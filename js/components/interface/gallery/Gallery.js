@@ -9,7 +9,7 @@ define(function (require) {
 	require('lg-video');
 	require('lg-fullscreen');
 	require('lg-pager');
-	require('../../../../node_modules/lightgallery/src/css/lightgallery.css');
+	require('lightgallery/src/css/lightgallery.css');
 
 	var LazyLoad = require('react-lazy-load').default;
 
