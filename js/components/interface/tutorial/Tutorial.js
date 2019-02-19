@@ -321,7 +321,7 @@ define(function (require) {
 					} else {
 						//default tutorial when user doesn't specify one for this event
 						if (self.state.tutorialData == {}) {
-							self.setTutorial("/org.geppetto.frontend/geppetto/js/components/interface/tutorial/configuration/experiment_loaded_tutorial.json", "Geppetto tutorial");
+							self.setTutorial("/org.geppetto.frontend/geppetto/node_modules/@geppettoengine/geppetto-client/js/components/interface/tutorial/configuration/experiment_loaded_tutorial.json", "Geppetto tutorial");
 						}
 						else {
 							self.start();

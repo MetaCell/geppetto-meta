@@ -4,7 +4,7 @@
 define(function(require) {
 
 	window.$ = require('jquery');
-    global.GEPPETTO_CONFIGURATION = require('../../../GeppettoConfiguration.json');
+    global.GEPPETTO_CONFIGURATION = require('root/GeppettoConfiguration.json');
 	var React = require('react');
 	var ReactDOM = require('react-dom');
 	var adminPanel = React.createFactory(require('./AdminPanel'));

@@ -438,7 +438,7 @@ THREE.OBJLoader.prototype = {
         var material = new THREE.PointsMaterial(
             {
                 size: 2,
-                map: textureLoader.load("geppetto/js/components/interface/3dCanvas/particle.png"),
+                map: textureLoader.load("geppetto/node_modules/@geppettoengine/geppetto-client/js/components/interface/3dCanvas/particle.png"),
                 blending: THREE.AdditiveBlending,
                 depthTest: false,
                 transparent: true,

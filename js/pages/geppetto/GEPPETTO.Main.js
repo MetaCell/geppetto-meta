@@ -78,9 +78,9 @@ define(function (require) {
                     this.statusWorker.terminate();
                 }
                 if (GEPPETTO_CONFIGURATION.contextPath == "/") {
-                    this.statusWorker = new Worker("/geppetto/js/geppettoProject/PullStatusWorker.js");
+                    this.statusWorker = new Worker("/geppetto/node_modules/@geppettoengine/geppetto-client/js/geppettoProject/PullStatusWorker.js");
                 }else{
-                    this.statusWorker = new Worker("geppetto/js/geppettoProject/PullStatusWorker.js");
+                    this.statusWorker = new Worker("geppetto/node_modules/@geppettoengine/geppetto-client/js/geppettoProject/PullStatusWorker.js");
                 }
 
                 this.statusWorker.postMessage(2000);

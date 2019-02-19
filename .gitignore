@@ -1,18 +1,6 @@
-*.class
 *.DS_Store
-META-INF
 node_modules/
 node/
-dashboard/api/session.json
-
-# Build js, css
-webapp/css/main.css
-webapp/js/extensions/*
-webapp/WEB-INF/web.xml
-!webapp/js/extensions/geppetto-default
-!js/extensions/extensions.js
-
-# Package Files #
 
 # Editor byproducts
 .idea/
@@ -25,8 +13,6 @@ webapp/WEB-INF/web.xml
 *~
 .imdone/
 /.externalToolBuilders/
-/.settings/*
-.classpath
 
 #WormSim specific stuff
 *.css-e
