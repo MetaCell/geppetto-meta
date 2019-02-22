@@ -1,27 +1,27 @@
 define([
-    'jquery',
-    'underscore',
-    'backbone',
-    'text!templates/projects/projectPreviewTemplate.hbs',
-    //dirty hack for handlebars loading wait
-    'handlebars',
-    'libs/ginny/ginny'
+  'jquery',
+  'underscore',
+  'backbone',
+  'text!templates/projects/projectPreviewTemplate.hbs',
+  // dirty hack for handlebars loading wait
+  'handlebars',
+  'libs/ginny/ginny'
 ], function ($, _, Backbone, projectPreviewTemplate) {
 
-    var ProjectPreviewView = Backbone.View.extend({
+  var ProjectPreviewView = Backbone.View.extend({
 
-        template: Handlebars.compile(projectPreviewTemplate),
+    template: Handlebars.compile(projectPreviewTemplate),
 
-        initialize:function (options) {
-             _.bindAll(this, 'render');
-        },
+    initialize:function (options) {
+      _.bindAll(this, 'render');
+    },
 
-        render : function() {
-            this.$el.append(this.template(this.model.toJSON()));
-            return this;
-        }
+    render : function () {
+      this.$el.append(this.template(this.model.toJSON()));
+      return this;
+    }
 
-    });
+  });
 
-    return ProjectPreviewView;
+  return ProjectPreviewView;
 });

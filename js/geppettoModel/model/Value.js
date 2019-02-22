@@ -7,18 +7,18 @@
  * @author Nitesh Thali
  */
 define(function (require) {
-	
-    var ObjectWrapper = require('./ObjectWrapper');
+  
+  var ObjectWrapper = require('./ObjectWrapper');
 
-    function Value(options) {
-    	ObjectWrapper.prototype.constructor.call(this, options);
-    	this.pointerValue=  options.pointerValue;
-    	this.capabilities= [];
-    }
+  function Value (options) {
+    ObjectWrapper.prototype.constructor.call(this, options);
+    this.pointerValue = options.pointerValue;
+    this.capabilities = [];
+  }
     
-    Value.prototype = Object.create(ObjectWrapper.prototype);
-    Value.prototype.constructor = Value;
+  Value.prototype = Object.create(ObjectWrapper.prototype);
+  Value.prototype.constructor = Value;
 
-    return Value;
+  return Value;
     
 });

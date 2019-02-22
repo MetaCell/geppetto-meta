@@ -10,13 +10,12 @@
  */
 
 
-
-//Load PlotsController and other classes using GEPPETTO
-define(function(require) {
-	return function(GEPPETTO) {
-		// Register Commands
-		GEPPETTO.MenuManager.registerNewCommandProvider([GEPPETTO.Resources.DYNAMICS_TYPE,GEPPETTO.Resources.VARIABLE_NODE],
-				GEPPETTO.WidgetFactory.getController(GEPPETTO.Widgets.PLOT).getCommands);
-	};
+// Load PlotsController and other classes using GEPPETTO
+define(function (require) {
+  return function (GEPPETTO) {
+    // Register Commands
+    GEPPETTO.MenuManager.registerNewCommandProvider([GEPPETTO.Resources.DYNAMICS_TYPE,GEPPETTO.Resources.VARIABLE_NODE],
+      GEPPETTO.WidgetFactory.getController(GEPPETTO.Widgets.PLOT).getCommands);
+  };
 });
 

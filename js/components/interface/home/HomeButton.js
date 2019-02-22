@@ -1,30 +1,30 @@
 define(function (require) {
 
-    var React = require('react');
-    var CreateClass = require('create-react-class'),
-        GEPPETTO = require('geppetto');
+  var React = require('react');
+  var CreateClass = require('create-react-class'),
+    GEPPETTO = require('geppetto');
 
-    return CreateClass({
-        mixins: [require('../../controls/mixins/Button')],
+  return CreateClass({
+    mixins: [require('../../controls/mixins/Button')],
 
-        componentDidMount: function() {
-        },
+    componentDidMount: function () {
+    },
 
-        getDefaultProps: function() {
-            return {
-            	label : '',
-                className: 'HomeButton pull-right',
-                icon: 'fa fa-home',
-                onClick: function() {
-                    var targetWindow = '_blank';
-                    if(GEPPETTO_CONFIGURATION.embedded) {
-                        targetWindow = '_self';
-                    }
-                    var win = window.open("./", targetWindow);
-                    win.focus();
-                }
-            };
+    getDefaultProps: function () {
+      return {
+        label : '',
+        className: 'HomeButton pull-right',
+        icon: 'fa fa-home',
+        onClick: function () {
+          var targetWindow = '_blank';
+          if (GEPPETTO_CONFIGURATION.embedded) {
+            targetWindow = '_self';
+          }
+          var win = window.open("./", targetWindow);
+          win.focus();
         }
+      };
+    }
 
-    });
+  });
 });

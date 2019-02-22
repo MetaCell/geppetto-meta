@@ -8,37 +8,37 @@
  */
 
 define(['jquery'], function (require) {
-    return {
-        capabilityId: 'ConnectionCapability',
-        A: null,
-        B: null,
+  return {
+    capabilityId: 'ConnectionCapability',
+    A: null,
+    B: null,
 
-        /**
-         * Get A
-         */
-        getA: function(){
-            return this.A;
-        },
+    /**
+     * Get A
+     */
+    getA: function (){
+      return this.A;
+    },
 
-        /**
-         * Get B
-         */
-        getB: function(){
-            return this.B;
-        },
+    /**
+     * Get B
+     */
+    getB: function (){
+      return this.B;
+    },
 
-        /**
-         * Set A
-         */
-        setA: function(a){
-            this.A = a;
-        },
+    /**
+     * Set A
+     */
+    setA: function (a){
+      this.A = a;
+    },
 
-        /**
-         * Set B
-         */
-        setB: function(b){
-            this.B = b;
-        }
+    /**
+     * Set B
+     */
+    setB: function (b){
+      this.B = b;
     }
+  }
 });

@@ -1,19 +1,19 @@
 define([
-    'jquery',
-    'underscore',
-    'backbone'
-], function($, _, Backbone){
+  'jquery',
+  'underscore',
+  'backbone'
+], function ($, _, Backbone){
 
-    var UserDetailsModel = Backbone.Model.extend({
-        url:    "api/session.json",
+  var UserDetailsModel = Backbone.Model.extend({
+    url:    "api/session.json",
 
-        initialize : function () {
-        },
+    initialize : function () {
+    },
 
-        parse: function (data) {
-            return data;
-        }
-    });
+    parse: function (data) {
+      return data;
+    }
+  });
 
-    return UserDetailsModel;
+  return UserDetailsModel;
 });

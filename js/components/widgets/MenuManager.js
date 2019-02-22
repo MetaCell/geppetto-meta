@@ -1,39 +1,42 @@
 
 define(function (require) {
-    return function (GEPPETTO) {
+  return function (GEPPETTO) {
 
-        var commandsProviders = {};
+    var commandsProviders = {};
 
-        /**
-         * @class GEPPETTO.MenuManager
-         */
-        GEPPETTO.MenuManager = {
+    /**
+     * @class GEPPETTO.MenuManager
+     */
+    GEPPETTO.MenuManager = {
 
-            resetMap: function () {
-                commandsProviders = {};
-            },
-            registerNewCommandProvider: function (nodeTypes, handler) {
-                for (var nodeTypeKey in nodeTypes) {
-                    nodeType = nodeTypes[nodeTypeKey];
-                    commandsItem = [];
-                    if (nodeType in commandsProviders) {
-                        commandsItem = commandsProviders[nodeType];
-                    }
-                    commandsItem.push(handler);
-                    commandsProviders[nodeType] = commandsItem;
-                }
-            },
+      resetMap: function () {
+        commandsProviders = {};
+      },
+      registerNewCommandProvider: function (nodeTypes, handler) {
+        let nodeType;
+        let commandsItem;
 
-
-            getCommandsProvidersFor: function (nodeType) {
-                var commandsProvidersForNodeType = [];
-                if (nodeType in commandsProviders) {
-                    commandsProvidersForNodeType = commandsProviders[nodeType];
-                }
-                return commandsProvidersForNodeType;
-            }
+        for (var nodeTypeKey in nodeTypes) {
+          nodeType = nodeTypes[nodeTypeKey];
+          commandsItem = [];
+          if (nodeType in commandsProviders) {
+            commandsItem = commandsProviders[nodeType];
+          }
+          commandsItem.push(handler);
+          commandsProviders[nodeType] = commandsItem;
+        }
+      },
 
 
-        };
+      getCommandsProvidersFor: function (nodeType) {
+        var commandsProvidersForNodeType = [];
+        if (nodeType in commandsProviders) {
+          commandsProvidersForNodeType = commandsProviders[nodeType];
+        }
+        return commandsProvidersForNodeType;
+      }
+
+
     };
+  };
 });

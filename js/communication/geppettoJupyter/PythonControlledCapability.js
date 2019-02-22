@@ -7,395 +7,401 @@
  */
 define(function (require) {
 
-    var $ = require('jquery');
-    var React = require('react');
-    var Utils = require('./GeppettoJupyterUtils');
+  var $ = require('jquery');
+  var React = require('react');
+  var Utils = require('./GeppettoJupyterUtils');
 
-    module.exports = {
-        createPythonControlledComponent(WrappedComponent) {
-            class PythonControlledComponent extends WrappedComponent {
-                constructor(props) {
-                    super(props);
-                    if (this.state == undefined) {
-                        this.state = {};
-                    }
-                    this.state.model = props.model;
-                    this.state.componentType = WrappedComponent.name;
-                    this.id = (this.props.id == undefined) ? this.props.model : this.props.id;
-                    this._isMounted = false;
-                }
+  module.exports = {
+    createPythonControlledComponent (WrappedComponent) {
+      class PythonControlledComponent extends WrappedComponent {
+        constructor (props) {
+          super(props);
+          if (this.state == undefined) {
+            this.state = {};
+          }
+          this.state.model = props.model;
+          this.state.componentType = WrappedComponent.name;
+          this.id = (this.props.id == undefined) ? this.props.model : this.props.id;
+          this._isMounted = false;
+        }
 
-                setSyncValueWithPythonHandler(handler) {
-                    this.syncValueWithPython = handler;
-                }
+        setSyncValueWithPythonHandler (handler) {
+          this.syncValueWithPython = handler;
+        }
 
-                connectToPython(componentType, model) {
-                    Utils.execPythonMessage('jupyter_geppetto.ComponentSync(componentType="' + componentType + '",model="' + model + '",id="' + this.id + '").connect()');
-                }
+        connectToPython (componentType, model) {
+          Utils.execPythonMessage('jupyter_geppetto.ComponentSync(componentType="' + componentType + '",model="' + model + '",id="' + this.id + '").connect()');
+        }
 
-                disconnectFromPython() {
-                    Utils.execPythonMessage('jupyter_geppetto.remove_component_sync(componentType="' + this.state.componentType + '",model="' + this.id + '")');
-                    GEPPETTO.ComponentFactory.removeExistingComponent(this.state.componentType, this);
-                }
+        disconnectFromPython () {
+          Utils.execPythonMessage('jupyter_geppetto.remove_component_sync(componentType="' + this.state.componentType + '",model="' + this.id + '")');
+          GEPPETTO.ComponentFactory.removeExistingComponent(this.state.componentType, this);
+        }
 
-                componentWillUnmount() {
-                    this._isMounted = false;
-                    this.disconnectFromPython();
-                }
+        componentWillUnmount () {
+          this._isMounted = false;
+          this.disconnectFromPython();
+        }
 
-                componentWillReceiveProps(nextProps) {
-                    this.disconnectFromPython();
-                    this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
-                    GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
-                    this.connectToPython(this.state.componentType, nextProps.model);
-                    if (this.state.value != nextProps.value) {
-                        this.setState({ value: (nextProps.value === undefined) ? '' : nextProps.value });
-                    }
-                }
+        componentWillReceiveProps (nextProps) {
+          this.disconnectFromPython();
+          this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
+          this.connectToPython(this.state.componentType, nextProps.model);
+          if (this.state.value != nextProps.value) {
+            this.setState({ value: (nextProps.value === undefined) ? '' : nextProps.value });
+          }
+        }
 
-                componentDidMount() {
-                    this._isMounted = true;
-                    GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this, true);
-                    if (this.props.model != undefined) {
-                        this.connectToPython(this.state.componentType, this.props.model);
-                    }
-                    if (this.props.value != undefined) {
-                        this.setState({ value: this.props.value });
-                    }
-                }
+        componentDidMount () {
+          this._isMounted = true;
+          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this, true);
+          if (this.props.model != undefined) {
+            this.connectToPython(this.state.componentType, this.props.model);
+          }
+          if (this.props.value != undefined) {
+            this.setState({ value: this.props.value });
+          }
+        }
+      }
+
+      return PythonControlledComponent;
+    },
+
+    createPythonControlledControl (WrappedComponent) {
+
+      var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
+      class PythonControlledControl extends PythonControlledComponent {
+
+        constructor (props) {
+          super(props);
+          this.state = $.extend(this.state, {
+            value: '',
+            searchText: '',
+            checked: false
+          });
+
+          // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
+          this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
+          this.handleUpdateInput = this.handleUpdateInput.bind(this);
+          this.handleUpdateCheckbox = this.handleUpdateCheckbox.bind(this);
+        }
+
+        shouldComponentUpdate (nextProps, nextState) {
+          switch (this.state.componentType) {
+          case 'AutoComplete':
+            return ((this.state.searchText !== nextState.searchText) || (this.state.model !== nextState.model));
+          case 'Checkbox':
+            return ((this.state.checked !== nextState.checked) || (this.state.model !== nextState.model));
+          default:
+            return ((this.state.value !== nextState.value) || (this.state.model !== nextState.model));
+          }
+        }
+
+        componentWillReceiveProps (nextProps) {
+          this.disconnectFromPython();
+          this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
+          this.connectToPython(this.state.componentType, nextProps.model);
+          if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
+            this.setState({ searchText: nextProps.searchText });
+          }
+          if ((this.state.checked != nextProps.checked) && (nextProps.checked != undefined)) {
+            this.setState({ checked: nextProps.checked });
+          }
+          if ((this.state.value != nextProps.value) && (nextProps.value != undefined)) {
+            this.setState({ value: nextProps.value });
+          }
+          if ((this.state.model != nextProps.model) && (nextProps.model != undefined)) {
+            this.setState({ model: nextProps.model });
+          }
+        }
+
+        componentDidUpdate (prevProps, prevState) {
+          switch (WrappedComponent.name) {
+          case 'AutoComplete':
+            if (this.state.searchText !== prevState.searchText && this.props.onChange) {
+              this.props.onChange(this.state.searchText);
             }
+            break;
+          case 'Checkbox':
+            if (this.state.checked !== prevState.checked && this.props.onCheck) {
+              this.props.onCheck(null, this.state.checked);
+            }
+            break;
+          default:
+            if (this.state.value !== prevState.value && this.props.onChange) {
+              this.props.onChange(null, null, this.state.value);
+            }
+            break;
+          }
+          if (this.props.validate) {
+            this.props.validate(this.state.value).then(errorState => {
+              this.setState(errorState);
+            });
+          }
+        }
 
-            return PythonControlledComponent;
-        },
+        updatePythonValue (newValue) {
+          if (this.props.prePythonSyncProcessing !== undefined) {
+            newValue = this.props.prePythonSyncProcessing(newValue);
+          }
+          // whenever we invoke syncValueWithPython we will propagate the Javascript value of the model to Python
+          if (this.syncValueWithPython) {
+            // this.syncValueWithPython((event.target.type == 'number') ? parseFloat(this.state.value) : this.state.value, this.props.requirement);
+            switch (this.props.realType) {
+            case 'float':
+              if (!isNaN(newValue) && newValue !== '') {
+                newValue = parseFloat(newValue)
+              }
+              break;
+            case 'dict':
+              if (typeof newValue === 'string') {
+                newValue = JSON.parse(newValue)
+              }
+              break;
+            default:
+              break;
+            }
+            if (newValue !== '') {
+              this.syncValueWithPython(newValue);
+              if (this.props.callback) {
+                this.props.callback(newValue, this.oldValue === undefined ? this.state.value : this.oldValue);
+                this.oldValue = newValue;
+              }
+            }
+          }
+          this.setState({ value: newValue, searchText: newValue, checked: newValue });
+          this.forceUpdate();
+        }
 
-        createPythonControlledControl(WrappedComponent) {
+        triggerUpdate (updateMethod) {
+          // common strategy when triggering processing of a value change, delay it, every time there is a change we reset
+          if (this.updateTimer != undefined) {
+            clearTimeout(this.updateTimer);
+          }
+          this.updateTimer = setTimeout(updateMethod, 1000);
+        }
+        // Default handle (mainly textfields and dropdowns)
+        handleChange (event, index, value) {
+          var targetValue = value;
+          if (event != null && event.target.value != undefined) {
+            targetValue = event.target.value;
+          }
+          this.setState({ value: targetValue });
 
-            var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
-            class PythonControlledControl extends PythonControlledComponent {
+          if (this.props.validate) {
+            this.props.validate(targetValue).then(errorState => {
+              this.setState(errorState);
+            });
+          }
 
-                constructor(props) {
-                    super(props);
-                    this.state = $.extend(this.state, {
-                        value: '',
-                        searchText: '',
-                        checked: false
-                    });
+          // For textfields value is retrieved from the event. For dropdown value is retrieved from the value
+          this.triggerUpdate(() => this.updatePythonValue(targetValue));
+        }
 
-                    // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
-                    this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
-                    this.handleUpdateInput = this.handleUpdateInput.bind(this);
-                    this.handleUpdateCheckbox = this.handleUpdateCheckbox.bind(this);
-                }
+        // Autocomplete handle
+        handleUpdateInput (value) {
+          this.triggerUpdate(() => this.updatePythonValue(value));
+        }
 
-                shouldComponentUpdate(nextProps, nextState) {
-                    switch (this.state.componentType) {
-                        case 'AutoComplete':
-                            return ((this.state.searchText !== nextState.searchText) || (this.state.model !== nextState.model));
-                        case 'Checkbox':
-                            return ((this.state.checked !== nextState.checked) || (this.state.model !== nextState.model));
-                        default:
-                            return ((this.state.value !== nextState.value) || (this.state.model !== nextState.model));
-                    }
-                }
+        // Checkbox
+        handleUpdateCheckbox (event, isInputChecked) {
+          this.updatePythonValue(isInputChecked);
+        }
 
-                componentWillReceiveProps(nextProps) {
-                    this.disconnectFromPython();
-                    this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
-                    GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
-                    this.connectToPython(this.state.componentType, nextProps.model);
-                    if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
-                        this.setState({ searchText: nextProps.searchText });
-                    }
-                    if ((this.state.checked != nextProps.checked) && (nextProps.checked != undefined)) {
-                        this.setState({ checked: nextProps.checked });
-                    }
-                    if ((this.state.value != nextProps.value) && (nextProps.value != undefined)) {
-                        this.setState({ value: nextProps.value });
-                    }
-                    if ((this.state.model != nextProps.model) && (nextProps.model != undefined)) {
-                        this.setState({ model: nextProps.model });
-                    }
-                }
+        render () {
+          const wrappedComponentProps = Object.assign({}, this.props);
+          if (wrappedComponentProps.key == undefined) {
+            wrappedComponentProps.key = wrappedComponentProps.model;
+          }
+          if (wrappedComponentProps.id == undefined) {
+            wrappedComponentProps.id = wrappedComponentProps.model;
+          }
+          delete wrappedComponentProps.model;
+          delete wrappedComponentProps.handleChange;
 
-                componentDidUpdate(prevProps, prevState) {
-                    switch (WrappedComponent.name) {
-                        case 'AutoComplete':
-                            if (this.state.searchText !== prevState.searchText && this.props.onChange) {
-                                this.props.onChange(this.state.searchText);
-                            }
-                            break;
-                        case 'Checkbox':
-                            if (this.state.checked !== prevState.checked && this.props.onCheck) {
-                                this.props.onCheck(null, this.state.checked);
-                            }
-                            break;
-                        default:
-                            if (this.state.value !== prevState.value && this.props.onChange) {
-                                this.props.onChange(null, null, this.state.value);
-                            }
-                            break;
-                    }
-                    if (this.props.validate) {
-                        this.props.validate(this.state.value).then((errorState) => {
-                            this.setState(errorState);
-                        });
-                    }
-                }
+          delete wrappedComponentProps.modelName;
+          delete wrappedComponentProps.dimensionType;
+          delete wrappedComponentProps.noStyle;
+          delete wrappedComponentProps.validate;
+          delete wrappedComponentProps.prePythonSyncProcessing;
+          delete wrappedComponentProps.callback;
 
-                updatePythonValue(newValue) {
-                    if (this.props.prePythonSyncProcessing!==undefined) {
-                        newValue = this.props.prePythonSyncProcessing(newValue);
-                    }
-                    //whenever we invoke syncValueWithPython we will propagate the Javascript value of the model to Python
-                    if (this.syncValueWithPython) {
-                        // this.syncValueWithPython((event.target.type == 'number') ? parseFloat(this.state.value) : this.state.value, this.props.requirement);
-                        switch (this.props.realType) {
-                            case 'float':
-                                if (!isNaN(newValue) && newValue !== '') {
-                                    newValue = parseFloat(newValue)
-                                }
-                                break;
-                            case 'dict':
-                                if (typeof newValue === 'string') {
-                                    newValue = JSON.parse(newValue)
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        if (newValue !== '') {
-                            this.syncValueWithPython(newValue);
-                            if (this.props.callback) {
-                                this.props.callback(newValue, this.oldValue === undefined ? this.state.value : this.oldValue);
-                                this.oldValue = newValue;
-                            }
-                        }
-                    }
-                    this.setState({ value: newValue, searchText: newValue, checked: newValue });
-                    this.forceUpdate();
-                }
+          if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
+            wrappedComponentProps['helperText'] = this.state.errorMsg;
+          }
+          if (WrappedComponent.name != 'ListComponent') {
+            delete wrappedComponentProps.realType;
+          }
 
-                triggerUpdate(updateMethod) {
-                    //common strategy when triggering processing of a value change, delay it, every time there is a change we reset
-                    if (this.updateTimer != undefined) {
-                        clearTimeout(this.updateTimer);
-                    }
-                    this.updateTimer = setTimeout(updateMethod, 1000);
-                }
-                // Default handle (mainly textfields and dropdowns)
-                handleChange(event, index, value) {
-                    var targetValue = value;
-                    if (event != null && event.target.value != undefined) {
-                        targetValue = event.target.value;
-                    }
-                    this.setState({ value: targetValue });
+          switch (WrappedComponent.name) {
+          case 'AutoComplete':
+            wrappedComponentProps['onUpdateInput'] = this.handleUpdateInput;
+            wrappedComponentProps['searchText'] = this.state.searchText;
+            break;
+          case 'Checkbox':
+            wrappedComponentProps['onCheck'] = this.handleUpdateCheckbox;
+            wrappedComponentProps['checked'] = this.state.checked;
+            delete wrappedComponentProps.searchText;
+            delete wrappedComponentProps.dataSource;
+            delete wrappedComponentProps.floatingLabelText;
+            delete wrappedComponentProps.hintText;
+            break;
+          default:
+            wrappedComponentProps['onChange'] = this.handleChange;
+            wrappedComponentProps['value'] = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
+            delete wrappedComponentProps.searchText;
+            delete wrappedComponentProps.dataSource;
+            break;
+          }
 
-                    if (this.props.validate) {
-                        this.props.validate(targetValue).then((errorState) => {
-                            this.setState(errorState);
-                        });
-                    }
+          return (
+            <WrappedComponent {...wrappedComponentProps} />
+          );
+        }
 
-                    // For textfields value is retrieved from the event. For dropdown value is retrieved from the value
-                    this.triggerUpdate(() => this.updatePythonValue(targetValue));
-                }
+      }
 
-                // Autocomplete handle
-                handleUpdateInput(value) {
-                    this.triggerUpdate(() => this.updatePythonValue(value));
-                }
+      return PythonControlledControl;
+    },
 
-                //Checkbox
-                handleUpdateCheckbox(event, isInputChecked) {
-                    this.updatePythonValue(isInputChecked);
-                }
+    createPythonControlledControlWithPythonDataFetch (WrappedComponent) {
 
-                render() {
-                    const wrappedComponentProps = Object.assign({}, this.props);
-                    if (wrappedComponentProps.key == undefined) {
-                        wrappedComponentProps.key = wrappedComponentProps.model;
-                    }
-                    if (wrappedComponentProps.id == undefined) {
-                        wrappedComponentProps.id = wrappedComponentProps.model;
-                    }
-                    delete wrappedComponentProps.model;
-                    delete wrappedComponentProps.handleChange;
+      var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
+      class PythonControlledControlWithPythonDataFetch extends PythonControlledComponent {
 
-                    delete wrappedComponentProps.modelName;
-                    delete wrappedComponentProps.dimensionType;
-                    delete wrappedComponentProps.noStyle;
-                    delete wrappedComponentProps.validate;
-                    delete wrappedComponentProps.prePythonSyncProcessing;
-                    delete wrappedComponentProps.callback;
-
-                    if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
-                        wrappedComponentProps['helperText'] = this.state.errorMsg;
-                    }
-                    if (WrappedComponent.name != 'ListComponent') {
-                        delete wrappedComponentProps.realType;
-                    }
-
-                    switch (WrappedComponent.name) {
-                        case 'AutoComplete':
-                            wrappedComponentProps['onUpdateInput'] = this.handleUpdateInput;
-                            wrappedComponentProps['searchText'] = this.state.searchText;
-                            break;
-                        case 'Checkbox':
-                            wrappedComponentProps['onCheck'] = this.handleUpdateCheckbox;
-                            wrappedComponentProps['checked'] = this.state.checked;
-                            delete wrappedComponentProps.searchText;
-                            delete wrappedComponentProps.dataSource;
-                            delete wrappedComponentProps.floatingLabelText;
-                            delete wrappedComponentProps.hintText;
-                            break;
-                        default:
-                            wrappedComponentProps['onChange'] = this.handleChange;
-                            wrappedComponentProps['value'] = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
-                            delete wrappedComponentProps.searchText;
-                            delete wrappedComponentProps.dataSource;
-                            break;
-                    }
-
-                    return (
-                        <WrappedComponent {...wrappedComponentProps} />
-                    );
-                }
-
-            };
-
-            return PythonControlledControl;
-        },
-
-        createPythonControlledControlWithPythonDataFetch(WrappedComponent) {
-
-            var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
-            class PythonControlledControlWithPythonDataFetch extends PythonControlledComponent {
-
-                constructor(props) {
-                    super(props);
-                    this.state = $.extend(this.state, {
-                        value: [],
-                        items: [],
-                        pythonData: []
-                    });
-                    // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
-                    this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
+        constructor (props) {
+          super(props);
+          this.state = $.extend(this.state, {
+            value: [],
+            items: [],
+            pythonData: []
+          });
+          // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
+          this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
                     
-                    this.callPythonMethod();
+          this.callPythonMethod();
+        }
+
+        componentWillReceiveProps (nextProps) {
+          this.disconnectFromPython();
+          this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
+          this.connectToPython(this.state.componentType, nextProps.model);
+          this.callPythonMethod();
+        }
+
+        /*
+         * TODO: this function appears defined 2 times
+         * I think the last def is picked up, so I am commenting this one
+         * componentDidUpdate (prevProps, prevState) {
+         *   if (this.state.value != prevState.value && this.props.onChange) {
+         *     this.props.onChange(null, null, this.state.value);
+         *   }
+         * }
+         */
+
+        updatePythonValue (newValue) {
+          this.setState({ value: newValue, searchText: newValue, checked: newValue });
+          if (this.syncValueWithPython) {
+            this.syncValueWithPython(newValue);
+          }
+
+          this.forceUpdate();
+        }
+
+
+        // Default handle (mainly textfields and dropdowns)
+        handleChange (event, index, value) {
+          var targetValue = value;
+          if (event != null && event.target.value != undefined) {
+            targetValue = event.target.value;
+          }
+          this.setState({ value: targetValue });
+          this.updatePythonValue(targetValue);
+        }
+
+
+        compareArrays (array1, array2) {
+          // if the other array is a falsy value, return
+          if (!array1 || !array2) {
+            return false;
+          }
+
+          // compare lengths - can save a lot of time 
+          if (array1.length != array2.length) {
+            return false;
+          }
+
+          for (var i = 0, l = array1.length; i < l; i++) {
+            // Check if we have nested arrays
+            if (array1[i] instanceof Array && array2[i] instanceof Array) {
+              // recurse into the nested arrays
+              if (!array1[i].equals(array2[i])) {
+                return false;
+              }
+            } else if (array1[i] != array2[i]) {
+              // Warning - two different object instances will never be equal: {x:20} != {x:20}
+              return false;
+            }
+          }
+          return true;
+        }
+
+        callPythonMethod = value => {
+          Utils.evalPythonMessage(this.props.method, []).then(response => {
+            if (Object.keys(response).length != 0) {
+              this.setState({ pythonData: response });
+            }
+          });
+        }
+
+        componentDidUpdate (prevProps, prevState) {
+          if (!this.compareArrays(this.state.value, prevState.value)) {
+            if ($.isArray(this.state.value)) {
+              for (var v in this.state.value) {
+                if (this.state.pythonData.indexOf(this.state.value[v]) < 0) {
+                  var newValue = [this.state.value[v]];
+                  this.setState({ pythonData: this.state.pythonData.concat(newValue) });
                 }
+              }
+            }
+          }
+        }
 
-                componentWillReceiveProps(nextProps) {
-                    this.disconnectFromPython();
-                    this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
-                    GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
-                    this.connectToPython(this.state.componentType, nextProps.model);
-                    this.callPythonMethod();
-                }
+        shouldComponentUpdate (nextProps, nextState) {
+          return !this.compareArrays(this.state.pythonData, nextState.pythonData) || !this.compareArrays(this.state.value, nextState.value);
+        }
 
-                componentDidUpdate(prevProps, prevState) {
-                    if (this.state.value != prevState.value && this.props.onChange) {
-                        this.props.onChange(null, null, this.state.value);
-                    }
-                }
-
-                updatePythonValue(newValue) {
-                    this.setState({ value: newValue, searchText: newValue, checked: newValue });
-                    if (this.syncValueWithPython) {
-                        this.syncValueWithPython(newValue);
-                    }
-
-                    this.forceUpdate();
-                }
-
-
-                // Default handle (mainly textfields and dropdowns)
-                handleChange(event, index, value) {
-                    var targetValue = value;
-                    if (event != null && event.target.value != undefined) {
-                        targetValue = event.target.value;
-                    }
-                    this.setState({ value: targetValue });
-                    this.updatePythonValue(targetValue);
-                }
-
-
-                compareArrays(array1, array2) {
-                    // if the other array is a falsy value, return
-                    if (!array1 || !array2)
-                        return false;
-
-                    // compare lengths - can save a lot of time 
-                    if (array1.length != array2.length)
-                        return false;
-
-                    for (var i = 0, l = array1.length; i < l; i++) {
-                        // Check if we have nested arrays
-                        if (array1[i] instanceof Array && array2[i] instanceof Array) {
-                            // recurse into the nested arrays
-                            if (!array1[i].equals(array2[i]))
-                                return false;
-                        }
-                        else if (array1[i] != array2[i]) {
-                            // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-
-                callPythonMethod = (value) => {
-                    Utils.evalPythonMessage(this.props.method, []).then((response) => {
-                        if (Object.keys(response).length != 0) {
-                            this.setState({ pythonData: response });
-                        }
-                    });
-                }
-
-                componentDidUpdate(prevProps, prevState) {
-                    if (!this.compareArrays(this.state.value, prevState.value)) {
-                        if ($.isArray(this.state.value)) {
-                            for (var v in this.state.value) {
-                                if (this.state.pythonData.indexOf(this.state.value[v]) < 0) {
-                                    var newValue = [this.state.value[v]];
-                                    this.setState({ pythonData: this.state.pythonData.concat(newValue) });
-                                }
-                            }
-                        }
-                    }
-                }
-
-                shouldComponentUpdate(nextProps, nextState) {
-                    return !this.compareArrays(this.state.pythonData, nextState.pythonData) || !this.compareArrays(this.state.value, nextState.value);
-                }
-
-                render() {
-                    const wrappedComponentProps = Object.assign({}, this.props);
-                    if (wrappedComponentProps.key == undefined) {
-                        wrappedComponentProps.key = wrappedComponentProps.model;
-                    }
-                    if (wrappedComponentProps.id == undefined) {
-                        wrappedComponentProps.id = wrappedComponentProps.model;
-                    }
-                    wrappedComponentProps['onChange'] = this.handleChange;
-                    wrappedComponentProps['value'] = this.state.value;
-                    delete wrappedComponentProps.model;
-                    delete wrappedComponentProps.postProcessItems;
-                    delete wrappedComponentProps.validate;
-                    delete wrappedComponentProps.prePythonSyncProcessing;
+        render () {
+          const wrappedComponentProps = Object.assign({}, this.props);
+          if (wrappedComponentProps.key == undefined) {
+            wrappedComponentProps.key = wrappedComponentProps.model;
+          }
+          if (wrappedComponentProps.id == undefined) {
+            wrappedComponentProps.id = wrappedComponentProps.model;
+          }
+          wrappedComponentProps['onChange'] = this.handleChange;
+          wrappedComponentProps['value'] = this.state.value;
+          delete wrappedComponentProps.model;
+          delete wrappedComponentProps.postProcessItems;
+          delete wrappedComponentProps.validate;
+          delete wrappedComponentProps.prePythonSyncProcessing;
                     
-                    if (this.props.postProcessItems) {
-                        var items = this.props.postProcessItems(this.state.pythonData, this.state.value);
-                    }
-                    return (
-                        <WrappedComponent {...wrappedComponentProps}>
-                            {items}
-                        </WrappedComponent>
-                    );
-                }
+          if (this.props.postProcessItems) {
+            var items = this.props.postProcessItems(this.state.pythonData, this.state.value);
+          }
+          return (
+            <WrappedComponent {...wrappedComponentProps}>
+              {items}
+            </WrappedComponent>
+          );
+        }
 
-            };
+      }
 
-            return PythonControlledControlWithPythonDataFetch;
-        },
-    }
+      return PythonControlledControlWithPythonDataFetch;
+    },
+  }
 })

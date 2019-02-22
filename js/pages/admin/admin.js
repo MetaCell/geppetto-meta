@@ -1,15 +1,15 @@
 /**
  * @class The Geppetto admin console
  */
-define(function(require) {
+define(function (require) {
 
-	window.$ = require('jquery');
-    global.GEPPETTO_CONFIGURATION = require('root/GeppettoConfiguration.json');
-	var React = require('react');
-	var ReactDOM = require('react-dom');
-	var adminPanel = React.createFactory(require('./AdminPanel'));
+  window.$ = require('jquery');
+  global.GEPPETTO_CONFIGURATION = require('root/GeppettoConfiguration.json');
+  var React = require('react');
+  var ReactDOM = require('react-dom');
+  var adminPanel = React.createFactory(require('./AdminPanel'));
 
-	var height = window.innerHeight - 100;
+  var height = window.innerHeight - 100;
 
-	ReactDOM.render(React.createFactory(adminPanel)({height : height}), document.getElementById('adminPanel'));
+  ReactDOM.render(React.createFactory(adminPanel)({ height : height }), document.getElementById('adminPanel'));
 });

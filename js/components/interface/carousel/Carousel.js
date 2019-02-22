@@ -1,56 +1,56 @@
 define(function (require) {
 
-	require("./vendor/slick.css");
-	require("./vendor/slick-theme.less");
-	var React = require('react');
-	var Slider = require('react-slick').default;
-	
-	var AbstractComponent = require('../../AComponent');
+  require("./vendor/slick.css");
+  require("./vendor/slick-theme.less");
+  var React = require('react');
+  var Slider = require('react-slick').default;
 
-	return class Carousel extends AbstractComponent {
+  var AbstractComponent = require('../../AComponent');
 
-		constructor(props) {
-			super(props);
+  return class Carousel extends AbstractComponent {
 
-			var settings = {
-				infinite: false,
-				speed: 500,
-				slidesToShow: 1
-			};
+    constructor (props) {
+      super(props);
 
-			this.state = {
-				settings: $.extend(settings, props.settings),
-				files: props.files
-			};
+      var settings = {
+        infinite: false,
+        speed: 500,
+        slidesToShow: 1
+      };
 
-			this.download = this.download.bind(this);
-		}
+      this.state = {
+        settings: $.extend(settings, props.settings),
+        files: props.files
+      };
 
-		componentDidMount() {
-			this.refs.slider.forceUpdate();
-		}
+      this.download = this.download.bind(this);
+    }
 
-		setData(files) {
-			this.setState({ files: files });
-		}
+    componentDidMount () {
+      this.refs.slider.forceUpdate();
+    }
 
-		download() {
-			GEPPETTO.Utility.createZipFromRemoteFiles(this.state.files, "data.zip");
-		}
+    setData (files) {
+      this.setState({ files: files });
+    }
 
-		render() {
-			var that = this;
-			var items = this.state.files.map(function (path, index) {
-				return (<div key={index}><img onClick={() => that.props.onClick(path)} onMouseEnter={() => that.props.onMouseEnter(path)} onMouseLeave={() => that.props.onMouseLeave(path)} src={path} /></div>);
-			});
+    download () {
+      GEPPETTO.Utility.createZipFromRemoteFiles(this.state.files, "data.zip");
+    }
 
-			if (this.state.files != undefined) {
-				return (
-					<Slider {...this.state.settings} ref='slider'>
-						{items}
-					</Slider>
-				)
-			}
-		}
-	};
+    render () {
+      var that = this;
+      var items = this.state.files.map(function (path, index) {
+        return (<div key={index}><img onClick={() => that.props.onClick(path)} onMouseEnter={() => that.props.onMouseEnter(path)} onMouseLeave={() => that.props.onMouseLeave(path)} src={path} /></div>);
+      });
+
+      if (this.state.files != undefined) {
+        return (
+          <Slider {...this.state.settings} ref='slider'>
+            {items}
+          </Slider>
+        )
+      }
+    }
+  };
 });
