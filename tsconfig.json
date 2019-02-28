@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es5",
+    "stripInternal":true,
+    "alwaysStrict":true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "jsx": "react",
+    "types": [], // <--- this excludes node_modules/@types/** from implicit bundle
+  },
+  "include": [
+    "./js/components/interface/flexLayout2/src/**/*", 
+    "./js/components/interface/flexLayout2/examples/demo/*"
+  ]
+}

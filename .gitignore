@@ -1,21 +1,6 @@
-*.class
 *.DS_Store
-src/main/webapp/META-INF
 node_modules/
 node/
-src/main/webapp/dashboard/api/session.json
-
-# Build js, css
-src/main/webapp/css/main.css
-src/main/webapp/js/extensions/*
-src/main/webapp/WEB-INF/web.xml
-!src/main/webapp/js/extensions/geppetto-default
-!src/main/webapp/js/extensions/extensions.js
-
-# Package Files #
-*.jar
-*.war
-*.ear
 
 # Editor byproducts
 .idea/
@@ -28,18 +13,16 @@ src/main/webapp/WEB-INF/web.xml
 *~
 .imdone/
 /.externalToolBuilders/
-/.settings/*
-.classpath
 
 #WormSim specific stuff
 *.css-e
 *.less-e
-src/main/webapp/js/components/dev/customrenderer/
-src/main/webapp/js/components/dev/wormsimbuttonbar/
-src/main/webapp/js/components/dev/wormsimlogo/
-src/main/webapp/js/components/dev/wormsimsimulationcontrols/
-src/main/webapp/js/components/dev/wormsimtutorialhandler/
-src/main/webapp/js/components/wormsim.*
+js/components/dev/customrenderer/
+js/components/dev/wormsimbuttonbar/
+js/components/dev/wormsimlogo/
+js/components/dev/wormsimsimulationcontrols/
+js/components/dev/wormsimtutorialhandler/
+js/components/wormsim.*
 
 #other local directories that may get installed
 org.geppetto.core/
