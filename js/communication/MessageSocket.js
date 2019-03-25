@@ -126,7 +126,11 @@ define(function (require) {
       },
 
       isReady: function () {
-        return GEPPETTO.MessageSocket.socket.readyState;
+        if (GEPPETTO.MessageSocket.socket !== null) {
+          return GEPPETTO.MessageSocket.socket.readyState;
+        } else {
+          return 0;
+        }
       },
 
       close: function () {
