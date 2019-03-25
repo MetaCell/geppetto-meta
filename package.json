@@ -77,6 +77,8 @@
     "qunitjs": "^2.1.1",
     "raw-loader": "^0.5.1",
     "react": "^16.6.3",
+    "react-dnd": "7.0.2",
+    "react-dnd-html5-backend": "7.0.2",
     "react-dom": "^16.6.3",
     "react-dom-factories": "1.0.2",
     "react-jsonschema-form": "^1.0.6",
@@ -118,7 +120,7 @@
       ]
     }
   },
-  "_deprecated_packages": {
+  "_removed_packages": {
     "aws-sdk": "^2.362.0",
     "image-webpack-loader": "^2.0.0",
     "jquery.cookie": "^1.4.1",
@@ -130,8 +132,6 @@
     "react-collapsible": "^2.3.1",
     "three-loaders-collada": "^1.0.1",
     "@material-ui/icons": "3.0.1",
-    "react-dnd": "^5.0.0",
-    "react-dnd-html5-backend": "^5.0.1",
     "react-event-listener": "^0.6.4",
     "recompose": "^0.30.0",
     "react-select": "^2.1.2",
