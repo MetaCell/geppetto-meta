@@ -38,7 +38,7 @@ define(function (require) {
     rotateRight: function () {
       GEPPETTO.CommandController.execute(this.props.viewer + '.incrementCameraRotate(0.01, 0)', true);
     },
-        
+
     rotateZ: function () {
       GEPPETTO.CommandController.execute(this.props.viewer + '.incrementCameraRotate(0, 0, 0.01)',true);
     },
@@ -50,7 +50,7 @@ define(function (require) {
     rotate: function () {
       GEPPETTO.CommandController.execute(this.props.viewer + '.autoRotate()', true);
     },
-        
+
     cameraHome: function () {
       GEPPETTO.CommandController.execute(this.props.viewer + '.resetCamera()', true);
     },
@@ -61,6 +61,10 @@ define(function (require) {
 
     zoomOut: function () {
       GEPPETTO.CommandController.execute(this.props.viewer + '.incrementCameraZoom(+0.1)',true);
+    },
+
+    wireFrame: function () {
+      GEPPETTO.CommandController.execute(this.props.viewer + '.setWireframe(!' + this.props.viewer + '.getWireframe())',true);
     },
 
     componentDidMount: function () {
@@ -86,6 +90,7 @@ define(function (require) {
 
           <button id="zoomInBtn" className="btn squareB fa fa-search-plus zoom-in" onClick={this.zoomIn}></button>
           <button id="zoomOutBtn" className="btn squareB fa fa-search-minus zoom-out" onClick={this.zoomOut}></button>
+          <button id="wireframeBtn" className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={this.wireFrame}></button>
         </div>
 
       );
