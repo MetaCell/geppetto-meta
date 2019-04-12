@@ -90,7 +90,7 @@ define(function (require) {
 
           <button id="zoomInBtn" className="btn squareB fa fa-search-plus zoom-in" onClick={this.zoomIn}></button>
           <button id="zoomOutBtn" className="btn squareB fa fa-search-minus zoom-out" onClick={this.zoomOut}></button>
-          <button id="wireframeBtn" className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={this.wireFrame}></button>
+          {this.props.wireframeEnabled ? <button id="wireframeBtn" className="btn squareB gpt-sphere_wireframe-jpg wireframe" onClick={this.wireFrame}></button> : undefined }
         </div>
 
       );
