@@ -10,24 +10,27 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const styles = {
   root: {
-    background: '#444141',
-    border: '5px',
+    top: '1px',
+    backgroundColor: '#444141f2',
     borderRadius: 0,
-    borderColor: '#11bffe',
     color: '#ffffff',
     fontSize: '12px',
     fontFamily: 'Khand, sans-serif',
-    marginTop: '-5px',
-    minWidth: '110px'
+    minWidth: '110px',
+    borderLeft: '1px solid #585858',
+    borderRight: '1px solid #585858',
+    borderBottom: '1px solid #585858',
+    borderBottomLeftRadius: '2px',
+    borderBottomRightRadius: '2px',
   }
 };
 
 class MenuPopper extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  render () {
+  render() {
     const anchorEl = this.props.parentRef;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
@@ -40,7 +43,9 @@ class MenuPopper extends React.Component {
           <Fade {...TransitionProps} timeout={50}>
             <ClickAwayListener onClickAway={this.props.awayClickHandler}>
               <Paper
-                classes={{ root: classes.root }} // class name, e.g. `classes-nesting-root-x`
+                classes={{
+                  root: classes.root, // class name, e.g. `classes-nesting-root-x`
+                }}
                 square={false}>
                 <MenuList>
                   <MenuSingleItem
@@ -65,6 +70,8 @@ class MenuPopper extends React.Component {
   }
 }
 
-MenuPopper.propTypes = { classes: PropTypes.object.isRequired, };
+MenuPopper.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(MenuPopper);

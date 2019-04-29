@@ -7,11 +7,11 @@
  */
 define(['jquery'], function () {
 
-  function SceneController () {
-  }
+  function SceneController() {
+  };
 
-  SceneController.prototype
-    = {
+  SceneController.prototype =
+    {
 
       constructor: SceneController,
 
@@ -25,6 +25,15 @@ define(['jquery'], function () {
         this.canvasComponents.push(canvasComponent);
       },
 
+      /**
+       *
+       * @param canvasComponent
+       */
+      remove3DCanvas: function () {
+        if (this.canvasComponents.length > 0) {
+          this.canvasComponents.pop();
+        }
+      },
 
       /**
        *
@@ -40,6 +49,32 @@ define(['jquery'], function () {
           }
         }
         return visible;
+      },
+
+      /**
+       *
+       * @param instance
+       * @returns {boolean}
+       */
+      isInstancePresent: function (instance) {
+        for (var i = 0; i < this.canvasComponents.length; i++) {
+          for (var j = 0; j < this.canvasComponents[i].engine.scene.children.length; j++) {
+            if (this.canvasComponents[i].engine.scene.children[j].instancePath === instance.getInstancePath()) {
+              return true;
+            }
+          }
+        }
+        return false;
+      },
+
+      /**
+       *
+       * @param instance
+       */
+      display: function (instance) {
+        for (var i = 0; i < this.canvasComponents.length; i++) {
+          this.canvasComponents[i].display([instance]);
+        }
       },
 
       /**
@@ -250,18 +285,21 @@ define(['jquery'], function () {
         var colors = [];
         for (var i = 0; i < this.canvasComponents.length; i++) {
           var c = this.canvasComponents[i].getColor(instance);
-          if ($.inArray(c,colors) == -1){
+          if ($.inArray(c, colors) == -1) {
             colors.push(c);
           }
         }
-        if (colors.length == 1){
+        if (colors.length == 1) {
           return colors[0];
-        } else if (colors.length == 0){
+        }
+        else if (colors.length == 0) {
           return undefined;
-        } else {
+        }
+        else {
           return colors;
         }
       },
+
 
 
       /**
@@ -285,7 +323,7 @@ define(['jquery'], function () {
        */
       setLinesThreshold: function (threshold) {
         for (var i = 0; i < this.canvasComponents.length; i++) {
-          this.canvasComponents[i].setLinesThreshold(threshold);
+          this.canvasComponents[i].setLinesThreshold(ithreshold);
         }
       },
 
@@ -410,4 +448,3 @@ define(['jquery'], function () {
 
   return SceneController;
 });
-
