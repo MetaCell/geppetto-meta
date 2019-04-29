@@ -165,6 +165,7 @@ define(function (require) {
 
       var action = function (e) {
         e.preventDefault();
+        e.nativeEvent.stopImmediatePropagation();
         var actionStr = that.props.metadata.actions;
         actionStr = actionStr.replace(/\$entity\$/gi, path);
         GEPPETTO.CommandController.execute(actionStr);
@@ -190,9 +191,11 @@ define(function (require) {
 
       var action = function (e) {
         e.preventDefault();
+        e.nativeEvent.stopImmediatePropagation();
         var actionStr = that.props.metadata.actions;
         actionStr = actionStr.replace(/\$entity\$/gi, path);
         GEPPETTO.CommandController.execute(actionStr);
+        $("#querybuilder").hide();
       };
 
       return action;
@@ -629,6 +632,14 @@ define(function (require) {
         }
         );
         that.initTypeAheadCreated = true;
+      }
+    },
+
+    shouldComponentUpdate: function() {
+      if($("#querybuilder").is(":visible")) {
+        return true;
+      } else {
+        return false;
       }
     },
 
