@@ -2,7 +2,7 @@
  * Connectivity widget
  */
 define(function (require) {
-  var d3 = require("d3");
+  var d3 = require("d4");
   var _ = require('underscore');
 
   return {

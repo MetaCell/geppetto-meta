@@ -6,7 +6,7 @@
 define(function (require) {
   return {
     createForceLayout: function (context) {
-      var d3 = require("d3");
+      var d3 = require("d4");
       var _ = require('underscore');
 
       // TODO: 10/20 categories hardcoded in color scales

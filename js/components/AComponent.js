@@ -21,6 +21,7 @@ define(function (require) {
       this.dirtyView = false;
       this.container = null;
       window[this.props.id] = this;
+      GEPPETTO.ComponentFactory.addExistingComponent(this.constructor.name.toUpperCase(), this, true);
     }
 
     getContainer () {
