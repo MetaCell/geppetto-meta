@@ -5,7 +5,7 @@ define(function (require) {
 
   return {
     createMatrixLayout: function (context) {
-      var d3 = require("d4");
+      var d3 = require("d3");
 
       var margin = { top: 45, right: 10, bottom: 10, left: 15 };
       var legendWidth = 120;

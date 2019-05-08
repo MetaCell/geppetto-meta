@@ -12,7 +12,7 @@ define(function (require) {
     var CameraControls = require('../cameraControls/CameraControls');
     var AbstractComponent = require('../../AComponent');
 
-    var d3 = require("d4");
+    var d3 = require("d3");
 
     return class Canvas extends AbstractComponent {
 

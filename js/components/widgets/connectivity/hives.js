@@ -6,7 +6,7 @@ define(function (require){
 
   return {
     createHiveLayout: function (context) {
-      var d3 = require("d4");
+      var d3 = require("d3");
       var hiveLink = require("d3-plugins-dist/dist/mbostock/hive/cjs")["default"]();
   
       const innerRadius = 20;

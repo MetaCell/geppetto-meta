@@ -13,7 +13,7 @@ define(function (require) {
   var Instance = require('../../../geppettoModel/model/Instance');
   require('../../controls/mixins/bootstrap/modal.js')
 
-  var d3 = require("d4");
+  var d3 = require("d3");
 
   var chords = require('./chords');
   var hives = require('./hives');
