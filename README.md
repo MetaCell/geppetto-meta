@@ -4,8 +4,8 @@
   <img src="https://github.com/tarelli/bucket/blob/master/geppetto%20logo.png?raw=true" alt="Geppetto logo"/>
 </p>
 
-# Geppetto Frontend
+# Geppetto Client
 
-This module contains the client side of Geppetto which includes the visualization 3D engine (using the awesome [three.js](https://github.com/mrdoob/three.js/)), all the javascript magic and the servlet which is used to connect to the backend using WebSocket.
+This is the client library of Geppetto which includes all the frontend components and widgets, the WebSocket API implementation to talk to the backend and all the infrastructure to manage the Geppetto Model in Javascript.
 
 For information about how this fits into [Geppetto](http://www.geppetto.org/) refer to the umbrella project [org.geppetto](https://github.com/openworm/org.geppetto) on GitHub.
