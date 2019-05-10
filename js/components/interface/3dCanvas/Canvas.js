@@ -12,6 +12,8 @@ define(function (require) {
     var CameraControls = require('../cameraControls/CameraControls');
     var AbstractComponent = require('../../AComponent');
 
+    var d3 = require("d3");
+
     return class Canvas extends AbstractComponent {
 
         constructor(props) {
