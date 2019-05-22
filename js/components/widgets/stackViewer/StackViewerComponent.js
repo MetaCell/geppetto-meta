@@ -58,13 +58,14 @@ define(function (require) {
     /**
      * In this case, componentDidMount is used to grab the canvas container ref, and
      * and hook up the PixiJS renderer
-     **/
+     *
+     */
     componentDidMount: function () {
       // signal component mounted (used to avoid calling isMounted() deprecated method)
       this._isMounted = true;
 
       console.log('Loading....');
-      //Setup PIXI Canvas in componentDidMount
+      // Setup PIXI Canvas in componentDidMount
       this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
       // maintain full window size
       this.refs.stackCanvas.appendChild(this.renderer.view);
@@ -114,12 +115,12 @@ define(function (require) {
       // block move event outside stack
       this.renderer.plugins.interaction.moveWhenInside = true;
 
-      //call metadata from server
+      // call metadata from server
       this.callDstRange();
       this.callTileSize();
       this.callImageSize();
 
-      //start the display
+      // start the display
       this.createImages();
       this.animate();
 
@@ -167,8 +168,10 @@ define(function (require) {
 
     callDstRange: function () {
       var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
-      // this.state.buffer[-1].text = 'Buffering stack...';
-      //get distance range;
+      /*
+       * this.state.buffer[-1].text = 'Buffering stack...';
+       *get distance range;
+       */
       $.ajax({
         url: image + '&obj=Wlz-distance-range',
         type: 'POST',
@@ -195,7 +198,7 @@ define(function (require) {
 
     callTileSize: function () {
       var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
-      //get tile size;
+      // get tile size;
       $.ajax({
         url: image + '&obj=Tile-size',
         type: 'POST',
@@ -220,7 +223,7 @@ define(function (require) {
 
     callImageSize: function () {
       var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
-      //get image size;
+      // get image size;
       $.ajax({
         url: image + '&obj=Max-size',
         type: 'POST',
@@ -253,14 +256,12 @@ define(function (require) {
           // update widget window extents (X,Y):
           if (this.state.orth == 2) {
             x = (this.stack.position.x) + (-this.disp.position.x / this.disp.scale.x);
-          }
-          else {
+          } else {
             x = (-this.stack.position.x) + (-this.disp.position.x / this.disp.scale.x);
           }
           if (this.state.orth == 1) {
             y = (this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
-          }
-          else {
+          } else {
             y = (-this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
           }
           coordinates[0] = x.toFixed(0);
@@ -352,7 +353,7 @@ define(function (require) {
         (function (i, that, shift) {
           var shift = GEPPETTO.isKeyPressed("shift");
           var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
-          //get image size;
+          // get image size;
           $.ajax({
             url: image + '&prl=-1,' + that.state.posX.toFixed(0) + ',' + that.state.posY.toFixed(0) + '&obj=Wlz-foreground-objects',
             type: 'POST',
@@ -430,7 +431,7 @@ define(function (require) {
             }
             var shift = GEPPETTO.isKeyPressed("shift");
             var image = that.state.serverUrl.toString() + '?wlz=' + item + '&sel=0,255,255,255&mod=zeta&fxp=' + that.props.fxp.join(',') + '&scl=' + that.props.scl.toFixed(1) + '&dst=' + Number(that.state.dst).toFixed(1) + '&pit=' + Number(that.state.pit).toFixed(0) + '&yaw=' + Number(that.state.yaw).toFixed(0) + '&rol=' + Number(that.state.rol).toFixed(0);
-            //get image size;
+            // get image size;
             $.ajax({
               url: image + '&prl=-1,' + callX + ',' + callY + '&obj=Wlz-foreground-objects',
               type: 'POST',
@@ -582,7 +583,7 @@ define(function (require) {
         .on('complete', setup.bind(this))
         .load();
 
-      function loadProgressHandler(loader, resource) {
+      function loadProgressHandler (loader, resource) {
         if (loader.progress < 100) {
           if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
             this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
@@ -590,10 +591,10 @@ define(function (require) {
         }
       }
 
-      function setup() {
+      function setup () {
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
-          //this.props.canvasRef.resetCamera();
+          // this.props.canvasRef.resetCamera();
           this.props.onHome();
           this._initialized = true;
         }
@@ -611,7 +612,7 @@ define(function (require) {
 
       if (this.disp.width > 1) {
         if (this.state.recenter) {
-          //console.log('centering image ' + this.disp.width + ' inside window ' + this.props.width + ' wide');
+          // console.log('centering image ' + this.disp.width + ' inside window ' + this.props.width + ' wide');
           this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
           this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
           this.stack.position.x = 0;
@@ -646,14 +647,14 @@ define(function (require) {
       }
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
-        for (i in Object.keys(this.state.images)) {
+        for (let i in Object.keys(this.state.images)) {
           var id = Object.keys(this.state.images)[i].split(",")[0];
           if (id > (this.state.stack.length - 1)) {
             delete this.state.images[Object.keys(this.state.images)[i]];
             try {
               this.stack.removeChildAt(i);
             } catch (ignore) {
-              //ignore if it doesn't exist
+              // ignore if it doesn't exist
             }
           }
         }
@@ -673,8 +674,10 @@ define(function (require) {
     createImages: function () {
       if (this.state.stack.length > 0) {
         var i, x, y, w, h, d, offX, offY, t, image;
-        // move through tiles
-        // console.log('Creating slice view...');
+        /*
+         * move through tiles
+         * console.log('Creating slice view...');
+         */
         this.state.visibleTiles = [];
         w = Math.ceil(this.state.imageX / this.state.tileX);
         h = Math.ceil(this.state.imageY / this.state.tileY);
@@ -776,7 +779,8 @@ define(function (require) {
 
     /**
      * When we get new props, run the appropriate imperative functions
-     **/
+     *
+     */
     componentWillReceiveProps: function (nextProps) {
       var updDst = false;
       if (nextProps.stack !== this.state.stack || nextProps.color !== this.state.color || this.state.serverUrl !== nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== nextProps.id) {
@@ -842,7 +846,8 @@ define(function (require) {
     },
     /**
      * Update the stage "zoom" level by setting the scale
-     **/
+     *
+     */
     updateZoomLevel: function (props) {
       this.disp.scale.x = props.zoomLevel;
       this.disp.scale.y = props.zoomLevel;
@@ -852,7 +857,8 @@ define(function (require) {
 
     /**
      * Update the display text
-     **/
+     *
+     */
     updateStatusText: function (props) {
       this.setStatusText(props.statusText);
     },
@@ -885,7 +891,8 @@ define(function (require) {
 
     /**
      * Update the stage Image files when any change.
-     **/
+     *
+     */
     updateImages: function (props) {
       var i, j, d, image;
       // console.log(this.state.visibleTiles);
@@ -911,11 +918,13 @@ define(function (require) {
             this.state.images[d].tint = this.state.color[i];
             this.state.images[d].zOrder = i;
             // console.log([d,this.state.images[d].position.x,this.state.images[d].position.y,this.state.images[d].anchor.x,this.state.images[d].anchor.y])
-          }//else{
-          //   console.log(d + ' not loaded!?');
-          //   console.log(this.state.images);
-          //   console.log(this.state.visibleTiles[j]);
-          // }
+          }// else{
+          /*
+           *   console.log(d + ' not loaded!?');
+           *   console.log(this.state.images);
+           *   console.log(this.state.visibleTiles[j]);
+           * }
+           */
         }
       }
       PIXI.loader.load();
@@ -923,7 +932,8 @@ define(function (require) {
 
     /**
      * Animation loop for updating Pixi Canvas
-     **/
+     *
+     */
     animate: function () {
       if (this._isMounted) {
         // render the stage container (if the component is still mounted)
@@ -933,9 +943,11 @@ define(function (require) {
     },
 
     onDragStart: function (event) {
-      // store a reference to the data
-      // the reason for this is because of multitouch
-      // we want to track the movement of this particular touch
+      /*
+       * store a reference to the data
+       * the reason for this is because of multitouch
+       * we want to track the movement of this particular touch
+       */
       this.state.data = event.data;
       this.stack.alpha = 0.7;
       this.state.dragging = true;
@@ -944,12 +956,12 @@ define(function (require) {
         x: offPosition.x,
         y: offPosition.y
       };
-      //console.log('DragStartOffset:'+JSON.stringify(this.state.dragOffset));
+      // console.log('DragStartOffset:'+JSON.stringify(this.state.dragOffset));
       var startPosition = this.state.data.getLocalPosition(this.stack);
       // console.log([startPosition.x,this.state.imageX*0.5,1/this.disp.scale.x]);
       this.state.posX = Number(startPosition.x.toFixed(0));
       this.state.posY = Number(startPosition.y.toFixed(0));
-      //console.log('DragStart:'+JSON.stringify(startPosition));
+      // console.log('DragStart:'+JSON.stringify(startPosition));
     },
 
     onDragEnd: function () {
@@ -958,7 +970,7 @@ define(function (require) {
         var startPosition = this.state.data.getLocalPosition(this.stack);
         var newPosX = Number(startPosition.x.toFixed(0));
         var newPosY = Number(startPosition.y.toFixed(0));
-        //console.log('DragEnd:'+JSON.stringify(startPosition));
+        // console.log('DragEnd:'+JSON.stringify(startPosition));
         if (newPosX == this.state.posX && newPosY == this.state.posY) {
           this.callObjects();
           this.state.oldX = newPosX;
@@ -1024,7 +1036,7 @@ define(function (require) {
         this.state.dragOffset.y = newPosition.y;
         this.stack.position.x += xmove;
         this.stack.position.y += ymove;
-        //console.log('Moving :'+xmove+','+ymove);
+        // console.log('Moving :'+xmove+','+ymove);
         this.state.buffer[-1].text = 'Moving stack... (X:' + Number(this.stack.position.x).toFixed(2) + ',Y:' + Number(this.stack.position.y).toFixed(2) + ')';
         // update slice view
         this.checkStack();
@@ -1035,539 +1047,544 @@ define(function (require) {
 
     /**
      * Render our container that will store our PixiJS game canvas. Store the ref
-     **/
+     *
+     */
     render: function () {
       return (
         < div
           className="stack-canvas-container"
           ref="stackCanvas" > < /div>
       )
-          ;
-      }
+      ;
+    }
   });
 
   var prefix = "", _addEventListener, onwheel, support;
 
   var StackViewerComponent = createClass({
-            _isMounted: false,
+    _isMounted: false,
     
-      getInitialState: function () {
-          return {
-            zoomLevel: 0.5,
-          dst: 0,
-          text: '',
-          stackX: -10000,
-          stackY: -10000,
-          imageX: 1024,
-          imageY: 1024,
-          fxp: [511, 255, 108],
-          pit: 0,
-          yaw: 0,
-          rol: 0,
-          scl: 1.0,
-          voxelX: (this.props.voxel.x || 0.622088),
-          voxelY: (this.props.voxel.y || 0.622088),
-          voxelZ: (this.props.voxel.z || 0.622088),
-          minDst: -100,
-          maxDst: 100,
-          orth: 0,
-          color: [],
-          stack: [],
-          label: [],
-          id: [],
-          tempId: [],
-          tempName: [],
-          tempType: [],
-          plane: null,
-          initalised: false,
-          slice: false
+    getInitialState: function () {
+      return {
+        zoomLevel: 0.5,
+        dst: 0,
+        text: '',
+        stackX: -10000,
+        stackY: -10000,
+        imageX: 1024,
+        imageY: 1024,
+        fxp: [511, 255, 108],
+        pit: 0,
+        yaw: 0,
+        rol: 0,
+        scl: 1.0,
+        voxelX: (this.props.voxel.x || 0.622088),
+        voxelY: (this.props.voxel.y || 0.622088),
+        voxelZ: (this.props.voxel.z || 0.622088),
+        minDst: -100,
+        maxDst: 100,
+        orth: 0,
+        color: [],
+        stack: [],
+        label: [],
+        id: [],
+        tempId: [],
+        tempName: [],
+        tempType: [],
+        plane: null,
+        initalised: false,
+        slice: false
       };
-  },
+    },
 
-      onWheelEvent: function (e) {
-            e.preventDefault();
-          e.stopImmediatePropagation();
-          var newdst = this.state.dst;
-          if (e.ctrlKey && e.wheelDelta > 0) {
-            this.onZoomIn();
-          } else if (e.ctrlKey && e.wheelDelta < 0) {
-            this.onZoomOut();
-          } else {
-              // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-              var step = -1 * e.wheelDelta;
-          // Max step of imposed
-              if (step > 0) {
-                  if (this.state.orth == 0) {
+    onWheelEvent: function (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      var newdst = this.state.dst;
+      if (e.ctrlKey && e.wheelDelta > 0) {
+        this.onZoomIn();
+      } else if (e.ctrlKey && e.wheelDelta < 0) {
+        this.onZoomOut();
+      } else {
+        // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
+        var step = -1 * e.wheelDelta;
+        // Max step of imposed
+        if (step > 0) {
+          if (this.state.orth == 0) {
             step = this.state.voxelZ;
           } else if (this.state.orth == 1) {
             step = this.state.voxelY;
           } else if (this.state.orth == 2) {
             step = this.state.voxelX;
           }
-              } else if (step < 0) {
-                  if (this.state.orth == 0) {
+        } else if (step < 0) {
+          if (this.state.orth == 0) {
             step = -this.state.voxelZ;
           } else if (this.state.orth == 1) {
             step = -this.state.voxelY;
           } else if (this.state.orth == 2) {
             step = -this.state.voxelX;
           }
+        }
+        if (e.shiftKey) {
+          newdst += step * 10;
+        } else {
+          newdst += step;
+        }
+
+        if (newdst < this.state.maxDst && newdst > this.state.minDst) {
+          this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
+        } else if (newdst < this.state.maxDst) {
+          newdst = this.state.minDst;
+          this.setState({ dst: newdst, text: 'First slice!' });
+        } else if (newdst > this.state.minDst) {
+          newdst = this.state.maxDst;
+          this.setState({ dst: newdst, text: 'Last slice!' });
+        }
       }
-              if (e.shiftKey) {
-            newdst += step * 10;
-          } else {
-            newdst += step;
-          }
+    },
 
-              if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-            this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-          } else if (newdst < this.state.maxDst) {
-            newdst = this.state.minDst;
-          this.setState({dst: newdst, text: 'First slice!'});
-              } else if (newdst > this.state.minDst) {
-            newdst = this.state.maxDst;
-          this.setState({dst: newdst, text: 'Last slice!'});
-      }
-  }
-},
+    componentDidMount: function () {
+      this._isMounted = true;
 
-      componentDidMount: function () {
-            this._isMounted = true;
-
-          // detect event model
-          if (window.addEventListener) {
-            this._addEventListener = "addEventListener";
-          } else {
-            this._addEventListener = "attachEvent";
-          prefix = "on";
+      // detect event model
+      if (window.addEventListener) {
+        this._addEventListener = "addEventListener";
+      } else {
+        this._addEventListener = "attachEvent";
+        prefix = "on";
       }
 
       // detect available wheel event
-      support = "onwheel" in document.createElement("div") ? "wheel" : // Modern browsers support "wheel"
-          document.onmousewheel !== undefined ? "mousewheel" : // Webkit and IE support at least "mousewheel"
-              "DOMMouseScroll"; // let's assume that remaining browsers are older Firefox
-          this.addWheelListener($('#' + this.props.data.id + 'displayArea')[0], function (e) {
-            this.onWheelEvent(e);
-          }.bind(this));
+      support = "onwheel" in document.createElement("div") ? "wheel" // Modern browsers support "wheel"
+        : document.onmousewheel !== undefined ? "mousewheel" // Webkit and IE support at least "mousewheel"
+          : "DOMMouseScroll"; // let's assume that remaining browsers are older Firefox
+      this.addWheelListener($('#' + this.props.data.id + 'displayArea')[0], function (e) {
+        this.onWheelEvent(e);
+      }.bind(this));
 
-          if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
-            this.handleInstances(this.props.data.instances);
-          }
-      },
-
-      componentWillReceiveProps: function (nextProps) {
-          if (nextProps.data && nextProps.data != null) {
-              if (nextProps.data.instances && nextProps.data.instances != null) {
-            this.handleInstances(nextProps.data.instances);
-          }
-
-              if (nextProps.data.height && nextProps.data.height != null) {
-            this.setState({ height: nextProps.data.height });
-          }
-              if (nextProps.data.width && nextProps.data.width != null) {
-            this.setState({ width: nextProps.data.width });
-          }
-              if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-            this.setState({
-              voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-              voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-              voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-            });
-          }
-              if (nextProps.config && nextProps.config != null) {
-                  if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
-                      if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-            this.setState({
-              voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-              voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-              voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-            });
-          }
-                      if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-            this.setState({
-              tempName: nextProps.config.subDomains[2],
-              tempId: nextProps.config.subDomains[1],
-              tempType: nextProps.config.subDomains[3]
-            });
-          if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-            this.setState({ fxp: JSON.parse(nextProps.config.subDomains[4][0]) });
-          }
+      if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
+        this.handleInstances(this.props.data.instances);
       }
-  }
-}
-              if (nextProps.voxel && nextProps.voxel != null) {
-            this.setState({ voxelX: nextProps.voxel.x, voxelY: nextProps.voxel.y, voxelZ: nextProps.voxel.z });
-          }
-      }
-  },
+    },
 
-      handleInstances: function (instances) {
-          if (instances && instances != null && instances.length > 0) {
-              var instance;
-          var data, vals;
-          var files = [];
-          var colors = [];
-          var labels = [];
-          var ids = [];
-          var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
-              for (instance in instances) {
-                  try {
-                      if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function")){
-            vals = instances[instance].getVariable().getInitialValue().value;
-          data = JSON.parse(vals.data);
-          server = data.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
-          files.push(data.fileLocation);
-          // Take multiple ID's for template
-                        if (typeof this.props.config.templateId !== 'undefined' && typeof this.props.config.templateDomainIds !== 'undefined' && instances[instance].parent.getId() == this.props.config.templateId) {
-            ids.push(this.props.config.templateDomainIds);
-          } else {
-            ids.push([instances[instance].parent.getId()]);
-          }
-          labels.push(instances[instance].parent.getName());
-                        if (instances[instance].parent.isSelected() || (typeof instances[instance].parent[instances[instance].parent.getId() + '_obj'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_obj'].isSelected()) || (typeof instances[instance].parent[instances[instance].parent.getId() + '_swc'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_swc'].isSelected())) {
-            colors.push('0Xffcc00'); // selected
-          } else if (instances[instance].parent.getColor() !== undefined){
-            colors.push(instances[instance].parent.getColor().replace('#', '0X'));
-          }
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.data && nextProps.data != null) {
+        if (nextProps.data.instances && nextProps.data.instances != null) {
+          this.handleInstances(nextProps.data.instances);
         }
-    }
-                  catch (err) {
-            console.log('Error handling ' + instance);
-          console.log(err.message);
-          console.log(err.stack);
-      }
-  }
-              if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
-            this.setState({ serverURL: server });
-          // console.log('Changing IIP server to ' + server);
-          }
-              if (files != this.state.stack && files != null && files.length > 0) {
-            this.setState({ stack: files });
-          // console.log('setting stack to ' + JSON.stringify(files));
-          }
-              if (labels != this.state.label && labels != null && labels.length > 0) {
-            this.setState({ label: labels });
-          // console.log('updating labels to ' + JSON.stringify(labels));
-          }
-              if (ids != this.state.id && ids != null && ids.length > 0) {
-            this.setState({ id: ids });
-          // console.log('updating ids to ' + JSON.stringify(ids));
-          }
-              if (colors.toString() != this.state.color.toString() && colors != null && colors.length > 0) {
-            this.setState({ color: colors });
-          // console.log('updating colours to ' + JSON.stringify(colors));
-          }
-          } else {
-            this.setState({ label: [], stack: [], id: [], color: [] });
-          }
-      },
 
-      componentWillUnmount: function () {
-            clearTimeout(this.state.oldEvent);
-          this._isMounted = false;
-          return true;
-      },
-      /**
-       * Event handler for clicking zoom in. Increments the zoom level
-       **/
-      onZoomIn: function () {
-          var zoomLevel = 1;
-          if (GEPPETTO.isKeyPressed("shift")) {
-            zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
-          } else {
-            zoomLevel = Number((this.state.zoomLevel += 0.1).toFixed(1));
-          }
-          if (zoomLevel < 10.0) {
-            this.setState({
-              zoomLevel: zoomLevel,
-              text: 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'
-            });
-          } else {
-            this.setState({ zoomLevel: 10.0, text: 'Max zoom! (X10)' });
-          }
-      },
-
-      toggleOrth: function () {
-          var orth = this.state.orth += 1;
-          var pit, yaw, rol;
-          if (orth > 2) {
-            orth = 0;
-          this.state.orth = orth;
-      }
-          if (orth == 0) {
-            pit = 0;
-          yaw = 0;
-          rol = 0;
-          } else if (orth == 1) {
-            pit = 90;
-          yaw = 90;
-          rol = 270;
-          } else if (orth == 2) {
-            pit = 90;
-          yaw = 0;
-          rol = 0;
-      }
-          this.setState({orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: -10000, stackY: -10000});
-      },
-
-      toggleSlice: function () {
-          if (this.state.slice) {
-            this.setState({ slice: false });
-          } else {
-            this.setState({ slice: true });
-          }
-      },
-
-      /**
-       * Event handler for clicking zoom out. Decrements the zoom level
-       **/
-      onZoomOut: function () {
-          var zoomLevel = 1;
-          if (GEPPETTO.isKeyPressed("shift")) {
-            zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
-          } else {
-            zoomLevel = Number((this.state.zoomLevel -= .1).toFixed(1));
-          }
-          if (zoomLevel > 0.1) {
-            this.setState({
-              zoomLevel: zoomLevel,
-              text: 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'
-            });
-          } else {
-            this.setState({ zoomLevel: 0.1, text: 'Min zoom! (X0.1)' });
-          }
-      },
-
-      /**
-       * Event handler for clicking step in. Increments the dst level - TODO Remove
-       **/
-      onStepIn: function () {
-          var shift = GEPPETTO.isKeyPressed("shift");
-          var newdst = this.state.dst
-          if (shift) {
-            newdst += this.state.voxelZ * 10;
-          } else {
-            newdst += this.state.voxelZ;
-          }
-          if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-            this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-          } else if (newdst < this.state.maxDst) {
-            newdst = this.state.minDst;
-          this.setState({dst: newdst, text: 'First slice!'});
-          } else if (newdst > this.state.minDst) {
-            newdst = this.state.maxDst;
-          this.setState({dst: newdst, text: 'Last slice!'});
-      }
-  },
-  /**
-   * Event handler for clicking step out. Decrements the dst level - TODO Remove
-   **/
-      onStepOut: function () {
-          var shift = GEPPETTO.isKeyPressed("shift");
-          var newdst = this.state.dst
-          if (shift) {
-            newdst -= this.state.voxelZ * 10;
-          } else {
-            newdst -= this.state.voxelZ;
-          }
-          if (newdst < this.state.maxDst && newdst > this.state.minDst) {
-            this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
-          } else if (newdst < this.state.maxDst) {
-            newdst = this.state.minDst;
-          this.setState({dst: newdst, text: 'First slice!'});
-          } else if (newdst > this.state.minDst) {
-            newdst = this.state.maxDst;
-          this.setState({dst: newdst, text: 'Last slice!'});
-      }
-  },
-
-  /**
-   * Event handler for clicking Home.
-   **/
-      onHome: function () {
-          var autoScale = Number(Math.min(this.props.data.height / this.state.imageY, this.props.data.width / this.state.imageX).toFixed(1));
-          this.setState({dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale});
-      },
-
-      onExtentChange: function (data) {
-            this.setState(data);
-          if (!this.state.initalised && JSON.stringify(data).indexOf('imageX') > -1) {
-            this.state.initalised = true;
-          this.onHome();
-      }
-  },
-
-      addWheelListener: function (elem, callback, useCapture) {
-            this._addWheelListener(elem, support, callback, useCapture);
-
-          // handle MozMousePixelScroll in older Firefox
-          if (support == "DOMMouseScroll") {
-            this._addWheelListener(elem, "MozMousePixelScroll", callback, useCapture);
-          }
-      },
-
-      _addWheelListener: function (elem, eventName, callback, useCapture) {
-            elem[this._addEventListener](prefix + eventName, support == "wheel" ? callback : function (originalEvent) {
-              !originalEvent && (originalEvent = window.event);
-
-              // create a normalized event object
-              var event = {
-                // keep a ref to the original event object
-                originalEvent: originalEvent,
-                target: originalEvent.target || originalEvent.srcElement,
-                type: "wheel",
-                deltaMode: originalEvent.type == "MozMousePixelScroll" ? 0 : 1,
-                deltaX: 0,
-                delatZ: 0,
-                preventDefault: function () {
-                  originalEvent.preventDefault ?
-                    originalEvent.preventDefault() :
-                    originalEvent.returnValue = false;
-                }
-              };
-
-              // calculate deltaY (and deltaX) according to the event
-              if (support == "mousewheel") {
-                event.deltaY = -1 / 40 * originalEvent.wheelDelta;
-                // Webkit also support wheelDeltaX
-                originalEvent.wheelDeltaX && (event.deltaX = -1 / 40 * originalEvent.wheelDeltaX);
-              } else {
-                event.deltaY = originalEvent.detail;
-              }
-
-              // it's time to fire the callback
-              return callback(event);
-
-            }, useCapture || false);
-          },
-    
-      render: function () {
-          var homeClass = 'btn fa fa-home';
-          var zoomInClass = 'btn fa fa-search-plus';
-          var zoomOutClass = 'btn fa fa-search-minus';
-          var stepInClass = 'btn fa fa-chevron-down';
-          var stepOutClass = 'btn fa fa-chevron-up';
-          var pointerClass = 'btn fa fa-hand-pointer-o';
-          var orthClass = 'btn fa fa-refresh';
-          var toggleSliceClass = 'btn ';
-          if (this.state.slice) {
-            toggleSliceClass += 'gpt-hideplane';
-          }else{
-            toggleSliceClass += 'gpt-showplane';
-          }
-          var startOffset = 2.5;
-          var displayArea = this.props.data.id + 'displayArea';
-
-          var markup = '';
-          if (this.state.stack.length > 0) {
-            markup = (
-              <div id={displayArea} style={{ position: 'absolute', top: 3, left: 3 }}>
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={homeClass} onClick={this.onHome} title={'Center Stack'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset + 20,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={zoomInClass} onClick={this.onZoomIn} title={'Zoom In'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset + 35,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={zoomOutClass} onClick={this.onZoomOut} title={'Zoom Out'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset + 64,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={stepInClass} onClick={this.onStepIn} title={'Step Into Stack'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset + 52,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={stepOutClass} onClick={this.onStepOut} title={'Step Out Of Stack'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 2.5,
-                  top: startOffset + 83,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={orthClass} onClick={this.toggleOrth} title={'Change Slice Plane Through Stack'} />
-                <button style={{
-                  position: 'absolute',
-                  left: 3.5,
-                  top: startOffset + 106,
-                  padding: 0,
-                  border: 0,
-                  background: 'transparent'
-                }} className={toggleSliceClass} onClick={this.toggleSlice} title={'Toggle the 3D slice display'} />
-                <Canvas zoomLevel={this.state.zoomLevel} dst={this.state.dst}
-                  serverUrl={this.props.config.serverUrl} canvasRef={this.props.canvasRef}
-                  fxp={this.state.fxp} pit={this.state.pit} yaw={this.state.yaw} rol={this.state.rol}
-                  stack={this.state.stack} color={this.state.color} setExtent={this.onExtentChange}
-                  statusText={this.state.text} stackX={this.state.stackX} stackY={this.state.stackY}
-                  scl={this.state.scl} orth={this.state.orth}
-                  label={this.state.label} id={this.state.id} height={this.props.data.height}
-                  width={this.props.data.width} voxelX={this.state.voxelX}
-                  voxelY={this.state.voxelY} voxelZ={this.state.voxelZ} displayArea={displayArea}
-                  templateId={this.props.config.templateId}
-                  templateDomainIds={this.state.tempId}
-                  templateDomainTypeIds={this.state.tempType}
-                  templateDomainNames={this.state.tempName} layout={this.props.layout}
-                  slice={this.state.slice} onHome={this.onHome} onZoomIn={this.onZoomIn}
-                  onResize={this.onResize} />
-              </div>
-            );
-          } else {
-            markup = (
-              < div
-                id={displayArea}
-                style={
-                  {
-                    position: 'absolute',
-                    top
-                      :
-                      1,
-                    left
-                      :
-                      1,
-                    background
-                      :
-                      'transparent',
-                    width
-                      :
-                      this.props.data.width,
-                    height
-                      :
-                      this.props.data.height
-                  }
-                }>
-                <
-              /div>
-            )
-                ;
+        if (nextProps.data.height && nextProps.data.height != null) {
+          this.setState({ height: nextProps.data.height });
+        }
+        if (nextProps.data.width && nextProps.data.width != null) {
+          this.setState({ width: nextProps.data.width });
+        }
+        if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
+          this.setState({
+            voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
+            voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
+            voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
+          });
+        }
+        if (nextProps.config && nextProps.config != null) {
+          if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
+            if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
+              this.setState({
+                voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
+                voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
+                voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
+              });
             }
-  
-            return markup;
+            if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
+              this.setState({
+                tempName: nextProps.config.subDomains[2],
+                tempId: nextProps.config.subDomains[1],
+                tempType: nextProps.config.subDomains[3]
+              });
+              if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
+                this.setState({ fxp: JSON.parse(nextProps.config.subDomains[4][0]) });
+              }
+            }
+          }
         }
-    });
+        if (nextProps.voxel && nextProps.voxel != null) {
+          this.setState({ voxelX: nextProps.voxel.x, voxelY: nextProps.voxel.y, voxelZ: nextProps.voxel.z });
+        }
+      }
+    },
+
+    handleInstances: function (instances) {
+      if (instances && instances != null && instances.length > 0) {
+        var instance;
+        var data, vals;
+        var files = [];
+        var colors = [];
+        var labels = [];
+        var ids = [];
+        var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
+        for (instance in instances) {
+          try {
+            if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function")){
+              vals = instances[instance].getVariable().getInitialValue().value;
+              data = JSON.parse(vals.data);
+              server = data.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
+              files.push(data.fileLocation);
+              // Take multiple ID's for template
+              if (typeof this.props.config.templateId !== 'undefined' && typeof this.props.config.templateDomainIds !== 'undefined' && instances[instance].parent.getId() == this.props.config.templateId) {
+                ids.push(this.props.config.templateDomainIds);
+              } else {
+                ids.push([instances[instance].parent.getId()]);
+              }
+              labels.push(instances[instance].parent.getName());
+              if (instances[instance].parent.isSelected() || (typeof instances[instance].parent[instances[instance].parent.getId() + '_obj'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_obj'].isSelected()) || (typeof instances[instance].parent[instances[instance].parent.getId() + '_swc'] != 'undefined' && instances[instance].parent[instances[instance].parent.getId() + '_swc'].isSelected())) {
+                colors.push('0Xffcc00'); // selected
+              } else if (instances[instance].parent.getColor() !== undefined){
+                colors.push(instances[instance].parent.getColor().replace('#', '0X'));
+              }
+            }
+          } catch (err) {
+            console.log('Error handling ' + instance);
+            console.log(err.message);
+            console.log(err.stack);
+          }
+        }
+        if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
+          this.setState({ serverURL: server });
+          // console.log('Changing IIP server to ' + server);
+        }
+        if (files != this.state.stack && files != null && files.length > 0) {
+          this.setState({ stack: files });
+          // console.log('setting stack to ' + JSON.stringify(files));
+        }
+        if (labels != this.state.label && labels != null && labels.length > 0) {
+          this.setState({ label: labels });
+          // console.log('updating labels to ' + JSON.stringify(labels));
+        }
+        if (ids != this.state.id && ids != null && ids.length > 0) {
+          this.setState({ id: ids });
+          // console.log('updating ids to ' + JSON.stringify(ids));
+        }
+        if (colors.toString() != this.state.color.toString() && colors != null && colors.length > 0) {
+          this.setState({ color: colors });
+          // console.log('updating colours to ' + JSON.stringify(colors));
+        }
+      } else {
+        this.setState({ label: [], stack: [], id: [], color: [] });
+      }
+    },
+
+    componentWillUnmount: function () {
+      clearTimeout(this.state.oldEvent);
+      this._isMounted = false;
+      return true;
+    },
+    /**
+     * Event handler for clicking zoom in. Increments the zoom level
+     *
+     */
+    onZoomIn: function () {
+      var zoomLevel = 1;
+      if (GEPPETTO.isKeyPressed("shift")) {
+        zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
+      } else {
+        zoomLevel = Number((this.state.zoomLevel += 0.1).toFixed(1));
+      }
+      if (zoomLevel < 10.0) {
+        this.setState({
+          zoomLevel: zoomLevel,
+          text: 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'
+        });
+      } else {
+        this.setState({ zoomLevel: 10.0, text: 'Max zoom! (X10)' });
+      }
+    },
+
+    toggleOrth: function () {
+      var orth = this.state.orth += 1;
+      var pit, yaw, rol;
+      if (orth > 2) {
+        orth = 0;
+        this.state.orth = orth;
+      }
+      if (orth == 0) {
+        pit = 0;
+        yaw = 0;
+        rol = 0;
+      } else if (orth == 1) {
+        pit = 90;
+        yaw = 90;
+        rol = 270;
+      } else if (orth == 2) {
+        pit = 90;
+        yaw = 0;
+        rol = 0;
+      }
+      this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: -10000, stackY: -10000 });
+    },
+
+    toggleSlice: function () {
+      if (this.state.slice) {
+        this.setState({ slice: false });
+      } else {
+        this.setState({ slice: true });
+      }
+    },
+
+    /**
+     * Event handler for clicking zoom out. Decrements the zoom level
+     *
+     */
+    onZoomOut: function () {
+      var zoomLevel = 1;
+      if (GEPPETTO.isKeyPressed("shift")) {
+        zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
+      } else {
+        zoomLevel = Number((this.state.zoomLevel -= .1).toFixed(1));
+      }
+      if (zoomLevel > 0.1) {
+        this.setState({
+          zoomLevel: zoomLevel,
+          text: 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'
+        });
+      } else {
+        this.setState({ zoomLevel: 0.1, text: 'Min zoom! (X0.1)' });
+      }
+    },
+
+    /**
+     * Event handler for clicking step in. Increments the dst level - TODO Remove
+     *
+     */
+    onStepIn: function () {
+      var shift = GEPPETTO.isKeyPressed("shift");
+      var newdst = this.state.dst
+      if (shift) {
+        newdst += this.state.voxelZ * 10;
+      } else {
+        newdst += this.state.voxelZ;
+      }
+      if (newdst < this.state.maxDst && newdst > this.state.minDst) {
+        this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
+      } else if (newdst < this.state.maxDst) {
+        newdst = this.state.minDst;
+        this.setState({ dst: newdst, text: 'First slice!' });
+      } else if (newdst > this.state.minDst) {
+        newdst = this.state.maxDst;
+        this.setState({ dst: newdst, text: 'Last slice!' });
+      }
+    },
+    /**
+     * Event handler for clicking step out. Decrements the dst level - TODO Remove
+     *
+     */
+    onStepOut: function () {
+      var shift = GEPPETTO.isKeyPressed("shift");
+      var newdst = this.state.dst
+      if (shift) {
+        newdst -= this.state.voxelZ * 10;
+      } else {
+        newdst -= this.state.voxelZ;
+      }
+      if (newdst < this.state.maxDst && newdst > this.state.minDst) {
+        this.setState({ dst: newdst, text: 'Slice:' + (newdst - this.state.minDst).toFixed(1) });
+      } else if (newdst < this.state.maxDst) {
+        newdst = this.state.minDst;
+        this.setState({ dst: newdst, text: 'First slice!' });
+      } else if (newdst > this.state.minDst) {
+        newdst = this.state.maxDst;
+        this.setState({ dst: newdst, text: 'Last slice!' });
+      }
+    },
+
+    /**
+     * Event handler for clicking Home.
+     *
+     */
+    onHome: function () {
+      var autoScale = Number(Math.min(this.props.data.height / this.state.imageY, this.props.data.width / this.state.imageX).toFixed(1));
+      this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale });
+    },
+
+    onExtentChange: function (data) {
+      this.setState(data);
+      if (!this.state.initalised && JSON.stringify(data).indexOf('imageX') > -1) {
+        this.state.initalised = true;
+        this.onHome();
+      }
+    },
+
+    addWheelListener: function (elem, callback, useCapture) {
+      this._addWheelListener(elem, support, callback, useCapture);
+
+      // handle MozMousePixelScroll in older Firefox
+      if (support == "DOMMouseScroll") {
+        this._addWheelListener(elem, "MozMousePixelScroll", callback, useCapture);
+      }
+    },
+
+    _addWheelListener: function (elem, eventName, callback, useCapture) {
+      elem[this._addEventListener](prefix + eventName, support == "wheel" ? callback : function (originalEvent) {
+        !originalEvent && (originalEvent = window.event);
+
+        // create a normalized event object
+        var event = {
+          // keep a ref to the original event object
+          originalEvent: originalEvent,
+          target: originalEvent.target || originalEvent.srcElement,
+          type: "wheel",
+          deltaMode: originalEvent.type == "MozMousePixelScroll" ? 0 : 1,
+          deltaX: 0,
+          delatZ: 0,
+          preventDefault: function () {
+            originalEvent.preventDefault
+              ? originalEvent.preventDefault()
+              : originalEvent.returnValue = false;
+          }
+        };
+
+        // calculate deltaY (and deltaX) according to the event
+        if (support == "mousewheel") {
+          event.deltaY = -1 / 40 * originalEvent.wheelDelta;
+          // Webkit also support wheelDeltaX
+          originalEvent.wheelDeltaX && (event.deltaX = -1 / 40 * originalEvent.wheelDeltaX);
+        } else {
+          event.deltaY = originalEvent.detail;
+        }
+
+        // it's time to fire the callback
+        return callback(event);
+
+      }, useCapture || false);
+    },
+    
+    render: function () {
+      var homeClass = 'btn fa fa-home';
+      var zoomInClass = 'btn fa fa-search-plus';
+      var zoomOutClass = 'btn fa fa-search-minus';
+      var stepInClass = 'btn fa fa-chevron-down';
+      var stepOutClass = 'btn fa fa-chevron-up';
+      var pointerClass = 'btn fa fa-hand-pointer-o';
+      var orthClass = 'btn fa fa-refresh';
+      var toggleSliceClass = 'btn ';
+      if (this.state.slice) {
+        toggleSliceClass += 'gpt-hideplane';
+      } else {
+        toggleSliceClass += 'gpt-showplane';
+      }
+      var startOffset = 2.5;
+      var displayArea = this.props.data.id + 'displayArea';
+
+      var markup = '';
+      if (this.state.stack.length > 0) {
+        markup = (
+          <div id={displayArea} style={{ position: 'absolute', top: 3, left: 3 }}>
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={homeClass} onClick={this.onHome} title={'Center Stack'} />
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset + 20,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={zoomInClass} onClick={this.onZoomIn} title={'Zoom In'} />
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset + 35,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={zoomOutClass} onClick={this.onZoomOut} title={'Zoom Out'} />
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset + 64,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={stepInClass} onClick={this.onStepIn} title={'Step Into Stack'} />
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset + 52,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={stepOutClass} onClick={this.onStepOut} title={'Step Out Of Stack'} />
+            <button style={{
+              position: 'absolute',
+              left: 2.5,
+              top: startOffset + 83,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={orthClass} onClick={this.toggleOrth} title={'Change Slice Plane Through Stack'} />
+            <button style={{
+              position: 'absolute',
+              left: 3.5,
+              top: startOffset + 106,
+              padding: 0,
+              border: 0,
+              background: 'transparent'
+            }} className={toggleSliceClass} onClick={this.toggleSlice} title={'Toggle the 3D slice display'} />
+            <Canvas zoomLevel={this.state.zoomLevel} dst={this.state.dst}
+              serverUrl={this.props.config.serverUrl} canvasRef={this.props.canvasRef}
+              fxp={this.state.fxp} pit={this.state.pit} yaw={this.state.yaw} rol={this.state.rol}
+              stack={this.state.stack} color={this.state.color} setExtent={this.onExtentChange}
+              statusText={this.state.text} stackX={this.state.stackX} stackY={this.state.stackY}
+              scl={this.state.scl} orth={this.state.orth}
+              label={this.state.label} id={this.state.id} height={this.props.data.height}
+              width={this.props.data.width} voxelX={this.state.voxelX}
+              voxelY={this.state.voxelY} voxelZ={this.state.voxelZ} displayArea={displayArea}
+              templateId={this.props.config.templateId}
+              templateDomainIds={this.state.tempId}
+              templateDomainTypeIds={this.state.tempType}
+              templateDomainNames={this.state.tempName} layout={this.props.layout}
+              slice={this.state.slice} onHome={this.onHome} onZoomIn={this.onZoomIn}
+              onResize={this.onResize} />
+          </div>
+        );
+      } else {
+        markup = (
+          < div
+            id={displayArea}
+            style={
+              {
+                position: 'absolute',
+                top
+                :
+                      1,
+                left
+                :
+                      1,
+                background
+                :
+                      'transparent',
+                width
+                :
+                      this.props.data.width,
+                height
+                :
+                      this.props.data.height
+              }
+            }>
+          <
+          /div>
+        )
+        ;
+      }
   
-    return StackViewerComponent;
+      return markup;
+    }
+  });
+  
+  return StackViewerComponent;
 });

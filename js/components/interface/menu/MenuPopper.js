@@ -26,11 +26,11 @@ const styles = {
 };
 
 class MenuPopper extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     const anchorEl = this.props.parentRef;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
@@ -43,9 +43,7 @@ class MenuPopper extends React.Component {
           <Fade {...TransitionProps} timeout={50}>
             <ClickAwayListener onClickAway={this.props.awayClickHandler}>
               <Paper
-                classes={{
-                  root: classes.root, // class name, e.g. `classes-nesting-root-x`
-                }}
+                classes={{ root: classes.root, }}
                 square={false}>
                 <MenuList>
                   <MenuSingleItem
@@ -70,8 +68,6 @@ class MenuPopper extends React.Component {
   }
 }
 
-MenuPopper.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+MenuPopper.propTypes = { classes: PropTypes.object.isRequired, };
 
 export default withStyles(styles)(MenuPopper);

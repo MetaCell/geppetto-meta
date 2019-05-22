@@ -49,7 +49,7 @@ const styles = {
 };
 
 class MenuSection extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -61,7 +61,7 @@ class MenuSection extends React.Component {
     this.handleAwayListener = this.handleAwayListener.bind(this);
 
     this.tempList = undefined;
-  };
+  }
 
   handleClick = event => {
     if ((this.props.list === undefined) || (this.props.list.length === 0)) {
@@ -87,9 +87,7 @@ class MenuSection extends React.Component {
       } else {
         this.props.menuClickHandler(true, this.props.id);
       }
-      this.setState(state => ({
-        anchorEl: state.anchorEl ? null : currentTarget
-      }));
+      this.setState(state => ({ anchorEl: state.anchorEl ? null : currentTarget }));
     }
   };
 
@@ -120,13 +118,13 @@ class MenuSection extends React.Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     if ((nextProps.sectionOpened !== this.props.id) && (this.props.menuOpen === true) && (this.state.anchorEl !== null)) {
       this.setState({ anchorEl: null });
     }
-  };
+  }
 
-  render() {
+  render () {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
