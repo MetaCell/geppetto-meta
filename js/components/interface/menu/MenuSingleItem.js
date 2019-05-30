@@ -38,7 +38,7 @@ const styles = {
 };
 
 class MenuSingleItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -53,9 +53,7 @@ class MenuSingleItem extends React.Component {
 
   handleClick = (event, action) => {
     const { currentTarget } = event;
-    this.setState(state => ({
-      anchorEl: state.anchorEl ? null : currentTarget,
-    }));
+    this.setState(state => ({ anchorEl: state.anchorEl ? null : currentTarget, }));
     this.props.menuHandler(action);
   };
 
@@ -69,7 +67,7 @@ class MenuSingleItem extends React.Component {
     }
   };
 
-  render() {
+  render () {
     const { anchorEl } = this.state;
     const { classes } = this.props;
     var menuToRender = undefined;
@@ -85,21 +83,21 @@ class MenuSingleItem extends React.Component {
             menuHandlerDirect={this.props.menuHandlerDirect}
             awayClickHandler={this.props.awayClickHandler}
           />);
-          MenuItemClass = {
-            root: classes.root2
-          };
+          MenuItemClass = { root: classes.root2 };
         } else {
           menuToRender = undefined;
-          MenuItemClass = {
-            root: classes.root1
-          };
+          MenuItemClass = { root: classes.root1 };
         }
         return (
           <MenuItem
             id={index}
             key={index}
-            onClick={(e) => { this.handleClick(e, item.action) }}
-            onMouseOver={(e) => { this.handleMouseOver(e, index) }}
+            onClick={e => {
+              this.handleClick(e, item.action) 
+            }}
+            onMouseOver={e => {
+              this.handleMouseOver(e, index) 
+            }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             classes={MenuItemClass}>
             {item.label}
@@ -118,21 +116,21 @@ class MenuSingleItem extends React.Component {
             menuHandlerDirect={this.props.menuHandlerDirect}
             awayClickHandler={this.props.awayClickHandler}
           />);
-          MenuItemClass = {
-            root: classes.root2
-          };
+          MenuItemClass = { root: classes.root2 };
         } else {
           menuToRender = undefined;
-          MenuItemClass = {
-            root: classes.root1
-          };
+          MenuItemClass = { root: classes.root1 };
         }
         return (
           <MenuItem
             id={index}
             key={index}
-            onClick={(e) => { this.handleClick(e, item.action) }}
-            onMouseOver={(e) => { this.handleMouseOver(e, index) }}
+            onClick={e => {
+              this.handleClick(e, item.action) 
+            }}
+            onMouseOver={e => {
+              this.handleMouseOver(e, index) 
+            }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             classes={MenuItemClass}>
             {item.label}
@@ -144,13 +142,16 @@ class MenuSingleItem extends React.Component {
         return (
           <MenuItem
             key={index}
-            onClick={(e) => { this.handleClick(e, item.action) }}
-            onMouseOver={(e) => { this.handleMouseOver(e, index) }}
+            onClick={e => {
+              this.handleClick(e, item.action) 
+            }}
+            onMouseOver={e => {
+              this.handleMouseOver(e, index) 
+            }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             menuaction={item.action}
-            classes={{
-              root: classes.root1, // class name, e.g. `classes-nesting-root-x`
-            }}>
+            classes={{ root: classes.root1, }}
+          >
             {item.label}
           </MenuItem>
         );
@@ -165,8 +166,6 @@ class MenuSingleItem extends React.Component {
   }
 }
 
-MenuSingleItem.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+MenuSingleItem.propTypes = { classes: PropTypes.object.isRequired, };
 
 export default withStyles(styles)(MenuSingleItem);
