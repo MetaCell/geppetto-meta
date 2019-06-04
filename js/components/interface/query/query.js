@@ -597,7 +597,7 @@ define(function (require) {
               if (that.configuration.DataSources.hasOwnProperty(key)) {
                 var dataSource = that.configuration.DataSources[key];
                 var searchQuery = $("#query-typeahead").val();
-                var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
+                var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
                 that.updateResults = true;
                 that.requestDataSourceResults(key, url, dataSource.crossDomain);
               }
