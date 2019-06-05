@@ -106,7 +106,7 @@ define(function (require) {
             if (that.configuration.SpotlightBar.DataSources.hasOwnProperty(key)) {
               var dataSource = that.configuration.SpotlightBar.DataSources[key];
               var searchQuery = typeAhead.val();
-              var url = dataSource.url.replace(/\$SEARCH_TERM\$\$/g, searchQuery);
+              var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
               that.updateResults = true;
               that.requestDataSourceResults(key, url, dataSource.crossDomain);
             }
