@@ -1,20 +1,18 @@
 define(function (require) {
-  
+
   require("./query.less");
   require("./react-simpletabs.less");
 
   var React = require('react');
-  var Typography = require('@material-ui/core/Typography').default;
-  var Griddle = require('griddle-0.6-fork');
-  var typeahead = require("typeahead.js/dist/typeahead.jquery.min.js");
-  var Bloodhound = require("typeahead.js/dist/bloodhound.min.js");
-  var Handlebars = require('handlebars');
   var GEPPETTO = require('geppetto');
-  var QueryFooter = require('./queryFooter.js');
+  var Handlebars = require('handlebars');
+  var Griddle = require('griddle-0.6-fork');
   var QueryItem = require('./queryItem.js');
-
-
+  var QueryFooter = require('./queryFooter.js');
+  var Bloodhound = require("typeahead.js/dist/bloodhound.min.js");
+  var Typography = require('@material-ui/core/Typography').default;
   var MenuButton = require('../../controls/menuButton/MenuButton');
+  var typeahead = require("typeahead.js/dist/typeahead.jquery.min.js");
 
   var resultsViewState = false;
 
@@ -172,6 +170,7 @@ define(function (require) {
         resultsPerPate: undefined,
         refreshTrigger: false,
         value: 0,
+        display: "block",
       }
 
       this.displayName = 'QueryBuilder';

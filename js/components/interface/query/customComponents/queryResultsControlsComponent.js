@@ -1,7 +1,7 @@
 define(function (require) {
   
-  require("./query.less");
-  require("./react-simpletabs.less");
+  require("../query.less");
+  require("../react-simpletabs.less");
 
   var React = require('react');
   var GEPPETTO = require('geppetto');
