@@ -153,7 +153,7 @@ define(['jquery'], function () {
           var y = event.clientY;
 
           // If the mouse moved since the mousedown then don't consider this a selection
-          if (x != clientX || y != clientY)
+          if (typeof clientX === 'undefined' || typeof clientY === 'undefined' || x != clientX || y != clientY)
             return;
 
           that.mouse.y = -((event.clientY - (that.renderer.domElement.getBoundingClientRect().top)) / that.renderer.domElement.getBoundingClientRect().height) * 2 + 1;

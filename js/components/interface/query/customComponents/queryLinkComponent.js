@@ -23,7 +23,7 @@ define(function (require) {
         var actionStr = that.props.metadata.actions;
         actionStr = actionStr.replace(/\$entity\$/gi, path);
         GEPPETTO.CommandController.execute(actionStr);
-        $("#querybuilder").hide();
+        GEPPETTO.QueryBuilder.close();
       };
     
       return (

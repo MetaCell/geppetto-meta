@@ -170,7 +170,8 @@ define(function (require) {
         resultsPerPate: undefined,
         refreshTrigger: false,
         value: 0,
-        display: "block",
+        display: false,
+        allColumnsToShow: null,
       }
 
       this.displayName = 'QueryBuilder';
@@ -181,8 +182,51 @@ define(function (require) {
       this.mixins = [
         require('../../controls/mixins/bootstrap/modal.js')
       ];
+      this.escape = 27;
+      this.qKey = 81;
+
+      this.runQuery = this.runQuery.bind(this);
+      this.switchView = this.switchView.bind(this);
+      this.initTypeahead = this.initTypeahead.bind(this);
+      this.setWrapperRef = this.setWrapperRef.bind(this);
+      this.keyOpenHandler = this.keyOpenHandler.bind(this);
+      this.keyCloseHandler = this.keyCloseHandler.bind(this);
+      this.defaultDataSources = this.defaultDataSources.bind(this);
+      this.queryResultDeleted = this.queryResultDeleted.bind(this);
+      this.handleClickOutside = this.handleClickOutside.bind(this);
+      this.downloadQueryResults = this.downloadQueryResults.bind(this);
+      this.resultSetSelectionChange = this.resultSetSelectionChange.bind(this);
+      this.queryOptionSelected = this.queryOptionSelected.bind(this);
     }
-    
+
+    keyCloseHandler (event){
+      if (event.keyCode === this.escape) {
+        this.close();
+        GEPPETTO.trigger("query_closed");
+      }
+    }
+
+    keyOpenHandler (event) {
+      if (event.keyCode === this.qKey && GEPPETTO.isKeyPressed("ctrl")) {
+        if (this.state.display) {
+          this.close();
+        } else {
+          this.open();
+        }
+      }
+    }
+
+    setWrapperRef (node) {
+      this.wrapperRef = node;
+    }
+
+    handleClickOutside (event) {
+      if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+        this.close();
+        GEPPETTO.trigger("query_closed");
+      }
+    }
+
     defaultDataSources (q, sync) {
       if (q === '') {
         sync(this.dataSourceResults.index.all());
@@ -190,125 +234,131 @@ define(function (require) {
         this.dataSourceResults.search(q, sync);
       }
     }
-    
+
     componentWillMount () {
       // this.clearErrorMessage();
       GEPPETTO.QueryBuilder = this;
     }
-    
+
+    componentWillUnmount () {
+      document.removeEventListener('mousedown', this.handleClickOutside);
+      document.removeEventListener("keydown", this.keyOpenHandler, false);
+      document.removeEventListener("keydown", this.keyCloseHandler, false);
+    }
+
     switchView (resultsView, clearQueryItems) {
       if (clearQueryItems == true) {
         this.clearAllQueryItems();
       }
-    
+
       this.setState({ resultsView: resultsView });
     }
-    
+
     showBrentSpiner (spin) {
       this.setState({ showSpinner: spin });
     }
-    
+
     open () {
-      // show query builder
-      $("#querybuilder").show();
-      var typeAhead = $("#query-typeahead");
-      typeAhead.focus();
+      /*
+       * show query builder
+       */
+      this.setState({ display: true }, () => {
+        var typeAhead = $("#query-typeahead");
+        typeAhead.focus();
+      });
     }
-    
+
     close () {
-      // hide query builder
-      $("#querybuilder").hide();
+      /*
+       * hide query builder
+       */
+      this.setState({ display: false });
     }
-    
+
     setResultsControlsConfig (controlsConfig) {
       this.setState({ resultsControlsConfig: controlsConfig });
     }
-    
+
     setResultsColumns (columns) {
-      this.setState({ resultsColumns: columns });
+      this.setState({
+        resultsColumns: columns,
+        allColumnsToShow: columns 
+      });
     }
-    
+
     setResultsColumnMeta (colMeta) {
       this.setState({ resultsColumnMeta: colMeta });
     }
-    
-    initTypeahead () {
-      if (!this.initTypeAheadCreated) {
-        var that = this;
-    
-        $("#query-typeahead").unbind('keydown');
-        $("#query-typeahead").keydown(this, function (e) {
-          if (e.which == 9 || e.keyCode == 9) {
-            e.preventDefault();
-          }
-        });
-    
-        var queryTypeAheadElem = $("#query-typeahead");
-    
-        queryTypeAheadElem.unbind('keydown');
-        queryTypeAheadElem.keydown(this, function (e) {
-          if (e.which == 9 || e.keyCode == 9) {
-            e.preventDefault();
-          }
-        });
-    
-        queryTypeAheadElem.unbind('keypress');
-        queryTypeAheadElem.keypress(this, function (e) {
-          if (e.which == 13 || e.keyCode == 13) {
-            that.confirmed($("#query-typeahead").val());
-          }
-          if (this.searchTimeOut !== null) {
-            clearTimeout(this.searchTimeOut);
-          }
-          this.searchTimeOut = setTimeout(function () {
-            for (var key in that.configuration.DataSources) {
-              if (that.configuration.DataSources.hasOwnProperty(key)) {
-                var dataSource = that.configuration.DataSources[key];
-                var searchQuery = $("#query-typeahead").val();
-                var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
-                that.updateResults = true;
-                that.requestDataSourceResults(key, url, dataSource.crossDomain);
-              }
-            }
-          }, 150);
-        });
-    
-        // fire key event on paste
-        queryTypeAheadElem.off("paste");
-        queryTypeAheadElem.on("paste", function () {
-          $(this).trigger("keypress", { keyCode: 13 });
-        });
-    
-        queryTypeAheadElem.unbind('typeahead:selected');
-        queryTypeAheadElem.bind('typeahead:selected', function (obj, datum, name) {
-          if (datum.hasOwnProperty("label")) {
-            that.confirmed(datum.label);
-          }
-        });
-    
-        queryTypeAheadElem.typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          name: 'dataSourceResults',
-          source: this.defaultDataSources,
-          limit: 50,
-          display: 'label',
-          templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}}</div>') }
-        }
-        );
-        that.initTypeAheadCreated = true;
-      }
-    }
 
-    shouldComponentUpdate () {
-      if($("#querybuilder").is(":visible")) {
-        return true;
-      } else {
-        return false;
+    initTypeahead () {
+
+      var that = this;
+
+      $("#query-typeahead").unbind('keydown');
+      $("#query-typeahead").keydown(this, function (e) {
+        if (e.which == 9 || e.keyCode == 9) {
+          e.preventDefault();
+        }
+      });
+
+      var queryTypeAheadElem = $("#query-typeahead");
+
+      queryTypeAheadElem.unbind('keydown');
+      queryTypeAheadElem.keydown(this, function (e) {
+        if (e.which == 9 || e.keyCode == 9) {
+          e.preventDefault();
+        }
+      });
+
+      queryTypeAheadElem.unbind('keypress');
+      queryTypeAheadElem.keypress(this, function (e) {
+        if (e.which == 13 || e.keyCode == 13) {
+          that.confirmed($("#query-typeahead").val());
+        }
+        if (this.searchTimeOut !== null) {
+          clearTimeout(this.searchTimeOut);
+        }
+        this.searchTimeOut = setTimeout(function () {
+          for (var key in that.configuration.DataSources) {
+            if (that.configuration.DataSources.hasOwnProperty(key)) {
+              var dataSource = that.configuration.DataSources[key];
+              var searchQuery = $("#query-typeahead").val();
+              var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
+              that.updateResults = true;
+              that.requestDataSourceResults(key, url, dataSource.crossDomain);
+            }
+          }
+        }, 150);
+      });
+
+      // fire key event on paste
+      queryTypeAheadElem.off("paste");
+      queryTypeAheadElem.on("paste", function () {
+        $(this).trigger("keypress", { keyCode: 13 });
+      });
+
+      queryTypeAheadElem.unbind('typeahead:selected');
+      queryTypeAheadElem.bind('typeahead:selected', function (obj, datum, name) {
+        if (datum.hasOwnProperty("label")) {
+          that.confirmed(datum.label);
+        }
+      });
+
+      queryTypeAheadElem.typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'dataSourceResults',
+        source: this.defaultDataSources,
+        limit: 50,
+        display: 'label',
+        templates: { suggestion: Handlebars.compile('<div>{{geticon icon}} {{label}}</div>') }
       }
+      );
+      that.initTypeAheadCreated = true;
+
     }
 
     componentDidMount () {
@@ -318,27 +368,10 @@ define(function (require) {
       var that = this;
       queryBuilderModel.subscribe(this.refresh, that);
 
-      $(document).keydown(function (e) {
-        if (GEPPETTO.isKeyPressed("ctrl") && e.keyCode == qKey) {
-          // show query builder
-          $("#querybuilder").show();
-        }
-      });
-    
-      $(document).keydown(function (e) {
-        if ($("#querybuilder").is(':visible') && e.keyCode == escape) {
-          that.close();
-        }
-      });
-    
-      $("#querybuilder").click(function (e) {
-        if (e.target == e.delegateTarget) {
-          // we want this only to happen if we clicked on the div directly and not on anything therein contained
-          that.close();
-          GEPPETTO.trigger("query_closed");
-        }
-      });
-    
+      document.addEventListener('mousedown', this.handleClickOutside);
+      document.addEventListener("keydown", this.keyCloseHandler, false);
+      document.addEventListener("keydown", this.keyOpenHandler, false);
+
       Handlebars.registerHelper('geticon', function (icon) {
         if (icon) {
           return new Handlebars.SafeString("<icon class='fa " + icon + "' style='margin-right:5px;'/>");
@@ -346,23 +379,31 @@ define(function (require) {
           return;
         }
       });
-    
+
       this.initDataSourceResults();
-    
+
       this.initTypeahead();
-    
+
       if (GEPPETTO.ForegroundControls != undefined) {
         GEPPETTO.ForegroundControls.refresh();
       }
     }
-    
+
     componentDidUpdate () {
       if (!this.state.resultsView) {
         // re-init the search box on query builder
         this.initTypeahead();
       }
+
+      if (!this.state.display) {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+        document.removeEventListener("keydown", this.keyCloseHandler, false);
+      } else {
+        document.addEventListener('mousedown', this.handleClickOutside);
+        document.addEventListener("keydown", this.keyCloseHandler, false);
+      }
     }
-    
+
     initDataSourceResults (datumToken, queryToken, sorter) {
       this.dataSourceResults = new Bloodhound({
         datumTokenizer: (datumToken != undefined) ? datumToken : Bloodhound.tokenizers.obj.whitespace('label'),
@@ -373,10 +414,9 @@ define(function (require) {
         sorter: sorter
       });
     }
-    
+
     /**
      * Requests external data sources.
-     *
      */
     addDataSource (sources) {
       try {
@@ -385,7 +425,7 @@ define(function (require) {
             var obj = sources[key];
             var key = this.generateDataSourceKey(key, 0);
             this.configuration.DataSources[key] = obj;
-    
+
             if (obj.bloodhoundConfig) {
               this.initDataSourceResults(
                 obj.bloodhoundConfig.datumTokenizer,
@@ -399,7 +439,7 @@ define(function (require) {
         throw ("Error parsing data sources " + err);
       }
     }
-    
+
     /**
      * Figure out if data source of same name is already in there. If it is create a new key for it.
      */
@@ -409,10 +449,10 @@ define(function (require) {
         key = key.concat(index);
         this.generateDataSourceKey(key, index++);
       }
-    
+
       return key;
     }
-    
+
     /**
      * Requests results for an external data source
      *
@@ -443,7 +483,7 @@ define(function (require) {
         });
       }
     }
-    
+
     /**
      * Update the datasource results with results that come back
      *
@@ -456,7 +496,7 @@ define(function (require) {
       responses.forEach(function (response) {
         that.formatDataSourceResult(data_source_name, response);
       });
-    
+
       // If it's an update request to show the drop down menu, this for it to show updated results
       if (this.updateResults) {
         var queryTypeAheadElem = $("#query-typeahead");
@@ -465,7 +505,7 @@ define(function (require) {
         queryTypeAheadElem.typeahead('val', value);
       }
     }
-    
+
     /**
      * Format incoming data source results into specified format in configuration script
      */
@@ -478,9 +518,9 @@ define(function (require) {
       var labelFormatting = this.configuration.DataSources[data_source_name].label.formatting;
       var formattedLabel = labelFormatting.replace('$VALUE$', mainLabel);
       formattedLabel = formattedLabel.replace('$ID$', id);
-    
+
       this.createDataSourceResult(data_source_name, response, formattedLabel, id);
-    
+
       var explodeFields = this.configuration.DataSources[data_source_name].explode_fields;
       for (var i = 0; i < explodeFields.length; i++) {
         // create searchable result using id as label
@@ -489,10 +529,10 @@ define(function (require) {
         labelFormatting = explodeFields[i].formatting;
         formattedLabel = labelFormatting.replace('$VALUE$', idLabel);
         formattedLabel = formattedLabel.replace('$LABEL$', mainLabel);
-    
+
         this.createDataSourceResult(data_source_name, response, formattedLabel, id);
       }
-    
+
       var explodeArrays = this.configuration.DataSources[data_source_name].explode_arrays;
       for (var i = 0; i < explodeArrays.length; i++) {
         labelFormatting = explodeArrays[i].formatting;
@@ -505,19 +545,19 @@ define(function (require) {
             formattedLabel = labelFormatting.replace('$VALUE$', result);
             formattedLabel = formattedLabel.replace('$LABEL$', mainLabel);
             formattedLabel = formattedLabel.replace('$ID$', id);
-    
+
             this.createDataSourceResult(data_source_name, response, formattedLabel, id);
           }
         }
       }
     }
-    
+
     /**
      * Creates a searchable result from external data source response
      */
     createDataSourceResult (data_source_name, response, formattedLabel, id) {
       var typeName = response.type;
-    
+
       var obj = {};
       obj["label"] = formattedLabel;
       obj["id"] = id;
@@ -532,7 +572,7 @@ define(function (require) {
       obj["icon"] = this.configuration.DataSources[data_source_name].type[typeName].icon;
       this.dataSourceResults.add(obj);
     }
-    
+
     confirmed (item) {
       if (item && item != "") {
         if (this.dataSourceResults.get(item)) {
@@ -547,7 +587,7 @@ define(function (require) {
         }
       }
     }
-    
+
     queryOptionSelected (item, value, cb) {
       this.clearErrorMessage();
 
@@ -570,17 +610,17 @@ define(function (require) {
 
     queryItemDeleted (item) {
       this.clearErrorMessage();
-    
+
       var callback = function () {
         this.showBrentSpiner(false);
       };
-    
+
       // hide footer and show spinner
       this.showBrentSpiner(true);
-    
+
       this.props.model.deleteItem(item, callback.bind(this));
     }
-    
+
     /**
      * Clears all query items from the query builder
      */
@@ -588,25 +628,25 @@ define(function (require) {
       this.clearErrorMessage();
       this.props.model.clearItems();
     }
-    
+
     queryResultDeleted (resultsItem) {
       this.props.model.deleteResults(resultsItem);
     }
-    
+
     getCompoundQueryId (queryItems) {
       var id = "";
-    
+
       for (var i = 0; i < queryItems.length; i++) {
         id += queryItems[i].term + queryItems[i].selection;
       }
-    
+
       return id;
     }
-    
+
     runQuery () {
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
-    
+
         var allSelected = true;
         for (var i = 0; i < this.props.model.items.length; i++) {
           if (this.props.model.items[i].selection == -1) {
@@ -614,7 +654,7 @@ define(function (require) {
             break;
           }
         }
-    
+
         if (!allSelected) {
           // show error message for unselected query items
           this.setErrorMessage('Please select an option for all query items.');
@@ -625,17 +665,17 @@ define(function (require) {
           // check if we already have results for the given compound query
           var compoundId = this.getCompoundQueryId(this.props.model.items);
           var match = false;
-    
+
           for (var i = 0; i < this.props.model.results.length; i++) {
             if (this.props.model.results[i].id == compoundId) {
               match = true;
             }
           }
-    
+
           if (!match) {
             // build query items for data transfer
             var queryDTOs = [];
-    
+
             for (var i = 0; i < this.props.model.items.length; i++) {
               var selection = this.props.model.items[i].selection;
               if (selection != -1) {
@@ -643,11 +683,11 @@ define(function (require) {
                   target: this.props.model.items[i].target,
                   query: this.props.model.items[i].options[selection + 1].queryObj
                 };
-    
+
                 queryDTOs.push(queryDTO);
               }
             }
-    
+
             var that = this;
             var queryDoneCallback = function (jsonResults) {
               var queryLabel = "";
@@ -661,23 +701,36 @@ define(function (require) {
                 verboseLabelPlain += ((i != 0) ? " AND " : "")
                                         + that.props.model.items[i].options[that.props.model.items[i].selection + 1].name;
               }
-    
+
               // NOTE: assumption we only have one datasource configured
               var datasourceConfig = that.configuration.DataSources[Object.keys(that.configuration.DataSources)[0]];
               var headersDatasourceFormat = datasourceConfig.resultsFilters.getHeaders(JSON.parse(jsonResults));
-              var recordsDatasourceFormat = datasourceConfig.resultsFilters.getRecords(JSON.parse(jsonResults));
-              var formattedRecords = recordsDatasourceFormat.map(function (record) {
-                return {
-                  id: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "ID"),
-                  name: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Name"),
-                  description: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Definition"),
-                  type: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Type"),
-                  images: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Images"),
-                  controls: '',
-                  score: datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, "Score")
+              var columnsPresent = headersDatasourceFormat.map(header => {
+                for (var counter = 0; counter < that.state.resultsColumnMeta.length; counter++) {
+                  if (that.state.resultsColumnMeta[counter].displayName == header) {
+                    return that.state.resultsColumnMeta[counter].columnName;
+                  }
                 }
               });
-    
+              var recordsDatasourceFormat = datasourceConfig.resultsFilters.getRecords(JSON.parse(jsonResults));
+              var formattedRecords = recordsDatasourceFormat.map(function (record) {
+                var instance = new Object();
+                for (var counter = 0; counter < columnsPresent.length; counter++) {
+                  instance[columnsPresent[counter]] = datasourceConfig.resultsFilters.getItem(record, headersDatasourceFormat, headersDatasourceFormat[counter]);
+                }
+                instance["controls"] = '';
+                return instance;
+              });
+
+              var columnsToShow = that.state.allColumnsToShow.filter(item => {
+                for (var counter = 0; counter < columnsPresent.length; counter++) {
+                  if (item == columnsPresent[counter]) {
+                    return true;
+                  }
+                }
+                return false;
+              });
+
               that.props.model.addResults({
                 id: compoundId,
                 items: that.props.model.items.slice(0),
@@ -685,19 +738,22 @@ define(function (require) {
                 verboseLabel: '<span>' + formattedRecords.length.toString() + '</span> ' + verboseLabel,
                 verboseLabelPLain: formattedRecords.length.toString() + ' ' + verboseLabelPlain,
                 records: formattedRecords,
-                selected: true
+                selected: true,
+                columnsToShow: columnsToShow,
+                columnsPresent: columnsPresent,
+                headersColumns: headersDatasourceFormat
               });
-    
+
               // stop showing spinner
               that.showBrentSpiner(false);
-    
+
               // change state to switch to results view
               that.switchView(true);
             };
-    
+
             // hide footer and show spinner
             this.showBrentSpiner(true);
-    
+
             // run query on queries controller
             GEPPETTO.QueriesController.runQuery(queryDTOs, queryDoneCallback);
           } else {
@@ -712,10 +768,10 @@ define(function (require) {
                 this.props.model.results[i].selected = false;
               }
             }
-    
+
             // trigger refresh
             this.props.model.notifyChange();
-    
+
             // change state to switch to results view
             this.switchView(true);
           }
@@ -725,7 +781,7 @@ define(function (require) {
         this.setErrorMessage('Please add query items to run a query.');
       }
     }
-    
+
     /**
      * Add a query item
      *
@@ -734,15 +790,15 @@ define(function (require) {
      */
     addQueryItem (queryItemParam, cb) {
       this.clearErrorMessage();
-    
+
       // grab datasource configuration (assumption we only have one datasource)
       var datasourceConfig = this.configuration.DataSources[Object.keys(this.configuration.DataSources)[0]];
       var queryNameToken = datasourceConfig.queryNameToken;
-    
+
       // retrieve variable from queryItem.id
       var variable = GEPPETTO.ModelFactory.getTopLevelVariablesById([queryItemParam.id])[0];
       var term = variable.getName();
-    
+
       // do we have any query items already? If so grab result type and match on that too
       var resultType = undefined;
       for (var h = 0; h < this.props.model.items.length > 0; h++) {
@@ -752,10 +808,10 @@ define(function (require) {
           resultType = this.props.model.items[h].options[sel].queryObj.getResultType();
         }
       }
-    
+
       // retrieve matching queries for variable type
       var matchingQueries = GEPPETTO.ModelFactory.getMatchingQueries(variable.getType(), resultType);
-    
+
       if (matchingQueries.length > 0) {
         // build item in model-friendly format
         var queryItem = {
@@ -763,7 +819,7 @@ define(function (require) {
           target: variable,
           options: []
         };
-    
+
         // fill out options from matching queries
         for (var i = 0; i < matchingQueries.length; i++) {
           var regx = new RegExp('\\' + queryNameToken, "g");
@@ -776,7 +832,7 @@ define(function (require) {
           }
           );
         }
-    
+
         // count how many occurrences of term we have in the model
         var termCount = 0;
         for (var i = 0; i < this.props.model.items.length; i++) {
@@ -784,24 +840,24 @@ define(function (require) {
             termCount++;
           }
         }
-    
+
         // generate a unique id for the query item
         queryItem.id = term + '_' + termCount.toString();
         // add default selection
         queryItem.selection = -1;
         // add default option
         queryItem.options.splice(0, 0, { name: 'Select query for ' + term, value: -1 });
-    
+
         var callback = function () {
           this.showBrentSpiner(false);
         };
-    
+
         // hide footer and show spinner
         this.showBrentSpiner(true);
-    
+
         // add query item to model
         this.props.model.addItem(queryItem, callback.bind(this));
-    
+
         // check if we have a queryObj parameter and set it as the selected item
         if (queryItemParam.queryObj != undefined) {
           // figure out which option it matches to and trigger selection
@@ -811,7 +867,7 @@ define(function (require) {
               val = queryItem.options[h].value;
             }
           }
-    
+
           if (val != -1) {
             this.queryOptionSelected(queryItem, val, cb);
           }
@@ -820,7 +876,7 @@ define(function (require) {
         // notify no queries available for the selected term
         this.setErrorMessage("No queries available for the selected term.");
       }
-    
+
       /*
        * init datasource results to avoid duplicates
        * if(typeof this.dataSourceResults.clear == 'function') {
@@ -828,15 +884,15 @@ define(function (require) {
       this.dataSourceResults.clear();
       // }
     }
-    
+
     setErrorMessage (message) {
       this.setState({ errorMsg: message });
     }
-    
+
     clearErrorMessage () {
       this.setErrorMessage('');
     }
-    
+
     resultSetSelectionChange (val) {
       this.props.model.resultSelectionChanged(val);
       this.props.model.results.map((resultItem, index) => {
@@ -845,93 +901,104 @@ define(function (require) {
         }
       });
     }
-    
+
     downloadQueryResults (resultsItem) {
       var convertArrayOfObjectsToCSV = function (args) {
         var result, ctr, keys, columnDelimiter, lineDelimiter, data;
-    
+
         data = args.data || null;
         if (data == null || !data.length) {
           return null;
         }
-    
+
         columnDelimiter = args.columnDelimiter || ',';
         lineDelimiter = args.lineDelimiter || '\n';
-    
+
         keys = Object.keys(data[0]);
-    
+
         result = '';
         result += keys.join(columnDelimiter);
         result += lineDelimiter;
-    
+
         data.forEach(function (item) {
           ctr = 0;
           keys.forEach(function (key) {
             if (ctr > 0) {
               result += columnDelimiter;
             }
-    
+
             result += item[key];
             ctr++;
           });
           result += lineDelimiter;
         });
-    
+
         return result;
       };
-    
+
       var downloadCSV = function (args) {
         var data, filename, link, extension;
-    
-        var csv = convertArrayOfObjectsToCSV({ data: args.data });
+
+        var records = args.data.map(function (record) {
+          var instance = new Object();
+          for (var counter = 0; counter < args.columnsPresent.length; counter++) {
+            if (args.columnsPresent[counter] == "controls" || args.columnsPresent[counter] == "images") {
+              continue;
+            }
+            instance[args.columnsPresent[counter]] = record[args.columnsPresent[counter]];
+          }
+          return instance;
+        });
+
+        var csv = convertArrayOfObjectsToCSV({ data: records });
         if (csv == null) {
           return;
         }
-    
+
         extension = '.csv'
         filename = args.filename || 'export.csv';
-    
+
         if (!filename.includes(extension)) {
           filename += extension
         }
-    
+
         if (!csv.match(/^data:text\/csv/i)) {
           csv = 'data:text/csv;charset=utf-8,' + csv;
         }
         data = encodeURI(csv);
-    
+
         link = document.createElement('a');
         link.setAttribute('href', data);
         link.setAttribute('download', filename);
         link.click();
       };
-    
+
       downloadCSV({
-        filename: 'query-results',
-        data: resultsItem.records.map(function (record) {
-          return {
-            id: record.id,
-            name: record.name,
-            description: record.description.replace(/,/g, ' ')
-          }
-        }
-        )
+        filename: resultsItem.verboseLabelPLain.replace(/ /g, '_'),
+        data: resultsItem.records,
+        columnsPresent: resultsItem.columnsPresent,
+        headersColumns: resultsItem.headersColumns,
+        datasourceConfig: this.configuration.DataSources[Object.keys(this.configuration.DataSources)[0]],
       });
     }
-    
+
     refresh () {
       this.setState({ refreshTrigger: !this.state.refreshTrigger });
     }
-    
+
     render () {
       const { value } = this.state;
       var markup = null;
+
+      if (this.state.display === false) {
+        return markup;
+      }
       // once off figure out if we are to use infinite scrolling for results and store in state
       if (this.state.infiniteScroll === undefined) {
         this.state.infiniteScroll = !(this.props.enablePagination != undefined && this.props.enablePagination === true);
         this.state.resultsPerPage = this.props.resultsPerPage;
       }
-    
+
       // figure out if we are in results view or query builder view
       if (this.state.resultsView && this.props.model.results.length > 0) {
         /*
@@ -945,7 +1012,7 @@ define(function (require) {
             focusTabIndex = i;
           }
         }
-    
+
         /*
          * set data for each tab based on results from the model
          * for each tab put a Griddle configured with appropriate column meta
@@ -954,7 +1021,7 @@ define(function (require) {
           var getVerboseLabelMarkup = function () {
             return { __html: resultsItem.verboseLabel };
           };
-    
+
           return (focusTabIndex === index
                             && <Typography component="div" key={index}>
                               <div className="result-verbose-label" dangerouslySetInnerHTML={getVerboseLabelMarkup()}></div>
@@ -964,7 +1031,7 @@ define(function (require) {
                                 showSettings={false}
                                 useGriddleStyles={false}
                                 results={resultsItem.records}
-                                columns={this.state.resultsColumns}
+                                columns={resultsItem.columnsToShow}
                                 bodyHeight={(window.innerHeight - 280)}
                                 resultsPerPage={this.state.resultsPerPage}
                                 columnMetadata={this.state.resultsColumnMeta}
@@ -972,7 +1039,7 @@ define(function (require) {
                             </Typography>
           );
         }, this);
-    
+
         var loadHandler = function (self) {
           GEPPETTO.on("query_closed", function () {
             if (self.state.open) {
@@ -980,7 +1047,7 @@ define(function (require) {
             }
           });
         };
-    
+
         var configuration = {
           id: "queryResultsButton",
           openByDefault: false,
@@ -996,17 +1063,17 @@ define(function (require) {
           onLoadHandler: loadHandler,
           menuItems: []
         };
-    
+
         var menuItems = this.props.model.results.map(function (resultItem) {
           return { label: resultItem.verboseLabelPLain, value: resultItem.id, icon: "fa-cogs" };
         });
-    
+
         configuration["menuItems"] = menuItems;
-    
+
         this.initTypeAheadCreated = false;
-    
+
         markup = (
-          <div id="query-results-container" className="center-content">
+          <div id="query-results-container" className="center-content" ref={this.setWrapperRef}>
             <MenuButton configuration={configuration} />
             {tabs}
             <button id="switch-view-btn" className="fa fa-angle-left querybuilder-button"
@@ -1029,7 +1096,7 @@ define(function (require) {
             </button>
           </div>
         );
-    
+
       } else {
         /*
          * if we ended up in query builder rendering make sure the state flag is synced up
@@ -1037,7 +1104,7 @@ define(function (require) {
          */
         this.state.resultsView = false;
         resultsViewState = this.state.resultsView;
-    
+
         // build QueryItem list
         var queryItems = this.props.model.items.map(function (item) {
           return (
@@ -1049,12 +1116,12 @@ define(function (require) {
             />
           );
         }, this);
-    
+
         var spinnerClass = this.state.showSpinner ? 'fa fa-cog fa-spin' : 'hide';
         var footerClass = this.state.showSpinner ? 'hide' : '';
-    
+
         markup = (
-          <div id="query-builder-container">
+          <div id="query-builder-container" ref={this.setWrapperRef}>
             <div id="query-builder-items-container">
               {queryItems}
             </div>
@@ -1068,14 +1135,15 @@ define(function (require) {
           </div>
         );
       }
-    
-      return markup;
+
+      return (
+        <div id="querybuilder" style={{ top: 0, display: 'block' }}>
+          {markup}
+        </div> );
     }
   }
 
-  QueryBuilder.defaultProps = {
-    model: queryBuilderModel
-  };
+  QueryBuilder.defaultProps = { model: queryBuilderModel };
 
   return QueryBuilder;
 });
