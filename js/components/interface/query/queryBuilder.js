@@ -190,7 +190,10 @@ define(function (require) {
       this.initTypeahead = this.initTypeahead.bind(this);
       this.setWrapperRef = this.setWrapperRef.bind(this);
       this.keyOpenHandler = this.keyOpenHandler.bind(this);
+      this.setErrorMessage = this.setErrorMessage.bind(this);
       this.keyCloseHandler = this.keyCloseHandler.bind(this);
+      this.queryItemDeleted = this.queryItemDeleted.bind(this);
+      this.clearErrorMessage = this.clearErrorMessage.bind(this);
       this.defaultDataSources = this.defaultDataSources.bind(this);
       this.queryResultDeleted = this.queryResultDeleted.bind(this);
       this.handleClickOutside = this.handleClickOutside.bind(this);
