@@ -179,6 +179,7 @@ class MenuSection extends React.Component {
           aria-describedby={id}
           onClick={this.handleClick}
           onMouseOver={this.handleOver}>
+          {this.props.button.icon !== "" ? <i className={this.props.button.icon} style={{ marginRight: '10px' }}></i> : undefined}
           {this.props.button.label}
         </Button>
         <MenuPopper
