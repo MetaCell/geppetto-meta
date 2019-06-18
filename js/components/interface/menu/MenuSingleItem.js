@@ -100,6 +100,7 @@ class MenuSingleItem extends React.Component {
             }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             classes={MenuItemClass}>
+            {item.icon !== "" ? <i className={item.icon} style={{ marginRight: '10px' }}></i> : undefined}
             {item.label}
             <i className="fa fa-chevron-right" style={{
               marginLeft: '10px',
