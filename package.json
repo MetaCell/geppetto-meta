@@ -69,6 +69,7 @@
     "lg-video": "1.1.0",
     "lightgallery": "1.6.0",
     "mathjs": "3.5.3",
+    "mini-css-extract-plugin" : "0.7.0",
     "openseadragon": "2.2.1",
     "pako": "1.0.3",
     "pixi.js": "4.2.3",
@@ -113,9 +114,6 @@
     "webpack-cli" : "3.3.5",
     "webpack-dev-server": "3.7.2",
     "react-dropzone": "8.0.3"
-  },
-  "devDependencies": {
-    "mini-css-extract-plugin": "0.7.0"
   },
   "buildOptions": {
     "emitEntryPoint": true,
