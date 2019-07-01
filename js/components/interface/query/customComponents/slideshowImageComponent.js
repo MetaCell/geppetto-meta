@@ -27,7 +27,7 @@ define(function (require) {
         var actionStr = that.props.metadata.actions;
         actionStr = actionStr.replace(/\$entity\$/gi, path);
         GEPPETTO.CommandController.execute(actionStr);
-        GEPPETTO.QueryBuilder.close();
+        that.props.metadata.queryBuilder.close();
       };
 
       return action;
