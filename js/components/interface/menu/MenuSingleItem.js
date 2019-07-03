@@ -75,7 +75,7 @@ class MenuSingleItem extends React.Component {
     var menuToRender = undefined;
     var MenuItemClass = undefined;
     let menuItems = this.props.menuList.map((item, index) => {
-      if (item.hasOwnProperty('list')) {
+      if (Object.prototype.hasOwnProperty.call(item,list)) {
         if ((anchorEl !== null) && (anchorEl !== undefined) && (index === Number(this.state.sectionOpened))) {
           menuToRender = (<MenuPopper
             position={item.position}
@@ -107,7 +107,7 @@ class MenuSingleItem extends React.Component {
             {menuToRender}
           </MenuItem>
         );
-      } else if (item.hasOwnProperty('dynamicListInjector')) {
+      } else if (Object.prototype.hasOwnProperty.call(item,'dynamicListInjector')) {
         if ((anchorEl !== null) && (anchorEl !== undefined) && (index === Number(this.state.sectionOpened))) {
           var tempList = this.props.menuHandlerDirect(item.dynamicListInjector);
           menuToRender = (<MenuPopper

@@ -47,7 +47,7 @@ define(function (require) {
               var instancePath = this.getInstancePathFromPointer(recordedVariable.pointer, false);
               var instance = Instances.getInstance(instancePath);
               instance.setWatched(true, false);
-              if (recordedVariable.hasOwnProperty("value") && recordedVariable.value != undefined) {
+              if (Object.prototype.hasOwnProperty.call(recordedVariable, "value") && recordedVariable.value != undefined) {
                 // if at least one of the varialbes has a value we consider the experiment as ready to be played
                 this.playExperimentReady = true;
                 instance.setTimeSeries(recordedVariable.value.value);
@@ -60,7 +60,7 @@ define(function (require) {
           if (experimentState.setParameters) {
             for (var i = 0; i < experimentState.setParameters.length; i++) {
               var setParameter = experimentState.setParameters[i];
-              if (setParameter.hasOwnProperty("value") && setParameter.value != undefined) {
+              if (Object.prototype.hasOwnProperty.call(setParameter, "value") && setParameter.value != undefined) {
                 var path = setParameter.pointer.path;
                 var firstToken = path.split(".")[0];
                 var parameter = undefined;
@@ -108,7 +108,7 @@ define(function (require) {
             var instance = GEPPETTO.ModelFactory.createExternalInstance(instancePath, experimentState.projectId, experimentState.experimentId);
             instance.extendApi(AStateVariableCapability);
             instance.setWatched(true, false);
-            if (recordedVariable.hasOwnProperty("value") && recordedVariable.value != undefined) {
+            if (Object.prototype.hasOwnProperty.call(recordedVariable, "value") && recordedVariable.value != undefined) {
               instance.setTimeSeries(recordedVariable.value.value);
               instance.setUnit(recordedVariable.value.unit.unit);
             }
@@ -120,7 +120,7 @@ define(function (require) {
               var instancePath = setParameter.pointer.path;
               var instance = GEPPETTO.ModelFactory.createExternalInstance(instancePath, experimentState.projectId, experimentState.experimentId);
               instance.extendApi(AParameterCapability);
-              if (setParameter.hasOwnProperty("value") && setParameter.value != undefined) {
+              if (Object.prototype.hasOwnProperty.call(setParameter, "value") && setParameter.value != undefined) {
                 instance.setValue(setParameter.value.value, false);
               }
               this.externalExperiments[experimentState.projectId][experimentState.experimentId][instancePath] = instance;
@@ -417,7 +417,7 @@ define(function (require) {
             if (types) {
               instancePath += "(" + resolvedType.getId() + ")";
             }
-            if (element.hasOwnProperty("index") && element.index > -1) {
+            if (Object.prototype.hasOwnProperty.call(element, "index") && element.index > -1) {
               instancePath += "[" + element.index + "]";
             }
             if (e < pointer.elements.length - 1) {

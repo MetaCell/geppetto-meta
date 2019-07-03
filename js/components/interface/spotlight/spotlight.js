@@ -103,7 +103,7 @@ define(function (require) {
         }
         this.searchTimeOut = setTimeout(function () {
           for (var key in that.configuration.SpotlightBar.DataSources) {
-            if (that.configuration.SpotlightBar.DataSources.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(that.configuration.SpotlightBar.DataSources, key)) {
               var dataSource = that.configuration.SpotlightBar.DataSources[key];
               var searchQuery = typeAhead.val();
               var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
@@ -115,10 +115,10 @@ define(function (require) {
       });
 
       typeAhead.bind('typeahead:selected', function (obj, datum, name) {
-        if (datum.hasOwnProperty("path")) {
+        if (Object.prototype.hasOwnProperty.call(datum, "path")) {
           // it's an instance
           that.confirmed(datum.path);
-        } else if (datum.hasOwnProperty("label")) {
+        } else if (Object.prototype.hasOwnProperty.call(datum, "label")) {
           // it's a suggestion
           that.confirmed(datum.label);
         }
@@ -310,7 +310,7 @@ define(function (require) {
                 var button;
                 // format button actions to have proper values instead of placeholders
                 for (var prop in buttons) {
-                  if ( buttons.hasOwnProperty( prop ) ) {
+                  if ( Object.prototype.hasOwnProperty.call(buttons, prop) ) {
                     button = buttons[prop];
                     this.formatButtonActions(button,found[0]["id"], found[0]["label"]);
                   }
@@ -499,7 +499,7 @@ define(function (require) {
     addDataSource : function (sources){
       try {
         for (var key in sources) {
-          if (sources.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(sources,key)) {
             var obj = sources[key];
             var keysha = this.generateDataSourceKey(key, 0);
             this.configuration.SpotlightBar.DataSources[keysha] = obj;
@@ -753,7 +753,7 @@ define(function (require) {
         var label = null;
         var uiElement = null;
         var that = this;
-        if (element.hasOwnProperty("condition")) {
+        if (Object.prototype.hasOwnProperty.call(element, "condition")) {
           // a stateful button
           var condition = this.execute(element.condition, instance);
           var b = element[condition];
@@ -767,7 +767,7 @@ define(function (require) {
             .attr('container', 'body')
             .on('click', this.statefulButtonCallback(element, name, instance));
           uiElement.append(label);
-        } else if (element.hasOwnProperty("inputValue")) {
+        } else if (Object.prototype.hasOwnProperty.call(element, "inputValue")) {
           // an input box
 
           if (!(instance.length > 1)){
@@ -823,7 +823,7 @@ define(function (require) {
           $(button).keypress(that, function (e) {
             if (e.which == 13 || e.keyCode == 13) {
               // enter
-              if (button.hasOwnProperty("condition")) {
+              if (Object.prototype.hasOwnProperty.call(button, "condition")) {
                 e.data.statefulButtonCallback(button, instance);
               } else {
                 e.data.buttonCallback(button, instance);
