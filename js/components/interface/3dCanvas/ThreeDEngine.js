@@ -1809,7 +1809,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = true;
               mesh.traverse(function (object) {
-                if (Object.prototype.hasOwnProperty.call(child, "material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = true;
                     object.material.transparent = true;
@@ -1826,7 +1826,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = false;
               mesh.traverse(function (object) {
-                if (Object.prototype.hasOwnProperty.call(child, "material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = false;
                     object.material.opacity = object.material.defaultOpacity;
