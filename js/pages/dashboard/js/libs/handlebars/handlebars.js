@@ -104,7 +104,7 @@ this.Handlebars = {};
         }
       } else {
         for (var key in context) {
-          if (context.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(context, key)) {
             if (data) {
               data.key = key; 
             }

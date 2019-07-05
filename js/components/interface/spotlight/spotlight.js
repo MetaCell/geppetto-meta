@@ -106,7 +106,7 @@ define(function (require) {
             if (Object.prototype.hasOwnProperty.call(that.configuration.SpotlightBar.DataSources, key)) {
               var dataSource = that.configuration.SpotlightBar.DataSources[key];
               var searchQuery = typeAhead.val();
-              var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
+              var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
               that.updateResults = true;
               that.requestDataSourceResults(key, url, dataSource.crossDomain);
             }
@@ -158,7 +158,9 @@ define(function (require) {
         }
       });
 
-      this.initDataSourceResults();
+      if (this.props.spotlightDataSourceConfig === undefined) {
+        this.initDataSourceResults();
+      }
 
       Handlebars.registerHelper('geticonFromMetaType', function (metaType) {
         if (metaType) {

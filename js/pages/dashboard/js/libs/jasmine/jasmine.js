@@ -1978,7 +1978,7 @@ jasmine.PrettyPrinter.prototype.format = function (value) {
 
 jasmine.PrettyPrinter.prototype.iterateObject = function (obj, fn) {
   for (var property in obj) {
-    if (!obj.hasOwnProperty(property)) {
+    if (!Object.prototype.hasOwnProperty.call(obj, property)) {
       continue;
     }
     if (property == '__Jasmine_been_here_before__') {
