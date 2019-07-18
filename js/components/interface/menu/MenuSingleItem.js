@@ -100,8 +100,15 @@ class MenuSingleItem extends React.Component {
             }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             classes={MenuItemClass}>
+            {item.icon !== "" ? <i className={item.icon} style={{ marginRight: '10px' }}></i> : undefined}
             {item.label}
-            <ArrowRightIcon style={{ marginLeft: '10px' }} />
+            <i className="fa fa-chevron-right" style={{
+              marginLeft: '10px',
+              position: 'absolute',
+              marginRight: '0px',
+              paddingRight: '0px',
+              right: '5px'
+            }} />
             {menuToRender}
           </MenuItem>
         );
@@ -133,8 +140,15 @@ class MenuSingleItem extends React.Component {
             }}
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             classes={MenuItemClass}>
+            {item.icon !== "" ? <i className={item.icon} style={{ marginRight: '10px' }}></i> : undefined}
             {item.label}
-            <ArrowRightIcon style={{ marginLeft: '10px' }} />
+            <i className="fa fa-chevron-right" style={{
+              marginLeft: '10px',
+              position: 'absolute',
+              marginRight: '0px',
+              paddingRight: '0px',
+              right: '5px'
+            }} />
             {menuToRender}
           </MenuItem>
         );
@@ -152,6 +166,7 @@ class MenuSingleItem extends React.Component {
             menuaction={item.action}
             classes={{ root: classes.root1, }}
           >
+            {item.icon !== "" ? <i className={item.icon} style={{ marginRight: '10px' }}></i> : undefined}
             {item.label}
           </MenuItem>
         );
