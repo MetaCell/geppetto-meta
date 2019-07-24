@@ -931,7 +931,7 @@ define(function (require) {
         keys = Object.keys(data[0]);
 
         result = '';
-        result += keys.join(columnDelimiter);
+        result += '"' + keys.join('"' + columnDelimiter + '"') + '"';
         result += lineDelimiter;
 
         data.forEach(function (item) {
@@ -941,7 +941,7 @@ define(function (require) {
               result += columnDelimiter;
             }
 
-            result += item[key];
+            result += '"' + item[key] + '"';
             ctr++;
           });
           result += lineDelimiter;
