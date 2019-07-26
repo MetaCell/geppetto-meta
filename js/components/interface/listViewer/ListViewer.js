@@ -287,5 +287,3 @@ export default class ListViewer extends React.Component {
   
  
 }
-
-
