@@ -1,3 +1,5 @@
+language: minimal
+
 before_script:
   - npm install travis-ci
 
