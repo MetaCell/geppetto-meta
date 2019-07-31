@@ -7,4 +7,6 @@ before_script:
   - npm install travis-ci
 
 after_success:
-  - node travis/trigger-build.js
+  - if [ $TRAVIS_PULL_REQUEST == false ]; then
+  	node travis/trigger-build.js;
+    fi;
