@@ -21,7 +21,7 @@ define(function (require) {
         e.preventDefault();
         e.nativeEvent.stopImmediatePropagation();
         var actionStr = that.props.metadata.actions;
-        actionStr = actionStr.replace(/\$entity\$/gi, path);
+        actionStr = actionStr.replace(/\$entity\$/gi, path.split(that.props.metadata.entityDelimiter)[that.props.metadata.entityIndex]);
         GEPPETTO.CommandController.execute(actionStr);
         that.props.metadata.queryBuilder.close();
       };
