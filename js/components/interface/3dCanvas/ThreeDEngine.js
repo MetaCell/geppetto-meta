@@ -340,7 +340,14 @@ define(['jquery'], function () {
      */
     setupLights: function () {
       // Lights
-      this.camera.add(new THREE.PointLight(0xffffff, 1.5));
+      var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+      this.scene.add(ambientLight);
+      // add spotlight for the shadows
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.position.set(-30, 60, 60);
+      spotLight.castShadow = true;
+      this.scene.add(spotLight);
+      this.camera.add(new THREE.PointLight(0xffffff, 1));
     },
 
     /**

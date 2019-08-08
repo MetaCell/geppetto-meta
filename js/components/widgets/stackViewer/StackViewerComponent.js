@@ -762,7 +762,8 @@ define(function (require) {
           dropShadowAngle: Math.PI / 6,
           dropShadowDistance: 2,
           wordWrap: true,
-          wordWrapWidth: this.renderer.view.width
+          wordWrapWidth: this.renderer.view.width,
+          textAlign: 'right'
         };
         this.state.buffer[-1] = new PIXI.Text(this.state.text, style);
         this.stage.addChild(this.state.buffer[-1]);
@@ -770,8 +771,8 @@ define(function (require) {
         this.state.buffer[-1].text = this.state.text;
       }
       // fix position
-      this.state.buffer[-1].x = -this.stage.position.x + 20;
-      this.state.buffer[-1].y = -this.stage.position.y;
+      this.state.buffer[-1].x = -this.stage.position.x + 35;
+      this.state.buffer[-1].y = -this.stage.position.y + 8;
       this.state.buffer[-1].anchor.x = 0;
       this.state.buffer[-1].anchor.y = 0;
       this.state.buffer[-1].zOrder = 1000;
@@ -1472,7 +1473,7 @@ define(function (require) {
       } else {
         toggleSliceClass += 'gpt-showplane';
       }
-      var startOffset = 2.5;
+      var startOffset = 5;
       var displayArea = this.props.data.id + 'displayArea';
 
       var markup = '';
@@ -1481,56 +1482,56 @@ define(function (require) {
           <div id={displayArea} style={{ position: 'absolute', top: 3, left: 3 }}>
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset,
+              left: 15,
+              top: startOffset + 20,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={homeClass} onClick={this.onHome} title={'Center Stack'} />
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset + 20,
+              left: 15,
+              top: startOffset + 82,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={zoomInClass} onClick={this.onZoomIn} title={'Zoom In'} />
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset + 35,
+              left: 15,
+              top: startOffset + 104,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={zoomOutClass} onClick={this.onZoomOut} title={'Zoom Out'} />
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset + 64,
+              left: 15,
+              top: startOffset + 40,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={stepInClass} onClick={this.onStepIn} title={'Step Into Stack'} />
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset + 52,
+              left: 15,
+              top: startOffset,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={stepOutClass} onClick={this.onStepOut} title={'Step Out Of Stack'} />
             <button style={{
               position: 'absolute',
-              left: 2.5,
-              top: startOffset + 83,
+              left: 15,
+              top: startOffset + 60,
               padding: 0,
               border: 0,
               background: 'transparent'
             }} className={orthClass} onClick={this.toggleOrth} title={'Change Slice Plane Through Stack'} />
             <button style={{
               position: 'absolute',
-              left: 3.5,
-              top: startOffset + 106,
+              left: 15,
+              top: startOffset + 130,
               padding: 0,
               border: 0,
               background: 'transparent'
@@ -1554,32 +1555,18 @@ define(function (require) {
         );
       } else {
         markup = (
-          < div
+          <div
             id={displayArea}
-            style={
-              {
-                position: 'absolute',
-                top
-                :
-                      1,
-                left
-                :
-                      1,
-                background
-                :
-                      'transparent',
-                width
-                :
-                      this.props.data.width,
-                height
-                :
-                      this.props.data.height
-              }
-            }>
-          <
-          /div>
-        )
-        ;
+            style={{
+              position: 'absolute',
+              top: 1,
+              left: 1,
+              background: 'transparent',
+              width: this.props.data.width,
+              height: this.props.data.height
+            }}>
+          </div>
+        );
       }
   
       return markup;
