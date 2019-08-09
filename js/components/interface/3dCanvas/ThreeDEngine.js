@@ -342,7 +342,14 @@ define(['jquery'], function () {
      */
     setupLights: function () {
       // Lights
-      this.camera.add(new THREE.PointLight(0xffffff, 1.5));
+      var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+      this.scene.add(ambientLight);
+      // add spotlight for the shadows
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.position.set(-30, 60, 60);
+      spotLight.castShadow = true;
+      this.scene.add(spotLight);
+      this.camera.add(new THREE.PointLight(0xffffff, 1));
     },
 
     /**
@@ -376,10 +383,8 @@ define(['jquery'], function () {
           if (aabbMin == null && aabbMax == null) {
             aabbMin = bb.min;
             aabbMax = bb.max;
-          }
-
-          // Compare other meshes, particles BB's to find min and max
-          else {
+          } else {
+            // Compare other meshes, particles BB's to find min and max
             aabbMin.x = Math.min(aabbMin.x, bb.min.x);
             aabbMin.y = Math.min(aabbMin.y, bb.min.y);
             aabbMin.z = Math.min(aabbMin.z, bb.min.z);
@@ -748,7 +753,7 @@ define(['jquery'], function () {
           var elements = {};
           for (var splitMesh in splitMeshes) {
             if (splitMeshes[splitMesh].instancePath == instancePath && splitMesh != instancePath) {
-              visualObject = splitMesh.substring(instancePath.length + 1);
+              let visualObject = splitMesh.substring(instancePath.length + 1);
               elements[visualObject] = "";
             }
           }
@@ -2292,9 +2297,8 @@ define(['jquery'], function () {
           }
           this.setThreeColor(mesh.material.color, mesh.material.defaultColor);
 
-        }
-        // if mesh is selected, make it look like so
-        else {
+        } else {
+          // if mesh is selected, make it look like so
           this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.SELECTED);
           mesh.material.transparent = true;
           mesh.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -2477,7 +2481,7 @@ define(['jquery'], function () {
      */
     splitHighlightedMesh: function (targetObjects, aspects) {
       var groups = {};
-      for (a in aspects) {
+      for (var a in aspects) {
         // create object to hold geometries used for merging objects in groups
         var geometryGroups = {};
 
@@ -2499,7 +2503,7 @@ define(['jquery'], function () {
          * loop through individual meshes, add them to group, set
          * new material to them
          */ 
-        for (v in map) {
+        for (var v in map) {
           var m = this.visualModelMap[map[v]];
           if (m.instancePath in targetObjects) {
             // merged mesh into corresponding geometry
@@ -2535,7 +2539,7 @@ define(['jquery'], function () {
     highlight: function (targetObjects, aspects, mode) {
       var splitHighlightedGroups = this.splitHighlightedMesh(targetObjects, aspects);
 
-      for (groupName in splitHighlightedGroups) {
+      for (var groupName in splitHighlightedGroups) {
         // get group mesh
         var groupMesh = this.splitMeshes[groupName];
 
@@ -2698,7 +2702,7 @@ define(['jquery'], function () {
       mergedMesh.visible = false;
       this.scene.remove(mergedMesh);
 
-      for (g in groups) {
+      for (var g in groups) {
         var groupName = g;
         if (groupName.indexOf(instancePath) <= -1) {
           groupName = instancePath + "." + g;
@@ -2816,7 +2820,7 @@ define(['jquery'], function () {
      */
     showVisualGroupsRaw: function (visualGroups, instance, meshesContainer) {
       var instancePath = instance.getInstancePath();
-      for (g in visualGroups) {
+      for (var g in visualGroups) {
         // retrieve visual group object
         var visualGroup = visualGroups[g];
 

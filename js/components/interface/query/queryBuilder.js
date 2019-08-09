@@ -185,6 +185,8 @@ define(function (require) {
       this.escape = 27;
       this.qKey = 81;
 
+      this.open = this.open.bind(this);
+      this.close = this.close.bind(this);
       this.runQuery = this.runQuery.bind(this);
       this.switchView = this.switchView.bind(this);
       this.initTypeahead = this.initTypeahead.bind(this);
@@ -241,6 +243,15 @@ define(function (require) {
     componentWillMount () {
       // this.clearErrorMessage();
       GEPPETTO.QueryBuilder = this;
+      this.props.resultsColMeta.map(item => {
+        if (item["customComponent"] !== undefined) {
+          item["queryBuilder"] = this;
+        }
+      });
+      this.setResultsColumnMeta(this.props.resultsColMeta);
+      this.setResultsColumns(this.props.resultsColumns);
+      this.setResultsControlsConfig(this.props.resultsControlConfig);
+      this.addDataSource(this.props.datasourceConfig);
     }
 
     componentWillUnmount () {
@@ -920,7 +931,7 @@ define(function (require) {
         keys = Object.keys(data[0]);
 
         result = '';
-        result += keys.join(columnDelimiter);
+        result += '"' + keys.join('"' + columnDelimiter + '"') + '"';
         result += lineDelimiter;
 
         data.forEach(function (item) {
@@ -930,7 +941,7 @@ define(function (require) {
               result += columnDelimiter;
             }
 
-            result += item[key];
+            result += '"' + item[key] + '"';
             ctr++;
           });
           result += lineDelimiter;

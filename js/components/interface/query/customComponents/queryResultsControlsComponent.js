@@ -50,7 +50,7 @@ define(function (require) {
     
     render () {
       // TODO: would be nicer to pass controls and config straight from the parent component rather than assume
-      var config = GEPPETTO.QueryBuilder.state.resultsControlsConfig;
+      var config = this.props.metadata.queryBuilder.state.resultsControlsConfig;
       var resultItemId = this.props.rowData.id;
       var ctrlButtons = [];
     
