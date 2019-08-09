@@ -1216,6 +1216,7 @@ define(function (require) {
     },
 
     handleInstances: function (instances) {
+      var newState = {}
       if (instances && instances != null && instances.length > 0) {
         var instance;
         var data, vals;
@@ -1250,28 +1251,28 @@ define(function (require) {
             console.log(err.stack);
           }
         }
+        
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
-          this.setState({ serverURL: server });
-          // console.log('Changing IIP server to ' + server);
+          newState.serverURL = server;
         }
         if (files != this.state.stack && files != null && files.length > 0) {
-          this.setState({ stack: files });
-          // console.log('setting stack to ' + JSON.stringify(files));
+          newState.stack = files;
         }
         if (labels != this.state.label && labels != null && labels.length > 0) {
-          this.setState({ label: labels });
+          newState.label = labels;
           // console.log('updating labels to ' + JSON.stringify(labels));
         }
         if (ids != this.state.id && ids != null && ids.length > 0) {
-          this.setState({ id: ids });
-          // console.log('updating ids to ' + JSON.stringify(ids));
+          newState.id = ids;
         }
         if (colors.toString() != this.state.color.toString() && colors != null && colors.length > 0) {
-          this.setState({ color: colors });
-          // console.log('updating colours to ' + JSON.stringify(colors));
+          newState.color = colors;
         }
       } else {
-        this.setState({ label: [], stack: [], id: [], color: [] });
+        newState = { label: [], stack: [], id: [], color: [] };
+      }
+      if (JSON.stringify(newState) !== "{}") {
+        this.setState(newState);  
       }
     },
 
