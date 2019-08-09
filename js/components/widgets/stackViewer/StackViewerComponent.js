@@ -1260,7 +1260,6 @@ define(function (require) {
         }
         if (labels != this.state.label && labels != null && labels.length > 0) {
           newState.label = labels;
-          // console.log('updating labels to ' + JSON.stringify(labels));
         }
         if (ids != this.state.id && ids != null && ids.length > 0) {
           newState.id = ids;
