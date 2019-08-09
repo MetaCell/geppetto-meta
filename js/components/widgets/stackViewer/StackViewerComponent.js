@@ -1054,7 +1054,7 @@ define(function (require) {
       return (
         < div
           className="stack-canvas-container"
-          ref="stackCanvas" > < /div>
+          ref="stackCanvas" > </div>
       )
       ;
     }
