@@ -590,11 +590,9 @@ define(function (require) {
           }
         }
         // sort position after 10% loaded.
-        if (loader.progress < 10) {
-          if (this._initialized === false) {
-            this.props.onHome();
-            this._initialized = true;
-          }
+        if (this._initialized === false && loader.progress > 10) {
+          this.props.onHome();
+          this._initialized = true;
         }
       }
 
