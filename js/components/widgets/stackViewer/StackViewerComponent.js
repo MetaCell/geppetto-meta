@@ -1260,16 +1260,16 @@ define(function (require) {
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
           newState.serverURL = server;
         }
-        if (files != this.state.stack && files != null && files.length > 0) {
+        if (files && files != null && files.length > 0 && files.toString() != this.state.stack.toString()) {
           newState.stack = files;
         }
-        if (labels != this.state.label && labels != null && labels.length > 0) {
+        if (labels && labels != null && labels.length > 0 && labels.toString() != this.state.label.toString()) {
           newState.label = labels;
         }
-        if (ids != this.state.id && ids != null && ids.length > 0) {
+        if (ids && ids != null && ids.length > 0 && ids.toString() != this.state.id.toString()) {
           newState.id = ids;
         }
-        if (colors.toString() != this.state.color.toString() && colors != null && colors.length > 0) {
+        if (colors && colors != null && colors.length > 0 && colors.toString() != this.state.color.toString()) {
           newState.color = colors;
         }
       } else {
