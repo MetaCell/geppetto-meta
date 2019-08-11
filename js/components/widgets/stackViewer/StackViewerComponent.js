@@ -386,7 +386,6 @@ define(function (require) {
                                 eval(that.state.id[i][Number(result[j])]).select();
                                 console.log(that.props.templateDomainNames[index] + ' clicked');
                                 that.setStatusText(that.props.templateDomainNames[index] + ' selected');
-                                isSelected = true;
                                 break;
                               } catch (ignore) {
                                 console.log(that.props.templateDomainNames[index] + ' requested');
@@ -401,7 +400,6 @@ define(function (require) {
                                 } else {
                                   that.setStatusText(that.props.templateDomainNames[index] + ' (⇧click to add)');
                                   stackViewerRequest(that.props.templateDomainTypeIds[index]);
-                                  isSelected = true;
                                   break;
                                 }
                               }
