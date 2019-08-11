@@ -346,6 +346,7 @@ define(function (require) {
 
       var i, j, result, id, label;
       var that = this;
+      var isSelected = false;
       while (GEPPETTO.SceneController.getSelection()[0] != undefined) {
         GEPPETTO.SceneController.getSelection()[0].deselect();
       }
@@ -366,35 +367,43 @@ define(function (require) {
                       var index = Number(result[j]);
                       if (i !== 0 || index !== 0) { // don't select template
                         if (index == 0 && !shift) {
-                          console.log(that.state.label[i] + ' clicked');
-                          try {
-                            eval(that.state.id[i][Number(result[j])]).select();
-                            that.setStatusText(that.state.label[i] + ' selected');
-                          } catch (err) {
-                            console.log("Error selecting: " + that.state.id[i][Number(result[j])]);
-                            console.log(err.message);
+                          if (!isSelected){
+                            console.log(that.state.label[i] + ' clicked');
+                            try {
+                              eval(that.state.id[i][Number(result[j])]).select();
+                              that.setStatusText(that.state.label[i] + ' selected');
+                              isSelected = true;
+                            } catch (err) {
+                              console.log("Error selecting: " + that.state.id[i][Number(result[j])]);
+                              console.log(err.message);
+                            }
                           }
                           break;
                         } else {
                           if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainIds[index] !== null && that.props.templateDomainNames[index] !== null) {
-                            try {
-                              eval(that.state.id[i][Number(result[j])]).select();
-                              console.log(that.props.templateDomainNames[index] + ' clicked');
-                              that.setStatusText(that.props.templateDomainNames[index] + ' selected');
-                              break;
-                            } catch (ignore) {
-                              console.log(that.props.templateDomainNames[index] + ' requested');
-                              that.setStatusText(that.props.templateDomainNames[index] + ' requested');
-                              if (shift) {
-                                console.log('Adding ' + that.props.templateDomainNames[index]);
-                                that.setStatusText('Adding ' + that.props.templateDomainNames[index]);
-                                var varriableId = that.props.templateDomainIds[index];
-                                stackViewerRequest(varriableId); // window.stackViewerRequest must be configured in init script
+                            if (!isSelected) {
+                              try {
+                                eval(that.state.id[i][Number(result[j])]).select();
+                                console.log(that.props.templateDomainNames[index] + ' clicked');
+                                that.setStatusText(that.props.templateDomainNames[index] + ' selected');
+                                isSelected = true;
                                 break;
-                              } else {
-                                that.setStatusText(that.props.templateDomainNames[index] + ' (⇧click to add)');
-                                stackViewerRequest(that.props.templateDomainTypeIds[index]);
-                                break;
+                              } catch (ignore) {
+                                console.log(that.props.templateDomainNames[index] + ' requested');
+                                that.setStatusText(that.props.templateDomainNames[index] + ' requested');
+                                if (shift) {
+                                  console.log('Adding ' + that.props.templateDomainNames[index]);
+                                  that.setStatusText('Adding ' + that.props.templateDomainNames[index]);
+                                  var varriableId = that.props.templateDomainIds[index];
+                                  stackViewerRequest(varriableId); // window.stackViewerRequest must be configured in init script
+                                  isSelected = true;
+                                  break;
+                                } else {
+                                  that.setStatusText(that.props.templateDomainNames[index] + ' (⇧click to add)');
+                                  stackViewerRequest(that.props.templateDomainTypeIds[index]);
+                                  isSelected = true;
+                                  break;
+                                }
                               }
                             }
                           } else {
