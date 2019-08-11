@@ -1208,14 +1208,14 @@ define(function (require) {
         }
         if (nextProps.data.instances && nextProps.data.instances != null) {
           if (JSON.stringify(newState) !== "{}"){
-            () => this.setState(newState, () => {
+            this.setState(newState, () => {
               this.handleInstances(nextProps.data.instances);
             });
           } else {
-            () => this.handleInstances(nextProps.data.instances);
+            this.handleInstances(nextProps.data.instances);
           }
         } else if (JSON.stringify(newState) !== "{}"){
-          () => this.setState(newState);
+          this.setState(newState);
         }
       }
     },
@@ -1276,7 +1276,7 @@ define(function (require) {
         newState = { label: [], stack: [], id: [], color: [] };
       }
       if (JSON.stringify(newState) !== "{}") {
-        () => this.setState(newState);  
+        this.setState(newState);  
       }
     },
 
