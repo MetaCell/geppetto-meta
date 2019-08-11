@@ -579,7 +579,7 @@ define(function (require) {
       }
       imageLoader
         .on('progress', loadProgressHandler.bind(this))
-        .on('error', console.log)
+        .on('error', console.error)
         .on('complete', setup.bind(this))
         .load();
 
@@ -587,6 +587,13 @@ define(function (require) {
         if (loader.progress < 100) {
           if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
             this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
+          }
+        }
+        // sort position after 10% loaded.
+        if (loader.progress < 10) {
+          if (this._initialized === false) {
+            this.props.onHome();
+            this._initialized = true;
           }
         }
       }
