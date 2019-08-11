@@ -1171,10 +1171,7 @@ define(function (require) {
 
     componentWillReceiveProps: function (nextProps) {
       if (nextProps.data && nextProps.data != null) {
-        if (nextProps.data.instances && nextProps.data.instances != null) {
-          this.handleInstances(nextProps.data.instances);
-        }
-
+        var newState = {}
         if (nextProps.data.height && nextProps.data.height != null) {
           this.setState({ height: nextProps.data.height });
         }
@@ -1211,6 +1208,9 @@ define(function (require) {
         }
         if (nextProps.voxel && nextProps.voxel != null) {
           this.setState({ voxelX: nextProps.voxel.x, voxelY: nextProps.voxel.y, voxelZ: nextProps.voxel.z });
+        }
+        if (nextProps.data.instances && nextProps.data.instances != null) {
+          this.handleInstances(nextProps.data.instances);
         }
       }
     },
