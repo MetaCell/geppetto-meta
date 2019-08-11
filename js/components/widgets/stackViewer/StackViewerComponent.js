@@ -1173,44 +1173,49 @@ define(function (require) {
       if (nextProps.data && nextProps.data != null) {
         var newState = {}
         if (nextProps.data.height && nextProps.data.height != null) {
-          this.setState({ height: nextProps.data.height });
+          newState.height = nextProps.data.height;
         }
         if (nextProps.data.width && nextProps.data.width != null) {
-          this.setState({ width: nextProps.data.width });
+          newState.width = nextProps.data.width;
         }
         if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-          this.setState({
-            voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-            voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-            voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-          });
+          newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
+          newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
+          newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
         }
         if (nextProps.config && nextProps.config != null) {
           if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
             if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-              this.setState({
-                voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-                voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-                voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-              });
+              newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
+              newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
+              newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
             }
             if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-              this.setState({
-                tempName: nextProps.config.subDomains[2],
-                tempId: nextProps.config.subDomains[1],
-                tempType: nextProps.config.subDomains[3]
-              });
+              newState.tempName = nextProps.config.subDomains[2];
+              newState.tempId = nextProps.config.subDomains[1];
+              newState.tempType = nextProps.config.subDomains[3];
               if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-                this.setState({ fxp: JSON.parse(nextProps.config.subDomains[4][0]) });
+                newState.fxp = JSON.parse(nextProps.config.subDomains[4][0]);
               }
             }
           }
         }
         if (nextProps.voxel && nextProps.voxel != null) {
-          this.setState({ voxelX: nextProps.voxel.x, voxelY: nextProps.voxel.y, voxelZ: nextProps.voxel.z });
+          
+          newState.voxelX = nextProps.voxel.x;
+          newState.voxelY = nextProps.voxel.y; 
+          newState.voxelZ = nextProps.voxel.z; 
         }
         if (nextProps.data.instances && nextProps.data.instances != null) {
-          this.handleInstances(nextProps.data.instances);
+          if (JSON.stringify(newState) !== "{}"){
+            this.setState(newState, () => {
+              this.handleInstances(nextProps.data.instances);
+            });
+          } else {
+            this.handleInstances(nextProps.data.instances);
+          }
+        } else if (JSON.stringify(newState) !== "{}"){
+          this.setState(newState);
         }
       }
     },
