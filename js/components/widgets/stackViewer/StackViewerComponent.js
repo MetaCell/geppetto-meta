@@ -346,6 +346,7 @@ define(function (require) {
 
       var i, j, result, id, label;
       var that = this;
+      var isSelected = false;
       while (GEPPETTO.SceneController.getSelection()[0] != undefined) {
         GEPPETTO.SceneController.getSelection()[0].deselect();
       }
@@ -366,35 +367,41 @@ define(function (require) {
                       var index = Number(result[j]);
                       if (i !== 0 || index !== 0) { // don't select template
                         if (index == 0 && !shift) {
-                          console.log(that.state.label[i] + ' clicked');
-                          try {
-                            eval(that.state.id[i][Number(result[j])]).select();
-                            that.setStatusText(that.state.label[i] + ' selected');
-                          } catch (err) {
-                            console.log("Error selecting: " + that.state.id[i][Number(result[j])]);
-                            console.log(err.message);
+                          if (!isSelected){
+                            console.log(that.state.label[i] + ' clicked');
+                            try {
+                              eval(that.state.id[i][Number(result[j])]).select();
+                              that.setStatusText(that.state.label[i] + ' selected');
+                              isSelected = true;
+                            } catch (err) {
+                              console.log("Error selecting: " + that.state.id[i][Number(result[j])]);
+                              console.log(err.message);
+                            }
                           }
                           break;
                         } else {
                           if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainIds[index] !== null && that.props.templateDomainNames[index] !== null) {
-                            try {
-                              eval(that.state.id[i][Number(result[j])]).select();
-                              console.log(that.props.templateDomainNames[index] + ' clicked');
-                              that.setStatusText(that.props.templateDomainNames[index] + ' selected');
-                              break;
-                            } catch (ignore) {
-                              console.log(that.props.templateDomainNames[index] + ' requested');
-                              that.setStatusText(that.props.templateDomainNames[index] + ' requested');
-                              if (shift) {
-                                console.log('Adding ' + that.props.templateDomainNames[index]);
-                                that.setStatusText('Adding ' + that.props.templateDomainNames[index]);
-                                var varriableId = that.props.templateDomainIds[index];
-                                stackViewerRequest(varriableId); // window.stackViewerRequest must be configured in init script
+                            if (!isSelected) {
+                              try {
+                                eval(that.state.id[i][Number(result[j])]).select();
+                                console.log(that.props.templateDomainNames[index] + ' clicked');
+                                that.setStatusText(that.props.templateDomainNames[index] + ' selected');
                                 break;
-                              } else {
-                                that.setStatusText(that.props.templateDomainNames[index] + ' (⇧click to add)');
-                                stackViewerRequest(that.props.templateDomainTypeIds[index]);
-                                break;
+                              } catch (ignore) {
+                                console.log(that.props.templateDomainNames[index] + ' requested');
+                                that.setStatusText(that.props.templateDomainNames[index] + ' requested');
+                                if (shift) {
+                                  console.log('Adding ' + that.props.templateDomainNames[index]);
+                                  that.setStatusText('Adding ' + that.props.templateDomainNames[index]);
+                                  var varriableId = that.props.templateDomainIds[index];
+                                  stackViewerRequest(varriableId); // window.stackViewerRequest must be configured in init script
+                                  isSelected = true;
+                                  break;
+                                } else {
+                                  that.setStatusText(that.props.templateDomainNames[index] + ' (⇧click to add)');
+                                  stackViewerRequest(that.props.templateDomainTypeIds[index]);
+                                  break;
+                                }
                               }
                             }
                           } else {
@@ -579,7 +586,7 @@ define(function (require) {
       }
       imageLoader
         .on('progress', loadProgressHandler.bind(this))
-        .on('error', console.log)
+        .on('error', console.error)
         .on('complete', setup.bind(this))
         .load();
 
@@ -588,6 +595,11 @@ define(function (require) {
           if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
             this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
           }
+        }
+        // sort position after 10% loaded.
+        if (this._initialized === false && loader.progress > 5) {
+          this.props.onHome();
+          this._initialized = true;
         }
       }
 
@@ -1054,7 +1066,7 @@ define(function (require) {
       return (
         < div
           className="stack-canvas-container"
-          ref="stackCanvas" > < /div>
+          ref="stackCanvas" > </div>
       )
       ;
     }
@@ -1171,51 +1183,57 @@ define(function (require) {
 
     componentWillReceiveProps: function (nextProps) {
       if (nextProps.data && nextProps.data != null) {
-        if (nextProps.data.instances && nextProps.data.instances != null) {
-          this.handleInstances(nextProps.data.instances);
-        }
-
+        var newState = {}
         if (nextProps.data.height && nextProps.data.height != null) {
-          this.setState({ height: nextProps.data.height });
+          newState.height = nextProps.data.height;
         }
         if (nextProps.data.width && nextProps.data.width != null) {
-          this.setState({ width: nextProps.data.width });
+          newState.width = nextProps.data.width;
         }
         if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-          this.setState({
-            voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-            voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-            voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-          });
+          newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
+          newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
+          newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
         }
         if (nextProps.config && nextProps.config != null) {
           if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
             if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-              this.setState({
-                voxelX: Number(nextProps.config.subDomains[0][0] || 0.622088),
-                voxelY: Number(nextProps.config.subDomains[0][1] || 0.622088),
-                voxelZ: Number(nextProps.config.subDomains[0][2] || 0.622088),
-              });
+              newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
+              newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
+              newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
             }
             if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-              this.setState({
-                tempName: nextProps.config.subDomains[2],
-                tempId: nextProps.config.subDomains[1],
-                tempType: nextProps.config.subDomains[3]
-              });
+              newState.tempName = nextProps.config.subDomains[2];
+              newState.tempId = nextProps.config.subDomains[1];
+              newState.tempType = nextProps.config.subDomains[3];
               if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-                this.setState({ fxp: JSON.parse(nextProps.config.subDomains[4][0]) });
+                newState.fxp = JSON.parse(nextProps.config.subDomains[4][0]);
               }
             }
           }
         }
         if (nextProps.voxel && nextProps.voxel != null) {
-          this.setState({ voxelX: nextProps.voxel.x, voxelY: nextProps.voxel.y, voxelZ: nextProps.voxel.z });
+          
+          newState.voxelX = nextProps.voxel.x;
+          newState.voxelY = nextProps.voxel.y; 
+          newState.voxelZ = nextProps.voxel.z; 
+        }
+        if (nextProps.data.instances && nextProps.data.instances != null) {
+          if (JSON.stringify(newState) !== "{}"){
+            this.setState(newState, () => {
+              this.handleInstances(nextProps.data.instances);
+            });
+          } else {
+            this.handleInstances(nextProps.data.instances);
+          }
+        } else if (JSON.stringify(newState) !== "{}"){
+          this.setState(newState);
         }
       }
     },
 
     handleInstances: function (instances) {
+      var newState = {}
       if (instances && instances != null && instances.length > 0) {
         var instance;
         var data, vals;
@@ -1250,28 +1268,27 @@ define(function (require) {
             console.log(err.stack);
           }
         }
+        
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
-          this.setState({ serverURL: server });
-          // console.log('Changing IIP server to ' + server);
+          newState.serverURL = server;
         }
-        if (files != this.state.stack && files != null && files.length > 0) {
-          this.setState({ stack: files });
-          // console.log('setting stack to ' + JSON.stringify(files));
+        if (files && files != null && files.length > 0 && files.toString() != this.state.stack.toString()) {
+          newState.stack = files;
         }
-        if (labels != this.state.label && labels != null && labels.length > 0) {
-          this.setState({ label: labels });
-          // console.log('updating labels to ' + JSON.stringify(labels));
+        if (labels && labels != null && labels.length > 0 && labels.toString() != this.state.label.toString()) {
+          newState.label = labels;
         }
-        if (ids != this.state.id && ids != null && ids.length > 0) {
-          this.setState({ id: ids });
-          // console.log('updating ids to ' + JSON.stringify(ids));
+        if (ids && ids != null && ids.length > 0 && ids.toString() != this.state.id.toString()) {
+          newState.id = ids;
         }
-        if (colors.toString() != this.state.color.toString() && colors != null && colors.length > 0) {
-          this.setState({ color: colors });
-          // console.log('updating colours to ' + JSON.stringify(colors));
+        if (colors && colors != null && colors.length > 0 && colors.toString() != this.state.color.toString()) {
+          newState.color = colors;
         }
       } else {
-        this.setState({ label: [], stack: [], id: [], color: [] });
+        newState = { label: [], stack: [], id: [], color: [] };
+      }
+      if (JSON.stringify(newState) !== "{}") {
+        this.setState(newState);  
       }
     },
 
