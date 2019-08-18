@@ -394,7 +394,7 @@ define(function (require) {
         }
       });
 
-      this.initDataSourceResults();
+      //this.initDataSourceResults();
 
       this.initTypeahead();
 
