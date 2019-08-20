@@ -1,0 +1,7 @@
+language: node_js
+sudo: required
+node_js:
+  - "9"
+script:
+  - npm i
+  - ./node_modules/eslint/bin/eslint.js .
