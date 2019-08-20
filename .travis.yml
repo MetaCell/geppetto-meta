@@ -1,10 +1,14 @@
 language: node_js
-
+sudo: required
 node_js:
-  - "7"
+  - "9"
 
 before_script:
   - npm install travis-ci
 
+script:
+  - npm i
+  - ./node_modules/eslint/bin/eslint.js .
+  
 after_success:
   - node travis/trigger-build.js

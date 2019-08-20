@@ -766,7 +766,7 @@ THREE.OBJLoader.prototype = {
 
           if (!material) {
 
-            material = ( !isLine ? new THREE.MeshPhongMaterial() : new THREE.LineBasicMaterial() );
+            material = !isLine ? new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, opacity: 1, transparent: true, depthWrite: false }) : new THREE.LineBasicMaterial();
             material.name = sourceMaterial.name;
 
           }

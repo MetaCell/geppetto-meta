@@ -111,7 +111,9 @@ class Menu extends React.Component {
       menuOpen: false,
       sectionOpened: undefined
     }, () => {
-      this.props.menuHandler(action)
+      if (action !== "") {
+        this.props.menuHandler(action)
+      }
     });
   }
 
