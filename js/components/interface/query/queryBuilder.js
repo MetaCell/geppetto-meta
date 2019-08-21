@@ -337,7 +337,7 @@ define(function (require) {
             if (Object.prototype.hasOwnProperty.call(that.configuration.DataSources, key)) {
               var dataSource = that.configuration.DataSources[key];
               var searchQuery = $("#query-typeahead").val();
-              var url = dataSource.url.replace("$SEARCH_TERM$", searchQuery);
+              var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
               that.updateResults = true;
               that.requestDataSourceResults(key, url, dataSource.crossDomain);
             }
@@ -394,7 +394,7 @@ define(function (require) {
         }
       });
 
-      this.initDataSourceResults();
+      // this.initDataSourceResults(); 
 
       this.initTypeahead();
 
@@ -931,7 +931,7 @@ define(function (require) {
         keys = Object.keys(data[0]);
 
         result = '';
-        result += keys.join(columnDelimiter);
+        result += '"' + keys.join('"' + columnDelimiter + '"') + '"';
         result += lineDelimiter;
 
         data.forEach(function (item) {
@@ -941,7 +941,7 @@ define(function (require) {
               result += columnDelimiter;
             }
 
-            result += item[key];
+            result += '"' + item[key] + '"';
             ctr++;
           });
           result += lineDelimiter;

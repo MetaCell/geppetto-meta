@@ -1,3 +1,4 @@
+/* eslint-disable jest/valid-describe */
 /**
  * @fileoverview Jasmine JsTestDriver Adapter.
  * @author misko@hevery.com (Misko Hevery)
