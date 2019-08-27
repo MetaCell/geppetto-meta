@@ -38,7 +38,7 @@ class MenuSingleItem extends React.Component {
     var menuToRender = undefined;
     var MenuItemClass = undefined;
     let menuItems = this.props.menuList.map((item, index) => {
-      if (Object.prototype.hasOwnProperty.call(item,list)) {
+      if (Object.prototype.hasOwnProperty.call(item,"list")) {
         if ((anchorEl !== null) && (anchorEl !== undefined) && (index === Number(this.state.sectionOpened))) {
           menuToRender = (<MenuPopper
             position={item.position}

@@ -1,4 +1,6 @@
 /* eslint-disable no-dupe-keys */
+/* eslint-disable no-undef */
+/* eslint-disable brace-style */
 /*
  * The 3D engine used by the 3D canvas component. This class is internal, any method you
  * use from inside here might break between versions. Methods maintained are the exposed ones
@@ -163,8 +165,8 @@ define(['jquery'], function () {
           that.mouse.y = -((event.clientY - (that.renderer.domElement.getBoundingClientRect().top)) / that.renderer.domElement.getBoundingClientRect().height) * 2 + 1;
           that.mouse.x = ((event.clientX - (that.renderer.domElement.getBoundingClientRect().left)) / that.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
-          // only for left click
-          if (event.button == 0) {
+          if (event.button == 0) // only for left click
+          {
             if (that.pickingEnabled) {
               var intersects = that.getIntersectedObjects();
 
@@ -209,8 +211,8 @@ define(['jquery'], function () {
                       }
                     } else {
                       /*
-                       * if there are more than one element intersected and opacity of the current one is less than 1
-                       * we skip it to realize a "pick through"
+                       *if there are more than one element intersected and opacity of the current one is less than 1
+                       *we skip it to realize a "pick through"
                        */
                       var opacity = that.meshes[instancePath].defaultOpacity;
                       if ((opacity == 1 && visible) || GEPPETTO.isKeyPressed("ctrl")) {
@@ -219,8 +221,8 @@ define(['jquery'], function () {
                         break;
                       } else if (visible && opacity < 1 && opacity > 0) {
                         /*
-                         * if only transparent objects intersected select first or the next down if
-                         * one is already selected in order to enable "burrow through" sample.
+                         *if only transparent objects intersected select first or the next down if
+                         *one is already selected in order to enable "burrow through" sample.
                          */
                         if (selected == "" && !eval(instancePath + '.selected')) {
                           selected = instancePath;
@@ -340,7 +342,14 @@ define(['jquery'], function () {
      */
     setupLights: function () {
       // Lights
-      this.camera.add(new THREE.PointLight(0xffffff, 1.5));
+      var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+      this.scene.add(ambientLight);
+      // add spotlight for the shadows
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.position.set(-30, 60, 60);
+      spotLight.castShadow = true;
+      this.scene.add(spotLight);
+      this.camera.add(new THREE.PointLight(0xffffff, 1));
     },
 
     /**
