@@ -1716,7 +1716,7 @@ define(function (require) {
           var stats = {};
           for (var i = 0; i < this.allPaths.length; i++) {
             var path = this.allPaths[i];
-            if (!stats.hasOwnProperty(path.metaType)) {
+            if (!Object.prototype.hasOwnProperty.call(stats,path.metaType)) {
               stats[path.metaType] = 0;
             }
             stats[path.metaType]++;

@@ -90,7 +90,7 @@ define(function (require) {
      * @param datasourceId
      */
     fetchVariables: function (variableIds, datasourceId, callback) {
-      if (!window.Model.hasOwnProperty(variableIds)) {
+      if (!Object.prototype.hasOwnProperty.call(window.Model, variableIds)) {
         var params = {};
         params["projectId"] = Project.getId();
         params["variableId"] = variableIds;

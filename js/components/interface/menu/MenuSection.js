@@ -21,7 +21,7 @@ class MenuSection extends React.Component {
 
   handleClick = event => {
     if ((this.props.list === undefined) || (this.props.list.length === 0)) {
-      if (this.props.button.hasOwnProperty('dynamicListInjector')) {
+      if (Object.prototype.hasOwnProperty.call(this.props.button,'dynamicListInjector')) {
         this.tempList = this.props.menuHandlerDirect(this.props.button.dynamicListInjector);
         const { currentTarget } = event;
         if (this.state.anchorEl !== null) {
@@ -60,7 +60,7 @@ class MenuSection extends React.Component {
     this.setState({ hover: true });
     if (this.props.menuOpen && this.props.sectionOpened !== this.props.id) {
       if ((this.props.list === undefined) || (this.props.list.length === 0)) {
-        if (this.props.button.hasOwnProperty('dynamicListInjector')) {
+        if (Object.prototype.hasOwnProperty.call(this.props.button,'dynamicListInjector')) {
           this.tempList = this.props.menuHandlerDirect(this.props.button.dynamicListInjector);
         } else {
           return;

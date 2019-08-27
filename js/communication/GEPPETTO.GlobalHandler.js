@@ -103,7 +103,7 @@ define(function (require) {
     GEPPETTO.GlobalHandler
         = {
         onMessage: function (parsedServerMessage) {
-          if (messageHandler.hasOwnProperty(parsedServerMessage.type)) {
+          if (Object.prototype.hasOwnProperty.call(messageHandler, parsedServerMessage.type)) {
             messageHandler[parsedServerMessage.type](JSON.parse(parsedServerMessage.data));
           }
         }

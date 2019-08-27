@@ -334,7 +334,7 @@ define(function (require) {
         }
         this.searchTimeOut = setTimeout(function () {
           for (var key in that.configuration.DataSources) {
-            if (that.configuration.DataSources.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(that.configuration.DataSources, key)) {
               var dataSource = that.configuration.DataSources[key];
               var searchQuery = $("#query-typeahead").val();
               var url = dataSource.url.replace(/\$SEARCH_TERM\$/g, searchQuery);
@@ -353,7 +353,7 @@ define(function (require) {
 
       queryTypeAheadElem.unbind('typeahead:selected');
       queryTypeAheadElem.bind('typeahead:selected', function (obj, datum, name) {
-        if (datum.hasOwnProperty("label")) {
+        if (Object.prototype.hasOwnProperty.call(datum, "label")) {
           that.confirmed(datum.label);
         }
       });
@@ -435,7 +435,7 @@ define(function (require) {
     addDataSource (sources) {
       try {
         for (var key in sources) {
-          if (sources.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(sources, key)) {
             var obj = sources[key];
             var key = this.generateDataSourceKey(key, 0);
             this.configuration.DataSources[key] = obj;

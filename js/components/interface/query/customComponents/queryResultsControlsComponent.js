@@ -35,7 +35,7 @@ define(function (require) {
     
       var resolvedConfig = control;
     
-      if (resolvedConfig.hasOwnProperty('condition')) {
+      if (Object.prototype.hasOwnProperty.call(resolvedConfig, "condition")) {
         // evaluate condition and reassign control depending on results
         var conditionStr = this.replaceTokensWithPath(control.condition, path);
         if (eval(conditionStr)) {
@@ -104,7 +104,7 @@ define(function (require) {
               }
     
               // if conditional, swap icon with the other condition outcome
-              if (control.hasOwnProperty('condition')) {
+              if (Object.prototype.hasOwnProperty.call(control, "condition")) {
                 var otherConfig = that.resolveCondition(control, path);
                 var element = $('#' + idVal);
                 element.removeClass();

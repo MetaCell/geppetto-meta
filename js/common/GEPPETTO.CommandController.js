@@ -66,7 +66,7 @@ define(function (require) {
         var proto = object;
         // find all functions of object Simulation
         for (var prop in proto) {
-          if (typeof proto[prop] === "function" && proto.hasOwnProperty(prop)) {
+          if (typeof proto[prop] === "function" && Object.prototype.hasOwnProperty.call(proto, prop)) {
             var f = proto[prop].toString();
             // get the argument for this function
             var parameter = f.match(/\(.*?\)/)[0].replace(/[()]/gi, '').replace(/\s/gi, '').split(',');
@@ -219,10 +219,10 @@ define(function (require) {
           if (isTag) {
             var current = this.tags;
             for (var i = 0; i < split.length; i++) {
-              if (this.tags.hasOwnProperty(split[i])) {
+              if (Object.prototype.hasOwnProperty.call(this.tags, split[i])) {
                 current = this.tags[split[i]];
               } else {
-                if (current.hasOwnProperty(split[i])) {
+                if (Object.prototype.hasOwnProperty.call(current, split[i])) {
                   current = current[split[i]];
                 } else {
                   current[split[i]] = {};

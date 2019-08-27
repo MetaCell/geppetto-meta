@@ -85,7 +85,7 @@ define(['jquery'], function () {
       isSelected: function (variables) {
         var selected = false;
         for (var i = 0; i < variables.length; i++) {
-          if (variables[i].hasOwnProperty('isSelected') && variables[i].isSelected()) {
+          if (Object.prototype.hasOwnProperty.call(variables[i], 'isSelected') && variables[i].isSelected()) {
             selected = true;
             break;
           }

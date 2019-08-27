@@ -248,7 +248,7 @@ define(function (require) {
       var parameters = this.props.experiment.getSetParameters();
            
       for (var key in parameters) {
-        if (parameters.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(parameters,key)) {
           modifiedParameters += '<li>' + key + "=" + parameters[key] + '</li>';
         }
       }
@@ -592,7 +592,7 @@ define(function (require) {
       
       this.setState({ newExperimentIconVisible: visible });
       for (var property in this.refs) {
-        if (this.refs.hasOwnProperty(property)) {
+        if (Object.prototype.hasOwnProperty.call(this.refs,property)) {
           this.refs[property].updateIcons(GEPPETTO.UserController.isLoggedIn(),visible);
         }
       }

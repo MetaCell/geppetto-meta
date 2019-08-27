@@ -192,7 +192,7 @@ define(['jquery'], function () {
                 for (var i = 0; i < intersects.length; i++) {
                   // figure out if the entity is visible
                   var instancePath = "";
-                  if (intersects[i].object.hasOwnProperty("instancePath")) {
+                  if (Object.prototype.hasOwnProperty.call(intersects[i].object, 'instancePath')) {
                     instancePath = intersects[i].object.instancePath;
                     geometryIdentifier = intersects[i].object.geometryIdentifier;
                   } else {
@@ -239,7 +239,7 @@ define(['jquery'], function () {
 
 
                 if (selected != "") {
-                  if (that.meshes.hasOwnProperty(selected) || that.splitMeshes.hasOwnProperty(selected)) {
+                  if (Object.prototype.hasOwnProperty.call(that.meshes, selected) || Object.prototype.hasOwnProperty.call(that.splitMeshes, selected)) {
                     if (!GEPPETTO.isKeyPressed("shift")) {
                       that.deselectAll();
                     }
@@ -370,7 +370,7 @@ define(['jquery'], function () {
       var aabbMax = null;
 
       this.scene.traverse(function (child) {
-        if (child.hasOwnProperty("geometry") && (child.visible === true)) {
+        if ( Object.prototype.hasOwnProperty.call(child, "geometry") && (child.visible === true)) {
           child.geometry.computeBoundingBox();
 
           var bb = child.geometry.boundingBox;
@@ -1392,7 +1392,7 @@ define(['jquery'], function () {
       if (!isNaN(color % 1)) {
         // we have an integer (hex) value
         threeColor.setHex(color);
-      } else if (color.hasOwnProperty("r") && color.hasOwnProperty("g") && color.hasOwnProperty("b")) {
+      } else if (Object.prototype.hasOwnProperty.call(color, "r") && Object.prototype.hasOwnProperty.call(color, "g") && Object.prototype.hasOwnProperty.call(color, "b")) {
         threeColor.r = color.r;
         threeColor.g = color.g;
         threeColor.b = color.b;
@@ -1603,7 +1603,7 @@ define(['jquery'], function () {
           if (mesh.selected == false) {
             if (mesh instanceof THREE.Object3D) {
               mesh.traverse(function (child) {
-                if (child.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(child, "material")) {
                   that.setThreeColor(child.material.color, GEPPETTO.Resources.COLORS.SELECTED);
                   child.material.opacity = Math.max(0.5, child.material.defaultOpacity);
 
@@ -1695,7 +1695,7 @@ define(['jquery'], function () {
             var that = this;
             if (mesh instanceof THREE.Object3D) {
               mesh.traverse(function (child) {
-                if (child.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(child, "material")) {
                   that.setThreeColor(child.material.color, child.material.defaultColor);
                   child.material.opacity = child.material.defaultOpacity;
                 }
@@ -1819,7 +1819,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = true;
               mesh.traverse(function (object) {
-                if (object.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = true;
                     object.material.transparent = true;
@@ -1836,7 +1836,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = false;
               mesh.traverse(function (object) {
-                if (object.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = false;
                     object.material.opacity = object.material.defaultOpacity;
@@ -1889,7 +1889,7 @@ define(['jquery'], function () {
      */
     hideAllInstances: function () {
       for (var instancePath in this.meshes) {
-        if (this.meshes.hasOwnProperty(instancePath)) {
+        if (Object.prototype.hasOwnProperty.call(this.meshes,instancePath)) {
           this.hideInstance(instancePath);
         }
       }
@@ -1936,7 +1936,7 @@ define(['jquery'], function () {
           if (mesh) {
             var that = this;
             mesh.traverse(function (object) {
-              if (object.hasOwnProperty("material")) {
+              if (Object.prototype.hasOwnProperty.call(object,"material")) {
                 that.setThreeColor(object.material.color, color);
                 object.material.defaultColor = color;
               }
@@ -1976,7 +1976,7 @@ define(['jquery'], function () {
           var mesh = meshes[i];
           if (mesh) {
             mesh.traverse(function (object) {
-              if (object.hasOwnProperty("material")) {
+              if (Object.prototype.hasOwnProperty.call(object,"material")) {
                 if (color == "") {
                   color = object.material.defaultColor;
                 } else if (color != object.material.defaultColor) {
@@ -2022,7 +2022,7 @@ define(['jquery'], function () {
                 var randomColor = getRandomColor();
 
                 mesh.traverse(function (object) {
-                  if (object.hasOwnProperty("material")) {
+                  if (Object.prototype.hasOwnProperty.call(object,"material")) {
                     that.setThreeColor(object.material.color, randomColor);
                     object.material.defaultColor = randomColor;
                   }
@@ -2056,7 +2056,7 @@ define(['jquery'], function () {
         mesh.defaultOpacity = opacity;
         if (opacity == 1) {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("material")) {
+            if (Object.prototype.hasOwnProperty.call(object,"material")) {
               object.material.transparent = false;
               object.material.opacity = 1;
               object.material.defaultOpacity = 1;
@@ -2064,7 +2064,7 @@ define(['jquery'], function () {
           });
         } else {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("material")) {
+            if (Object.prototype.hasOwnProperty.call(object,"material")) {
               object.material.transparent = true;
               object.material.opacity = opacity;
               object.material.defaultOpacity = opacity;
@@ -2152,7 +2152,7 @@ define(['jquery'], function () {
       var zoomParameters = {};
       var mesh = this.meshes[instance.getInstancePath()];
       mesh.traverse(function (object) {
-        if (object.hasOwnProperty("geometry")) {
+        if (Object.prototype.hasOwnProperty.call(object, "geometry")) {
           that.addMeshToZoomParameters(object, zoomParameters);
         }
       });
@@ -2184,7 +2184,7 @@ define(['jquery'], function () {
         var mesh = this.meshes[instancePath];
         if (mesh) {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("geometry")) {
+            if (Object.prototype.hasOwnProperty.call(object, "geometry")) {
               that.addMeshToZoomParameters(object, zoomParameters);
             }
           });
@@ -2454,7 +2454,7 @@ define(['jquery'], function () {
         // get connections for given instance and remove only those
         var lines = this.connectionLines;
         for (var i = 0; i < connections.length; i++) {
-          if (lines.hasOwnProperty(connections[i].getInstancePath())) {
+          if (Object.prototype.hasOwnProperty.call(lines, connections[i].getInstancePath())) {
             // remove the connection line from the scene
             this.scene.remove(lines[connections[i].getInstancePath()]);
             // remove the conneciton line from the GEPPETTO list of connection lines
@@ -2465,7 +2465,7 @@ define(['jquery'], function () {
         // remove all connection lines
         var lines = this.connectionLines;
         for (var key in lines) {
-          if (lines.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(lines, key)) {
             this.scene.remove(lines[key]);
           }
         }
@@ -2891,7 +2891,7 @@ define(['jquery'], function () {
     isSelected: function (variables) {
       var selected = false;
       for (var i = 0; i < variables.length; i++) {
-        if (variables[i].hasOwnProperty('isSelected') && variables[i].isSelected()) {
+        if (Object.prototype.hasOwnProperty.call(variables[i], 'isSelected') && variables[i].isSelected()) {
           selected = true;
           break;
         }
@@ -2950,7 +2950,7 @@ define(['jquery'], function () {
           }
         }
       } else {
-        if (object.hasOwnProperty("geometry")) {
+        if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
           object.geometry.computeBoundingSphere();
           currentRadius = object.geometry.boundingSphere.radius;
         }
