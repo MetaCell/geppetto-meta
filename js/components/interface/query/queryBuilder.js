@@ -956,7 +956,11 @@ define(function (require) {
         var records = args.data.map(function (record) {
           var instance = new Object();
           for (var counter = 0; counter < args.columnsPresent.length; counter++) {
-            if (args.columnsPresent[counter] == "controls" || args.columnsPresent[counter] == "images") {
+            if (args.columnsPresent[counter] == "controls") {
+              continue;
+            }
+            if (args.columnsPresent[counter] == "images") {
+              instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
               continue;
             }
             instance[args.columnsPresent[counter]] = record[args.columnsPresent[counter]];
