@@ -205,7 +205,7 @@ define(function (require) {
       this.setState({ tutorialData: Object.assign(this.state.tutorialData, { [tutorialData.name]: tutorialData }) });
 
       if (start) {
-        this.setState({ activeTutorial: tutorialData.name });
+        this.setState({ activeTutorial: tutorialName });
         this.setState({ currentStep: 0 });
       }
 
@@ -298,7 +298,7 @@ define(function (require) {
           // default tutorial when user doesn't specify one for this event
           if (self.props.tutorialURL != undefined) {
             self.addTutorial(self.props.tutorialURL);
-          } else if (self.props.tutorialData != undefined) {
+          } else if (self.props.tutorialData != undefined ) {
             self.loadTutorial(self.props.tutorialData, true);
           }
           self.dontShowTutorial = true;
@@ -307,7 +307,7 @@ define(function (require) {
 
       // Launches tutorial from button 
       GEPPETTO.on(GEPPETTO.Events.Show_Tutorial, function () {
-        if (self.started == undefined) {
+        if (self.started == undefined && self.props.tutorialData != undefined) {
           self.loadTutorial(self.props.tutorialData, true);
           self.open(false);
         } else if (self.started) {
@@ -338,7 +338,7 @@ define(function (require) {
         GEPPETTO.ForegroundControls.refresh();
       }
 
-      if (this.started == undefined) {
+      if (this.started == undefined && this.props.tutorialData != undefined) {
         this.loadTutorial(this.props.tutorialData, true);
         this.open(false);
       }
