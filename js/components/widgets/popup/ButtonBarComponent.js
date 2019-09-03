@@ -237,9 +237,11 @@ define(function (require) {
               that.colorPickerBtnId = idVal;
               that.colorPickerActionFn = actionFn;
               // set style val to color tint icon
-              var colorVal = String(entity.getColor().replace(/0X/i, "#") + "0000").slice(0, 7);
-              styleVal = { color: colorVal.startsWith('#') ? colorVal : ('#' + colorVal) };
-              classVal += " color-picker-button";
+              if (entity !== undefined) {
+                var colorVal = String(entity.getColor().replace(/0X/i, "#") + "0000").slice(0, 7);
+                styleVal = { color: colorVal.startsWith('#') ? colorVal : ('#' + colorVal) };
+                classVal += " color-picker-button";
+              }
             }
 
             return (
