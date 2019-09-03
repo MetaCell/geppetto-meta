@@ -20,24 +20,26 @@ class MenuPopper extends React.Component {
       return (<Popper id={id} open={open} anchorEl={anchorEl} placement={String((this.props.position !== undefined) ? this.props.position : "right-start")} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={50}>
-            <ClickAwayListener onClickAway={this.props.awayClickHandler}>
-              <Paper
-                style={this.props.drawersStyle.standard}
-                square={false}>
-                <MenuList>
-                  <MenuSingleItem
-                    position={this.props.position}
-                    parentRef={anchorEl}
-                    menuList={this.props.menuList}
-                    menuHandler={this.props.menuHandler}
-                    menuHandlerDirect={this.props.menuHandlerDirect}
-                    awayClickHandler={this.props.awayClickHandler}
-                    drawersStyle={this.props.drawersStyle}
-                    labelsStyle={this.props.labelsStyle}
-                  />
-                </MenuList>
-              </Paper>
-            </ClickAwayListener>
+            <React.Fragment>
+              <ClickAwayListener onClickAway={this.props.awayClickHandler}>
+                <Paper
+                  style={this.props.drawersStyle.standard}
+                  square={false}>
+                  <MenuList>
+                    <MenuSingleItem
+                      position={this.props.position}
+                      parentRef={anchorEl}
+                      menuList={this.props.menuList}
+                      menuHandler={this.props.menuHandler}
+                      menuHandlerDirect={this.props.menuHandlerDirect}
+                      awayClickHandler={this.props.awayClickHandler}
+                      drawersStyle={this.props.drawersStyle}
+                      labelsStyle={this.props.labelsStyle}
+                    />
+                  </MenuList>
+                </Paper>
+              </ClickAwayListener>
+            </React.Fragment>
           </Fade>
         )}
       </Popper>);

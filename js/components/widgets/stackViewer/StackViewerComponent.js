@@ -149,7 +149,10 @@ define(function (require) {
         this.props.canvasRef.removeObject(this.state.stackViewerPlane);
       }
 
+      let loaderResources = PIXI.loader.resources;
       PIXI.loader.reset();
+      PIXI.loader.resources = loaderResources;
+      // PIXI.utils.clearTextureCache();
 
       // free texture caches
       var textureUrl;
@@ -507,6 +510,10 @@ define(function (require) {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
+      let loaderResources = imageLoader.resources;
+      imageLoader.reset();
+      imageLoader.resources = loaderResources;
+      // PIXI.utils.clearTextureCache();
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
           image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
@@ -922,6 +929,10 @@ define(function (require) {
               }
               this.state.images[d].texture = PIXI.Texture.fromImage(image);
               if (!PIXI.loader.resources[image]) {
+                let loaderResources = PIXI.loader.resources;
+                PIXI.loader.reset();
+                PIXI.loader.resources = loaderResources;
+                // PIXI.utils.clearTextureCache();
                 PIXI.loader.add(image, image, {
                   loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
                   xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
