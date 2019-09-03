@@ -308,7 +308,7 @@ define(function (require) {
 
       // Launches tutorial from button 
       GEPPETTO.on(GEPPETTO.Events.Show_Tutorial, function () {
-        if (self.started == undefined) {
+        if (self.started == undefined && self.props.tutorialData != undefined) {
           self.loadTutorial(self.props.tutorialData, true);
           self.open(false);
         } else if (self.started) {
@@ -339,7 +339,7 @@ define(function (require) {
         GEPPETTO.ForegroundControls.refresh();
       }
 
-      if (this.started == undefined) {
+      if (this.started == undefined && this.props.tutorialData != undefined) {
         this.loadTutorial(this.props.tutorialData, true);
         this.open(false);
       }
