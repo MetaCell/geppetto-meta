@@ -202,10 +202,11 @@ define(function (require) {
     }
 
     loadTutorial (tutorialData, start) {
-      this.setState({ tutorialData: Object.assign(this.state.tutorialData, { [tutorialData.name]: tutorialData }) });
+      let tutorialName = tutorialData.name ? tutorialData.name : 'tutorial';
+      this.setState({ tutorialData: Object.assign(this.state.tutorialData, { [tutorialName]: tutorialData }) });
 
       if (start) {
-        this.setState({ activeTutorial: tutorialData.name });
+        this.setState({ activeTutorial: tutorialName });
         this.setState({ currentStep: 0 });
       }
 
@@ -298,7 +299,7 @@ define(function (require) {
           // default tutorial when user doesn't specify one for this event
           if (self.props.tutorialURL != undefined) {
             self.addTutorial(self.props.tutorialURL);
-          } else if (self.props.tutorialData != undefined) {
+          } else if (self.props.tutorialData != undefined ) {
             self.loadTutorial(self.props.tutorialData, true);
           }
           self.dontShowTutorial = true;
