@@ -202,11 +202,10 @@ define(function (require) {
     }
 
     loadTutorial (tutorialData, start) {
-      let tutorialName = tutorialData.name ? tutorialData.name : 'tutorial';
-      this.setState({ tutorialData: Object.assign(this.state.tutorialData, { [tutorialName]: tutorialData }) });
+      this.setState({ tutorialData: Object.assign(this.state.tutorialData, { [tutorialData.name]: tutorialData }) });
 
       if (start) {
-        this.setState({ activeTutorial: tutorialName });
+        this.setState({ activeTutorial: tutorialData.name });
         this.setState({ currentStep: 0 });
       }
 
@@ -257,13 +256,16 @@ define(function (require) {
           this.props.tutorialsList = [this.props.tutorialsList];
         }
         for (var i = 0; i < this.props.tutorialsList.length; i++) {
-          
+
           this.addTutorial(this.props.tutorialsList[i]);
         }
       }
     }
 
     componentDidUpdate () {
+      if (Object.keys(this.state.tutorialData).length === 0){
+        return;
+      }
       if (this.chaptersMenu == undefined) {
         var that = this;
         this.chaptersMenu = new GEPPETTO.ContextMenuView();
@@ -292,23 +294,23 @@ define(function (require) {
           self.forceUpdate();
         }
       });
-      
+
       // launches specific tutorial is experiment is loaded
       GEPPETTO.on(GEPPETTO.Events.Model_loaded, function () {
         if (!self.dontShowTutorial) {
           // default tutorial when user doesn't specify one for this event
           if (self.props.tutorialURL != undefined) {
             self.addTutorial(self.props.tutorialURL);
-          } else if (self.props.tutorialData != undefined ) {
+          } else if (self.props.tutorialData != undefined) {
             self.loadTutorial(self.props.tutorialData, true);
           }
           self.dontShowTutorial = true;
         }
       });
 
-      // Launches tutorial from button 
+      // Launches tutorial from button
       GEPPETTO.on(GEPPETTO.Events.Show_Tutorial, function () {
-        if (self.started == undefined && self.props.tutorialData != undefined) {
+        if (self.started == undefined) {
           self.loadTutorial(self.props.tutorialData, true);
           self.open(false);
         } else if (self.started) {
@@ -371,7 +373,7 @@ define(function (require) {
 
       return baseView;
     }
-    
+
     setComponentSpecificView (componentSpecific){
       if (componentSpecific != undefined) {
         if (componentSpecific.activeTutorial != undefined) {
@@ -394,7 +396,7 @@ define(function (require) {
           self.setComponentSpecificView(view.componentSpecific);
         }
       };
-      
+
       // set data
       if (view.data != undefined) {
         if (view.dataType == 'array') {
@@ -413,12 +415,12 @@ define(function (require) {
 
       this.setDirty(false);
     }
-    
+
     updatePosition (position){
       var left,top;
       var screenWidth = $(window).width();
       var screenHeight = $(window).height();
-      
+
       if (position.left != undefined && position.top != undefined){
         left = position.left;
         top = position.top;
@@ -431,7 +433,7 @@ define(function (require) {
         left = (screenWidth / 2) - (this.dialog.parent().width() / 2);
         top = (screenHeight / 2) - (this.dialog.parent().height() / 2);
       }
-      
+
       this.dialog.parent().css("top", top + "px");
       this.dialog.parent().css("left", left + "px");
     }
@@ -471,7 +473,7 @@ define(function (require) {
           dialog.width(width + "px");
           this.dialog.css("width", width + "px");
         }
-        
+
 
         var showMemoryCheckbox = this.props.showMemoryCheckbox;
         if (showMemoryCheckbox == undefined){
