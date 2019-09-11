@@ -184,6 +184,7 @@ define(function (require) {
       ];
       this.escape = 27;
       this.qKey = 81;
+      this.sorterColumn = undefined;
 
       this.open = this.open.bind(this);
       this.close = this.close.bind(this);
@@ -252,6 +253,14 @@ define(function (require) {
       this.setResultsColumns(this.props.resultsColumns);
       this.setResultsControlsConfig(this.props.resultsControlConfig);
       this.addDataSource(this.props.datasourceConfig);
+
+      if (this.props.sorterColumn !== undefined) {
+        this.sorterColumn = this.props.sorterColumn;
+      } else {
+        if (this.props.resultsColumns.length > 0) {
+          this.sorterColumn = this.props.resultsColumns[0];
+        }
+      }
     }
 
     componentWillUnmount () {
@@ -1046,6 +1055,7 @@ define(function (require) {
                               <div className="clearer"></div>
                               <Griddle
                                 showFilter={true}
+                                initialSort={this.sorterColumn}
                                 showSettings={false}
                                 useGriddleStyles={false}
                                 results={resultsItem.records}
