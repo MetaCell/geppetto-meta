@@ -536,7 +536,7 @@ define(function (require) {
         self.updateExperimentStatus();
       });
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_created, function (experiment) {
+      GEPPETTO.off(GEPPETTO.Events.Experiment_created).on(GEPPETTO.Events.Experiment_created, function (experiment) {
         self.newExperiment(experiment);
       });
 
@@ -545,7 +545,7 @@ define(function (require) {
         self.refresh();
       });
 
-      GEPPETTO.on(GEPPETTO.Events.Experiment_deleted, function (experiment) {
+      GEPPETTO.off(GEPPETTO.Events.Experiment_deleted).on(GEPPETTO.Events.Experiment_deleted, function (experiment) {
         self.deleteExperiment(experiment);
         if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.EXPERIMENT_DELETED, "Experiment " + experiment.name + " with id " + experiment.id + " was deleted successfully");
