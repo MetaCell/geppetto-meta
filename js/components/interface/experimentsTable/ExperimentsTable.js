@@ -545,7 +545,7 @@ define(function (require) {
         self.refresh();
       });
 
-      //Avoid adding the same listener twice by first calling off()
+      // Avoid adding the same listener twice by first calling off()
       GEPPETTO.off(GEPPETTO.Events.Experiment_deleted).on(GEPPETTO.Events.Experiment_deleted, function (experiment) {
         self.deleteExperiment(experiment);
         if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
