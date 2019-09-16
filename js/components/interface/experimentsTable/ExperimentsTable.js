@@ -519,20 +519,20 @@ define(function (require) {
         }
       });
 
-      GEPPETTO.off(GEPPETTO.Events.Project_loaded).on(GEPPETTO.Events.Project_loaded, function () {
+      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
         self.populate();
         self.updateStatus();
       });
 
-      GEPPETTO.off(GEPPETTO.Events.Project_persisted).on(GEPPETTO.Events.Project_persisted, function () {
+      GEPPETTO.on(GEPPETTO.Events.Project_persisted, function () {
         self.refresh();
       });
             
-      GEPPETTO.off(GEPPETTO.Events.Experiment_status_check).on(GEPPETTO.Events.Experiment_status_check, function () {
+      GEPPETTO.on(GEPPETTO.Events.Experiment_status_check, function () {
         self.updateExperimentsTableStatus();
       });
 
-      GEPPETTO.off(GEPPETTO.Events.Experiment_loaded).on(GEPPETTO.Events.Experiment_loaded, function () {
+      GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, function () {
         self.updateExperimentStatus();
       });
 
@@ -541,11 +541,10 @@ define(function (require) {
       });
 
 
-      GEPPETTO.off(GEPPETTO.Events.Experiment_renamed).on(GEPPETTO.Events.Experiment_renamed, function (experiment) {
+      GEPPETTO.on(GEPPETTO.Events.Experiment_renamed, function (experiment) {
         self.refresh();
       });
 
-      // Avoid adding the same listener twice by first calling off()
       GEPPETTO.off(GEPPETTO.Events.Experiment_deleted).on(GEPPETTO.Events.Experiment_deleted, function (experiment) {
         self.deleteExperiment(experiment);
         if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
