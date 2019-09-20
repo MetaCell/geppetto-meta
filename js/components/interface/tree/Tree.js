@@ -126,6 +126,12 @@ define(function (require) {
       return nodeProps;
     }
 
+    componentWillReceiveProps (nextProps) {
+      if (this.state.treeData !== nextProps.treeData) {
+        this.setState({ treeData: nextProps.treeData });
+      }
+    }
+
     render () {
       return (
         <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="treeViewer" style={this.props.style}>
