@@ -578,15 +578,8 @@ define(function (require) {
     },
     
     componentWillUnmount () {
-      /* 
-       * GEPPETTO.off(GEPPETTO.Events.Experiment_status_check);
-       * GEPPETTO.off(GEPPETTO.Events.Experiment_loaded);
-       * GEPPETTO.off(GEPPETTO.Events.Experiment_renamed);
-       * GEPPETTO.off(GEPPETTO.Events.Experiment_created); 
-       */
       GEPPETTO.off(GEPPETTO.Events.Experiment_deleted, this, this);
       GEPPETTO.off(GEPPETTO.Events.Project_loaded, this, this);
-      // GEPPETTO.off(GEPPETTO.Events.Project_persisted);
       console.log("exp will un mount")
     },
         
