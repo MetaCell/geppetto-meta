@@ -566,7 +566,6 @@ define(function (require) {
       GEPPETTO.off(GEPPETTO.Events.Experiment_status_check, this.updateExperimentsTableStatus, this);
       GEPPETTO.off(GEPPETTO.Events.Experiment_created, this.newExperiment, this);
       GEPPETTO.off(GEPPETTO.Events.Experiment_renamed, this.refresh, this);
-      console.log("exp will un mount")
     },
     
     projectLoaded: function () {
@@ -578,7 +577,7 @@ define(function (require) {
       this.deleteExperiment(experiment);
       if (!GEPPETTO.ExperimentsController.suppressDeleteExperimentConfirmation) {
         GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.EXPERIMENT_DELETED, "Experiment " + experiment.name + " with id " + experiment.id + " was deleted successfully");
-      }	
+      }
     },
     
     refresh: function (){
