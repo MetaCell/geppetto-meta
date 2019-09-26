@@ -578,7 +578,6 @@ define(function (require) {
     },
     
     componentWillUnmount () {
-      // stop listening to events on unmount
       // GEPPETTO.off(GEPPETTO.Events.Experiment_status_check);
       // GEPPETTO.off(GEPPETTO.Events.Experiment_loaded);
       // GEPPETTO.off(GEPPETTO.Events.Experiment_renamed);
