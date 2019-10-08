@@ -149,11 +149,6 @@ define(function (require) {
         this.props.canvasRef.removeObject(this.state.stackViewerPlane);
       }
 
-      let loaderResources = PIXI.loader.resources;
-      PIXI.loader.reset();
-      PIXI.loader.resources = loaderResources;
-      // PIXI.utils.clearTextureCache();
-
       // free texture caches
       var textureUrl;
       for (textureUrl in PIXI.utils.BaseTextureCache) {
@@ -510,14 +505,11 @@ define(function (require) {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
-      let loaderResources = imageLoader.resources;
-      imageLoader.reset();
-      imageLoader.resources = loaderResources;
-      // PIXI.utils.clearTextureCache();
+
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
           image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-          if (!PIXI.loader.resources[image]) {
+          if (!PIXI.loader.resources[image] && !imageLoader.loading) {
             // console.log('buffering ' + this.state.stack[i].toString() + '...');
             imageLoader.add(image, image, loaderOptions);
             buffMax -= 1;
@@ -531,7 +523,7 @@ define(function (require) {
         for (j in this.state.visibleTiles) {
           for (i in this.state.stack) {
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-            if (!PIXI.loader.resources[image]) {
+            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
               buffMax -= 1;
@@ -551,12 +543,12 @@ define(function (require) {
           for (dst = 0; -dst > min || dst < max; dst += step) {
             for (i in this.state.stack) {
               image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (dst < max && !PIXI.loader.resources[image]) {
+              if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
                 imageLoader.add(image, image, loaderOptions);
                 buffMax -= 1;
               }
               image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (-dst > min && !PIXI.loader.resources[image]) {
+              if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
                 imageLoader.add(image, image, loaderOptions);
                 buffMax -= 1;
               }
@@ -571,7 +563,7 @@ define(function (require) {
         for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
           for (i in this.state.stack) {
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image]) {
+            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
               buffMax -= 1;
@@ -580,7 +572,7 @@ define(function (require) {
               break;
             }
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + this.props.scl.toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image]) {
+            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
               buffMax -= 1;
@@ -928,11 +920,7 @@ define(function (require) {
                 this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - this.state.minDst).toFixed(1) + '...';
               }
               this.state.images[d].texture = PIXI.Texture.fromImage(image);
-              if (!PIXI.loader.resources[image]) {
-                let loaderResources = PIXI.loader.resources;
-                PIXI.loader.reset();
-                PIXI.loader.resources = loaderResources;
-                // PIXI.utils.clearTextureCache();
+              if (!PIXI.loader.resources[image] && !PIXI.loader.loading) {
                 PIXI.loader.add(image, image, {
                   loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
                   xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
