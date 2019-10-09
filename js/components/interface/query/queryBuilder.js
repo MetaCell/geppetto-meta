@@ -184,7 +184,7 @@ define(function (require) {
       ];
       this.escape = 27;
       this.qKey = 81;
-      this.sorterColumn = undefined;
+      this.sorterColumns = undefined;
 
       this.open = this.open.bind(this);
       this.close = this.close.bind(this);
@@ -203,6 +203,7 @@ define(function (require) {
       this.downloadQueryResults = this.downloadQueryResults.bind(this);
       this.resultSetSelectionChange = this.resultSetSelectionChange.bind(this);
       this.queryOptionSelected = this.queryOptionSelected.bind(this);
+      this.getSorterColumn = this.getSorterColumn.bind(this);
     }
 
     keyCloseHandler (event){
@@ -253,14 +254,6 @@ define(function (require) {
       this.setResultsColumns(this.props.resultsColumns);
       this.setResultsControlsConfig(this.props.resultsControlConfig);
       this.addDataSource(this.props.datasourceConfig);
-
-      if (this.props.sorterColumn !== undefined) {
-        this.sorterColumn = this.props.sorterColumn;
-      } else {
-        if (this.props.resultsColumns.length > 0) {
-          this.sorterColumn = this.props.resultsColumns[0];
-        }
-      }
     }
 
     componentWillUnmount () {
@@ -666,6 +659,43 @@ define(function (require) {
       return id;
     }
 
+    getSorterColumn (sorterColumns, resultsColumns) {
+      var found = false;
+      var column = (resultsColumns.length > 0) ? resultsColumns[0] : undefined;
+      var order = true;
+      var metaData = [...this.state.resultsColumnMeta];
+      for ( var i = 0; i < sorterColumns.length; i++) {
+        if (found) {
+          break;
+        }
+        for (var j = 0; j < resultsColumns.length; j++) {
+          if (sorterColumns[i].column.toLowerCase() === resultsColumns[j].toLowerCase()) {
+            found = true;
+            column = resultsColumns[j];
+            for ( var y = 0; y < metaData.length; y++) {
+              if ( column.toLowerCase() === metaData[y].columnName) {
+                switch (sorterColumns[i].order.toLowerCase()) {
+                case 'asc':
+                  metaData[y].sortDirectionCycle = ['asc', 'desc', null];
+                  break;
+                case 'desc':
+                  metaData[y].sortDirectionCycle = ['desc', 'asc', null];
+                  break;
+                default:
+                  metaData[y].sortDirectionCycle = ['desc', 'asc', null];
+                }
+              }
+            }
+          }
+        }
+      }
+      this.setState({ resultsColumnMeta: metaData });
+      return {
+        column: column,
+        order: order
+      };
+    }
+
     runQuery () {
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
@@ -766,6 +796,17 @@ define(function (require) {
                 columnsPresent: columnsPresent,
                 headersColumns: headersDatasourceFormat
               });
+
+              if (that.props.sorterColumns !== undefined) {
+                that.sorterColumn = that.getSorterColumn(that.props.sorterColumns, columnsToShow);
+              } else {
+                if (that.props.resultsColumns.length > 0) {
+                  that.sorterColumn = {
+                    column: that.props.resultsColumns[0],
+                    order: true
+                  };
+                }
+              }
 
               // stop showing spinner
               that.showBrentSpiner(false);
@@ -1055,7 +1096,7 @@ define(function (require) {
                               <div className="clearer"></div>
                               <Griddle
                                 showFilter={true}
-                                initialSort={this.sorterColumn}
+                                initialSort={this.sorterColumn.column}
                                 showSettings={false}
                                 useGriddleStyles={false}
                                 results={resultsItem.records}
