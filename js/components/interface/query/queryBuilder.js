@@ -193,7 +193,7 @@ define(function (require) {
        *    {column: "name", order: "ASC"}, {column: "image", order: "DESC"}
        *  ];
        */
-      this.sorterColumns = undefined;
+      this.sorterColumn = undefined;
 
 
       this.open = this.open.bind(this);
