@@ -185,11 +185,11 @@ define(function (require) {
       this.escape = 27;
       this.qKey = 81;
       /*
-       * this.sorterColumns will be taken from the prop sorterColumns.
-       * it represents an array of objects, each object must have the parameters
-       * column: (string) represents the string that should drive the sorting
-       * order: (string) represents the order we want to use, must be between ASC or DESC
-       * e.g.: this.sorterColumns = [
+       * this.sorterColumn will be an object taken from the prop sorterColumns.
+       * The prop represents an array of objects, each object must have the parameters:
+       * - column: (string) represents the string that should drive the sorting
+       * - order: (string) represents the order we want to use, must be between ASC or DESC
+       * e.g.: this.props.sorterColumns = [
        *    {column: "name", order: "ASC"}, {column: "image", order: "DESC"}
        *  ];
        */
@@ -694,11 +694,11 @@ define(function (require) {
             column = resultsColumns[j];
             /*
              * This third for it's a constraint since the initialSortAscending prop of griddle is not working
-             * anymore. To bypass this problem I will set the order editing the resultsColumnMeta, looking 
+             * anymore. To bypass this problem I will set the order editing the resultsColumnMeta, looking
              * for the object that specify all the params for the column that we are considering and
              * injecting in this object the param sortDirectionCycle based on what we specified in the order
              * param in our sorterColumns array of objects. By default desc will be the first candidate if the
-             * developer does not choice anything.
+             * developer does not chose anything.
              */
             for ( var y = 0; y < metaData.length; y++) {
               if ( column.toLowerCase() === metaData[y].columnName) {
