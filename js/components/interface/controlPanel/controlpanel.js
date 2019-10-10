@@ -374,11 +374,7 @@ define(function (require) {
           // check show condition
           if (controlsConfig[configPropertyName][control].showCondition != undefined && Instances[targetPath] !== undefined) {
             var condition = this.replaceAllTokensKnownToMan(controlsConfig[configPropertyName][control].showCondition, targetPath, projectId, experimentId);
-            try {
-              add = eval(condition);
-            } catch (error) {
-              add = false;
-            }
+            add = eval(condition);
           }
 
           if (add) {
@@ -1588,19 +1584,22 @@ define(function (require) {
         // grab existing input
         var gridInput = this.state.data;
         var newGridInput = [];
-
+        var needsUpdate = false;
+        
         // remove unwanted instances from grid input
         for (var i = 0; i < instancePaths.length; i++) {
           for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i] != gridInput[j].path) {
-              newGridInput.push(gridInput[j]);
+            if (instancePaths[i].indexOf(gridInput[j].path)==-1) {
+              var index = gridInput.indexOf(gridInput[j].path);
+              gridInput.splice(index,1);
+              needsUpdate = true;
             }
           }
         }
 
         // set state to refresh grid
-        if (gridInput.length != newGridInput.length) {
-          this.setState({ data: newGridInput });
+        if (needsUpdate) {
+          this.setState({ data: gridInput });
         }
       }
     },
@@ -1979,7 +1978,7 @@ define(function (require) {
     isOpen: function () {
       return $("#controlpanel").is(':visible');
     },
-
+    
     componentDidMount: function () {
       var escape = 27;
       var pKey = 80;
