@@ -698,7 +698,7 @@ define(function (require) {
              * for the object that specify all the params for the column that we are considering and
              * injecting in this object the param sortDirectionCycle based on what we specified in the order
              * param in our sorterColumns array of objects. By default desc will be the first candidate if the
-             * developer does not chose anything.
+             * developer does not choose anything.
              */
             for ( var y = 0; y < metaData.length; y++) {
               if ( column.toLowerCase() === metaData[y].columnName) {
