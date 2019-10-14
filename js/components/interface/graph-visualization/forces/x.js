@@ -1,21 +1,25 @@
 import constant from "./constant.js";
 
-export default function(x) {
+export default function (x) {
   var strength = constant(0.1),
-      nodes,
-      strengths,
-      xz;
+    nodes,
+    strengths,
+    xz;
 
-  if (typeof x !== "function") x = constant(x == null ? 0 : +x);
+  if (typeof x !== "function") {
+    x = constant(x == null ? 0 : +x);
+  }
 
-  function force(alpha) {
+  function force (alpha) {
     for (var i = 0, n = nodes.length, node; i < n; ++i) {
       node = nodes[i], node.vx += (xz[i] - node.x) * strengths[i] * alpha;
     }
   }
 
-  function initialize() {
-    if (!nodes) return;
+  function initialize () {
+    if (!nodes) {
+      return;
+    }
     var i, n = nodes.length;
     strengths = new Array(n);
     xz = new Array(n);
@@ -24,16 +28,16 @@ export default function(x) {
     }
   }
 
-  force.initialize = function(_) {
+  force.initialize = function (_) {
     nodes = _;
     initialize();
   };
 
-  force.strength = function(_) {
+  force.strength = function (_) {
     return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), initialize(), force) : strength;
   };
 
-  force.x = function(_) {
+  force.x = function (_) {
     return arguments.length ? (x = typeof _ === "function" ? _ : constant(+_), initialize(), force) : x;
   };
 

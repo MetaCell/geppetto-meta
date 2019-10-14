@@ -1,43 +1,51 @@
 import constant from "./constant.js";
 import jiggle from "./jiggle.js";
 
-function index(d) {
+function index (d) {
   return d.index;
 }
 
-function find(nodeById, nodeId) {
+function find (nodeById, nodeId) {
   var node = nodeById.get(nodeId);
-  if (!node) throw new Error("node not found: " + nodeId);
+  if (!node) {
+    throw new Error("node not found: " + nodeId);
+  }
   return node;
 }
 
-export default function(links) {
+export default function (links) {
   var id = index,
-      strength = defaultStrength,
-      strengths,
-      distance = constant(30),
-      distances,
-      nodes,
-      nDim,
-      count,
-      bias,
-      iterations = 1;
+    strength = defaultStrength,
+    strengths,
+    distance = constant(30),
+    distances,
+    nodes,
+    nDim,
+    count,
+    bias,
+    iterations = 1;
 
-  if (links == null) links = [];
+  if (links == null) {
+    links = [];
+  }
 
-  function defaultStrength(link) {
+  function defaultStrength (link) {
     return 1 / Math.min(count[link.source.index], count[link.target.index]);
   }
 
-  function force(alpha) {
+  function force (alpha) {
     for (var k = 0, n = links.length; k < iterations; ++k) {
       for (var i = 0, link, source, target, x = 0, y = 0, z = 0, l, b; i < n; ++i) {
         link = links[i]
         source = link.source
         target = link.target;
         x = target.x + target.vx - source.x - source.vx || jiggle();
-        if (nDim > 1) { y = target.y + target.vy - source.y - source.vy || jiggle(); }
-        if (nDim > 2) { z = target.z + target.vz - source.z - source.vz || jiggle(); }
+        if (nDim > 1) {
+          y = target.y + target.vy - source.y - source.vy || jiggle(); 
+        }
+        if (nDim > 2) {
+          z = target.z + target.vz - source.z - source.vz || jiggle(); 
+        }
         l = Math.sqrt(x * x + y * y + z * z);
         l = (l - distances[i]) / l * alpha * strengths[i];
         x *= l
@@ -46,34 +54,48 @@ export default function(links) {
 
         if (!target.defaultX) {
           target.vx -= x * (b = bias[i]);
-          if (nDim > 1) { target.vy -= y * b; }
-          if (nDim > 2) { target.vz -= z * b; }
+          if (nDim > 1) {
+            target.vy -= y * b; 
+          }
+          if (nDim > 2) {
+            target.vz -= z * b; 
+          }
         }
         
         if (!source.defaultX) {
           source.vx += x * (b = 1 - b);
-          if (nDim > 1) { source.vy += y * b; }
-          if (nDim > 2) { source.vz += z * b; }
+          if (nDim > 1) {
+            source.vy += y * b; 
+          }
+          if (nDim > 2) {
+            source.vz += z * b; 
+          }
         }
         
       }
     }
   }
 
-  function initialize() {
-    if (!nodes) return;
+  function initialize () {
+    if (!nodes) {
+      return;
+    }
     
     var i,
-        n = nodes.length,
-        m = links.length,
-        nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d])),
-        link;
+      n = nodes.length,
+      m = links.length,
+      nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d])),
+      link;
 
     for (i = 0, count = new Array(n); i < m; ++i) {
       link = links[i]
       link.index = i;
-      if (typeof link.source !== "object") link.source = find(nodeById, link.source);
-      if (typeof link.target !== "object") link.target = find(nodeById, link.target);
+      if (typeof link.source !== "object") {
+        link.source = find(nodeById, link.source);
+      }
+      if (typeof link.target !== "object") {
+        link.target = find(nodeById, link.target);
+      }
       count[link.source.index] = (count[link.source.index] || 0) + 1;
       count[link.target.index] = (count[link.target.index] || 0) + 1;
     }
@@ -89,23 +111,27 @@ export default function(links) {
     distances = new Array(m), initializeDistance();
   }
 
-  function initializeStrength() {
-    if (!nodes) return;
+  function initializeStrength () {
+    if (!nodes) {
+      return;
+    }
 
     for (var i = 0, n = links.length; i < n; ++i) {
       strengths[i] = +strength(links[i], i, links);
     }
   }
 
-  function initializeDistance() {
-    if (!nodes) return;
+  function initializeDistance () {
+    if (!nodes) {
+      return;
+    }
 
     for (var i = 0, n = links.length; i < n; ++i) {
       distances[i] = +distance(links[i], i, links);
     }
   }
 
-  force.initialize = function(initNodes, numDimensions) {
+  force.initialize = function (initNodes, numDimensions) {
     
     nodes = initNodes;
     nDim = numDimensions;
@@ -116,23 +142,23 @@ export default function(links) {
     
   };
 
-  force.links = function(_) {
+  force.links = function (_) {
     return arguments.length ? (links = _, initialize(), force) : links;
   };
 
-  force.id = function(_) {
+  force.id = function (_) {
     return arguments.length ? (id = _, force) : id;
   };
 
-  force.iterations = function(_) {
+  force.iterations = function (_) {
     return arguments.length ? (iterations = +_, force) : iterations;
   };
 
-  force.strength = function(_) {
+  force.strength = function (_) {
     return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), initializeStrength(), force) : strength;
   };
 
-  force.distance = function(_) {
+  force.distance = function (_) {
     return arguments.length ? (distance = typeof _ === "function" ? _ : constant(+_), initializeDistance(), force) : distance;
   };
 

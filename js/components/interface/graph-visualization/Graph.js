@@ -6,7 +6,7 @@ import holdForce from './forces/hold'
 import centerForce from './forces/center'
 import manyBodyForce from './forces/manyBody'
 
-const fullSizeStyle= { width: '100%', height: '100%'}
+const fullSizeStyle = { width: '100%', height: '100%' }
 
 export default class GeppettoGraphVisualization extends Component {
   state = {
@@ -20,7 +20,7 @@ export default class GeppettoGraphVisualization extends Component {
   // Ref to GGV container
   ggv = React.createRef()
 
-  componentDidMount(){
+  componentDidMount (){
     const { data, url } = this.props
     const { width, height } = this.container.current.getBoundingClientRect()
     
@@ -30,16 +30,15 @@ export default class GeppettoGraphVisualization extends Component {
     this.ggv.current.d3Force('hold', holdForce())
     if (url) {
       this.addToScene()
-    }
-    else {
+    } else {
       this.zoomCameraToFitScene()
     }
     this.setState({ width, height })
   }
 
   // add a obj file to the scene from url
-  addToScene() {
-    const { url, wireframe=true } = this.props
+  addToScene () {
+    const { url, wireframe = true } = this.props
     var loader = new THREE.OBJLoader();
     // load a resource
     loader.load(
@@ -51,7 +50,7 @@ export default class GeppettoGraphVisualization extends Component {
           this.wireframeAnObject(object)
         }
         this.zoomCameraToFitScene(object)
-        scene.add( object );
+        window.scene.add( object );
       },
       // called when loading is in progresses
       xhr => {
@@ -66,12 +65,12 @@ export default class GeppettoGraphVisualization extends Component {
   
   // wireframe the loaded obj file 
   wireframeAnObject = object => {
-    const { wireframeColor=0x6893DE } = this.props
+    const { wireframeColor = 0x6893DE } = this.props
     object.traverse( child => {
       if ( child instanceof THREE.Mesh ) {
         const { geometry, material } = child
         let mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+        window.scene.add(mesh);
 
         mesh.traverse(child => {
           if (child instanceof THREE.Mesh) {
@@ -83,41 +82,44 @@ export default class GeppettoGraphVisualization extends Component {
     })
   }
 
-  getMaxAndMinVectors() {
+  getMaxAndMinVectors () {
     const { nodes } = this.props.data;
-    var maxX=0, maxY=0, maxZ=0, minX=0, minY=0, minZ=0
+    var maxX = 0, maxY = 0, maxZ = 0, minX = 0, minY = 0, minZ = 0
 
     nodes.forEach(({ defaultX, defaultY, defaultZ }) => {
       if (defaultX) {
         if (defaultX > maxX) {
           maxX = defaultX
-        } else if (defaultX < minX)
+        } else if (defaultX < minX) {
           minX = defaultX
+        }
       }
 
       if (defaultY) {
         if (defaultY > maxY) {
           maxY = defaultY
-        } else if (defaultY < minY)
+        } else if (defaultY < minY) {
           minY = defaultY
+        }
       }
 
       if (defaultZ) {
         if (defaultZ > maxZ) {
           maxZ = defaultZ
-        } else if (defaultZ < minZ)
+        } else if (defaultZ < minZ) {
           minZ = defaultZ
+        }
       }
     })
 
-    const minVector = new THREE.Vector3( minX,  minY, minZ );
-    const maxVector = new THREE.Vector3( maxX,  maxY, maxZ );
+    const minVector = new THREE.Vector3( minX, minY, minZ );
+    const maxVector = new THREE.Vector3( maxX, maxY, maxZ );
     
     return [minVector, maxVector, maxX || minY || maxY || minY || maxZ || minZ]
   }
 
   // cameraSizeRatioToNodeSize controls how big nodes look compared to 
-  zoomCameraToFitScene(object=undefined, cameraSizeRatioToNodeSize=400) {
+  zoomCameraToFitScene (object = undefined, cameraSizeRatioToNodeSize = 400) {
     var offset = 1.25
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
@@ -126,8 +128,7 @@ export default class GeppettoGraphVisualization extends Component {
     if (object) {
       // if we load a OBJ file, we need to get the size of the boundary box
       boundingBox.setFromObject( object );
-    }
-    else {
+    } else {
       offset = 2
       // if we maunally set the position of nodes in the graph, we need to adjust the camera in order to see those fixed nodes.
       const [ minV, maxV, containsFixedPoints ] = this.getMaxAndMinVectors()
@@ -160,7 +161,7 @@ export default class GeppettoGraphVisualization extends Component {
     this.setState({ nodeSize: cameraZ / cameraSizeRatioToNodeSize })
   }
 
-  render() {
+  render () {
     const { width, height, nodeSize } = this.state
     const { data, style, classes, ...others } = this.props;
     
@@ -174,7 +175,7 @@ export default class GeppettoGraphVisualization extends Component {
             graphData={data}
             backgroundColor="white"
             nodeColor={() => "blue"}
-            nodeRelSize={nodeSize ? nodeSize :0.1}
+            nodeRelSize={nodeSize ? nodeSize : 0.1}
             linkColor={link => link.source < link.target ? "red" : "green"}
             { ...others }
           />

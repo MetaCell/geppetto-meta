@@ -1,33 +1,47 @@
 import constant from "./constant.js";
 
-export default function(radius, x, y, z) {
+export default function (radius, x, y, z) {
   var nodes,
-      nDim,
-      strength = constant(0.1),
-      strengths,
-      radiuses;
+    nDim,
+    strength = constant(0.1),
+    strengths,
+    radiuses;
 
-  if (typeof radius !== "function") radius = constant(+radius);
-  if (x == null) x = 0;
-  if (y == null) y = 0;
-  if (z == null) z = 0;
+  if (typeof radius !== "function") {
+    radius = constant(+radius);
+  }
+  if (x == null) {
+    x = 0;
+  }
+  if (y == null) {
+    y = 0;
+  }
+  if (z == null) {
+    z = 0;
+  }
 
-  function force(alpha) {
+  function force (alpha) {
     for (var i = 0, n = nodes.length; i < n; ++i) {
       var node = nodes[i],
-          dx = node.x - x || 1e-6,
-          dy = (node.y || 0) - y || 1e-6,
-          dz = (node.z || 0) - z || 1e-6,
-          r = Math.sqrt(dx * dx + dy * dy + dz * dz),
-          k = (radiuses[i] - r) * strengths[i] * alpha / r;
+        dx = node.x - x || 1e-6,
+        dy = (node.y || 0) - y || 1e-6,
+        dz = (node.z || 0) - z || 1e-6,
+        r = Math.sqrt(dx * dx + dy * dy + dz * dz),
+        k = (radiuses[i] - r) * strengths[i] * alpha / r;
       node.vx += dx * k;
-      if (nDim>1) { node.vy += dy * k; }
-      if (nDim>2) { node.vz += dz * k; }
+      if (nDim > 1) {
+        node.vy += dy * k; 
+      }
+      if (nDim > 2) {
+        node.vz += dz * k; 
+      }
     }
   }
 
-  function initialize() {
-    if (!nodes) return;
+  function initialize () {
+    if (!nodes) {
+      return;
+    }
     var i, n = nodes.length;
     strengths = new Array(n);
     radiuses = new Array(n);
@@ -37,29 +51,29 @@ export default function(radius, x, y, z) {
     }
   }
 
-  force.initialize = function(initNodes, numDimensions) {
+  force.initialize = function (initNodes, numDimensions) {
     nodes = initNodes;
     nDim = numDimensions;
     initialize();
   };
 
-  force.strength = function(_) {
+  force.strength = function (_) {
     return arguments.length ? (strength = typeof _ === "function" ? _ : constant(+_), initialize(), force) : strength;
   };
 
-  force.radius = function(_) {
+  force.radius = function (_) {
     return arguments.length ? (radius = typeof _ === "function" ? _ : constant(+_), initialize(), force) : radius;
   };
 
-  force.x = function(_) {
+  force.x = function (_) {
     return arguments.length ? (x = +_, force) : x;
   };
 
-  force.y = function(_) {
+  force.y = function (_) {
     return arguments.length ? (y = +_, force) : y;
   };
 
-  force.z = function(_) {
+  force.z = function (_) {
     return arguments.length ? (z = +_, force) : z;
   };
 
