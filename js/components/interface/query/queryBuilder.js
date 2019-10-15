@@ -184,6 +184,17 @@ define(function (require) {
       ];
       this.escape = 27;
       this.qKey = 81;
+      /*
+       * this.sorterColumn will be an object taken from the prop sorterColumns.
+       * The prop represents an array of objects, each object must have the parameters:
+       * - column: (string) represents the string that should drive the sorting
+       * - order: (string) represents the order we want to use, must be between ASC or DESC
+       * e.g.: this.props.sorterColumns = [
+       *    {column: "name", order: "ASC"}, {column: "image", order: "DESC"}
+       *  ];
+       */
+      this.sorterColumn = undefined;
+
 
       this.open = this.open.bind(this);
       this.close = this.close.bind(this);
@@ -202,6 +213,7 @@ define(function (require) {
       this.downloadQueryResults = this.downloadQueryResults.bind(this);
       this.resultSetSelectionChange = this.resultSetSelectionChange.bind(this);
       this.queryOptionSelected = this.queryOptionSelected.bind(this);
+      this.getSorterColumn = this.getSorterColumn.bind(this);
     }
 
     keyCloseHandler (event){
@@ -657,6 +669,66 @@ define(function (require) {
       return id;
     }
 
+    /*
+     * This function will take in input the prop sorterColumns and, for each query, the results header
+     * that we want to display. Comparing the 2 data we will get the first column possible from the
+     * sorterColumns array that is present in the resultsColumns and use this column to drive the 
+     * sorting.
+     */
+    getSorterColumn (sorterColumns, resultsColumns) {
+      var found = false;
+      var column = (resultsColumns.length > 0) ? resultsColumns[0] : undefined;
+      var order = true;
+      var metaData = [...this.state.resultsColumnMeta];
+      // Loop the sorterColumns since we have to take the first available from this
+      for ( var i = 0; i < sorterColumns.length; i++) {
+        // If in the previous loop I found one column I break the cycle since I don't need to look anymore
+        if (found) {
+          break;
+        }
+        // Loop through the resultsColumns and compare these with the sorterColumn[i].column
+        for (var j = 0; j < resultsColumns.length; j++) {
+          if (sorterColumns[i].column.toLowerCase() === resultsColumns[j].toLowerCase()) {
+            // If we find the candidate we set found to break the loop and column will be the one found
+            found = true;
+            column = resultsColumns[j];
+            /*
+             * This third for it's a constraint since the initialSortAscending prop of griddle is not working
+             * anymore. To bypass this problem I will set the order editing the resultsColumnMeta, looking
+             * for the object that specify all the params for the column that we are considering and
+             * injecting in this object the param sortDirectionCycle based on what we specified in the order
+             * param in our sorterColumns array of objects. By default desc will be the first candidate if the
+             * developer does not choose anything.
+             */
+            for ( var y = 0; y < metaData.length; y++) {
+              if ( column.toLowerCase() === metaData[y].columnName) {
+                switch (sorterColumns[i].order.toLowerCase()) {
+                case 'asc':
+                  metaData[y].sortDirectionCycle = ['asc', 'desc', null];
+                  break;
+                case 'desc':
+                  metaData[y].sortDirectionCycle = ['desc', 'asc', null];
+                  break;
+                default:
+                  metaData[y].sortDirectionCycle = ['desc', 'asc', null];
+                }
+              }
+            }
+          }
+        }
+      }
+      // I need to re-set the resultscolumnMeta since this is stored in the state
+      this.setState({ resultsColumnMeta: metaData });
+      /*
+       * return the object with the column and the order, the order is not used anymore though but 
+       * it might be useful if we upgrade griddle so I left what already done there.
+       */
+      return {
+        column: column,
+        order: order
+      };
+    }
+
     runQuery () {
       this.clearErrorMessage();
       if (this.props.model.items.length > 0) {
@@ -757,6 +829,21 @@ define(function (require) {
                 columnsPresent: columnsPresent,
                 headersColumns: headersDatasourceFormat
               });
+
+              if (that.props.sorterColumns !== undefined) {
+                /*
+                 * From the array passed with the props extract the column in relation 
+                 * to the results that should drive the sorting
+                 */
+                that.sorterColumn = that.getSorterColumn(that.props.sorterColumns, columnsToShow);
+              } else {
+                if (that.props.resultsColumns.length > 0) {
+                  that.sorterColumn = {
+                    column: that.props.resultsColumns[0],
+                    order: true
+                  };
+                }
+              }
 
               // stop showing spinner
               that.showBrentSpiner(false);
@@ -1046,6 +1133,7 @@ define(function (require) {
                               <div className="clearer"></div>
                               <Griddle
                                 showFilter={true}
+                                initialSort={this.sorterColumn.column}
                                 showSettings={false}
                                 useGriddleStyles={false}
                                 results={resultsItem.records}
