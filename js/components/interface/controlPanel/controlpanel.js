@@ -372,9 +372,13 @@ define(function (require) {
           var add = true;
 
           // check show condition
-          if (controlsConfig[configPropertyName][control].showCondition != undefined) {
+          if (controlsConfig[configPropertyName][control].showCondition != undefined && Instances[targetPath] !== undefined) {
             var condition = this.replaceAllTokensKnownToMan(controlsConfig[configPropertyName][control].showCondition, targetPath, projectId, experimentId);
-            add = eval(condition);
+            try {
+              add = eval(condition);
+            } catch (error) {
+              add = false;
+            }
           }
 
           if (add) {
@@ -1978,7 +1982,7 @@ define(function (require) {
     isOpen: function () {
       return $("#controlpanel").is(':visible');
     },
-    
+
     componentDidMount: function () {
       var escape = 27;
       var pKey = 80;
