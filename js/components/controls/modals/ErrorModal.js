@@ -23,42 +23,43 @@ define(function (require) {
         source: '',
         exception: '',
         githubButton : {
-          enabled : false,
+          enabled : true,
           url : "https://github.com/openworm/org.geppetto/issues/new"
         },
         twitterButton : {
-          enabled : false,
+          enabled : true,
           url : "http://geppetto.org",
           message : "Whoops, I broke Geppetto! @geppettoengine help!"
         }
       }
     },
     
-    getProperty: function (property) {
+    // Searches for property in GEPPETTO_CONFIGURATION JSON object, if not found returns undefined.
+    getGeppettoConfigurationProperty: function (property) {
       return property.split(".").reduce(function(o, x) {
         return (typeof o == "undefined" || o === null) ? o : o[x];
       }, GEPPETTO_CONFIGURATION);
     },
         
     shareTwitter: function () {
-      let urlProperty = this.getProperty("properties.errorDialog.twitterButton.url");
+      let urlProperty = this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.url");
       let url = ( urlProperty != undefined ? urlProperty : this.props.twitterButton.url)
-      let messageProperty = this.getProperty("properties.errorDialog.twitterButton.message");
+      let messageProperty = this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.message");
       let message = ( messageProperty != undefined ? messageProperty : this.props.twitterButton.message)
       window.open('http://twitter.com/share?url=' + encodeURIComponent(url) + '&text='
         + encodeURIComponent(message), '', 'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
     },
         
     render: function (){
-      let twiButProp = (this.getProperty("properties.errorDialog.twitterButton.enabled") == undefined 
-        ? this.props.twitterButton.enabled : this.getProperty("properties.errorDialog.twitterButton.enabled"));
+      let twiButProp = (this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled") == undefined 
+        ? this.props.twitterButton.enabled : this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled"));
       let twitterButtonVisible = ( twiButProp ? null : { display: "none" })
-      let gitButProp = (this.getProperty("properties.errorDialog.githubButton.enabled") == undefined 
-        ? this.props.githubButton.enabled : this.getProperty("properties.errorDialog.githubButton.enabled"));
+      let gitButProp = (this.getGeppettoConfigurationProperty("properties.errorDialog.githubButton.enabled") == undefined 
+        ? this.props.githubButton.enabled : this.getGeppettoConfigurationProperty("properties.errorDialog.githubButton.enabled"));
       let githubButtonVisible = ( gitButProp ? null : { display: "none" })
-      let confGitURL = this.getProperty("properties.errorDialog.githubButton.url");
+      let confGitURL = this.getGeppettoConfigurationProperty("properties.errorDialog.githubButton.url");
       let githubButtonURL = (confGitURL != undefined ? confGitURL : this.props.githubButton.url)
-      let githubMessage = this.getProperty("properties.errorDialog.message")
+      let githubMessage = this.getGeppettoConfigurationProperty("properties.errorDialog.message")
       return (
         <div className="modal fade" id="errormodal">
           <div className="modal-dialog">
