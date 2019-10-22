@@ -382,6 +382,14 @@ define(function (require) {
 
 
       /**
+       * Error Modal Message
+       */
+      ERROR_MODAL_TITLE : "There was an error",
+      ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @geppettoengine help!",
+      ERROR_MODAL_TWITTER_URL : "http://geppetto.org",
+      ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/openworm/org.geppetto/issues/new",
+      
+      /**
        * GEPPETTO resources
        */
       UPDATE_FRAME_STARTING: "Starting update frame",

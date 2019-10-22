@@ -17,19 +17,19 @@ define(function (require) {
         
     getDefaultProps: function () {
       return {
-        title: 'There was an error',
+        title: GEPPETTO.Resources.ERROR_MODAL_TITLE,
         text: '',
         code: '',
         source: '',
         exception: '',
         githubButton : {
           enabled : true,
-          url : "https://github.com/openworm/org.geppetto/issues/new"
+          url :  GEPPETTO.Resources.ERROR_MODAL_NEW_ISSUE_URL
         },
         twitterButton : {
           enabled : true,
-          url : "http://geppetto.org",
-          message : "Whoops, I broke Geppetto! @geppettoengine help!"
+          url : GEPPETTO.Resources.ERROR_MODAL_TWITTER_URL,
+          message : GEPPETTO.Resources.ERROR_MODAL_TWITTER_MESSAGE
         }
       }
     },
