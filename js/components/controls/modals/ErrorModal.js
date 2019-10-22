@@ -9,7 +9,7 @@ define(function (require) {
     $ = require('jquery');
   var GEPPETTO = require('geppetto');
   require('../../../common/GEPPETTO.Resources')(GEPPETTO);
-  
+   
   require("./ErrorModal.less");
 
   return CreateClass({
@@ -38,7 +38,7 @@ define(function (require) {
     
     // Searches for property in GEPPETTO_CONFIGURATION JSON object, if not found returns undefined.
     getGeppettoConfigurationProperty: function (property) {
-      return property.split(".").reduce(function(o, x) {
+      return property.split(".").reduce(function (o, x) {
         return (typeof o == "undefined" || o === null) ? o : o[x];
       }, GEPPETTO_CONFIGURATION);
     },
@@ -52,7 +52,7 @@ define(function (require) {
         + encodeURIComponent(message), '', 'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
     },
         
-    render: function (){
+    render: function () {
       let twiButProp = (this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled") == undefined 
         ? this.props.twitterButton.enabled : this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled"));
       let twitterButtonVisible = ( twiButProp ? null : { display: "none" })
