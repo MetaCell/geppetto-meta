@@ -19,54 +19,6 @@
 }
 ```
 
-## With react-flexlayout
-
-If you are planning to use GGV with react-flexlayout, remember to add the resize event listener to the node where GGV will be attached. Example bellow:
-
-```javascript
-// react-layout factory function
-factory = (node) => {
-    var component = node.getComponent();
-    if (component === 'graph') {
-        const { width, height } = this.state
-
-        node.setEventListener("resize", ({ rect }) => {
-            const { width, height } = rect
-            this.setState({ width, height }) // set new width and height when window resizes
-        })
-
-        return (
-            <GeppettoGraphVisualizer // notify GGV of the changes
-                width={width}
-                height={height}
-                {...}
-            />
-        )
-    }
-}
-```
-
-## Without react-flexlayout
-
-Wrap GGV in a div and remember to set a height somewhere:
-
-```javascript
-render() {
-    return (
-        <div style={{ height: '500px' }}> // Rememeber to define a height on the parent element for GGV.
-            <h3>Some elements above the canvas</h3>
-
-            <GeppettoGraphVisualizer // if omitted, GGV takes 100%
-                style={{ width: '80%', height: '90%' }}
-                {...}
-            >
-
-            <h3>Some elements below the canvas</h3>
-        </div>
-    )
-}
-```
-
 ## Adding obj to scene
 
 - **url**: String (Optional)

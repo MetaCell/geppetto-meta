@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { ForceGraph3D } from 'react-force-graph';
 
 import linkForce from './forces/link'
@@ -9,20 +10,15 @@ import manyBodyForce from './forces/manyBody'
 const fullSizeStyle = { width: '100%', height: '100%' }
 
 export default class GeppettoGraphVisualization extends Component {
-  state = {
-    width: 0,
-    height: 0,
-    nodeSize: 0.0001
-  }
+  state = { nodeSize: 0.0001 }
 
-  container = React.createRef()
+  dimensions = {}
 
   // Ref to GGV container
   ggv = React.createRef()
 
   componentDidMount (){
     const { data, url } = this.props
-    const { width, height } = this.container.current.getBoundingClientRect()
     
     this.ggv.current.d3Force("charge", manyBodyForce())
     this.ggv.current.d3Force("link", linkForce(data.links))
@@ -33,7 +29,14 @@ export default class GeppettoGraphVisualization extends Component {
     } else {
       this.zoomCameraToFitScene()
     }
-    this.setState({ width, height })
+  }
+
+  componentDidUpdate () {
+    const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
+    if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
+      this.dimensions = dimensions
+      this.forceUpdate()
+    }
   }
 
   // add a obj file to the scene from url
@@ -162,25 +165,20 @@ export default class GeppettoGraphVisualization extends Component {
   }
 
   render () {
-    const { width, height, nodeSize } = this.state
-    const { data, style, classes, ...others } = this.props;
-    
+    const { data, ...others } = this.props;
+
     return (
-      <div style={{ ...fullSizeStyle, ...style, position:'relative' }}>
-        <div style={{ ...fullSizeStyle, position:'absolute' }} ref={this.container}>
-          <ForceGraph3D
-            ref={this.ggv}
-            width={width}
-            height={height}
-            graphData={data}
-            backgroundColor="white"
-            nodeColor={() => "blue"}
-            nodeRelSize={nodeSize ? nodeSize : 0.1}
-            linkColor={link => link.source < link.target ? "red" : "green"}
-            { ...others }
-          />
-        </div>
-      </div>
+      <ForceGraph3D
+        ref={this.ggv}
+        graphData={data}
+        width={this.dimensions.width}
+        height={this.dimensions.height}
+        backgroundColor="white"
+        nodeColor={() => "blue"}
+        nodeRelSize={this.state.nodeSize}
+        linkColor={link => link.source < link.target ? "red" : "green"}
+        { ...others }
+      />
     )
   }
 }
