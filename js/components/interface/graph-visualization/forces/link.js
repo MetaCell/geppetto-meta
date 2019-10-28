@@ -1,3 +1,4 @@
+// compute link for between nodes
 import constant from "./constant.js";
 import jiggle from "./jiggle.js";
 

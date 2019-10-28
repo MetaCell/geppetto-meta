@@ -1,3 +1,4 @@
+// reset position of particles to default position
 export default function () {
   var nodes;
   

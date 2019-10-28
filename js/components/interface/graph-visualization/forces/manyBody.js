@@ -4,7 +4,7 @@ import { octree } from "d3-octree";
 import constant from "./constant.js";
 import jiggle from "./jiggle.js";
 import { x, y, z } from "./simulation.js";
-
+// compute electric charge between particles
 export default function () {
   var nodes,
     nDim,

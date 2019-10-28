@@ -4,6 +4,7 @@ import { octree } from "d3-octree";
 import constant from "./constant.js";
 import jiggle from "./jiggle.js";
 
+// compute particle collision
 function x (d) {
   return d.x + d.vx;
 }

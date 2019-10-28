@@ -1,3 +1,4 @@
+// compute center of mass inertia
 export default function (x, y, z) {
   var nodes;
 
