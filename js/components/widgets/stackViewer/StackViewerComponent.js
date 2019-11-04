@@ -913,7 +913,7 @@ define(function (require) {
           image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + props.scl.toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
-            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture) {
+            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture && (PIXI.loader.resources[image].texture.baseTexture !== null)) {
               this.state.images[d].texture = PIXI.loader.resources[image].texture;
             } else {
               if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
@@ -1000,6 +1000,9 @@ define(function (require) {
       var oldEvent = this.state.oldEvent;
       if (!this.state.loadingLabels && !this.state.dragging) {
         repeat = typeof repeat !== 'undefined' ? repeat : true;
+        if (this.renderer === null ) {
+          return;
+        }
         var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
         currentPosition.x = Number(currentPosition.x.toFixed(0));
         currentPosition.y = Number(currentPosition.y.toFixed(0));
