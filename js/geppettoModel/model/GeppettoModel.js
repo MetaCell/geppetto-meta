@@ -16,6 +16,8 @@ define(function (require) {
     this.libraries = (options.libraries != undefined) ? options.libraries : [];
     this.datasources = (options.datasources != undefined) ? options.datasources : [];
     this.queries = (options.queries != undefined) ? options.queries : [];
+    this.worlds = options.worlds != undefined ? options.worlds : [];
+    this.selectedWorldIdx = 0;
   }
 
   GeppettoModel.prototype = Object.create(ObjectWrapper.prototype);
@@ -93,5 +95,30 @@ define(function (require) {
     return this.variables.concat(this.libraries.concat(this.datasources.concat(this.queries)));
   };
 
+
+  /**
+   * Get the default selected world
+   *
+   */
+  GeppettoModel.prototype.getSelectedWorld = function () {
+    return this.worlds[this.selectedWorldIdx];
+  };
+
+  /**
+   * Set the default selected world
+   *
+   */
+  GeppettoModel.prototype.setSelectedWorld = function (worldOrIndex) {
+    if (typeof worldOrIndex == 'number') {
+      this.selectedWorldIdx = worldOrIndex;
+    } else if (typeof worldOrIndex == 'string'){
+      this.selectedWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex);
+    }
+    this.selectedWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex.id);
+    if (this.worlds[this.selectedWorldIdx] === undefined) {
+      console.error(worldOrIndex, "world not found in model");
+      throw "World not found in model";
+    }
+  };
   return GeppettoModel;
 });
