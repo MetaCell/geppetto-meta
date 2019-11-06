@@ -28,6 +28,9 @@ define(function (require) {
     var VisualGroupElement = require('./model/VisualGroupElement');
     var Pointer = require('./model/Pointer');
     var PointerElement = require('./model/PointerElement');
+    var SimpleInstance = require('./model/SimpleInstance');
+    var SimpleConnectionInstance = require('./model/SimpleConnectionInstance');
+    var World = require('./model/World');
     var AVisualCapability = require('./capabilities/AVisualCapability');
     var AVisualGroupCapability = require('./capabilities/AVisualGroupCapability');
     var AConnectionCapability = require('./capabilities/AConnectionCapability');
@@ -91,7 +94,26 @@ define(function (require) {
             }
 
             // create variables
-            geppettoModel.variables = this.createVariables(jsonModel.variables, geppettoModel);
+            if (jsonModel.variables) {
+              console.warn('Geppetto variables are deprecated: use worlds instead.');
+              geppettoModel.variables = this.createVariables(jsonModel.variables, geppettoModel);
+            }
+            if (jsonModel.worlds) {
+              geppettoModel.worlds = jsonModel.worlds.map(world => this.createWorld(world));
+              geppettoModel.variables = geppettoModel.getSelectedWorld().getVariables();
+              if (geppettoModel.getSelectedWorld().getInstances()) {
+                // Add instances from the default world to allPaths
+                this.allPaths = geppettoModel.getSelectedWorld().getInstances().map(
+                  instance => ({
+                    path: instance.getPath(), 
+                    type: instance.getValue().eClass, 
+                    metaType: instance._metaType, 
+                    static: true
+                  })
+                );
+              }
+
+            }
 
             // create libraries
             for (var i = 0; i < jsonModel.libraries.length; i++) {
@@ -115,10 +137,35 @@ define(function (require) {
 
               // traverse everything and populate type references in variables
               this.populateTypeReferences(geppettoModel);
+
+              if (geppettoModel.getSelectedWorld()) {
+                this.populateInstanceReferences(geppettoModel);
+              }
             }
           }
 
           return geppettoModel;
+        },
+
+        createWorld: function (world) {
+          return World(this.createStaticInstances(world.instances), this.createVariables(world.variables));
+        },
+
+        createStaticInstances: function (instances) {
+          return instances.map(instance => this.createStaticInstance(instance));
+        },
+
+
+        createStaticInstance: function (instance) {
+          switch (instance.eClass) {
+          case SimpleInstance.name:
+            return SimpleInstance(instance);
+          case SimpleConnectionInstance.name:
+            return SimpleConnectionInstance(instance);
+          default:
+            throw instance.eClass + " instance type is not supported"
+          }
+          
         },
 
         /**
@@ -153,10 +200,15 @@ define(function (require) {
           }
         },
 
+        populateInstanceReferences: function (geppettoModel) {
+          // TODO  populateInstanceReferences FL
+        },
+
         /**
          * Populate type references
          */
         populateTypeReferences: function (node) {
+          // TODO pupulate instance types inside populateTypeReferences
 
           // check if variable, if so populate type references
           if (node.getMetaType() == GEPPETTO.Resources.VARIABLE_NODE) {
@@ -436,7 +488,7 @@ define(function (require) {
         /**
          * Creates and populates initial instance tree skeleton with any instance that needs to be visualized
          */
-        createInstances: function (geppettoModel) {
+        instantiateVariables: function (geppettoModel) {
 
           var instances = [];
 
@@ -457,7 +509,7 @@ define(function (require) {
             this.fetchAllPotentialInstancePaths(vars[i], allPotentialInstancePaths, allPotentialInstancePathsForIndexing, '');
           }
 
-          this.allPaths = allPotentialInstancePaths;
+          this.allPaths = this.allPaths.concat(allPotentialInstancePaths);
           this.allPathsIndexing = allPotentialInstancePathsForIndexing;
           var varsToInstantiate = varsWithVizTypes;
 
@@ -1130,7 +1182,6 @@ define(function (require) {
 
               idConcatPath += (i != splitInstancePath.length - 1) ? (splitInstancePath[i] + '.') : splitInstancePath[i];
             }
-
             this.buildInstanceHierarchy(idConcatPath, null, geppettoModel, topInstances);
           }
 
