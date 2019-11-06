@@ -68,8 +68,12 @@ define(function (require) {
 
       console.time(GEPPETTO.Resources.CREATING_INSTANCES);
       GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.CREATING_INSTANCES);
-      // build instance tree here (instance tree will be populated with state info for each experiment)
-      window.Instances = GEPPETTO.ModelFactory.createInstances(window.Model);
+      
+      // Initialize instances with static instances already present in the model
+      window.Instances = window.Model.getDefaultWorld().getInstances();
+      // add dynamic instance tree (instance tree will be populated with state info for each experiment)
+      window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(window.Model));
+      
       this.augmentInstancesArray(window.Instances);
       console.timeEnd(GEPPETTO.Resources.CREATING_INSTANCES);
 
