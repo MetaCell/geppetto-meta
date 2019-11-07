@@ -898,8 +898,8 @@ define(function (require) {
     },
     
     setHoverText: function (x,y,text) {
-      this.state.buffer[-1].x = (this.state.dragOffset.x + (this.stack.width/2) + Number(x)) * this.disp.scale.x;
-      this.state.buffer[-1].y = (this.state.dragOffset.y + (this.stack.height/2) + Number(y)) * this.disp.scale.y;
+      this.state.buffer[-1].x = -this.stage.position.x + this.stack.position.x + 180 + (Number(x) * this.disp.scale.x);
+      this.state.buffer[-1].y = -this.stage.position.y + this.stack.position.y + 8 + (Number(y) * this.disp.scale.y);
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
@@ -1005,6 +1005,7 @@ define(function (require) {
       if (!this.state.loadingLabels && !this.state.dragging) {
         repeat = typeof repeat !== 'undefined' ? repeat : true;
         var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
+        var currentWindowPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.state);
         currentPosition.x = Number(currentPosition.x.toFixed(0));
         currentPosition.y = Number(currentPosition.y.toFixed(0));
         if (this.state.hoverTime < Date.now() - 1000 && !(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) && this.state.posX == currentPosition.x && this.state.posY == currentPosition.y) {
