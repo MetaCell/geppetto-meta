@@ -896,16 +896,16 @@ define(function (require) {
     },
 
     setStatusText: function (text) {
-      this.state.buffer[-1].anchor.x = 0;
-      this.state.buffer[-1].anchor.y = 0;
+      this.state.buffer[-1].x = (-this.stage.position.x + 35);
+      this.state.buffer[-1].y = (-this.stage.position.y + 8);
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
     },
     
     setHoverText: function (x,y,text) {
-      this.state.buffer[-1].anchor.x = x;
-      this.state.buffer[-1].anchor.y = y;
+      this.state.buffer[-1].x = (-this.state.dragOffset.x + (this.stack.width/2) + Number(x)) * this.disp.scale.x;
+      this.state.buffer[-1].y = (-this.state.dragOffset.y + (this.stack.height/2) + Number(y)) * this.disp.scale.y;
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
