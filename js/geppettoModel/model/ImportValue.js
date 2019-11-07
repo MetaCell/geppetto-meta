@@ -7,7 +7,7 @@
  * @author nitesh thali
  */
 define(function (require) {
-  var Value = require('./Value');
+  var Value = require('./Value').default;
     
 
   function ImportValue (options) {

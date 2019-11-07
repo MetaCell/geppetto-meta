@@ -8,7 +8,7 @@ export default class ASimpleInstance extends ObjectWrapper{
     this.value = node.value;
     this.type = node.type;
     this.visualValue = node.visualValue;
-    this.point = node.point;
+    this.position = node.position;
     this.tags = node.tags;
     this.capabilities = [];
     this.connections = [];
@@ -38,8 +38,8 @@ export default class ASimpleInstance extends ObjectWrapper{
     return this.visualValue;
   }
 
-  getPoint () {
-    return this.point;
+  getPosition () {
+    return this.position;
   }
 
   hasVisualType () {

@@ -12,7 +12,7 @@ define(function (require) {
     var Library = require('./model/Library');
     var Type = require('./model/Type');
     var Variable = require('./model/Variable');
-    var Value = require('./model/Value');
+    var Value = require('./model/Value').default;
     var Datasource = require('./model/Datasource');
     var Query = require('./model/Query');
     var CompositeType = require('./model/CompositeType');
@@ -159,6 +159,7 @@ define(function (require) {
 
 
         createStaticInstance: function (instance) {
+          instance.value = this.createValue(instance, { wrappedObj: instance.value });
           switch (instance.eClass) {
           case SimpleInstance.name:
             return new SimpleInstance(instance);
