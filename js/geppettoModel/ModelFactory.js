@@ -20,17 +20,17 @@ define(function (require) {
     var ArrayType = require('./model/ArrayType');
     var ImportType = require('./model/ImportType');
     var ImportValue = require('./model/ImportValue');
-    var Instance = require('./model/Instance');
-    var ExternalInstance = require('./model/ExternalInstance');
-    var ArrayInstance = require('./model/ArrayInstance');
-    var ArrayElementInstance = require('./model/ArrayElementInstance');
+    var Instance = require('./model/Instance').default;
+    var ExternalInstance = require('./model/ExternalInstance').default;
+    var ArrayInstance = require('./model/ArrayInstance').default;
+    var ArrayElementInstance = require('./model/ArrayElementInstance').default;
     var VisualGroup = require('./model/VisualGroup');
     var VisualGroupElement = require('./model/VisualGroupElement');
     var Pointer = require('./model/Pointer');
     var PointerElement = require('./model/PointerElement');
-    var SimpleInstance = require('./model/SimpleInstance');
-    var SimpleConnectionInstance = require('./model/SimpleConnectionInstance');
-    var World = require('./model/World');
+    var SimpleInstance = require('./model/SimpleInstance').default;
+    var SimpleConnectionInstance = require('./model/SimpleConnectionInstance').default;
+    var World = require('./model/World').default;
     var AVisualCapability = require('./capabilities/AVisualCapability');
     var AVisualGroupCapability = require('./capabilities/AVisualGroupCapability');
     var AConnectionCapability = require('./capabilities/AConnectionCapability');
@@ -150,7 +150,7 @@ define(function (require) {
         },
 
         createWorld: function (world) {
-          return World(this.createStaticInstances(world.instances), this.createVariables(world.variables));
+          return new World(world, this.createStaticInstances(world.instances), this.createVariables(world.variables));
         },
 
         createStaticInstances: function (instances) {
@@ -161,9 +161,9 @@ define(function (require) {
         createStaticInstance: function (instance) {
           switch (instance.eClass) {
           case SimpleInstance.name:
-            return SimpleInstance(instance);
+            return new SimpleInstance(instance);
           case SimpleConnectionInstance.name:
-            return SimpleConnectionInstance(instance);
+            return new SimpleConnectionInstance(instance);
           default:
             throw instance.eClass + " instance type is not supported"
           }
@@ -203,8 +203,8 @@ define(function (require) {
         },
 
         populateInstanceReferences: function (geppettoModel) {
-          for (let world in geppettoModel.getWorlds()) {
-            for (let instance in world.getInstances()) {
+          for (let world of geppettoModel.getWorlds()) {
+            for (let instance of world.getInstances()) {
               if (instance instanceof SimpleConnectionInstance) {
                 instance.a = this.resolve(instance.a.$ref);
                 instance.b = this.resolve(instance.b.$ref);
@@ -2802,7 +2802,6 @@ define(function (require) {
         resolve: function (refStr) {
 
           var reference = undefined;
-
           /*
            * Examples of reference strings
            * //@libraries.0/@types.20/@variables.5/@anonymousTypes.0/@variables.7
@@ -2836,7 +2835,9 @@ define(function (require) {
             } else if (raw[i].indexOf('visualGroupElements') > -1) {
               reference = reference.getVisualGroupElements()[index];
             } else if (raw[i].indexOf('worlds') > -1) {
-              reference = reference.getWorlds()[index];
+              reference = this.geppettoModel.getWorlds()[index];
+            } else if (raw[i].indexOf('instances') > -1) {           
+              reference = reference.getInstances()[index];
             }
           }
 

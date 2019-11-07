@@ -105,6 +105,14 @@ define(function (require) {
   };
 
   /**
+   * Get worlds
+   *
+   */
+  GeppettoModel.prototype.getWorlds = function () {
+    return this.worlds;
+  };
+
+  /**
    * Set the default selected world
    *
    */

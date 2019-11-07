@@ -1,16 +1,17 @@
 import ObjectWrapper from './ObjectWrapper';
-import { extend } from '../../common/GEPPETTO.Utility';
+import { extend } from '../../common/Utils';
 
 export default class ASimpleInstance extends ObjectWrapper{
  
   constructor (node) {
-    super(node);
+    super({ wrappedObj: node });
     this.value = node.value;
     this.type = node.type;
     this.visualValue = node.visualValue;
     this.point = node.point;
     this.tags = node.tags;
     this.capabilities = [];
+    this.connections = [];
   }
 
   getTypes () {

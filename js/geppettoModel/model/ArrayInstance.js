@@ -1,4 +1,4 @@
-
+import Instance from './Instance';
 
 /**
  * Client class use to represent an array of instances.
@@ -8,32 +8,27 @@
  * @author Matteo Cantarelli
  */
 
-define(function (require) {
+export default class ArrayInstance extends Instance {
 
-  var Instance = require('./Instance');
-
-  function ArrayInstance (options) {
-    Instance.prototype.constructor.call(this, options);
+  constructor (options) {
+    super(options);
     this.size = options.size;
     this.length = options.size;
   }
 
-  ArrayInstance.prototype = Object.create(Instance.prototype);
-  ArrayInstance.prototype.constructor = ArrayInstance;
 
-
-  ArrayInstance.prototype.getConnections = function () {
+  getConnections = function () {
     // We don't currently support connections for arrays
     return [];
-  };
+  }
 
-  ArrayInstance.prototype.getChildren = function () {
+  getChildren = function () {
     var children = [];
     for (var i = 0; i < this.getSize(); i++) {
       children.push(this[i]);
     }
     return children;
-  };
+  }
 
   /**
    * Get the size of the array instance
@@ -43,12 +38,9 @@ define(function (require) {
    * @returns {Integer} - size of the array
    *
    */
-  ArrayInstance.prototype.getSize = function () {
+  getSize = function () {
     return this.size;
-  };
+  }
 
-
-  return ArrayInstance;
-
-});
+}
 

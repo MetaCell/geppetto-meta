@@ -1,4 +1,4 @@
-
+import Instance from './Instance';
 
 /**
  * Client class use to represent an array element instance.
@@ -6,34 +6,29 @@
  * @module model/ArrayElementInstance
  * @author Giovanni Idili
  */
-define(function (require) {
+export default class ExternalInstance extends Instance {
 
-  var Instance = require('./Instance');
-
-  function ArrayElementInstance (options) {
-    Instance.prototype.constructor.call(this, options);
+  constructor (options) {
+    super(options);
     this.index = options.index;
   }
 
 
-  ArrayElementInstance.prototype = Object.create(Instance.prototype);
-  ArrayElementInstance.prototype.constructor = ArrayElementInstance;
-
-  ArrayElementInstance.prototype.getIndex = function () {
+  getIndex () {
     return this.index;
-  };
+  }
 
-  ArrayElementInstance.prototype.delete = function () {
+  delete () {
     var children = [].concat(this.getChildren());
     for (var c = 0; c < children.length; c++) {
       children[c].delete();
     }
 
     GEPPETTO.ModelFactory.deleteInstance(this);
-  };
+  }
 
 
-  ArrayElementInstance.prototype.getInstancePath = function () {
+  getInstancePath () {
     var parent = this.getParent();
     var parentPath = "";
     var parentId = "";
@@ -46,30 +41,29 @@ define(function (require) {
     var path = parentPath.replace(parentId, this.getId());
 
     return (parentPath != "") ? path : this.getId();
-  };
+  }
 
-  ArrayElementInstance.prototype.getPosition = function () {
+  getPosition () {
 
     if ((this.getVariable().getType().getDefaultValue().elements != undefined)
             && (this.getVariable().getType().getDefaultValue().elements[this.getIndex()] != undefined)) {
       return this.getVariable().getType().getDefaultValue().elements[this.getIndex()].position;
     }
 
-  };
+  }
 
-  ArrayElementInstance.prototype.getTypes = function () {
+  getTypes () {
     return [this.getVariable().getType().getType()];
-  };
+  }
 
-  ArrayElementInstance.prototype.getType = function () {
+  getType () {
     var types = this.getTypes();
     if (types.length == 1) {
       return types[0];
     } else {
       return types;
     }
-  };
+  }
 
-  return ArrayElementInstance;
-});
+}
 
