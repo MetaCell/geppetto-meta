@@ -471,7 +471,7 @@ define(function (require) {
                       objects = objects + list[j] + '\n';
                     }
                     if (objects !== '') {
-                      that.setStatusText(objects);
+                      that.setHoverText(callX,callY,objects);
                     }
                   } else if (i == 0) {
                     that.state.loadingLabels = false;
@@ -896,6 +896,16 @@ define(function (require) {
     },
 
     setStatusText: function (text) {
+      this.state.buffer[-1].anchor.x = 0;
+      this.state.buffer[-1].anchor.y = 0;
+      this.state.buffer[-1].text = text;
+      this.state.text = text;
+      this.state.txtUpdated = Date.now();
+    },
+    
+    setHoverText: function (x,y,text) {
+      this.state.buffer[-1].anchor.x = x;
+      this.state.buffer[-1].anchor.y = y;
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
