@@ -36,7 +36,7 @@ define(function (require) {
     
     // Searches for property in GEPPETTO_CONFIGURATION JSON object, if not found returns undefined.
     getGeppettoConfigurationProperty: function (property) {
-      return property.split(".").reduce(function(o, x) {
+      return property.split(".").reduce(function (o, x) {
         return (typeof o == "undefined" || o === null) ? o : o[x];
       }, GEPPETTO_CONFIGURATION);
     },
