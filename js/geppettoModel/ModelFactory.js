@@ -111,6 +111,8 @@ define(function (require) {
                     static: true
                   })
                 );
+
+                this.allPathsIndexing = [...this.allPaths];
               }
 
             }
@@ -206,6 +208,9 @@ define(function (require) {
               if (instance instanceof SimpleConnectionInstance) {
                 instance.a = this.resolve(instance.a.$ref);
                 instance.b = this.resolve(instance.b.$ref);
+                // TODO this is a shortcut to add connections, verify it's equivalent
+                instance.a.addConnection(instance);
+                instance.b.addConnection(instance);
               }
             }
           }
@@ -2830,6 +2835,8 @@ define(function (require) {
               reference = reference.getVisualGroups()[index];
             } else if (raw[i].indexOf('visualGroupElements') > -1) {
               reference = reference.getVisualGroupElements()[index];
+            } else if (raw[i].indexOf('worlds') > -1) {
+              reference = reference.getWorlds()[index];
             }
           }
 
