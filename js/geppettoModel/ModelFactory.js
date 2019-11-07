@@ -201,14 +201,20 @@ define(function (require) {
         },
 
         populateInstanceReferences: function (geppettoModel) {
-          // TODO  populateInstanceReferences FL
+          for (let world in geppettoModel.getWorlds()) {
+            for (let instance in world.getInstances()) {
+              if (instance instanceof SimpleConnectionInstance) {
+                instance.a = this.resolve(instance.a.$ref);
+                instance.b = this.resolve(instance.b.$ref);
+              }
+            }
+          }
         },
 
         /**
          * Populate type references
          */
         populateTypeReferences: function (node) {
-          // TODO pupulate instance types inside populateTypeReferences
 
           // check if variable, if so populate type references
           if (node.getMetaType() == GEPPETTO.Resources.VARIABLE_NODE) {
@@ -339,6 +345,8 @@ define(function (require) {
 
               node.superType = typeObjs;
             }
+          } else if (node.getMetaType() === SimpleInstance.name || node.getMetaType() === SimpleConnectionInstance.name) {
+            node.type = this.resolve(node.getType().$ref);
           }
 
           // check if getChildren exists, if so recurse over children

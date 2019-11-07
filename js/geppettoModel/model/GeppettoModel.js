@@ -92,7 +92,7 @@ define(function (require) {
    *
    */
   GeppettoModel.prototype.getChildren = function () {
-    return this.variables.concat(this.libraries.concat(this.datasources.concat(this.queries)));
+    return this.variables.concat(this.libraries, this.datasources, this.queries, this.worlds);
   };
 
 

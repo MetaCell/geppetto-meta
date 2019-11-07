@@ -12,4 +12,8 @@ export default class World {
   getVariables () {
     return this.variables;
   }
+
+  getChildren () {
+    return this.instances.concat(this.variables);
+  }
 }
