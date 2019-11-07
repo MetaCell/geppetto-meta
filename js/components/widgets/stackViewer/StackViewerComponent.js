@@ -443,39 +443,33 @@ define(function (require) {
               success: function (data) {
                 result = data.trim().split(':')[1].trim().split(' ');
                 if (result !== '') {
-                  var currentPosition = that.renderer.plugins.interaction.mouse.getLocalPosition(that.stack);
-                  if (callX == currentPosition.x.toFixed(0) && callY == currentPosition.y.toFixed(0)) {
-                    for (j in result) {
-                      if (result[j].trim() !== '') {
-                        var index = Number(result[j]);
-                        if (i !== 0 || index !== 0) { // don't select template
-                          if (index == 0) {
-                            if (!shift) {
-                              that.state.objects.push(that.state.label[i]);
-                            }
-                          } else {
-                            if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
-                              that.state.objects.push(that.props.templateDomainNames[index]);
-                              break;
-                            }
+                  for (j in result) {
+                    if (result[j].trim() !== '') {
+                      var index = Number(result[j]);
+                      if (i !== 0 || index !== 0) { // don't select template
+                        if (index == 0) {
+                          if (!shift) {
+                            that.state.objects.push(that.state.label[i]);
+                          }
+                        } else {
+                          if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
+                            that.state.objects.push(that.props.templateDomainNames[index]);
+                            break;
                           }
                         }
                       }
                     }
-                    var list = $.unique(that.state.objects).sort();
-                    var objects = '';
-                    if (shift) {
-                      objects = 'Click to add: ';
-                    }
-                    for (j in list) {
-                      objects = objects + list[j] + '\n';
-                    }
-                    if (objects !== '') {
-                      that.setHoverText(callX,callY,objects);
-                    }
-                  } else if (i == 0) {
-                    that.state.loadingLabels = false;
-                    that.onHoverEvent();
+                  }
+                  var list = $.unique(that.state.objects).sort();
+                  var objects = '';
+                  if (shift) {
+                    objects = 'Click to add: ';
+                  }
+                  for (j in list) {
+                    objects = objects + list[j] + '\n';
+                  }
+                  if (objects !== '') {
+                    that.setHoverText(callX,callY,objects);
                   }
                 }
                 // update slice view
@@ -904,8 +898,8 @@ define(function (require) {
     },
     
     setHoverText: function (x,y,text) {
-      this.state.buffer[-1].x = (-this.state.dragOffset.x + (this.stack.width/2) + Number(x)) * this.disp.scale.x;
-      this.state.buffer[-1].y = (-this.state.dragOffset.y + (this.stack.height/2) + Number(y)) * this.disp.scale.y;
+      this.state.buffer[-1].x = (this.state.dragOffset.x + (this.stack.width/2) + Number(x)) * this.disp.scale.x;
+      this.state.buffer[-1].y = (this.state.dragOffset.y + (this.stack.height/2) + Number(y)) * this.disp.scale.y;
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
