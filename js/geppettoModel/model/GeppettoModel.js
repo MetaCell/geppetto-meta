@@ -17,7 +17,7 @@ define(function (require) {
     this.datasources = (options.datasources != undefined) ? options.datasources : [];
     this.queries = (options.queries != undefined) ? options.queries : [];
     this.worlds = options.worlds != undefined ? options.worlds : [];
-    this.selectedWorldIdx = 0;
+    this.currentWorldIdx = 0;
   }
 
   GeppettoModel.prototype = Object.create(ObjectWrapper.prototype);
@@ -100,8 +100,8 @@ define(function (require) {
    * Get the default selected world
    *
    */
-  GeppettoModel.prototype.getSelectedWorld = function () {
-    return this.worlds[this.selectedWorldIdx];
+  GeppettoModel.prototype.getCurrentWorld = function () {
+    return this.worlds[this.currentWorldIdx];
   };
 
   /**
@@ -116,14 +116,14 @@ define(function (require) {
    * Set the default selected world
    *
    */
-  GeppettoModel.prototype.setSelectedWorld = function (worldOrIndex) {
+  GeppettoModel.prototype.activateWorld = function (worldOrIndex) {
     if (typeof worldOrIndex == 'number') {
-      this.selectedWorldIdx = worldOrIndex;
+      this.currentWorldIdx = worldOrIndex;
     } else if (typeof worldOrIndex == 'string'){
-      this.selectedWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex);
+      this.currentWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex);
     }
-    this.selectedWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex.id);
-    if (this.worlds[this.selectedWorldIdx] === undefined) {
+    this.currentWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex.id);
+    if (this.worlds[this.currentWorldIdx] === undefined) {
       console.error(worldOrIndex, "world not found in model");
       throw "World not found in model";
     }
