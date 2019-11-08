@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import { ForceGraph3D } from 'react-force-graph';
+import { ForceGraph3D, ForceGraph2D } from 'react-force-graph';
 
 import linkForce from './forces/link'
 import holdForce from './forces/hold'
@@ -10,25 +10,37 @@ import manyBodyForce from './forces/manyBody'
 const fullSizeStyle = { width: '100%', height: '100%' }
 
 export default class GeppettoGraphVisualization extends Component {
-  state = { nodeSize: 0.0001 }
-
-  dimensions = {}
 
   // Ref to GGV container
   ggv = React.createRef()
 
+  dimensions = {}
+  
   componentDidMount (){
-    const { data, url } = this.props
+    const { data, url, noForces = false } = this.props
+    var charge = null, link = null, center = null, hold = holdForce()
+
     
-    this.ggv.current.d3Force("charge", manyBodyForce())
-    this.ggv.current.d3Force("link", linkForce(data.links))
-    this.ggv.current.d3Force("center", centerForce())
-    this.ggv.current.d3Force('hold', holdForce())
+    if (!noForces) {
+      charge = manyBodyForce()
+      link = linkForce(data.links)
+      center = centerForce()
+      hold = null
+    }
+    this.ggv.current.d3Force("charge", charge)
+    this.ggv.current.d3Force("link", link)
+    this.ggv.current.d3Force("center", center)
+    this.ggv.current.d3Force('hold', hold)
+
+
     if (url) {
       this.addToScene()
-    } else {
+    } else if (!this.props.d2) {
       this.zoomCameraToFitScene()
+    } else {
+      this.forceUpdate()
     }
+     
   }
 
   componentDidUpdate () {
@@ -123,7 +135,7 @@ export default class GeppettoGraphVisualization extends Component {
 
   // cameraSizeRatioToNodeSize controls how big nodes look compared to 
   zoomCameraToFitScene (object = undefined, cameraSizeRatioToNodeSize = 400) {
-    var offset = 1.25
+    var offset = this.props.offset ? this.props.offset : 1.25
     const size = new THREE.Vector3();
     const center = new THREE.Vector3();
     const boundingBox = new THREE.Box3();
@@ -132,7 +144,6 @@ export default class GeppettoGraphVisualization extends Component {
       // if we load a OBJ file, we need to get the size of the boundary box
       boundingBox.setFromObject( object );
     } else {
-      offset = 2
       // if we maunally set the position of nodes in the graph, we need to adjust the camera in order to see those fixed nodes.
       const [ minV, maxV, containsFixedPoints ] = this.getMaxAndMinVectors()
       if (!containsFixedPoints) { 
@@ -165,20 +176,20 @@ export default class GeppettoGraphVisualization extends Component {
   }
 
   render () {
-    const { data, ...others } = this.props;
-
-    return (
-      <ForceGraph3D
-        ref={this.ggv}
-        graphData={data}
-        width={this.dimensions.width}
-        height={this.dimensions.height}
-        backgroundColor="white"
-        nodeColor={() => "blue"}
-        nodeRelSize={this.state.nodeSize}
-        linkColor={link => link.source < link.target ? "red" : "green"}
-        { ...others }
-      />
-    )
+    const { data, d2 = false, noForces = false, xGap = 20, yGap = 40, ...others } = this.props;
+    
+    const props = {
+      ref: this.ggv,
+      graphData: data,
+      width: this.dimensions.width - xGap ,
+      height: this.dimensions.height - yGap,
+      ...others
+    }
+    
+    if (d2) {
+      return <ForceGraph2D {...props} />
+    } else {
+      return <ForceGraph3D {...props} />
+    }
   }
 }

@@ -27,6 +27,14 @@
     Create a wireframe for the object.
 - **wireframeColor**: Hex (Optional. Default: *0x6893DE*)
     Specify the wireframe color (in hexadecimal).
+- **d2**: Bool (Optional. Default: false)
+    If true, the graph would be 2D.
+- **noForce**: Bool (Optional. Default: false)
+    If true, there will be no forces on the nodes.
+- **xGap**: Int (Optional. Default: 20)
+    Define width gap size with respect to the parent container.
+- **yGap**: Int (Optional. Default: 45)
+    Define height gap size with respect to the parent container.
 
 ## Selectively hold nodes in place
 

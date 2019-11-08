@@ -9,12 +9,12 @@ export default function () {
     
     for (i = 0; i < n; ++i) {
       node = nodes[i];
-      if (node.defaultX) {
+      if (node.defaultX !== undefined) {
         node.x = node.defaultX
-        if (node.defaultY) {
+        if (node.defaultY !== undefined) {
           node.y = node.defaultY 
         }
-        if (node.defaultZ) {
+        if (node.defaultZ !== undefined) {
           node.z = node.defaultZ 
         }
       }
