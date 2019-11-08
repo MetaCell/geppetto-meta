@@ -1005,7 +1005,6 @@ define(function (require) {
       if (!this.state.loadingLabels && !this.state.dragging) {
         repeat = typeof repeat !== 'undefined' ? repeat : true;
         var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
-        var currentWindowPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.state);
         currentPosition.x = Number(currentPosition.x.toFixed(0));
         currentPosition.y = Number(currentPosition.y.toFixed(0));
         if (this.state.hoverTime < Date.now() - 1000 && !(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) && this.state.posX == currentPosition.x && this.state.posY == currentPosition.y) {
