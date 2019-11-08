@@ -21,13 +21,19 @@ export default class Value extends ObjectWrapper{
     case 'JSON':
       return JSON.parse(rawValue.json);
     case 'Metadata':
+    case 'Composite':
       return this.getObjectForMetadata(rawValue.value);
+    case 'StringToValueMap':
+      return { [rawValue.key]:this.getObject(rawValue.value) }
+    case 'TypeToValueMap':
+      return { 'value': this.getObject(rawValue.value) }
     default:{
       let obj = { ...rawValue };
-      delete obj.eClass;
-      if (obj.value) {
+      
+      if (obj.value && obj.value.eClass) {
         extend(obj, this.getObject(obj.value));
       }
+      delete obj.eClass;
       return obj;
     }
 
@@ -40,6 +46,10 @@ export default class Value extends ObjectWrapper{
   getObjectForMetadata (rawValue) {
     let obj = {}
     for (let stringValueMap of rawValue) {
+      if (!stringValueMap.value) {
+        console.error('Malformed object value', stringValueMap);
+        continue;
+      }
       obj[stringValueMap.key] = this.getObject(stringValueMap.value);
     }
     return obj;
