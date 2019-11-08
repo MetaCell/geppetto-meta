@@ -100,10 +100,10 @@ define(function (require) {
             }
             if (jsonModel.worlds) {
               geppettoModel.worlds = jsonModel.worlds.map(world => this.createWorld(world));
-              geppettoModel.variables = geppettoModel.getSelectedWorld().getVariables();
-              if (geppettoModel.getSelectedWorld().getInstances()) {
+              geppettoModel.variables = geppettoModel.getCurrentWorld().getVariables();
+              if (geppettoModel.getCurrentWorld().getInstances()) {
                 // Add instances from the default world to allPaths
-                this.allPaths = geppettoModel.getSelectedWorld().getInstances().map(
+                this.allPaths = geppettoModel.getCurrentWorld().getInstances().map(
                   instance => ({
                     path: instance.getPath(), 
                     type: instance.getValue().eClass, 
@@ -140,7 +140,7 @@ define(function (require) {
               // traverse everything and populate type references in variables
               this.populateTypeReferences(geppettoModel);
 
-              if (geppettoModel.getSelectedWorld()) {
+              if (geppettoModel.getCurrentWorld()) {
                 this.populateInstanceReferences(geppettoModel);
               }
             }
@@ -158,17 +158,21 @@ define(function (require) {
         },
 
 
-        createStaticInstance: function (instance) {
-          instance.value = this.createValue(instance, { wrappedObj: instance.value });
-          switch (instance.eClass) {
+        createStaticInstance: function (rawInstance) {
+          let instance;
+          switch (rawInstance.eClass) {
           case SimpleInstance.name:
-            return new SimpleInstance(instance);
+            instance = new SimpleInstance(rawInstance);
+            break;
           case SimpleConnectionInstance.name:
-            return new SimpleConnectionInstance(instance);
+            instance = new SimpleConnectionInstance(rawInstance);
+            break;
           default:
             throw instance.eClass + " instance type is not supported"
           }
-          
+
+          instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
+          return instance;
         },
 
         /**

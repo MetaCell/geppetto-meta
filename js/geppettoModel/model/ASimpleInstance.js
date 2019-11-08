@@ -5,11 +5,10 @@ export default class ASimpleInstance extends ObjectWrapper{
  
   constructor (node) {
     super({ wrappedObj: node });
+
+    // Value and type can be wrapped so let's keep separate from the visual value
     this.value = node.value;
     this.type = node.type;
-    this.visualValue = node.visualValue;
-    this.position = node.position;
-    this.tags = node.tags;
     this.capabilities = [];
     this.connections = [];
   }
@@ -31,15 +30,15 @@ export default class ASimpleInstance extends ObjectWrapper{
   }
   
   getVisualValue () {
-    return this.visualValue;
+    return this.wrappedObj.visualValue;
   }
 
   hasVisualValue () {
-    return this.visualValue;
+    return this.wrappedObj.visualValue;
   }
 
   getPosition () {
-    return this.position;
+    return this.wrappedObj.position;
   }
 
   hasVisualType () {
@@ -59,7 +58,7 @@ export default class ASimpleInstance extends ObjectWrapper{
   }
 
   getInstancePath () {
-    return this.id;
+    return this.wrappedObj.id;
   }
 
   getPath () {
@@ -67,7 +66,7 @@ export default class ASimpleInstance extends ObjectWrapper{
   }
 
   getRawInstancePath () {
-    return this.getPath();
+    return this.getInstancePath();
   }
 
   getParent () {
