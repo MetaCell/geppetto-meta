@@ -71,12 +71,13 @@ Manager.prototype = {
     // Initialize instances with static instances already present in the model
     if (window.Model.getCurrentWorld()) {
       window.Instances = window.Model.getCurrentWorld().getInstances();
+      window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(window.Model));
     } else {
-      window.Instances = [];
+      window.Instances = GEPPETTO.ModelFactory.instantiateVariables(window.Model);
     }
     
     // add dynamic instance tree (instance tree will be populated with state info for each experiment)
-    window.Instances.push.apply(window.Instances, GEPPETTO.ModelFactory.instantiateVariables(window.Model));
+    
       
     this.augmentInstancesArray(window.Instances);
     console.timeEnd(GEPPETTO.Resources.CREATING_INSTANCES);
