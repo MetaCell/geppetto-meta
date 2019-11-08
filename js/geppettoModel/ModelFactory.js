@@ -100,21 +100,8 @@ define(function (require) {
             }
             if (jsonModel.worlds) {
               geppettoModel.worlds = jsonModel.worlds.map(world => this.createWorld(world));
-              geppettoModel.variables = geppettoModel.getCurrentWorld().getVariables();
-              if (geppettoModel.getCurrentWorld().getInstances()) {
-                // Add instances from the default world to allPaths
-                this.allPaths = geppettoModel.getCurrentWorld().getInstances().map(
-                  instance => ({
-                    path: instance.getPath(), 
-                    type: instance.getValue().eClass, 
-                    metaType: instance._metaType, 
-                    static: true
-                  })
-                );
-
-                this.allPathsIndexing = [...this.allPaths];
-              }
-
+              geppettoModel.variables = geppettoModel.getCurrentWorld().getVariables()
+                .concat(geppettoModel.variables);
             }
 
             // create libraries
@@ -145,7 +132,23 @@ define(function (require) {
               }
             }
           }
+          
+          if (geppettoModel.getCurrentWorld()) {
+        
+            // Add instances from the default world to allPaths
+            let staticInstancesPaths = geppettoModel.getCurrentWorld().getInstances().map(
+              instance => ({
+                path: instance.getPath(), 
+                metaType: instance.getType().getMetaType(), 
+                type: instance.getType().getPath(),
+                static: true
+              })
+            );
+            this.allPaths = this.allPaths.concat(staticInstancesPaths);
+            this.allPathsIndexing = this.allPathsIndexing.concat(staticInstancesPaths);
+          }
 
+          
           return geppettoModel;
         },
 
@@ -170,8 +173,12 @@ define(function (require) {
           default:
             throw instance.eClass + " instance type is not supported"
           }
-
-          instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
+          if (instance.value) {
+            instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
+          } else {
+            console.error("Instance", instance, "has no value defined");
+          }
+          
           return instance;
         },
 
