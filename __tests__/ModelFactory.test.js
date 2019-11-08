@@ -96,9 +96,11 @@ test('load demo model 5: Primary auditory cortex network', () => {
   expect(GEPPETTO.ModelFactory.allPathsIndexing[0].path ).toBe('acnet2')
   expect( GEPPETTO.ModelFactory.allPathsIndexing[0].metaType ).toBe( 'CompositeType')
   
-  expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].path).toBe( "acnet2.SmallNet_bask_bask.GABA_syn_inh.GABA_syn_inh")
-  expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].metaType)
-    .toBe('StateVariableType')
+  /*
+   * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].path).toBe( "acnet2.SmallNet_bask_bask.GABA_syn_inh.GABA_syn_inh")
+   * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].metaType)
+   *   .toBe('StateVariableType')
+   */
    
 
   expect(window.Instances.getInstance('acnet2.baskets_12[3]').getInstancePath() == 'acnet2.baskets_12[3]')
