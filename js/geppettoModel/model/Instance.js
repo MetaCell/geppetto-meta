@@ -1,5 +1,4 @@
-
-
+import { extend } from '../../common/Utils';
 /**
  * Client class use to represent an instance object (instantiation of a variable).
  *
@@ -287,7 +286,7 @@ export default class Instance {
    * @command Instance.extendApi(extensionObj)
    */
   extendApi (extensionObj) {
-    $.extend(this, extensionObj);
+    extend(this, extensionObj);
     this.capabilities.push(extensionObj.capabilityId);
   }
 
