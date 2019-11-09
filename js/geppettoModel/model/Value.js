@@ -1,5 +1,5 @@
-import ObjectWrapper from './ObjectWrapper';
-import { extend } from '../../common/Utils';
+const ObjectWrapper = require('./ObjectWrapper');
+const extend = require('../../common/Utils').extend;
 /**
  * Client class use to represent a variable.
  *

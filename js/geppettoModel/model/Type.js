@@ -7,9 +7,9 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-import { extend } from '../../common/Utils';
-var ObjectWrapper = require('./ObjectWrapper').default;
-var Variable = require('./Variable').default;
+const ObjectWrapper = require('./ObjectWrapper');
+const extend = require('../../common/Utils').extend;
+const Variable = require('./Variable').default;
 
 function Type (options) {
   ObjectWrapper.prototype.constructor.call(this, options);

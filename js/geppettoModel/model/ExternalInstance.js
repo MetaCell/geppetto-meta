@@ -1,4 +1,4 @@
-import Instance from './Instance';
+const Instance = require('./Instance').default;
 
 /**
  * Client class use to represent an instance object (instantiation of a variable)

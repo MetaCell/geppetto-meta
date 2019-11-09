@@ -7,8 +7,8 @@
  * @author Giovanni Idili
  */
 
-import { extend } from '../../common/Utils';
-import ObjectWrapper from './ObjectWrapper';
+const extend = require('../../common/Utils').extend;
+const ObjectWrapper = require('./ObjectWrapper');
 
 function Variable (options) {
   ObjectWrapper.prototype.constructor.call(this, options);

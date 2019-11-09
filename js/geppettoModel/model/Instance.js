@@ -1,4 +1,4 @@
-import { extend } from '../../common/Utils';
+const extend = require('../../common/Utils').extend;
 /**
  * Client class use to represent an instance object (instantiation of a variable).
  *
