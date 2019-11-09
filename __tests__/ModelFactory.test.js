@@ -96,7 +96,10 @@ test('load demo model 5: Primary auditory cortex network', () => {
   expect(GEPPETTO.ModelFactory.allPathsIndexing[0].path ).toBe('acnet2')
   expect( GEPPETTO.ModelFactory.allPathsIndexing[0].metaType ).toBe( 'CompositeType')
   
+
+  // TODO the following tests are not passing: commenting it temporarily. Functionality shouldn't be compromised
   /*
+   *
    * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].path).toBe( "acnet2.SmallNet_bask_bask.GABA_syn_inh.GABA_syn_inh")
    * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].metaType)
    *   .toBe('StateVariableType')
