@@ -96,4 +96,6 @@ Query.prototype.matchesCriteria = function (type) {
   return match;
 };
 
-export default Query;
+// Compatibility with new imports and old require syntax
+Query.default = Query;
+module.exports = Query;

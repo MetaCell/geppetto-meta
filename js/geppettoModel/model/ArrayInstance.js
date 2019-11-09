@@ -8,7 +8,7 @@ import Instance from './Instance';
  * @author Matteo Cantarelli
  */
 
-export default class ArrayInstance extends Instance {
+class ArrayInstance extends Instance {
 
   constructor (options) {
     super(options);
@@ -44,3 +44,6 @@ export default class ArrayInstance extends Instance {
 
 }
 
+// Compatibility with new imports and old require syntax
+ArrayInstance.default = ArrayInstance;
+module.exports = ArrayInstance;

@@ -72,6 +72,8 @@ Pointer.prototype.getPoint = function (){
 }
     
 
-export default Pointer;
+// Compatibility with new imports and old require syntax
+Pointer.default = Pointer;
+module.exports = Pointer;
 
 

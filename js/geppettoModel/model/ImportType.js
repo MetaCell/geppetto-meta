@@ -66,5 +66,6 @@ ImportType.prototype.resolve = function (callback) {
   GEPPETTO.Manager.resolveImportType(this.getPath(), callback);
 };
 
-export default ImportType;
-
+// Compatibility with new imports and old require syntax
+ImportType.default = ImportType;
+module.exports = ImportType;

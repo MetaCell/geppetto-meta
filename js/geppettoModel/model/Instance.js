@@ -7,7 +7,7 @@ import { extend } from '../../common/Utils';
  * @author Matteo Cantarelli
  */
 
-export default class Instance {
+class Instance {
 
   constructor (options) {
     this.id = options.id;
@@ -384,3 +384,7 @@ export default class Instance {
   }
 
 }
+
+// Compatibility with new imports and old require syntax
+Instance.default = Instance;
+module.exports = Instance;

@@ -38,6 +38,7 @@ ImportValue.prototype.getPath = function () {
   }
 
 };
-    
-export default ImportValue;
 
+// Compatibility with new imports and old require syntax
+ImportValue.default = ImportValue;
+module.exports = ImportValue;

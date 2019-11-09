@@ -7,7 +7,7 @@ import Instance from './Instance';
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-export default class ExternalInstance extends Instance {
+class ExternalInstance extends Instance {
 
   constructor (options) {
     super(options);
@@ -170,3 +170,7 @@ export default class ExternalInstance extends Instance {
 
  
 }
+
+// Compatibility with new imports and old require syntax
+ExternalInstance.default = ExternalInstance;
+module.exports = ExternalInstance;

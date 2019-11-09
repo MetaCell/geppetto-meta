@@ -167,4 +167,6 @@ VisualGroup.prototype.print = function () {
             + "    LowSpectrumColor : " + this.getLowSpectrumColor() + "\n";
 };
 
-export default VisualGroup;
+// Compatibility with new imports and old require syntax
+VisualGroup.default = VisualGroup;
+module.exports = VisualGroup;

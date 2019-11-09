@@ -1,7 +1,7 @@
 import ObjectWrapper from './ObjectWrapper';
 import { extend } from '../../common/Utils';
 
-export default class ASimpleInstance extends ObjectWrapper{
+class ASimpleInstance extends ObjectWrapper{
  
   constructor (node) {
     super({ wrappedObj: node });
@@ -99,3 +99,7 @@ export default class ASimpleInstance extends ObjectWrapper{
     this.connections.push(connection);
   }
 }
+
+// Compatibility with new imports and old require syntax
+ASimpleInstance.default = ASimpleInstance;
+module.exports = ASimpleInstance;

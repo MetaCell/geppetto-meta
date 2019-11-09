@@ -47,5 +47,6 @@ CompositeVisualType.prototype.getChildren = function () {
 
 };
 
-export default CompositeVisualType;
-
+// Compatibility with new imports and old require syntax
+CompositeVisualType.default = CompositeVisualType;
+module.exports = CompositeVisualType;

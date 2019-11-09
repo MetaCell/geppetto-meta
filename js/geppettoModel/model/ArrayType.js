@@ -43,5 +43,6 @@ ArrayType.prototype.getSize = function () {
   return this.size;
 };
 
-export default ArrayType;
-
+// Compatibility with new imports and old require syntax
+ArrayType.default = ArrayType;
+module.exports = ArrayType;

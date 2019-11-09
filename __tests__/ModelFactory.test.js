@@ -6,6 +6,7 @@ require('../js/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
 const Manager = require('../js/common/Manager').default;
 const ModelFactory = require('../js/geppettoModel/ModelFactory').default(GEPPETTO);
 const testModel = require('./resources/test_model.json');
+const AA = require('../js/geppettoModel/model/ArrayElementInstance').default;
 
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];

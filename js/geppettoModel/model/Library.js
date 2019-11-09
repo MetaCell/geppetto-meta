@@ -103,4 +103,6 @@ Library.prototype.addType = function (type) {
   return this;
 }
 
-export default Library;
+// Compatibility with new imports and old require syntax
+Library.default = Library;
+module.exports = Library;

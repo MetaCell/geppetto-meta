@@ -153,5 +153,7 @@ Type.prototype.typeOf = function (type){
   return match;
 };
     
-export default Type;
+// Compatibility with new imports and old require syntax
+Type.default = Type;
+module.exports = Type;
 

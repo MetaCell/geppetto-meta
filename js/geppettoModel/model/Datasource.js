@@ -129,4 +129,6 @@ Datasource.prototype.fetchVariable = function (variableIds, callback) {
   GEPPETTO.Manager.fetchVariables(variableIds, this.getId(), callback);
 };
 
-export default Datasource;
+// Compatibility with new imports and old require syntax
+Datasource.default = Datasource;
+module.exports = Datasource;

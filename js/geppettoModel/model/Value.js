@@ -4,9 +4,8 @@ import { extend } from '../../common/Utils';
  * Client class use to represent a variable.
  *
  * @module model/Value
- * @author Nitesh Thali
  */
-export default class Value extends ObjectWrapper{
+class Value extends ObjectWrapper{
 
 
   constructor (options) {
@@ -54,6 +53,9 @@ export default class Value extends ObjectWrapper{
     }
     return obj;
   }
-    
-    
+  
 }
+
+// Compatibility with new imports and old require syntax
+Value.default = Value;
+module.exports = Value;

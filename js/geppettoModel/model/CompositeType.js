@@ -82,5 +82,6 @@ CompositeType.prototype.getConnections = function () {
   return connectionVariables;
 };
 
-export default CompositeType;
-
+// Compatibility with new imports and old require syntax
+CompositeType.default = CompositeType;
+module.exports = CompositeType;

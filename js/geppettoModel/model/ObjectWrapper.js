@@ -103,5 +103,6 @@ ObjectWrapper.prototype = {
   }
 };
 
-export default ObjectWrapper;
-
+// Compatibility with new imports and old require syntax
+ObjectWrapper.default = ObjectWrapper;
+module.exports = ObjectWrapper;

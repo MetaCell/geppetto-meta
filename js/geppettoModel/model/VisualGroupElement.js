@@ -81,4 +81,6 @@ VisualGroupElement.prototype.show = function (mode, instances) {
   }
 };
 
-export default VisualGroupElement;
+// Compatibility with new imports and old require syntax
+VisualGroupElement.default = VisualGroupElement;
+module.exports = VisualGroupElement;

@@ -6,8 +6,8 @@ import Instance from './Instance';
  * @module model/ArrayElementInstance
  * @author Giovanni Idili
  */
-export default class ExternalInstance extends Instance {
-
+class ArrayElementInstance extends Instance {
+  
   constructor (options) {
     super(options);
     this.index = options.index;
@@ -67,3 +67,5 @@ export default class ExternalInstance extends Instance {
 
 }
 
+ArrayElementInstance.default = ArrayElementInstance;
+module.exports = ArrayElementInstance;

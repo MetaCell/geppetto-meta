@@ -223,5 +223,7 @@ Variable.prototype.setTypes = function (types) {
 };
 
 
-export default Variable;
+// Compatibility with new imports and old require syntax
+Variable.default = Variable;
+module.exports = Variable;
 

@@ -128,4 +128,7 @@ GeppettoModel.prototype.activateWorld = function (worldOrIndex) {
     throw "World not found in model";
   }
 };
-export default GeppettoModel;
+
+// Compatibility with new imports and old require syntax
+GeppettoModel.default = GeppettoModel;
+module.exports = GeppettoModel;
