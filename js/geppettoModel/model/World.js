@@ -1,11 +1,10 @@
+import ObjectWrapper from './ObjectWrapper';
 
-export default class World {
+export default class World extends ObjectWrapper{
   constructor (world, instances, variables) {
+    super({ wrappedObj: world });
     this.instances = instances;
     this.variables = variables;
-    this.id = world.id;
-    this.name = world.name;
-    this._metaType = world.eClass;
   }
 
   getInstances () {
@@ -18,18 +17,6 @@ export default class World {
 
   getChildren () {
     return this.instances.concat(this.variables);
-  }
-
-  getId () {
-    return this.id;
-  }
-
-  getName () {
-    return this.name;
-  }
-
-  getMetaType () {
-    return this._metaType;
   }
 
 }
