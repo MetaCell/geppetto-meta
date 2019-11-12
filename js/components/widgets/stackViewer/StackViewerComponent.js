@@ -658,7 +658,7 @@ define(function (require) {
       }
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
-        for (let i in Object.keys(this.state.images)) {
+        for (var i = 0; i < Object.keys(this.state.images).length; i++) {
           var id = Object.keys(this.state.images)[i].split(",")[0];
           if (id > (this.state.stack.length - 1)) {
             delete this.state.images[Object.keys(this.state.images)[i]];
