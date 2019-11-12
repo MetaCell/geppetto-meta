@@ -267,10 +267,11 @@ define(function (require) {
         var that = this;
         this.chaptersMenu = new GEPPETTO.ContextMenuView();
 
-        var button = $("<div class='fa fa-leanpub' title='Select chapter'></div>").on('click', function (event) {
+        var button = $("<div class='fa fa-leanpub' title='Select chapter'></div>");
+        button.on('click', function (event) {
           that.showChaptersMenu(event);
           event.stopPropagation();
-        }).bind(this);
+        });
 
         var dialog = this.dialog.parent();
         var closeButton = dialog.find("button.ui-dialog-titlebar-close");
