@@ -140,8 +140,7 @@ define(function (require) {
             generateNodeProps={rowInfo => (this.getNodeProps(rowInfo))}
             onChange={treeData => this.updateTreeData(treeData)}
             searchQuery={(this.props.searchQuery !== undefined) ? this.props.searchQuery : null}
-            onlyExpandSearchedNodes={onlyExpandSearchedNodes}
-            searchFinishCallback={this.props.searchFinishCallback}
+            onlyExpandSearchedNodes={this.props.onlyExpandSearchedNodes !== undefined ? this.props.onlyExpandSearchedNodes : false}
           />
         </div>
       )
