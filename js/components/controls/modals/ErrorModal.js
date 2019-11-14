@@ -7,7 +7,9 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class'),
     $ = require('jquery');
-
+  var GEPPETTO = require('geppetto');
+  require('../../../common/GEPPETTO.Resources')(GEPPETTO);
+   
   require("./ErrorModal.less");
 
   return CreateClass({
@@ -17,19 +19,19 @@ define(function (require) {
         
     getDefaultProps: function () {
       return {
-        title: 'There was an error',
+        title: GEPPETTO.Resources.ERROR_MODAL_TITLE,
         text: '',
         code: '',
         source: '',
         exception: '',
         githubButton : {
           enabled : true,
-          url : "https://github.com/openworm/org.geppetto/issues/new"
+          url :  GEPPETTO.Resources.ERROR_MODAL_NEW_ISSUE_URL
         },
         twitterButton : {
           enabled : true,
-          url : "http://geppetto.org",
-          message : "Whoops, I broke Geppetto! @geppettoengine help!"
+          url : GEPPETTO.Resources.ERROR_MODAL_TWITTER_URL,
+          message : GEPPETTO.Resources.ERROR_MODAL_TWITTER_MESSAGE
         }
       }
     },
@@ -50,7 +52,7 @@ define(function (require) {
         + encodeURIComponent(message), '', 'left=0,top=0,width=550,height=450,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
     },
         
-    render: function (){
+    render: function () {
       let twiButProp = (this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled") == undefined 
         ? this.props.twitterButton.enabled : this.getGeppettoConfigurationProperty("properties.errorDialog.twitterButton.enabled"));
       let twitterButtonVisible = ( twiButProp ? null : { display: "none" })
