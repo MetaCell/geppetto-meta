@@ -99,9 +99,12 @@ export default function (GEPPETTO) {
           }
           if (jsonModel.worlds) {
             geppettoModel.worlds = jsonModel.worlds.map(world => this.createWorld(world));
-            geppettoModel.variables = geppettoModel.getCurrentWorld().getVariables()
-              .concat(geppettoModel.variables);
+            if (geppettoModel.variables.length) {
+              this.geppettoModel.getCurrentWorld().variables = this.geppettoModel.getCurrentWorld().variables.concat(geppettoModel.variables);
+              geppettoModel.variables = [];
+            }
           }
+
 
           // create libraries
           for (var i = 0; i < jsonModel.libraries.length; i++) {
@@ -135,14 +138,7 @@ export default function (GEPPETTO) {
         if (geppettoModel.getCurrentWorld()) {
         
           // Add instances from the default world to allPaths
-          let staticInstancesPaths = geppettoModel.getCurrentWorld().getInstances().map(
-            instance => ({
-              path: instance.getPath(), 
-              metaType: instance.getType().getMetaType(), 
-              type: instance.getType().getPath(),
-              static: true
-            })
-          );
+          let staticInstancesPaths = getStaticInstancePaths(geppettoModel);
           this.allPaths = this.allPaths.concat(staticInstancesPaths);
           this.allPathsIndexing = this.allPathsIndexing.concat(staticInstancesPaths);
         }
@@ -579,14 +575,14 @@ export default function (GEPPETTO) {
               paths = paths.concat(that.getAllPotentialInstancesOfType(types[l].getPath()));
             }
           }
-
-          return paths;
+          
         };
 
         // STEP 1: check new variables to see if any new instances are needed
         var varsWithVizTypes = [];
-        for (var i = 0; i < diffReport.variables; i++) {
-          GEPPETTO.ModelFactory.fetchVarsWithVisualTypes(diffReport.variables[i], varsWithVizTypes, '');
+        const variables = this.getVariables(diffReport);
+        for (var i = 0; i < variables; i++) {
+          GEPPETTO.ModelFactory.fetchVarsWithVisualTypes(variables, varsWithVizTypes, '');
         }
         // for each variable, get types and potential instances of those types
         for (var j = 0; j < varsWithVizTypes.length; j++) {
@@ -600,6 +596,7 @@ export default function (GEPPETTO) {
         var diffTypes = diffReport.types;
         newInstancePaths = newInstancePaths.concat(getPotentialInstancePaths(diffTypes));
 
+
         // STEP 3: call getInstance to create the instances
         var newInstances = window.Instances.getInstance(newInstancePaths);
 
@@ -612,6 +609,10 @@ export default function (GEPPETTO) {
         for (var k = 0; k < window.Instances.length; k++) {
           GEPPETTO.ModelFactory.populateConnections(window.Instances[k]);
         }
+
+        // STEP 5: Add static instances
+        const staticInstancesPaths = getStaticInstancePaths(diffReport);
+        newInstancePaths = newInstancePaths.concat(staticInstancesPaths);
 
         return newInstances;
       },
@@ -809,7 +810,7 @@ export default function (GEPPETTO) {
         }
 
         // STEP 3: add variables if any new ones are found (both to object model and json model)
-        var diffVars = diffModel.getVariables();
+        var diffVars = this.getVariables(diffReport);
         var vars = this.geppettoModel.getVariables();
 
         for (var x = 0; x < diffVars.length; x++) {
@@ -825,19 +826,21 @@ export default function (GEPPETTO) {
               varMatch = true;
             }
           }
-
+          const variables = this.getVariables(diffReport);
           // if no match, add it, it's actually new
           if (!varMatch) {
-            if (this.geppettoModel.getWrappedObj().variables == undefined) {
-              this.geppettoModel.getWrappedObj().variables = [];
+            let wrappedObjVariables = this.getVariables(this.geppettoModel.getWrappedObj());
+            const wrappedObj = this.geppettoModel.getWrappedObj();
+            if (wrappedObjVariables == undefined) {
+              wrappedObjVariables = addVariablesToRawModel(wrappedObj, wrappedObjVariables);
             }
 
             // append variable to raw model
-            this.geppettoModel.getWrappedObj().variables.push(diffVars[x].getWrappedObj());
+            wrappedObjVariables.push(diffVars[x].getWrappedObj());
 
             // add variable to geppetto object model
             diffVars[x].parent = this.geppettoModel;
-            this.geppettoModel.getVariables().push(diffVars[x]);
+            vars.push(diffVars[x]);
 
             // populate references for new vars
             this.populateTypeReferences(diffVars[x]);
@@ -845,7 +848,7 @@ export default function (GEPPETTO) {
             // find new potential instance paths and add to the list
             this.addPotentialInstancePaths([diffVars[x]]);
 
-            diffReport.variables.push(diffVars[x]);
+            variables.push(diffVars[x]); // FIXME variables to worlds
 
             // populate the shortcuts for the added variable
             this.populateChildrenShortcuts(diffVars[x]);
@@ -865,10 +868,20 @@ export default function (GEPPETTO) {
         this.newPathsIndexing = [];
 
         // diff object to report back what changed / has been added
-        var diffReport = { variables: [], types: [], libraries: [] };
+        var diffReport = { variables: [], types: [], libraries: [], worlds: [] };
+        var diffVars = diffReport.variables;
+
 
         // STEP 1: create new geppetto model to merge into existing one
         var diffModel = this.createGeppettoModel(rawModel, false, false);
+
+        // STEP 1.5: add world
+        for (let world of rawModel.worlds) {
+          if (!world.synched) {
+            diffReport.worlds.push(world);
+            diffVars = world.variables;
+          }
+        }
 
         // STEP 2: add libraries/types if any are different (both to object model and json model)
         var diffLibs = diffModel.getLibraries();
@@ -921,7 +934,7 @@ export default function (GEPPETTO) {
               varMatch = true;
               this.populateTypeReferences(diffVars[x]);
               vars[y] = diffVars[x];
-              diffReport.variables.push(vars[y]);
+              diffVars.push(vars[y]); // FIXME variables to worlds
               break;
             }
           }
@@ -2865,9 +2878,33 @@ export default function (GEPPETTO) {
         this.instanceTags[GEPPETTO.Resources.ARRAY_INSTANCE_NODE] = GEPPETTO.Utility.extractMethodsFromObject(ai, true);
         var aei = new ArrayElementInstance({});
         this.instanceTags[GEPPETTO.Resources.ARRAY_ELEMENT_INSTANCE_NODE] = GEPPETTO.Utility.extractMethodsFromObject(aei, true);
+      },
+
+      getVariables: function (rawGeppettoModel) {
+        if (!rawGeppettoModel.worlds && !rawGeppettoModel.worlds.length) {
+          return rawGeppettoModel.variables;
+        }
+        const world = rawGeppettoModel.worlds[0]; // TODO handle multiple worlds
+        return world.getVariables();
       }
     };
 
   return GEPPETTO.ModelFactory;
 }
+
+function addVariablesToRawModel (rawGeppettoModel, wrappedObjVariables) {
+  rawGeppettoModel.variables = [];
+  wrappedObjVariables = rawGeppettoModel.variables;
+  return wrappedObjVariables;
+}
+
+function getStaticInstancePaths (geppettoModel) {
+  return geppettoModel.getCurrentWorld().getInstances().map(instance => ({
+    path: instance.getPath(),
+    metaType: instance.getType().getMetaType(),
+    type: instance.getType().getPath(),
+    static: true
+  }));
+}
+
 

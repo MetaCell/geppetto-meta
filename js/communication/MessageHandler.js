@@ -44,7 +44,8 @@ define(function (require) {
       DOWNLOAD_MODEL: "download_model",
       DOWNLOAD_RESULTS: "download_results",
       ERROR_RUNNING_EXPERIMENT: "error_running_experiment",
-      PROJECT_MADE_PUBLIC: "project_made_public"
+      PROJECT_MADE_PUBLIC: "project_made_public",
+      FETCHED: "fetched",
     };
 
     var messageHandler = {};
@@ -118,6 +119,13 @@ define(function (require) {
     messageHandler[messageTypes.VARIABLE_FETCHED] = function (payload) {
       GEPPETTO.trigger('spin_logo');
       var rawModel = JSON.parse(payload.variable_fetched);
+      GEPPETTO.Manager.addVariableToModel(rawModel);
+      GEPPETTO.trigger('stop_spin_logo');
+    };
+
+    messageHandler[messageTypes.FETCHED] = function (payload) {
+      GEPPETTO.trigger('spin_logo');
+      var rawModel = JSON.parse(payload.fetched);
       GEPPETTO.Manager.addVariableToModel(rawModel);
       GEPPETTO.trigger('stop_spin_logo');
     };
