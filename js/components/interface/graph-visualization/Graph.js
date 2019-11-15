@@ -20,7 +20,7 @@ export default class GeppettoGraphVisualization extends Component {
   doubleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.25)
   tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
   
-  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 1500
+  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 0
 
   componentDidMount (){
     const { data, url } = this.props

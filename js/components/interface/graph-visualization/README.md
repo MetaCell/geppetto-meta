@@ -54,7 +54,7 @@ If we update the data preserving the references to each node, then the graph wil
     Adjust the stiffness coiefficient for the spring simulated between two nodes
 - **forceChargeStrength**: Int (Optional. Default: -200).
     Adjust the repulsion coefficient simulated between two nodes.
-- **timeToCenter2DCamera**: Int (Optional. Default: 3000).
+- **timeToCenter2DCamera**: Int (Optional. Default: 0).
     Transition time in ms when centering camera in 2D Graph after window resize event.
 - **forceRadial**: Int (Optional. Default: 1).
     Creates a radial atractive force of radial circle equal to forceRadial. Useful to avoid nodes scattering away when they have no links.
