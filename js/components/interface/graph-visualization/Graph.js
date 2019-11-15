@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import * as d3 from 'd3-force-3d'
-import { ForceGraph3D, ForceGraph2D } from 'react-force-graph';
+import * as THREE from 'three'
+import ForceGraph2D from 'react-force-graph-2d';
+import ForceGraph3D from 'react-force-graph-3d';
 
 import { splitter, getDarkerColor } from './utils'
 
