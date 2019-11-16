@@ -210,6 +210,10 @@ export default function (GEPPETTO) {
       },
 
       populateInstanceReferences: function (geppettoModel) {
+        if (!geppettoModel.getWorlds().length) { 
+          return; 
+        }
+
         for (let world of geppettoModel.getWorlds()) {
           for (let instance of world.getInstances()) {
             if (instance instanceof SimpleConnectionInstance) {
@@ -876,12 +880,15 @@ export default function (GEPPETTO) {
         var diffModel = this.createGeppettoModel(rawModel, false, false);
 
         // STEP 1.5: add world
-        for (let world of rawModel.worlds) {
-          if (!world.synched) {
-            diffReport.worlds.push(world);
-            diffVars = world.variables;
+        if (rawModel.worlds && rawModel.worlds.length) {
+          for (let world of rawModel.worlds) {
+            if (!world.synched) {
+              diffReport.worlds.push(world);
+              diffVars = world.variables;
+            }
           }
         }
+        
 
         // STEP 2: add libraries/types if any are different (both to object model and json model)
         var diffLibs = diffModel.getLibraries();
