@@ -31,8 +31,8 @@ GeppettoModel.prototype.constructor = GeppettoModel;
  * @returns {List<Variable>} - List of Variable objects
  *
  */
-GeppettoModel.prototype.getVariables = function () {
-  if (this.currentWorldIdx >= 0) {
+GeppettoModel.prototype.getVariables = function (legacy) {
+  if (this.currentWorldIdx >= 0 && !legacy) {
     return this.getCurrentWorld().getVariables();
   }
   return this.variables;
@@ -50,6 +50,14 @@ GeppettoModel.prototype.setVariables = function (variables) {
     this.variables = variables;
   }
 };
+
+GeppettoModel.prototype.getAllVariables = function () {
+  if (this.currentWorldIdx >= 0) {
+    return this.getCurrentWorld().getVariables().concat(this.variables);
+  }
+  return this.variables;
+};
+
     
 /**
  * Get the id

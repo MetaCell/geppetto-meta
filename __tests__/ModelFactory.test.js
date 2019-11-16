@@ -13,9 +13,9 @@ GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();
 console.warn = () => null;
-GEPPETTO.CommandController = { 
-  log: console.log, 
-  createTags: (a, b) => null 
+GEPPETTO.CommandController = {
+  log: console.log,
+  createTags: (a, b) => null
 };
 
 test('load test model with new instances', () => {
@@ -36,106 +36,93 @@ test('load test model with new instances', () => {
   expect(Instances.a2b.b).toBe(Instances.b);
   ModelFactory.allPaths = [];
   ModelFactory.allPathsIndexing = [];
+  Instances = [];
 });
 
-test('load demo model 1: Hodgkin-Huxley NEURON simulation', () => {
-  GEPPETTO.Manager.loadModel(require('./resources/model.1.json'));
-  // console.log(ModelFactory.allPaths);
-  expect(ModelFactory.allPaths.length).toBe(136);
-  Instances.getInstance('time');
-  expect(Instances.length).toBe(2);
-  ModelFactory.allPaths = [];
-  ModelFactory.allPathsIndexing = [];
+
+test('Merge models', () => {
+  GEPPETTO.Manager.loadModel(testModel);
+
+  expect(ModelFactory.allPaths.length).toBe(11);
+  expect(Instances.length).toBe(7);
   
-});
+  let diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0);
 
-test('load demo model 5: Primary auditory cortex network', () => {
-  GEPPETTO.Manager.loadModel(require('./resources/model.5.json'));
-  // console.log(ModelFactory.allPaths);
+  GEPPETTO.Manager.addVariableToModel(testModel);
+  expect(ModelFactory.allPaths.length).toBe(11);
+  expect(Instances.length).toBe(7);
 
+  testModel.variables.push({
+    "eClass": "Variable",
+    "types": [
+      {
+        "eClass": "CompositeType",
+        "$ref": "//@libraries.0/@types.2"
+      }
+    ],
+    "name": "V2",
+    "id": "v2"
+  });
+
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(1);
+  expect(ModelFactory.allPaths.length).toBe(13);
+  GEPPETTO.Manager.addVariableToModel(testModel);
   
-  expect(ModelFactory.allPaths.length).toBe(13491);
-  expect(window.acnet2 != undefined && window.acnet2.baskets_12 != undefined)
-    .toBeTruthy();
-  expect(window.acnet2.pyramidals_48.getChildren().length === 48
-    && window.acnet2.baskets_12.getChildren().length === 12)
-    .toBeTruthy()
+  expect(Instances.length).toBe(7);
+  Instances.getInstance('v2');
+  expect(Instances.length).toBe(8);
 
 
-  expect(GEPPETTO.ModelFactory.resolve('//@libraries.1/@types.5').getId() == window.Model.getLibraries()[1].getTypes()[5].getId()
-    && GEPPETTO.ModelFactory.resolve('//@libraries.1/@types.5').getMetaType() == window.Model.getLibraries()[1].getTypes()[5].getMetaType())
-    .toBeTruthy()
+  testModel.worlds[0].variables.push({
+    "eClass": "Variable",
+    "types": [
+      {
+        "eClass": "CompositeType",
+        "$ref": "//@libraries.0/@types.2"
+      }
+    ],
+    "name": "WV2",
+    "id": "wv2"
+  });
 
-  let acnet2 = window.acnet2;
-  expect(acnet2.baskets_12[0].getTypes().length == 1
-  && acnet2.baskets_12[0].getTypes()[0].getId() == 'bask'
-  && acnet2.baskets_12[0].getTypes()[0].getMetaType() == 'CompositeType')
-    .toBeTruthy()
-
-
-  expect(acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups().length == 3
-  && acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[0].getId() == 'Cell_Regions'
-  && (acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[1].getId() == 'Kdr_bask'
-      || acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[1].getId() == 'Kdr_bask')
-  && (acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[2].getId() == 'Na_bask'
-      || acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[2].getId() == 'Na_bask'))
-    .toBeTruthy();
-
-  expect(GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getType()).length == 12
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getType().getPath()).length == 12
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getType())[0].getId() == "baskets_12[0]"
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getType())[0].getMetaType() == "ArrayElementInstance")
-    .toBeTruthy()
-
-  expect(GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getVariable()).length == 1
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getVariable().getPath()).length == 1
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getVariable())[0].getId() == "baskets_12"
-  && GEPPETTO.ModelFactory.getAllInstancesOf(acnet2.baskets_12[0].getVariable())[0].getMetaType() == "ArrayInstance")
-    .toBeTruthy()
-
-  expect(GEPPETTO.ModelFactory.allPathsIndexing.length ).toBe(9741)
-  expect(GEPPETTO.ModelFactory.allPathsIndexing[0].path ).toBe('acnet2')
-  expect( GEPPETTO.ModelFactory.allPathsIndexing[0].metaType ).toBe( 'CompositeType')
-  
-
-  // TODO the following tests are not passing: commenting it temporarily. Functionality shouldn't be compromised
-  /*
-   *
-   * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].path).toBe( "acnet2.SmallNet_bask_bask.GABA_syn_inh.GABA_syn_inh")
-   * expect(GEPPETTO.ModelFactory.allPathsIndexing[9741 - 1].metaType)
-   *   .toBe('StateVariableType')
-   */
-   
-
-  expect(window.Instances.getInstance('acnet2.baskets_12[3]').getInstancePath() == 'acnet2.baskets_12[3]')
-    .toBeTruthy()
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0);
+  expect(diffReport.worlds[0].variables.length).toBe(1);
+  expect(diffReport.worlds[0].instances.length).toBe(0);
+  expect(ModelFactory.allPaths.length).toBe(15);
+  expect(Instances.length).toBe(8);
+  Instances.getInstance('wv2');
+  expect(Instances.length).toBe(9);
 
 
-  expect(window.Instances.getInstance('acnet2.baskets_12[3].soma_0.v').getInstancePath() == 'acnet2.baskets_12[3].soma_0.v')
-    .toBeTruthy()
+  testModel.worlds[0].instances.push({
+    "eClass": "SimpleInstance",
+    "position": {
+      "eClass": "Point",
+      "y": 1,
+      "x": 1,
+      "z": 1
+    },
+    "value": {
+      "eClass": "JSON",
+      "json": "{\"l\": [\"x\", \"y\"]}"
+    },
+    "type": {
+      "eClass": "SimpleType",
+      "$ref": "//@libraries.0/@types.1"
+    },
+    "id": "n",
+    "name": "N"
+  });
 
-
-  expect(window.Instances.getInstance('acnet2.baskets_12[3].sticaxxi') == undefined)
-    .toBeTruthy()
-
-
-  expect(window.acnet2.baskets_12[0].hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY))
-    .toBeTruthy()
-
-
-  expect(window.acnet2.baskets_12[0].getType().hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY))
-    .toBeTruthy()
-
-
-  expect(window.Model.neuroml.network_ACnet2.temperature.hasCapability(GEPPETTO.Resources.PARAMETER_CAPABILITY))
-    .toBeTruthy()
-
-  expect(GEPPETTO.ModelFactory.getAllVariablesOfMetaType(GEPPETTO.ModelFactory.getAllTypesOfMetaType(GEPPETTO.Resources.COMPOSITE_TYPE_NODE),
-    'ConnectionType')[0].hasCapability(GEPPETTO.Resources.CONNECTION_CAPABILITY))
-    .toBeTruthy()
-
-  expect(window.acnet2.pyramidals_48[0].getConnections()[0].hasCapability(GEPPETTO.Resources.CONNECTION_CAPABILITY))
-    .toBeTruthy()
-  ModelFactory.allPaths = [];
-  
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0);
+  expect(diffReport.worlds[0].variables.length).toBe(0);
+  expect(diffReport.worlds[0].instances.length).toBe(1);
+  expect(ModelFactory.allPaths.length).toBe(16);
+  expect(Instances.length).toBe(10);
+  Instances.getInstance('n'); // Static instances are always instantiated
+  expect(Instances.length).toBe(10);
 });
