@@ -39,7 +39,6 @@ test('load test model with new instances', () => {
   Instances = [];
 });
 
-
 test('Merge models', () => {
   GEPPETTO.Manager.loadModel(testModel);
 
