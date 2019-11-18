@@ -57,7 +57,7 @@ class MenuSingleItem extends React.Component {
         }
         return (
           <MenuItem
-            id={index}
+            id={item.label}
             key={index}
             onClick={e => {
               this.handleClick(e, item.action)
@@ -99,7 +99,7 @@ class MenuSingleItem extends React.Component {
         }
         return (
           <MenuItem
-            id={index}
+            id={item.label}
             key={index}
             onClick={e => {
               this.handleClick(e, item.action)
