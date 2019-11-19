@@ -133,8 +133,7 @@ export default function (GEPPETTO) {
               this.allPathsIndexing = this.allPathsIndexing.concat(staticInstancesPaths);
             }
           }
-
-          
+        
         }
           
         return geppettoModel;
@@ -148,7 +147,7 @@ export default function (GEPPETTO) {
       },
 
       createStaticInstances: function (instances) {
-        return instances.map(instance => this.createStaticInstance(instance));
+        return instances ? instances.map(instance => this.createStaticInstance(instance)) : [];
       },
 
 
@@ -619,11 +618,22 @@ export default function (GEPPETTO) {
             // Already populated
             return;
           }
-          instance.a = this.resolve(instance.a.$ref);
-          instance.b = this.resolve(instance.b.$ref);
+
+          const a = this.resolve(instance.a.$ref);
+          if (a) {
+            instance.a = a;
+            instance.a.addConnection(instance);
+          }
+          
+          const b = this.resolve(instance.b.$ref);
+          if (b) {
+            instance.b = b;
+            instance.b.addConnection(instance);
+          }
+          
           // TODO this is a shortcut to add connections, verify it's equivalent
-          instance.a.addConnection(instance);
-          instance.b.addConnection(instance);
+          
+          
           return;
         }
 
@@ -836,6 +846,7 @@ export default function (GEPPETTO) {
           diffReport.worlds[0].instances = this._mergeInstances(
             diffModel.getCurrentWorld().getInstances(), 
             currentWorld);
+          this.populateInstanceReferences(diffModel);
         }
         
         return diffReport;
@@ -931,6 +942,7 @@ export default function (GEPPETTO) {
 
             // let's populate the shortcut in the parent of the variable, this might not exist if it was a fetch
             this.geppettoModel[diffInst[x].getId()] = diffInst[x];
+            // window.Instances.push(diffInst[x]);
           }
         }
         return diffReportInst;
