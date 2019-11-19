@@ -21,6 +21,9 @@ export default class GeppettoGraphVisualization extends Component {
   tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
   
 
+  getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
+  getLinkLabel = this.props.linkLabel ? this.fnOrField(this.props.linkLabel) : link => link.name
+
   componentDidMount (){
     const { data, url } = this.props
 
@@ -53,6 +56,17 @@ export default class GeppettoGraphVisualization extends Component {
       this.forceUpdate()
       
     }
+  }
+
+  /**
+   * 
+   * @param {*} fnOrString 
+   */
+  fnOrField (fnOrString) {
+    if (typeof fnOrString === 'string' || fnOrString instanceof String) {
+      return obj => obj[fnOrString];
+    }
+    return fnOrString;
   }
 
   // add a obj file to the scene from url
@@ -209,7 +223,7 @@ export default class GeppettoGraphVisualization extends Component {
     const cx = (xs + xt) / 2
     const cy = (ys + yt) / 2
 
-    var linkText = link.id
+    var linkText = this.getLinkLabel(link)
     var arrowSize = this.size * 0.2
     const linkLength = Math.sqrt((xt - xs) * (xt - xs) + (yt - ys) * (yt - ys));
     const availableSpaceForLinkLabel = linkLength - 2.1 * this.size - 6 * arrowSize
@@ -222,10 +236,10 @@ export default class GeppettoGraphVisualization extends Component {
     const textLength = ctx.measureText(link.id).width
 
     
-    const doNotPlotLinkLabel = availableSpaceForLinkLabel < ctx.measureText('Abc...').width
+    const doNotPlotLinkLabel = !linkText || availableSpaceForLinkLabel < ctx.measureText('Abc...').width
 
     if (doNotPlotLinkLabel) {
-      linkText = ''
+      
       ctx.beginPath();
       ctx.moveTo(xs, ys);
       ctx.lineTo(xt, yt);
@@ -233,7 +247,7 @@ export default class GeppettoGraphVisualization extends Component {
 
 
     } else {
-      if (textLength > availableSpaceForLinkLabel){
+      if (linkText && textLength > availableSpaceForLinkLabel){
         var i = linkText.length - 3 // for the ... at the end
         while (ctx.measureText(linkText.substring(0, i) + '...').width > availableSpaceForLinkLabel) {
           i--
@@ -255,14 +269,16 @@ export default class GeppettoGraphVisualization extends Component {
       ctx.moveTo(cx + subX, cy + subY);
       ctx.lineTo(xt, yt);
       ctx.stroke()
+      // Draw text for link label
+      
     }
-
-    // Draw text for link label
+    
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(angle)
-    ctx.fillText(linkText, 0, 0);
-    
+    if (linkText){
+      ctx.fillText(linkText, 0, 0);
+    }
     // Draw arrow to indicate link direction
     var dist = (linkLength / 2 - this.size) - arrowSize
     ctx.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -293,7 +309,7 @@ export default class GeppettoGraphVisualization extends Component {
     const color = node.color || '#6520ff'
     ctx.font = this.font
     
-    var label = node.id;
+    var label = this.getNodeLabel(node);
     
     ctx.fillStyle = color
     ctx.beginPath(); 
@@ -311,7 +327,7 @@ export default class GeppettoGraphVisualization extends Component {
     
     const maxCharsPerLine = Math.floor(this.size * 1.75 / ctx.measureText("a").width)
       
-    const nodeLabel = splitter(node.id, maxCharsPerLine)
+    const nodeLabel = splitter(label, maxCharsPerLine)
     
     // Use single, double or triple lines to put text inside node
     if (nodeLabel.length == 1) {
