@@ -818,8 +818,7 @@ export default function (GEPPETTO) {
         
         // STEP 3a: merge old geppettoModel.variables
         let diffVars = diffModel.variables;
-        let diffReportVars = diffReport.variables;
-        this._mergeVariables(diffVars, diffReportVars, this.geppettoModel);
+        diffReport.variables = this._mergeVariables(diffVars, this.geppettoModel);
 
         const currentWorld = this.geppettoModel.getCurrentWorld();
         // STEP 3b: merge world.variables and instances
@@ -827,22 +826,26 @@ export default function (GEPPETTO) {
           this.populateInstanceReferences(diffModel);
           diffVars = diffModel.getCurrentWorld().getVariables();
           diffReport.worlds = rawModel.worlds.map(world => ({ ...world, variables: [], instances: [] }))
-          diffReportVars = diffReport.worlds[0].variables; // TODO handle multiple worlds
-          this._mergeVariables(diffVars, diffReportVars, currentWorld);
+          
+          // TODO handle multiple worlds
+          diffReport.worlds[0].variables = diffReport.worlds[0].variables.concat(
+            this._mergeVariables(diffVars, currentWorld)
+          );
 
-
-          this._mergeInstances(
+          // TODO handle multiple worlds
+          diffReport.worlds[0].instances = this._mergeInstances(
             diffModel.getCurrentWorld().getInstances(), 
-            diffReport.worlds[0].instances, 
             currentWorld);
         }
         
         return diffReport;
       },
 
-      _mergeVariables: function (diffVars, diffReportVars, parent) {
+      _mergeVariables: function (diffVars, parent) {
         const currentModelVars = parent.getVariables(true);
         const wrappedObj = parent.wrappedObj;
+        const diffReportVars = [];
+
         for (var x = 0; x < diffVars.length; x++) {
           if (diffVars[x].getWrappedObj().synched == true) {
             // if synch placeholder var, skip it
@@ -879,11 +882,20 @@ export default function (GEPPETTO) {
             diffVars[x].getParent()[diffVars[x].getId()] = diffVars[x];
           }
         }
+        return diffReportVars;
       },
 
-      _mergeInstances: function (diffInst, diffReportInst, parent) {
+      /**
+       * Merge simple instances 
+       * @param {*} diffInst wrapped instance objects to be added
+       * @param {*} diffReportInst diff report list to be filled
+       * @param {World} parent - parent container: the world in which the instances are defined
+       */
+      _mergeInstances: function (diffInst, parent) {
         const currentModelInst = parent.getInstances();
         const wrappedObj = parent.wrappedObj;
+        const diffReportInst = [];
+
         for (var x = 0; x < diffInst.length; x++) {
           if (diffInst[x].getWrappedObj().synched == true) {
             // if synch placeholder var, skip it
@@ -921,6 +933,7 @@ export default function (GEPPETTO) {
             this.geppettoModel[diffInst[x].getId()] = diffInst[x];
           }
         }
+        return diffReportInst;
       },
             
       mergeValue: function (rawModel, overrideTypes) {
