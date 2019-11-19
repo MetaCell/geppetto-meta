@@ -17,7 +17,7 @@ function GeppettoModel (options) {
   this.datasources = (options.datasources != undefined) ? options.datasources : [];
   this.queries = (options.queries != undefined) ? options.queries : [];
   this.worlds = options.worlds != undefined ? options.worlds : [];
-  this.currentWorldIdx = 0;
+  this.currentWorldIdx = this.wrappedObj.worlds && this.wrappedObj.worlds.length ? 0 : -1;
 }
 
 GeppettoModel.prototype = Object.create(ObjectWrapper.prototype);
@@ -31,9 +31,33 @@ GeppettoModel.prototype.constructor = GeppettoModel;
  * @returns {List<Variable>} - List of Variable objects
  *
  */
-GeppettoModel.prototype.getVariables = function () {
+GeppettoModel.prototype.getVariables = function (legacy) {
+  if (this.currentWorldIdx >= 0 && !legacy) {
+    return this.getCurrentWorld().getVariables();
+  }
   return this.variables;
 };
+
+GeppettoModel.prototype.addToVariables = function (variablesToAdd) {
+  let variables = this.getVariables();
+  variables.push.apply(variables, variablesToAdd);
+};
+
+GeppettoModel.prototype.setVariables = function (variables) {
+  if (this.currentWorldIdx >= 0) {
+    this.getCurrentWorld().setVariables(variables);
+  } else {
+    this.variables = variables;
+  }
+};
+
+GeppettoModel.prototype.getAllVariables = function () {
+  if (this.currentWorldIdx >= 0) {
+    return this.getCurrentWorld().getVariables().concat(this.variables);
+  }
+  return this.variables;
+};
+
     
 /**
  * Get the id

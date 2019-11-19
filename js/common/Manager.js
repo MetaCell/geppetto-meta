@@ -117,6 +117,27 @@ Manager.prototype = {
   },
 
   /**
+   * Fetch variables and instances
+   *
+   * @param variables
+   * @param instances
+   * @param worldId
+   * @param datasourceId
+   */
+  fetch: function (variableIds, instanceIds, worldId, datasourceId, callback) {
+    var params = {};
+    params["projectId"] = Project.getId();
+    params["variables"] = variableIds;
+    params["instances"] = instanceIds;
+    params["worldId"] = worldId;
+    params["dataSourceId"] = datasourceId;
+
+    var requestID = GEPPETTO.MessageSocket.send("fetch", params, callback);
+
+    GEPPETTO.trigger('spin_logo');
+  },
+
+  /**
    * Adds fetched variable to model
    *
    * @param rawModel

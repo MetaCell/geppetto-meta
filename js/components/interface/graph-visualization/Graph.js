@@ -339,7 +339,7 @@ export default class GeppettoGraphVisualization extends Component {
     const { data, d2 = false, xGap = 20, yGap = 40, ...others } = this.props;
     
     this.addFixedPositionToNodes(data)
-    
+     
     const props = {
       ref: this.ggv,
       graphData: data,
