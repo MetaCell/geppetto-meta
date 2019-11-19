@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import * as d3 from 'd3-force-3d'
-import { ForceGraph3D, ForceGraph2D } from 'react-force-graph';
+import * as THREE from 'three'
+import ForceGraph2D from 'react-force-graph-2d';
+import ForceGraph3D from 'react-force-graph-3d';
 
 import { splitter, getDarkerColor } from './utils'
 
@@ -20,6 +22,7 @@ export default class GeppettoGraphVisualization extends Component {
   doubleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.25)
   tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
   
+  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 0
 
   componentDidMount (){
     const { data, url } = this.props
@@ -31,6 +34,7 @@ export default class GeppettoGraphVisualization extends Component {
       this.ggv.current.d3Force('collide', d3.forceCollide(this.size));
       this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
       this.ggv.current.d3Force('charge').strength(forceChargeStrength)
+      this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
     }
     if (url) {
       this.addToScene()
@@ -46,7 +50,7 @@ export default class GeppettoGraphVisualization extends Component {
   componentDidUpdate () {
     const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
     if (this.props.d2) {
-      this.ggv.current.centerAt(0)
+      this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
     }
     if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
       this.dimensions = dimensions

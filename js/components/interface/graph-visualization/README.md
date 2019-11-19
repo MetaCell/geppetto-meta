@@ -19,6 +19,8 @@
 }
 ```
 
+If we update the data preserving the references to each node, then the graph will preserve the position, but if a new reference is provided for a particular node, then the graph will reset the position of that particular node.
+
 - **d2**: Bool (Optional. Default: false)
     If true, the graph would be 2D.
 
@@ -52,6 +54,10 @@
     Adjust the stiffness coiefficient for the spring simulated between two nodes
 - **forceChargeStrength**: Int (Optional. Default: -200).
     Adjust the repulsion coefficient simulated between two nodes.
+- **timeToCenter2DCamera**: Int (Optional. Default: 0).
+    Transition time in ms when centering camera in 2D Graph after window resize event.
+- **forceRadial**: Int (Optional. Default: 1).
+    Creates a radial atractive force of radial circle equal to forceRadial. Useful to avoid nodes scattering away when they have no links.
 
 ## Disable drag and forces for some nodes
 
