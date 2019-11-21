@@ -468,7 +468,7 @@ define(function (require) {
                   for (j in list) {
                     objects = objects + list[j] + '\n';
                   }
-                  if (objects !== '') {
+                  if (objects !== '' && index == 0) {
                     that.setHoverText(callX,callY,objects);
                   }
                 }
@@ -486,6 +486,7 @@ define(function (require) {
             });
           })(i, that);
         });
+        that.state.loadingLabels = false;
       }
     },
 
