@@ -175,8 +175,11 @@ export default {
         GEPPETTO.SceneController.selectInstance(this.getInstancePath(), geometryIdentifier);
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
-        // signal selection has changed in simulation pass instance
-        GEPPETTO.trigger(GEPPETTO.Events.Select, this, geometryIdentifier, point);
+        /*
+         * signal selection has changed in simulation pass instance
+         * GEPPETTO.trigger(GEPPETTO.Events.Select, this, geometryIdentifier, point);
+         */
+        GEPPETTO.StoreManager.actionsHandler["SELECT_INSTANCE"](this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
       }
@@ -287,4 +290,3 @@ export default {
     return this;
   }
 }
-

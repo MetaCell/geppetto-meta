@@ -5,15 +5,22 @@ export const clientInitialStatus = {
   selected: undefined,
 };
 
-export default ( state = {}, action ) => ({
-  ...state,
-  ...clientReducer(state, action)
-});
+export default function geppettoClientReducer ( state = {}, action ) {
+  return ({
+    ...state,
+    ...clientReducer(state, action)
+  });
+}
 
 function clientReducer (state, action) {
   switch (action.type) {
   case SELECT_INSTANCE:
-    console.log("SELECT instance case hit");
+    if (action.data !== undefined) {
+      return {
+        ...state,
+        selected: action.data
+      };
+    }
     break;
   default:
     console.log("default scenario hit");

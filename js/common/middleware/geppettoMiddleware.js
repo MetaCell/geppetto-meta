@@ -19,7 +19,7 @@ export function callbacksMiddleware({ getState, dispatch }) {
       case SELECT_INSTANCE:
         if (callbacksList[action.type].list.length > 0) {
           callbacksList[action.type].list.map(item => {
-            item();
+            item(action);
           });
         }
         break;

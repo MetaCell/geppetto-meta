@@ -4,10 +4,11 @@ import {
   compose,
   combineReducers,
 } from "redux";
-import callbacksMiddleware from '../middleware/geppettoMiddleware';
+import { callbacksMiddleware } from '../middleware/geppettoMiddleware';
 
-import { geppettoModel, modelInitialStatus } from '../reducer/geppettoModel';
-import { geppettoClient, clientInitialStatus } from '../reducer/geppettoClient';
+// TO FIX: status is state
+import geppettoModelReducer, { modelInitialStatus } from '../reducer/geppettoModel';
+import geppettoClientReducer, { clientInitialStatus } from '../reducer/geppettoClient';
 
 const initialState = {
   model: modelInitialStatus,
@@ -15,8 +16,8 @@ const initialState = {
 };
 
 const staticReducers = {
-  client: geppettoClient,
-  model: geppettoModel
+  client: geppettoClientReducer,
+  model: geppettoModelReducer
 }
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

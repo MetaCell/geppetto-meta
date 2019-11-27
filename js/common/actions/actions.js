@@ -61,7 +61,11 @@ export const ERROR_WHILE_EXEC_PYTHON_COMMAND = "ERROR_WHILE_EXEC_PYTHON_COMMAND"
 
 // Model actions
 
-export const selectInstance = ({ instance }) => ({
+export const selectInstance = ( scope, geometryIdentifier, point ) => ({
   type: SELECT_INSTANCE,
-  data: { instance: instance }
+  data: {
+    scope: scope,
+    geometryIdentifier: geometryIdentifier,
+    point: point
+  }
 });

@@ -7,12 +7,13 @@
  */
 define(function (require) {
   require('../../../style/less/main.less');
-  
+
   var GEPPETTO = require('geppetto');
-  
+
   require('../../components/ComponentFactory')(GEPPETTO);
   require('../../components/WidgetFactory')(GEPPETTO);
-  
+  // require('../../common/GEPPETTO.StoreManager')(GEPPETTO);
+
   GEPPETTO.ComponentFactory.loadSpinner();
   window.GEPPETTO = GEPPETTO
 

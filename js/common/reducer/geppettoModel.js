@@ -9,10 +9,12 @@ export const modelInitialStatus = {
   instances: [],
 };
 
-export default ( state = {}, action ) => ({
-  ...state,
-  ...modelReducer(state, action)
-});
+export default function geppettoModelReducer ( state = {}, action ) {
+  return ({
+    ...state,
+    ...modelReducer(state, action)
+  });
+}
 
 function modelReducer (state, action) {
   switch (action.type) {
