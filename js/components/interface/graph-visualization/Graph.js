@@ -12,17 +12,17 @@ export default class GeppettoGraphVisualization extends Component {
   // Ref to GGV container
   ggv = React.createRef()
 
-  dimensions = { width: 1, height: 1 }
+  dimensions = { width: 200, height: 200 }
 
-  font = this.props.font ? this.props.font : "6px Source Sans Pro"
-  size = this.props.nodeRelSize ? this.props.nodeRelSize : 20
-  borderSize = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.1)
+  font = this.props.font || "6px Source Sans Pro"
+  size = this.props.nodeRelSize || 20
+  borderSize = Math.floor((this.props.nodeRelSize || 20) * 0.1)
 
   // Gap to leave between lines in text inside nodes in 2D graphs
-  doubleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.25)
-  tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
+  doubleGap = Math.floor((this.props.nodeRelSize || 20) * 0.25)
+  tripleGap = Math.floor((this.props.nodeRelSize || 20) * 0.35)
   
-  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 0
+  timeToCenter2DCamera = this.props.timeToCenter2DCamera || 0
 
   getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
   getLinkLabel = this.props.linkLabel ? this.fnOrField(this.props.linkLabel) : link => link.name
@@ -35,35 +35,33 @@ export default class GeppettoGraphVisualization extends Component {
     const { data, url } = this.props
 
     if (this.props.d2) {
-      const forceLinkDistance = this.props.forceLinkDistance ? this.props.forceLinkDistance : 90
-      const forceLinkStrength = this.props.forceLinkStrength ? this.props.forceLinkStrength : 0.7
-      const forceChargeStrength = this.props.forceChargeStrength ? this.props.forceChargeStrength : -200
-      const collideSize = this.collideSize ? this.collideSize : this.size * 1.5
+      const forceLinkDistance = this.props.forceLinkDistance || 90
+      const forceLinkStrength = this.props.forceLinkStrength || 0.7
+      const forceChargeStrength = this.props.forceChargeStrength || -200
+      const collideSize = this.props.collideSize || this.size * 1.5
       this.ggv.current.d3Force('collide', d3.forceCollide(collideSize));
       this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
       this.ggv.current.d3Force('charge').strength(forceChargeStrength)
       this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
+      this.ggv.current.d3Force('center', null)
     }
     if (url) {
       this.addToScene()
     } else if (!this.props.d2) {
       this.zoomCameraToFitScene()
     } else {
-      
       this.forceUpdate()
-      
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
-    if (this.props.d2) {
-      this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
-    }
     if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
       this.dimensions = dimensions
+      if (this.props.d2) {
+        this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
+      }
       this.forceUpdate()
-      
     }
   }
 
