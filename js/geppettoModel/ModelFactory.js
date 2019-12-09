@@ -101,7 +101,7 @@ export default function (GEPPETTO) {
             this.fillWorldsFromRawModel(geppettoModel, jsonModel);
           }
 
-          if(jsonModel.tags) {
+          if (jsonModel.tags) {
             this.geppettoModel.tags = jsonModel.tags.map(wr => wr.name);
           }
 
@@ -2949,7 +2949,7 @@ export default function (GEPPETTO) {
           } else if (raw[i].indexOf('anonymousTypes') > -1) {
             reference = reference.getAnonymousTypes()[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 1) {
-            reference = this.geppettoModel.tags[index]
+            reference = this.rawGeppetoModel.tags && this.rawGeppetoModel.tags.length >= index ? this.rawGeppetoModel.tags[index] : this.geppettoModel.tags[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 2) {
             reference = reference.tags[index];
           } else if (raw[i].indexOf('visualGroups') > -1) {
