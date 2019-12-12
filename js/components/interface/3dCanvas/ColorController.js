@@ -95,7 +95,7 @@ define(['jquery'], function () {
         }
 
         var currentCompositePath = composite.getInstancePath();
-        if (!compositeToLit.hasOwnProperty(currentCompositePath)) {
+        if (!Object.prototype.hasOwnProperty.call(compositeToLit, currentCompositePath)) {
           compositeToLit[currentCompositePath] = composite;
           visualObjectsToLit[currentCompositePath] = [];
           variables[currentCompositePath] = [];

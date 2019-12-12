@@ -1,3 +1,6 @@
+/* eslint-disable no-dupe-keys */
+/* eslint-disable no-undef */
+/* eslint-disable brace-style */
 /*
  * The 3D engine used by the 3D canvas component. This class is internal, any method you
  * use from inside here might break between versions. Methods maintained are the exposed ones
@@ -28,11 +31,11 @@ define(['jquery'], function () {
   THREE.FilmPass = require('imports-loader?THREE=three!exports-loader?THREE.FilmPass!three\/examples\/js\/postprocessing\/FilmPass');
 
   class ThreeDEngine {
-    constructor(container, viewerId) {
+    constructor (container, viewerId) {
       this.container = container;
       this.colorController = new (require('./ColorController'))(this);
       this.viewerId = viewerId;
-      //Engine components
+      // Engine components
       this.scene = new THREE.Scene();
       this.camera = null;
       this.controls = null;
@@ -42,16 +45,16 @@ define(['jquery'], function () {
       this.sceneCenter = new THREE.Vector3();
       this.cameraPosition = new THREE.Vector3();
       this.mouse = { x: 0, y: 0 };
-      //The content of the scene
+      // The content of the scene
       this.meshes = {};
       this.splitMeshes = {};
       this.connectionLines = {};
       this.visualModelMap = {};
       this.complexity = 0;
-      this.sceneMaxRadius = 0; //maximum radius of bounding sphere in scene
-      this.linePrecisionMinRadius = 300; //Default expected minimum radius
-      this.minAllowedLinePrecision = 1; //default line precision, can't go lower than this
-      //Settings
+      this.sceneMaxRadius = 0; // maximum radius of bounding sphere in scene
+      this.linePrecisionMinRadius = 300; // Default expected minimum radius
+      this.minAllowedLinePrecision = 1; // default line precision, can't go lower than this
+      // Settings
       this.linesThreshold = 2000;
       this.baseZoom = 1;
       this.aboveLinesThreshold = false;
@@ -64,7 +67,7 @@ define(['jquery'], function () {
       this.linesUserPreference = undefined;
       this.hoverListeners = undefined;
       this.THREE = THREE;
-      //Initialisation
+      // Initialisation
       this.setupCamera();
       this.setupRenderer();
       this.setupLights();
@@ -114,8 +117,10 @@ define(['jquery'], function () {
      * Set up the WebGL Renderer
      */
     setupRenderer: function () {
-      // Reuse a single WebGL renderer.
-      // NOTE: Recreating the renderer causes camera displacement on Chrome OSX.
+      /*
+       * Reuse a single WebGL renderer.
+       * NOTE: Recreating the renderer causes camera displacement on Chrome OSX.
+       */
       if (!this.canvasCreated) {
         this.renderer = new THREE.WebGLRenderer({
           antialias: true,
@@ -153,13 +158,14 @@ define(['jquery'], function () {
           var y = event.clientY;
 
           // If the mouse moved since the mousedown then don't consider this a selection
-          if (x != clientX || y != clientY)
+          if (typeof clientX === 'undefined' || typeof clientY === 'undefined' || x != clientX || y != clientY) {
             return;
+          }
 
           that.mouse.y = -((event.clientY - (that.renderer.domElement.getBoundingClientRect().top)) / that.renderer.domElement.getBoundingClientRect().height) * 2 + 1;
           that.mouse.x = ((event.clientX - (that.renderer.domElement.getBoundingClientRect().left)) / that.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
-          if (event.button == 0) //only for left click
+          if (event.button == 0) // only for left click
           {
             if (that.pickingEnabled) {
               var intersects = that.getIntersectedObjects();
@@ -170,10 +176,12 @@ define(['jquery'], function () {
 
                 // sort intersects
                 var compare = function (a, b) {
-                  if (a.distance < b.distance)
+                  if (a.distance < b.distance) {
                     return -1;
-                  if (a.distance > b.distance)
+                  }
+                  if (a.distance > b.distance) {
                     return 1;
+                  }
                   return 0;
                 };
 
@@ -184,34 +192,38 @@ define(['jquery'], function () {
                 for (var i = 0; i < intersects.length; i++) {
                   // figure out if the entity is visible
                   var instancePath = "";
-                  if (intersects[i].object.hasOwnProperty("instancePath")) {
+                  if (Object.prototype.hasOwnProperty.call(intersects[i].object, 'instancePath')) {
                     instancePath = intersects[i].object.instancePath;
                     geometryIdentifier = intersects[i].object.geometryIdentifier;
                   } else {
-                    //weak assumption: if the object doesn't have an instancePath its parent will
+                    // weak assumption: if the object doesn't have an instancePath its parent will
                     instancePath = intersects[i].object.parent.instancePath;
                     geometryIdentifier = intersects[i].object.parent.geometryIdentifier;
                   }
                   if (instancePath != null || undefined) {
                     var visible = eval(instancePath + '.visible');
                     if (intersects.length == 1 || i == intersects.length) {
-                      //if there's only one element intersected we select it regardless of its opacity
+                      // if there's only one element intersected we select it regardless of its opacity
                       if (visible) {
                         selected = instancePath;
                         selectedIntersect = intersects[i];
                         break;
                       }
                     } else {
-                      //if there are more than one element intersected and opacity of the current one is less than 1
-                      //we skip it to realize a "pick through"
+                      /*
+                       *if there are more than one element intersected and opacity of the current one is less than 1
+                       *we skip it to realize a "pick through"
+                       */
                       var opacity = that.meshes[instancePath].defaultOpacity;
                       if ((opacity == 1 && visible) || GEPPETTO.isKeyPressed("ctrl")) {
                         selected = instancePath;
                         selectedIntersect = intersects[i];
                         break;
                       } else if (visible && opacity < 1 && opacity > 0) {
-                        //if only transparent objects intersected select first or the next down if
-                        //one is already selected in order to enable "burrow through" sample.
+                        /*
+                         *if only transparent objects intersected select first or the next down if
+                         *one is already selected in order to enable "burrow through" sample.
+                         */
                         if (selected == "" && !eval(instancePath + '.selected')) {
                           selected = instancePath;
                           selectedIntersect = intersects[i];
@@ -227,7 +239,7 @@ define(['jquery'], function () {
 
 
                 if (selected != "") {
-                  if (that.meshes.hasOwnProperty(selected) || that.splitMeshes.hasOwnProperty(selected)) {
+                  if (Object.prototype.hasOwnProperty.call(that.meshes, selected) || Object.prototype.hasOwnProperty.call(that.splitMeshes, selected)) {
                     if (!GEPPETTO.isKeyPressed("shift")) {
                       that.deselectAll();
                     }
@@ -293,7 +305,7 @@ define(['jquery'], function () {
       }
 
       var color = new THREE.Color(this.backgroundColor);
-      //this.renderer.setClearColor(color, 1);
+      // this.renderer.setClearColor(color, 1);
       this.renderer.setPixelRatio(window.devicePixelRatio);
 
       this.renderer.autoClear = false;
@@ -318,7 +330,7 @@ define(['jquery'], function () {
         this.composer.addPass(effectFilm);
         this.composer.addPass(effectFocus);
       } else {
-        //standard
+        // standard
         renderModel.renderToScreen = true;
         this.composer.addPass(renderModel);
       }
@@ -330,7 +342,14 @@ define(['jquery'], function () {
      */
     setupLights: function () {
       // Lights
-      this.camera.add(new THREE.PointLight(0xffffff, 1.5));
+      var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+      this.scene.add(ambientLight);
+      // add spotlight for the shadows
+      var spotLight = new THREE.SpotLight(0xffffff);
+      spotLight.position.set(-30, 60, 60);
+      spotLight.castShadow = true;
+      this.scene.add(spotLight);
+      this.camera.add(new THREE.PointLight(0xffffff, 1));
     },
 
     /**
@@ -351,21 +370,21 @@ define(['jquery'], function () {
       var aabbMax = null;
 
       this.scene.traverse(function (child) {
-        if (child.hasOwnProperty("geometry") && (child.visible === true)) {
+        if ( Object.prototype.hasOwnProperty.call(child, "geometry") && (child.visible === true)) {
           child.geometry.computeBoundingBox();
 
           var bb = child.geometry.boundingBox;
           bb.translate(child.localToWorld(new THREE.Vector3()));
 
-          // If min and max vectors are null, first values become
-          // default min and max
+          /*
+           * If min and max vectors are null, first values become
+           * default min and max
+           */
           if (aabbMin == null && aabbMax == null) {
             aabbMin = bb.min;
             aabbMax = bb.max;
-          }
-
-          // Compare other meshes, particles BB's to find min and max
-          else {
+          } else {
+            // Compare other meshes, particles BB's to find min and max
             aabbMin.x = Math.min(aabbMin.x, bb.min.x);
             aabbMin.y = Math.min(aabbMin.y, bb.min.y);
             aabbMin.z = Math.min(aabbMin.z, bb.min.z);
@@ -415,17 +434,16 @@ define(['jquery'], function () {
      * @param {WIDGET_EVENT_TYPE} event - Event that tells widgets what to do
      */
     update: function (event, parameters) {
-      //reset plot's datasets
+      // reset plot's datasets
       if (event == GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.RESET_DATA) {
 
 
-      }
-      else if (event == GEPPETTO.Events.Experiment_update) {
+      } else if (event == GEPPETTO.Events.Experiment_update) {
         this.scene.traverse(function (child) {
           if (child instanceof THREE.Points) {
             var instance = Instances.getInstance(child.instancePath);
             if (instance.getTimeSeries() != undefined && instance.getTimeSeries()[parameters.step] != undefined) {
-              //if we have recorded this object we'll have a timeseries
+              // if we have recorded this object we'll have a timeseries
               var particles = instance.getTimeSeries()[parameters.step].particles;
               for (var p = 0; p < particles.length; p++) {
                 child.geometry.vertices[p].x = particles[p].x;
@@ -541,8 +559,9 @@ define(['jquery'], function () {
           this.axis = new THREE.AxisHelper(200);
           this.scene.add(this.axis);
         }
-      } else
+      } else {
         this.scene.remove(this.axis);
+      }
     },
 
     /**
@@ -587,14 +606,14 @@ define(['jquery'], function () {
     getDefaultGeometryType: function () {
       // Unless it's being forced we use a threshold to decide whether to use lines or cylinders
       if (!this.aboveLinesThreshold) {
-        //Unless we are already above the threshold...
+        // Unless we are already above the threshold...
         this.aboveLinesThreshold = this.complexity > this.linesThreshold;
 
         if (this.aboveLinesThreshold) {
 
           if (this.linesUserInput && this.linesUserPreference == undefined) {
 
-            //we need to ask the user
+            // we need to ask the user
             this.linesUserPreference = confirm("The model you are loading has a complex morphology, would you like to render it using lines instead of 3D shapes? Be careful, choosing to use 3D shapes might crash your browser!");
           }
         }
@@ -602,8 +621,7 @@ define(['jquery'], function () {
 
       if (this.aboveLinesThreshold && this.linesUserInput) {
         geometry = this.linesUserPreference ? 'lines' : 'cylinders';
-      }
-      else {
+      } else {
         geometry = this.aboveLinesThreshold ? 'lines' : 'cylinders';
       }
 
@@ -672,7 +690,7 @@ define(['jquery'], function () {
     checkVisualInstance: function (instance, lines, thickness) {
       var traversedInstances = [];
       if (instance.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-        //since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
+        // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if ((instance.getType().getMetaType() != GEPPETTO.Resources.ARRAY_TYPE_NODE) && instance.getVisualType()) {
           this.buildVisualInstance(instance, lines, thickness);
         }
@@ -729,13 +747,13 @@ define(['jquery'], function () {
         this.meshes[instancePath].input = false;
         this.meshes[instancePath].output = false;
 
-        //Split anything that was splitted before
+        // Split anything that was splitted before
         if (instancePath in this.splitMeshes) {
           var splitMeshes = this.splitMeshes;
           var elements = {};
           for (var splitMesh in splitMeshes) {
             if (splitMeshes[splitMesh].instancePath == instancePath && splitMesh != instancePath) {
-              visualObject = splitMesh.substring(instancePath.length + 1);
+              let visualObject = splitMesh.substring(instancePath.length + 1);
               elements[visualObject] = "";
             }
           }
@@ -760,22 +778,24 @@ define(['jquery'], function () {
       var color = undefined;
       if (previous3DObject) {
         color = previous3DObject.material.defaultColor;
-        // if an object already exists for this aspect we remove it. This could happen in case we are changing how an aspect
-        // is visualized, e.g. lines over tubes representation
+        /*
+         * if an object already exists for this aspect we remove it. This could happen in case we are changing how an aspect
+         * is visualized, e.g. lines over tubes representation
+         */
         this.scene.remove(previous3DObject);
         var splitMeshes = this.splitMeshes;
         for (var m in splitMeshes) {
           if (m.indexOf(instance.getInstancePath()) != -1) {
             this.scene.remove(splitMeshes[m]);
-            //splitMeshes[m] = null;
+            // splitMeshes[m] = null;
           }
         }
 
       }
       var that = this;
-      //TODO This can be optimised, no need to create both
-      var materials =
-      {
+      // TODO This can be optimised, no need to create both
+      var materials
+      = {
         "mesh": that.getMeshPhongMaterial(color),
         "line": that.getLineMaterial(thickness, color)
       };
@@ -795,8 +815,7 @@ define(['jquery'], function () {
             instanceObjects.push(threeDeeObjList[obj]);
           }
         }
-      }
-      else if (threeDeeObjList.length == 1) {
+      } else if (threeDeeObjList.length == 1) {
         // only one object in list, add it to local array and set
         instanceObjects.push(threeDeeObjList[0]);
         instanceObjects[0].instancePath = instance.getInstancePath();
@@ -818,10 +837,9 @@ define(['jquery'], function () {
       var visualType = instance.getVisualType();
       if (visualType == undefined) {
         return threeDeeObjList;
-      }
-      else {
+      } else {
         if ($.isArray(visualType)) {
-          //TODO if there is more than one visual type we need to display all of them
+          // TODO if there is more than one visual type we need to display all of them
           visualType = visualType[0];
         }
       }
@@ -833,8 +851,7 @@ define(['jquery'], function () {
             threeDeeObjList.push(threeDeeObj);
           }
         }
-      }
-      else if (visualType.getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE && visualType.getId() == "particles") {
+      } else if (visualType.getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE && visualType.getId() == "particles") {
         var visualValue = instance.getVariable().getWrappedObj().initialValues[0].value;
         threeDeeObj = this.create3DObjectFromInstance(instance, visualValue, instance.getVariable().getId(), materials, lines);
         if (threeDeeObj) {
@@ -870,17 +887,14 @@ define(['jquery'], function () {
           }
           mergedLines.vertices.push(obj.geometry.vertices[0]);
           mergedLines.vertices.push(obj.geometry.vertices[1]);
-        }
-        else if (obj.geometry.type == "Geometry") {
+        } else if (obj.geometry.type == "Geometry") {
           // This catches both Collada an OBJ
           if (objArray.length > 1) {
             throw Error("Merging of multiple OBJs or Colladas not supported");
-          }
-          else {
+          } else {
             ret = obj;
           }
-        }
-        else {
+        } else {
           if (mergedMeshes === undefined) {
             mergedMeshes = new THREE.Geometry()
           }
@@ -894,8 +908,10 @@ define(['jquery'], function () {
       });
 
       if (mergedLines === undefined) {
-        // There are no line geometries, we just create a mesh for the merge of the solid geometries
-        // and apply the mesh material
+        /*
+         * There are no line geometries, we just create a mesh for the merge of the solid geometries
+         * and apply the mesh material
+         */
         ret = new THREE.Mesh(mergedMeshes, materials["mesh"]);
       } else {
         ret = new THREE.LineSegments(mergedLines, materials["line"]);
@@ -928,41 +944,41 @@ define(['jquery'], function () {
       var threeObject = null;
 
       if (lines === undefined) {
-        lines = this.getDefaultGeometryType() == 'lines' ? true : false;
+        lines = this.getDefaultGeometryType() == 'lines';
       }
 
       var material = lines ? materials["line"] : materials["mesh"];
 
       switch (node.eClass) {
-        case GEPPETTO.Resources.PARTICLES:
-          threeObject = this.createParticles(node);
-          break;
+      case GEPPETTO.Resources.PARTICLES:
+        threeObject = this.createParticles(node);
+        break;
 
-        case GEPPETTO.Resources.CYLINDER:
-          if (lines) {
-            threeObject = this.create3DLineFromNode(node, material);
-          } else {
-            threeObject = this.create3DCylinderFromNode(node, material);
-          }
-          this.complexity++;
-          break;
+      case GEPPETTO.Resources.CYLINDER:
+        if (lines) {
+          threeObject = this.create3DLineFromNode(node, material);
+        } else {
+          threeObject = this.create3DCylinderFromNode(node, material);
+        }
+        this.complexity++;
+        break;
 
-        case GEPPETTO.Resources.SPHERE:
-          if (lines) {
-            threeObject = this.create3DLineFromNode(node, material);
-          } else {
-            threeObject = this.create3DSphereFromNode(node, material);
-          }
-          this.complexity++;
-          break;
-        case GEPPETTO.Resources.COLLADA:
-          threeObject = this.loadColladaModelFromNode(node);
-          this.complexity++;
-          break;
-        case GEPPETTO.Resources.OBJ:
-          threeObject = this.loadThreeOBJModelFromNode(node);
-          this.complexity++;
-          break;
+      case GEPPETTO.Resources.SPHERE:
+        if (lines) {
+          threeObject = this.create3DLineFromNode(node, material);
+        } else {
+          threeObject = this.create3DSphereFromNode(node, material);
+        }
+        this.complexity++;
+        break;
+      case GEPPETTO.Resources.COLLADA:
+        threeObject = this.loadColladaModelFromNode(node);
+        this.complexity++;
+        break;
+      case GEPPETTO.Resources.OBJ:
+        threeObject = this.loadThreeOBJModelFromNode(node);
+        this.complexity++;
+        break;
       }
       if (threeObject) {
         threeObject.visible = true;
@@ -1147,8 +1163,10 @@ define(['jquery'], function () {
      * @returns {THREE.Mesh}
      */
     modify3DSphere: function (object, x, y, z, radius, material) {
-      // Impossible to change the radius of a Sphere.
-      // Removing old object and creating a new one
+      /*
+       * Impossible to change the radius of a Sphere.
+       * Removing old object and creating a new one
+       */
       this.scene.remove(object);
       var mesh = this.add3DSphere(x, y, z, radius, material);
       mesh.instancePath = object.instancePath;
@@ -1190,14 +1208,14 @@ define(['jquery'], function () {
 
       var geometry = new THREE.Geometry();
       geometry.vertices.push(
-        new THREE.Vector3(x1, y1, z1),//vertex0
-        new THREE.Vector3(x2, y2, z2),//1
-        new THREE.Vector3(x3, y3, z3),//2
-        new THREE.Vector3(x4, y4, z4)//3
+        new THREE.Vector3(x1, y1, z1),// vertex0
+        new THREE.Vector3(x2, y2, z2),// 1
+        new THREE.Vector3(x3, y3, z3),// 2
+        new THREE.Vector3(x4, y4, z4)// 3
       );
       geometry.faces.push(
-        new THREE.Face3(2, 1, 0),//use vertices of rank 2,1,0
-        new THREE.Face3(3, 1, 2)//vertices[3],1,2...
+        new THREE.Face3(2, 1, 0),// use vertices of rank 2,1,0
+        new THREE.Face3(3, 1, 2)// vertices[3],1,2...
       );
       geometry.computeBoundingBox();
 
@@ -1234,7 +1252,7 @@ define(['jquery'], function () {
           textureURL,
           // Function when resource is loaded
           function (texture) {
-            //texture.minFilter = THREE.LinearFilter;
+            // texture.minFilter = THREE.LinearFilter;
             material.map = texture;
             texture.flipY = false;
             material.opacity = 0.3;
@@ -1252,8 +1270,7 @@ define(['jquery'], function () {
           }
         );
 
-      }
-      else {
+      } else {
         material.opacity = 0.3;
         material.transparent = true;
         material.color.setHex("0xb0b0b0");
@@ -1375,7 +1392,7 @@ define(['jquery'], function () {
       if (!isNaN(color % 1)) {
         // we have an integer (hex) value
         threeColor.setHex(color);
-      } else if (color.hasOwnProperty("r") && color.hasOwnProperty("g") && color.hasOwnProperty("b")) {
+      } else if (Object.prototype.hasOwnProperty.call(color, "r") && Object.prototype.hasOwnProperty.call(color, "g") && Object.prototype.hasOwnProperty.call(color, "b")) {
         threeColor.r = color.r;
         threeColor.g = color.g;
         threeColor.b = color.b;
@@ -1504,8 +1521,7 @@ define(['jquery'], function () {
         this.rotate = setInterval(function () {
           that.incrementCameraRotate(0.01, 0)
         }, 100);
-      }
-      else {
+      } else {
         this.movieMode(false);
         clearInterval(this.rotate);
         this.rotate = null;
@@ -1554,8 +1570,7 @@ define(['jquery'], function () {
           }
 
         }
-      }
-      else {
+      } else {
         if (instancePath in this.meshes) {
           meshes.push(this.meshes[instancePath]);
         }
@@ -1588,7 +1603,7 @@ define(['jquery'], function () {
           if (mesh.selected == false) {
             if (mesh instanceof THREE.Object3D) {
               mesh.traverse(function (child) {
-                if (child.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(child, "material")) {
                   that.setThreeColor(child.material.color, GEPPETTO.Resources.COLORS.SELECTED);
                   child.material.opacity = Math.max(0.5, child.material.defaultOpacity);
 
@@ -1604,7 +1619,7 @@ define(['jquery'], function () {
               mesh.material.opacity = Math.max(0.5, mesh.material.defaultOpacity);
               if (GEPPETTO.isKeyPressed('c')) {
                 mesh.geometry.computeBoundingBox();
-                //let's set the center of rotation to the selected mesh
+                // let's set the center of rotation to the selected mesh
                 this.controls.target.copy(mesh.position);
                 this.controls.target.add(mesh.geometry.boundingBox.getCenter());
               }
@@ -1636,14 +1651,12 @@ define(['jquery'], function () {
           for (var i in meshes) {
             delete allOtherMeshes[meshes[i]];
           }
-        }
-        else if (G.getSelectionOptions().show_inputs) {
+        } else if (G.getSelectionOptions().show_inputs) {
           var inputs = this.highlightInstances(true, GEPPETTO.Resources.INPUT);
           for (var i in inputs) {
             delete allOtherMeshes[inputs[i]];
           }
-        }
-        else if (G.getSelectionOptions().show_outputs) {
+        } else if (G.getSelectionOptions().show_outputs) {
           var outputs = this.highlightInstances(true, GEPPETTO.Resources.OUTPUT);
           for (var o in outputs) {
             delete allOtherMeshes[outputs[o]];
@@ -1682,7 +1695,7 @@ define(['jquery'], function () {
             var that = this;
             if (mesh instanceof THREE.Object3D) {
               mesh.traverse(function (child) {
-                if (child.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(child, "material")) {
                   that.setThreeColor(child.material.color, child.material.defaultColor);
                   child.material.opacity = child.material.defaultOpacity;
                 }
@@ -1699,11 +1712,9 @@ define(['jquery'], function () {
 
       if (G.getSelectionOptions().show_inputs && G.getSelectionOptions().show_outputs) {
         this.highlightInstances(instancePath, false);
-      }
-      else if (G.getSelectionOptions().show_inputs) {
+      } else if (G.getSelectionOptions().show_inputs) {
         this.highlightInstances(instancePath, false, GEPPETTO.Resources.INPUT);
-      }
-      else if (G.getSelectionOptions().show_outputs) {
+      } else if (G.getSelectionOptions().show_outputs) {
         this.highlightInstances(instancePath, false, GEPPETTO.Resources.OUTPUT);
       }
 
@@ -1734,7 +1745,7 @@ define(['jquery'], function () {
 
     /**
      * Show output connections for this object.
-
+     *
      * @command AVisualCapability.highlightInstances()
      * @param {boolean} mode - Show or hide output connections
      */
@@ -1744,11 +1755,10 @@ define(['jquery'], function () {
       }
       var entity = eval(path);
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
-        //show/hide connections
+        // show/hide connections
         if (mode) {
           this.highlightConnectedInstances(entity, type);
-        }
-        else {
+        } else {
           this.restoreConnectedInstancesColour(entity);
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
@@ -1809,7 +1819,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = true;
               mesh.traverse(function (object) {
-                if (object.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = true;
                     object.material.transparent = true;
@@ -1826,7 +1836,7 @@ define(['jquery'], function () {
             if (mesh instanceof THREE.Object3D) {
               mesh.ghosted = false;
               mesh.traverse(function (object) {
-                if (object.hasOwnProperty("material")) {
+                if (Object.prototype.hasOwnProperty.call(object, "material")) {
                   if (object.visible) {
                     object.ghosted = false;
                     object.material.opacity = object.material.defaultOpacity;
@@ -1879,7 +1889,7 @@ define(['jquery'], function () {
      */
     hideAllInstances: function () {
       for (var instancePath in this.meshes) {
-        if (this.meshes.hasOwnProperty(instancePath)) {
+        if (Object.prototype.hasOwnProperty.call(this.meshes,instancePath)) {
           this.hideInstance(instancePath);
         }
       }
@@ -1916,8 +1926,9 @@ define(['jquery'], function () {
       if (!this.hasInstance(instancePath)) {
         return;
       }
-      if (typeof color === 'string')
+      if (typeof color === 'string') {
         color = color.replace(/0X/i, "#");
+      }
       var meshes = this.getRealMeshesForInstancePath(instancePath);
       if (meshes.length > 0) {
         for (var i = 0; i < meshes.length; i++) {
@@ -1925,7 +1936,7 @@ define(['jquery'], function () {
           if (mesh) {
             var that = this;
             mesh.traverse(function (object) {
-              if (object.hasOwnProperty("material")) {
+              if (Object.prototype.hasOwnProperty.call(object,"material")) {
                 that.setThreeColor(object.material.color, color);
                 object.material.defaultColor = color;
               }
@@ -1943,7 +1954,7 @@ define(['jquery'], function () {
     getColor: function (instance) {
       var color = "";
       if (typeof instance.getChildren === "function") {
-        //this is a an array, it will contain children
+        // this is a an array, it will contain children
         var children = instance.getChildren();
 
         var color = "";
@@ -1952,8 +1963,7 @@ define(['jquery'], function () {
             var newColor = children[i].getColor();
             if (color == "") {
               color = newColor;
-            }
-            else if (color != newColor) {
+            } else if (color != newColor) {
               return "";
             }
           }
@@ -1966,11 +1976,10 @@ define(['jquery'], function () {
           var mesh = meshes[i];
           if (mesh) {
             mesh.traverse(function (object) {
-              if (object.hasOwnProperty("material")) {
+              if (Object.prototype.hasOwnProperty.call(object,"material")) {
                 if (color == "") {
                   color = object.material.defaultColor;
-                }
-                else if (color != object.material.defaultColor) {
+                } else if (color != object.material.defaultColor) {
                   return "";
                 }
               }
@@ -2013,7 +2022,7 @@ define(['jquery'], function () {
                 var randomColor = getRandomColor();
 
                 mesh.traverse(function (object) {
-                  if (object.hasOwnProperty("material")) {
+                  if (Object.prototype.hasOwnProperty.call(object,"material")) {
                     that.setThreeColor(object.material.color, randomColor);
                     object.material.defaultColor = randomColor;
                   }
@@ -2047,7 +2056,7 @@ define(['jquery'], function () {
         mesh.defaultOpacity = opacity;
         if (opacity == 1) {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("material")) {
+            if (Object.prototype.hasOwnProperty.call(object,"material")) {
               object.material.transparent = false;
               object.material.opacity = 1;
               object.material.defaultOpacity = 1;
@@ -2055,7 +2064,7 @@ define(['jquery'], function () {
           });
         } else {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("material")) {
+            if (Object.prototype.hasOwnProperty.call(object,"material")) {
               object.material.transparent = true;
               object.material.opacity = opacity;
               object.material.defaultOpacity = opacity;
@@ -2143,7 +2152,7 @@ define(['jquery'], function () {
       var zoomParameters = {};
       var mesh = this.meshes[instance.getInstancePath()];
       mesh.traverse(function (object) {
-        if (object.hasOwnProperty("geometry")) {
+        if (Object.prototype.hasOwnProperty.call(object, "geometry")) {
           that.addMeshToZoomParameters(object, zoomParameters);
         }
       });
@@ -2175,12 +2184,11 @@ define(['jquery'], function () {
         var mesh = this.meshes[instancePath];
         if (mesh) {
           mesh.traverse(function (object) {
-            if (object.hasOwnProperty("geometry")) {
+            if (Object.prototype.hasOwnProperty.call(object, "geometry")) {
               that.addMeshToZoomParameters(object, zoomParameters);
             }
           });
-        }
-        else {
+        } else {
           zoomParameters = this.zoomIterator(instances[i].getChildren(), zoomParameters);
         }
 
@@ -2210,33 +2218,31 @@ define(['jquery'], function () {
       for (var c = 0; c < connections.length; c++) {
         var connection = connections[c];
 
-        var otherEndPath = connection.getA().getPath() == instance.getInstancePath() ?
-          connection.getB().getPath() :
-          connection.getA().getPath();
+        var otherEndPath = connection.getA().getPath() == instance.getInstancePath()
+          ? connection.getB().getPath()
+          : connection.getA().getPath();
 
-        var connectionType = connection.getA().getPath() == instance.getInstancePath() ?
-          GEPPETTO.Resources.OUTPUT :
-          GEPPETTO.Resources.INPUT;
+        var connectionType = connection.getA().getPath() == instance.getInstancePath()
+          ? GEPPETTO.Resources.OUTPUT
+          : GEPPETTO.Resources.INPUT;
 
 
         // determine whether connection is input or output
         if (connectionType == GEPPETTO.Resources.INPUT) {
-          //I want to change the colour the instances that are an input to the instance passed as a parameter
-          var mesh = this.meshes[connection.getA().getPath()]; //this is the instance input to the current one
+          // I want to change the colour the instances that are an input to the instance passed as a parameter
+          var mesh = this.meshes[connection.getA().getPath()]; // this is the instance input to the current one
           if (outputs[otherEndPath]) {
             this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT);
-          }
-          else {
+          } else {
             this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED);
           }
           inputs[otherEndPath] = connection.getInstancePath();
         } else if (connectionType == GEPPETTO.Resources.OUTPUT) {
-          //I want to change the colour the instances that are an output of the instance passed as a parameter
-          var mesh = this.meshes[connection.getB().getPath()]; //this is the instance output of the current on
+          // I want to change the colour the instances that are an output of the instance passed as a parameter
+          var mesh = this.meshes[connection.getB().getPath()]; // this is the instance output of the current on
           if (inputs[otherEndPath]) {
             this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT);
-          }
-          else {
+          } else {
             this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED);
           }
           outputs[otherEndPath] = connection.getInstancePath();
@@ -2273,15 +2279,17 @@ define(['jquery'], function () {
       for (var c = 0; c < connections.length; c++) {
         var connection = connections[c];
 
-        var mesh = connection.getA().getPath() == instance.getInstancePath() ?
-          this.meshes[connection.getB().getPath()] :
-          this.meshes[connection.getA().getPath()];
+        var mesh = connection.getA().getPath() == instance.getInstancePath()
+          ? this.meshes[connection.getB().getPath()]
+          : this.meshes[connection.getA().getPath()];
 
 
         // if mesh is not selected, give it ghost or default color and opacity
         if (!mesh.selected) {
-          // if there are nodes still selected, give it a ghost effect. If not nodes are
-          // selected, give the meshes old default color
+          /*
+           * if there are nodes still selected, give it a ghost effect. If not nodes are
+           * selected, give the meshes old default color
+           */
           if (G.getSelectionOptions().unselected_transparent) {
             mesh.material.transparent = true;
             mesh.material.opacity = GEPPETTO.Resources.OPACITY.GHOST;
@@ -2289,9 +2297,8 @@ define(['jquery'], function () {
           }
           this.setThreeColor(mesh.material.color, mesh.material.defaultColor);
 
-        }
-        // if mesh is selected, make it look like so
-        else {
+        } else {
+          // if mesh is selected, make it look like so
           this.setThreeColor(mesh.material.color, GEPPETTO.Resources.COLORS.SELECTED);
           mesh.material.transparent = true;
           mesh.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -2303,7 +2310,7 @@ define(['jquery'], function () {
 
     /**
      * Show connection lines for this instance.
-
+     *
      * @command AVisualCapability.showConnectionLines()
      * @param {boolean} mode - Show or hide connection lines
      * @param instancePath
@@ -2314,11 +2321,10 @@ define(['jquery'], function () {
       }
       var entity = eval(instancePath);
       if (entity instanceof Instance || entity instanceof ArrayInstance) {
-        //show or hide connection lines
+        // show or hide connection lines
         if (mode) {
           this.showConnectionLinesForInstance(entity);
-        }
-        else {
+        } else {
           this.removeConnectionLines(entity);
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
@@ -2349,9 +2355,9 @@ define(['jquery'], function () {
       for (var c = 0; c < connections.length; c++) {
 
         var connection = connections[c];
-        var type = connection.getA().getPath() == instance.getInstancePath() ?
-          GEPPETTO.Resources.OUTPUT :
-          GEPPETTO.Resources.INPUT;
+        var type = connection.getA().getPath() == instance.getInstancePath()
+          ? GEPPETTO.Resources.OUTPUT
+          : GEPPETTO.Resources.INPUT;
 
         var thisEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getA() : connection.getB();
         var otherEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getB() : connection.getA();
@@ -2363,21 +2369,19 @@ define(['jquery'], function () {
         var origin;
 
         if (thisEnd.getPoint() == undefined) {
-          //same as before
+          // same as before
           origin = defaultOrigin;
-        }
-        else {
-          //the specified coordinate
+        } else {
+          // the specified coordinate
           var p = thisEnd.getPoint();
           origin = new THREE.Vector3(p.x + mesh.position.x, p.y + mesh.position.y, p.z + mesh.position.z);
         }
 
         if (otherEnd.getPoint() == undefined) {
-          //same as before
+          // same as before
           destination = otherEndMesh.position.clone();
-        }
-        else {
-          //the specified coordinate
+        } else {
+          // the specified coordinate
           var p = otherEnd.getPoint();
           destination = new THREE.Vector3(p.x + otherEndMesh.position.x, p.y + otherEndMesh.position.y, p.z + otherEndMesh.position.z);
         }
@@ -2402,14 +2406,11 @@ define(['jquery'], function () {
 
           if (inputs[otherEndPath]) {
             inputs[otherEndPath].push(connection.getInstancePath());
-          }
-          else {
+          } else {
             inputs[otherEndPath] = [];
             inputs[otherEndPath].push(connection.getInstancePath());
           }
-        }
-
-        else if (type == GEPPETTO.Resources.OUTPUT) {
+        } else if (type == GEPPETTO.Resources.OUTPUT) {
 
           colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
           // figure out if connection is both, input and output
@@ -2419,8 +2420,7 @@ define(['jquery'], function () {
 
           if (outputs[otherEndPath]) {
             outputs[otherEndPath].push(connection.getInstancePath());
-          }
-          else {
+          } else {
             outputs[otherEndPath] = [];
             outputs[otherEndPath].push(connection.getInstancePath());
           }
@@ -2454,7 +2454,7 @@ define(['jquery'], function () {
         // get connections for given instance and remove only those
         var lines = this.connectionLines;
         for (var i = 0; i < connections.length; i++) {
-          if (lines.hasOwnProperty(connections[i].getInstancePath())) {
+          if (Object.prototype.hasOwnProperty.call(lines, connections[i].getInstancePath())) {
             // remove the connection line from the scene
             this.scene.remove(lines[connections[i].getInstancePath()]);
             // remove the conneciton line from the GEPPETTO list of connection lines
@@ -2465,7 +2465,7 @@ define(['jquery'], function () {
         // remove all connection lines
         var lines = this.connectionLines;
         for (var key in lines) {
-          if (lines.hasOwnProperty(key)) {
+          if (Object.prototype.hasOwnProperty.call(lines, key)) {
             this.scene.remove(lines[key]);
           }
         }
@@ -2481,7 +2481,7 @@ define(['jquery'], function () {
      */
     splitHighlightedMesh: function (targetObjects, aspects) {
       var groups = {};
-      for (a in aspects) {
+      for (var a in aspects) {
         // create object to hold geometries used for merging objects in groups
         var geometryGroups = {};
 
@@ -2503,7 +2503,7 @@ define(['jquery'], function () {
          * loop through individual meshes, add them to group, set
          * new material to them
          */ 
-        for (v in map) {
+        for (var v in map) {
           var m = this.visualModelMap[map[v]];
           if (m.instancePath in targetObjects) {
             // merged mesh into corresponding geometry
@@ -2539,7 +2539,7 @@ define(['jquery'], function () {
     highlight: function (targetObjects, aspects, mode) {
       var splitHighlightedGroups = this.splitHighlightedMesh(targetObjects, aspects);
 
-      for (groupName in splitHighlightedGroups) {
+      for (var groupName in splitHighlightedGroups) {
         // get group mesh
         var groupMesh = this.splitMeshes[groupName];
 
@@ -2630,8 +2630,10 @@ define(['jquery'], function () {
             }
           }
 
-          // if visual object didn't belong to group, add it to mesh
-          // with remainder of them
+          /*
+           * if visual object didn't belong to group, add it to mesh
+           * with remainder of them
+           */
           if (!added) {
             var geometry = geometryGroups[instancePath];
             if (m instanceof THREE.Line) {
@@ -2700,7 +2702,7 @@ define(['jquery'], function () {
       mergedMesh.visible = false;
       this.scene.remove(mergedMesh);
 
-      for (g in groups) {
+      for (var g in groups) {
         var groupName = g;
         if (groupName.indexOf(instancePath) <= -1) {
           groupName = instancePath + "." + g;
@@ -2818,7 +2820,7 @@ define(['jquery'], function () {
      */
     showVisualGroupsRaw: function (visualGroups, instance, meshesContainer) {
       var instancePath = instance.getInstancePath();
-      for (g in visualGroups) {
+      for (var g in visualGroups) {
         // retrieve visual group object
         var visualGroup = visualGroups[g];
 
@@ -2850,7 +2852,7 @@ define(['jquery'], function () {
         if (mode) {
           var mergedMesh = this.meshes[instancePath];
           var map = mergedMesh.mergedMeshesPaths;
-          //no mergedMeshesPaths means object hasn't been merged, single object
+          // no mergedMeshesPaths means object hasn't been merged, single object
           if (map != undefined || null) {
             this.splitGroups(instance, visualGroups);
             this.showVisualGroupsRaw(visualGroups, instance, this.splitMeshes);
@@ -2889,7 +2891,7 @@ define(['jquery'], function () {
     isSelected: function (variables) {
       var selected = false;
       for (var i = 0; i < variables.length; i++) {
-        if (variables[i].hasOwnProperty('isSelected') && variables[i].isSelected()) {
+        if (Object.prototype.hasOwnProperty.call(variables[i], 'isSelected') && variables[i].isSelected()) {
           selected = true;
           break;
         }
@@ -2939,7 +2941,7 @@ define(['jquery'], function () {
      * Traverse through THREE object to calculate that maximun radius based 
      * on bounding sphere of visible objects
      */
-    calculateSceneMaxRadius(object) {
+    calculateSceneMaxRadius (object) {
       var currentRadius = 0;
       if (object.children.length > 0) {
         for (var i = 0; i < object.children.length; i++) {
@@ -2948,7 +2950,7 @@ define(['jquery'], function () {
           }
         }
       } else {
-        if (object.hasOwnProperty("geometry")) {
+        if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
           object.geometry.computeBoundingSphere();
           currentRadius = object.geometry.boundingSphere.radius;
         }
@@ -2963,7 +2965,7 @@ define(['jquery'], function () {
     /**
      * Calculates linePrecision used by raycaster when picking objects. 
      */
-    getLinePrecision() {
+    getLinePrecision () {
       this.rayCasterLinePrecision = this.sceneMaxRadius / this.linePrecisionMinRadius;
       if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
         this.rayCasterLinePrecision = this.minAllowedLinePrecision;
@@ -2974,7 +2976,7 @@ define(['jquery'], function () {
     }
 
   }
-    ;
+  ;
 
   return ThreeDEngine;
 });

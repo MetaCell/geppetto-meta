@@ -62,7 +62,7 @@ define(function (require) {
         this.props.buttonHandler(this.props.id);
       } else {
         for (var action in this.actions){
-          if ((this.actions).hasOwnProperty(action)){
+          if (Object.prototype.hasOwnProperty.call(this.actions,"action")){
             GEPPETTO.CommandController.execute(this.actions[action], true);
           }
         }

@@ -305,7 +305,7 @@ define(function (require) {
 
       var resolvedConfig = control;
 
-      if (resolvedConfig.hasOwnProperty('condition')) {
+      if (Object.prototype.hasOwnProperty.call(resolvedConfig,"condition")) {
         // evaluate condition and reassign control depending on results
         var conditionStr = this.replaceAllTokensKnownToMan(control.condition, path, projectId, experimentId);
         if (eval(conditionStr)) {
@@ -372,9 +372,13 @@ define(function (require) {
           var add = true;
 
           // check show condition
-          if (controlsConfig[configPropertyName][control].showCondition != undefined) {
+          if (controlsConfig[configPropertyName][control].showCondition != undefined && Instances[targetPath] !== undefined) {
             var condition = this.replaceAllTokensKnownToMan(controlsConfig[configPropertyName][control].showCondition, targetPath, projectId, experimentId);
-            add = eval(condition);
+            try {
+              add = eval(condition);
+            } catch (error) {
+              add = false;
+            }
           }
 
           if (add) {
@@ -458,7 +462,7 @@ define(function (require) {
               }
 
               // if conditional, swap icon with the other condition outcome
-              if (control.hasOwnProperty('condition')) {
+              if (Object.prototype.hasOwnProperty.call(control,"condition")) {
                 var otherConfig = that.resolveCondition(control, path, false, projectId, experimentId);
                 var element = $('#' + idVal);
                 element.removeClass();
@@ -1584,19 +1588,22 @@ define(function (require) {
         // grab existing input
         var gridInput = this.state.data;
         var newGridInput = [];
-
+        var needsUpdate = false;
+        
         // remove unwanted instances from grid input
         for (var i = 0; i < instancePaths.length; i++) {
           for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i] != gridInput[j].path) {
-              newGridInput.push(gridInput[j]);
+            if (instancePaths[i].indexOf(gridInput[j].path) == -1) {
+              var index = gridInput.indexOf(gridInput[j].path);
+              gridInput.splice(index,1);
+              needsUpdate = true;
             }
           }
         }
 
         // set state to refresh grid
-        if (gridInput.length != newGridInput.length) {
-          this.setState({ data: newGridInput });
+        if (needsUpdate) {
+          this.setState({ data: gridInput });
         }
       }
     },

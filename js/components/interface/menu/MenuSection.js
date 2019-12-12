@@ -1,71 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import MenuPopper from './MenuPopper';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
-
-const styles = {
-  root1: {
-    background: '#010101',
-    "&:hover": {
-      background: "#11bffe",
-      backgroundColor: "#11bffe",
-      color: '#ffffff'
-    },
-    borderRadius: 0,
-    border: 0,
-    boxShadow: '0px 0px',
-    color: '#ffffff',
-    fontSize: '16px',
-    fontFamily: 'Khand, sans-serif',
-    margin: '0px 0px 0px 0px',
-    minWidth: '44px',
-    height: '30px'
-  },
-  root2: {
-    background: "#11bffe",
-    backgroundColor: "#11bffe",
-    "&:hover": {
-      background: "#11bffe",
-      backgroundColor: "#11bffe",
-      color: '#ffffff'
-    },
-    borderRadius: 0,
-    border: 0,
-    boxShadow: '0px 0px',
-    color: '#ffffff',
-    fontSize: '16px',
-    fontFamily: 'Khand, sans-serif',
-    margin: '0px 0px 0px 0px',
-    minWidth: '44px',
-    height: '30px'
-  },
-  label: {
-    textTransform: 'capitalize',
-    textAlign: 'left',
-    justifyContent: 'start',
-    marginTop: '1px'
-  },
-};
 
 class MenuSection extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
       anchorEl: null,
-      customList: undefined
+      customList: undefined,
+      hover: false
     }
+    this.handleOut = this.handleOut.bind(this);
     this.handleOver = this.handleOver.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleAwayListener = this.handleAwayListener.bind(this);
 
     this.tempList = undefined;
-  };
+  }
 
   handleClick = event => {
     if ((this.props.list === undefined) || (this.props.list.length === 0)) {
-      if (this.props.button.hasOwnProperty('dynamicListInjector')) {
+      if (Object.prototype.hasOwnProperty.call(this.props.button,'dynamicListInjector')) {
         this.tempList = this.props.menuHandlerDirect(this.props.button.dynamicListInjector);
         const { currentTarget } = event;
         if (this.state.anchorEl !== null) {
@@ -87,9 +43,7 @@ class MenuSection extends React.Component {
       } else {
         this.props.menuClickHandler(true, this.props.id);
       }
-      this.setState(state => ({
-        anchorEl: state.anchorEl ? null : currentTarget
-      }));
+      this.setState(state => ({ anchorEl: state.anchorEl ? null : currentTarget }));
     }
   };
 
@@ -103,9 +57,10 @@ class MenuSection extends React.Component {
 
   handleOver = event => {
     const { currentTarget } = event;
+    this.setState({ hover: true });
     if (this.props.menuOpen && this.props.sectionOpened !== this.props.id) {
       if ((this.props.list === undefined) || (this.props.list.length === 0)) {
-        if (this.props.button.hasOwnProperty('dynamicListInjector')) {
+        if (Object.prototype.hasOwnProperty.call(this.props.button,'dynamicListInjector')) {
           this.tempList = this.props.menuHandlerDirect(this.props.button.dynamicListInjector);
         } else {
           return;
@@ -120,18 +75,20 @@ class MenuSection extends React.Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
+  handleOut = event => {
+    this.setState({ hover: false });
+  };
+
+  componentWillReceiveProps (nextProps) {
     if ((nextProps.sectionOpened !== this.props.id) && (this.props.menuOpen === true) && (this.state.anchorEl !== null)) {
       this.setState({ anchorEl: null });
     }
-  };
+  }
 
-  render() {
+  render () {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
-
-    const { classes } = this.props;
 
     var popperToRender = undefined;
     if (this.props.button.list !== undefined) {
@@ -160,27 +117,24 @@ class MenuSection extends React.Component {
       );
     }
     var buttonClasses = undefined;
-    if (open) {
-      buttonClasses = {
-        root: classes.root2,
-        label: classes.label
-      };
+    if (open || this.state.hover) {
+      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.hover : undefined;
     } else {
-      buttonClasses = {
-        root: classes.root1,
-        label: classes.label
-      };
+      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.standard : undefined;
     }
 
     return (
       <span>
         <Button
-          classes={buttonClasses}
+          style={buttonClasses}
           size='small'
+          id={this.props.button.label}
           variant="contained"
           aria-describedby={id}
           onClick={this.handleClick}
-          onMouseOver={this.handleOver}>
+          onMouseOver={this.handleOver}
+          onMouseOut={this.handleOut}>
+          {this.props.button.icon !== "" ? <span style={{ display: "inline-block", width: "25px" }}><i className={this.props.button.icon}></i></span> : undefined}
           {this.props.button.label}
         </Button>
         <MenuPopper
@@ -191,10 +145,12 @@ class MenuSection extends React.Component {
           menuHandlerDirect={this.props.menuHandlerDirect}
           awayClickHandler={this.handleAwayListener}
           position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
+          drawersStyle={this.props.drawersStyle}
+          labelsStyle={this.props.labelsStyle}
         />
       </span>
     );
   }
 }
 
-export default withStyles(styles)(MenuSection);
+export default MenuSection;

@@ -7,11 +7,11 @@
  */
 define(['jquery'], function () {
 
-  function SceneController() {
-  };
+  function SceneController () {
+  }
 
-  SceneController.prototype =
-    {
+  SceneController.prototype
+    = {
 
       constructor: SceneController,
 
@@ -85,7 +85,7 @@ define(['jquery'], function () {
       isSelected: function (variables) {
         var selected = false;
         for (var i = 0; i < variables.length; i++) {
-          if (variables[i].hasOwnProperty('isSelected') && variables[i].isSelected()) {
+          if (Object.prototype.hasOwnProperty.call(variables[i], 'isSelected') && variables[i].isSelected()) {
             selected = true;
             break;
           }
@@ -291,15 +291,12 @@ define(['jquery'], function () {
         }
         if (colors.length == 1) {
           return colors[0];
-        }
-        else if (colors.length == 0) {
+        } else if (colors.length == 0) {
           return undefined;
-        }
-        else {
+        } else {
           return colors;
         }
       },
-
 
 
       /**
@@ -323,7 +320,7 @@ define(['jquery'], function () {
        */
       setLinesThreshold: function (threshold) {
         for (var i = 0; i < this.canvasComponents.length; i++) {
-          this.canvasComponents[i].setLinesThreshold(ithreshold);
+          this.canvasComponents[i].setLinesThreshold(threshold);
         }
       },
 
