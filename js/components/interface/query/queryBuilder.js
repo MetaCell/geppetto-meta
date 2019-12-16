@@ -1040,6 +1040,13 @@ define(function (require) {
       var downloadCSV = function (args) {
         var data, filename, link, extension;
 
+        var isJson = data => {
+          try {
+            return (JSON.parse(data) && data);
+          } catch (e) {
+            return false;
+          }
+        }
         var records = args.data.map(function (record) {
           var instance = new Object();
           for (var counter = 0; counter < args.columnsPresent.length; counter++) {
@@ -1047,7 +1054,7 @@ define(function (require) {
               continue;
             }
             if (args.columnsPresent[counter] == "images") {
-              if (record[args.columnsPresent[counter]].indexOf('{') > -1){
+              if (isJson(record[args.columnsPresent[counter]])){
                 if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements) {
                   instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
                   continue;
