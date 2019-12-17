@@ -12,53 +12,56 @@ export default class GeppettoGraphVisualization extends Component {
   // Ref to GGV container
   ggv = React.createRef()
 
-  dimensions = { width: 1, height: 1 }
+  dimensions = { width: 200, height: 200 }
 
-  font = this.props.font ? this.props.font : "6px Source Sans Pro"
-  size = this.props.nodeRelSize ? this.props.nodeRelSize : 20
-  borderSize = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.1)
+  font = this.props.font || "6px Source Sans Pro"
+  size = this.props.nodeRelSize || 20
+  borderSize = Math.floor((this.props.nodeRelSize || 20) * 0.1)
 
   // Gap to leave between lines in text inside nodes in 2D graphs
-  doubleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.25)
-  tripleGap = Math.floor((this.props.nodeRelSize ? this.props.nodeRelSize : 20) * 0.35)
+  doubleGap = Math.floor((this.props.nodeRelSize || 20) * 0.25)
+  tripleGap = Math.floor((this.props.nodeRelSize || 20) * 0.35)
   
-  timeToCenter2DCamera = this.props.timeToCenter2DCamera ? this.props.timeToCenter2DCamera : 0
+  timeToCenter2DCamera = this.props.timeToCenter2DCamera || 0
 
   getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
   getLinkLabel = this.props.linkLabel ? this.fnOrField(this.props.linkLabel) : link => link.name
+  getLinkWidth = this.props.linkWidth ? this.props.linkWidth instanceof Function ? this.props.linkWidth : () => this.props.linkWidth : () => 0.25
+  getLinkColor = this.props.linkColor ? this.props.linkColor instanceof Function ? this.props.linkColor : () => this.props.linkColor : () => 'white'
+  getNodeColor = this.props.nodeColor ? this.props.nodeColor instanceof Function ? this.props.nodeColor : () => this.props.nodeColor : () => '#6520ff'
+  getNodeLabelColor = this.props.nodeLabelColor ? this.props.nodeLabelColor instanceof Function ? this.props.nodeLabelColor : () => this.props.nodeLabelColor : () => '#ffffff'
 
   componentDidMount (){
     const { data, url } = this.props
 
     if (this.props.d2) {
-      const forceLinkDistance = this.props.forceLinkDistance ? this.props.forceLinkDistance : 90
-      const forceLinkStrength = this.props.forceLinkStrength ? this.props.forceLinkStrength : 0.7
-      const forceChargeStrength = this.props.forceChargeStrength ? this.props.forceChargeStrength : -200
-      this.ggv.current.d3Force('collide', d3.forceCollide(this.size));
+      const forceLinkDistance = this.props.forceLinkDistance || 90
+      const forceLinkStrength = this.props.forceLinkStrength || 0.7
+      const forceChargeStrength = this.props.forceChargeStrength || -200
+      const collideSize = this.props.collideSize || this.size * 1.5
+      this.ggv.current.d3Force('collide', d3.forceCollide(collideSize));
       this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
       this.ggv.current.d3Force('charge').strength(forceChargeStrength)
       this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
+      this.ggv.current.d3Force('center', null)
     }
     if (url) {
       this.addToScene()
     } else if (!this.props.d2) {
       this.zoomCameraToFitScene()
     } else {
-      
       this.forceUpdate()
-      
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (prevProps, prevState) {
     const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
-    if (this.props.d2) {
-      this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
-    }
     if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
       this.dimensions = dimensions
+      if (this.props.d2) {
+        this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
+      }
       this.forceUpdate()
-      
     }
   }
 
@@ -220,6 +223,8 @@ export default class GeppettoGraphVisualization extends Component {
 
   // Draw this: ( n1 )--- link_Label --->( n2 )
   linkCanvasObject (link, ctx, globalScale) {
+    const color = this.getLinkColor(link)
+    ctx.lineWidth = this.getLinkWidth(link)
     const xs = link.source.x
     const xt = link.target.x
     const ys = link.source.y
@@ -237,13 +242,12 @@ export default class GeppettoGraphVisualization extends Component {
     // [-PI ; PI]
     const angle2 = Math.atan2(yt - ys, xt - xs)
 
-    const textLength = ctx.measureText(link.id).width
-
-    
     const doNotPlotLinkLabel = !linkText || availableSpaceForLinkLabel < ctx.measureText('Abc...').width
 
+    ctx.fillStyle = color
+    ctx.strokeStyle = color
     if (doNotPlotLinkLabel) {
-      
+      linkText = ''
       ctx.beginPath();
       ctx.moveTo(xs, ys);
       ctx.lineTo(xt, yt);
@@ -251,7 +255,7 @@ export default class GeppettoGraphVisualization extends Component {
 
 
     } else {
-      if (linkText && textLength > availableSpaceForLinkLabel){
+      if (linkText && ctx.measureText(linkText).width > availableSpaceForLinkLabel){
         var i = linkText.length - 3 // for the ... at the end
         while (ctx.measureText(linkText.substring(0, i) + '...').width > availableSpaceForLinkLabel) {
           i--
@@ -259,6 +263,7 @@ export default class GeppettoGraphVisualization extends Component {
         linkText = linkText.substring(0, i) + '...'
       }
 
+      const textLength = ctx.measureText(linkText).width
       const subX = Math.cos(angle2) * textLength / 2
       const subY = Math.sin(angle2) * textLength / 2
       
@@ -273,19 +278,19 @@ export default class GeppettoGraphVisualization extends Component {
       ctx.moveTo(cx + subX, cy + subY);
       ctx.lineTo(xt, yt);
       ctx.stroke()
-      // Draw text for link label
-      
     }
     
+    // Draw text for link label
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(angle)
     if (linkText){
       ctx.fillText(linkText, 0, 0);
     }
+
     // Draw arrow to indicate link direction
     var dist = (linkLength / 2 - this.size) - arrowSize
-    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+    ctx.fillStyle = color;
     ctx.beginPath();
     if (angle2 >= Math.PI / 2 || angle2 <= -Math.PI / 2){
       dist *= -1
@@ -310,7 +315,9 @@ export default class GeppettoGraphVisualization extends Component {
    *   \_____/
    */
   nodeWithName (node, ctx, globalScale) {
-    const color = node.color || '#6520ff'
+    const color = this.getNodeColor(node)
+    const labelColor = this.getNodeLabelColor(node)
+
     ctx.font = this.font
     
     var label = this.getNodeLabel(node);
@@ -327,7 +334,7 @@ export default class GeppettoGraphVisualization extends Component {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    ctx.fillStyle = labelColor;
     
     const maxCharsPerLine = Math.floor(this.size * 1.75 / ctx.measureText("a").width)
       
@@ -356,7 +363,7 @@ export default class GeppettoGraphVisualization extends Component {
     
     this.addFixedPositionToNodes(data)
      
-    const props = {
+    const commonProps = {
       ref: this.ggv,
       graphData: data,
       width: this.dimensions.width - xGap,
@@ -364,16 +371,15 @@ export default class GeppettoGraphVisualization extends Component {
       onNodeDrag: node => this.onNodeDrag(node),
       ...others
     }
-    
+
     if (d2) {
       return <ForceGraph2D 
         linkCanvasObjectMode={() => "replace"}
         linkCanvasObject={this.linkCanvasObject.bind(this)} 
         nodeCanvasObject={this.nodeWithName.bind(this)} 
         nodeRelSize={this.size} 
-        {...props}/>
-    } else {
-      return <ForceGraph3D {...props} />
-    }
+        {...commonProps}/>
+    } 
+    return <ForceGraph3D {...commonProps} />
   }
 }
