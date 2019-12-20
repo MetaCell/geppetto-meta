@@ -182,7 +182,7 @@ export class Matrix {
       .each(row);
 
     row_.append("line")
-      .attr("x2", context.options.innerWidth);
+      .attr("x2", context.innerWidth);
 
     let column = container.selectAll(".column")
       .data(matrix)
@@ -193,7 +193,7 @@ export class Matrix {
       });
 
     column.append("line")
-      .attr("x1", -context.options.innerWidth);
+      .attr("x1", -context.innerWidth);
 
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
 

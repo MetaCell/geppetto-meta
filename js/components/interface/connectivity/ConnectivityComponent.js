@@ -214,18 +214,128 @@ export default class ConnectivityComponent extends AbstractComponent {
     }
   }
 
+  /**
+   *
+   * Sets colorScale
+   *
+   * @command onColorChange(context)
+   *
+   * @param context
+   */
+
+  onColorChange (context){
+    return function (){
+      const colorMap = context.auxFunctions.colorMapFunction ? context.auxFunctions.colorMapFunction() : context.defaultColorMapFunction();
+      for (let i = 0; i < colorMap.domain().length; ++i) {
+        // only update if there is a change
+        if (context.nodeColormap(colorMap.domain()[i]) !== colorMap(colorMap.domain()[i])) {
+          context.setNodeColormap(colorMap);
+          /*
+           * FIXME: would be more efficient to update only what has
+           * changed, though this depends on the type of layout
+           */
+          context.svg.selectAll("*").remove();
+          context.createLayout();
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   *
+   * Creates the layout
+   *
+   * @command createLayout()
+   *
+   */
+
   createLayout () {
     this.cleanCanvas();
-    this.svg = d3.select(this.props.id)
+    this.svg = d3.select("#" + this.props.id)
       .append("svg")
       .attr("width", this.innerWidth)
       .attr("height", this.innerHeight);
     this.state.layout.draw(this)
   }
 
+  /**
+   *
+   * Cleans the canvas
+   *
+   * @command cleanCanvas()
+   *
+   */
+
   cleanCanvas (){
     util.removeElement(this.props.id);
     util.removeElement("#" + "matrix-sorter");
+  }
+
+  /**
+   *
+   * Creates legend
+   *
+   * @command createLegend (id, colorScale, position, title)
+   *
+   * @param id
+   * @param colorScale
+   * @param position
+   * @param title
+   */
+  createLegend (id, colorScale, position, title) {
+
+    let ret;
+    // TODO: boxes should scale based on number of items
+    const colorBox = { size: 20, labelSpace: 4 };
+    const padding = { x: colorBox.size, y: 2 * colorBox.size };
+
+    // TODO: is it sane not to draw the legend if there is only one category?
+    if (colorScale.domain().length > 1) {
+      let horz, vert;
+      const legendItem = this.svg.selectAll(id)
+        .data(colorScale.domain().slice().sort())
+        .enter().append('g')
+        .attr('class', 'legend-item')
+        .attr('transform', function (d, i) {
+          const height = colorBox.size + colorBox.labelSpace;
+          horz = colorBox.size + position.x + padding.x;
+          vert = i * height + position.y + padding.y;
+          return 'translate(' + horz + ',' + vert + ')';
+        });
+
+      // coloured squares
+      legendItem.append('rect')
+        .attr('width', colorBox.size)
+        .attr('height', colorBox.size)
+        .style('fill', function (d) {
+          return colorScale(d);
+        })
+        .style('stroke', function (d) {
+          return colorScale(d);
+        });
+
+      // labels
+      legendItem.append('text')
+        .attr('x', colorBox.size + colorBox.labelSpace)
+        .attr('y', colorBox.size - colorBox.labelSpace)
+        .attr('class', 'legend-text')
+        .text(function (d) {
+          return d;
+        });
+
+      // title
+      if (typeof title != 'undefined') {
+        this.svg.append('text')
+          .text(title)
+          .attr('class', 'legend-title')
+          .attr('x', position.x + 2 * padding.x)
+          .attr('y', position.y + 0.75 * padding.y);
+      }
+      ret = { x: horz, y: vert };
+    }
+
+    return ret;
   }
 
 

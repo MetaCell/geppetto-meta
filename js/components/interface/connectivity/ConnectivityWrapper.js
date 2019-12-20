@@ -7,7 +7,7 @@ import { Matrix} from "./layouts/Matrix";
 export default class ConnectivityWrapper extends Component {
   constructor (props) {
     super(props);
-    this.width = 600;
+    this.width = 660;
     this.height = 500;
     this.state = {
       data: [],
