@@ -7,6 +7,7 @@
  */
 
 export function getInnerHeight (el){
+  // todo: make sure its the same
   return parseFloat(getComputedStyle(el, null).height.replace("px", ""))
 }
 
@@ -18,6 +19,7 @@ export function getInnerHeight (el){
  */
 
 export function getInnerWidth (el){
+  // todo: make sure its the same
   return parseFloat(getComputedStyle(el, null).width.replace("px", ""))
 }
 
@@ -42,6 +44,7 @@ export function strToFunc (body){
 
 export function extend (obj1, obj2){
   Object.assign(obj1, obj2);
+  return obj1
 }
 
 /**
@@ -64,4 +67,31 @@ export function uniq (array) {
  */
 export function pluck (array, property) {
   return array.map(x => x[property])
+}
+
+/**
+ *
+ * Deletes element and child
+ *
+ * @param cssSelector
+ */
+export function removeElement (cssSelector){
+  const container = document.querySelectorAll(cssSelector);
+
+  for (let i = 0; i < container.length; i++) {
+    let element = container[i];
+    if (element.innerHTML.length === 0) {
+      element.parentNode.removeChild(element);
+    }
+  }
+}
+
+/**
+ *
+ * Selects element
+ *
+ * @param cssSelector
+ */
+export function selectElement (cssSelector){
+  return document.getElementById(cssSelector);
 }

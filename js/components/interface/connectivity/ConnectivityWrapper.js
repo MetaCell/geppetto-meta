@@ -23,13 +23,13 @@ export default class ConnectivityWrapper extends Component {
   render () {
     const ConnectivityWidget = WidgetCapability.createWidget(ConnectivityComponent);
     const isOpen = this.state.isOpen;
-    const data = this.state.data;
+    const root = this.state.data.root;
     const auxFunctions = {
       linkType: "("
           + "function (c){return GEPPETTO.ModelFactory.getAllVariablesOfType(c.getParent(),GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse)[0].getId();}"
     + ")"
     };
-    const colorScale = null;
+    const nodeColormap = undefined;
     let show;
     if (!isOpen){
       show = <button onClick={() => this.handleClick(Window.workaround)}>Activate Connectivity </button>
@@ -48,9 +48,9 @@ export default class ConnectivityWrapper extends Component {
         closable={true}
         minimizable={true}
         collapsable={true}
-        data={data}
+        root={root}
         auxFunctions={auxFunctions}
-        colorScale={colorScale}
+        nodeColormap={nodeColormap}
         layout={new Matrix()}
       />
     }

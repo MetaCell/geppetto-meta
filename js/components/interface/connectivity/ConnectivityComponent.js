@@ -32,9 +32,7 @@ export default class ConnectivityComponent extends AbstractComponent {
       },
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
-
     this.setAuxFunctions(this.props.auxFunctions);
-    this.setData(this.props.data);
   }
 
   /**
@@ -46,23 +44,31 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
   setAuxFunctions (auxFunctions){
     if (auxFunctions != null) {
-      if (typeof auxFunctions.linkType === 'string') {
-        auxFunctions.linkType = util.strToFunc(auxFunctions.linkType);
+      this.auxFunctions = util.extend(this.auxFunctions, auxFunctions);
+
+      if (typeof this.auxFunctions.linkType === 'string') {
+        this.auxFunctions.linkType = util.strToFunc(this.auxFunctions.linkType);
       }
-      if (typeof auxFunctions.nodeType === 'string') {
-        auxFunctions.nodeType = util.strToFunc(auxFunctions.nodeType);
+      if (typeof this.auxFunctions.nodeType === 'string') {
+        this.auxFunctions.nodeType = util.strToFunc(this.auxFunctions.nodeType);
       }
-      if (typeof auxFunctions.linkWeight === 'string') {
-        auxFunctions.linkWeight = util.strToFunc(auxFunctions.linkWeight);
+      if (typeof this.auxFunctions.linkWeight === 'string') {
+        this.auxFunctions.linkWeight = util.strToFunc(this.auxFunctions.linkWeight);
       }
-      if (typeof auxFunctions.colorMapFunction === 'string') {
-        auxFunctions.colorMapFunction = util.strToFunc(auxFunctions.colorMapFunction);
+      if (typeof this.auxFunctions.colorMapFunction === 'string') {
+        this.auxFunctions.colorMapFunction = util.strToFunc(this.auxFunctions.colorMapFunction);
       }
-      if (typeof auxFunctions.library === 'string') {
-        auxFunctions.library = eval(auxFunctions.library);
+      if (typeof this.auxFunctions.library === 'string') {
+        this.auxFunctions.library = eval(this.auxFunctions.library);
       }
-      util.extend(this.auxFunctions, auxFunctions);
     }
+  }
+
+  componentDidMount () {
+    this.connectivityContainer = util.selectElement(this.props.id);
+    this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
+    this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
+    this.setData(this.props.root);
   }
 
   /**
@@ -77,7 +83,7 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.mapping = {};
     this.mappingSize = 0;
     this.dataset["root"] = root;
-    this.setColorScale(this.props.colorScale);
+    this.setNodeColormap(this.props.nodeColormap);
     if (this.createDataFromConnections()){
       this.createLayout();
     }
@@ -103,7 +109,7 @@ export default class ConnectivityComponent extends AbstractComponent {
             const populationChildren = subInstance.getChildren();
             for (let l = 0; l < populationChildren.length; l++) {
               const populationChild = populationChildren[l];
-              this.createNode(populationChild.getId(), this.options.nodeType(populationChild));
+              this.createNode(populationChild.getId(), this.auxFunctions.nodeType(populationChild));
             }
           }
         }
@@ -169,13 +175,13 @@ export default class ConnectivityComponent extends AbstractComponent {
    *
    * Sets colorScale
    *
-   * @command setColorScale(colorScale)
+   * @command setNodeColormap(colorScale)
    *
-   * @param colorScale
+   * @param nodeColormap
    */
-  setColorScale (colorScale){
-    if (typeof colorScale !== 'undefined') {
-      this.nodeColormap = colorScale;
+  setNodeColormap (nodeColormap){
+    if (typeof nodeColormap !== 'undefined') {
+      this.nodeColormap = nodeColormap;
     } else {
       this.nodeColormap = this.defaultColorMapFunction();
     }
@@ -208,24 +214,18 @@ export default class ConnectivityComponent extends AbstractComponent {
     }
   }
 
-  componentDidMount () {
-    this.connectivityContainer = this.selectElement(this.props.id);
-    this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
-    this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
-  }
-
   createLayout () {
     this.cleanCanvas();
     this.svg = d3.select(this.props.id)
       .append("svg")
       .attr("width", this.innerWidth)
       .attr("height", this.innerHeight);
-    this.layout.draw(this)
+    this.state.layout.draw(this)
   }
 
   cleanCanvas (){
-    this.removeElement(this.props.id);
-    this.removeElement("#" + "matrix-sorter");
+    util.removeElement(this.props.id);
+    util.removeElement("#" + "matrix-sorter");
   }
 
 

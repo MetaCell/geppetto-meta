@@ -140,6 +140,8 @@ define(function (require) {
     },
 
     setData: function (root, options, nodeColormap) {
+      // todo: remove after Dario refactoring
+      Window.workaround = { root, options, nodeColormap };
       this.setOptions(options);
       this.dataset = {};
       this.mapping = {};
