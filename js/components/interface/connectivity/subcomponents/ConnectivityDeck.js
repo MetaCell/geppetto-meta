@@ -85,6 +85,7 @@ class ConnectivityDeck extends Component {
   }
 
   handler (name) {
+    // todo: change parent layout
     console.log("click " + name)
   }
 
@@ -97,6 +98,7 @@ class ConnectivityDeck extends Component {
     const { classes } = this.props;
 
     return (
+    // todo: add tooltip
       <span>
         <IconButton
           disabled={false}
