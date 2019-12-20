@@ -6,7 +6,7 @@
  * @param el
  */
 
-function getInnerHeight (el){
+export function getInnerHeight (el){
   return parseFloat(getComputedStyle(el, null).height.replace("px", ""))
 }
 
@@ -17,7 +17,7 @@ function getInnerHeight (el){
  * @param el
  */
 
-function getInnerWidth (el){
+export function getInnerWidth (el){
   return parseFloat(getComputedStyle(el, null).width.replace("px", ""))
 }
 
@@ -28,7 +28,7 @@ function getInnerWidth (el){
  * @param body
  */
 
-function strToFunc (body){
+export function strToFunc (body){
   return new Function('x', 'return ' + body + ';');
 }
 
@@ -40,7 +40,7 @@ function strToFunc (body){
  * @param obj2
  */
 
-function extend (obj1, obj2){
+export function extend (obj1, obj2){
   Object.assign(obj1, obj2);
 }
 
@@ -50,7 +50,7 @@ function extend (obj1, obj2){
  *
  * @param array
  */
-function uniq (array) {
+export function uniq (array) {
   return [...new Set(array)];
 }
 
@@ -62,6 +62,6 @@ function uniq (array) {
  * @param array
  * @param property
  */
-function pluck (array, property) {
+export function pluck (array, property) {
   return array.map(x => x[property])
 }
