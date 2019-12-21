@@ -2,9 +2,10 @@ import React from 'react';
 import AbstractComponent from '../../AComponent';
 import ConnectivityDeck from "./subcomponents/ConnectivityDeck";
 import { Matrix } from "./layouts/Matrix";
-import * as d3 from "d3";
 import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
+// import * as d3 from "d3";
+const d3 = require("d3");
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -173,9 +174,9 @@ export default class ConnectivityComponent extends AbstractComponent {
 
   /**
    *
-   * Sets colorScale
+   * Sets nodeColormap
    *
-   * @command setNodeColormap(colorScale)
+   * @command setNodeColormap(nodeColormap)
    *
    * @param nodeColormap
    */
@@ -272,6 +273,7 @@ export default class ConnectivityComponent extends AbstractComponent {
     util.removeElement("#" + "matrix-sorter");
   }
 
+
   /**
    *
    * Creates legend
@@ -337,7 +339,6 @@ export default class ConnectivityComponent extends AbstractComponent {
 
     return ret;
   }
-
 
   render () {
     const { id } = this.props;

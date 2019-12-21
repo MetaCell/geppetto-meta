@@ -1,5 +1,7 @@
-import * as d3 from "d3";
 import $ from 'jquery';
+
+// import * as d3 from "d3";
+const d3 = require("d3");
 
 export class Matrix {
   
@@ -282,7 +284,7 @@ export class Matrix {
         })
         .on("click", function (d) {
           GEPPETTO.SceneController.deselectAll();
-          // Ideally instead of hiding the connectivity lines we'd show only the ones connecting the two cells, also we could higlight the connection.
+          // Ideally instead of hiding the connectivity lines we'd show only the ones connecting the two cells, also we could highlight the connection.
           eval(root.getId() + "." + nodes[d.x].id).select();
           eval(root.getId() + "." + nodes[d.x].id).showConnectionLines(false);
           eval(root.getId() + "." + nodes[d.y].id).select();

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as WidgetCapability from "../../widgets/WidgetCapability";
 import ConnectivityComponent from "./ConnectivityComponent";
-import { Matrix} from "./layouts/Matrix";
+import { Matrix } from "./layouts/Matrix";
 
 
 export default class ConnectivityWrapper extends Component {
@@ -24,12 +24,8 @@ export default class ConnectivityWrapper extends Component {
     const ConnectivityWidget = WidgetCapability.createWidget(ConnectivityComponent);
     const isOpen = this.state.isOpen;
     const root = this.state.data.root;
-    const auxFunctions = {
-      linkType: "("
-          + "function (c){return GEPPETTO.ModelFactory.getAllVariablesOfType(c.getParent(),GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse)[0].getId();}"
-    + ")"
-    };
-    const nodeColormap = undefined;
+    const auxFunctions = this.state.data.options;
+    const nodeColormap = this.state.data.nodeColormap;
     let show;
     if (!isOpen){
       show = <button onClick={() => this.handleClick(Window.workaround)}>Activate Connectivity </button>
