@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import IconButton from '@material-ui/core/IconButton';
+import {Matrix} from "../layouts/Matrix";
+import {Force} from "../layouts/Force";
 
 const styles = theme => ({
   container: {
@@ -50,14 +52,14 @@ class ConnectivityDeck extends Component {
       {
         title: "Adjacency matrix",
         subtitle: "A coloured square at row 𝒊, column 𝒋 represents a directed connection from node 𝒋 to node 𝒊.",
-        handler: this.handler.bind(this, 'matrix'),
+        handler: this.props.handler.bind(this, new Matrix()),
         disabled: false,
         img: this.getImgPath('matrix.svg')
       },
       {
         title: "Force-directed layout",
         subtitle: "Draw circles for nodes, lines for connections, disregarding spatial information. ",
-        handler: this.handler.bind(this, 'force'),
+        handler: this.props.handler.bind(this, new Force()),
         disabled: false,
         img: this.getImgPath('force.svg')
 
@@ -67,7 +69,7 @@ class ConnectivityDeck extends Component {
         subtitle: "Axes correspond to node categories, arcs to connections."
             + "The position of each node along an axis is determined by "
             + "the total number of connections it makes.",
-        handler: this.handler.bind(this, 'hive'),
+        handler: this.props.handler.bind(this, 'hive'),
         disabled: false,
         img: this.getImgPath('hive.svg')
       },
@@ -77,17 +79,13 @@ class ConnectivityDeck extends Component {
             + "connections. A gap between slice and chord indicate an "
             + "incoming connection. Use ctrl(shift) + mouse hover to "
             + "hide incoming(outgoing) connections from a population.",
-        handler: this.handler.bind(this, 'Chord'),
+        handler: this.props.handler.bind(this, 'Chord'),
         disabled: false,
         img: this.getImgPath('chord.svg')
       },
     ];
   }
 
-  handler (name) {
-    // todo: change parent layout
-    console.log("click " + name)
-  }
 
   getImgPath (path){
     return 'geppetto/node_modules/@geppettoengine/geppetto-client/js/components/widgets/connectivity/images/' + path;

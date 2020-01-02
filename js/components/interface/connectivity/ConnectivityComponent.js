@@ -34,6 +34,7 @@ export default class ConnectivityComponent extends AbstractComponent {
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
     this.setAuxFunctions(this.props.auxFunctions);
+    this.deckHandler = this.deckHandler.bind(this)
   }
 
   /**
@@ -66,10 +67,17 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
   componentDidMount () {
-    this.connectivityContainer = util.selectElement(this.props.id);
+    this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
     this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
     this.setData(this.props.root);
+
+    /*
+     * this.$el = $("#" + this.props.id);
+     * this.addButtonToTitleBar($("<div class='fa fa-gear'></div>").on('click', function (event) {
+     *   console.log("Hello")
+     * }));
+     */
   }
 
   /**
@@ -269,8 +277,8 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
 
   cleanCanvas (){
-    util.removeElement(this.props.id);
-    util.removeElement("#" + "matrix-sorter");
+    util.removeElement("#" + this.props.id + " svg");
+    util.removeElement("#" + this.props.id + " #matrix-sorter");
   }
 
 
@@ -340,11 +348,18 @@ export default class ConnectivityComponent extends AbstractComponent {
     return ret;
   }
 
+  deckHandler (layout) {
+    console.log("Deck Handler");
+    console.log(layout);
+    this.setState(() => ({ layout: layout }), () => this.createLayout());
+  }
+
+
   render () {
     const { id } = this.props;
     return (
       <div>
-        <ConnectivityDeck/>
+        <ConnectivityDeck handler={this.deckHandler}/>
         <div id={id}/>
       </div>
 

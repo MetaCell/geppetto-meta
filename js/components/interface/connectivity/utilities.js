@@ -76,13 +76,9 @@ export function pluck (array, property) {
  * @param cssSelector
  */
 export function removeElement (cssSelector){
-  const container = document.querySelectorAll(cssSelector);
-
-  for (let i = 0; i < container.length; i++) {
-    let element = container[i];
-    if (element.innerHTML.length === 0) {
-      element.parentNode.removeChild(element);
-    }
+  const element = document.querySelector(cssSelector);
+  if (element){
+    element.parentNode.removeChild(element);
   }
 }
 
@@ -93,5 +89,5 @@ export function removeElement (cssSelector){
  * @param cssSelector
  */
 export function selectElement (cssSelector){
-  return document.getElementById(cssSelector);
+  return document.querySelector(cssSelector);
 }
