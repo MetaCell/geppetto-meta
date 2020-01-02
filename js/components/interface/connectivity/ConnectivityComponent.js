@@ -6,7 +6,6 @@ import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
 // import * as d3 from "d3";
 const d3 = require("d3");
-const _ = require('underscore');
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -35,7 +34,6 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.auxFunctions = this.defaultAuxFunctions;
     this.setAuxFunctions(this.props.auxFunctions);
     this.configViaGUI = this.configViaGUI.bind(this);
-    this.$el = $("#" + this.props.id);
   }
 
   /**
@@ -68,9 +66,9 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
   componentDidMount () {
-    this.widgetElement = $("#" + this.props.id);
-    this.widgetElement.bind('dialogresizestop', () => this.createLayout());
-    $(".ui-dialog-titlebar-maximize, .ui-dialog-titlebar-restore").on("click", () => this.createLayout());
+    util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
+    util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
+    util.addEventListenerId(this.props.id, 'dialogresizestop2', () => this.createLayout.bind(this));
     this.setData(this.props.data);
   }
 
@@ -140,10 +138,11 @@ export default class ConnectivityComponent extends AbstractComponent {
    * @param normalize
    */
   calculateNodeDegrees (normalize) {
-    const indegrees = _.countBy(this.dataset.links, function (link) {
+    const indegrees = util.countBy(this.dataset.links, function (link) {
       return link.source;
     });
-    const outdegrees = _.countBy(this.dataset.links, function (link) {
+
+    const outdegrees = util.countBy(this.dataset.links, function (link) {
       return link.target;
     });
     let maxDeg = 1;
@@ -284,6 +283,7 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
 
   createLayout () {
+    console.log("Print");
     this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
     this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
@@ -390,19 +390,6 @@ export default class ConnectivityComponent extends AbstractComponent {
       this.setAuxFunctions(this.props.auxFunctions);
       this.setData(this.dataset["root"]);
     });
-  }
-
-  setSize (h, w){
-
-    if (this.svg != null) {
-      // TODO: To subtract 20px is horrible and has to be replaced but I have no idea about how to calculate it
-      const width = this.size.width - 20;
-      const height = this.size.height - 20;
-      if (this.layout.getName() === "matrix") {
-        $('#' + this.id + '-ordering').remove();
-      }
-      this.createLayout();
-    }
   }
 
   render () {

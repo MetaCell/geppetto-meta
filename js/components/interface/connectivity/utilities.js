@@ -91,3 +91,53 @@ export function removeElement (cssSelector){
 export function selectElement (cssSelector){
   return document.querySelector(cssSelector);
 }
+
+/**
+ *
+ * Sorts a list into groups and returns a count for the number of objects in each group.
+ *
+ * @param list
+ * @param func
+ */
+export function countBy (list, func){
+  let dict = {};
+  for (let index in list){
+    let key = func(list[index]);
+    if (key in dict){
+      dict[key]++
+    } else {
+      dict[key] = 1
+    }
+  }
+  return dict
+}
+
+
+/**
+ *
+ * Adds eventlistener for each element in class
+ *
+ * @param classname
+ * @param event
+ * @param callback
+ */
+export function addEventListenerClass (classname, event, callback) {
+  let classname_el = document.getElementsByClassName(classname);
+  for (let i = 0; i < classname_el.length; i++) {
+    classname_el[i].addEventListener(event, callback());
+  }
+}
+
+/**
+ *
+ * Adds eventlistener for element
+ *
+ * @param id
+ * @param event
+ * @param callback
+ */
+export function addEventListenerId (id, event, callback) {
+  let el = document.getElementById(id);
+  el.addEventListener(event, callback());
+}
+

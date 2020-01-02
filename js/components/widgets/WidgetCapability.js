@@ -726,6 +726,8 @@ define(function (require) {
             var newWidth = that.dialog.parent().innerWidth() - widthBorder;
             that.$el[0].setAttribute("style", that.$el[0].getAttribute("style") + "height: " + newHeight + "px; " + "width: " + newWidth + "px;");
             console.log("height is " + newHeight + "width is " + newWidth);
+            var event = new Event('dialogresizestop2');
+            document.getElementById(that.props.id).dispatchEvent(event);
           });
         }
 
