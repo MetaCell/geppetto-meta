@@ -118,4 +118,8 @@ export class Force {
     });
     context.force.force("link").links(context.dataset.links);
   }
+
+  getName (){
+    return "Force"
+  }
 }

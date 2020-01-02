@@ -467,4 +467,9 @@ export class Chord {
     };
     return chord;
   }
+
+  getName (){
+    return "Chord"
+  }
+
 }

@@ -7,7 +7,6 @@ import Instance from '../../../geppettoModel/model/Instance';
 // import * as d3 from "d3";
 const d3 = require("d3");
 const _ = require('underscore');
-require("./Connectivity.less");
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -35,7 +34,8 @@ export default class ConnectivityComponent extends AbstractComponent {
     };
     this.auxFunctions = this.defaultAuxFunctions;
     this.setAuxFunctions(this.props.auxFunctions);
-    this.configViaGUI = this.configViaGUI.bind(this)
+    this.configViaGUI = this.configViaGUI.bind(this);
+    this.$el = $("#" + this.props.id);
   }
 
   /**
@@ -68,17 +68,10 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
   componentDidMount () {
-    this.connectivityContainer = util.selectElement("#" + this.props.id);
-    this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
-    this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
+    this.widgetElement = $("#" + this.props.id);
+    this.widgetElement.bind('dialogresizestop', () => this.createLayout());
+    $(".ui-dialog-titlebar-maximize, .ui-dialog-titlebar-restore").on("click", () => this.createLayout());
     this.setData(this.props.data);
-
-    /*
-     * this.$el = $("#" + this.props.id);
-     * this.addButtonToTitleBar($("<div class='fa fa-gear'></div>").on('click', function (event) {
-     *   console.log("Hello")
-     * }));
-     */
   }
 
   /**
@@ -291,6 +284,10 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
 
   createLayout () {
+    this.connectivityContainer = util.selectElement("#" + this.props.id);
+    this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
+    this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
+
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
       .append("svg")
@@ -395,9 +392,21 @@ export default class ConnectivityComponent extends AbstractComponent {
     });
   }
 
+  setSize (h, w){
+
+    if (this.svg != null) {
+      // TODO: To subtract 20px is horrible and has to be replaced but I have no idea about how to calculate it
+      const width = this.size.width - 20;
+      const height = this.size.height - 20;
+      if (this.layout.getName() === "matrix") {
+        $('#' + this.id + '-ordering').remove();
+      }
+      this.createLayout();
+    }
+  }
 
   render () {
-    const { id} = this.props;
+    const { id } = this.props;
     return (
       <div>
         <ConnectivityDeck handler={this.configViaGUI}/>

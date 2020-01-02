@@ -296,4 +296,8 @@ export class Matrix {
         .on("mouseout", $.proxy(mouseoutCell));
     }
   }
+  
+  getName (){
+    return "Matrix"
+  }
 }

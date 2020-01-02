@@ -83,4 +83,8 @@ export class Hive {
       return radians / Math.PI * 180 - 90;
     }
   }
+
+  getName (){
+    return "Hive"
+  }
 }
