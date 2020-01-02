@@ -13,21 +13,20 @@ import { Hive } from "../layouts/Hive";
 import { Chord } from "../layouts/Chord";
 
 const styles = theme => ({
-  container: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    display: 'flex',
-    flexDirection: 'row',
-    width:'100%'
-  },
+  cardDeckWrapper: { border:0 },
   card: {
-    width: '160px',
-    height: '200px',
-    flex: 1,
-    margin: '10px',
-    opacity: 0.85
+    borderRadius: 0,
+    border:0,
+    cursor:"pointer",
+    padding:"15px",
+    background: "rgba(50, 50, 53, 0.8)",
+    display: "table-cell",
+    width: "1%",
+    verticalAlign: "top",
+    "&:hover":{
+      border:"1px solid",
+      borderColor:"#fc6320"
+    }
   },
   img: {
     display: 'block',
@@ -111,9 +110,9 @@ class ConnectivityDeck extends Component {
           disableAutoFocus
           onClose={() => this.setState({ open: false })}
         >
-          <div >
+          <div className={"card-deck-wrapper " + classes.cardDeckWrapper}>
             <p className={"card-wrapper-title"}>How would you like to represent your network?</p>
-            <div className={classes.container }>
+            <div className={"card-deck"}>
               {this.deck.map(({ title, subtitle, handler, disabled, img }, index) => (
                 <Card raised className={classes.card} key={title}>
                   <CardActionArea
@@ -125,11 +124,11 @@ class ConnectivityDeck extends Component {
                     disabled={disabled}
                   >
                     <CardContent className={classes.cardText}>
-                      <img className={classes.img} src={img} />
-                      <Typography className={classes.cardTitle} variant="h5">
+                      <img className={"card-img-top center-block"} src={img} />
+                      <Typography className={"card-title"} variant="h5">
                         {title}
                       </Typography>
-                      <Typography component="p">
+                      <Typography className={"card-text"} component="p">
                         {subtitle}
                       </Typography>
                     </CardContent>
