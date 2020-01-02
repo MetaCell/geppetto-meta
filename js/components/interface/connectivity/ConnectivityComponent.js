@@ -7,6 +7,7 @@ import Instance from '../../../geppettoModel/model/Instance';
 // import * as d3 from "d3";
 const d3 = require("d3");
 const _ = require('underscore');
+require("./Connectivity.less");
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -14,8 +15,6 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
       size: this.props.size,
-      width: 660,
-      height: 500,
       widgetMargin: 20
     };
     this.defaultAuxFunctions = {
@@ -389,7 +388,6 @@ export default class ConnectivityComponent extends AbstractComponent {
    * @param layout
    */
   configViaGUI (layout) {
-
     this.setState(() => ({ layout: layout }), () => {
       this.auxFunctions = this.defaultAuxFunctions;
       this.setAuxFunctions(this.props.auxFunctions);
@@ -399,7 +397,7 @@ export default class ConnectivityComponent extends AbstractComponent {
 
 
   render () {
-    const { id } = this.props;
+    const { id} = this.props;
     return (
       <div>
         <ConnectivityDeck handler={this.configViaGUI}/>

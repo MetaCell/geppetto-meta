@@ -202,7 +202,7 @@ export class Matrix {
     // Sorting matrix entries by criteria specified via combobox
     let orderContainer = $('<div/>', {
       id: context.id + '-ordering',
-      style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.widgetMargin) + 'px;top:' + (matrixDim - 32) + 'px;',
+      style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.state.widgetMargin) + 'px;top:' + (matrixDim - 32) + 'px;',
       class: 'connectivity-ordering'
     }).appendTo(context.connectivityContainer);
 
