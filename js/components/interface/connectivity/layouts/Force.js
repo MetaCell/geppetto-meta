@@ -2,7 +2,7 @@
 
 // import * as d3 from "d3";
 const d3 = require("d3");
-const _ = require('underscore');
+import * as util from "../utilities";
 
 export class Force {
 
@@ -13,7 +13,7 @@ export class Force {
       .domain(context.dataset.linkTypes);
     const nodeTypeScale = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
     const weightScale = d3.scaleLinear()
-      .domain(d3.extent(_.pluck(context.dataset.links, 'weight').map(parseFloat)))
+      .domain(d3.extent(util.pluck(context.dataset.links, 'weight').map(parseFloat)))
     // TODO: think about weight = 0 (do we draw a line?)
       .range([0.5, 4]);
 

@@ -2,7 +2,8 @@
 
 // import * as d3 from "d3";
 const d3 = require("d3");
-const _ = require('underscore');
+import * as util from "../utilities";
+
 
 export class Chord {
   constructor (calculateNodeDegrees) {
@@ -214,27 +215,29 @@ export class Chord {
     const type2type = {};
 
     // {type_i: {postType_j: counts, ...}, ...}
-    const typesZeros = _.map(context.dataset.nodeTypes, function (type) {
+    const typesZeros = util.map(context.dataset.nodeTypes, function (type) {
       return [type, 0]
     });
     context.dataset.nodeTypes.forEach(function (type) {
-      const initCounts = _.object(typesZeros);
-      const linksFromType = _.filter(context.dataset.links, function (link) {
+      const initCounts = util._object(typesZeros);
+      const linksFromType = util.filter(context.dataset.links, function (link) {
         return context.dataset.nodes[link.source].type === type
       });
-      type2type[type] = _.extend(initCounts, _.countBy(linksFromType, function (link) {
+
+      type2type[type] = util._extend(initCounts, util.countBy(linksFromType, function (link) {
         return context.dataset.nodes[link.target].type
       }));
+
     });
-    _.countBy(context.dataset.nodes, function (node) {
+    util.countBy(context.dataset.nodes, function (node) {
       return node.type
     });
     /*
      *        //unconnected nodes of all types
-     *        var discNodes = _.filter(context.dataset.nodes, function (node) {
+     *        var discNodes = util.filter(context.dataset.nodes, function (node) {
      *            return node.degree == 0
      *        });
-     *        var numDiscByType = _.countBy(discNodes, function (node) {
+     *        var numDiscByType = util.countBy(discNodes, function (node) {
      *            return node.type
      *        });
      */

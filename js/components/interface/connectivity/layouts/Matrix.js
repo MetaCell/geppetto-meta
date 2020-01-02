@@ -1,7 +1,8 @@
-import $ from 'jquery';
 
 // import * as d3 from "d3";
 const d3 = require("d3");
+import * as util from "../utilities";
+
 
 export class Matrix {
   
@@ -149,9 +150,9 @@ export class Matrix {
             return colormap(popNameFromId(d.id));
           })
           .on("mouseover", function (d) {
-            $.proxy(mouseoverCell, this)(popNameFromId(d.id))
+            mouseoverCell.bind(this)(popNameFromId(d.id))
           })
-          .on("mouseout", $.proxy(mouseoutCell))
+          .on("mouseout", mouseoutCell.bind(this))
       };
     };
 
@@ -200,27 +201,30 @@ export class Matrix {
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
 
     // Sorting matrix entries by criteria specified via combobox
-    let orderContainer = $('<div/>', {
+    let orderContainer = util.createElement('div', {
       id: context.id + '-ordering',
       style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.state.widgetMargin) + 'px;top:' + (matrixDim - 32) + 'px;',
       class: 'connectivity-ordering'
-    }).appendTo(context.connectivityContainer);
-
-    let orderCombo = $('<select/>');
-    $.each(sortOptions, function (k, v) {
-      $('<option/>', { value: k, text: v }).appendTo(orderCombo);
     });
-    orderContainer.append($('<span/>', {
+
+    let orderCombo = util.createElement('select');
+    Object.keys(sortOptions).forEach(k => {
+      util.appendTo(orderCombo, util.createElement('option', { value: k, text: sortOptions[k] }));
+    });
+    let span = util.createElement('span', {
       id: 'matrix-sorter',
       class: 'connectivity-ordering-label',
       text: 'Order by:'
-    }).append(orderCombo));
+    });
+    util.appendTo(span, orderCombo);
+    util.appendTo(orderContainer, span);
+    util.appendTo(context.connectivityContainer, orderContainer);
 
-    orderCombo.on("change", function (svg) {
+    orderCombo.addEventListener("change", function (svg) {
       return function () {
         x.domain(orders[this.value]);
 
-        var t = svg.transition().duration(2500);
+        const t = svg.transition().duration(2500);
         t.selectAll(".row")
           .delay(function (d, i) {
             return x(i) * 4;
@@ -291,9 +295,9 @@ export class Matrix {
           eval(root.getId() + "." + nodes[d.y].id).showConnectionLines(false);
         })
         .on("mouseover", function (d) {
-          $.proxy(mouseoverCell, this)(nodes[d.y].id + " is connected to " + nodes[d.x].id);
+          mouseoverCell.bind(this)(nodes[d.y].id + " is connected to " + nodes[d.x].id);
         })
-        .on("mouseout", $.proxy(mouseoutCell));
+        .on("mouseout", mouseoutCell.bind(this));
     }
   }
   

@@ -49,6 +49,34 @@ export function extend (obj1, obj2){
 
 /**
  *
+ * Copies the values of all enumerable own and inherited properties from one or more source objects to a target object.
+ *
+ * @param target
+ * @param sources
+ */
+
+export function _extend (target, ...sources){
+  let source = [];
+  sources.forEach(src => {
+    source = source.concat([src, Object.getPrototypeOf(src)])
+  });
+  return Object.assign(target, ...source)
+}
+
+/**
+ *
+ * Converts an array of keys and values to an object.
+ *
+ * @param array
+ */
+
+export function _object (array){
+  return array.reduce((result, [key, val]) => Object.assign(result, { [key]: val }), {})
+}
+
+
+/**
+ *
  * Produces a duplicate-free version of the array
  *
  * @param array
@@ -60,7 +88,7 @@ export function uniq (array) {
 
 /**
  *
- * Creates a new array with the results of calling a function for every array element.
+ * Creates a new array with the results of getting a property for every element in array.
  *
  * @param array
  * @param property
@@ -68,6 +96,29 @@ export function uniq (array) {
 export function pluck (array, property) {
   return array.map(x => x[property])
 }
+
+/**
+ *
+ * Creates a new array with the results of calling a function for every array element.
+ *
+ * @param array
+ * @param func
+ */
+export function map (array, func) {
+  return array.map(x => func(x))
+}
+
+/**
+ *
+ * Creates a new array with all elements that pass the test implemented by the provided function.
+ *
+ * @param array
+ * @param func
+ */
+export function filter (array, func) {
+  return array.filter(x => func(x))
+}
+
 
 /**
  *
@@ -112,7 +163,6 @@ export function countBy (list, func){
   return dict
 }
 
-
 /**
  *
  * Adds eventlistener for each element in class
@@ -141,3 +191,33 @@ export function addEventListenerId (id, event, callback) {
   el.addEventListener(event, callback());
 }
 
+/**
+ *
+ * Creates the HTML element specified by tagName,
+ *
+ * @param tagName
+ * @param options
+ */
+export function createElement (tagName, options) {
+  let el = document.createElement(tagName, options);
+  for (let attr in options){
+    if (attr === "text"){
+      el.innerHTML += options[attr]
+    } else {
+      el.setAttribute(attr, options[attr])
+    }
+  }
+  return el
+}
+
+
+/**
+ *
+ * Insert child to the end of the target
+ *
+ * @param target
+ * @param child
+ */
+export function appendTo (target, child) {
+  target.appendChild(child)
+}

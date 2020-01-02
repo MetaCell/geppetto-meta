@@ -10,6 +10,7 @@ const d3 = require("d3");
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
     super(props);
+    this.id = this.props.id;
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
       size: this.props.size,
@@ -283,7 +284,6 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
 
   createLayout () {
-    console.log("Print");
     this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
     this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
