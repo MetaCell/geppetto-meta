@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import IconButton from '@material-ui/core/IconButton';
+import IconButtonWithTooltip from "./IconButtonWithTooltip";
 import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";
 import { Hive } from "../layouts/Hive";
@@ -38,9 +38,9 @@ const styles = theme => ({
   cardAction: { height: "100%" },
   cardActionDisabled: { height: "100%", opacity: "0.2" },
   button: {
-    transition: "background-color 150ms cubic-bezier(0.2, 0, 0.1, 1) 0ms",
     padding: "8px",
-    top: "0"
+    top: "0",
+    color: "#fc6320"
   }
 });
 
@@ -97,12 +97,12 @@ class ConnectivityDeck extends Component {
     const { classes } = this.props;
 
     return (
-    // todo: add tooltip
       <span>
-        <IconButton
+        <IconButtonWithTooltip
           disabled={false}
           onClick={() => this.setState({ open: true })}
           className={" fa fa-cog " + `${classes.button}`}
+          tooltip={"Open layout selector"}
         />
 
         <Modal
