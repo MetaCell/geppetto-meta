@@ -7,8 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import IconButton from '@material-ui/core/IconButton';
-import {Matrix} from "../layouts/Matrix";
-import {Force} from "../layouts/Force";
+import { Matrix } from "../layouts/Matrix";
+import { Force } from "../layouts/Force";
+import { Hive } from "../layouts/Hive";
+import { Chord } from "../layouts/Chord";
 
 const styles = theme => ({
   container: {
@@ -69,7 +71,7 @@ class ConnectivityDeck extends Component {
         subtitle: "Axes correspond to node categories, arcs to connections."
             + "The position of each node along an axis is determined by "
             + "the total number of connections it makes.",
-        handler: this.props.handler.bind(this, 'hive'),
+        handler: this.props.handler.bind(this, new Hive(true)),
         disabled: false,
         img: this.getImgPath('hive.svg')
       },
@@ -79,7 +81,7 @@ class ConnectivityDeck extends Component {
             + "connections. A gap between slice and chord indicate an "
             + "incoming connection. Use ctrl(shift) + mouse hover to "
             + "hide incoming(outgoing) connections from a population.",
-        handler: this.props.handler.bind(this, 'Chord'),
+        handler: this.props.handler.bind(this, new Chord(false)),
         disabled: false,
         img: this.getImgPath('chord.svg')
       },

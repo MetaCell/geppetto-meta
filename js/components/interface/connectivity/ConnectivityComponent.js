@@ -6,6 +6,7 @@ import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
 // import * as d3 from "d3";
 const d3 = require("d3");
+const _ = require('underscore');
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -17,7 +18,7 @@ export default class ConnectivityComponent extends AbstractComponent {
       height: 500,
       widgetMargin: 20
     };
-    this.auxFunctions = {
+    this.defaultAuxFunctions = {
       nodeType: function (node) {
         if (node instanceof Instance) {
           return node.getParent().getId();
@@ -33,8 +34,9 @@ export default class ConnectivityComponent extends AbstractComponent {
       },
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
+    this.auxFunctions = this.defaultAuxFunctions;
     this.setAuxFunctions(this.props.auxFunctions);
-    this.deckHandler = this.deckHandler.bind(this)
+    this.configViaGUI = this.configViaGUI.bind(this)
   }
 
   /**
@@ -70,7 +72,7 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
     this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
-    this.setData(this.props.root);
+    this.setData(this.props.data);
 
     /*
      * this.$el = $("#" + this.props.id);
@@ -84,14 +86,14 @@ export default class ConnectivityComponent extends AbstractComponent {
    *
    * Sets data and draws layout
    *
-   * @command setData(root)
-   * @param root
+   * @command setData(data)
+   * @param data
    */
-  setData (root){
+  setData (data){
     this.dataset = {};
     this.mapping = {};
     this.mappingSize = 0;
-    this.dataset["root"] = root;
+    this.dataset["root"] = data;
     this.setNodeColormap(this.props.nodeColormap);
     if (this.createDataFromConnections()){
       this.createLayout();
@@ -136,6 +138,36 @@ export default class ConnectivityComponent extends AbstractComponent {
       return true;
     }
     return false;
+  }
+
+  /**
+   *
+   * Prepocesses node degrees
+   *
+   * @command calculateNodeDegrees(normalize)
+   * @param normalize
+   */
+  calculateNodeDegrees (normalize) {
+    const indegrees = _.countBy(this.dataset.links, function (link) {
+      return link.source;
+    });
+    const outdegrees = _.countBy(this.dataset.links, function (link) {
+      return link.target;
+    });
+    let maxDeg = 1;
+    this.dataset.nodes.forEach(function (node, idx) {
+      const idg = (typeof indegrees[idx] === 'undefined') ? 0 : indegrees[idx];
+      const odg = (typeof outdegrees[idx] === 'undefined') ? 0 : outdegrees[idx];
+      node.degree = idg + odg;
+      if (node.degree > maxDeg) {
+        maxDeg = node.degree;
+      }
+    });
+    if (normalize) {
+      this.dataset.nodes.forEach(function (node) {
+        node.degree /= maxDeg;
+      });
+    }
   }
 
   /**
@@ -348,10 +380,21 @@ export default class ConnectivityComponent extends AbstractComponent {
     return ret;
   }
 
-  deckHandler (layout) {
-    console.log("Deck Handler");
-    console.log(layout);
-    this.setState(() => ({ layout: layout }), () => this.createLayout());
+  /**
+   *
+   * Handle layout selection
+   *
+   * @command configViaGUI (layout)
+   *
+   * @param layout
+   */
+  configViaGUI (layout) {
+
+    this.setState(() => ({ layout: layout }), () => {
+      this.auxFunctions = this.defaultAuxFunctions;
+      this.setAuxFunctions(this.props.auxFunctions);
+      this.setData(this.dataset["root"]);
+    });
   }
 
 
@@ -359,7 +402,7 @@ export default class ConnectivityComponent extends AbstractComponent {
     const { id } = this.props;
     return (
       <div>
-        <ConnectivityDeck handler={this.deckHandler}/>
+        <ConnectivityDeck handler={this.configViaGUI}/>
         <div id={id}/>
       </div>
 

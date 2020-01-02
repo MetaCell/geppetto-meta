@@ -23,7 +23,7 @@ export default class ConnectivityWrapper extends Component {
   render () {
     const ConnectivityWidget = WidgetCapability.createWidget(ConnectivityComponent);
     const isOpen = this.state.isOpen;
-    const root = this.state.data.root;
+    const data = this.state.data.root;
     const auxFunctions = this.state.data.options;
     const nodeColormap = this.state.data.nodeColormap;
     let show;
@@ -44,7 +44,7 @@ export default class ConnectivityWrapper extends Component {
         closable={true}
         minimizable={true}
         collapsable={true}
-        root={root}
+        data={data}
         auxFunctions={auxFunctions}
         nodeColormap={nodeColormap}
         layout={new Matrix()}
