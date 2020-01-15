@@ -443,21 +443,18 @@ define(function (require) {
               success: function (data) {
                 result = data.trim().split(':')[1].trim().split(' ');
                 if (result !== '') {
-                  var currentPosition = that.renderer.plugins.interaction.mouse.getLocalPosition(that.stack);
-                  if (callX == currentPosition.x.toFixed(0) && callY == currentPosition.y.toFixed(0)) {
-                    for (j in result) {
-                      if (result[j].trim() !== '') {
-                        var index = Number(result[j]);
-                        if (i !== 0 || index !== 0) { // don't select template
-                          if (index == 0) {
-                            if (!shift) {
-                              that.state.objects.push(that.state.label[i]);
-                            }
-                          } else {
-                            if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
-                              that.state.objects.push(that.props.templateDomainNames[index]);
-                              break;
-                            }
+                  for (j in result) {
+                    if (result[j].trim() !== '') {
+                      var index = Number(result[j]);
+                      if (i !== 0 || index !== 0) { // don't select template
+                        if (index == 0) {
+                          if (!shift) {
+                            that.state.objects.push(that.state.label[i]);
+                          }
+                        } else {
+                          if (typeof that.props.templateDomainIds !== 'undefined' && typeof that.props.templateDomainNames !== 'undefined' && typeof that.props.templateDomainIds[index] !== 'undefined' && typeof that.props.templateDomainNames[index] !== 'undefined' && that.props.templateDomainNames[index] !== null) {
+                            that.state.objects.push(that.props.templateDomainNames[index]);
+                            break;
                           }
                         }
                       }
