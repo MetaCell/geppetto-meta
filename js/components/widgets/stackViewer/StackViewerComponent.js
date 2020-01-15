@@ -486,6 +486,7 @@ define(function (require) {
             });
           })(i, that);
         });
+        that.state.loadingLabels = false;
       }
     },
 
