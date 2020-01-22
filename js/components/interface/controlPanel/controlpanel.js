@@ -1592,10 +1592,9 @@ define(function (require) {
         
         // remove unwanted instances from grid input
         for (var i = 0; i < instancePaths.length; i++) {
-          for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i].indexOf(gridInput[j].path) == -1) {
-              var index = gridInput.indexOf(gridInput[j].path);
-              gridInput.splice(index,1);
+          for (var j = gridInput.length - 1; j >= 0; j--) {
+            if (instancePaths[i].indexOf(gridInput[j].path) !== -1) {
+              gridInput.splice(j, 1);
               needsUpdate = true;
             }
           }
