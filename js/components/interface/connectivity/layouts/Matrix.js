@@ -150,9 +150,11 @@ export class Matrix {
             return colormap(popNameFromId(d.id));
           })
           .on("mouseover", function (d) {
-            mouseoverCell.bind(this)(popNameFromId(d.id))
+            mouseoverCell.apply(this, [popNameFromId(d.id)])
           })
-          .on("mouseout", mouseoutCell.bind(this))
+          .on("mouseout", function () {
+            mouseoutCell.apply(this);
+          })
       };
     };
 
@@ -295,9 +297,11 @@ export class Matrix {
           eval(root.getId() + "." + nodes[d.y].id).showConnectionLines(false);
         })
         .on("mouseover", function (d) {
-          mouseoverCell.bind(this)(nodes[d.y].id + " is connected to " + nodes[d.x].id);
+          mouseoverCell.apply(this, [nodes[d.y].id + " is connected to " + nodes[d.x].id]);
         })
-        .on("mouseout", mouseoutCell.bind(this));
+        .on("mouseout", function () {
+          mouseoutCell.apply(this);
+        })
     }
   }
   
