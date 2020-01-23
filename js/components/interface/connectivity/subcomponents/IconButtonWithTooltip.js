@@ -16,6 +16,7 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
         disabled={disabled}
         onClick={() => onClick()}
         className={className}
+        disableRipple
       />
     )
   }
