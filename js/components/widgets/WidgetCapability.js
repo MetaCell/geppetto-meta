@@ -726,7 +726,7 @@ define(function (require) {
             var newWidth = that.dialog.parent().innerWidth() - widthBorder;
             that.$el[0].setAttribute("style", that.$el[0].getAttribute("style") + "height: " + newHeight + "px; " + "width: " + newWidth + "px;");
             console.log("height is " + newHeight + "width is " + newWidth);
-            var event = new Event('dialog_container_resize');
+            const event = new Event('dialog_container_resize');
             document.getElementById(that.props.id).dispatchEvent(event);
           });
         }
@@ -838,12 +838,13 @@ define(function (require) {
           this.refs.overlay.setState({ show: false });
         }
 
+
         /**
          * Renders the widget dialog window
          */
         render () {
           return (
-            <div key={this.props.id} id={this.props.id} className={'dialog ' + (this.props.componentType != undefined) ? this.props.componentType.toLowerCase() + "-widget" : ''} title={this.props.title}>
+            <div onMouseEnter={() => super.onEnter()} onMouseLeave={() => super.onLeave()} key={this.props.id} id={this.props.id} className={'dialog ' + (this.props.componentType != undefined) ? this.props.componentType.toLowerCase() + "-widget" : ''} title={this.props.title}>
 
               <Overlay
                 ref="overlay"

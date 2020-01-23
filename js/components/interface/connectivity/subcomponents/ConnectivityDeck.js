@@ -51,7 +51,7 @@ const styles = theme => ({
     minHeight: "50%",
     background: "#424242",
     padding: "0",
-    borderRadius:"5px"
+    borderRadius:"5px",
   },
 });
 
@@ -105,11 +105,14 @@ class ConnectivityDeck extends Component {
 
   render () {
     const { open } = this.state;
-    const { classes } = this.props;
+    const { classes, buttonVisibility } = this.props;
+    const visibility = buttonVisibility ? "visible" : "hidden";
 
     return (
       <span>
-        <Toolbar className={classes.toolBar}>
+        <Toolbar 
+          className={classes.toolBar + " visibility: " + visibility }
+        >
           <IconButtonWithTooltip
             disabled={false}
             onClick={() => this.setState({ open: true })}

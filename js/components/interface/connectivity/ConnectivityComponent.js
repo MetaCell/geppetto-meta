@@ -14,7 +14,8 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
       size: this.props.size,
-      widgetMargin: 20
+      widgetMargin: 20,
+      buttonVisibility: false
     };
     this.defaultAuxFunctions = {
       nodeType: function (node) {
@@ -35,6 +36,8 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.auxFunctions = this.defaultAuxFunctions;
     this.setAuxFunctions(this.props.auxFunctions);
     this.configViaGUI = this.configViaGUI.bind(this);
+    this.onEnter = this.onEnter.bind(this);
+    this.onLeave = this.onLeave.bind(this);
   }
 
   /**
@@ -392,11 +395,34 @@ export default class ConnectivityComponent extends AbstractComponent {
     });
   }
 
+  /**
+   *
+   * Updates buttonVisibility true
+   *
+   * @command onHover (layout)
+   *
+   */
+  onEnter (){
+    this.setState({ buttonVisibility: true });
+  }
+
+  /**
+   *
+   * Updates buttonVisibility false
+   *
+   * @command onLeave (layout)
+   *
+   */
+  onLeave (){
+    this.setState({ buttonVisibility: false });
+  }
+
+
   render () {
     const { id } = this.props;
     return (
       <div>
-        <ConnectivityDeck handler={this.configViaGUI}/>
+        <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
         <div id={id}/>
       </div>
 
