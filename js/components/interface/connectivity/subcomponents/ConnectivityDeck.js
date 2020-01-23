@@ -15,7 +15,7 @@ import { Chord } from "../layouts/Chord";
 const styles = theme => ({
   cardDeckWrapper: { 
     border:0,
-    "&focus":{ outline: "none" }
+    outline: 0
   },
   card: {
     borderRadius: 0,
