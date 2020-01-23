@@ -13,7 +13,10 @@ import { Hive } from "../layouts/Hive";
 import { Chord } from "../layouts/Chord";
 
 const styles = theme => ({
-  cardDeckWrapper: { border:0 },
+  cardDeckWrapper: { 
+    border:0,
+    "&focus":{ outline: "none" }
+  },
   card: {
     borderRadius: 0,
     border:0,

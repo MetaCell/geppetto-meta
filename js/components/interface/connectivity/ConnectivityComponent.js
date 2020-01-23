@@ -69,7 +69,7 @@ export default class ConnectivityComponent extends AbstractComponent {
   componentDidMount () {
     util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
     util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
-    util.addEventListenerId(this.props.id, 'dialogresizestop2', () => this.createLayout.bind(this));
+    util.addEventListenerId(this.props.id, 'dialog_container_resize', () => this.createLayout.bind(this));
     this.setData(this.props.data);
   }
 
