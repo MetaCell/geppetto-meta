@@ -4,8 +4,8 @@ import ConnectivityDeck from "./subcomponents/ConnectivityDeck";
 import { Matrix } from "./layouts/Matrix";
 import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
-import * as d3 from "d3";
-// const d3 = require("d3");
+// import * as d3 from "d3";
+const d3 = require("d3");
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -38,10 +38,6 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.configViaGUI = this.configViaGUI.bind(this);
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
-    this.handleMaximize = this.handleMaximize.bind(this);
-    this.handleRestore = this.handleRestore.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-
   }
 
   /**
@@ -74,6 +70,9 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
   componentDidMount () {
+    util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
+    util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
+    util.addEventListenerId(this.props.id, 'dialog_container_resize', () => this.createLayout.bind(this));
     this.setData(this.props.data);
   }
 
@@ -294,9 +293,9 @@ export default class ConnectivityComponent extends AbstractComponent {
 
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
-      .append("svg")
-      .attr("width", this.innerWidth)
-      .attr("height", this.innerHeight);
+        .append("svg")
+        .attr("width", this.innerWidth)
+        .attr("height", this.innerHeight);
     this.state.layout.draw(this)
   }
 
@@ -336,43 +335,43 @@ export default class ConnectivityComponent extends AbstractComponent {
     if (colorScale.domain().length > 1) {
       let horz, vert;
       const legendItem = this.svg.selectAll(id)
-        .data(colorScale.domain().slice().sort())
-        .enter().append('g')
-        .attr('class', 'legend-item')
-        .attr('transform', function (d, i) {
-          const height = colorBox.size + colorBox.labelSpace;
-          horz = colorBox.size + position.x + padding.x;
-          vert = i * height + position.y + padding.y;
-          return 'translate(' + horz + ',' + vert + ')';
-        });
+          .data(colorScale.domain().slice().sort())
+          .enter().append('g')
+          .attr('class', 'legend-item')
+          .attr('transform', function (d, i) {
+            const height = colorBox.size + colorBox.labelSpace;
+            horz = colorBox.size + position.x + padding.x;
+            vert = i * height + position.y + padding.y;
+            return 'translate(' + horz + ',' + vert + ')';
+          });
 
       // coloured squares
       legendItem.append('rect')
-        .attr('width', colorBox.size)
-        .attr('height', colorBox.size)
-        .style('fill', function (d) {
-          return colorScale(d);
-        })
-        .style('stroke', function (d) {
-          return colorScale(d);
-        });
+          .attr('width', colorBox.size)
+          .attr('height', colorBox.size)
+          .style('fill', function (d) {
+            return colorScale(d);
+          })
+          .style('stroke', function (d) {
+            return colorScale(d);
+          });
 
       // labels
       legendItem.append('text')
-        .attr('x', colorBox.size + colorBox.labelSpace)
-        .attr('y', colorBox.size - colorBox.labelSpace)
-        .attr('class', 'legend-text')
-        .text(function (d) {
-          return d;
-        });
+          .attr('x', colorBox.size + colorBox.labelSpace)
+          .attr('y', colorBox.size - colorBox.labelSpace)
+          .attr('class', 'legend-text')
+          .text(function (d) {
+            return d;
+          });
 
       // title
       if (typeof title != 'undefined') {
         this.svg.append('text')
-          .text(title)
-          .attr('class', 'legend-title')
-          .attr('x', position.x + 2 * padding.x)
-          .attr('y', position.y + 0.75 * padding.y);
+            .text(title)
+            .attr('class', 'legend-title')
+            .attr('x', position.x + 2 * padding.x)
+            .attr('y', position.y + 0.75 * padding.y);
       }
       ret = { x: horz, y: vert };
     }
@@ -419,49 +418,13 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
 
-  /**
-   *
-   * Handler for Resize
-   *
-   * @command handleResize ()
-   *
-   */
-  handleResize (){
-    this.createLayout()
-  }
-
-
-  /**
-   *
-   * Handler for Maximize
-   *
-   * @command handleMaximize ()
-   *
-   */
-  handleMaximize (){
-    this.createLayout()
-  }
-
-
-  /**
-   *
-   * Handler for Restore
-   *
-   * @command handleRestore ()
-   *
-   */
-  handleRestore (){
-    this.createLayout()
-  }
-
-
   render () {
     const { id } = this.props;
     return (
-      <div>
-        <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
-        <div id={id}/>
-      </div>
+        <div>
+          <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
+          <div id={id}/>
+        </div>
 
     )
   }
