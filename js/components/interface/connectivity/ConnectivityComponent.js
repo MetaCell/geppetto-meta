@@ -4,8 +4,8 @@ import ConnectivityDeck from "./subcomponents/ConnectivityDeck";
 import { Matrix } from "./layouts/Matrix";
 import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
-// import * as d3 from "d3";
-const d3 = require("d3");
+import * as d3 from "d3";
+// const d3 = require("d3");
 
 export default class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
@@ -38,6 +38,7 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.configViaGUI = this.configViaGUI.bind(this);
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
+    this.createLayout = this.createLayout.bind(this);
   }
 
   /**
@@ -72,7 +73,6 @@ export default class ConnectivityComponent extends AbstractComponent {
   componentDidMount () {
     util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
     util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
-    util.addEventListenerId(this.props.id, 'dialog_container_resize', () => this.createLayout.bind(this));
     this.setData(this.props.data);
   }
 

@@ -726,8 +726,9 @@ define(function (require) {
             var newWidth = that.dialog.parent().innerWidth() - widthBorder;
             that.$el[0].setAttribute("style", that.$el[0].getAttribute("style") + "height: " + newHeight + "px; " + "width: " + newWidth + "px;");
             console.log("height is " + newHeight + "width is " + newWidth);
-            const event = new Event('dialog_container_resize');
-            document.getElementById(that.props.id).dispatchEvent(event);
+
+            // TODO: Still relies on dom event dialogresizetop
+            super.createLayout()
           });
         }
 
