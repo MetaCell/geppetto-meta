@@ -38,7 +38,10 @@ export default class ConnectivityComponent extends AbstractComponent {
     this.configViaGUI = this.configViaGUI.bind(this);
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
-    this.createLayout = this.createLayout.bind(this);
+    this.handleMaximize = this.handleMaximize.bind(this);
+    this.handleRestore = this.handleRestore.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+
   }
 
   /**
@@ -71,8 +74,6 @@ export default class ConnectivityComponent extends AbstractComponent {
   }
 
   componentDidMount () {
-    util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
-    util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
     this.setData(this.props.data);
   }
 
@@ -415,6 +416,42 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
   onLeave (){
     this.setState({ buttonVisibility: false });
+  }
+
+
+  /**
+   *
+   * Handler for Resize
+   *
+   * @command handleResize ()
+   *
+   */
+  handleResize (){
+    this.createLayout()
+  }
+
+
+  /**
+   *
+   * Handler for Maximize
+   *
+   * @command handleMaximize ()
+   *
+   */
+  handleMaximize (){
+    this.createLayout()
+  }
+
+
+  /**
+   *
+   * Handler for Restore
+   *
+   * @command handleRestore ()
+   *
+   */
+  handleRestore (){
+    this.createLayout()
   }
 
 

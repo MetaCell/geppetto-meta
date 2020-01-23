@@ -1,3 +1,5 @@
+import * as util from "../interface/connectivity/utilities";
+
 /**
  *
  * High Level widget component
@@ -727,9 +729,12 @@ define(function (require) {
             that.$el[0].setAttribute("style", that.$el[0].getAttribute("style") + "height: " + newHeight + "px; " + "width: " + newWidth + "px;");
             console.log("height is " + newHeight + "width is " + newWidth);
 
-            // TODO: Still relies on dom event dialogresizetop
-            super.createLayout()
+            // TODO: Still relies on dom event dialogresizetop, every parent component has to implement this method
+            super.handleResize()
           });
+
+          util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => super.handleMaximize());
+          util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => super.handleRestore());
         }
 
         /**
