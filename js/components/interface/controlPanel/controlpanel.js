@@ -1591,7 +1591,7 @@ define(function (require) {
 
         // remove unwanted instances from grid input
         instancePaths.map( path => {
-          newGridInput = this.state.data.filter( record =>
+          newGridInput = newGridInput.filter( record =>
             path.indexOf(record.path) === -1);
           if (newGridInput.length !== this.state.data.length) {
             needsUpdate = true;
