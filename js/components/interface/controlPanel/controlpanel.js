@@ -1595,20 +1595,12 @@ define(function (require) {
 
     deleteData: function (instancePaths) {
       if (instancePaths != undefined && instancePaths.length > 0) {
-        // grab existing input
-        var needsUpdate = false;
-
         // remove unwanted instances from grid input
         const newGridInput = this.state.data.filter( record =>
           this.checkInstanceToFilter(record.path, instancePaths)
         );
 
         if (newGridInput.length !== this.state.data.length) {
-          needsUpdate = true;
-        }
-
-        // set state to refresh grid
-        if (needsUpdate) {
           this.setState({ data: newGridInput });
         }
       }
