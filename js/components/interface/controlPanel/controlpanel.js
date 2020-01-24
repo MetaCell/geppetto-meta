@@ -1586,23 +1586,21 @@ define(function (require) {
     deleteData: function (instancePaths) {
       if (instancePaths != undefined && instancePaths.length > 0) {
         // grab existing input
-        var gridInput = this.state.data;
-        var newGridInput = [];
+        var newGridInput = this.state.data;
         var needsUpdate = false;
-        
+
         // remove unwanted instances from grid input
-        for (var i = 0; i < instancePaths.length; i++) {
-          for (var j = gridInput.length - 1; j >= 0; j--) {
-            if (instancePaths[i].indexOf(gridInput[j].path) !== -1) {
-              gridInput.splice(j, 1);
-              needsUpdate = true;
-            }
+        instancePaths.map( path => {
+          newGridInput = this.state.data.filter( record =>
+            path.indexOf(record.path) === -1);
+          if (newGridInput.length !== this.state.data.length) {
+            needsUpdate = true;
           }
-        }
+        });
 
         // set state to refresh grid
         if (needsUpdate) {
-          this.setState({ data: gridInput });
+          this.setState({ data: newGridInput });
         }
       }
     },
