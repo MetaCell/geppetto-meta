@@ -1583,20 +1583,29 @@ define(function (require) {
       }
     },
 
+    checkInstanceToFilter: function (instance, list) {
+      let condition = false;
+      list.map(element => {
+        if (element.indexOf(instance) === -1) {
+          condition = true;
+        }
+      });
+      return condition;
+    },
+
     deleteData: function (instancePaths) {
       if (instancePaths != undefined && instancePaths.length > 0) {
         // grab existing input
-        var newGridInput = this.state.data;
         var needsUpdate = false;
 
         // remove unwanted instances from grid input
-        instancePaths.map( path => {
-          newGridInput = newGridInput.filter( record =>
-            path.indexOf(record.path) === -1);
-          if (newGridInput.length !== this.state.data.length) {
-            needsUpdate = true;
-          }
-        });
+        const newGridInput = this.state.data.filter( record =>
+          this.checkInstanceToFilter(record.path, instancePaths)
+        );
+
+        if (newGridInput.length !== this.state.data.length) {
+          needsUpdate = true;
+        }
 
         // set state to refresh grid
         if (needsUpdate) {
