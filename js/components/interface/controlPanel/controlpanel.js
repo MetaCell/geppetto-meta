@@ -1585,11 +1585,12 @@ define(function (require) {
 
     checkInstanceToFilter: function (instance, list) {
       let condition = false;
-      list.map(element => {
+      for (var element of list) {
         if (element.indexOf(instance) === -1) {
           condition = true;
+          break;
         }
-      });
+      }
       return condition;
     },
 
