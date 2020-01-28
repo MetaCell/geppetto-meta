@@ -13,7 +13,7 @@ import { Force } from "../layouts/Force";
 import { Hive } from "../layouts/Hive";
 import { Chord } from "../layouts/Chord";
 
-const styles = theme => ({
+const styles = () => ({
   cardDeckWrapper: { 
     border:0,
     outline: 0
@@ -49,7 +49,7 @@ const styles = theme => ({
   toolBar: {
     maxWidth: "5%",
     minHeight: "50%",
-    background: "#424242",
+    background: "#778899",
     padding: "0",
     borderRadius:"5px",
   },

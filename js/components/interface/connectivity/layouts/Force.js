@@ -22,7 +22,7 @@ export class Force {
       .force("link", d3.forceLink().id(function (d) {
         return d.index;
       }))
-      .force("center", d3.forceCenter(context.innerWidth / 2, context.innerHeight / 2));
+      .force("center", d3.forceCenter(context.svgWidth / 2, context.svgHeight / 2));
 
     // add encompassing group for the zoom
     const g = context.svg.append("g")
@@ -86,7 +86,7 @@ export class Force {
     }
     zoom_handler(context.svg);
 
-    const legendPosition = { x: 0.75 * context.innerWidth, y: 0 };
+    const legendPosition = { x: 0.75 * context.svgWidth, y: 0 };
 
     // Nodes
     const legendBottom = context.createLegend('legend', nodeTypeScale, legendPosition, 'Cell Types');

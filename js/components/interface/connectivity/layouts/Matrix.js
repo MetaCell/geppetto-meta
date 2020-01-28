@@ -7,10 +7,10 @@ import * as util from "../utilities";
 export class Matrix {
   
   draw (context) {
-    const margin = { top: 45, right: 10, bottom: 10, left: 15 };
+    const margin = { top: 45, right: 15, bottom: 10, left: 15 };
     const legendWidth = 120;
 
-    const matrixDim = (context.innerHeight < (context.innerWidth - legendWidth)) ? (context.innerHeight) : (context.innerWidth - legendWidth);
+    const matrixDim = (context.svgHeight < (context.svgWidth - legendWidth)) ? (context.svgHeight) : (context.svgWidth - legendWidth);
 
     const x = d3.scaleBand().range([0, matrixDim - margin.top]),
       // Opacity
@@ -187,7 +187,7 @@ export class Matrix {
       .each(row);
 
     row_.append("line")
-      .attr("x2", context.innerWidth);
+      .attr("x2", context.svgWidth);
 
     let column = container.selectAll(".column")
       .data(matrix)
@@ -198,14 +198,14 @@ export class Matrix {
       });
 
     column.append("line")
-      .attr("x1", -context.innerWidth);
+      .attr("x1", -context.svgWidth);
 
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
 
     // Sorting matrix entries by criteria specified via combobox
     let orderContainer = util.createElement('div', {
-      id: context.id + '-ordering',
-      style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.state.widgetMargin) + 'px;top:' + (matrixDim - 32) + 'px;',
+      id: context.props.id + '-ordering',
+      style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.state.containerMargin - margin.right) + 'px;top:' + (matrixDim - 32) + 'px;',
       class: 'connectivity-ordering'
     });
 

@@ -20,14 +20,14 @@ export class Chord {
     const pi = Math.PI;
     const halfpi = pi / 2;
     const dr = 15;
-    const innerRadius = Math.min(context.innerWidth, context.innerHeight) * .41,
+    const innerRadius = Math.min(context.svgWidth, context.svgHeight) * .41,
       outerRadius = innerRadius * 1.05;
 
     // if no custom colors set then use d3 provided color scheme
     const fill = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
 
     const svg = context.svg.append("g")
-      .attr("transform", "translate(" + context.innerWidth / 2 + "," + context.innerHeight / 2 + ")");
+      .attr("transform", "translate(" + context.svgWidth / 2 + "," + context.svgHeight / 2 + ")");
 
     const chord = this.layout_chord()
       .padding(.05)
@@ -203,7 +203,7 @@ export class Chord {
 
   createLegend (context) {
     const nodeTypeScale = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
-    const legendPosition = { x: 0.77 * context.innerWidth, y: 0 };
+    const legendPosition = { x: 0.77 * context.svgWidth, y: 0 };
 
     // Nodes
     context.createLegend('legend', nodeTypeScale, legendPosition, 'Populations');

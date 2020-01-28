@@ -4,18 +4,19 @@ import ConnectivityDeck from "./subcomponents/ConnectivityDeck";
 import { Matrix } from "./layouts/Matrix";
 import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
-// import * as d3 from "d3";
 const d3 = require("d3");
+import { withStyles } from '@material-ui/core';
 
-export default class ConnectivityComponent extends AbstractComponent {
+
+const styles = { root: { background: '#424242', }, };
+
+class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
     super(props);
-    this.id = this.props.id;
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      size: this.props.size,
-      widgetMargin: 20,
-      buttonVisibility: false
+      containerMargin: 20,
+      buttonVisibility: true
     };
     this.defaultAuxFunctions = {
       nodeType: function (node) {
@@ -287,15 +288,14 @@ export default class ConnectivityComponent extends AbstractComponent {
    */
 
   createLayout () {
+    this.svgHeight = this.props.size.height - this.state.containerMargin;
+    this.svgWidth = this.props.size.width - this.state.containerMargin;
     this.connectivityContainer = util.selectElement("#" + this.props.id);
-    this.innerHeight = util.getInnerHeight(this.connectivityContainer) - this.state.widgetMargin;
-    this.innerWidth = util.getInnerWidth(this.connectivityContainer) - this.state.widgetMargin;
-
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
-        .append("svg")
-        .attr("width", this.innerWidth)
-        .attr("height", this.innerHeight);
+      .append("svg")
+      .attr("width", this.svgWidth)
+      .attr("height", this.svgHeight);
     this.state.layout.draw(this)
   }
 
@@ -335,43 +335,43 @@ export default class ConnectivityComponent extends AbstractComponent {
     if (colorScale.domain().length > 1) {
       let horz, vert;
       const legendItem = this.svg.selectAll(id)
-          .data(colorScale.domain().slice().sort())
-          .enter().append('g')
-          .attr('class', 'legend-item')
-          .attr('transform', function (d, i) {
-            const height = colorBox.size + colorBox.labelSpace;
-            horz = colorBox.size + position.x + padding.x;
-            vert = i * height + position.y + padding.y;
-            return 'translate(' + horz + ',' + vert + ')';
-          });
+        .data(colorScale.domain().slice().sort())
+        .enter().append('g')
+        .attr('class', 'legend-item')
+        .attr('transform', function (d, i) {
+          const height = colorBox.size + colorBox.labelSpace;
+          horz = colorBox.size + position.x + padding.x - 5;
+          vert = i * height + position.y + padding.y;
+          return 'translate(' + horz + ',' + vert + ')';
+        });
 
       // coloured squares
       legendItem.append('rect')
-          .attr('width', colorBox.size)
-          .attr('height', colorBox.size)
-          .style('fill', function (d) {
-            return colorScale(d);
-          })
-          .style('stroke', function (d) {
-            return colorScale(d);
-          });
+        .attr('width', colorBox.size)
+        .attr('height', colorBox.size)
+        .style('fill', function (d) {
+          return colorScale(d);
+        })
+        .style('stroke', function (d) {
+          return colorScale(d);
+        });
 
       // labels
       legendItem.append('text')
-          .attr('x', colorBox.size + colorBox.labelSpace)
-          .attr('y', colorBox.size - colorBox.labelSpace)
-          .attr('class', 'legend-text')
-          .text(function (d) {
-            return d;
-          });
+        .attr('x', colorBox.size + colorBox.labelSpace)
+        .attr('y', colorBox.size - colorBox.labelSpace)
+        .attr('class', 'legend-text')
+        .text(function (d) {
+          return d;
+        });
 
       // title
       if (typeof title != 'undefined') {
         this.svg.append('text')
-            .text(title)
-            .attr('class', 'legend-title')
-            .attr('x', position.x + 2 * padding.x)
-            .attr('y', position.y + 0.75 * padding.y);
+          .text(title)
+          .attr('class', 'legend-title')
+          .attr('x', position.x + 2 * padding.x)
+          .attr('y', position.y + 0.75 * padding.y);
       }
       ret = { x: horz, y: vert };
     }
@@ -419,13 +419,14 @@ export default class ConnectivityComponent extends AbstractComponent {
 
 
   render () {
-    const { id } = this.props;
+    const { id, classes } = this.props;
     return (
-        <div>
-          <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
-          <div id={id}/>
-        </div>
+      <div className={classes.root} style={{ maxWidth: this.props.size.width, maxHeight: this.props.size.height }}>
+        <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
+        <div id={id}/>
+      </div>
 
     )
   }
 }
+export default withStyles(styles)(ConnectivityComponent);
