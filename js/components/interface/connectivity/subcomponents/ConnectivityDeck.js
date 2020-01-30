@@ -47,11 +47,10 @@ const styles = () => ({
     color: "#fc6320"
   },
   toolBar: {
-    maxWidth: "5%",
+    maxWidth: "30px",
     minHeight: "50%",
-    background: "#778899",
-    padding: "0",
-    borderRadius:"5px",
+    background: "#383838",
+    padding: "0"
   },
 });
 

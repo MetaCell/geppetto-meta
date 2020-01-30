@@ -30,7 +30,7 @@ class ConnectivityComponent extends AbstractComponent {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      buttonVisibility: false
+      buttonVisibility: true
     };
     this.defaultOptions = {
       nodeType: function (node) {
@@ -62,7 +62,7 @@ class ConnectivityComponent extends AbstractComponent {
     this.setNodeColormap(this.props.colorMap);
     this.draw();
   }
-
+  
   componentDidUpdate (prevProps, prevState, snapshot) {
     if (prevProps.options !== this.props.options){
       this.setOptions(this.props.options);
@@ -412,7 +412,7 @@ class ConnectivityComponent extends AbstractComponent {
     const { id, classes } = this.props;
     return (
       <div className={classes.container}>
-        <div className={classes.connectivityContainer} onMouseEnter={this.onEnter} onMouseLeave={this.onLeave}>
+        <div className={classes.connectivityContainer}>
           <ConnectivityDeck ref={ deck => {
             this.deck = deck
           } } handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
