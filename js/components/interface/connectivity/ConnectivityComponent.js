@@ -6,6 +6,7 @@ import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
 const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
+import SelectButton from "./subcomponents/SelectButton";
 
 
 const styles = {
@@ -51,6 +52,7 @@ class ConnectivityComponent extends AbstractComponent {
 
 
     this.deckHandler = this.deckHandler.bind(this);
+    this.sortOptionsHandler = this.sortOptionsHandler.bind(this);
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
   }
@@ -62,7 +64,7 @@ class ConnectivityComponent extends AbstractComponent {
     this.setNodeColormap(this.props.colorMap);
     this.draw();
   }
-  
+
   componentDidUpdate (prevProps, prevState, snapshot) {
     if (prevProps.options !== this.props.options){
       this.setOptions(this.props.options);
@@ -407,9 +409,30 @@ class ConnectivityComponent extends AbstractComponent {
     this.setState({ buttonVisibility: false });
   }
 
+  /**
+   *
+   * Updates the sorting order
+   *
+   * @command sortOptionsHandler (option)
+   *
+   */
+  sortOptionsHandler (option){
+    console.log(option)
+  }
+
 
   render () {
     const { id, classes } = this.props;
+    const { layout } = this.state;
+    const sortOptions = {
+      'id': 'By entity name',
+      'pre_count': 'By # pre',
+      'post_count': 'By # post'
+    };
+    const matrixDim = (this.props.size.height < (this.props.size.width - layout.legendWidth - layout.margin.right))
+      ? (this.props.size.height)
+      : (this.props.size.width - layout.legendWidth - layout.margin.right);
+
     return (
       <div className={classes.container}>
         <div className={classes.connectivityContainer}>
@@ -417,6 +440,16 @@ class ConnectivityComponent extends AbstractComponent {
             this.deck = deck
           } } handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
           <div id={id}/>
+          {layout instanceof Matrix
+            ? (<SelectButton id={id + 'select'}
+              label={"Order by"}
+              options={sortOptions}
+              handler = {this.sortOptionsHandler}
+              style={
+                {
+                  width: layout.legendWidth, left: matrixDim, 
+                  top: -layout.buttonHeight - layout.margin.bottom
+                }}/>) : <span/>}
         </div>
       </div>
 

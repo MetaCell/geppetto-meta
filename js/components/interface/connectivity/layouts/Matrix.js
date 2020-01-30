@@ -6,31 +6,33 @@ import ReactDOM from 'react-dom'
 
 
 export class Matrix {
+  constructor () {
+    this.margin = { top: 45, right: 30, bottom: 10, left: 15 };
+    this.legendWidth = 120;
+    this.buttonHeight = 50;
+  }
   
   draw (context) {
-    const margin = { top: 45, right: 30, bottom: 10, left: 15 };
-    const legendWidth = 120;
+    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
 
-    const matrixDim = (context.svgHeight < (context.svgWidth - legendWidth - margin.right)) ? (context.svgHeight) : (context.svgWidth - legendWidth - margin.right);
-
-    const x = d3.scaleBand().range([0, matrixDim - margin.top - margin.bottom]),
+    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]),
       // Opacity
       z = d3.scaleLinear().domain([0, 4]).clamp(true),
       // Colors
       c = d3.scaleOrdinal(d3.schemeCategory10);
 
-    const labelTop = margin.top - 25;
+    const labelTop = this.margin.top - 25;
     const defaultTooltipText = "Hover the squares to see the connections.";
     const tooltip = context.svg
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + labelTop + ")")
+      .attr("transform", "translate(" + this.margin.left + "," + labelTop + ")")
       .append("text")
       .attr('class', 'connectionlabel')
       .text(defaultTooltipText);
 
     const container = context.svg
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
 
     const matrix = [];
@@ -86,8 +88,8 @@ export class Matrix {
     const rect = container
       .append("rect")
       .attr("class", "background")
-      .attr("width", matrixDim - margin.left - margin.right)
-      .attr("height", matrixDim - margin.top - margin.bottom);
+      .attr("width", matrixDim - this.margin.left - this.margin.right)
+      .attr("height", matrixDim - this.margin.top - this.margin.bottom);
 
     /*
      * we store the 'conn' key in case we want to
@@ -203,13 +205,10 @@ export class Matrix {
 
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
 
-
-    let buttonHeight = 50;
-    let shift = context.state.buttonVisibility ? ReactDOM.findDOMNode(context.deck).getBoundingClientRect().height : 0;
     // Sorting matrix entries by criteria specified via combobox
     let orderContainer = util.createElement('div', {
       id: context.props.id + '-ordering',
-      style: 'width:' + legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - buttonHeight - margin.bottom + shift) + 'px;',
+      style: 'width:' + this.legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - this.buttonHeight - this.margin.bottom) + 'px;',
       class: 'connectivity-ordering'
     });
 
@@ -308,8 +307,10 @@ export class Matrix {
         })
     }
   }
-  
+
   getName (){
     return "Matrix"
   }
+
+
 }
