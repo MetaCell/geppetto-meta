@@ -285,7 +285,6 @@ class ConnectivityComponent extends AbstractComponent {
   drawLayout () {
     this.svgHeight = this.props.size.height;
     this.svgWidth = this.props.size.width;
-    this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
       .append("svg")
@@ -303,8 +302,7 @@ class ConnectivityComponent extends AbstractComponent {
    */
 
   cleanCanvas (){
-    util.removeElement("#" + this.props.id + " svg");
-    util.removeElement("#" + this.props.id + "-ordering");
+    d3.select("svg").remove();
   }
 
   /**
@@ -429,9 +427,22 @@ class ConnectivityComponent extends AbstractComponent {
       'pre_count': 'By # pre',
       'post_count': 'By # post'
     };
-    const matrixDim = (this.props.size.height < (this.props.size.width - layout.legendWidth - layout.margin.right))
-      ? (this.props.size.height)
-      : (this.props.size.width - layout.legendWidth - layout.margin.right);
+    
+    let selectButton = <span/>;
+    if (layout instanceof Matrix){
+      const matrixDim = (this.props.size.height < (this.props.size.width - layout.legendWidth - layout.margin.right))
+        ? (this.props.size.height)
+        : (this.props.size.width - layout.legendWidth - layout.margin.right);
+      selectButton = (<SelectButton id={id + 'select'}
+        label={"Order by"}
+        options={sortOptions}
+        handler = {this.sortOptionsHandler}
+        style={
+          {
+            width: layout.legendWidth, left: matrixDim,
+            top: -layout.buttonHeight - layout.margin.bottom
+          }}/>)
+    }
 
     return (
       <div className={classes.container}>
@@ -440,16 +451,7 @@ class ConnectivityComponent extends AbstractComponent {
             this.deck = deck
           } } handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
           <div id={id}/>
-          {layout instanceof Matrix
-            ? (<SelectButton id={id + 'select'}
-              label={"Order by"}
-              options={sortOptions}
-              handler = {this.sortOptionsHandler}
-              style={
-                {
-                  width: layout.legendWidth, left: matrixDim, 
-                  top: -layout.buttonHeight - layout.margin.bottom
-                }}/>) : <span/>}
+          {selectButton}
         </div>
       </div>
 
