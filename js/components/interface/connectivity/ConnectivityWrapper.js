@@ -6,11 +6,13 @@ import { Matrix } from "./layouts/Matrix";
 export default class ConnectivityWrapper extends Component {
   constructor (props) {
     super(props);
-    this.width = 700;
-    this.height = 600;
+
     this.state = {
       data: [],
-      isOpen: false
+      isOpen: false,
+      width: 660,
+      height: 500,
+      showResize: true,
     }
   }
 
@@ -18,25 +20,63 @@ export default class ConnectivityWrapper extends Component {
     this.setState({ data: data, isOpen: true })
   }
 
+  handleDimensions (){
+    this.setState({ width: 1600, height: 800, showResize: false })
+  }
+
+  onColorChange (ctx){
+    return function (){
+      ctx.getColors();
+      ctx.forceUpdate()
+    }
+  }
+
+  getColors () {
+    const cells = this.state.data.root.getChildren();
+    this.colors = [];
+    for (let i = 0; i < cells.length; ++i) {
+      if (cells[i].getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
+        this.colors.push(cells[i].getColor());
+      }
+    }
+  }
 
   render () {
-    const isOpen = this.state.isOpen;
     const data = this.state.data.root;
-    const auxFunctions = this.state.data.options;
-    const nodeColormap = this.state.data.nodeColormap;
+    const options = this.state.data.options;
+    const colorMap = this.state.data.nodeColormap;
+    const { width, height, isOpen, showResize } = this.state;
+    let colors = [];
+    if (isOpen){
+      this.getColors();
+      colors = this.colors;
+      GEPPETTO.on(GEPPETTO.Events.Color_set, this.onColorChange(this));
+    }
+
     let show;
+    let connectivityComponent = <ConnectivityComponent
+      id="ConnectivityContainer"
+      size={{ height: height, width: width }}
+      data={data}
+      options={options}
+      colorMap={colorMap}
+      colors={colors}
+      layout={new Matrix()}
+    />;
     if (!isOpen){
       show = <button onClick={() => this.handleClick(Window.workaround)}>Activate Connectivity </button>
     } else {
-      show = <ConnectivityComponent
-        id="ConnectivityContainer"
-        size={{ height: this.height, width: this.width }}
-        data={data}
-        auxFunctions={auxFunctions}
-        nodeColormap={nodeColormap}
-        layout={new Matrix()}
-      />
+      if (showResize){
+        show = <div>
+          {connectivityComponent}
+          <br/>
+          <button onClick={() => this.handleDimensions()}> Resize </button>
+        </div>
+      } else {
+        show = { connectivityComponent }
+      }
     }
+    
     return (
       show
     )

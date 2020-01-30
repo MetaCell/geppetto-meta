@@ -18,7 +18,7 @@ class ConnectivityComponent extends AbstractComponent {
       containerMargin: 20,
       buttonVisibility: true
     };
-    this.defaultAuxFunctions = {
+    this.defaultOptions = {
       nodeType: function (node) {
         if (node instanceof Instance) {
           return node.getParent().getId();
@@ -34,54 +34,69 @@ class ConnectivityComponent extends AbstractComponent {
       },
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
-    this.auxFunctions = this.defaultAuxFunctions;
-    this.setAuxFunctions(this.props.auxFunctions);
-    this.configViaGUI = this.configViaGUI.bind(this);
+
+
+    this.deckHandler = this.deckHandler.bind(this);
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
   }
 
+
+  componentDidMount () {
+    this.setOptions(this.props.options);
+    this.setData(this.props.data);
+    this.setNodeColormap(this.props.colorMap);
+    this.draw();
+  }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps.options !== this.props.options){
+      this.setOptions(this.props.options);
+    }
+
+    this.setData(this.props.data);
+    this.setNodeColormap(this.props.colorMap);
+    this.draw();
+  }
+
   /**
    *
-   * Sets auxiliary functions
+   * Sets connectivity auxiliary functions
    *
-   * @command setAuxFunctions(auxFunctions)
-   * @param {Object} auxFunctions - auxFunctions to modify the plot widget
+   * @command setOptions(options)
+   * @param {Object} options - options to modify the connections
    */
-  setAuxFunctions (auxFunctions){
-    if (auxFunctions != null) {
-      this.auxFunctions = util.extend(this.auxFunctions, auxFunctions);
 
-      if (typeof this.auxFunctions.linkType === 'string') {
-        this.auxFunctions.linkType = util.strToFunc(this.auxFunctions.linkType);
+
+  setOptions (options){
+    this.options = this.defaultOptions;
+    if (options != null) {
+      this.options = util.extend(this.options, options);
+
+      if (typeof this.options.linkType === 'string') {
+        this.options.linkType = util.strToFunc(this.options.linkType);
       }
-      if (typeof this.auxFunctions.nodeType === 'string') {
-        this.auxFunctions.nodeType = util.strToFunc(this.auxFunctions.nodeType);
+      if (typeof this.options.nodeType === 'string') {
+        this.options.nodeType = util.strToFunc(this.options.nodeType);
       }
-      if (typeof this.auxFunctions.linkWeight === 'string') {
-        this.auxFunctions.linkWeight = util.strToFunc(this.auxFunctions.linkWeight);
+      if (typeof this.options.linkWeight === 'string') {
+        this.options.linkWeight = util.strToFunc(this.options.linkWeight);
       }
-      if (typeof this.auxFunctions.colorMapFunction === 'string') {
-        this.auxFunctions.colorMapFunction = util.strToFunc(this.auxFunctions.colorMapFunction);
+      if (typeof this.options.colorMapFunction === 'string') {
+        this.options.colorMapFunction = util.strToFunc(this.options.colorMapFunction);
       }
-      if (typeof this.auxFunctions.library === 'string') {
-        this.auxFunctions.library = eval(this.auxFunctions.library);
+      if (typeof this.options.library === 'string') {
+        this.options.library = eval(this.options.library);
       }
     }
   }
 
-  componentDidMount () {
-    util.addEventListenerClass("ui-dialog-titlebar-maximize", 'click', () => this.createLayout.bind(this));
-    util.addEventListenerClass("ui-dialog-titlebar-restore", 'click', () => this.createLayout.bind(this));
-    util.addEventListenerId(this.props.id, 'dialog_container_resize', () => this.createLayout.bind(this));
-    this.setData(this.props.data);
-  }
-
   /**
    *
-   * Sets data and draws layout
+   * Creates dataset with provided data
    *
    * @command setData(data)
+   *
    * @param data
    */
   setData (data){
@@ -89,12 +104,69 @@ class ConnectivityComponent extends AbstractComponent {
     this.mapping = {};
     this.mappingSize = 0;
     this.dataset["root"] = data;
-    this.setNodeColormap(this.props.nodeColormap);
-    if (this.createDataFromConnections()){
-      this.createLayout();
-    }
-    GEPPETTO.on(GEPPETTO.Events.Color_set, this.onColorChange(this));
   }
+
+  /**
+   *
+   * Sets nodeColormap
+   *
+   * @command setNodeColormap(nodeColormap)
+   *
+   * @param nodeColormap
+   */
+  setNodeColormap (nodeColormap){
+    if (typeof nodeColormap !== 'undefined') {
+      this.nodeColormap = nodeColormap;
+    } else {
+      this.nodeColormap = this.defaultColorMapFunction();
+    }
+  }
+
+  /**
+   *
+   * Returns default colorScale
+   *
+   * @command defaultColorMapFunction()
+   *
+   */
+  defaultColorMapFunction () {
+    const cells = this.dataset["root"].getChildren();
+    const domain = [];
+    const range = this.props.colors;
+    for (let i = 0; i < cells.length; ++i) {
+      if (cells[i].getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
+        domain.push(cells[i].getName());
+      }
+    }
+    if (range.filter(function (x) {
+      return x !== GEPPETTO.Resources.COLORS.DEFAULT;
+    }).length === 0) {
+      return d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
+    } else {
+      return d3.scaleOrdinal(range).domain(domain);
+    }
+  }
+  
+  /**
+   *
+   * Creates connections and draws layout
+   *
+   * @command draw()
+   *
+   */
+  draw (){
+    if (this.createDataFromConnections()){
+      this.drawLayout();
+    }
+  }
+
+  /**
+   *
+   * Creates the layout
+   *
+   * @command createLayout()
+   *
+   */
 
   /**
    *
@@ -103,7 +175,7 @@ class ConnectivityComponent extends AbstractComponent {
    * @command createDataFromConnections()
    */
   createDataFromConnections (){
-    const connectionVariables = GEPPETTO.ModelFactory.getAllTypesOfType(this.auxFunctions.library.connection)[0].getVariableReferences();
+    const connectionVariables = GEPPETTO.ModelFactory.getAllTypesOfType(this.options.library.connection)[0].getVariableReferences();
     if (connectionVariables.length > 0) {
       if (this.dataset["root"].getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
         const subInstances = this.dataset["root"].getChildren();
@@ -115,7 +187,7 @@ class ConnectivityComponent extends AbstractComponent {
             const populationChildren = subInstance.getChildren();
             for (let l = 0; l < populationChildren.length; l++) {
               const populationChild = populationChildren[l];
-              this.createNode(populationChild.getId(), this.auxFunctions.nodeType(populationChild));
+              this.createNode(populationChild.getId(), this.options.nodeType(populationChild));
             }
           }
         }
@@ -125,7 +197,7 @@ class ConnectivityComponent extends AbstractComponent {
           const target = connectionVariable.getB();
           const sourceId = source.getElements()[source.getElements().length - 1].getPath();
           const targetId = target.getElements()[source.getElements().length - 1].getPath();
-          this.createLink(sourceId, targetId, this.auxFunctions.linkType.bind(this)(connectionVariable, this.linkCache), this.auxFunctions.linkWeight(connectionVariable));
+          this.createLink(sourceId, targetId, this.options.linkType.bind(this)(connectionVariable, this.linkCache), this.options.linkWeight(connectionVariable));
         }
       }
       this.dataset.nodeTypes = util.uniq(util.pluck(this.dataset.nodes, 'type')).sort();
@@ -208,86 +280,8 @@ class ConnectivityComponent extends AbstractComponent {
     this.dataset["links"].push(linkItem);
   }
 
-  /**
-   *
-   * Sets nodeColormap
-   *
-   * @command setNodeColormap(nodeColormap)
-   *
-   * @param nodeColormap
-   */
-  setNodeColormap (nodeColormap){
-    if (typeof nodeColormap !== 'undefined') {
-      this.nodeColormap = nodeColormap;
-    } else {
-      this.nodeColormap = this.defaultColorMapFunction();
-    }
-  }
 
-  /**
-   *
-   * Returns default colorScale
-   *
-   * @command defaultColorMapFunction()
-   *
-   */
-  defaultColorMapFunction () {
-    const cells = this.dataset["root"].getChildren();
-    const domain = [];
-    const range = [];
-    for (let i = 0; i < cells.length; ++i) {
-      if (cells[i].getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
-        domain.push(cells[i].getName());
-        range.push(cells[i].getColor());
-      }
-    }
-    // if everything is default color, use a d3 provided palette as range
-    if (range.filter(function (x) {
-      return x !== GEPPETTO.Resources.COLORS.DEFAULT;
-    }).length === 0) {
-      return d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
-    } else {
-      return d3.scaleOrdinal(range).domain(domain);
-    }
-  }
-
-  /**
-   *
-   * Sets colorScale
-   *
-   * @command onColorChange(context)
-   *
-   * @param context
-   */
-
-  onColorChange (context){
-    return function (){
-      const colorMap = context.auxFunctions.colorMapFunction ? context.auxFunctions.colorMapFunction() : context.defaultColorMapFunction();
-      for (let i = 0; i < colorMap.domain().length; ++i) {
-        // only update if there is a change
-        if (context.nodeColormap(colorMap.domain()[i]) !== colorMap(colorMap.domain()[i])) {
-          context.setNodeColormap(colorMap);
-          /*
-           * FIXME: would be more efficient to update only what has
-           * changed, though this depends on the type of layout
-           */
-          context.svg.selectAll("*").remove();
-          context.createLayout();
-          break;
-        }
-      }
-    }
-  }
-
-  /**
-   *
-   * Creates the layout
-   *
-   * @command createLayout()
-   *
-   */
-
-  createLayout () {
+  drawLayout () {
     this.svgHeight = this.props.size.height - this.state.containerMargin;
     this.svgWidth = this.props.size.width - this.state.containerMargin;
     this.connectivityContainer = util.selectElement("#" + this.props.id);
@@ -311,6 +305,8 @@ class ConnectivityComponent extends AbstractComponent {
     util.removeElement("#" + this.props.id + " svg");
     util.removeElement("#" + this.props.id + " #matrix-sorter");
   }
+
+
 
 
   /**
@@ -383,15 +379,13 @@ class ConnectivityComponent extends AbstractComponent {
    *
    * Handle layout selection
    *
-   * @command configViaGUI (layout)
+   * @command deckHandler (layout)
    *
    * @param layout
    */
-  configViaGUI (layout) {
+  deckHandler (layout) {
     this.setState(() => ({ layout: layout }), () => {
-      this.auxFunctions = this.defaultAuxFunctions;
-      this.setAuxFunctions(this.props.auxFunctions);
-      this.setData(this.dataset["root"]);
+      this.setOptions(this.props.options);
     });
   }
 
@@ -422,7 +416,7 @@ class ConnectivityComponent extends AbstractComponent {
     const { id, classes } = this.props;
     return (
       <div className={classes.root} style={{ maxWidth: this.props.size.width, maxHeight: this.props.size.height }}>
-        <ConnectivityDeck handler={this.configViaGUI} buttonVisibility={this.state.buttonVisibility}/>
+        <ConnectivityDeck handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
         <div id={id}/>
       </div>
 
