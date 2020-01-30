@@ -2,6 +2,7 @@
 // import * as d3 from "d3";
 const d3 = require("d3");
 import * as util from "../utilities";
+import ReactDOM from 'react-dom'
 
 
 export class Matrix {
@@ -202,10 +203,13 @@ export class Matrix {
 
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
 
+
+    let buttonHeight = 50;
+    let shift = context.state.buttonVisibility ? ReactDOM.findDOMNode(context.deck).getBoundingClientRect().height : 0;
     // Sorting matrix entries by criteria specified via combobox
     let orderContainer = util.createElement('div', {
       id: context.props.id + '-ordering',
-      style: 'width:' + legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - 32) + 'px;',
+      style: 'width:' + legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - buttonHeight - margin.bottom + shift) + 'px;',
       class: 'connectivity-ordering'
     });
 

@@ -7,7 +7,7 @@ export default class ConnectivityWrapper extends Component {
   constructor (props) {
     super(props);
 
-    this.sizes = [{ width: 660, height: 500 }, { width: 1200, height: 900 }];
+    this.sizes = [{ width: 660, height: 500 }, { width: 1000, height: 700 }];
     this.state = {
       data: [],
       isOpen: false,

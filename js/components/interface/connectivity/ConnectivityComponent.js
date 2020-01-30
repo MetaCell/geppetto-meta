@@ -30,7 +30,7 @@ class ConnectivityComponent extends AbstractComponent {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      buttonVisibility: true
+      buttonVisibility: false
     };
     this.defaultOptions = {
       nodeType: function (node) {
@@ -163,14 +163,6 @@ class ConnectivityComponent extends AbstractComponent {
 
   /**
    *
-   * Creates the layout
-   *
-   * @command createLayout()
-   *
-   */
-
-  /**
-   *
    * Creates data from connections
    *
    * @command createDataFromConnections()
@@ -281,7 +273,13 @@ class ConnectivityComponent extends AbstractComponent {
     this.dataset["links"].push(linkItem);
   }
 
-
+  /**
+   *
+   * Draws the layout
+   *
+   * @command drawLayout()
+   *
+   */
   drawLayout () {
     this.svgHeight = this.props.size.height;
     this.svgWidth = this.props.size.width;
@@ -304,7 +302,7 @@ class ConnectivityComponent extends AbstractComponent {
 
   cleanCanvas (){
     util.removeElement("#" + this.props.id + " svg");
-    util.removeElement("#" + this.props.id + " #matrix-sorter");
+    util.removeElement("#" + this.props.id + "-ordering");
   }
 
   /**
@@ -414,8 +412,10 @@ class ConnectivityComponent extends AbstractComponent {
     const { id, classes } = this.props;
     return (
       <div className={classes.container}>
-        <div className={classes.connectivityContainer}>
-          <ConnectivityDeck handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
+        <div className={classes.connectivityContainer} onMouseEnter={this.onEnter} onMouseLeave={this.onLeave}>
+          <ConnectivityDeck ref={ deck => {
+            this.deck = deck
+          } } handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
           <div id={id}/>
         </div>
       </div>
