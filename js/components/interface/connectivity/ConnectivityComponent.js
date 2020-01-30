@@ -67,7 +67,6 @@ class ConnectivityComponent extends AbstractComponent {
     if (prevProps.options !== this.props.options){
       this.setOptions(this.props.options);
     }
-
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
     this.draw();
@@ -144,21 +143,9 @@ class ConnectivityComponent extends AbstractComponent {
    *
    */
   defaultColorMapFunction () {
-    const cells = this.dataset["root"].getChildren();
-    const domain = [];
+    const domain = this.props.names;
     const range = this.props.colors;
-    for (let i = 0; i < cells.length; ++i) {
-      if (cells[i].getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
-        domain.push(cells[i].getName());
-      }
-    }
-    if (range.filter(function (x) {
-      return x !== GEPPETTO.Resources.COLORS.DEFAULT;
-    }).length === 0) {
-      return d3.scaleOrdinal(d3.schemeCategory20).domain(domain);
-    } else {
-      return d3.scaleOrdinal(range).domain(domain);
-    }
+    return d3.scaleOrdinal(range).domain(domain);
   }
   
   /**

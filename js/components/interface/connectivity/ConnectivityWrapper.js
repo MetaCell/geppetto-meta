@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ConnectivityComponent from "./ConnectivityComponent";
 import { Matrix } from "./layouts/Matrix";
-
+const d3 = require("d3");
 
 export default class ConnectivityWrapper extends Component {
   constructor (props) {
@@ -29,18 +29,25 @@ export default class ConnectivityWrapper extends Component {
 
   onColorChange (ctx){
     return function (){
-      ctx.getColors();
+      ctx.getCellsData();
       ctx.forceUpdate()
     }
   }
 
-  getColors () {
+  getCellsData () {
     const cells = this.state.data.root.getChildren();
     this.colors = [];
+    this.names = [];
     for (let i = 0; i < cells.length; ++i) {
       if (cells[i].getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
+        this.names.push(cells[i].getName());
         this.colors.push(cells[i].getColor());
       }
+    }
+    if (this.colors.filter(function (x) {
+      return x !== GEPPETTO.Resources.COLORS.DEFAULT;
+    }).length === 0) {
+      this.colors = d3.schemeCategory20
     }
   }
 
@@ -50,9 +57,11 @@ export default class ConnectivityWrapper extends Component {
     const colorMap = this.state.data.nodeColormap;
     const { width, height, isOpen } = this.state;
     let colors = [];
+    let names = [];
     if (isOpen){
-      this.getColors();
+      this.getCellsData();
       colors = this.colors;
+      names = this.names;
       GEPPETTO.on(GEPPETTO.Events.Color_set, this.onColorChange(this));
     }
 
@@ -68,6 +77,7 @@ export default class ConnectivityWrapper extends Component {
           options={options}
           colorMap={colorMap}
           colors={colors}
+          names={names}
           layout={new Matrix()}
         />
         <br/>
