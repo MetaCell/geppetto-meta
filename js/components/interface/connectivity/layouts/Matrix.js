@@ -15,11 +15,11 @@ export class Matrix {
   draw (context) {
     const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
 
-    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]),
-      // Opacity
-      z = d3.scaleLinear().domain([0, 4]).clamp(true),
-      // Colors
-      c = d3.scaleOrdinal(d3.schemeCategory10);
+    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]);
+    // Opacity
+    const z = d3.scaleLinear().domain([0, 4]).clamp(true);
+    // Colors
+    const c = d3.scaleOrdinal(d3.schemeCategory10);
 
     const labelTop = this.margin.top - 25;
     const defaultTooltipText = "Hover the squares to see the connections.";
@@ -70,7 +70,7 @@ export class Matrix {
       'post_count': 'By # post'
     };
     //  Precompute the orders.
-    const orders = {
+    this.orders = {
       id: d3.range(n).sort(function (a, b) {
         return d3.ascending(nodes[a].id, nodes[b].id);
       }),
@@ -83,7 +83,7 @@ export class Matrix {
       // community: d3.range(n).sort(function(a, b) { return nodes[b].community - nodes[a].community; }),
     };
     // Default sort order.
-    x.domain(orders.id);
+    x.domain(this.orders.id);
 
     const rect = container
       .append("rect")
@@ -204,73 +204,7 @@ export class Matrix {
       .attr("x1", -context.svgWidth);
 
     context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
-
-    // Sorting matrix entries by criteria specified via combobox
-    let orderContainer = util.createElement('div', {
-      id: context.props.id + '-ordering',
-      style: 'width:' + this.legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - this.buttonHeight - this.margin.bottom) + 'px;',
-      class: 'connectivity-ordering'
-    });
-
-    let orderCombo = util.createElement('select');
-    Object.keys(sortOptions).forEach(k => {
-      util.appendTo(orderCombo, util.createElement('option', { value: k, text: sortOptions[k] }));
-    });
-    let span = util.createElement('span', {
-      id: 'matrix-sorter',
-      class: 'connectivity-ordering-label',
-      text: 'Order by:'
-    });
-    util.appendTo(span, orderCombo);
-    util.appendTo(orderContainer, span);
-    util.appendTo(context.connectivityContainer, orderContainer);
-
-    orderCombo.addEventListener("change", function (svg) {
-      return function () {
-        x.domain(orders[this.value]);
-
-        const t = svg.transition().duration(2500);
-        t.selectAll(".row")
-          .delay(function (d, i) {
-            return x(i) * 4;
-          })
-          .attr("transform", function (d, i) {
-            return "translate(0," + x(i) + ")";
-          })
-          .selectAll(".cell")
-          .delay(function (d) {
-            return x(d.x) * 4;
-          })
-          .attr("x", function (d) {
-            return x(d.x);
-          });
-
-        t.selectAll(".postPop .cell")
-          .delay(function (d, i) {
-            return x(i) * 4;
-          })
-          .attr("x", function (d, i) {
-            return x(i);
-          });
-
-        t.selectAll(".prePop .cell")
-          .delay(function (d, i) {
-            return x(i) * 4;
-          })
-          .attr("y", function (d, i) {
-            return x(i);
-          });
-
-        t.selectAll(".column")
-          .delay(function (d, i) {
-            return x(i) * 4;
-          })
-          .attr("transform", function (d, i) {
-            return "translate(" + x(i) + ")rotate(-90)";
-          });
-      }
-    } (context.svg));
-
+    
     // Draw squares for each connection
     function row (row) {
       const cell = d3.select(this).selectAll(".cell")
@@ -311,6 +245,51 @@ export class Matrix {
   getName (){
     return "Matrix"
   }
+  
+  setOrder (context, value){
+    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
+    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]);
 
+    x.domain(this.orders[value]);
 
+    const t = context.svg.transition().duration(2500);
+    t.selectAll(".row")
+      .delay(function (d, i) {
+        return x(i) * 4;
+      })
+      .attr("transform", function (d, i) {
+        return "translate(0," + x(i) + ")";
+      })
+      .selectAll(".cell")
+      .delay(function (d) {
+        return x(d.x) * 4;
+      })
+      .attr("x", function (d) {
+        return x(d.x);
+      });
+
+    t.selectAll(".postPop .cell")
+      .delay(function (d, i) {
+        return x(i) * 4;
+      })
+      .attr("x", function (d, i) {
+        return x(i);
+      });
+
+    t.selectAll(".prePop .cell")
+      .delay(function (d, i) {
+        return x(i) * 4;
+      })
+      .attr("y", function (d, i) {
+        return x(i);
+      });
+
+    t.selectAll(".column")
+      .delay(function (d, i) {
+        return x(i) * 4;
+      })
+      .attr("transform", function (d, i) {
+        return "translate(" + x(i) + ")rotate(-90)";
+      });
+  }
 }

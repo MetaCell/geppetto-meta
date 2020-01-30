@@ -417,7 +417,7 @@ class ConnectivityComponent extends AbstractComponent {
    *
    */
   sortOptionsHandler (option){
-    console.log(option)
+    this.state.layout.setOrder(this, option)
   }
 
 
