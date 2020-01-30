@@ -7,12 +7,12 @@ import * as util from "../utilities";
 export class Matrix {
   
   draw (context) {
-    const margin = { top: 45, right: 15, bottom: 10, left: 15 };
+    const margin = { top: 45, right: 30, bottom: 10, left: 15 };
     const legendWidth = 120;
 
-    const matrixDim = (context.svgHeight < (context.svgWidth - legendWidth)) ? (context.svgHeight) : (context.svgWidth - legendWidth);
+    const matrixDim = (context.svgHeight < (context.svgWidth - legendWidth - margin.right)) ? (context.svgHeight) : (context.svgWidth - legendWidth - margin.right);
 
-    const x = d3.scaleBand().range([0, matrixDim - margin.top]),
+    const x = d3.scaleBand().range([0, matrixDim - margin.top - margin.bottom]),
       // Opacity
       z = d3.scaleLinear().domain([0, 4]).clamp(true),
       // Colors
@@ -85,8 +85,8 @@ export class Matrix {
     const rect = container
       .append("rect")
       .attr("class", "background")
-      .attr("width", matrixDim - margin.left - 30)
-      .attr("height", matrixDim - margin.top);
+      .attr("width", matrixDim - margin.left - margin.right)
+      .attr("height", matrixDim - margin.top - margin.bottom);
 
     /*
      * we store the 'conn' key in case we want to
@@ -205,7 +205,7 @@ export class Matrix {
     // Sorting matrix entries by criteria specified via combobox
     let orderContainer = util.createElement('div', {
       id: context.props.id + '-ordering',
-      style: 'width:' + legendWidth + 'px;left:' + (matrixDim + context.state.containerMargin - margin.right) + 'px;top:' + (matrixDim - 32) + 'px;',
+      style: 'width:' + legendWidth + 'px;left:' + (matrixDim) + 'px;top:' + (matrixDim - 32) + 'px;',
       class: 'connectivity-ordering'
     });
 

@@ -7,12 +7,13 @@ export default class ConnectivityWrapper extends Component {
   constructor (props) {
     super(props);
 
+    this.sizes = [{ width: 660, height: 500 }, { width: 1200, height: 900 }];
     this.state = {
       data: [],
       isOpen: false,
-      width: 660,
-      height: 500,
-      showResize: true,
+      resize: false,
+      width: this.sizes[0].width,
+      height: this.sizes[0].height,
     }
   }
 
@@ -21,7 +22,9 @@ export default class ConnectivityWrapper extends Component {
   }
 
   handleDimensions (){
-    this.setState({ width: 1600, height: 800, showResize: false })
+    const resize = !this.state.resize;
+    const index = resize | 0;
+    this.setState({ width: this.sizes[index].width, height: this.sizes[index].height, resize: !this.state.resize })
   }
 
   onColorChange (ctx){
@@ -45,7 +48,7 @@ export default class ConnectivityWrapper extends Component {
     const data = this.state.data.root;
     const options = this.state.data.options;
     const colorMap = this.state.data.nodeColormap;
-    const { width, height, isOpen, showResize } = this.state;
+    const { width, height, isOpen } = this.state;
     let colors = [];
     if (isOpen){
       this.getColors();
@@ -54,31 +57,29 @@ export default class ConnectivityWrapper extends Component {
     }
 
     let show;
-    let connectivityComponent = <ConnectivityComponent
-      id="ConnectivityContainer"
-      size={{ height: height, width: width }}
-      data={data}
-      options={options}
-      colorMap={colorMap}
-      colors={colors}
-      layout={new Matrix()}
-    />;
     if (!isOpen){
       show = <button onClick={() => this.handleClick(Window.workaround)}>Activate Connectivity </button>
     } else {
-      if (showResize){
-        show = <div>
-          {connectivityComponent}
-          <br/>
-          <button onClick={() => this.handleDimensions()}> Resize </button>
-        </div>
-      } else {
-        show = { connectivityComponent }
-      }
+      show = <div>
+        <ConnectivityComponent
+          id="ConnectivityContainer"
+          size={{ height: height, width: width }}
+          data={data}
+          options={options}
+          colorMap={colorMap}
+          colors={colors}
+          layout={new Matrix()}
+        />
+        <br/>
+        <button onClick={() => this.handleDimensions()}> Resize </button>
+      </div>
     }
-    
+
     return (
-      show
+      <div style={{ maxWidth: width, maxHeight: height }}>
+        {show}
+      </div>
+
     )
   }
 }

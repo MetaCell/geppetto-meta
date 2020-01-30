@@ -8,14 +8,28 @@ const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
 
 
-const styles = { root: { background: '#424242', }, };
+const styles = {
+  container: {
+    height: '100%',
+    minHeight: '100%',
+    display: 'flex',
+    flexDirection: 'column' 
+  },
+  connectivityContainer: {
+    background: '#424242',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    flex: "1"
+  },
+
+};
 
 class ConnectivityComponent extends AbstractComponent {
   constructor (props) {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      containerMargin: 20,
       buttonVisibility: true
     };
     this.defaultOptions = {
@@ -282,8 +296,8 @@ class ConnectivityComponent extends AbstractComponent {
 
 
   drawLayout () {
-    this.svgHeight = this.props.size.height - this.state.containerMargin;
-    this.svgWidth = this.props.size.width - this.state.containerMargin;
+    this.svgHeight = this.props.size.height;
+    this.svgWidth = this.props.size.width;
     this.connectivityContainer = util.selectElement("#" + this.props.id);
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
@@ -305,9 +319,6 @@ class ConnectivityComponent extends AbstractComponent {
     util.removeElement("#" + this.props.id + " svg");
     util.removeElement("#" + this.props.id + " #matrix-sorter");
   }
-
-
-
 
   /**
    *
@@ -415,9 +426,11 @@ class ConnectivityComponent extends AbstractComponent {
   render () {
     const { id, classes } = this.props;
     return (
-      <div className={classes.root} style={{ maxWidth: this.props.size.width, maxHeight: this.props.size.height }}>
-        <ConnectivityDeck handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
-        <div id={id}/>
+      <div className={classes.container}>
+        <div className={classes.connectivityContainer}>
+          <ConnectivityDeck handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
+          <div id={id}/>
+        </div>
       </div>
 
     )
