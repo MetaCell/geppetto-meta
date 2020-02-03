@@ -2095,6 +2095,10 @@ define(function (require) {
 
       return (
         <div id="controlpanel-container">
+          { this.props.showClose === true
+            ? <div onClick={this.close} className="closeControlPanel fa fa-times" />
+            : undefined
+          }
           {menuButtonMarkup}
           {filterMarkup}
           <Griddle columns={this.state.columns} results={this.state.data}
