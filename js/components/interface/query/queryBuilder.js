@@ -1194,6 +1194,10 @@ define(function (require) {
 
         markup = (
           <div id="query-results-container" className="center-content" ref={this.setWrapperRef}>
+            { this.props.showClose === true
+              ? <div onClick={this.close} className="fa fa-times" id="closeQuery" />
+              : undefined
+            }
             <MenuButton configuration={configuration} />
             {tabs}
             <button id="switch-view-btn" className="fa fa-angle-left querybuilder-button"
@@ -1239,9 +1243,14 @@ define(function (require) {
 
         var spinnerClass = this.state.showSpinner ? 'fa fa-cog fa-spin' : 'hide';
         var footerClass = this.state.showSpinner ? 'hide' : '';
+        var closeIconId = this.state.showSpinner ? 'hide' : 'closeQuery2';
 
         markup = (
           <div id="query-builder-container" ref={this.setWrapperRef}>
+            { this.props.showClose === true
+              ? <div onClick={this.close} className="fa fa-times" id={closeIconId} />
+              : undefined
+            }
             <div id="query-builder-items-container">
               {queryItems}
             </div>
