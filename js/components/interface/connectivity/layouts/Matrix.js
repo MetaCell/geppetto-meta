@@ -10,7 +10,7 @@ export class Matrix {
   draw (context) {
     const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
 
-    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]);
+    const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
     // Opacity
     const z = d3.scaleLinear().domain([0, 4]).clamp(true);
     // Colors
@@ -84,7 +84,7 @@ export class Matrix {
       .append("rect")
       .attr("class", "background")
       .attr("width", matrixDim - this.margin.left - this.margin.right)
-      .attr("height", matrixDim - this.margin.top - this.margin.bottom);
+      .attr("height", matrixDim - this.margin.top);
 
     /*
      * we store the 'conn' key in case we want to
