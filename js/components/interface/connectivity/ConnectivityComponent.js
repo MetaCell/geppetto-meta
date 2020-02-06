@@ -10,6 +10,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./subcomponents/MenuButton";
 import IconText from "./subcomponents/IconText";
 import Typography from '@material-ui/core/Typography';
+import IconButtonWithTooltip from "./subcomponents/IconButtonWithTooltip";
 
 
 const styles = {
@@ -36,8 +37,13 @@ const styles = {
   },
   gridWrapper:{
     display:"grid",
-    gridTemplateColumns:"82% 18%"
-  }
+    gridTemplateColumns:"82% 18%" 
+  },
+  button: {
+    padding: "8px",
+    top: "0",
+    color: "#fc6320"
+  },
 
 };
 
@@ -47,6 +53,7 @@ class ConnectivityComponent extends AbstractComponent {
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
       buttonVisibility: false,
+      legendsVisibility: true,
     };
     this.defaultOptions = {
       nodeType: function (node) {
@@ -335,6 +342,17 @@ class ConnectivityComponent extends AbstractComponent {
 
   /**
    *
+   * Handle legend collapse button
+   *
+   * @command legendHandler (layout)
+   *
+   */
+  legendHandler () {
+    this.setState(() => ({ legendsVisibility: !this.state.legendsVisibility }));
+  }
+
+  /**
+   *
    * Updates buttonVisibility true
    *
    * @command onHover (layout)
@@ -369,7 +387,7 @@ class ConnectivityComponent extends AbstractComponent {
 
   render () {
     const { id, classes } = this.props;
-    const { layout, buttonVisibility } = this.state;
+    const { layout, buttonVisibility, legendsVisibility } = this.state;
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
@@ -409,6 +427,9 @@ class ConnectivityComponent extends AbstractComponent {
       }
     }
 
+    let legendsButton = legendsVisibility ? "fa fa-chevron-down" : "fa fa-chevron-up";
+    let legendsTooltip = legendsVisibility ? "Collapse subtitles" : "Open subtitles";
+
     return (
       <div className={classes.container} onMouseEnter={this.onEnter} onMouseLeave={this.onLeave}>
         <div className={classes.connectivityContainer}>
@@ -418,14 +439,20 @@ class ConnectivityComponent extends AbstractComponent {
                 this.deck = deck
               } } handler={this.deckHandler}/>
               {selectButton}
+              <IconButtonWithTooltip
+                disabled={false}
+                onClick={() => this.setState({ legendsVisibility: !legendsVisibility })}
+                className={ legendsButton + ` ${classes.button} `}
+                tooltip={legendsTooltip}
+              />
             </div>
           </Toolbar>
           <div className={classes.gridWrapper}>
             <div id={id}/>
             <div>
-              {legends.map(entry => (
+              {legendsVisibility ? (legends.map(entry => (
                 entry
-              ))}
+              ))) : ""}
             </div>
           </div>
         </div>
