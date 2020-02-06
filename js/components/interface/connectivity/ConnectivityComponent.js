@@ -29,6 +29,14 @@ const styles = {
   legendTitle: {
     fontSize: "14px",
     color: "white",
+  },
+  toolbarBox: {
+    border: "solid #303030",
+    borderRadius: "5px",
+  },
+  gridWrapper:{
+    display:"grid",
+    gridTemplateColumns:"82% 18%"
   }
 
 };
@@ -385,7 +393,7 @@ class ConnectivityComponent extends AbstractComponent {
       for (const obj of layoutLegends){
         if (obj.title){
           legends.push(
-            <Typography className={classes.legendTitle} variant="h6" gutterBottom>
+            <Typography key={obj.title} className={classes.legendTitle} variant="h6" gutterBottom>
               {obj.title}
             </Typography>
           )
@@ -405,17 +413,20 @@ class ConnectivityComponent extends AbstractComponent {
       <div className={classes.container} onMouseEnter={this.onEnter} onMouseLeave={this.onLeave}>
         <div className={classes.connectivityContainer}>
           <Toolbar>
-            <div className={"visibility: " + visibility }>
+            <div className={classes.toolbarBox + " visibility: " + visibility }>
               <ConnectivityDeck ref={ deck => {
                 this.deck = deck
               } } handler={this.deckHandler}/>
               {selectButton}
             </div>
           </Toolbar>
-          <div id={id}>
-            {legends.map(entry => (
-              entry
-            ))}
+          <div className={classes.gridWrapper}>
+            <div id={id}/>
+            <div>
+              {legends.map(entry => (
+                entry
+              ))}
+            </div>
           </div>
         </div>
       </div>

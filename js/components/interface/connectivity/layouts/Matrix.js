@@ -2,14 +2,14 @@ const d3 = require("d3");
 
 export class Matrix {
   constructor () {
-    this.margin = { top: 45, right: 30, bottom: 10, left: 15 };
+    this.margin = { top: 45, right: 10, bottom: 10, left: 25 };
     this.legendWidth = 120;
     this.order = "id";
     this.legends = [];
   }
   
   draw (context) {
-    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
+    const matrixDim = ((context.svgHeight - this.margin.bottom) < (context.svgWidth - this.legendWidth)) ? (context.svgHeight - this.margin.bottom) : (context.svgWidth - this.legendWidth);
 
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
     // Opacity
@@ -84,7 +84,7 @@ export class Matrix {
     const rect = container
       .append("rect")
       .attr("class", "background")
-      .attr("width", matrixDim - this.margin.left - this.margin.right)
+      .attr("width", matrixDim - this.margin.left - 20)
       .attr("height", matrixDim - this.margin.top);
 
     /*
@@ -250,7 +250,7 @@ export class Matrix {
   setOrder (context, value){
     this.order = value;
 
-    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
+    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth);
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
 
     x.domain(this.orders[value]);
