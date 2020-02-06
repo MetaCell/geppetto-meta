@@ -81,8 +81,8 @@ define(function (require) {
       this.disp = new PIXI.Container();
       this.disp.pivot.x = 0;
       this.disp.pivot.y = 0;
-      this.disp.scale.x = this.props.zoomLevel/this.stack.scl;
-      this.disp.scale.y = this.props.zoomLevel/this.stack.scl;
+      this.disp.scale.x = this.props.zoomLevel / this.stack.scl;
+      this.disp.scale.y = this.props.zoomLevel / this.stack.scl;
       this.stage.addChild(this.disp);
       this.stack = new PIXI.Container();
       this.stack.pivot.x = 0;
@@ -857,9 +857,9 @@ define(function (require) {
      *
      */
     updateZoomLevel: function (props) {
-      this.state.scl = ceil(props.zoomLevel);
-      this.disp.scale.x = props.zoomLevel/this.state.scl;
-      this.disp.scale.y = props.zoomLevel/this.state.scl;
+      this.state.scl = Math.ceil(props.zoomLevel);
+      this.disp.scale.x = props.zoomLevel / this.state.scl;
+      this.disp.scale.y = props.zoomLevel / this.state.scl;
       // update slice view
       this.checkStack();
     },
