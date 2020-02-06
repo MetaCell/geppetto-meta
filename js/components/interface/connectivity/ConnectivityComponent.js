@@ -8,6 +8,8 @@ const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./subcomponents/MenuButton";
+import IconText from "./subcomponents/IconText";
+import Typography from '@material-ui/core/Typography';
 
 
 const styles = {
@@ -24,6 +26,10 @@ const styles = {
     justifyContent: "center",
     flex: "1"
   },
+  legendTitle: {
+    fontSize: "14px",
+    color: "white",
+  }
 
 };
 
@@ -307,72 +313,6 @@ class ConnectivityComponent extends AbstractComponent {
 
   /**
    *
-   * Creates legend
-   *
-   * @command createLegend (id, colorScale, position, title)
-   *
-   * @param id
-   * @param colorScale
-   * @param position
-   * @param title
-   */
-  createLegend (id, colorScale, position, title) {
-
-    let ret;
-    // TODO: boxes should scale based on number of items
-    const colorBox = { size: 20, labelSpace: 4 };
-    const padding = { x: colorBox.size, y: 2 * colorBox.size };
-
-    // TODO: is it sane not to draw the legend if there is only one category?
-    if (colorScale.domain().length > 1) {
-      let horz, vert;
-      const legendItem = this.svg.selectAll(id)
-        .data(colorScale.domain().slice().sort())
-        .enter().append('g')
-        .attr('class', 'legend-item')
-        .attr('transform', function (d, i) {
-          const height = colorBox.size + colorBox.labelSpace;
-          horz = colorBox.size + position.x + padding.x - 5;
-          vert = i * height + position.y + padding.y;
-          return 'translate(' + horz + ',' + vert + ')';
-        });
-
-      // coloured squares
-      legendItem.append('rect')
-        .attr('width', colorBox.size)
-        .attr('height', colorBox.size)
-        .style('fill', function (d) {
-          return colorScale(d);
-        })
-        .style('stroke', function (d) {
-          return colorScale(d);
-        });
-
-      // labels
-      legendItem.append('text')
-        .attr('x', colorBox.size + colorBox.labelSpace)
-        .attr('y', colorBox.size - colorBox.labelSpace)
-        .attr('class', 'legend-text')
-        .text(function (d) {
-          return d;
-        });
-
-      // title
-      if (typeof title != 'undefined') {
-        this.svg.append('text')
-          .text(title)
-          .attr('class', 'legend-title')
-          .attr('x', position.x + 2 * padding.x)
-          .attr('y', position.y + 0.75 * padding.y);
-      }
-      ret = { x: horz, y: vert };
-    }
-
-    return ret;
-  }
-
-  /**
-   *
    * Handle layout selection
    *
    * @command deckHandler (layout)
@@ -429,7 +369,7 @@ class ConnectivityComponent extends AbstractComponent {
     };
     const visibility = buttonVisibility ? "visible" : "hidden";
     
-    let selectButton = <span/>;
+    let selectButton;
     if (layout instanceof Matrix){
       selectButton = (<MenuButton id={id + 'select'}
         options={sortOptions}
@@ -437,6 +377,28 @@ class ConnectivityComponent extends AbstractComponent {
         defaultOption = "id"
         tooltip={"Order by"}
       />)
+    }
+
+    let legends = [];
+    if (this.state.layout && this.nodeColormap){
+      const layoutLegends = this.state.layout.getLegends(this);
+      for (const obj of layoutLegends){
+        if (obj.title){
+          legends.push(
+            <Typography className={classes.legendTitle} variant="h6" gutterBottom>
+              {obj.title}
+            </Typography>
+          )
+        }
+        let domain = obj.colorScale.domain().slice().sort();
+        for (const [i,v] of domain.entries()) {
+          legends.push(
+            <IconText key={v} icon="fa fa-square-full legend-item" color={obj.colorScale(i)} subtitle={v}
+              width={"20px"} height={"20px"}
+            />
+          );
+        }
+      }
     }
 
     return (
@@ -450,7 +412,11 @@ class ConnectivityComponent extends AbstractComponent {
               {selectButton}
             </div>
           </Toolbar>
-          <div id={id}/>
+          <div id={id}>
+            {legends.map(entry => (
+              entry
+            ))}
+          </div>
         </div>
       </div>
 

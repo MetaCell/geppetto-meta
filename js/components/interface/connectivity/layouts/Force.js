@@ -85,16 +85,7 @@ export class Force {
       g.attr("transform", d3.event.transform);
     }
     zoom_handler(context.svg);
-
-    const legendPosition = { x: 0.75 * context.svgWidth, y: 0 };
-
-    // Nodes
-    const legendBottom = context.createLegend('legend', nodeTypeScale, legendPosition, 'Cell Types');
-
-    legendPosition.y = legendBottom.y + 15;
-    // Links
-    context.createLegend('legend2', linkTypeScale, legendPosition, 'Synapse Types');
-
+    
     context.force.nodes(context.dataset.nodes).on("tick", function () {
       link.attr("x1", function (d) {
         return d.source.x;
@@ -117,6 +108,16 @@ export class Force {
         });
     });
     context.force.force("link").links(context.dataset.links);
+  }
+
+  getLegends (context){
+    const nodeTypeScale = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
+    const linkTypeScale = d3.scaleOrdinal(d3.schemeCategory10)
+      .domain(context.dataset.linkTypes);
+    return [
+      { id:'legend', colorScale:nodeTypeScale, title:'Cell Types' },
+      { id:'legend2', colorScale:linkTypeScale, title:'Synapse Types' }
+    ];
   }
 
   getName (){

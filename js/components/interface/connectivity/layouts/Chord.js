@@ -169,8 +169,6 @@ export class Chord {
       })
       .style("opacity", 1);
 
-    this.createLegend(context);
-
     function fade_over (opacity) {
       return function (g, i) {
         let filter = function (d) {
@@ -199,14 +197,6 @@ export class Chord {
           .style("opacity", opacity);
       };
     }
-  }
-
-  createLegend (context) {
-    const nodeTypeScale = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
-    const legendPosition = { x: 0.77 * context.svgWidth, y: 0 };
-
-    // Nodes
-    context.createLegend('legend', nodeTypeScale, legendPosition, 'Populations');
   }
 
   generateChordMatrix (context) {
@@ -469,6 +459,13 @@ export class Chord {
       return groups;
     };
     return chord;
+  }
+
+  getLegends (context){
+    const nodeTypeScale = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
+    return [
+      { id:'legend', colorScale:nodeTypeScale, title:"Populations" }
+    ];
   }
 
   getName (){

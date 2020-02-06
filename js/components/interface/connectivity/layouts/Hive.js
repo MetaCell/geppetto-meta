@@ -84,6 +84,10 @@ export class Hive {
     }
   }
 
+  getLegends (context){
+    return [];
+  }
+
   getName (){
     return "Hive"
   }

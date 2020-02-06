@@ -5,6 +5,7 @@ export class Matrix {
     this.margin = { top: 45, right: 30, bottom: 10, left: 15 };
     this.legendWidth = 120;
     this.order = "id";
+    this.legends = [];
   }
   
   draw (context) {
@@ -197,8 +198,6 @@ export class Matrix {
 
     column.append("line")
       .attr("x1", -context.svgWidth);
-
-    context.createLegend('legend', colormap, { x: matrixDim, y: 0 });
     
     // Draw squares for each connection
     function row (row) {
@@ -237,10 +236,16 @@ export class Matrix {
     }
   }
 
+  getLegends (context){
+    const colormap = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
+    return [
+      { id:'legend', colorScale:colormap, title:null }
+    ];
+  }
+
   getName (){
     return "Matrix"
   }
-
 
   setOrder (context, value){
     this.order = value;
