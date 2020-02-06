@@ -6,7 +6,8 @@ import * as util from "./utilities";
 import Instance from '../../../geppettoModel/model/Instance';
 const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
-import SelectButton from "./subcomponents/SelectButton";
+import Toolbar from '@material-ui/core/Toolbar';
+import MenuButton from "./subcomponents/MenuButton";
 
 
 const styles = {
@@ -31,7 +32,7 @@ class ConnectivityComponent extends AbstractComponent {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      buttonVisibility: true
+      buttonVisibility: false,
     };
     this.defaultOptions = {
       nodeType: function (node) {
@@ -56,7 +57,6 @@ class ConnectivityComponent extends AbstractComponent {
     this.onEnter = this.onEnter.bind(this);
     this.onLeave = this.onLeave.bind(this);
   }
-
 
   componentDidMount () {
     this.setOptions(this.props.options);
@@ -415,43 +415,42 @@ class ConnectivityComponent extends AbstractComponent {
    *
    */
   sortOptionsHandler (option){
-    this.state.layout.setOrder(this, option)
+    this.state.layout.setOrder(this, option);
   }
 
 
   render () {
     const { id, classes } = this.props;
-    const { layout } = this.state;
+    const { layout, buttonVisibility } = this.state;
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
       'post_count': 'By # post'
     };
+    const visibility = buttonVisibility ? "visible" : "hidden";
     
     let selectButton = <span/>;
     if (layout instanceof Matrix){
-      const matrixDim = (this.props.size.height < (this.props.size.width - layout.legendWidth - layout.margin.right))
-        ? (this.props.size.height)
-        : (this.props.size.width - layout.legendWidth - layout.margin.right);
-      selectButton = (<SelectButton id={id + 'select'}
-        label={"Order by"}
+      selectButton = (<MenuButton id={id + 'select'}
         options={sortOptions}
         handler = {this.sortOptionsHandler}
-        style={
-          {
-            width: layout.legendWidth, left: matrixDim,
-            top: -layout.buttonHeight - layout.margin.bottom
-          }}/>)
+        defaultOption = "id"
+        tooltip={"Order by"}
+      />)
     }
 
     return (
-      <div className={classes.container}>
+      <div className={classes.container} onMouseEnter={this.onEnter} onMouseLeave={this.onLeave}>
         <div className={classes.connectivityContainer}>
-          <ConnectivityDeck ref={ deck => {
-            this.deck = deck
-          } } handler={this.deckHandler} buttonVisibility={this.state.buttonVisibility}/>
+          <Toolbar>
+            <div className={"visibility: " + visibility }>
+              <ConnectivityDeck ref={ deck => {
+                this.deck = deck
+              } } handler={this.deckHandler}/>
+              {selectButton}
+            </div>
+          </Toolbar>
           <div id={id}/>
-          {selectButton}
         </div>
       </div>
 

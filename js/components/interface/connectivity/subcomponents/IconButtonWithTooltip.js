@@ -14,7 +14,7 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
       <IconButton
         color={color}
         disabled={disabled}
-        onClick={() => onClick()}
+        onClick={event => onClick(event)}
         className={className}
         disableRipple
       />

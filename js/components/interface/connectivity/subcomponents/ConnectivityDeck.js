@@ -6,7 +6,6 @@ import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
 import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";
@@ -46,12 +45,7 @@ const styles = () => ({
     top: "0",
     color: "#fc6320"
   },
-  toolBar: {
-    maxWidth: "30px",
-    minHeight: "50%",
-    background: "#383838",
-    padding: "0"
-  },
+  toolBar: { background: "#778899", },
 });
 
 
@@ -104,21 +98,17 @@ class ConnectivityDeck extends Component {
 
   render () {
     const { open } = this.state;
-    const { classes, buttonVisibility } = this.props;
-    const visibility = buttonVisibility ? "visible" : "hidden";
+    const { classes } = this.props;
+
 
     return (
       <span>
-        <Toolbar 
-          className={classes.toolBar + " visibility: " + visibility }
-        >
-          <IconButtonWithTooltip
-            disabled={false}
-            onClick={() => this.setState({ open: true })}
-            className={" fa fa-cog " + `${classes.button}`}
-            tooltip={"Open layout selector"}
-          />
-        </Toolbar>
+        <IconButtonWithTooltip
+          disabled={false}
+          onClick={() => this.setState({ open: true })}
+          className={" fa fa-cog " + `${classes.button}`}
+          tooltip={"Open layout selector"}
+        />
         <Modal
           open={open}
           disableAutoFocus

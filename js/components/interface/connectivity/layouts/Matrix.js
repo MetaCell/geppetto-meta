@@ -4,7 +4,7 @@ export class Matrix {
   constructor () {
     this.margin = { top: 45, right: 30, bottom: 10, left: 15 };
     this.legendWidth = 120;
-    this.buttonHeight = 50;
+    this.order = "id";
   }
   
   draw (context) {
@@ -78,7 +78,7 @@ export class Matrix {
       // community: d3.range(n).sort(function(a, b) { return nodes[b].community - nodes[a].community; }),
     };
     // Default sort order.
-    x.domain(this.orders.id);
+    x.domain(this.orders[this.order]);
 
     const rect = container
       .append("rect")
@@ -240,10 +240,13 @@ export class Matrix {
   getName (){
     return "Matrix"
   }
-  
+
+
   setOrder (context, value){
+    this.order = value;
+
     const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth - this.margin.right)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth - this.margin.right);
-    const x = d3.scaleBand().range([0, matrixDim - this.margin.top - this.margin.bottom]);
+    const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
 
     x.domain(this.orders[value]);
 

@@ -7,7 +7,7 @@ export default class ConnectivityWrapper extends Component {
   constructor (props) {
     super(props);
 
-    this.sizes = [{ width: 660, height: 500 }, { width: 1000, height: 700 }];
+    this.sizes = [{ width: 660, height: 600 }, { width: 1000, height: 700 }];
     this.state = {
       data: [],
       isOpen: false,
@@ -86,7 +86,7 @@ export default class ConnectivityWrapper extends Component {
     }
 
     return (
-      <div style={{ maxWidth: width, maxHeight: height }}>
+      <div style={{ maxWidth: width, maxHeight: height, marginLeft:"100px" }}>
         {show}
       </div>
 
