@@ -98,6 +98,12 @@ export default function (GEPPETTO) {
       GHOST: .3,
     },
 
+    SocketStatus: {
+      CLOSE: 0,
+      OPEN: 1,
+      RECONNECTING: 2,
+    },
+
     PROJECT_LOADED: "Project loaded",
 
     MODEL_LOADED: "The model for the current project has been loaded",
@@ -333,6 +339,8 @@ export default function (GEPPETTO) {
     SIMULATOR_UNAVAILABLE: " is Unavailable",
 
     WEBSOCKET_CONNECTION_ERROR: "Server Connection Error",
+
+    WEBSOCKET_RECONNECTION: "Client is attempting to reconnect",
 
     STOP_SIMULATION_TUTORIAL: "Tutorial Starting",
 
