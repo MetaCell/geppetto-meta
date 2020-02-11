@@ -245,6 +245,32 @@ define(function (require) {
       });
     },
 
+    updateImageSize: function (props) {
+      var image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[0] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0);
+      // get image size;
+      $.ajax({
+        url: image + '&obj=Max-size',
+        type: 'POST',
+        success: function (data) {
+          if (data.indexOf('html') < 0) {
+            var result = data.trim().split(':')[1].split(' ');
+            var imageX = Number(result[0]);
+            var imageY = Number(result[1]);
+            var extent = { imageX: imageX, imageY: imageY };
+            this.setState(extent);
+            this.props.setExtent(extent);
+            // update slice view
+            this.state.lastUpdate = 0;
+            this.checkStack();
+            this.callPlaneEdges();
+          }
+        }.bind(this),
+        error: function (xhr, status, err) {
+          console.error("Calling Max Size", status + " - " + xhr.progress().state(), err.toString());
+        }.bind(this)
+      });
+    },
+
     callPlaneEdges: function () {
       if (!this.state.planeUpdating) {
         this.state.planeUpdating = true;
@@ -802,6 +828,12 @@ define(function (require) {
         this.updateImages(nextProps);
         this.checkStack();
       }
+      if (nextProps.scl !== this.props.scl){
+        this.updateZoomLevel(nextProps);
+        this.updateImageSize(nextProps);
+        this.updateImages(nextProps);
+        this.checkStack();
+      }
       if (nextProps.zoomLevel !== this.props.zoomLevel) {
         this.updateZoomLevel(nextProps);
         // recenter display for new image size keeping any stack offset.
@@ -856,8 +888,8 @@ define(function (require) {
      *
      */
     updateZoomLevel: function (props) {
-      this.disp.scale.x = props.zoomLevel / this.props.scl;
-      this.disp.scale.y = props.zoomLevel / this.props.scl;
+      this.disp.scale.x = props.zoomLevel / props.scl;
+      this.disp.scale.y = props.zoomLevel / props.scl;
       // update slice view
       this.checkStack();
     },
