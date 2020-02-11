@@ -1394,18 +1394,21 @@ define(function (require) {
      */
     onZoomOut: function () {
       var zoomLevel = 1;
+      var scale = 1.0;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
       } else {
         zoomLevel = Number((this.state.zoomLevel -= .1).toFixed(1));
       }
       if (zoomLevel > 0.1) {
+        scale = Math.ceil(zoomLevel).toFixed(1);
         this.setState({
           zoomLevel: zoomLevel,
+          scl: scale,
           text: 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'
         });
       } else {
-        this.setState({ zoomLevel: 0.1, text: 'Min zoom! (X0.1)' });
+        this.setState({ zoomLevel: 0.1, scl: 1.0, text: 'Min zoom! (X0.1)' });
       }
     },
 
