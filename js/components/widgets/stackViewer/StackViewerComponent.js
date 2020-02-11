@@ -828,14 +828,9 @@ define(function (require) {
         this.updateImages(nextProps);
         this.checkStack();
       }
-      if (nextProps.scl !== this.props.scl){
+      if (nextProps.scl !== this.props.scl || nextProps.zoomLevel !== this.props.zoomLevel){
         this.updateZoomLevel(nextProps);
-        this.updateImageSize(nextProps);
-        this.updateImages(nextProps);
-        this.checkStack();
-      }
-      if (nextProps.zoomLevel !== this.props.zoomLevel) {
-        this.updateZoomLevel(nextProps);
+        updDst = true;
         // recenter display for new image size keeping any stack offset.
         this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
         this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
@@ -858,7 +853,7 @@ define(function (require) {
       if (nextProps.orth !== this.state.orth) {
         this.changeOrth(nextProps.orth);
         this.state.recenter = true;
-        this.callImageSize();
+        this.updateImageSize(nextProps);
         this.callDstRange();
       }
       if (nextProps.dst !== this.state.dst) {
@@ -879,7 +874,7 @@ define(function (require) {
       }
       if (updDst) {
         this.callDstRange();
-        this.callImageSize();
+        this.updateImageSize(nextProps);
         this.updateImages(nextProps);
       }
     },
