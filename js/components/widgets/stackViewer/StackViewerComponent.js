@@ -830,10 +830,12 @@ define(function (require) {
       }
       if (nextProps.scl !== this.props.scl || nextProps.zoomLevel !== this.props.zoomLevel){
         this.updateZoomLevel(nextProps);
-        updDst = true;
+        this.updateImageSize(nextProps);
+        this.updateImages(nextProps);
         // recenter display for new image size keeping any stack offset.
         this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
         this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
+        this.createImages();
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
