@@ -9,7 +9,7 @@ export class Matrix {
   }
   
   draw (context) {
-    const matrixDim = ((context.svgHeight - this.margin.bottom) < (context.svgWidth - this.legendWidth)) ? (context.svgHeight - this.margin.bottom) : (context.svgWidth - this.legendWidth);
+    const matrixDim = ((context.props.size.height - this.margin.bottom) < (context.props.size.width - this.legendWidth)) ? (context.props.size.height - this.margin.bottom) : (context.props.size.width - this.legendWidth);
 
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
     // Opacity
@@ -186,7 +186,7 @@ export class Matrix {
       .each(row);
 
     row_.append("line")
-      .attr("x2", context.svgWidth);
+      .attr("x2", context.props.size.width);
 
     let column = container.selectAll(".column")
       .data(matrix)
@@ -197,7 +197,7 @@ export class Matrix {
       });
 
     column.append("line")
-      .attr("x1", -context.svgWidth);
+      .attr("x1", -context.props.size.width);
     
     // Draw squares for each connection
     function row (row) {
@@ -250,7 +250,7 @@ export class Matrix {
   setOrder (context, value){
     this.order = value;
 
-    const matrixDim = (context.svgHeight < (context.svgWidth - this.legendWidth)) ? (context.svgHeight) : (context.svgWidth - this.legendWidth);
+    const matrixDim = (context.props.size.height < (context.props.size.width - this.legendWidth)) ? (context.props.size.height) : (context.props.size.width - this.legendWidth);
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
 
     x.domain(this.orders[value]);
