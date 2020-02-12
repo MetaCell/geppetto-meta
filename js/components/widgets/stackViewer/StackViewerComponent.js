@@ -828,14 +828,15 @@ define(function (require) {
         this.updateImages(nextProps);
         this.checkStack();
       }
-      if (nextProps.scl !== this.props.scl || nextProps.zoomLevel !== this.props.zoomLevel){
+      if (nextProps.scl !== this.props.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height){
         this.updateZoomLevel(nextProps);
         this.updateImageSize(nextProps);
         this.updateImages(nextProps);
         // recenter display for new image size keeping any stack offset.
-        this.disp.position.x = ((this.props.width / 2) - (this.disp.width / 2));
-        this.disp.position.y = ((this.props.height / 2) - (this.disp.height / 2));
+        this.disp.position.x = ((nextProps.width / 2) - (this.disp.width / 2));
+        this.disp.position.y = ((nextProps.height / 2) - (this.disp.height / 2));
         this.createImages();
+        this.checkStack();
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
