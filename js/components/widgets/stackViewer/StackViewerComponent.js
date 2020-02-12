@@ -1464,7 +1464,8 @@ define(function (require) {
      */
     onHome: function () {
       var autoScale = Number(Math.min(this.props.data.height / this.state.imageY, this.props.data.width / this.state.imageX).toFixed(1));
-      this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale });
+      var scale = Math.ceil(autoScale);
+      this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale, scl: scale});
     },
 
     onExtentChange: function (data) {
