@@ -284,9 +284,9 @@ define(function (require) {
             x = (-this.stack.position.x) + (-this.disp.position.x / this.disp.scale.x);
           }
           if (this.state.orth == 1) {
-            y = (this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
+            y = (this.stack.position.y) + (-this.disp.position.y / this.disp.scale.y);
           } else {
-            y = (-this.stack.position.y) + (-this.disp.position.y / this.disp.scale.x);
+            y = (-this.stack.position.y) + (-this.disp.position.y / this.disp.scale.y);
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
