@@ -2,14 +2,20 @@ const d3 = require("d3");
 
 export class Matrix {
   constructor () {
-    this.margin = { top: 45, right: 10, bottom: 10, left: 25 };
-    this.legendWidth = 120;
+    this.margin = { top: 45, left: 0, bottom: 0, right: 0 };
+    this.topLabelMargin = 25;
+    this.leftIndicator = 10;
+    this.topIndicator = 10;
     this.order = "id";
     this.legends = [];
   }
   
   draw (context) {
-    const matrixDim = ((context.props.size.height - this.margin.bottom) < (context.props.size.width - this.legendWidth)) ? (context.props.size.height - this.margin.bottom) : (context.props.size.width - this.legendWidth);
+    
+    const marginLeft = this.margin.left + this.leftIndicator;
+    const matrixDim = context.state.height - this.margin.bottom < context.state.width
+      ? context.state.height - this.margin.bottom
+      : context.state.width - this.margin.right;
 
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
     // Opacity
@@ -17,18 +23,18 @@ export class Matrix {
     // Colors
     const c = d3.scaleOrdinal(d3.schemeCategory10);
 
-    const labelTop = this.margin.top - 25;
+    const labelTop = this.margin.top - this.topLabelMargin;
     const defaultTooltipText = "Hover the squares to see the connections.";
     const tooltip = context.svg
       .append("g")
-      .attr("transform", "translate(" + this.margin.left + "," + labelTop + ")")
+      .attr("transform", "translate(" + marginLeft + "," + labelTop + ")")
       .append("text")
       .attr('class', 'connectionlabel')
       .text(defaultTooltipText);
 
     const container = context.svg
       .append("g")
-      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+      .attr("transform", "translate(" + marginLeft + "," + this.margin.top + ")");
 
 
     const matrix = [];
@@ -80,13 +86,7 @@ export class Matrix {
     };
     // Default sort order.
     x.domain(this.orders[this.order]);
-
-    const rect = container
-      .append("rect")
-      .attr("class", "background")
-      .attr("width", matrixDim - this.margin.left - 20)
-      .attr("height", matrixDim - this.margin.top);
-
+    
     /*
      * we store the 'conn' key in case we want to
      * eg. conditionally colour the indicator if there
@@ -157,6 +157,12 @@ export class Matrix {
       };
     };
 
+    const rect = container
+      .append("rect")
+      .attr("class", "background")
+      .attr("width", matrixDim - marginLeft - (this.margin.top - marginLeft))
+      .attr("height", matrixDim - this.margin.top);
+
     const colormap = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
     const postMargin = parseInt(rect.attr("width")) / pre.length;
     const preMargin = parseInt(rect.attr("height")) / post.length;
@@ -166,14 +172,14 @@ export class Matrix {
       .enter()
       .append("g")
       .attr("class", "postPop")
-      .attr("transform", "translate(0,-10)")
+      .attr("transform", "translate(0," + -this.topIndicator + ")")
       .each(popIndicator("x", colormap, postMargin, 5));
     const prePop = container.selectAll(".prePop")
       .data([pre])
       .enter()
       .append("g")
       .attr("class", "prePop")
-      .attr("transform", "translate(-10,0)")
+      .attr("transform", "translate(" + -this.leftIndicator + ",0)")
       .each(popIndicator("y", colormap, 5, preMargin));
 
     let row_ = container.selectAll(".row")
@@ -186,7 +192,7 @@ export class Matrix {
       .each(row);
 
     row_.append("line")
-      .attr("x2", context.props.size.width);
+      .attr("x2", context.state.width);
 
     let column = container.selectAll(".column")
       .data(matrix)
@@ -197,7 +203,7 @@ export class Matrix {
       });
 
     column.append("line")
-      .attr("x1", -context.props.size.width);
+      .attr("x1", -context.state.width);
     
     // Draw squares for each connection
     function row (row) {
@@ -250,7 +256,7 @@ export class Matrix {
   setOrder (context, value){
     this.order = value;
 
-    const matrixDim = (context.props.size.height < (context.props.size.width - this.legendWidth)) ? (context.props.size.height) : (context.props.size.width - this.legendWidth);
+    const matrixDim = (context.state.height < (context.state.width - this.legendWidth)) ? (context.state.height) : (context.state.width - this.legendWidth);
     const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
 
     x.domain(this.orders[value]);

@@ -20,14 +20,14 @@ export class Chord {
     const pi = Math.PI;
     const halfpi = pi / 2;
     const dr = 15;
-    const innerRadius = Math.min(context.props.size.width, context.props.size.height) * .41,
+    const innerRadius = Math.min(context.state.width, context.state.height) * .41,
       outerRadius = innerRadius * 1.05;
 
     // if no custom colors set then use d3 provided color scheme
     const fill = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
 
     const svg = context.svg.append("g")
-      .attr("transform", "translate(" + context.props.size.width / 2 + "," + context.props.size.height / 2 + ")");
+      .attr("transform", "translate(" + context.state.width / 2 + "," + context.state.height / 2 + ")");
 
     const chord = this.layout_chord()
       .padding(.05)

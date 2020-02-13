@@ -22,7 +22,7 @@ export class Force {
       .force("link", d3.forceLink().id(function (d) {
         return d.index;
       }))
-      .force("center", d3.forceCenter(context.props.size.width / 2, context.props.size.height / 2));
+      .force("center", d3.forceCenter(context.state.width / 2, context.state.height / 2));
 
     // add encompassing group for the zoom
     const g = context.svg.append("g")

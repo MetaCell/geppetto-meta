@@ -1,15 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom'
 import AbstractComponent from '../../../AComponent';
-import ConnectivityDeck from "./ConnectivityDeck";
-import { Matrix } from "../layouts/Matrix";
 import * as util from "../utilities";
 import Instance from '../../../../geppettoModel/model/Instance';
 const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
-import Toolbar from '@material-ui/core/Toolbar';
 import IconText from "./IconText";
 import Typography from '@material-ui/core/Typography';
-import IconButtonWithTooltip from "./IconButtonWithTooltip";
 
 
 const styles = {
@@ -20,8 +17,8 @@ const styles = {
   },
 
   gridWrapper:{
-    display:"grid",
-    gridTemplateColumns:"18% 82%"
+    display: "grid",
+    gridTemplateColumns: "auto auto",
   },
 
 };
@@ -29,7 +26,10 @@ const styles = {
 class ConnectivityPlot extends AbstractComponent {
   constructor (props) {
     super(props);
-    
+    this.state = {
+      height: this.props.size.height,
+      width: this.props.size.width,
+    };
     this.defaultOptions = {
       nodeType: function (node) {
         if (node instanceof Instance) {
@@ -48,6 +48,8 @@ class ConnectivityPlot extends AbstractComponent {
     };
 
     this.setNodeColormap(this.props.colorMap);
+    this.subRef = React.createRef();
+
 
   }
 
@@ -60,10 +62,10 @@ class ConnectivityPlot extends AbstractComponent {
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
     this.draw();
+    this.setState(() => ({ width: this.props.size.width - this.subRef.current.clientWidth, }))
   }
-
   componentDidUpdate (prevProps, prevState, snapshot) {
-    if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout){
+    if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout || this.options === null){
       this.setOptions(this.props.options);
     }
     this.setData(this.props.data);
@@ -283,8 +285,8 @@ class ConnectivityPlot extends AbstractComponent {
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
       .append("svg")
-      .attr("width", this.props.size.width)
-      .attr("height", this.props.size.height);
+      .attr("width", this.state.width)
+      .attr("height", this.state.height);
     this.props.layout.draw(this)
   }
 
@@ -327,7 +329,7 @@ class ConnectivityPlot extends AbstractComponent {
 
     return (
       <div className={classes.gridWrapper}>
-        <div>
+        <div ref = {this.subRef}>
           {legendsVisibility ? (legends.map(entry => (
             entry
           ))) : ""}

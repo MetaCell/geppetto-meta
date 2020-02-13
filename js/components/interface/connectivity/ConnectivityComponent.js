@@ -10,15 +10,11 @@ const styles = {
   container: {
     height: '100%',
     minHeight: '100%',
-    display: 'flex',
-    flexDirection: 'column' 
   },
   connectivityContainer: {
     background: '#424242',
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    flex: "1"
+    display: "grid",
+    gridTemplateRows: "auto auto",
   },
 };
 

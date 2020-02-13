@@ -10,6 +10,11 @@ import IconButtonWithTooltip from "./IconButtonWithTooltip";
 
 const styles = {
 
+  toolbar: {
+    display:"grid",
+    padding: "0",
+    justifyItems: "start"
+  },
   toolbarBox: { backgroundColor: "rgb(0,0,0,0.5);", },
   button: {
     padding: "8px",
@@ -58,8 +63,8 @@ class ConnectivityToolbar extends AbstractComponent {
     let legendsButton = "fa fa-list" ;
     let legendsTooltip = "Toggle legend";
     return (
-      <Toolbar>
-        <div className={classes.toolbarBox + " visibility: " + visibility }>
+      <Toolbar className={classes.toolbar}>
+        <div className={classes.toolbarBox + " visibility: " + "visible" }>
           <ConnectivityDeck ref={ deck => {
             this.deck = deck
           } } handler={deckHandler}/>
