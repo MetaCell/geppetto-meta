@@ -864,8 +864,8 @@ define(function (require) {
       // update slice view
       this.checkStack();
       // recenter display for new image size keeping any stack offset.
-      this.disp.position.x = ((nextProps.width / 2) - (this.disp.width / 2));
-      this.disp.position.y = ((nextProps.height / 2) - (this.disp.height / 2));
+      this.disp.position.x = ((props.width / 2) - (this.disp.width / 2));
+      this.disp.position.y = ((props.height / 2) - (this.disp.height / 2));
     },
 
     /**
