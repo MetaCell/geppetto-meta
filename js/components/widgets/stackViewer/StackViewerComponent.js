@@ -1002,6 +1002,7 @@ define(function (require) {
         this.state.data = null;
         this.state.dragging = false;
         this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
+        this.createImages();
       }
     },
 
