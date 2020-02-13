@@ -618,7 +618,6 @@ define(function (require) {
       }
 
       if (this.disp.width > 1) {
-        console.log('disp.width=' + this.disp.width + ' state.scl=' + this.state.scl + ' state.imageX=' + this.state.imageX );
         this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
         this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
         if (this.state.recenter) {
