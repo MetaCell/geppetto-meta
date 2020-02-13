@@ -229,8 +229,8 @@ define(function (require) {
         success: function (data) {
           if (data.indexOf('html') < 0) {
             var result = data.trim().split(':')[1].split(' ');
-            var imageX = Math.ceil(( Number(result[0] )).toFixed(1));
-            var imageY = Math.ceil(( Number(result[1] )).toFixed(1));
+            var imageX = Math.ceil( Number(result[0] ));
+            var imageY = Math.ceil( Number(result[1] ));
             var extent = { imageX: imageX, imageY: imageY };
             this.setState(extent);
             this.props.setExtent(extent);
@@ -1097,8 +1097,8 @@ define(function (require) {
         text: '',
         stackX: -10000,
         stackY: -10000,
-        imageX: 1024,
-        imageY: 1024,
+        imageX: 10240,
+        imageY: 10240,
         fxp: [511, 255, 108],
         pit: 0,
         yaw: 0,
@@ -1439,7 +1439,7 @@ define(function (require) {
      *
      */
     onHome: function () {
-      var autoScale = Number(Math.min(this.props.data.height / this.state.imageY, this.props.data.width / this.state.imageX).toFixed(1));
+      var autoScale = Number(Math.min(this.props.data.height / ((this.state.imageY / 10.0 ) * this.state.scl), this.props.data.width / ((this.state.imageX / 10.0 ) * this.state.scl)).toFixed(1));
       var scale = Math.ceil(autoScale);
       this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
     },
