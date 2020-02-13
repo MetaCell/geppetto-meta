@@ -829,7 +829,6 @@ define(function (require) {
       if (nextProps.orth !== this.state.orth) {
         this.changeOrth(nextProps.orth);
         this.state.recenter = true;
-        this.updateImageSize(nextProps);
         this.callDstRange();
       }
       if (nextProps.dst !== this.state.dst) {
@@ -850,7 +849,6 @@ define(function (require) {
       }
       if (updDst) {
         this.callDstRange();
-        this.updateImageSize(nextProps);
         this.updateImages(nextProps);
       }
     },
