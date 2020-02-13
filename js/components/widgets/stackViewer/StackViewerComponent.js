@@ -1090,7 +1090,7 @@ define(function (require) {
     
     getInitialState: function () {
       return {
-        zoomLevel: 0.5,
+        zoomLevel: 1.0,
         dst: 0,
         text: '',
         stackX: -10000,
@@ -1437,7 +1437,7 @@ define(function (require) {
      *
      */
     onHome: function () {
-      var autoScale = Number(Math.min(this.props.data.height / ((this.state.imageY / 10.0 ) * this.state.scl), this.props.data.width / ((this.state.imageX / 10.0 ) * this.state.scl)).toFixed(1));
+      var autoScale = Number(Math.min(this.props.data.height / ((this.state.imageY / 10.0 ) * this.state.scl), this.props.data.width / (this.state.imageX / 10.0 )).toFixed(1));
       var scale = Math.ceil(autoScale);
       this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
     },
