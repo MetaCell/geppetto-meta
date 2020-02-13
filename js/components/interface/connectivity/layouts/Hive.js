@@ -91,4 +91,8 @@ export class Hive {
   getName (){
     return "Hive"
   }
+
+  getMargin (context){
+    return "0px 0px 0px 0px"
+  }
 }

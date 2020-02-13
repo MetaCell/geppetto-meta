@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
 import AbstractComponent from '../../../AComponent';
 import * as util from "../utilities";
 import Instance from '../../../../geppettoModel/model/Instance';
@@ -336,10 +335,11 @@ class ConnectivityPlot extends AbstractComponent {
         }
       }
     }
+    const margin = this.props.layout.getMargin(this);
 
     return (
       <div className={classes.gridWrapper}>
-        <div ref = {this.subRef} className={classes.legends}>
+        <div ref = {this.subRef} style={ { margin: margin }}>
           {legendsVisibility ? (legends.map(entry => (
             entry
           ))) : ""}

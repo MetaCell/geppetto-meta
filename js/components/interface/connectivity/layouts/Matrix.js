@@ -87,7 +87,7 @@ export class Matrix {
     };
     // Default sort order.
     x.domain(this.orders[this.order]);
-    
+
     /*
      * we store the 'conn' key in case we want to
      * eg. conditionally colour the indicator if there
@@ -205,7 +205,7 @@ export class Matrix {
 
     column.append("line")
       .attr("x1", -context.width);
-    
+
     // Draw squares for each connection
     function row (row) {
       const cell = d3.select(this).selectAll(".cell")
@@ -252,6 +252,10 @@ export class Matrix {
 
   getName (){
     return "Matrix"
+  }
+
+  getMargin (context){
+    return "45px 0px 0px 5px"
   }
 
   setOrder (context, value){

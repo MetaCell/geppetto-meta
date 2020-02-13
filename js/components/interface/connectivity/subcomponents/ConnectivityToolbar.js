@@ -66,7 +66,7 @@ class ConnectivityToolbar extends AbstractComponent {
     let legendsTooltip = "Toggle legend";
     return (
       <Toolbar className={classes.toolbar}>
-        <div className={classes.toolbarBox + " visibility: " + "visible" }>
+        <div className={classes.toolbarBox + " visibility: " + visibility }>
           <ConnectivityDeck ref={ deck => {
             this.deck = deck
           } } handler={deckHandler}/>
