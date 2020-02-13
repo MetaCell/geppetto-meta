@@ -32,7 +32,7 @@ export class Hive {
     });
 
     const svg = context.svg.append("g")
-      .attr("transform", "translate(" + context.state.width / 2 + "," + context.state.height / 2 + ")");
+      .attr("transform", "translate(" + context.width / 2 + "," + context.height / 2 + ")");
 
     svg.selectAll(".axis")
       .data(d3.range(context.dataset.nodeTypes.length))

@@ -11,14 +11,17 @@ import Typography from '@material-ui/core/Typography';
 
 const styles = {
 
+  legends: {
+    marginTop: "35px",
+    marginLeft: "5px",
+  },
   legendTitle: {
     fontSize: "14px",
     color: "white",
   },
-
   gridWrapper:{
     display: "grid",
-    gridTemplateColumns: "auto auto",
+    gridTemplateColumns: "auto minmax(500px, auto)",
   },
 
 };
@@ -26,10 +29,8 @@ const styles = {
 class ConnectivityPlot extends AbstractComponent {
   constructor (props) {
     super(props);
-    this.state = {
-      height: this.props.size.height,
-      width: this.props.size.width,
-    };
+    this.height = this.props.size.height;
+    this.width = this.props.size.width;
     this.defaultOptions = {
       nodeType: function (node) {
         if (node instanceof Instance) {
@@ -47,8 +48,10 @@ class ConnectivityPlot extends AbstractComponent {
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
 
+    this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
+    this.plotRef = React.createRef();
 
 
   }
@@ -62,7 +65,7 @@ class ConnectivityPlot extends AbstractComponent {
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
     this.draw();
-    this.setState(() => ({ width: this.props.size.width - this.subRef.current.clientWidth, }))
+    this.forceUpdate();
   }
   componentDidUpdate (prevProps, prevState, snapshot) {
     if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout || this.options === null){
@@ -282,11 +285,18 @@ class ConnectivityPlot extends AbstractComponent {
    *
    */
   drawLayout () {
+    if (this.isDirty()){
+      this.setDirty(false)
+    } else {
+      this.width = this.props.size.width - this.subRef.current.clientWidth;
+      this.height = this.props.size.height;
+    }
+      
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
       .append("svg")
-      .attr("width", this.state.width)
-      .attr("height", this.state.height);
+      .attr("width", this.width)
+      .attr("height", this.height);
     this.props.layout.draw(this)
   }
 
@@ -329,12 +339,12 @@ class ConnectivityPlot extends AbstractComponent {
 
     return (
       <div className={classes.gridWrapper}>
-        <div ref = {this.subRef}>
+        <div ref = {this.subRef} className={classes.legends}>
           {legendsVisibility ? (legends.map(entry => (
             entry
           ))) : ""}
         </div>
-        <div id={id}/>
+        <div ref = {this.plotRef} id={id}/>
       </div>
     )
   }

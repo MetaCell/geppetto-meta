@@ -13,7 +13,9 @@ const styles = {
   toolbar: {
     display:"grid",
     padding: "0",
-    justifyItems: "start"
+    justifyItems: "start",
+    marginLeft:"5px"
+
   },
   toolbarBox: { backgroundColor: "rgb(0,0,0,0.5);", },
   button: {

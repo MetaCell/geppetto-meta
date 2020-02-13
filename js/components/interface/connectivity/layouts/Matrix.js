@@ -2,7 +2,7 @@ const d3 = require("d3");
 
 export class Matrix {
   constructor () {
-    this.margin = { top: 45, left: 0, bottom: 0, right: 0 };
+    this.margin = { top: 45, left: 5, bottom: 5, right: 10 };
     this.topLabelMargin = 25;
     this.leftIndicator = 10;
     this.topIndicator = 10;
@@ -13,11 +13,12 @@ export class Matrix {
   draw (context) {
     
     const marginLeft = this.margin.left + this.leftIndicator;
-    const matrixDim = context.state.height - this.margin.bottom < context.state.width
-      ? context.state.height - this.margin.bottom
-      : context.state.width - this.margin.right;
+    const matrixDim 
+        = context.height - (this.margin.top + this.margin.bottom) < context.width - (marginLeft + this.margin.right)
+          ? context.height - (this.margin.top + this.margin.bottom)
+          : context.width - (marginLeft + this.margin.right);
 
-    const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
+    const x = d3.scaleBand().range([0, matrixDim]);
     // Opacity
     const z = d3.scaleLinear().domain([0, 4]).clamp(true);
     // Colors
@@ -160,8 +161,8 @@ export class Matrix {
     const rect = container
       .append("rect")
       .attr("class", "background")
-      .attr("width", matrixDim - marginLeft - (this.margin.top - marginLeft))
-      .attr("height", matrixDim - this.margin.top);
+      .attr("width", matrixDim)
+      .attr("height", matrixDim);
 
     const colormap = context.nodeColormap.range ? context.nodeColormap : d3.scaleOrdinal(d3.schemeCategory20);
     const postMargin = parseInt(rect.attr("width")) / pre.length;
@@ -192,7 +193,7 @@ export class Matrix {
       .each(row);
 
     row_.append("line")
-      .attr("x2", context.state.width);
+      .attr("x2", context.width);
 
     let column = container.selectAll(".column")
       .data(matrix)
@@ -203,7 +204,7 @@ export class Matrix {
       });
 
     column.append("line")
-      .attr("x1", -context.state.width);
+      .attr("x1", -context.width);
     
     // Draw squares for each connection
     function row (row) {
@@ -256,8 +257,13 @@ export class Matrix {
   setOrder (context, value){
     this.order = value;
 
-    const matrixDim = (context.state.height < (context.state.width - this.legendWidth)) ? (context.state.height) : (context.state.width - this.legendWidth);
-    const x = d3.scaleBand().range([0, matrixDim - this.margin.top]);
+    const marginLeft = this.margin.left + this.leftIndicator;
+    const matrixDim
+        = context.height - (this.margin.top + this.margin.bottom) < context.width - (marginLeft + this.margin.right)
+          ? context.height - (this.margin.top + this.margin.bottom)
+          : context.width - (marginLeft + this.margin.right);
+    
+    const x = d3.scaleBand().range([0, matrixDim]);
 
     x.domain(this.orders[value]);
 
