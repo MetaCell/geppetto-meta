@@ -27,7 +27,7 @@ class ConnectivityComponent extends AbstractComponent {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
-      toolbarVisibility: false,
+      toolbarVisibility: true,
       legendsVisibility: true,
     };
     this.legendHandler = this.legendHandler.bind(this);

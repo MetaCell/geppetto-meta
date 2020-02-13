@@ -37,7 +37,7 @@ class MenuButton extends Component {
   }
 
   render () {
-    const { id, options, classes, defaultOption, tooltip } = this.props;
+    const { id, options, classes, defaultOption, tooltip, icon } = this.props;
     const { anchorEl } = this.state;
     const ITEM_HEIGHT = 48;
     return (
@@ -45,7 +45,7 @@ class MenuButton extends Component {
         <IconButtonWithTooltip
           disabled={false}
           onClick={this.handleClick}
-          className={" fa fa-ellipsis-v " + `${classes.button}`}
+          className={`${icon} ${classes.button}`}
           tooltip={tooltip}
         />
         <Menu

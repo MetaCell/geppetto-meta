@@ -10,10 +10,7 @@ import IconButtonWithTooltip from "./IconButtonWithTooltip";
 
 const styles = {
 
-  toolbarBox: {
-    border: "solid #303030",
-    borderRadius: "5px",
-  },
+  toolbarBox: { backgroundColor: "rgb(0,0,0,0.5);", },
   button: {
     padding: "8px",
     top: "0",
@@ -37,7 +34,7 @@ class ConnectivityToolbar extends AbstractComponent {
 
   render () {
     const {
-      id, classes, layout, toolbarVisibility, legendsVisibility, 
+      id, classes, layout, toolbarVisibility,
       deckHandler, legendHandler, sortOptionsHandler 
     } = this.props;
 
@@ -54,12 +51,12 @@ class ConnectivityToolbar extends AbstractComponent {
         handler = {sortOptionsHandler}
         defaultOption = "id"
         tooltip={"Order by"}
+        icon={"fa fa-sort"}
       />)
     }
 
-    let legendsButton = legendsVisibility ? "fa fa-chevron-down" : "fa fa-chevron-up";
-    let legendsTooltip = legendsVisibility ? "Collapse subtitles" : "Open subtitles";
-
+    let legendsButton = "fa fa-list" ;
+    let legendsTooltip = "Toggle legend";
     return (
       <Toolbar>
         <div className={classes.toolbarBox + " visibility: " + visibility }>
