@@ -26,8 +26,8 @@ define(function (require) {
         maxDst: 100,
         tileX: 1025,
         tileY: 1025,
-        imageX: 10240,
-        imageY: 10240,
+        imageX: 1024,
+        imageY: 1024,
         scl: Number(this.props.scl),
         voxelX: this.props.voxelX,
         voxelY: this.props.voxelY,
@@ -708,7 +708,7 @@ define(function (require) {
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y * this.state.scl)) + this.stack.position.y;
           YboundMin = -Ypos - (2 * this.state.tileY);
           YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + -Ypos + (2 * this.state.tileY);
-          if ((w * h == 1) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
+          if ((w * h < 2) || (this.state.imageX < 0) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
@@ -1445,7 +1445,7 @@ define(function (require) {
      *
      */
     onHome: function () {
-      var autoScale = Number(Math.min(this.props.data.height / ((this.state.imageY / 10.0 )), this.props.data.width / (this.state.imageX / 10.0 )).toFixed(1));
+      var autoScale = Number(Math.min((this.props.data.height / (this.state.imageY / 10.0 )), (this.props.data.width / (this.state.imageX / 10.0 ))).toFixed(1));
       var scale = Math.ceil(autoScale);
       this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
     },
