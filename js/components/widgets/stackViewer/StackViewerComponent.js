@@ -704,10 +704,10 @@ define(function (require) {
           // console.log('Tiling: ' + [t,offX,offY,x,y,w,h]);
           Xpos = (this.stack.parent.position.x / (this.disp.scale.x * this.state.scl)) + this.stack.position.x;
           XboundMin = -Xpos - (2 * this.state.tileX);
-          XboundMax = (this.renderer.view.width / (this.disp.scale.x * this.state.scl)) + Xpos + (2*this.state.tileX);
+          XboundMax = (this.renderer.view.width / (this.disp.scale.x * this.state.scl)) + Xpos + (2 * this.state.tileX);
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y * this.state.scl)) + this.stack.position.y;
           YboundMin = -Ypos - (2 * this.state.tileY);
-          YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + Ypos + (2*this.state.tileY);
+          YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + Ypos + (2 * this.state.tileY);
           if ((w * h == 1) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
