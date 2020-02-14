@@ -911,8 +911,8 @@ define(function (require) {
     },
     
     setHoverText: function (x,y,text) {
-      this.state.buffer[-1].x = -this.stage.position.x + this.disp.position.x + (this.stage.position.x * this.disp.scale.x) + (Number(x) * this.disp.scale.x) - 10;
-      this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stage.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
+      this.state.buffer[-1].x = -this.stage.position.x + this.disp.position.x + (this.stack.position.x * this.disp.scale.x) + (Number(x) * this.disp.scale.x) - 10;
+      this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stack.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
       this.state.buffer[-1].text = text;
       this.state.text = text;
       this.state.txtUpdated = Date.now();
