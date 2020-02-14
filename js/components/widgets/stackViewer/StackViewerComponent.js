@@ -702,7 +702,13 @@ define(function (require) {
           x += offX * this.state.tileX;
           y += offY * this.state.tileY;
           // console.log('Tiling: ' + [t,offX,offY,x,y,w,h]);
-          if ((w * h == 1) || (((x * this.disp.scale.x * this.stack.scl) + this.stack.position.x) > (-((this.renderer.view.width * 1) + (this.state.tileX * 2)) + this.stack.position.x) && ((x * this.disp.scale.x * this.stack.scl) + this.stack.position.x) < ((this.renderer.view.width * 1) + ((this.state.tileX * 1) + this.stack.position.x)) && ((y * this.disp.scale.y * this.stack.scl) + this.stack.position.y) > (-((this.renderer.view.height * 1) + (this.state.tileY * 2)) + this.stack.position.y) && ((y * this.disp.scale.y * this.stack.scl) + this.stack.position.y) < ((this.renderer.view.height * 1) + ((this.state.tileY * 1) + this.stack.position.y)))) {
+          Xpos = (this.stack.parent.position.x / (this.disp.scale.x * this.state.scl)) + this.stack.position.x;
+          XboundMin = -Xpos - (2 * this.state.tileX);
+          XboundMax = (this.renderer.view.width / (this.disp.scale.x * this.state.scl)) + Xpos + (2*this.state.tileX);
+          Ypos = (this.stack.parent.position.y / (this.disp.scale.y * this.state.scl)) + this.stack.position.y;
+          YboundMin = -Ypos - (2 * this.state.tileY);
+          YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + Ypos + (2*this.state.tileY);
+          if ((w * h == 1) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
@@ -857,13 +863,14 @@ define(function (require) {
      *
      */
     updateZoomLevel: function (props) {
-      this.disp.scale.x = props.zoomLevel / props.scl;
-      this.disp.scale.y = props.zoomLevel / props.scl;
+      var scale = props.zoomLevel / props.scl;
+      this.disp.scale.x = scale;
+      this.disp.scale.y = scale;
       // update slice view
       this.checkStack();
       // recenter display for new image size keeping any stack offset.
-      this.disp.position.x = ((props.width / 2) - (this.disp.width / 2));
-      this.disp.position.y = ((props.height / 2) - (this.disp.height / 2));
+      this.disp.position.x = Math.ceil((props.width / 2) - (((this.state.imageX / 10.0) * props.zoomLevel) / 2));
+      this.disp.position.y = Math.ceil((props.height / 2) - (((this.state.imageY / 10.0) * props.zoomLevel) / 2));
     },
 
     /**
