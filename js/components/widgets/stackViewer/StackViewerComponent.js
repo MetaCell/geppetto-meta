@@ -709,7 +709,7 @@ define(function (require) {
           YboundMin = -Ypos - (2 * this.state.tileY);
           YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + -Ypos + (2 * this.state.tileY);
           console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax]);
-          if ((w * h < 2) || (this.state.imageX < 0) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
+          if ((w * h < 2) || (this.state.imageX < 0) || (this.renderer.view.width < 100) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
