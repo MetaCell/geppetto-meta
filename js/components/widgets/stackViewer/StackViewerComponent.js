@@ -702,7 +702,7 @@ define(function (require) {
           x += offX * this.state.tileX;
           y += offY * this.state.tileY;
           // console.log('Tiling: ' + [t,offX,offY,x,y,w,h]);
-          Xpos = (this.stack.parent.position.x * (this.disp.scale.x * this.state.scl)) + this.stack.position.x;
+          Xpos = (this.stack.parent.position.x / (this.disp.scale.x * this.state.scl)) + this.stack.position.x;
           XboundMin = -Xpos - (2 * this.state.tileX);
           XboundMax = (this.renderer.view.width / (this.disp.scale.x * this.state.scl)) + -Xpos + (2 * this.state.tileX);
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y * this.state.scl)) + this.stack.position.y;
