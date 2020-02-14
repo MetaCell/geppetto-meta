@@ -254,14 +254,14 @@ define(function (require) {
           var x, y, z;
           // update widget window extents (X,Y):
           if (this.state.orth == 2) {
-            x = (this.stack.position.x) + (-this.disp.position.x / (this.disp.scale.x));
+            x = (this.stack.position.x) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           } else {
-            x = (-this.stack.position.x) + (-this.disp.position.x / (this.disp.scale.x));
+            x = (-this.stack.position.x) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           }
           if (this.state.orth == 1) {
-            y = (this.stack.position.y) + (-this.disp.position.y / (this.disp.scale.y));
+            y = (this.stack.position.y) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           } else {
-            y = (-this.stack.position.y) + (-this.disp.position.y / (this.disp.scale.y));
+            y = (-this.stack.position.y) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
