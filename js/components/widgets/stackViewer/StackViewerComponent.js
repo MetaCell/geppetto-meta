@@ -1142,19 +1142,19 @@ define(function (require) {
         // Max step of imposed
         if (step > 0) {
           if (this.state.orth == 0) {
-            step = this.state.voxelZ;
+            step = this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = this.state.voxelY;
+            step = this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = this.state.voxelX;
+            step = this.state.voxelX * this.state.scl;
           }
         } else if (step < 0) {
           if (this.state.orth == 0) {
-            step = -this.state.voxelZ;
+            step = -this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
-            step = -this.state.voxelY;
+            step = -this.state.voxelY * this.state.scl;
           } else if (this.state.orth == 2) {
-            step = -this.state.voxelX;
+            step = -this.state.voxelX * this.state.scl;
           }
         }
         if (e.shiftKey) {
@@ -1322,21 +1322,31 @@ define(function (require) {
     onZoomIn: function () {
       var zoomLevel = 1;
       var scale = 1.0;
+      var text = "";
+      var newDst = Number(this.state.dst);
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
       } else {
         zoomLevel = Number((this.state.zoomLevel += 0.1).toFixed(1));
       }
       if (zoomLevel < 10.0) {
-        scale = Math.ceil(zoomLevel).toFixed(1);
-        this.setState({
-          zoomLevel: zoomLevel,
-          scl: scale,
-          text: 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'
-        });
+        scale = Number(Math.ceil(zoomLevel).toFixed(1));
+        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'; 
       } else {
-        this.setState({ zoomLevel: 10.0, scl: 10.0, text: 'Max zoom! (X10)' });
+        zoomLevel = 10;
+        scale = 10;
+        text = 'Max zoom! (X10)';
       }
+      if (Number(this.state.scl) < scale) {
+        var baseDst = this.state.dst/this.state.scl;
+        newDst = baseDst * scale;
+      }
+      this.setState({
+        zoomLevel: zoomLevel,
+        scl: scale,
+        text: text,
+        dst: newDst
+      });
     },
 
     toggleOrth: function () {
@@ -1377,21 +1387,31 @@ define(function (require) {
     onZoomOut: function () {
       var zoomLevel = 1;
       var scale = 1.0;
+      var text = "";
+      var newDst = Number(this.state.dst);
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
       } else {
-        zoomLevel = Number((this.state.zoomLevel -= .1).toFixed(1));
+        zoomLevel = Number((this.state.zoomLevel -= 0.1).toFixed(1));
       }
       if (zoomLevel > 0.1) {
-        scale = Math.ceil(zoomLevel).toFixed(1);
-        this.setState({
-          zoomLevel: zoomLevel,
-          scl: scale,
-          text: 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'
-        });
+        scale = Number(Math.ceil(zoomLevel).toFixed(1));
+        text = 'Zooming out to (X' + Number(zoomLevel).toFixed(1) + ')'; 
       } else {
-        this.setState({ zoomLevel: 0.1, scl: 1.0, text: 'Min zoom! (X0.1)' });
+        zoomLevel = 0.1;
+        scale = 1.0;
+        text = 'Min zoom! (X0.1)';
       }
+      if (Number(this.state.scl) > scale) {
+        var baseDst = this.state.dst/this.state.scl;
+        newDst = baseDst * scale;
+      }
+      this.setState({
+        zoomLevel: zoomLevel,
+        scl: scale,
+        text: text,
+        dst: newDst
+      });
     },
 
     /**
@@ -1402,9 +1422,9 @@ define(function (require) {
       var shift = GEPPETTO.isKeyPressed("shift");
       var newdst = this.state.dst
       if (shift) {
-        newdst += this.state.voxelZ * 10;
+        newdst += (this.state.voxelZ * this.state.scl) * 10;
       } else {
-        newdst += this.state.voxelZ;
+        newdst += (this.state.voxelZ * this.state.scl);
       }
       if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
         this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
@@ -1424,9 +1444,9 @@ define(function (require) {
       var shift = GEPPETTO.isKeyPressed("shift");
       var newdst = this.state.dst
       if (shift) {
-        newdst -= this.state.voxelZ * 10;
+        newdst -= (this.state.voxelZ * this.state.scl) * 10;
       } else {
-        newdst -= this.state.voxelZ;
+        newdst -= (this.state.voxelZ * this.state.scl);
       }
       if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
         this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
