@@ -680,7 +680,7 @@ define(function (require) {
 
     createImages: function () {
       if (this.state.stack.length > 0) {
-        var i, x, y, w, h, d, offX, offY, t, image;
+        var i, x, y, w, h, d, offX, offY, t, image, Xpos, Ypos, XboundMax, YboundMax, XboundMin, YboundMin;
         /*
          * move through tiles
          * console.log('Creating slice view...');
