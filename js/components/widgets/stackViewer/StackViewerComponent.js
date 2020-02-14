@@ -256,12 +256,12 @@ define(function (require) {
           if (this.state.orth == 2) {
             x = (this.stack.position.x / this.state.scl) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           } else {
-            x = (-this.stack.position.x / this.state.scl) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
+            x = -(this.stack.position.x / this.state.scl) - (this.disp.position.x / (this.disp.scale.x * this.state.scl));
           }
           if (this.state.orth == 1) {
             y = (this.stack.position.y / this.state.scl) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           } else {
-            y = (-this.stack.position.y / this.state.scl) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
+            y = -(this.stack.position.y / this.state.scl) - (this.disp.position.y / (this.disp.scale.y * this.state.scl));
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
