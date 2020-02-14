@@ -702,13 +702,12 @@ define(function (require) {
           x += offX * this.state.tileX;
           y += offY * this.state.tileY;
           // console.log('Tiling: ' + [t,offX,offY,x,y,w,h]);
-          Xpos = (this.stack.parent.position.x / (this.disp.scale.x * this.state.scl)) + this.stack.position.x;
-          XboundMin = -Xpos - (2 * this.state.tileX);
-          XboundMax = (this.renderer.view.width / (this.disp.scale.x * this.state.scl)) + -Xpos + (2 * this.state.tileX);
-          Ypos = (this.stack.parent.position.y / (this.disp.scale.y * this.state.scl)) + this.stack.position.y;
-          YboundMin = -Ypos - (2 * this.state.tileY);
-          YboundMax = (this.renderer.view.height / (this.disp.scale.y * this.state.scl)) + -Ypos + (2 * this.state.tileY);
-          //console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax]);
+          Xpos = (this.stack.parent.position.x / (this.disp.scale.x)) + this.stack.position.x;
+          XboundMin = Xpos - (2 * (this.state.tileX * this.state.scl));
+          XboundMax = (this.props.width / (this.disp.scale.x)) + Xpos + (2 * (this.state.tileX * this.state.scl));
+          Ypos = (this.stack.parent.position.y / (this.disp.scale.y)) + this.stack.position.y;
+          YboundMin = Ypos - (2 * (this.state.tileY * this.state.scl));
+          YboundMax = (this.renderer.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
           if ((w * h < 2) || (this.props.stackX < 0) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
@@ -756,6 +755,7 @@ define(function (require) {
               if (this.state.images[d] && this.state.images[d].visible) {
                 this.state.images[d].visible = false;
                 console.log('Hiding tile ' + d);
+                console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
               }
             }
             // console.log('Tile ' + [offX,offY] + ' off screen.');
