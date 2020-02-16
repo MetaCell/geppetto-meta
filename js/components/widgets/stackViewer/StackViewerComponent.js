@@ -1338,7 +1338,7 @@ define(function (require) {
         text = 'Max zoom! (X10)';
       }
       if (Number(this.state.scl) < scale) {
-        var baseDst = this.state.dst/this.state.scl;
+        var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
       }
       this.setState({
@@ -1403,7 +1403,7 @@ define(function (require) {
         text = 'Min zoom! (X0.1)';
       }
       if (Number(this.state.scl) > scale) {
-        var baseDst = this.state.dst/this.state.scl;
+        var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
       }
       this.setState({
