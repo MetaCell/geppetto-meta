@@ -810,6 +810,10 @@ define(function (require) {
         this.checkStack();
       }
       if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height){
+        if (nextProps.scl !== this.state.scl) {
+          this.stack.position.x += this.state.imageX * ((Number(this.state.scl) - Number(nextProps.scl)) / 20.0);
+          this.stack.position.y += this.state.imageY * ((Number(this.state.scl) - Number(nextProps.scl)) / 20.0);
+        }
         this.setState({ scl: nextProps.scl });
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
