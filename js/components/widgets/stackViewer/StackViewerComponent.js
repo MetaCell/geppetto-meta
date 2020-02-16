@@ -299,7 +299,7 @@ define(function (require) {
           }
         }
         // Pass Z coordinates
-        z = ((this.props.dst / 10.0) * this.state.scl) - (this.state.minDst / 10.0);
+        z = ((this.props.dst / 10.0) * this.state.scl) - ((this.state.minDst / 10.0) * this.state.scl);
         if (this.state.orth == 0) { // frontal
           this.state.plane[2] = z;
           this.state.plane[5] = z;
