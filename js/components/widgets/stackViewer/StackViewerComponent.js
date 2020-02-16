@@ -902,6 +902,8 @@ define(function (require) {
         console.log('Orth:' + orth);
         this.setStatusText('...');
       }
+      this.callDstRange();
+      this.callImageSize();
     },
 
     setStatusText: function (text) {
