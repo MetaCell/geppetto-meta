@@ -837,22 +837,19 @@ define(function (require) {
       if (nextProps.orth !== this.state.orth) {
         this.changeOrth(nextProps.orth);
         this.state.recenter = true;
-        this.callDstRange();
+      }
+      if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
+        this.setState({
+          pit: nextProps.pit,
+          yaw: nextProps.yaw,
+          rol: nextProps.rol
+        }); 
+        this.changeOrth(nextProps.orth);
+        updDst = true;
       }
       if (nextProps.dst !== this.state.dst) {
         this.state.dst = nextProps.dst;
-        updDst = true;
-      }
-      if (nextProps.pit !== this.state.pit) {
-        this.state.pit = nextProps.pit;
-        updDst = true;
-      }
-      if (nextProps.yaw !== this.state.yaw) {
-        this.state.yaw = nextProps.yaw;
-        updDst = true;
-      }
-      if (nextProps.rol !== this.state.rol) {
-        this.state.rol = nextProps.rol;
+        this.changeOrth(nextProps.orth);
         updDst = true;
       }
       if (updDst) {
