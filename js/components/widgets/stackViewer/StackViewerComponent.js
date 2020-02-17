@@ -65,7 +65,8 @@ define(function (require) {
       // signal component mounted (used to avoid calling isMounted() deprecated method)
       this._isMounted = true;
 
-      console.log('Loading....');
+      // console.log('Loading....');
+      
       // Setup PIXI Canvas in componentDidMount
       this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
       // maintain full window size
@@ -182,7 +183,7 @@ define(function (require) {
             this.setState({ minDst: min, maxDst: max });
             var extent = { minDst: min, maxDst: max };
             this.props.setExtent(extent);
-            console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
+            // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.bufferStack();
             if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
               this.state.buffer[-1].text = '';
@@ -208,9 +209,9 @@ define(function (require) {
             var tileX = Number(result[0]);
             var tileY = Number(result[1]);
             this.setState({ tileX: tileX, tileY: tileY });
-            console.log('Tile Size: ' + tileX + ', ' + tileY);
-            // update slice view
+            // console.log('Tile Size: ' + tileX + ', ' + tileY);
             this.state.lastUpdate = 0;
+            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
@@ -235,9 +236,9 @@ define(function (require) {
             var extent = { imageX: imageX, imageY: imageY };
             this.setState(extent);
             this.props.setExtent(extent);
-            console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
-            // update slice view
+            // console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
             this.state.lastUpdate = 0;
+            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
