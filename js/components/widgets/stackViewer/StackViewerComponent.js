@@ -816,6 +816,7 @@ define(function (require) {
         if (nextProps.scl !== this.state.scl) {
           this.stack.position.x = (this.stack.position.x / (this.state.imageX / 10.0 * this.state.scl)) * (nextProps.imageX / 10.0 * nextProps.scl);
           this.stack.position.y = (this.stack.position.y / (this.state.imageY / 10.0 * this.state.scl)) * (nextProps.imageY / 10.0 * nextProps.scl);
+          this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
         }
         this.state.scl = nextProps.scl;
         this.setState({ scl: nextProps.scl });
