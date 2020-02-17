@@ -754,9 +754,9 @@ define(function (require) {
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
               if (this.state.images[d] && this.state.images[d].visible) {
+                // console.log('Hiding tile ' + d);
                 this.state.images[d].visible = false;
-                //console.log('Hiding tile ' + d);
-                //console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
+                // console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
               }
             }
             // console.log('Tile ' + [offX,offY] + ' off screen.');
