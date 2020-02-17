@@ -814,8 +814,8 @@ define(function (require) {
       }
       if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height){
         if (nextProps.scl !== this.state.scl) {
-          this.stack.position.x = (this.stack.position.x / Number(this.state.scl)) * Number(nextProps.scl);
-          this.stack.position.y = (this.stack.position.y / Number(this.state.scl)) * Number(nextProps.scl);
+          this.stack.position.x = (this.stack.position.x / Number(nextProps.scl)) * Number(this.state.scl);
+          this.stack.position.y = (this.stack.position.y / Number(nextProps.scl)) * Number(this.state.scl);
         }
         this.state.scl = nextProps.scl;
         this.setState({ scl: nextProps.scl });
