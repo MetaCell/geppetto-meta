@@ -824,7 +824,7 @@ define(function (require) {
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
-        this.setState({dst: nextProps.dst});
+        this.setState({ dst: nextProps.dst });
         updDst = true;
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
@@ -886,24 +886,24 @@ define(function (require) {
       this.state.rol = props.rol;
       // forcing the state change before size calls as setstate take time. 
       this.setState({
-        pit: nextProps.pit,
-        yaw: nextProps.yaw,
-        rol: nextProps.rol,
-        orth: nextProps.orth
+        pit: props.pit,
+        yaw: props.yaw,
+        rol: props.rol,
+        orth: props.orth
       }); 
       this.state.images = [];
       this.stack.removeChildren();
-      if (orth == 0) {
+      if (props.orth == 0) {
         console.log('Frontal');
         this.setStatusText('Frontal');
-      } else if (orth == 1) {
+      } else if (props.orth == 1) {
         console.log('Transverse');
         this.setStatusText('Transverse');
-      } else if (orth == 2) {
+      } else if (props.orth == 2) {
         console.log('Sagittal');
         this.setStatusText('Sagittal');
       } else {
-        console.log('Orth:' + orth);
+        console.log('Orth:' + props.orth);
         this.setStatusText('...');
       }
       this.callDstRange();
