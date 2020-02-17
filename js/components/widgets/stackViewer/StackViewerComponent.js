@@ -816,6 +816,7 @@ define(function (require) {
           this.stack.position.x = (this.stack.position.x / Number(this.state.scl)) * Number(nextProps.scl);
           this.stack.position.y = (this.stack.position.y / Number(this.state.scl)) * Number(nextProps.scl);
         }
+        this.state.scl = nextProps.scl;
         this.setState({ scl: nextProps.scl });
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
@@ -823,6 +824,7 @@ define(function (require) {
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
+        this.setState({dst: nextProps.dst});
         updDst = true;
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
@@ -837,21 +839,16 @@ define(function (require) {
         }
       }
       if (nextProps.orth !== this.state.orth) {
-        this.changeOrth(nextProps.orth);
+        this.changeOrth(nextProps);
         this.state.recenter = true;
       }
       if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
-        this.setState({
-          pit: nextProps.pit,
-          yaw: nextProps.yaw,
-          rol: nextProps.rol
-        }); 
-        this.changeOrth(nextProps.orth);
+        this.changeOrth(nextProps);
         updDst = true;
       }
       if (nextProps.dst !== this.state.dst) {
         this.state.dst = nextProps.dst;
-        this.changeOrth(nextProps.orth);
+        this.changeOrth(nextProps);
         updDst = true;
       }
       if (updDst) {
@@ -881,9 +878,19 @@ define(function (require) {
       this.setStatusText(props.statusText);
     },
 
-    changeOrth: function (orth) {
+    changeOrth: function (props) {
       // console.log('Orth: ' + orth);
-      this.state.orth = orth;
+      this.state.orth = props.orth;
+      this.state.pit = props.pit;
+      this.state.yaw = props.yaw;
+      this.state.rol = props.rol;
+      // forcing the state change before size calls as setstate take time. 
+      this.setState({
+        pit: nextProps.pit,
+        yaw: nextProps.yaw,
+        rol: nextProps.rol,
+        orth: nextProps.orth
+      }); 
       this.state.images = [];
       this.stack.removeChildren();
       if (orth == 0) {
