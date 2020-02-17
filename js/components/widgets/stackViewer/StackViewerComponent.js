@@ -753,8 +753,8 @@ define(function (require) {
               d = i.toString() + ',' + t.toString();
               if (this.state.images[d] && this.state.images[d].visible) {
                 this.state.images[d].visible = false;
-                console.log('Hiding tile ' + d);
-                console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
+                //console.log('Hiding tile ' + d);
+                //console.log([x,y,w,h,XboundMin,XboundMax,YboundMin,YboundMax,Xpos,Ypos]);
               }
             }
             // console.log('Tile ' + [offX,offY] + ' off screen.');
@@ -818,8 +818,6 @@ define(function (require) {
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
         this.createImages();
-        
-        
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
