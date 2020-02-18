@@ -816,9 +816,7 @@ define(function (require) {
         this.stack.position.x = nextProps.stackX;
         this.stack.position.y = nextProps.stackY;
         this.state.scl = nextProps.scl;
-        this.setState({
-          scl: nextProps.scl
-        });
+        this.setState({ scl: nextProps.scl });
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
         this.createImages();
