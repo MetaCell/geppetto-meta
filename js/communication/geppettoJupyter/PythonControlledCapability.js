@@ -13,7 +13,7 @@ define(function (require) {
 
   module.exports = {
     createPythonControlledComponent (WrappedComponent) {
-      class PythonControlledComponent extends WrappedComponent {
+      class PythonControlledComponent extends React.Component {
         constructor (props) {
           super(props);
           if (this.state == undefined) {
@@ -62,6 +62,10 @@ define(function (require) {
           if (this.props.value != undefined) {
             this.setState({ value: this.props.value });
           }
+        }
+
+        render () {
+          return <WrappedComponent {...this.props} />;
         }
       }
 
