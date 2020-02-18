@@ -703,7 +703,7 @@ define(function (require) {
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y)) + this.stack.position.y;
           YboundMin = Ypos - (2 * (this.state.tileY * this.state.scl));
           YboundMax = (this.renderer.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
-          if ((w * h < 2) || (this.props.stackX < 0) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
+          if ((w * h < 3) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
