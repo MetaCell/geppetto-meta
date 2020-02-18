@@ -1331,8 +1331,8 @@ define(function (require) {
       var scale = this.state.scl;
       var text = "";
       var newDst = Number(this.state.dst);
-      var stateX = this.state.stackX;
-      var stateY = this.state.stateY;
+      var stackX = this.state.stackX;
+      var stackY = this.state.stackY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
       } else {
@@ -1349,7 +1349,7 @@ define(function (require) {
       if (Number(this.state.scl) < scale) {
         var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
-        stateX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.imageY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
       this.setState({
@@ -1402,8 +1402,8 @@ define(function (require) {
       var scale = this.state.scl;
       var text = "";
       var newDst = Number(this.state.dst);
-      var stateX = this.state.stackX;
-      var stateY = this.state.stateY;
+      var stackX = this.state.stackX;
+      var stackY = this.state.stackY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
       } else {
@@ -1420,7 +1420,7 @@ define(function (require) {
       if (Number(this.state.scl) > scale) {
         var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
-        stateX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.imageY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
       this.setState({
