@@ -1408,8 +1408,8 @@ define(function (require) {
       if (Number(this.state.scl) > scale) {
         var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
-        stackX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
-        stackY = Math.ceil((this.state.imageY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
+        stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
       this.setState({
         zoomLevel: zoomLevel,
