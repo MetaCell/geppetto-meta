@@ -88,8 +88,8 @@ define(function (require) {
       this.stack = new PIXI.Container();
       this.stack.pivot.x = 0;
       this.stack.pivot.y = 0;
-      this.stack.position.x = -10000;
-      this.stack.position.y = -10000;
+      this.stack.position.x = 0;
+      this.stack.position.y = 0;
       this.state.recenter = true;
 
       this.createStatusText();
@@ -623,13 +623,6 @@ define(function (require) {
       if (this.disp.width > 1) {
         this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
         this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
-        if (this.state.recenter) {
-          // console.log('centering image ' + this.disp.width + ' inside window ' + this.props.width + ' wide');  
-          this.stack.position.x = 0;
-          this.stack.position.y = 0;
-          this.state.recenter = false;
-          this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
-        }
       }
 
       if (this.state.stack.length < 1) {
@@ -820,10 +813,7 @@ define(function (require) {
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
         this.createImages();
-        if (nextProps.stackX == -10000 && nextProps.stackY == -10000) {
-          this.state.recenter = true;
-          this.checkStack();
-        }
+        this.checkStack();
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
@@ -1105,8 +1095,8 @@ define(function (require) {
         zoomLevel: 1.0,
         dst: 0,
         text: '',
-        stackX: -10000,
-        stackY: -10000,
+        stackX: 0,
+        stackY: 0,
         imageX: 10240,
         imageY: 10240,
         fxp: [511, 255, 108],
@@ -1380,7 +1370,7 @@ define(function (require) {
         yaw = 0;
         rol = 0;
       }
-      this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: -10000, stackY: -10000 });
+      this.setState({ orth: orth, pit: pit, yaw: yaw, rol: rol, dst: 0, stackX: 0, stackY: 0 });
     },
 
     toggleSlice: function () {
@@ -1483,7 +1473,7 @@ define(function (require) {
     onHome: function () {
       var autoScale = Number(Math.min((this.props.data.height / (this.state.imageY / 10.0 )), (this.props.data.width / (this.state.imageX / 10.0 ))).toFixed(1));
       var scale = Math.ceil(autoScale);
-      this.setState({ dst: 0, stackX: -10000, stackY: -10000, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
+      this.setState({ dst: 0, stackX: 0, stackY: 0, text: 'Stack Centred', zoomLevel: autoScale, scl: scale });
     },
 
     onExtentChange: function (data) {
