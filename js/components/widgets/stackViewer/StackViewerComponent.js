@@ -812,17 +812,20 @@ define(function (require) {
         this.updateImages(nextProps);
         this.checkStack();
       }
-      if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height){
-        if (nextProps.scl !== this.state.scl) {
-          this.stack.position.x = (this.stack.position.x / (this.state.imageX / 10.0 * this.state.scl)) * (nextProps.imageX / 10.0 * nextProps.scl);
-          this.stack.position.y = (this.stack.position.y / (this.state.imageY / 10.0 * this.state.scl)) * (nextProps.imageY / 10.0 * nextProps.scl);
-          this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
-        }
+      if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
+        this.stack.position.x = nextProps.stackX;
+        this.stack.position.y = nextProps.stackY;
         this.state.scl = nextProps.scl;
-        this.setState({ scl: nextProps.scl });
+        this.setState({
+          scl: nextProps.scl
+        });
         this.updateZoomLevel(nextProps);
         this.updateImages(nextProps);
         this.createImages();
+        if (nextProps.stackX == -10000 && nextProps.stackY == -10000) {
+          this.state.recenter = true;
+          this.checkStack();
+        }
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
@@ -831,14 +834,6 @@ define(function (require) {
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
         this.updateStatusText(nextProps);
-      }
-      if (nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y) {
-        this.stack.position.x = nextProps.stackX;
-        this.stack.position.y = nextProps.stackY;
-        if (nextProps.stackX == -10000 && nextProps.stackY == -10000) {
-          this.state.recenter = true;
-          this.checkStack();
-        }
       }
       if (nextProps.orth !== this.state.orth) {
         this.changeOrth(nextProps);
@@ -1332,10 +1327,12 @@ define(function (require) {
      *
      */
     onZoomIn: function () {
-      var zoomLevel = 1;
-      var scale = 1.0;
+      var zoomLevel = this.state.zoomLevel;
+      var scale = this.state.scl;
       var text = "";
       var newDst = Number(this.state.dst);
+      var stateX = this.state.stackX;
+      var stateY = this.state.stateY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel += 1).toFixed(1));
       } else {
@@ -1352,12 +1349,16 @@ define(function (require) {
       if (Number(this.state.scl) < scale) {
         var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
+        stateX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackY = Math.ceil((this.state.imageY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
       this.setState({
         zoomLevel: zoomLevel,
         scl: scale,
         text: text,
-        dst: newDst
+        dst: newDst,
+        stackX: stackX, 
+        stackY: stackY 
       });
     },
 
@@ -1397,10 +1398,12 @@ define(function (require) {
      *
      */
     onZoomOut: function () {
-      var zoomLevel = 1;
-      var scale = 1.0;
+      var zoomLevel = this.state.zoomLevel;
+      var scale = this.state.scl;
       var text = "";
       var newDst = Number(this.state.dst);
+      var stateX = this.state.stackX;
+      var stateY = this.state.stateY;
       if (GEPPETTO.isKeyPressed("shift")) {
         zoomLevel = Number((this.state.zoomLevel -= 1).toFixed(1));
       } else {
@@ -1417,12 +1420,16 @@ define(function (require) {
       if (Number(this.state.scl) > scale) {
         var baseDst = this.state.dst / this.state.scl;
         newDst = baseDst * scale;
+        stateX = Math.ceil((this.state.imageX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
+        stackY = Math.ceil((this.state.imageY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
       this.setState({
         zoomLevel: zoomLevel,
         scl: scale,
         text: text,
-        dst: newDst
+        dst: newDst,
+        stackX: stackX, 
+        stackY: stackY
       });
     },
 
