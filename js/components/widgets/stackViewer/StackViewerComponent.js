@@ -184,11 +184,12 @@ define(function (require) {
             var extent = { minDst: min, maxDst: max };
             this.props.setExtent(extent);
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
+            this.checkStack();
+            this.callPlaneEdges();
             this.bufferStack();
             if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
               this.state.buffer[-1].text = '';
             }
-            this.callPlaneEdges();
           }
         }.bind(this),
         error: function (xhr, status, err) {
