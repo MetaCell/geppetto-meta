@@ -807,6 +807,11 @@ define(function (require) {
         this.checkStack();
       }
       if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
+        if (nextProps.scl < this.state.scl) {
+          // wipe the stack if image is getting smaller
+          this.state.images = [];
+          this.stack.removeChildren();
+        }
         this.stack.position.x = nextProps.stackX;
         this.stack.position.y = nextProps.stackY;
         this.state.scl = nextProps.scl;
