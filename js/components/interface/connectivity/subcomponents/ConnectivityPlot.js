@@ -6,6 +6,7 @@ const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
 import IconText from "./IconText";
 import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
 
 
 const styles = {
@@ -17,10 +18,6 @@ const styles = {
   legendTitle: {
     fontSize: "14px",
     color: "white",
-  },
-  gridWrapper:{
-    display: "grid",
-    gridTemplateColumns: "auto minmax(500px, auto)",
   },
 
 };
@@ -50,7 +47,6 @@ class ConnectivityPlot extends AbstractComponent {
     this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
-    this.plotRef = React.createRef();
 
 
   }
@@ -64,7 +60,6 @@ class ConnectivityPlot extends AbstractComponent {
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
     this.draw();
-    this.forceUpdate();
   }
   componentDidUpdate (prevProps, prevState, snapshot) {
     if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout || this.options === null){
@@ -287,7 +282,10 @@ class ConnectivityPlot extends AbstractComponent {
     if (this.isDirty()){
       this.setDirty(false)
     } else {
-      this.width = this.props.size.width - this.subRef.current.clientWidth;
+      this.width = this.props.size.width;
+      if (this.subRef.current !== null){
+        this.width -= this.subRef.current.clientWidth;
+      }
       this.height = this.props.size.height;
     }
       
@@ -336,17 +334,33 @@ class ConnectivityPlot extends AbstractComponent {
       }
     }
     const margin = this.props.layout.getMargin(this);
-
-    return (
-      <div className={classes.gridWrapper}>
-        <div ref = {this.subRef} style={ { margin: margin }}>
-          {legendsVisibility ? (legends.map(entry => (
-            entry
-          ))) : ""}
-        </div>
-        <div ref = {this.plotRef} id={id}/>
-      </div>
-    )
+  
+    let show;
+    if (legends.length === 0 || !legendsVisibility){
+      show = (
+        <Grid container>
+          <Grid item sm={9} xs={12}>
+            <div id={id}/>
+          </Grid>
+        </Grid>
+      )
+    } else {
+      show = (
+        <Grid container>
+          <Grid item sm={3} xs>
+            <div ref = {this.subRef} style={{ margin:margin }}>
+              {legendsVisibility ? (legends.map(entry => (
+                entry
+              ))) : ""}
+            </div>
+          </Grid>
+          <Grid item sm={9} xs={12}>
+            <div id={id}/>
+          </Grid>
+        </Grid>
+      )
+    }
+    return show
   }
 }
 export default withStyles(styles)(ConnectivityPlot);

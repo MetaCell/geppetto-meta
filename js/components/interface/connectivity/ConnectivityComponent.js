@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from "./subcomponents/ConnectivityToolbar";
 import ConnectivityPlot from "./subcomponents/ConnectivityPlot";
 import { Matrix } from "./layouts/Matrix";
+import Grid from '@material-ui/core/Grid';
 
 
 const styles = {
@@ -11,11 +12,7 @@ const styles = {
     height: '100%',
     minHeight: '100%',
   },
-  connectivityContainer: {
-    background: '#424242',
-    display: "grid",
-    gridTemplateRows: "auto auto",
-  },
+  connectivityContainer: { background: '#424242', },
 };
 
 class ConnectivityComponent extends AbstractComponent {
@@ -83,31 +80,35 @@ class ConnectivityComponent extends AbstractComponent {
     const { layout, toolbarVisibility, legendsVisibility } = this.state;
 
     return (
-      <div className={classes.container} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
-        <div className={classes.connectivityContainer}>
-          <ConnectivityToolbar
-            id={id}
-            layout={layout}
-            toolbarVisibility={toolbarVisibility}
-            legendsVisibility={legendsVisibility}
-            legendHandler={this.legendHandler}
-            deckHandler={this.deckHandler}
-            sortOptionsHandler={this.sortOptionsHandler}
-          />
-          <ConnectivityPlot
-            ref = {this.plotRef}
-            id={id}
-            size={size}
-            data={data}
-            options={options}
-            colorMap={colorMap}
-            colors={colors}
-            names={names}
-            layout={layout}
-            legendsVisibility={legendsVisibility}
-            toolbarVisibility={toolbarVisibility}
-          />
-        </div>
+      <div style={{ height:size.height, width:size.width }} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
+        <Grid className={classes.connectivityContainer} container spacing={2}>
+          <Grid item sm={12} xs={12} >
+            <ConnectivityToolbar
+              id={id}
+              layout={layout}
+              toolbarVisibility={toolbarVisibility}
+              legendsVisibility={legendsVisibility}
+              legendHandler={this.legendHandler}
+              deckHandler={this.deckHandler}
+              sortOptionsHandler={this.sortOptionsHandler}
+            />
+          </Grid>
+          <Grid item sm={12} xs>
+            <ConnectivityPlot
+              ref = {this.plotRef}
+              id={id}
+              size={size}
+              data={data}
+              options={options}
+              colorMap={colorMap}
+              colors={colors}
+              names={names}
+              layout={layout}
+              legendsVisibility={legendsVisibility}
+              toolbarVisibility={toolbarVisibility}
+            />
+          </Grid>
+        </Grid>
       </div>
 
     )

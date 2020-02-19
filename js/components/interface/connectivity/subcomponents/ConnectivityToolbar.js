@@ -11,9 +11,7 @@ import IconButtonWithTooltip from "./IconButtonWithTooltip";
 const styles = {
 
   toolbar: {
-    display:"grid",
     padding: "0",
-    justifyItems: "start",
     marginLeft:"5px"
 
   },
@@ -79,7 +77,6 @@ class ConnectivityToolbar extends AbstractComponent {
           />
         </div>
       </Toolbar>
-        
     )
   }
 }
