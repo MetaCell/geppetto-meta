@@ -812,9 +812,7 @@ define(function (require) {
         this.state.scl = nextProps.scl;
         this.setState({ scl: nextProps.scl });
         this.updateZoomLevel(nextProps);
-        this.updateImages(nextProps);
-        this.createImages();
-        this.checkStack();
+        updDst = true;
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
