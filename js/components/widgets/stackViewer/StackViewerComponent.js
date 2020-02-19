@@ -823,17 +823,17 @@ define(function (require) {
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
         this.updateStatusText(nextProps);
       }
-      if (nextProps.orth !== this.state.orth) {
-        this.changeOrth(nextProps);
-        this.state.recenter = true;
-      }
+      
       if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
+        if (nextProps.orth !== this.state.orth) {
+          this.state.recenter = true;
+        }
         this.changeOrth(nextProps);
         updDst = true;
       }
       if (nextProps.dst !== this.state.dst) {
         this.state.dst = nextProps.dst;
-        this.changeOrth(nextProps);
+        this.setState({ dst: nextProps.dst });
         updDst = true;
       }
       if (updDst) {
