@@ -838,6 +838,7 @@ define(function (require) {
       }
       if (updDst) {
         this.updateImages(nextProps);
+        this.checkStack();
       }
     },
     /**
