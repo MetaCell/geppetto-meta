@@ -54,19 +54,14 @@ class ConnectivityPlot extends AbstractComponent {
     this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
-    this.layoutTooltipChanged = false;
+    this.blockDraw = false;
 
 
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    if (this.props.toolbarVisibility !== nextProps.toolbarVisibility) {
-      return false
-    }
-    if (this.props.layoutTooltip !== nextProps.layoutTooltip){
-      return false
-    }
-    return true
+    return this.props.toolbarVisibility === nextProps.toolbarVisibility;
+
   }
 
   componentDidMount () {
@@ -82,10 +77,7 @@ class ConnectivityPlot extends AbstractComponent {
     }
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
-    if (!this.layoutTooltipChanged){
-      this.draw();
-      this.layoutTooltipChanged = false;
-    }
+    this.draw();
   }
 
   /**
@@ -306,13 +298,15 @@ class ConnectivityPlot extends AbstractComponent {
       }
       this.height = this.props.size.height;
     }
-    
-    this.cleanCanvas();
-    this.svg = d3.select("#" + this.props.id)
-      .append("svg")
-      .attr("width", this.width)
-      .attr("height", this.height);
-    this.props.layout.draw(this)
+    if (!this.blockDraw){
+      this.cleanCanvas();
+      this.svg = d3.select("#" + this.props.id)
+        .append("svg")
+        .attr("width", this.width)
+        .attr("height", this.height);
+      this.props.layout.draw(this);
+    }
+    this.blockDraw = false;
   }
 
   /**
@@ -354,14 +348,22 @@ class ConnectivityPlot extends AbstractComponent {
         }
       }
     }
+    let plot = (
+      <Grid item sm={9} xs={12}>
+        <div>
+          <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
+            {hasTooltip ? layoutTooltip : ""}
+          </Typography>
+        </div>
+        <div id={id}/>
+      </Grid>
+    );
     
     let show;
     if (legends.length === 0 || !legendsVisibility){
       show = (
         <Grid container>
-          <Grid item>
-            <div id={id}/>
-          </Grid>
+          {plot}
         </Grid>
       )
     } else {
@@ -374,14 +376,7 @@ class ConnectivityPlot extends AbstractComponent {
               ))) : ""}
             </div>
           </Grid>
-          <Grid item sm={9} xs={12}>
-            <div>
-              <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
-                {hasTooltip ? layoutTooltip : ""}
-              </Typography>
-            </div>
-            <div id={id}/>
-          </Grid>
+          {plot}
         </Grid>
       )
     }

@@ -39,6 +39,7 @@ class ConnectivityComponent extends AbstractComponent {
    */
   legendHandler () {
     this.setState(() => ({ legendsVisibility: !this.state.legendsVisibility }));
+    this.plotRef.current.blockDraw = false
   }
 
   /**
@@ -61,7 +62,9 @@ class ConnectivityComponent extends AbstractComponent {
    * @param layout
    */
   deckHandler (layout) {
-    this.setState(() => ({ layout: layout }))
+    this.setState(() => ({ layout: layout }));
+    this.plotRef.current.blockDraw = false
+
   }
 
   /**
