@@ -110,13 +110,15 @@ export class Matrix {
     const mouseoverCell = function (msg) {
       d3.select(this.parentNode.appendChild(this)).transition().duration(100).style('stroke-opacity', 1).style('stroke', 'white').style('stroke-width', 2);
       d3.select("body").style('cursor', 'pointer');
-      context.setState(() => ({ tooltip: msg }));
+      context.setState(() => ({ layoutTooltip: msg }), () => context.layoutTooltipChanged = true);
+      return true;
     };
 
     const mouseoutCell = function () {
       d3.select(this).transition().duration(100).style('stroke-opacity', 0).style('stroke', 'white');
       d3.select("body").style('cursor', 'default');
-      context.setState(() => ({ tooltip: defaultTooltipText }));
+      context.setState(() => ({ layoutTooltip: defaultTooltipText }), () => context.layoutTooltipChanged = true);
+      return true;
     };
 
     const popIndicator = function (pos, colormap, w, h) {

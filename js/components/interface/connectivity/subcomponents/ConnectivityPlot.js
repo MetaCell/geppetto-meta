@@ -5,12 +5,11 @@ import Instance from '../../../../geppettoModel/model/Instance';
 const d3 = require("d3");
 import { withStyles } from '@material-ui/core';
 import IconText from "./IconText";
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 
 const styles = {
-
   legends: {
     marginTop: "35px",
     marginLeft: "5px",
@@ -27,12 +26,12 @@ const styles = {
     stroke: "none",
     textRendering: "optimizeLegibility",
   },
-
 };
 
 class ConnectivityPlot extends AbstractComponent {
   constructor (props) {
     super(props);
+    this.state = { layoutTooltip: "Hover the squares to see the connections.", };
     this.height = this.props.size.height;
     this.width = this.props.size.width;
     this.defaultOptions = {
@@ -55,13 +54,19 @@ class ConnectivityPlot extends AbstractComponent {
     this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
-    this.state = { tooltip: "Hover the squares to see the connections." };
+    this.layoutTooltipChanged = false;
 
 
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return this.props.toolbarVisibility === nextProps.toolbarVisibility
+    if (this.props.toolbarVisibility !== nextProps.toolbarVisibility) {
+      return false
+    }
+    if (this.props.layoutTooltip !== nextProps.layoutTooltip){
+      return false
+    }
+    return true
   }
 
   componentDidMount () {
@@ -71,12 +76,16 @@ class ConnectivityPlot extends AbstractComponent {
     this.draw();
   }
   componentDidUpdate (prevProps, prevState, snapshot) {
+
     if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout || this.options === null){
       this.setOptions(this.props.options);
     }
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
-    this.draw();
+    if (!this.layoutTooltipChanged){
+      this.draw();
+      this.layoutTooltipChanged = false;
+    }
   }
 
   /**
@@ -297,7 +306,7 @@ class ConnectivityPlot extends AbstractComponent {
       }
       this.height = this.props.size.height;
     }
-      
+    
     this.cleanCanvas();
     this.svg = d3.select("#" + this.props.id)
       .append("svg")
@@ -319,12 +328,14 @@ class ConnectivityPlot extends AbstractComponent {
   }
 
   render () {
-    const { id, classes, legendsVisibility } = this.props;
-    const { tooltip } = this.state;
+    const { id, classes, legendsVisibility, layout } = this.props;
+    const { layoutTooltip } = this.state;
+    
+    const hasTooltip = layout.hasTooltip();
 
     let legends = [];
-    if (this.props.layout && this.nodeColormap){
-      const layoutLegends = this.props.layout.getLegends(this);
+    if (layout && this.nodeColormap){
+      const layoutLegends = layout.getLegends(this);
       for (const obj of layoutLegends){
         if (obj.title){
           legends.push(
@@ -343,23 +354,14 @@ class ConnectivityPlot extends AbstractComponent {
         }
       }
     }
-    const hasTooltip = this.props.layout.hasTooltip();
-
-    let plot = (
-      <Grid item sm={9} xs={12}>
-        <div>
-          <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
-            {hasTooltip ? tooltip : ""}
-          </Typography>
-        </div>
-        <div id={id}/>
-      </Grid>
-    );
+    
     let show;
     if (legends.length === 0 || !legendsVisibility){
       show = (
         <Grid container>
-          {plot}
+          <Grid item>
+            <div id={id}/>
+          </Grid>
         </Grid>
       )
     } else {
@@ -372,7 +374,14 @@ class ConnectivityPlot extends AbstractComponent {
               ))) : ""}
             </div>
           </Grid>
-          {plot}
+          <Grid item sm={9} xs={12}>
+            <div>
+              <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
+                {hasTooltip ? layoutTooltip : ""}
+              </Typography>
+            </div>
+            <div id={id}/>
+          </Grid>
         </Grid>
       )
     }

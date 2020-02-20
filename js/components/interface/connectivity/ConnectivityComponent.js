@@ -79,6 +79,7 @@ class ConnectivityComponent extends AbstractComponent {
     const { classes, id, size, data, options, colorMap, colors, names } = this.props;
     const { layout, toolbarVisibility, legendsVisibility } = this.state;
 
+
     return (
       <div style={{ height:size.height, width:size.width }} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
         <Grid className={classes.connectivityContainer} container spacing={2}>
