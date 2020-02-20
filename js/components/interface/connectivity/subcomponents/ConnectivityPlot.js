@@ -51,7 +51,6 @@ class ConnectivityPlot extends AbstractComponent {
       library: "GEPPETTO.ModelFactory.geppettoModel.common"
     };
 
-    this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
     this.blockDraw = false;
@@ -289,15 +288,12 @@ class ConnectivityPlot extends AbstractComponent {
    *
    */
   drawLayout () {
-    if (this.isDirty()){
-      this.setDirty(false)
-    } else {
-      this.width = this.props.size.width;
-      if (this.subRef.current !== null){
-        this.width -= this.subRef.current.clientWidth;
-      }
-      this.height = this.props.size.height;
+
+    this.width = this.props.size.width;
+    if (this.subRef.current !== null){
+      this.width -= this.subRef.current.clientWidth;
     }
+    this.height = this.props.size.height;
     if (!this.blockDraw){
       this.cleanCanvas();
       this.svg = d3.select("#" + this.props.id)
@@ -369,7 +365,7 @@ class ConnectivityPlot extends AbstractComponent {
     } else {
       show = (
         <Grid container>
-          <Grid item sm={3} xs>
+          <Grid item sm xs>
             <div ref = {this.subRef} >
               {legendsVisibility ? (legends.map(entry => (
                 entry
