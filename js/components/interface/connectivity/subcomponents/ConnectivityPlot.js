@@ -19,6 +19,14 @@ const styles = {
     fontSize: "14px",
     color: "white",
   },
+  matrixTooltip: {
+    fontSize: "16px",
+    fontWeight: "100",
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif;",
+    color: "white",
+    stroke: "none",
+    textRendering: "optimizeLegibility",
+  },
 
 };
 
@@ -47,6 +55,7 @@ class ConnectivityPlot extends AbstractComponent {
     this.setDirty(true);
     this.setNodeColormap(this.props.colorMap);
     this.subRef = React.createRef();
+    this.state = { tooltip: "Hover the squares to see the connections." };
 
 
   }
@@ -311,6 +320,7 @@ class ConnectivityPlot extends AbstractComponent {
 
   render () {
     const { id, classes, legendsVisibility } = this.props;
+    const { tooltip } = this.state;
 
     let legends = [];
     if (this.props.layout && this.nodeColormap){
@@ -334,14 +344,23 @@ class ConnectivityPlot extends AbstractComponent {
       }
     }
     const margin = this.props.layout.getMargin(this);
-  
+    const hasTooltip = this.props.layout.hasTooltip();
+
+    let plot = (
+      <Grid item sm={9} xs={12}>
+        <div>
+          <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
+            {hasTooltip ? tooltip : ""}
+          </Typography>
+        </div>
+        <div id={id}/>
+      </Grid>
+    );
     let show;
     if (legends.length === 0 || !legendsVisibility){
       show = (
         <Grid container>
-          <Grid item sm={9} xs={12}>
-            <div id={id}/>
-          </Grid>
+          {plot}
         </Grid>
       )
     } else {
@@ -354,9 +373,7 @@ class ConnectivityPlot extends AbstractComponent {
               ))) : ""}
             </div>
           </Grid>
-          <Grid item sm={9} xs={12}>
-            <div id={id}/>
-          </Grid>
+          {plot}
         </Grid>
       )
     }

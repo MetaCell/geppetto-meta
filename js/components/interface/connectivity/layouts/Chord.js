@@ -479,4 +479,15 @@ export class Chord {
     return "45px 0px 0px 5px"
   }
 
+  hasTooltip (){
+    return false
+  }
+
+  hasToggle (){
+    return true
+  }
+
+  hasSelect (){
+    return false
+  }
 }

@@ -2,8 +2,7 @@ const d3 = require("d3");
 
 export class Matrix {
   constructor () {
-    this.margin = { top: 45, left: 5, bottom: 5, right: 10 };
-    this.topLabelMargin = 25;
+    this.margin = { top: 25, left: 5, bottom: 5, right: 10 };
     this.leftIndicator = 10;
     this.topIndicator = 10;
     this.order = "id";
@@ -24,14 +23,7 @@ export class Matrix {
     // Colors
     const c = d3.scaleOrdinal(d3.schemeCategory10);
 
-    const labelTop = this.margin.top - this.topLabelMargin;
     const defaultTooltipText = "Hover the squares to see the connections.";
-    const tooltip = context.svg
-      .append("g")
-      .attr("transform", "translate(" + marginLeft + "," + labelTop + ")")
-      .append("text")
-      .attr('class', 'connectionlabel')
-      .text(defaultTooltipText);
 
     const container = context.svg
       .append("g")
@@ -120,13 +112,13 @@ export class Matrix {
     const mouseoverCell = function (msg) {
       d3.select(this.parentNode.appendChild(this)).transition().duration(100).style('stroke-opacity', 1).style('stroke', 'white').style('stroke-width', 2);
       d3.select("body").style('cursor', 'pointer');
-      return tooltip.transition().duration(100).text(msg);
+      context.setState(() => ({ tooltip: msg }));
     };
 
     const mouseoutCell = function () {
       d3.select(this).transition().duration(100).style('stroke-opacity', 0).style('stroke', 'white');
       d3.select("body").style('cursor', 'default');
-      return tooltip.text(defaultTooltipText);
+      context.setState(() => ({ tooltip: defaultTooltipText }));
     };
 
     const popIndicator = function (pos, colormap, w, h) {
@@ -310,5 +302,17 @@ export class Matrix {
       .attr("transform", function (d, i) {
         return "translate(" + x(i) + ")rotate(-90)";
       });
+  }
+  
+  hasTooltip (){
+    return true
+  }
+
+  hasToggle (){
+    return true
+  }
+
+  hasSelect (){
+    return true
   }
 }

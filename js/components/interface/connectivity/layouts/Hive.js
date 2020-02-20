@@ -95,4 +95,16 @@ export class Hive {
   getMargin (context){
     return "0px 0px 0px 0px"
   }
+
+  hasTooltip (){
+    return false
+  }
+
+  hasToggle (){
+    return false
+  }
+
+  hasSelect (){
+    return false
+  }
 }
