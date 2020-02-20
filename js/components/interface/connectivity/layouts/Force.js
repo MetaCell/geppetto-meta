@@ -124,10 +124,6 @@ export class Force {
     return "Force"
   }
 
-  getMargin (context){
-    return "45px 0px 0px 5px"
-  }
-
   hasTooltip (){
     return false
   }

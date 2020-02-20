@@ -2,7 +2,6 @@ const d3 = require("d3");
 
 export class Matrix {
   constructor () {
-    this.margin = { top: 25, left: 5, bottom: 5, right: 10 };
     this.leftIndicator = 10;
     this.topIndicator = 10;
     this.order = "id";
@@ -11,11 +10,10 @@ export class Matrix {
   
   draw (context) {
     
-    const marginLeft = this.margin.left + this.leftIndicator;
-    const matrixDim 
-        = context.height - (this.margin.top + this.margin.bottom) < context.width - (marginLeft + this.margin.right)
-          ? context.height - (this.margin.top + this.margin.bottom)
-          : context.width - (marginLeft + this.margin.right);
+    const matrixDim
+        = context.height < context.width
+          ? context.height
+          : context.width;
 
     const x = d3.scaleBand().range([0, matrixDim]);
     // Opacity
@@ -27,7 +25,7 @@ export class Matrix {
 
     const container = context.svg
       .append("g")
-      .attr("transform", "translate(" + marginLeft + "," + this.margin.top + ")");
+      .attr("transform", "translate(" + this.leftIndicator + "," + this.topIndicator + ")");
 
 
     const matrix = [];
@@ -246,18 +244,13 @@ export class Matrix {
     return "Matrix"
   }
 
-  getMargin (context){
-    return "45px 0px 0px 5px"
-  }
-
   setOrder (context, value){
     this.order = value;
 
-    const marginLeft = this.margin.left + this.leftIndicator;
     const matrixDim
-        = context.height - (this.margin.top + this.margin.bottom) < context.width - (marginLeft + this.margin.right)
-          ? context.height - (this.margin.top + this.margin.bottom)
-          : context.width - (marginLeft + this.margin.right);
+        = context.height < context.width
+          ? context.height
+          : context.width;
     
     const x = d3.scaleBand().range([0, matrixDim]);
 

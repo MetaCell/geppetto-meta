@@ -343,7 +343,6 @@ class ConnectivityPlot extends AbstractComponent {
         }
       }
     }
-    const margin = this.props.layout.getMargin(this);
     const hasTooltip = this.props.layout.hasTooltip();
 
     let plot = (
@@ -367,7 +366,7 @@ class ConnectivityPlot extends AbstractComponent {
       show = (
         <Grid container>
           <Grid item sm={3} xs>
-            <div ref = {this.subRef} style={{ margin:margin }}>
+            <div ref = {this.subRef} >
               {legendsVisibility ? (legends.map(entry => (
                 entry
               ))) : ""}

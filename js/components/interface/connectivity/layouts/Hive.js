@@ -92,10 +92,6 @@ export class Hive {
     return "Hive"
   }
 
-  getMargin (context){
-    return "0px 0px 0px 0px"
-  }
-
   hasTooltip (){
     return false
   }

@@ -472,13 +472,6 @@ export class Chord {
     return "Chord"
   }
 
-  getMargin (context){
-    const innerRadius = Math.min(context.width, context.height) * .41;
-    const outerRadius = innerRadius * 1.05;
-    const y = context.height / 2 - outerRadius;
-    return "45px 0px 0px 5px"
-  }
-
   hasTooltip (){
     return false
   }
