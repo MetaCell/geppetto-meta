@@ -11,22 +11,29 @@ define(function (require) {
     constructor (props) {
       super(props);
 
+      this.checkboxAction = this.checkboxAction.bind(this);
+      this.fireImageAction = this.fireImageAction.bind(this);
+      this.getImageInstanceVisibility = this.getImageInstanceVisibility.bind(this);
+
+      let initialCheckBoxState = this.getImageInstanceVisibility(this.props.rowData.id)
+
+      this.state = { carouselFullyLoaded: false, checked: initialCheckBoxState , imageID : '', imageInstanceLoading : false };
+
+      this.isCarousel = false;
+      this.imageContainerId = '';
+      this.fullyLoaded = false;
+    }
+
+    getImageInstanceVisibility (path) {
       let initialCheckBoxState = false;
       try {
-        let imageVariable = eval(this.props.rowData.id);
+        let imageVariable = eval(path);
         if (imageVariable !== undefined) {
           initialCheckBoxState = imageVariable.isVisible();
         }
       } catch (e) { }
 
-      this.state = { carouselFullyLoaded: false, checked: initialCheckBoxState , imageID : '', imageMeshLoading : false };
-
-      this.isCarousel = false;
-      this.imageContainerId = '';
-      this.fullyLoaded = false;
-
-      this.checkboxAction = this.checkboxAction.bind(this);
-      this.fireImageAction = this.fireImageAction.bind(this);
+      return initialCheckBoxState;
     }
 
     getImageClickAction (path) {
@@ -36,8 +43,8 @@ define(function (require) {
         e.preventDefault();
         e.nativeEvent.stopImmediatePropagation();
 
-        if (!that.state.imageMeshLoading) {
-          that.setState({ checked: true, imageMeshLoading: true, imageID: path }, () => {
+        if (!that.state.imageInstanceLoading) {
+          that.setState({ checked: true, imageInstanceLoading: true, imageID: path }, () => {
             var actionStr = that.props.metadata.actions;
             actionStr = actionStr.replace(/\$entity\$/gi, that.state.imageID);
             GEPPETTO.CommandController.execute(actionStr);
@@ -49,19 +56,25 @@ define(function (require) {
       return action;
     }
 
+    /**
+     * Instance deleted, update state to re-render checbox
+     */
     deletedInstance (instance) {
       if (this.state.imageID !== "") {
         if (instance.startsWith(this.state.imageID)) {
-          this.setState ( { imageMeshLoading : false } );
+          this.setState ( { imageInstanceLoading : false } );
         }
       }
     }
 
+    /**
+     * Instance added, update state to re-render checbox
+     */
     addedInstance (instances) {
       if (instances.length > 0) {
         if (this.state.imageID !== "") {
           if (instances[0].getInstancePath().startsWith(this.state.imageID)) {
-            this.setState ( { imageMeshLoading : false } );
+            this.setState ( { imageInstanceLoading : false } );
           }
         }
       }
@@ -89,6 +102,7 @@ define(function (require) {
     }
 
     componentWillUnmount () {
+      // Remove listeners once unmounted
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
       GEPPETTO.off(GEPPETTO.Events.Instances_created, this.addedInstance, this);
     }
@@ -98,6 +112,10 @@ define(function (require) {
       $('#' + this.imageContainerId + '.slickdiv').slick('unslick').slick();
     }
 
+    /**
+     * Fire action associated with image, can't reuse same method as image click 'getImageClickAction'
+     * to avoid events error from 'onclick' and 'onchange'
+     */
     fireImageAction (path) {
       var actionStr = this.props.metadata.actions;
       actionStr = actionStr.replace(/\$entity\$/gi, path);
@@ -105,10 +123,13 @@ define(function (require) {
     }
 
     checkboxAction (event, path) {
+      
+      // Retrieve checkbox 'checked' and store in state
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
+      
       let that = this;
-      this.setState({ checked: value , imageID : path, imageMeshLoading : true }, () => {
+      this.setState({ checked: value , imageID : path, imageInstanceLoading : true }, () => {
         try {
           let imageVariable = eval(that.state.imageID);
           if (imageVariable !== undefined) {
@@ -132,7 +153,7 @@ define(function (require) {
         <a href='' onClick={action}>
           <img className="query-results-image invert" src={thumbImage.data} />
         </a>
-        {this.state.imageMeshLoading
+        {this.state.imageInstanceLoading
           ? (<div id={imageContainerId + "-loader"} className="loader"></div>)
           : (<input id={imageContainerId + "-checkbox"} className="query-results-checkbox" type="checkbox"
             onChange={event => this.checkboxAction(event, thumbImage.reference)} checked={this.state.checked} />)
@@ -171,19 +192,13 @@ define(function (require) {
                 var action = that.getImageClickAction(image.reference);
                 
                 // Since a carousel has multiple images, we make sure the image getting rendered here is the one saved in the state
-                var loading = that.state.imageMeshLoading;
+                var loading = that.state.imageInstanceLoading;
                 if ( that.state.imageID !== image.reference ) {
                   loading = false;
                 }
 
-                var checked = false;
-                try {
-                  // Retrieve image variable visibility to determine state of checkbox
-                  let imageVariable = eval(image.reference);
-                  if (imageVariable !== undefined) {
-                    checked = imageVariable.isVisible();
-                  }
-                } catch (e) { }
+                // Retrieve image variable visibility to determine state of checkbox
+                var checked = that.getImageInstanceVisibility(image.reference);
 
                 return <div key={key} className="query-results-slick-image"> {image.name}
                   <a href='' onClick={action}>
