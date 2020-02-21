@@ -45,7 +45,7 @@ define(function (require) {
 
         if (!that.state.imageInstanceLoading) {
           that.setState({ checked: true, imageInstanceLoading: true, imageID: path }, () => {
-            var actionStr = that.props.metadata.actions;
+            var actionStr = that.props.metadata.actions.addInstance;
             actionStr = actionStr.replace(/\$entity\$/gi, that.state.imageID);
             GEPPETTO.CommandController.execute(actionStr);
 
@@ -116,8 +116,11 @@ define(function (require) {
      * Fire action associated with image, can't reuse same method as image click 'getImageClickAction'
      * to avoid events error from 'onclick' and 'onchange'
      */
-    fireImageAction (path) {
-      var actionStr = this.props.metadata.actions;
+    fireImageAction (add, path) {
+      var actionStr = this.props.metadata.actions.addInstance;
+      if (!add){
+        actionStr = this.props.metadata.actions.deleteInstance;
+      }
       actionStr = actionStr.replace(/\$entity\$/gi, path);
       GEPPETTO.CommandController.execute(actionStr);
     }
@@ -129,21 +132,17 @@ define(function (require) {
       const value = target.type === 'checkbox' ? target.checked : target.value;
       
       let that = this;
-      this.setState({ checked: value , imageID : path, imageInstanceLoading : true }, () => {
+      this.setState({ checked: value, imageID: path, imageInstanceLoading: true }, () => {
+        let add = true;
         try {
           let imageVariable = eval(that.state.imageID);
           if (imageVariable !== undefined) {
             if (imageVariable.isVisible()) {
-              imageVariable.delete();
-            } else {
-              imageVariable.show();
+              add = false;
             }
-          } else {
-            that.fireImageAction(that.state.imageID);
           }
-        } catch (e) {
-          that.fireImageAction(that.state.imageID);
-        }
+        } catch (e) { }
+        that.fireImageAction(add, that.state.imageID);
       });
     }
 
