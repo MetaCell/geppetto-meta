@@ -104,6 +104,8 @@ export default function (GEPPETTO) {
       RECONNECTING: 2,
     },
 
+    RECONNECTION_ERROR: "The client was not able to reconnect to the Backend, the page will be reloaded.",
+
     PROJECT_LOADED: "Project loaded",
 
     MODEL_LOADED: "The model for the current project has been loaded",
