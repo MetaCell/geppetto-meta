@@ -11,11 +11,22 @@ define(function (require) {
     constructor (props) {
       super(props);
 
-      this.state = { carouselFullyLoaded: false };
+      let initialCheckBoxState = false;
+      try {
+        let imageVariable = eval(this.props.rowData.id);
+        if (imageVariable !== undefined) {
+          initialCheckBoxState = imageVariable.isVisible();
+        }
+      } catch (e) { }
+
+      this.state = { carouselFullyLoaded: false, checked: initialCheckBoxState, imageMeshLoading: false };
 
       this.isCarousel = false;
       this.imageContainerId = '';
       this.fullyLoaded = false;
+
+      this.checkboxAction = this.checkboxAction.bind(this);
+      this.fireImageAction = this.fireImageAction.bind(this);
     }
 
     getImageClickAction (path) {
@@ -24,23 +35,39 @@ define(function (require) {
       var action = function (e) {
         e.preventDefault();
         e.nativeEvent.stopImmediatePropagation();
-        var actionStr = that.props.metadata.actions;
-        actionStr = actionStr.replace(/\$entity\$/gi, path);
-        GEPPETTO.CommandController.execute(actionStr);
-        if (!GEPPETTO.isKeyPressed("shift")) {
-          that.props.metadata.queryBuilder.close();
+
+        if (!that.state.imageMeshLoading) {
+          var actionStr = that.props.metadata.actions;
+          actionStr = actionStr.replace(/\$entity\$/gi, path);
+          that.setState ( { checked : true , imageMeshLoading : true } ); 
+          GEPPETTO.CommandController.execute(actionStr);
         }
       };
 
       return action;
     }
 
+    deletedInstance (instance) {
+      if (instance.startsWith(this.props.rowData.id)) {
+        this.setState({ imageMeshLoading: false })
+      }
+    }
+
+    addedInstance (instances) {
+      if (instances.length > 0) {
+        if (instances[0].getInstancePath().startsWith(this.props.rowData.id)) {
+          this.setState({ imageMeshLoading: false })
+        }
+      }
+    }
+
     componentDidMount () {
+      var that = this;
+
       // apply carousel
       if (this.isCarousel) {
         var slickDivElement = $('#' + this.imageContainerId + '.slickdiv');
         slickDivElement.slick();
-        var that = this;
 
         // reload slick carousel if it's first time clicking on arrow in any direction
         slickDivElement.find(".slick-arrow").on("click", function () {
@@ -50,11 +77,48 @@ define(function (require) {
           }
         }, { passive: true });
       }
+
+      GEPPETTO.on(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
+      GEPPETTO.on(GEPPETTO.Events.Instances_created, this.addedInstance, this);
+    }
+
+    componentWillUnmount () {
+      GEPPETTO.off(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
+      GEPPETTO.off(GEPPETTO.Events.Instances_created, this.addedInstance, this);
     }
 
     componentDidUpdate () {
       // on component refresh, update slick carousel
       $('#' + this.imageContainerId + '.slickdiv').slick('unslick').slick();
+    }
+
+    fireImageAction (path) {
+      if (!this.state.imageMeshLoading) {
+        var actionStr = this.props.metadata.actions;
+        actionStr = actionStr.replace(/\$entity\$/gi, path);
+        GEPPETTO.CommandController.execute(actionStr);
+      }
+    }
+
+    checkboxAction (event, path) {
+      const target = event.target;
+      const value = target.type === 'checkbox' ? target.checked : target.value;
+      this.setState({ checked: value, imageMeshLoading: true });
+
+      try {
+        let imageVariable = eval(path);
+        if (imageVariable !== undefined) {
+          if (imageVariable.isVisible()) {
+            imageVariable.delete();
+          } else {
+            imageVariable.show();
+          }
+        } else {
+          this.fireImageAction(path);
+        }
+      } catch (e) {
+        this.fireImageAction(path);
+      }
     }
 
     buildImage (thumbImage, imageContainerId) {
@@ -63,6 +127,11 @@ define(function (require) {
         <a href='' onClick={action}>
           <img className="query-results-image invert" src={thumbImage.data} />
         </a>
+        {this.state.imageMeshLoading
+          ? (<div id={imageContainerId + "-loader"} className="loader"></div>)
+          : (<input id={imageContainerId + "-checkbox"} className="query-results-checkbox" type="checkbox"
+            onChange={event => this.checkboxAction(event, thumbImage.reference)} checked={this.state.checked} />)
+        }
       </div>
       return imgElement;
     }
@@ -99,6 +168,11 @@ define(function (require) {
                   <a href='' onClick={action}>
                     <img className="popup-image invert" src={image.data} />
                   </a>
+                  {that.state.imageMeshLoading
+                    ? (<div id={image.reference + "-loader"} className="loader"></div>)
+                    : (<input id={image.reference + "-checkbox"} className="query-results-checkbox" type="checkbox"
+                      onChange={event => that.checkboxAction(event, value.reference)} checked={that.state.checked} />)
+                  }
                 </div>
               }
             });
@@ -110,11 +184,11 @@ define(function (require) {
               {elements}
             </div>
           } else {
-            imgElement = this.buildImage(value.elements[0].initialValue, imageContainerId);
+            imgElement = this.buildImage(value.elements[0].initialValue, imageContainerId, this.props.rowData.id);
           }
         } else if (value.eClass == GEPPETTO.Resources.IMAGE) {
           // otherwise we just show an image
-          imgElement = this.buildImage(value, imageContainerId);
+          imgElement = this.buildImage(value, imageContainerId, this.props.rowData.id);
         }
       }
 
