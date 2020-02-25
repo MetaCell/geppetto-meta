@@ -1,5 +1,4 @@
-import React from 'react';
-import AbstractComponent from '../../AComponent';
+import React, {Component} from 'react';
 import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from "./subcomponents/ConnectivityToolbar";
 import ConnectivityPlot from "./subcomponents/ConnectivityPlot";
@@ -15,7 +14,7 @@ const styles = {
   connectivityContainer: { background: '#424242', },
 };
 
-class ConnectivityComponent extends AbstractComponent {
+class ConnectivityComponent extends Component {
   constructor (props) {
     super(props);
     this.state = {

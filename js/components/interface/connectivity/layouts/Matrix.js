@@ -104,7 +104,7 @@ export class Matrix {
     });
 
     const popNameFromId = function (id) {
-      return eval(GEPPETTO.ModelFactory.getAllPotentialInstancesEndingWith(id)[0]).getParent().getName();
+      return eval(window.GEPPETTO.ModelFactory.getAllPotentialInstancesEndingWith(id)[0]).getParent().getName();
     };
 
     const mouseoverCell = function (msg) {
@@ -217,7 +217,7 @@ export class Matrix {
           return c(d.z);
         })
         .on("click", function (d) {
-          GEPPETTO.SceneController.deselectAll();
+          window.GEPPETTO.SceneController.deselectAll();
           // Ideally instead of hiding the connectivity lines we'd show only the ones connecting the two cells, also we could highlight the connection.
           eval(root.getId() + "." + nodes[d.x].id).select();
           eval(root.getId() + "." + nodes[d.x].id).showConnectionLines(false);

@@ -1,5 +1,4 @@
-import React from 'react';
-import AbstractComponent from '../../../AComponent';
+import React, {Component} from 'react';
 import ConnectivityDeck from "./ConnectivityDeck";
 import { Matrix } from "../layouts/Matrix";
 import { Hive } from "../layouts/Hive";
@@ -24,7 +23,7 @@ const styles = {
 
 };
 
-class ConnectivityToolbar extends AbstractComponent {
+class ConnectivityToolbar extends Component {
   constructor (props) {
     super(props);
   }

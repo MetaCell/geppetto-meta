@@ -1,0 +1,6 @@
+{
+  "linktype": {
+    "value": "function (c){return window.GEPPETTO.ModelFactory.getAllVariablesOfType(c.getParent(),window.GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse)[0].getId();}",
+    "type": "function"
+  }
+}

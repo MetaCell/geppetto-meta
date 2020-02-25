@@ -1,5 +1,4 @@
-import React from 'react';
-import AbstractComponent from '../../../AComponent';
+import React, {Component} from 'react';
 import * as util from "../utilities";
 import Instance from '../../../../geppettoModel/model/Instance';
 const d3 = require("d3");
@@ -28,7 +27,7 @@ const styles = {
   },
 };
 
-class ConnectivityPlot extends AbstractComponent {
+class ConnectivityPlot extends Component {
   constructor (props) {
     super(props);
     this.state = { layoutTooltip: "Hover the squares to see the connections.", };
@@ -48,7 +47,7 @@ class ConnectivityPlot extends AbstractComponent {
       linkType: function (conn) {
         return 1;
       },
-      library: "GEPPETTO.ModelFactory.geppettoModel.common"
+      library: "window.GEPPETTO.ModelFactory.geppettoModel.common"
     };
 
     this.setNodeColormap(this.props.colorMap);
@@ -175,15 +174,15 @@ class ConnectivityPlot extends AbstractComponent {
    * @command createDataFromConnections()
    */
   createDataFromConnections (){
-    const connectionVariables = GEPPETTO.ModelFactory.getAllTypesOfType(this.options.library.connection)[0].getVariableReferences();
+    const connectionVariables = window.GEPPETTO.ModelFactory.getAllTypesOfType(this.options.library.connection)[0].getVariableReferences();
     if (connectionVariables.length > 0) {
-      if (this.dataset["root"].getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+      if (this.dataset["root"].getMetaType() === window.GEPPETTO.Resources.INSTANCE_NODE) {
         const subInstances = this.dataset["root"].getChildren();
         this.dataset["nodes"] = [];
         this.dataset["links"] = [];
         for (let k = 0; k < subInstances.length; k++) {
           const subInstance = subInstances[k];
-          if (subInstance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
+          if (subInstance.getMetaType() === window.GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
             const populationChildren = subInstance.getChildren();
             for (let l = 0; l < populationChildren.length; l++) {
               const populationChild = populationChildren[l];
