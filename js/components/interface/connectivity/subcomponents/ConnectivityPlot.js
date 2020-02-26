@@ -313,7 +313,9 @@ class ConnectivityPlot extends Component {
    */
 
   cleanCanvas (){
-    d3.select("svg").remove();
+    if (this.svg){
+      this.svg.remove();
+    }
   }
 
   render () {
