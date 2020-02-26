@@ -11,7 +11,7 @@ export default class ConnectivityShowcase extends Component {
         this.data = Instances[0];
         this.options = this.deserializeOptions();
         this.colorMap = "undefined";
-        this.size = { width: 600, height: 600 };
+        this.size = { width: 600, height: 500 };
         this.config = {
             "matrix": {
                 layout: new Matrix(),

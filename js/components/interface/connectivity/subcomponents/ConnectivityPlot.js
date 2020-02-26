@@ -33,6 +33,7 @@ class ConnectivityPlot extends Component {
     this.state = { layoutTooltip: "Hover the squares to see the connections.", };
     this.height = this.props.size.height;
     this.width = this.props.size.width;
+    this.linkCache = {};
     this.defaultOptions = {
       nodeType: function (node) {
         if (node instanceof Instance) {
