@@ -134,7 +134,7 @@ class ConnectivityPlot extends Component {
    * @param nodeColormap
    */
   setNodeColormap (nodeColormap){
-    if (typeof nodeColormap !== 'undefined') {
+    if (nodeColormap !== 'undefined') {
       this.nodeColormap = nodeColormap;
     } else {
       this.nodeColormap = this.defaultColorMapFunction();
