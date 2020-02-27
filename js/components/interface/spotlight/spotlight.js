@@ -939,7 +939,7 @@ define(function (require) {
 
     render: function () {
       return (
-        <div>
+        <div className="typeaheadWrapper" >
           { this.props.showClose === true
             ? <div onClick={this.close} className="closeSpotlight fa fa-times" />
             : undefined
