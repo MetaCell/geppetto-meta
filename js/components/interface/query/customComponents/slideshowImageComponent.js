@@ -32,7 +32,7 @@ define(function (require) {
           initialCheckBoxState = imageVariable.isVisible();
         }
       } catch (e) {
-        console.info("Instance Variable not Visible : " + path); 
+        console.info("Instance Variable not Found : " + path); 
       }
 
       return initialCheckBoxState;
