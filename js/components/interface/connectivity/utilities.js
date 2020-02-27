@@ -1,30 +1,6 @@
 
 /**
  *
- * Get the current computed height for the first element in the set of matched elements, including padding but not border.
- *
- * @param el
- */
-
-export function getInnerHeight (el){
-  // todo: make sure its the same
-  return parseFloat(getComputedStyle(el, null).height.replace("px", ""))
-}
-
-/**
- *
- * Get the current computed width for the first element in the set of matched elements, including padding but not border.
- *
- * @param el
- */
-
-export function getInnerWidth (el){
-  // todo: make sure its the same
-  return parseFloat(getComputedStyle(el, null).width.replace("px", ""))
-}
-
-/**
- *
  * Creates function from string
  *
  * @param body
@@ -120,28 +96,6 @@ export function filter (array, func) {
 }
 
 
-/**
- *
- * Deletes element and child
- *
- * @param cssSelector
- */
-export function removeElement (cssSelector){
-  const element = document.querySelector(cssSelector);
-  if (element){
-    element.parentNode.removeChild(element);
-  }
-}
-
-/**
- *
- * Selects element
- *
- * @param cssSelector
- */
-export function selectElement (cssSelector){
-  return document.querySelector(cssSelector);
-}
 
 /**
  *
@@ -163,33 +117,6 @@ export function countBy (list, func){
   return dict
 }
 
-/**
- *
- * Adds eventlistener for each element in class
- *
- * @param classname
- * @param event
- * @param callback
- */
-export function addEventListenerClass (classname, event, callback) {
-  let classname_el = document.getElementsByClassName(classname);
-  for (let i = 0; i < classname_el.length; i++) {
-    classname_el[i].addEventListener(event, callback());
-  }
-}
-
-/**
- *
- * Adds eventlistener for element
- *
- * @param id
- * @param event
- * @param callback
- */
-export function addEventListenerId (id, event, callback) {
-  let el = document.getElementById(id);
-  el.addEventListener(event, callback());
-}
 
 /**
  *
