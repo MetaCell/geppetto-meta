@@ -11,6 +11,7 @@ import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";
 import { Hive } from "../layouts/Hive";
 import { Chord } from "../layouts/Chord";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 const styles = () => ({
   cardDeckWrapper: { 
@@ -106,7 +107,8 @@ class ConnectivityDeck extends Component {
         <IconButtonWithTooltip
           disabled={false}
           onClick={() => this.setState({ open: true })}
-          className={" fa fa-cog " + `${classes.button}`}
+          className={classes.button}
+          icon={faCog}
           tooltip={"Open layout selector"}
         />
         <Modal

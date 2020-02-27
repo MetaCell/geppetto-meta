@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import ConnectivityDeck from "./ConnectivityDeck";
-import { Matrix } from "../layouts/Matrix";
-import { Hive } from "../layouts/Hive";
 import { withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./MenuButton";
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
+import { faList, faSort } from "@fortawesome/free-solid-svg-icons";
+
 
 
 const styles = {
@@ -43,7 +43,6 @@ class ConnectivityToolbar extends Component {
     } = this.props;
 
     const visibility = toolbarVisibility ? "visible" : "hidden";
-    const legendsButton = "fa fa-list" ;
     const legendsTooltip = "Toggle legend";
     const sortOptions = {
       'id': 'By entity name',
@@ -58,15 +57,16 @@ class ConnectivityToolbar extends Component {
         handler = {sortOptionsHandler}
         defaultOption = "id"
         tooltip={"Order by"}
-        icon={"fa fa-sort"}
+        icon={faSort}
       />);
     }
     if (layout.hasToggle()){
       toggleButton = (<IconButtonWithTooltip
         disabled={false}
         onClick={() => legendHandler()}
-        className={ legendsButton + ` ${classes.button} `}
+        className={classes.button}
         tooltip={legendsTooltip}
+        icon={faList}
       />);
     }
 

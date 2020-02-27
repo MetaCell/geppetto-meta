@@ -45,8 +45,9 @@ class MenuButton extends Component {
         <IconButtonWithTooltip
           disabled={false}
           onClick={this.handleClick}
-          className={`${icon} ${classes.button}`}
+          className={classes.button}
           tooltip={tooltip}
+          icon={icon}
         />
         <Menu
           id={id}
