@@ -31,7 +31,9 @@ define(function (require) {
         if (imageVariable !== undefined) {
           initialCheckBoxState = imageVariable.isVisible();
         }
-      } catch (e) { }
+      } catch (e) {
+        console.info("Instance Variable not Visible : " + path); 
+      }
 
       return initialCheckBoxState;
     }
@@ -141,7 +143,10 @@ define(function (require) {
               add = false;
             }
           }
-        } catch (e) { }
+        } catch (e) {
+          console.info("Instance Variable not Available for Toggling Visibility ");
+        }
+
         that.fireImageAction(add, that.state.imageID);
       });
     }
