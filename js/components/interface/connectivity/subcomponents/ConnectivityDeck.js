@@ -16,7 +16,24 @@ import { faCog } from "@fortawesome/free-solid-svg-icons";
 const styles = () => ({
   cardDeckWrapper: { 
     border:0,
-    outline: 0
+    outline: 0,
+    marginRight: "-15px",
+    marginLeft: "-15px"
+  },
+  cardWrapperTitle: {
+    fontSize:"40px",
+    fontWeight: "300",
+    marginTop: "100px",
+    color: "#fc401a",
+    textAlign: "center"
+  },
+  cardDeck:{
+    marginTop: "20px",
+    marginRight: "100px",
+    marginLeft: "100px",
+    display: "table",
+    tableLayout: "fixed",
+    borderSpacing: "15px 0"
   },
   card: {
     borderRadius: 0,
@@ -37,9 +54,15 @@ const styles = () => ({
     margin: 'auto',
     width: '100px',
   },
-  cardText: { textAlign: 'center', },
-  cardTitle: { marginTop: '10px' },
+  cardText: { textAlign: 'center', color: "white" },
+  cardTitle: { marginTop: '10px', color: "#fc6320", marginBottom:"0.5em" },
   cardAction: { height: "100%" },
+  cardImgTopCenterBlock:{
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    borderRadius: "4px 4px 0 0"
+  },
   cardActionDisabled: { height: "100%", opacity: "0.2" },
   button: {
     padding: "8px",
@@ -116,9 +139,9 @@ class ConnectivityDeck extends Component {
           disableAutoFocus
           onClose={() => this.setState({ open: false })}
         >
-          <div className={"card-deck-wrapper " + classes.cardDeckWrapper}>
-            <p className={"card-wrapper-title"}>How would you like to represent your network?</p>
-            <div className={"card-deck"}>
+          <div className={classes.cardDeckWrapper}>
+            <p className={classes.cardWrapperTitle}>How would you like to represent your network?</p>
+            <div className={classes.cardDeck}>
               {this.deck.map(({ title, subtitle, handler, disabled, img }, index) => (
                 <Card raised className={classes.card} key={title}>
                   <CardActionArea
@@ -130,11 +153,11 @@ class ConnectivityDeck extends Component {
                     disabled={disabled}
                   >
                     <CardContent className={classes.cardText}>
-                      <img className={"card-img-top center-block"} src={img} />
-                      <Typography className={"card-title"} variant="h5">
+                      <img className={classes.cardImgTopCenterBlock} src={img} />
+                      <Typography className={classes.cardTitle} variant="h5">
                         {title}
                       </Typography>
-                      <Typography className={"card-text"} component="p">
+                      <Typography component="p">
                         {subtitle}
                       </Typography>
                     </CardContent>
