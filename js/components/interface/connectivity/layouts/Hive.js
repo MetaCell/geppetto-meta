@@ -42,7 +42,8 @@ export class Hive {
         return "rotate(" + degrees(angle(d)) + ")";
       })
       .attr("x1", radius.range()[0])
-      .attr("x2", radius.range()[1]);
+      .attr("x2", radius.range()[1])
+      .style('stroke', "#000").style('stroke-width', '1.5px');
 
     svg.selectAll(".link")
       .data(links)
@@ -57,7 +58,7 @@ export class Hive {
         }))
       .style("stroke", function (d) {
         return linkTypeScale(d.type);
-      });
+      }).style('fill', "none").style('stroke-width', '1.5px').style('stroke-opacity', 0.3);
 
     const node = svg.selectAll(".node")
       .data(nodes)
