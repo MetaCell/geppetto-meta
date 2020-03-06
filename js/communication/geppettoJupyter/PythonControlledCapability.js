@@ -74,9 +74,6 @@ define(function (require) {
           }
         }
 
-        render () {
-          return <WrappedComponent {...this.props} />;
-        }
       }
 
       return PythonControlledComponent;
