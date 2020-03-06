@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import model from './model.json';
-import options from './options.json';
 import {Matrix} from "../layouts/Matrix";
 import ConnectivityComponent from "../ConnectivityComponent";
 
@@ -9,7 +8,6 @@ export default class ConnectivityShowcase extends Component {
         super(props);
         GEPPETTO.Manager.loadModel(model);
         this.data = Instances[0];
-        this.options = this.deserializeOptions();
         this.colorMap = "undefined";
         this.size = { width: 600, height: 500 };
         this.config = {
@@ -18,24 +16,15 @@ export default class ConnectivityShowcase extends Component {
                 colors: ["#cb0000", "#003398"],
                 names: ["pyramidals_48", "baskets_12"],
             }
-        }
-
+        };
+        this.linkType = this.linkType.bind(this);
     }
 
-    deserializeOptions(){
-        const deserializedOptions = {};
-        for (const item in options){
-            if (options[item].type === "function" || options[item].type === "library"){
-                deserializedOptions[item] = eval('(' + options[item].value + ')');
-            } else {
-                deserializedOptions[item] = options[item].value;
-            }
-        }
-        return deserializedOptions
+    linkType(c){
+        return GEPPETTO.ModelFactory.getAllVariablesOfType(c.getParent(),GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse)[0].getId()
     }
 
     render() {
-
         const matrix = this.config['matrix'];
 
         return (
@@ -43,7 +32,6 @@ export default class ConnectivityShowcase extends Component {
                 id="ConnectivityContainer"
                 size={this.size}
                 data={this.data}
-                options={this.options}
                 colorMap={this.colorMap}
                 colors={matrix.colors}
                 names={matrix.names}
@@ -51,6 +39,10 @@ export default class ConnectivityShowcase extends Component {
                 modelFactory={GEPPETTO.ModelFactory}
                 resources={GEPPETTO.Resources}
                 matrixOnClickHandler={()=>console.log("Mock call to GEPPETTO.SceneController")}
+                nodeType={null}
+                linkWeight={null}
+                linkType={this.linkType}
+                library={null}
             />
         );
     }

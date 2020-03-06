@@ -41,7 +41,7 @@ class ConnectivityPlot extends Component {
             linkType: function (conn) {
                 return 1;
             },
-            library: "window.GEPPETTO.ModelFactory.geppettoModel.common"
+            library: this.props.modelFactory.geppettoModel.common
         };
 
         this.setNodeColormap(this.props.colorMap);
@@ -55,7 +55,7 @@ class ConnectivityPlot extends Component {
     }
 
     componentDidMount() {
-        this.setOptions(this.props.options);
+        this.setOptions();
         this.setData(this.props.data);
         this.setNodeColormap(this.props.colorMap);
         this.draw();
@@ -64,7 +64,7 @@ class ConnectivityPlot extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
 
         if (prevProps.options !== this.props.options || prevProps.layout !== this.props.layout || this.options === null) {
-            this.setOptions(this.props.options);
+            this.setOptions();
         }
         this.setData(this.props.data);
         this.setNodeColormap(this.props.colorMap);
@@ -75,31 +75,23 @@ class ConnectivityPlot extends Component {
      *
      * Sets connectivity auxiliary functions
      *
-     * @command setOptions(options)
-     * @param {Object} options - options to modify the connections
+     * @command setOptions()
      */
 
 
-    setOptions(options) {
+    setOptions() {
         this.options = this.defaultOptions;
-        if (options != null) {
-            this.options = util.extend(this.options, options);
-
-            if (typeof this.options.linkType === 'string') {
-                this.options.linkType = util.strToFunc(this.options.linkType);
-            }
-            if (typeof this.options.nodeType === 'string') {
-                this.options.nodeType = util.strToFunc(this.options.nodeType);
-            }
-            if (typeof this.options.linkWeight === 'string') {
-                this.options.linkWeight = util.strToFunc(this.options.linkWeight);
-            }
-            if (typeof this.options.colorMapFunction === 'string') {
-                this.options.colorMapFunction = util.strToFunc(this.options.colorMapFunction);
-            }
-            if (typeof this.options.library === 'string') {
-                this.options.library = eval(this.options.library);
-            }
+        if (this.props.linkType != null) {
+            this.options.linkType = this.props.linkType;
+        }
+        if (this.props.nodeType != null) {
+            this.options.nodeType = this.props.nodeType;
+        }
+        if (this.props.linkWeight != null) {
+            this.options.linkWeight = this.props.linkWeight;
+        }
+        if (this.props.library != null) {
+            this.options.library = this.props.library;
         }
     }
 
