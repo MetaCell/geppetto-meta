@@ -7,7 +7,7 @@ import ConnectivityComponent from "../ConnectivityComponent";
 export default class ConnectivityShowcase extends Component {
     constructor(props) {
         super(props);
-        window.GEPPETTO.Manager.loadModel(model);
+        GEPPETTO.Manager.loadModel(model);
         this.data = Instances[0];
         this.options = this.deserializeOptions();
         this.colorMap = "undefined";
@@ -48,6 +48,9 @@ export default class ConnectivityShowcase extends Component {
                 colors={matrix.colors}
                 names={matrix.names}
                 layout={matrix.layout}
+                modelFactory={GEPPETTO.ModelFactory}
+                resources={GEPPETTO.Resources}
+                matrixOnClickHandler={()=>console.log("Mock call to GEPPETTO.SceneController")}
             />
         );
     }

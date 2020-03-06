@@ -75,7 +75,7 @@ class ConnectivityComponent extends Component {
   }
 
   render () {
-    const { classes, id, size, data, options, colorMap, colors, names } = this.props;
+    const { classes, id, size, data, options, colorMap, colors, names, modelFactory, resources, matrixOnClickHandler } = this.props;
     const { layout, toolbarVisibility, legendsVisibility } = this.state;
 
 
@@ -106,6 +106,10 @@ class ConnectivityComponent extends Component {
               layout={layout}
               legendsVisibility={legendsVisibility}
               toolbarVisibility={toolbarVisibility}
+              modelFactory={modelFactory}
+              resources={resources}
+              matrixOnClickHandler={matrixOnClickHandler}
+
             />
           </Grid>
         </Grid>

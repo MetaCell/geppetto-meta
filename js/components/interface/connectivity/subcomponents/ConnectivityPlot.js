@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import * as util from "../utilities";
 import Instance from '../../../../geppettoModel/model/Instance';
-
-const d3 = require("d3");
 import {withStyles} from '@material-ui/core';
 import IconText from "./IconText";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ConnectivityTooltip from "./ConnectivityTooltip";
+const d3 = require("d3");
 
 
 const styles = {
@@ -168,15 +167,15 @@ class ConnectivityPlot extends Component {
      * @command createDataFromConnections()
      */
     createDataFromConnections() {
-        const connectionVariables = window.GEPPETTO.ModelFactory.getAllTypesOfType(this.options.library.connection)[0].getVariableReferences();
+        const connectionVariables = this.props.modelFactory.getAllTypesOfType(this.options.library.connection)[0].getVariableReferences();
         if (connectionVariables.length > 0) {
-            if (this.dataset["root"].getMetaType() === window.GEPPETTO.Resources.INSTANCE_NODE) {
+            if (this.dataset["root"].getMetaType() === this.props.resources.INSTANCE_NODE) {
                 const subInstances = this.dataset["root"].getChildren();
                 this.dataset["nodes"] = [];
                 this.dataset["links"] = [];
                 for (let k = 0; k < subInstances.length; k++) {
                     const subInstance = subInstances[k];
-                    if (subInstance.getMetaType() === window.GEPPETTO.Resources.ARRAY_INSTANCE_NODE) {
+                    if (subInstance.getMetaType() === this.props.resources.ARRAY_INSTANCE_NODE) {
                         const populationChildren = subInstance.getChildren();
                         for (let l = 0; l < populationChildren.length; l++) {
                             const populationChild = populationChildren[l];
