@@ -38,7 +38,6 @@ class ConnectivityComponent extends Component {
    */
   legendHandler () {
     this.setState(() => ({ legendsVisibility: !this.state.legendsVisibility }));
-    this.plotRef.current.blockDraw = false
   }
 
   /**
@@ -62,8 +61,6 @@ class ConnectivityComponent extends Component {
    */
   deckHandler (layout) {
     this.setState(() => ({ layout: layout }));
-    this.plotRef.current.blockDraw = false
-
   }
 
   /**
