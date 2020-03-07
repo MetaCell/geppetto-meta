@@ -16,7 +16,7 @@ define(function (require) {
       if (typeof WrappedComponent !== "function") {
         // Fixes components defined as objects (e.g. Material-ui components)
         class Wrapper extends React.Component {
-          render() {
+          render () {
             return <WrappedComponent {...this.props} />;
           }
         } 
@@ -32,6 +32,7 @@ define(function (require) {
           this.state.model = props.model;
           this.state.componentType = WrappedComponent.name || WrappedComponent.Naked.render.name;
           this.id = (this.props.id == undefined) ? this.props.model : this.props.id;
+          
           this._isMounted = false;
         }
 
@@ -53,9 +54,10 @@ define(function (require) {
           this.disconnectFromPython();
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if (this.state.value != nextProps.value) {
@@ -109,9 +111,10 @@ define(function (require) {
           }
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
@@ -298,9 +301,10 @@ define(function (require) {
           this.callPythonMethod();
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           this.callPythonMethod();

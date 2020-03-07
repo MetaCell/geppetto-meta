@@ -788,7 +788,7 @@ define(function (require) {
      * When we get new props, run the appropriate imperative functions
      *
      */
-    componentWillReceiveProps: function (nextProps) {
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
       var updDst = false;
       if (nextProps.stack !== this.state.stack || nextProps.color !== this.state.color || this.state.serverUrl !== nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== nextProps.id) {
         this.setState({
@@ -1188,7 +1188,7 @@ define(function (require) {
       }
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
       if (nextProps.data && nextProps.data != null) {
         var newState = {}
         if (nextProps.data.height && nextProps.data.height != null) {
