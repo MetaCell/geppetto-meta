@@ -15,7 +15,8 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
-                query: { presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react'] }
+                query: { presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react',
+                        {'plugins': ['@babel/plugin-proposal-class-properties']}] }
             },
             {
                 test: /\.html$/,
@@ -31,7 +32,11 @@ module.exports = {
                     loader: 'svg-url-loader',
                     options: {}
                 }
-            }
+            },
+            {
+                test: /\.less$/,
+                loader: 'style-loader!css-loader!less-loader'
+            },
         ]
     },
     plugins: [

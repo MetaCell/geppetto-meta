@@ -7,6 +7,8 @@ import Collapse from "@material-ui/core/Collapse";
 import {withStyles} from "@material-ui/core/styles";
 import ConnectivityShowcase
     from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityShowcase";
+import ListViewerShowcase
+    from "@geppettoengine/geppetto-client/js/components/interface/listViewer/showcase/ListViewerShowcase";
 
 const styles = theme => ({
     nested: {
@@ -55,7 +57,7 @@ class DrawerContent extends Component {
                     },
                     {
                         "name": "ListViewer",
-                        "component": <h1>Test2</h1>
+                        "component": <ListViewerShowcase/>
                     }
                 ]
             },
