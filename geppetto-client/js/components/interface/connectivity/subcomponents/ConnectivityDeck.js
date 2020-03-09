@@ -12,6 +12,10 @@ import { Force } from "../layouts/Force";
 import { Hive } from "../layouts/Hive";
 import { Chord } from "../layouts/Chord";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
+import MatrixImg from '../images/matrix.svg';
+import ForceImg from '../images/force.svg';
+import HiveImg from '../images/hive.svg';
+import ChordImg from '../images/chord.svg';
 
 const styles = () => ({
   cardDeckWrapper: { 
@@ -83,14 +87,14 @@ class ConnectivityDeck extends Component {
         subtitle: "A coloured square at row 𝒊, column 𝒋 represents a directed connection from node 𝒋 to node 𝒊.",
         handler: this.props.handler.bind(this, new Matrix()),
         disabled: false,
-        img: this.getImgPath('matrix.svg')
+        img: MatrixImg
       },
       {
         title: "Force-directed layout",
         subtitle: "Draw circles for nodes, lines for connections, disregarding spatial information. ",
         handler: this.props.handler.bind(this, new Force()),
         disabled: false,
-        img: this.getImgPath('force.svg')
+        img: ForceImg
 
       },
       {
@@ -100,7 +104,7 @@ class ConnectivityDeck extends Component {
             + "the total number of connections it makes.",
         handler: this.props.handler.bind(this, new Hive(true)),
         disabled: false,
-        img: this.getImgPath('hive.svg')
+        img: HiveImg
       },
       {
         title: "Chord diagram",
@@ -110,14 +114,14 @@ class ConnectivityDeck extends Component {
             + "hide incoming(outgoing) connections from a population.",
         handler: this.props.handler.bind(this, new Chord(false)),
         disabled: false,
-        img: this.getImgPath('chord.svg')
+        img: ChordImg
       },
     ];
   }
 
 
   getImgPath (path){
-    return 'geppetto/node_modules/@geppettoengine/geppetto-client/js/components/widgets/connectivity/images/' + path;
+    return '../images/' + path;
   }
 
   render () {
