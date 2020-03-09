@@ -290,14 +290,11 @@ define(function (require) {
           super(props);
           this.state = {
             ...this.state,
-            ...{
-              value: [],
-              pythonData: []
-            }
+            value: [],
+            pythonData: []
           }
           // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
           this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
-          this.items = [];
           this.callPythonMethod();
         }
 
@@ -400,26 +397,15 @@ define(function (require) {
           if (wrappedComponentProps.id == undefined) {
             wrappedComponentProps.id = wrappedComponentProps.model;
           }
-
-          let items = [];
-          
-            
-          WrappedComponent.prototype.setState = this.setState;
-            
-            
-          
           wrappedComponentProps.onChange = this.handleChange;
           wrappedComponentProps.value = wrappedComponentProps.multiple && this.state.value !== undefined && !this.state.value ? [] : this.state.value;
-
-          if (this.props.postProcessItems && this.state.pythonData) {
-            items = this.props.postProcessItems(this.state.pythonData, wrappedComponentProps.value);
-          }
-
           delete wrappedComponentProps.model;
           delete wrappedComponentProps.postProcessItems;
           delete wrappedComponentProps.validate;
           delete wrappedComponentProps.prePythonSyncProcessing;
-                    
+          if (this.props.postProcessItems) {
+            var items = this.props.postProcessItems(this.state.pythonData, wrappedComponentProps.value);
+          }
           
           return (
             <WrappedComponent {...wrappedComponentProps}>
