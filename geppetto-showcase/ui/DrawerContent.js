@@ -9,6 +9,7 @@ import ConnectivityShowcase
     from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityShowcase";
 import ListViewerShowcase
     from "@geppettoengine/geppetto-client/js/components/interface/listViewer/showcase/ListViewerShowcase";
+import MenuShowcase from "@geppettoengine/geppetto-client/js/components/interface/menu/showcase/MenuShowcase";
 
 const styles = theme => ({
     nested: {
@@ -58,6 +59,10 @@ class DrawerContent extends Component {
                     {
                         "name": "ListViewer",
                         "component": <ListViewerShowcase/>
+                    },
+                    {
+                        "name": "Menu",
+                        "component": <MenuShowcase/>
                     }
                 ]
             },
