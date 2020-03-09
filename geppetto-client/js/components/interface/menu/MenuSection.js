@@ -90,33 +90,7 @@ class MenuSection extends React.Component {
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
 
-    var popperToRender = undefined;
-    if (this.props.button.list !== undefined) {
-      popperToRender = (
-        <MenuPopper
-          parentRef={anchorEl}
-          parentHandler={this.handleClick}
-          menuList={this.props.button.list}
-          menuHandler={this.props.menuHandler}
-          menuHandlerDirect={this.props.menuHandlerDirect}
-          awayClickHandler={this.handleAwayListener}
-          position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
-        />
-      );
-    } else if (this.state.customList !== undefined) {
-      popperToRender = (
-        <MenuPopper
-          parentRef={anchorEl}
-          parentHandler={this.handleClick}
-          menuList={this.state.customList}
-          menuHandler={this.props.menuHandler}
-          menuHandlerDirect={this.props.menuHandlerDirect}
-          awayClickHandler={this.handleAwayListener}
-          position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
-        />
-      );
-    }
-    var buttonClasses = undefined;
+    let buttonClasses;
     if (open || this.state.hover) {
       buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.hover : undefined;
     } else {
