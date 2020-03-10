@@ -26,7 +26,7 @@ define(function (require) {
       /**
        * Creates base view for widget
        */
-        // https://gist.github.com/aldendaniels/5d94ecdbff89295f4cd6
+      // https://gist.github.com/aldendaniels/5d94ecdbff89295f4cd6
       class Widget extends WrappedComponent {
 
         constructor (props) {
@@ -141,11 +141,11 @@ define(function (require) {
             this.position.top = top;
           }
           this.$el.dialog(
-              'option', 'position', {
-                my: "left+" + this.position.left + " top+" + this.position.top,
-                at: "left top",
-                of: $(window)
-              }).dialogExtend();
+            'option', 'position', {
+              my: "left+" + this.position.left + " top+" + this.position.top,
+              at: "left top",
+              of: $(window)
+            }).dialogExtend();
 
           // set flag to indicate something changed
           this.dirtyView = true;
@@ -267,8 +267,8 @@ define(function (require) {
          */
         getState (tree, state) {
           var paths = state.split('.')
-              , current = tree
-              , i;
+            , current = tree
+            , i;
 
           for (i = 0; i < paths.length; ++i) {
             // get index from node if it's array
@@ -464,7 +464,7 @@ define(function (require) {
           var that = this;
           customButtons.forEach(function (customButton) {
             that.addButtonToTitleBar(
-                $("<div class='fa " + customButton.icon + "' title='" + customButton.title + "'></div>").click(customButton.action), '.customButtons');
+              $("<div class='fa " + customButton.icon + "' title='" + customButton.title + "'></div>").click(customButton.action), '.customButtons');
           });
         }
 
@@ -540,29 +540,29 @@ define(function (require) {
           var originalParentContainer = $("#" + this.props.id).parent();
           // create the dialog window for the widget
           this.dialog = $("#" + this.props.id).dialog(
-              {
-                /*
-                 * appendTo: "#widgetContainer",
-                 * autoOpen: false,
-                 */
-                resizable: this.props.resizable,
-                draggable: this.props.draggable,
-                top: 10,
-                height: this.props.size.height,
-                width: this.props.size.width,
-                closeOnEscape: false,
-                position: {
-                  my: "left+" + this.props.position.left + " top+" + this.props.position.top,
-                  at: "left top",
-                  of: $(window)
-                },
-                close (event, ui) {
-                  if (event.originalEvent
+            {
+              /*
+               * appendTo: "#widgetContainer",
+               * autoOpen: false,
+               */
+              resizable: this.props.resizable,
+              draggable: this.props.draggable,
+              top: 10,
+              height: this.props.size.height,
+              width: this.props.size.width,
+              closeOnEscape: false,
+              position: {
+                my: "left+" + this.props.position.left + " top+" + this.props.position.top,
+                at: "left top",
+                of: $(window)
+              },
+              close (event, ui) {
+                if (event.originalEvent
                       && $(event.originalEvent.target).closest(".ui-dialog-titlebar-close").length) {
-                    that.destroy();
-                  }
+                  that.destroy();
                 }
-              }).dialogExtend({
+              }
+            }).dialogExtend({
             "closable": this.props.closable,
             "maximizable": this.props.maximizable,
             "minimizable": this.props.minimizable,
@@ -844,23 +844,23 @@ define(function (require) {
          */
         render () {
           return (
-              <div onMouseEnter={() => super.onEnter()} onMouseLeave={() => super.onLeave()} key={this.props.id} id={this.props.id} className={'dialog ' + (this.props.componentType != undefined) ? this.props.componentType.toLowerCase() + "-widget" : ''} title={this.props.title}>
+            <div onMouseEnter={() => super.onEnter()} onMouseLeave={() => super.onLeave()} key={this.props.id} id={this.props.id} className={'dialog ' + (this.props.componentType != undefined) ? this.props.componentType.toLowerCase() + "-widget" : ''} title={this.props.title}>
 
-                <Overlay
-                    ref="overlay"
-                    show={this.props.modalIsOpen}
-                    container={() => document.querySelector('#' + this.props.id)}
-                    items={this.props.overlayItems}
-                    style={{
-                      position: 'absolute',
-                      zIndex: 1040,
-                      top: 0, bottom: 0, left: 0, right: 0,
-                      color: 'white'
-                    }}
-                />
+              <Overlay
+                ref="overlay"
+                show={this.props.modalIsOpen}
+                container={() => document.querySelector('#' + this.props.id)}
+                items={this.props.overlayItems}
+                style={{
+                  position: 'absolute',
+                  zIndex: 1040,
+                  top: 0, bottom: 0, left: 0, right: 0,
+                  color: 'white'
+                }}
+              />
 
-                {super.render()}
-              </div>
+              {super.render()}
+            </div>
           )
         }
       }

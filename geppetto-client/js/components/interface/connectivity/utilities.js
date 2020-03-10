@@ -96,7 +96,6 @@ export function filter (array, func) {
 }
 
 
-
 /**
  *
  * Sorts a list into groups and returns a count for the number of objects in each group.

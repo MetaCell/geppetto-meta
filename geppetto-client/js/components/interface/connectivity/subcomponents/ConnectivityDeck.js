@@ -119,11 +119,6 @@ class ConnectivityDeck extends Component {
     ];
   }
 
-
-  getImgPath (path){
-    return '../images/' + path;
-  }
-
   render () {
     const { open } = this.state;
     const { classes } = this.props;
@@ -146,7 +141,7 @@ class ConnectivityDeck extends Component {
           <div className={classes.cardDeckWrapper}>
             <p className={classes.cardWrapperTitle}>How would you like to represent your network?</p>
             <div className={classes.cardDeck}>
-              {this.deck.map(({ title, subtitle, handler, disabled, img }, index) => (
+              {this.deck.map(({ title, subtitle, handler, disabled, img }) => (
                 <Card raised className={classes.card} key={title}>
                   <CardActionArea
                     className={disabled ? classes.cardActionDisabled : classes.cardAction}

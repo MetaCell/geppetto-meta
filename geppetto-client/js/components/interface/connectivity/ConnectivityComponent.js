@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from "./subcomponents/ConnectivityToolbar";
 import ConnectivityPlot from "./subcomponents/ConnectivityPlot";
@@ -75,8 +75,10 @@ class ConnectivityComponent extends Component {
   }
 
   render () {
-    const { classes, id, size, data, colorMap, colors, names, modelFactory, resources,
-      matrixOnClickHandler, nodeType, linkWeight, linkType, library } = this.props;
+    const {
+      classes, id, size, data, colorMap, colors, names, modelFactory, resources,
+      matrixOnClickHandler, nodeType, linkWeight, linkType, library 
+    } = this.props;
     const { layout, toolbarVisibility, legendsVisibility } = this.state;
 
 

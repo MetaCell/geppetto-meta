@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import ConnectivityDeck from "./ConnectivityDeck";
 import { withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./MenuButton";
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
 import { faList, faSort } from "@fortawesome/free-solid-svg-icons";
-
 
 
 const styles = {

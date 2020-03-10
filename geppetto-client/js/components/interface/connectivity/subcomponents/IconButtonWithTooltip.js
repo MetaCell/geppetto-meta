@@ -6,23 +6,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = { lightTooltip: { fontSize: 12, }, };
 
-export default withStyles(styles)(({ onClick, tooltip, disabled, className, classes, icon }) => {
-  return (
-    <Tooltip
-      title={tooltip}
-      placement="left"
-      disableFocusListener
-      disableTouchListener
-      classes={{ tooltip: classes.lightTooltip }}
+export default withStyles(styles)(({ onClick, tooltip, disabled, className, classes, icon }) => (
+  <Tooltip
+    title={tooltip}
+    placement="left"
+    disableFocusListener
+    disableTouchListener
+    classes={{ tooltip: classes.lightTooltip }}
+  >
+    <IconButton
+      disabled={disabled}
+      onClick={event => onClick(event)}
+      className={className}
+      disableRipple
     >
-      <IconButton
-          disabled={disabled}
-          onClick={event => onClick(event)}
-          className={className}
-          disableRipple
-      >
-        <FontAwesomeIcon icon={icon} className={" fa-xs "} />
-      </IconButton>
-    </Tooltip>
-  )
-})
+      <FontAwesomeIcon icon={icon} className={" fa-xs "} />
+    </IconButton>
+  </Tooltip>
+))
