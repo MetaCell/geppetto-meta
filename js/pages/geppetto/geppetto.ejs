@@ -45,27 +45,11 @@ $content
 
 
 <div id="mainContainer">
-	<div id="loadingText">
-		<div style="position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    min-height: 95%;
-                    min-width: 95%;
-                    background-image: url('geppetto/build/splash.png');
-                    background-size: 100%;
-                    background-position: center;
-                    background-repeat: no-repeat;" >
-            <p style="height: 100%;
-                    width: 100%;
-                    text-align: center;
-                    margin: auto;
-                    position: absolute;
-                    top: 50%;
-                    z-index: -1;">
-                LOADING... [~3MB]
-            </p>
-        </div>
-	</div>
+    <div id="loadingText" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center;">
+        <object data="geppetto/build/splash.png" type="image/png" style="max-width: 95%">
+            LOADING... [~3MB]
+        </object>
+    </div>
     <div id="controls" class="noSelection">
 		<div id="DownloadProjectButton" class="row"></div>
         <div id="SaveButton" class="row"></div>
