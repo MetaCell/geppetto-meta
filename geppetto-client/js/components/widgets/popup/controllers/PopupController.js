@@ -57,7 +57,7 @@ define(function (require) {
           GEPPETTO.WidgetsListener.subscribe(that, id);
 
           // add commands to console autocomplete and help option
-          GEPPETTO.CommandController.updateHelpCommand(p, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/js/components/widgets/popup/Popup.js"));
+          GEPPETTO.CommandController.updateHelpCommand(p, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client//js/components/widgets/popup/Popup.js"));
 
           // update tags for autocompletion
           GEPPETTO.CommandController.updateTags(p.getId(), p);
