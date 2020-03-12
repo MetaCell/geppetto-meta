@@ -59,7 +59,7 @@ define(function (require) {
           GEPPETTO.WidgetsListener.subscribe(that, id);
 
           // add commands help option
-          GEPPETTO.CommandController.updateHelpCommand(cnt, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client//js/components/widgets/connectivity/Connectivity.js"));
+          GEPPETTO.CommandController.updateHelpCommand(cnt, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/components/widgets/connectivity/Connectivity.js"));
 
           // update tags for autocompletion
           GEPPETTO.CommandController.updateTags(cnt.getId(), cnt);

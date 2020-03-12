@@ -326,7 +326,7 @@ define(function (require) {
         }
       } else {
         if (this.props.canvasRef != undefined && this.props.canvasRef != null) {
-          this.state.stackViewerPlane = this.props.canvasRef.add3DPlane(this.state.plane[0], this.state.plane[1], this.state.plane[2], this.state.plane[3], this.state.plane[4], this.state.plane[5], this.state.plane[6], this.state.plane[7], this.state.plane[8], this.state.plane[9], this.state.plane[10], this.state.plane[11], "geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client//js/components/widgets/stackViewer/images/glass.jpg");
+          this.state.stackViewerPlane = this.props.canvasRef.add3DPlane(this.state.plane[0], this.state.plane[1], this.state.plane[2], this.state.plane[3], this.state.plane[4], this.state.plane[5], this.state.plane[6], this.state.plane[7], this.state.plane[8], this.state.plane[9], this.state.plane[10], this.state.plane[11], "geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/components/widgets/stackViewer/images/glass.jpg");
         }
         if (this.state.stackViewerPlane.visible) {
           this.state.stackViewerPlane.visible = true;

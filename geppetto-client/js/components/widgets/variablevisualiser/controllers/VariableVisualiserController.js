@@ -48,7 +48,7 @@ define(function (require) {
           GEPPETTO.WidgetsListener.subscribe(that, id);
 
           // updates help command options
-          GEPPETTO.CommandController.updateHelpCommand(vv, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client//js/components/widgets/variablevisualiser/VariableVisualiser.js"));
+          GEPPETTO.CommandController.updateHelpCommand(vv, id, that.getFileComments("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/components/widgets/variablevisualiser/VariableVisualiser.js"));
           // update tags for autocompletion
           GEPPETTO.CommandController.updateTags(vv.getId(), vv);
           resolve(vv);
