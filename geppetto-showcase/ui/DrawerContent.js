@@ -7,9 +7,8 @@ import Collapse from "@material-ui/core/Collapse";
 import { withStyles } from "@material-ui/core/styles";
 import ConnectivityShowcase
   from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityShowcase";
-import ListViewerShowcase
-  from "@geppettoengine/geppetto-client/js/components/interface/listViewer/showcase/ListViewerShowcase";
-import MenuShowcase from "@geppettoengine/geppetto-client/js/components/interface/menu/showcase/MenuShowcase";
+import MenuShowcase from "../../geppetto-ui/menu/showcase/MenuShowcase";
+import ListViewerShowcase from "../../geppetto-ui/listViewer/showcase/ListViewerShowcase";
 
 const styles = theme => ({
   nested: { paddingLeft: theme.spacing(4), },
