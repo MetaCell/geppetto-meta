@@ -20,6 +20,10 @@ const styles = theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  component: {
+    width: "100%",
+    height: "800px",
+  },
   toolbar: theme.mixins.toolbar,
   searchIcon: {
     width: theme.spacing(7),
@@ -90,7 +94,9 @@ class Main extends Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar}/>
-          {content}
+          <div className={classes.component}>
+              {content}
+          </div>
         </main>
       </div>
     );

@@ -12,6 +12,8 @@ import ListViewerShowcase from "../../geppetto-ui/listViewer/showcase/ListViewer
 import PlotShowcase from "../../geppetto-ui/plot/showcase/PlotShowcase";
 import FlexLayoutShowcase from "../../geppetto-ui/flexLayout2/showcase/FlexLayoutShowcase";
 import MoviePlayerShowcase from "../../geppetto-ui/moviePlayer/showcase/MoviePlayerShowcase";
+import PythonConsoleShowcase from "../../geppetto-ui/pythonConsole/showcase/PythonConsoleShowcase";
+import GraphVisualizationShowcase from "../../geppetto-ui/graph-visualization/showcase/GraphVisualizationShowcase";
 
 const styles = theme => ({
   nested: { paddingLeft: theme.spacing(4), },
@@ -46,7 +48,6 @@ class DrawerContent extends Component {
     const { interfaceOpen, controlsOpen } = this.state;
     const { classes, contentHandler } = this.props;
 
-    // todo: Change to showcase geppetto client component
     const content = {
       "Interface": {
         "open": interfaceOpen,
@@ -67,7 +68,15 @@ class DrawerContent extends Component {
           {
             "name": "MoviePlayer",
             "component": <MoviePlayerShowcase/>
-          }
+          },
+          {
+            "name": "GraphVisualizer",
+            "component": <GraphVisualizationShowcase/>
+          },
+          {
+            "name": "PythonConsole",
+            "component": <PythonConsoleShowcase/>
+          },
         ]
       },
       "Controls": {

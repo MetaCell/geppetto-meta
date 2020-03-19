@@ -27,6 +27,8 @@ GEPPETTO.CommandController = {
 GEPPETTO.ComponentFactory ={
   addExistingComponent: console.log,
 };
+GEPPETTO.on = console.log;
+GEPPETTO.off = console.log;
 
 export default class App extends Component {
   render () {
