@@ -3,18 +3,14 @@ import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
 import createPlotlyComponent from 'react-plotly.js/factory';
-
 Plotly.register([require('plotly.js/lib/scatter')]);
 const ScatterPlot = createPlotlyComponent(Plotly);
-
 import { unit } from 'mathjs';
 import PlotHeader from './PlotHeader';
-import AbstractComponent from '../../AComponent';
+import AbstractComponent from '@geppettoengine/geppetto-client/js/components/AComponent';
 import { defaultLayout, defaultTrace, defaultLine, defaultConfig, defaultAxisLayout } from './configuration/plotConfiguration';
-import ExternalInstance from '../../../geppettoModel/model/ExternalInstance';
+import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
 import { withStyles } from '@material-ui/core';
-
-import AStateVariableCapability from '../../../geppettoModel/capabilities/AStateVariableCapability';
 
 const style = { 
   container: {
@@ -26,7 +22,7 @@ const style = {
     width: '100%',
     height: "calc(100% - 16px)"
   }
-}
+};
 
 class PlotComponent extends AbstractComponent {
 
@@ -70,7 +66,7 @@ class PlotComponent extends AbstractComponent {
       action: () => {},
       tooltip: 'Show navigation history'
     }
-  ]
+  ];
 
   shouldComponentUpdate (nextProps, nextState) {
     const { plots } = this.props;
@@ -255,11 +251,6 @@ class PlotComponent extends AbstractComponent {
 
   resetAxes () {
     this.forceUpdate()
-  }
-
-
-  openHeaderIconMenu (anchor) {
-    this.reset = false
   }
 
   downloadImage (imageType) {

@@ -4,7 +4,10 @@ const path = require('path');
 module.exports = {
   entry: path.resolve(__dirname,"./geppetto-showcase/index.js"),
 
-  resolve:{ alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") } },
+  resolve:{
+    alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") },
+    extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
+  },
   module: {
     rules: [
       {
@@ -15,6 +18,10 @@ module.exports = {
           presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react',
                     { 'plugins': ['@babel/plugin-proposal-class-properties'] }] 
         }
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
       },
       {
         test: /\.html$/,

@@ -2,7 +2,8 @@ define(function (require) {
 
   var React = require('react');
   var ReactPlayer = require('react-player');
-  var AbstractComponent = require('../../AComponent');
+  var AbstractComponent = require('@geppettoengine/geppetto-client/js/components/AComponent');
+
 
   /**
    * Creates a component using react-player

@@ -1,0 +1,2333 @@
+{
+  "eClass": "GeppettoModel",
+  "name": "NWB File",
+  "variables": [
+    {
+      "eClass": "Variable",
+      "types": [
+        {
+          "eClass": "CompositeType",
+          "$ref": "//@libraries.1/@types.1"
+        }
+      ],
+      "id": "nwbfile",
+      "synched": false,
+      "name": "nwbfile"
+    }
+  ],
+  "libraries": [
+    {
+      "eClass": "GeppettoLibrary",
+      "types": [
+        {
+          "eClass": "ParameterType",
+          "id": "Parameter",
+          "name": "Parameter"
+        },
+        {
+          "eClass": "DynamicsType",
+          "id": "Dynamics",
+          "name": "Dynamics"
+        },
+        {
+          "eClass": "StateVariableType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.4"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.7"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.5"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.6"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.5"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.6"
+            }
+          ],
+          "id": "StateVariable",
+          "name": "State Variable"
+        },
+        {
+          "eClass": "HTMLType",
+          "id": "HTML",
+          "name": "HTML"
+        },
+        {
+          "eClass": "URLType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.20"
+            }
+          ],
+          "id": "URL",
+          "name": "URL"
+        },
+        {
+          "eClass": "TextType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.3"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.5"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.6"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.8"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.3/@variables.9"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.3"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.4"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.7"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.4/@variables.8"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.3"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.4"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.7"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.5/@variables.8"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.14/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.14/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.13"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.14"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.21/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.3"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.4"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.5"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.24/@variables.6"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.18"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.19"
+            }
+          ],
+          "id": "Text",
+          "name": "Text"
+        },
+        {
+          "eClass": "PointType",
+          "id": "Point",
+          "name": "Point"
+        },
+        {
+          "eClass": "ExpressionType",
+          "id": "Expression",
+          "name": "Expression"
+        },
+        {
+          "eClass": "VisualType",
+          "id": "Visual",
+          "name": "Visual"
+        },
+        {
+          "eClass": "PointerType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.14/@variables.2"
+            }
+          ],
+          "id": "Pointer",
+          "name": "Pointer"
+        },
+        {
+          "eClass": "ImageType",
+          "id": "Image",
+          "name": "Image"
+        },
+        {
+          "eClass": "ConnectionType",
+          "id": "connection",
+          "name": "Connection"
+        },
+        {
+          "eClass": "VisualType",
+          "id": "particles",
+          "name": "Particles"
+        },
+        {
+          "eClass": "JSONType",
+          "id": "JSON",
+          "name": "JSON"
+        },
+        {
+          "eClass": "SimpleArrayType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.21/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.0"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.1"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.2"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.3"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.4"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.5"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.6"
+            },
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.23/@variables.7"
+            }
+          ],
+          "id": "simplearray",
+          "name": "Simple Array"
+        },
+        {
+          "eClass": "MetadataType",
+          "id": "metadata",
+          "name": "Metadata"
+        }
+      ],
+      "id": "common",
+      "name": "Geppetto Common Library"
+    },
+    {
+      "eClass": "GeppettoLibrary",
+      "types": [
+        {
+          "eClass": "ImportType",
+          "referencedVariables": [],
+          "name": "nwbfile",
+          "id": "nwbfile",
+          "autoresolve": true,
+          "url": "webapp/nwb_files_cache/time_series_data.nwb"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@variables.0"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.2"
+                }
+              ],
+              "id": "acquisition",
+              "name": "acquisition"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.6"
+                }
+              ],
+              "id": "analysis",
+              "name": "analysis"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.7"
+                }
+              ],
+              "id": "scratch",
+              "name": "scratch"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.8"
+                }
+              ],
+              "id": "stimulus",
+              "name": "stimulus"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.9"
+                }
+              ],
+              "id": "stimulus_template",
+              "name": "stimulus_template"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.10"
+                }
+              ],
+              "id": "processing",
+              "name": "processing"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.11"
+                }
+              ],
+              "id": "devices",
+              "name": "devices"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.13"
+                }
+              ],
+              "id": "electrode_groups",
+              "name": "electrode_groups"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.15"
+                }
+              ],
+              "id": "imaging_planes",
+              "name": "imaging_planes"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.16"
+                }
+              ],
+              "id": "ic_electrodes",
+              "name": "ic_electrodes"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.17"
+                }
+              ],
+              "id": "ogen_sites",
+              "name": "ogen_sites"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.18"
+                }
+              ],
+              "id": "intervals",
+              "name": "intervals"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.19"
+                }
+              ],
+              "id": "lab_meta_data",
+              "name": "lab_meta_data"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "session_description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Home."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "session_description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "identifier",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "SF-238."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "identifier"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.20"
+                }
+              ],
+              "id": "file_create_date",
+              "name": "file_create_date"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.21"
+                }
+              ],
+              "id": "electrodes",
+              "name": "electrodes"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.24"
+                }
+              ],
+              "id": "subject",
+              "name": "subject"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "stimulus_notes",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "No sttimulus."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "stimulus_notes"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "Num. of acquisitions",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "3"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "Num. of acquisitions"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "URLType",
+                  "$ref": "//@libraries.0/@types.4"
+                }
+              ],
+              "id": "source file",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "URL",
+                    "url": "https://github.com/OpenSourceBrain/NWBShowcase/raw/master/NWB/time_series_data.nwb"
+                  },
+                  "key": {
+                    "eClass": "URLType",
+                    "$ref": "//@libraries.0/@types.4"
+                  }
+                }
+              ],
+              "name": "source file"
+            }
+          ],
+          "name": "nwbfile",
+          "abstract": false,
+          "id": "nwbfile"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.0"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.3"
+                }
+              ],
+              "id": "test_image_series",
+              "name": "test_image_series"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.4"
+                }
+              ],
+              "id": "test_sine_1",
+              "name": "test_sine_1"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.5"
+                }
+              ],
+              "id": "test_sine_2",
+              "name": "test_sine_2"
+            }
+          ],
+          "name": "LabelledDict",
+          "abstract": false,
+          "id": "acquisition"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.2/@variables.0"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "resolution",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "-1.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "resolution"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "comments",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "no comments"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "comments"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Series of images from a simulation of the cerebellum via neuroConstruct"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "conversion",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "conversion"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "timestamps",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "timestamps"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "timestamps_unit",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "seconds"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "timestamps_unit"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "interval",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "interval"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "external_file",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "external_file"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "format",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "external"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "format"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "num_samples",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "82"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "num_samples"
+            }
+          ],
+          "name": "ImageSeries",
+          "abstract": false,
+          "id": "test_image_series"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.2/@variables.1"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "resolution",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "0.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "resolution"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "comments",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Human-readable comments about this TimeSeries dataset."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "comments"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Description of this TimeSeries dataset."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "conversion",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "conversion"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "unit",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "mV"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "unit"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "data",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "data"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "timestamps",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "timestamps"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "timestamps_unit",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "seconds"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "timestamps_unit"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "interval",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "interval"
+            }
+          ],
+          "name": "TimeSeries",
+          "abstract": false,
+          "id": "test_sine_1"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.2/@variables.2"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "resolution",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "0.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "resolution"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "comments",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Another human-readable comments about this TimeSeries dataset."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "comments"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Another description of this TimeSeries dataset."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "conversion",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1.0"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "conversion"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "unit",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "pA"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "unit"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "data",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "data"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "StateVariableType",
+                  "$ref": "//@libraries.0/@types.2"
+                }
+              ],
+              "id": "timestamps",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "ImportValue"
+                  },
+                  "key": {
+                    "eClass": "StateVariableType",
+                    "$ref": "//@libraries.0/@types.2"
+                  }
+                }
+              ],
+              "name": "timestamps"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "timestamps_unit",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "seconds"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "timestamps_unit"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "interval",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "1"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "interval"
+            }
+          ],
+          "name": "TimeSeries",
+          "abstract": false,
+          "id": "test_sine_2"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.1"
+            }
+          ],
+          "abstract": false,
+          "id": "analysis",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.2"
+            }
+          ],
+          "abstract": false,
+          "id": "scratch",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.3"
+            }
+          ],
+          "abstract": false,
+          "id": "stimulus",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.4"
+            }
+          ],
+          "abstract": false,
+          "id": "stimulus_template",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.5"
+            }
+          ],
+          "abstract": false,
+          "id": "processing",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.6"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.12"
+                }
+              ],
+              "id": "Tetrode",
+              "name": "Tetrode"
+            }
+          ],
+          "name": "LabelledDict",
+          "abstract": false,
+          "id": "devices"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.11/@variables.0"
+            }
+          ],
+          "abstract": false,
+          "id": "Tetrode",
+          "name": "Device"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.7"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.14"
+                }
+              ],
+              "id": "Tetrode",
+              "name": "Tetrode"
+            }
+          ],
+          "name": "LabelledDict",
+          "abstract": false,
+          "id": "electrode_groups"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.13/@variables.0"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Tetrode group"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "location",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "CA1"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "location"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "PointerType",
+                  "$ref": "//@libraries.0/@types.9"
+                }
+              ],
+              "id": "device",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Pointer",
+                    "elements": [
+                      {
+                        "eClass": "PointerElement",
+                        "variable": {
+                          "eClass": "Variable",
+                          "$ref": "//@libraries.1/@types.11/@variables.0"
+                        },
+                        "type": {
+                          "eClass": "CompositeType",
+                          "$ref": "//@libraries.1/@types.12"
+                        },
+                        "index": null
+                      }
+                    ],
+                    "path": "Tetrode(Tetrode)"
+                  },
+                  "key": {
+                    "eClass": "PointerType",
+                    "$ref": "//@libraries.0/@types.9"
+                  }
+                }
+              ],
+              "name": "device"
+            }
+          ],
+          "name": "ElectrodeGroup",
+          "abstract": false,
+          "id": "Tetrode1"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.8"
+            }
+          ],
+          "abstract": false,
+          "id": "imaging_planes",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.9"
+            }
+          ],
+          "abstract": false,
+          "id": "ic_electrodes",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.10"
+            }
+          ],
+          "abstract": false,
+          "id": "ogen_sites",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.11"
+            }
+          ],
+          "abstract": false,
+          "id": "intervals",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.12"
+            }
+          ],
+          "abstract": false,
+          "id": "lab_meta_data",
+          "name": "LabelledDict"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.15"
+            }
+          ],
+          "abstract": false,
+          "id": "CompositeList",
+          "name": "CompositeList"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.16"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "metadata about extracellular electrodes"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.22"
+                }
+              ],
+              "id": "id",
+              "name": "id"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "colnames",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "StringArray",
+                    "elements": [
+                      "x",
+                      "y",
+                      "z",
+                      "imp",
+                      "location",
+                      "filtering",
+                      "group",
+                      "group_name"
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "colnames"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "CompositeType",
+                  "$ref": "//@libraries.1/@types.23"
+                }
+              ],
+              "id": "columns",
+              "name": "columns"
+            }
+          ],
+          "name": "DynamicTable",
+          "abstract": false,
+          "id": "electrodes"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.21/@variables.1"
+            }
+          ],
+          "abstract": false,
+          "id": "id",
+          "name": "ElementIdentifiers"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.21/@variables.3"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "x",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "1.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "1.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "1.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "1.0"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "x"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "y",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "2.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "2.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "2.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "2.0"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "y"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "z",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "3.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "3.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "3.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "3.0"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "z"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "imp",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "-1.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "-2.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "-3.0"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "-4.0"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "imp"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "location",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "CA1"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "CA1"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "CA1"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "CA1"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "location"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "filtering",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "Description of hardware filtering."
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Description of hardware filtering."
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Description of hardware filtering."
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Description of hardware filtering."
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "filtering"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "group",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Pointer",
+                        "path": "nwbfile.electrode_groups.Tetrode"
+                      },
+                      {
+                        "eClass": "Pointer",
+                        "path": "nwbfile.electrode_groups.Tetrode"
+                      },
+                      {
+                        "eClass": "Pointer",
+                        "path": "nwbfile.electrode_groups.Tetrode"
+                      },
+                      {
+                        "eClass": "Pointer",
+                        "path": "nwbfile.electrode_groups.Tetrode"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "group"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "SimpleArrayType",
+                  "$ref": "//@libraries.0/@types.14"
+                }
+              ],
+              "id": "group_name",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "GenericArray",
+                    "elements": [
+                      {
+                        "eClass": "Text",
+                        "text": "Tetrode"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Tetrode"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Tetrode"
+                      },
+                      {
+                        "eClass": "Text",
+                        "text": "Tetrode"
+                      }
+                    ]
+                  },
+                  "key": {
+                    "eClass": "SimpleArrayType",
+                    "$ref": "//@libraries.0/@types.14"
+                  }
+                }
+              ],
+              "name": "group_name"
+            }
+          ],
+          "name": "CompositeList",
+          "abstract": false,
+          "id": "CompositeList1"
+        },
+        {
+          "eClass": "CompositeType",
+          "referencedVariables": [
+            {
+              "eClass": "Variable",
+              "$ref": "//@libraries.1/@types.1/@variables.17"
+            }
+          ],
+          "variables": [
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "age",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "33."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "age"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "description",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Synthetic data"
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "description"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "genotype",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "AA."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "genotype"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "sex",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "F."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "sex"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "species",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "Homo Sapiens."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "species"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "subject_id",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "HM-AA-875362791629."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "subject_id"
+            },
+            {
+              "eClass": "Variable",
+              "types": [
+                {
+                  "eClass": "TextType",
+                  "$ref": "//@libraries.0/@types.5"
+                }
+              ],
+              "id": "weight",
+              "initialValues": [
+                {
+                  "eClass": "TypeToValueMap",
+                  "value": {
+                    "eClass": "Text",
+                    "text": "233lb."
+                  },
+                  "key": {
+                    "eClass": "TextType",
+                    "$ref": "//@libraries.0/@types.5"
+                  }
+                }
+              ],
+              "name": "weight"
+            }
+          ],
+          "name": "Subject",
+          "abstract": false,
+          "id": "subject"
+        }
+      ],
+      "id": "nwbfile",
+      "synched": false,
+      "name": "nwbfile"
+    }
+  ]
+}

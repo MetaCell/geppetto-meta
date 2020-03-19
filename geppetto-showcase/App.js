@@ -24,6 +24,9 @@ GEPPETTO.CommandController = {
   log: console.log,
   createTags: (a, b) => null
 };
+GEPPETTO.ComponentFactory ={
+  addExistingComponent: console.log,
+};
 
 export default class App extends Component {
   render () {

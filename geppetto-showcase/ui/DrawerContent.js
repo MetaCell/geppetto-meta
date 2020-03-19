@@ -9,6 +9,9 @@ import ConnectivityShowcase
   from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityShowcase";
 import MenuShowcase from "../../geppetto-ui/menu/showcase/MenuShowcase";
 import ListViewerShowcase from "../../geppetto-ui/listViewer/showcase/ListViewerShowcase";
+import PlotShowcase from "../../geppetto-ui/plot/showcase/PlotShowcase";
+import FlexLayoutShowcase from "../../geppetto-ui/flexLayout2/showcase/FlexLayoutShowcase";
+import MoviePlayerShowcase from "../../geppetto-ui/moviePlayer/showcase/MoviePlayerShowcase";
 
 const styles = theme => ({
   nested: { paddingLeft: theme.spacing(4), },
@@ -54,19 +57,32 @@ class DrawerContent extends Component {
             "component": <ConnectivityShowcase/>
           },
           {
-            "name": "ListViewer",
-            "component": <ListViewerShowcase/>
+            "name": "Plot",
+            "component": <PlotShowcase/>
           },
           {
-            "name": "Menu",
-            "component": <MenuShowcase/>
+            "name": "FlexLayout",
+            "component": <FlexLayoutShowcase/>
+          },
+          {
+            "name": "MoviePlayer",
+            "component": <MoviePlayerShowcase/>
           }
         ]
       },
       "Controls": {
         "open": controlsOpen,
         "handler": this.controlsHandler,
-        "children": []
+        "children": [
+          {
+            "name": "ListViewer",
+            "component": <ListViewerShowcase/>
+          },
+          {
+            "name": "Menu",
+            "component": <MenuShowcase/>
+          },
+        ]
       },
     };
     return (
