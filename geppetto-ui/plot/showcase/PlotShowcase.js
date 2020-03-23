@@ -9,8 +9,8 @@ export default class PlotShowcase extends Component {
         this.instancePath = "nwbfile.acquisition.test_sine_1";
         GEPPETTO.Manager.loadModel(model);
         Instances.getInstance(this.instancePath);
-        Instances.getInstance("nwbfile.acquisition.test_sine_1.data");
-        Instances.getInstance("nwbfile.acquisition.test_sine_1.timestamps");
+        Instances.getInstance(`${this.instancePath}.data`);
+        Instances.getInstance(`${this.instancePath}.timestamps`);
     }
 
     getLegendName (projectId, experimentId, instance, sameProject) {
