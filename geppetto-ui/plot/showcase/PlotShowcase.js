@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import model from './model.json';
 import PlotComponent from "../PlotComponent";
+import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
 
 export default class PlotShowcase extends Component {
     constructor (props) {
         super(props);
+        this.instancePath = "nwbfile.acquisition.test_sine_1";
         GEPPETTO.Manager.loadModel(model);
+        Instances.getInstance(this.instancePath)
     }
 
     getLegendName (projectId, experimentId, instance, sameProject) {
@@ -46,13 +49,12 @@ export default class PlotShowcase extends Component {
     }
 
     render () {
-        const instancePath = "acquisition.test_sine_1";
         const color = 'white';
         const guestList = [];
 
         const plots = [{
-            x: `${instancePath}.timestamps`,
-            y: `${instancePath}.data`,
+            x: `${this.instancePath}.timestamps`,
+            y: `${this.instancePath}.data`,
             lineOptions: { color: color }
         }];
 
@@ -69,7 +71,7 @@ export default class PlotShowcase extends Component {
         return (
             <PlotComponent
                 plots={plots}
-                id={instancePath ? instancePath : "empty"}
+                id={this.instancePath ? this.instancePath : "empty"}
                 extractLegendName={this.extractLegendName}
             />
         );
