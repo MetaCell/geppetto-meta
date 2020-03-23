@@ -29,6 +29,14 @@ GEPPETTO.ComponentFactory ={
 };
 GEPPETTO.on = console.log;
 GEPPETTO.off = console.log;
+GEPPETTO.UnitsController = {
+  getUnitLabel : function (unit){
+    return unit;
+  },
+  hasUnit : function (unit){
+    return true;
+  }
+};
 
 export default class App extends Component {
   render () {
