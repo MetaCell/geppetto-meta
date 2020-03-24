@@ -98,7 +98,7 @@ define(function (require) {
           this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
           this.handleUpdateInput = this.handleUpdateInput.bind(this);
           this.handleUpdateCheckbox = this.handleUpdateCheckbox.bind(this);
-          this.oldValue = ''
+          
         }
 
         shouldComponentUpdate (nextProps, nextState) {
@@ -182,13 +182,12 @@ define(function (require) {
             if (newValue !== '') {
               this.syncValueWithPython(newValue, this.oldValue);
             }
-            // Skip sync emtpy string with python on mount
-            if (newValue !== '' || this.oldValue !== '') {
-              if (this.props.callback) {
-                this.props.callback(newValue, this.oldValue);
-              }
+            
+            if (this.props.callback) {
+              this.props.callback(newValue, this.oldValue);
             }
-            this.oldValue = newValue;
+            this.oldValue = undefined
+          
           }
           this.setState({ value: newValue, searchText: newValue, checked: newValue });
           this.forceUpdate();
@@ -207,6 +206,10 @@ define(function (require) {
           if (event != null && event.target.value != undefined) {
             targetValue = event.target.value;
           }
+          if (this.oldValue === undefined) {
+            this.oldValue = this.state.value
+          }
+          
           this.setState({ value: targetValue });
 
           if (this.props.validate) {
