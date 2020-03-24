@@ -361,9 +361,11 @@ export default class Search extends Component<SearchProps, SearchState> {
                   this.resultsHeight = e.currentTarget.parentNode.offsetHeight + e.currentTarget.parentNode.offsetTop + 10;
                   this.requestData(e);
                 }} />
-              <CloseIcon id="closeIcon" onClick={ () => {
+
+              <span id="closeIcon" className="fa fa-times" onClick={ () => {
                 this.openSearch(false);
                 }}/>
+
               <Filters
                 filters={this.state.filters}
                 setFilters={this.setFilters}
