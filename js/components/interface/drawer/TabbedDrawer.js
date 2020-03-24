@@ -136,8 +136,7 @@ define(function (require) {
       if (this.marginTop == 50 && this.props.anchor) {
         try {
           this.marginTop += document.getElementById(this.props.anchor).getBoundingClientRect().height
-        }
-        catch (error) {
+        } catch (error) {
           console.log(`'${this.props.anchor}' element is not part of the DOM.`)
         }
       }
@@ -166,7 +165,7 @@ define(function (require) {
     maximizeDrawer () {
       var marginTop = 0;
       if (this.props.anchor) {
-          var marginTop = document.getElementById(this.props.anchor).getBoundingClientRect().height
+        var marginTop = document.getElementById(this.props.anchor).getBoundingClientRect().height
       }
       var newOffset = (this.state.drawerHeight >= window.innerHeight - this.marginTop) ? 250 : window.innerHeight - this.marginTop;
       this.rnd.updateSize({ height: newOffset, width: '100%' });
