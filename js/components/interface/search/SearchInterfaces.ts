@@ -2,7 +2,6 @@ export interface SearchProps {
     datasource: string;
     searchConfiguration: any,
     datasourceConfiguration: any;
-    clickHandler: Function;
     customDatasourceHandler?: Function
 };
 

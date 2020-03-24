@@ -6,6 +6,7 @@ import * as React from "react";
 import { Component, FC, useState, useRef, useEffect } from "react";
 import { getResultsSOLR } from "./datasources/SOLRclient";
 import { DatasourceTypes } from './datasources/datasources';
+import CloseIcon from '@material-ui/icons/Close';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { Checkbox, Paper, MenuList, MenuItem } from "@material-ui/core";
 
@@ -31,17 +32,10 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
   // if data are available we display the list of results
   if (data == undefined || data.length == 0) return null;
   return (
-      <Paper style={{top: topAnchor + "px",
-                    left: '10%',
-                    height: '50%',
-                    width: '80%',
-                    position: 'absolute',
-                    textAlign: 'center',
-                    backgroundColor: 'gray',
-                    overflow: 'scroll'}}>
+      <Paper id="paperResults" style={{top: topAnchor + "px"}}>
         <MenuList>
           {data.map((item, index) => {
-            return ( <MenuItem style={{ fontSize: "16px" }}
+            return ( <MenuItem id="singleResult" style={{ fontSize: "16px" }}
               key={index}
               onClick={() => {
                 clickHandler(item[mapping["id"]]);
@@ -89,16 +83,9 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
     return (
       <span ref={paperRef}>
         <FilterListIcon id="filterIcon" onClick={(e) => {
-            setState({ open: false, top: (200 - e.pageY).toString() + "px", left: (e.pageX - 280).toString() + "px"});
+            setState({ open: false, top: (240 - e.screenY).toString() + "px", left: (e.screenX - 280).toString() + "px"});
           }} />
-        <Paper
-          style={{top: state.top,
-                  left: state.left,
-                  height: '200px',
-                  width: '240px',
-                  position: 'absolute',
-                  backgroundColor: 'yellow',
-                  overflow: 'scroll'}}>
+        <Paper id="paperFilters" style={{top: state.top, left: state.left}}>
           <MenuList>
             {filters.map((item, index) => {
               switch (item.type) {
@@ -108,8 +95,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
                       <Checkbox
                         checked={item.enabled}
                         size='medium'
-                        color='default'
-                        inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        inputProps={{ 'aria-label': 'primary checkbox' }}
                         onChange={() => {
                           if (item.enabled !== undefined) {
                             item.enabled = !item.enabled;
@@ -134,8 +120,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
                             <Checkbox
                               checked={value.enabled}
                               size='medium'
-                              color='default'
-                              inputProps={{ 'aria-label': 'checkbox with default color' }}
+                              inputProps={{ 'aria-label': 'primary checkbox' }}
                               onChange={() => {
                                 if (value.enabled !== undefined) {
                                   value.enabled = !value.enabled;
@@ -170,7 +155,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
     return (
       <span ref={paperRef}>
         <FilterListIcon id="filterIcon" onClick={(e) => {
-          setState({ open: true, top: (200 - e.pageY).toString() + "px", left: (e.pageX - 280).toString() + "px"});
+          setState({ open: true, top: (280 - e.clientY).toString() + "px", left: (e.clientX - 240).toString() + "px"});
         }} />
       </span>
     );
@@ -194,6 +179,9 @@ export default class Search extends Component<SearchProps, SearchState> {
     constructor (props: SearchProps) {
         super(props);
 
+        // Initialise state from props is an antipattern if the source of truth can diverge from the state
+        // in our case that is not an issue since we are using the prop only to inialise the state, then
+        // the application rely on the state and not on the prop itself (this is for the filters)
         const initialFilters = (props.searchConfiguration.filters !== undefined) ? props.searchConfiguration.filters : [];
         this.state = {
           value: "",
@@ -206,6 +194,7 @@ export default class Search extends Component<SearchProps, SearchState> {
 
         this.openSearch = this.openSearch.bind(this);
         this.setFilters = this.setFilters.bind(this);
+        this.escFunction = this.escFunction.bind(this);
         this.handleResize = this.handleResize.bind(this);
         this.handleResults = this.handleResults.bind(this);
       };
@@ -216,6 +205,7 @@ export default class Search extends Component<SearchProps, SearchState> {
         [DatasourceTypes.SOLRClient]: getResultsSOLR,
       };
 
+      // handle the component opening / closing
       openSearch(requestedAction) {
         if (requestedAction !== undefined) {
           this.results = [];
@@ -247,6 +237,7 @@ export default class Search extends Component<SearchProps, SearchState> {
         }
       };
 
+      // update the filters, handler used to trigger the update from the filter component
       setFilters(filter) {
         let newFilters:Array<any> = [];
 
@@ -260,6 +251,7 @@ export default class Search extends Component<SearchProps, SearchState> {
         this.setState({ filters: newFilters });
       };
 
+      // filter the results when 1 or more than one filter is provided
       applyFilters() {
         var allFiltersDisabled:boolean = true;
         var newResults:Array<any> = [];
@@ -327,16 +319,26 @@ export default class Search extends Component<SearchProps, SearchState> {
       handleResize() {
         if (this.refs.inputRef !== undefined) {
           this.resultsHeight = ((this.refs.inputRef as HTMLInputElement).parentNode as HTMLDivElement).offsetHeight + ((this.refs.inputRef as HTMLInputElement).parentNode as HTMLDivElement).offsetTop + 10;
+          // this setState it's actually an hack to re-render when the browser is resized
+          // TODO: the render can be improved to avoid the filter function when this happen
           this.setState({ value: this.state.value });
         }
       }
 
+      escFunction(event){
+        if(event.keyCode === 27) {
+          this.openSearch(false);
+        }
+      }
+
       componentDidMount() {
-        window.addEventListener('resize', this.handleResize)
+        window.addEventListener('resize', this.handleResize);
+        window.addEventListener('keydown', this.escFunction, false);
       }
 
       componentWillUnmount() {
         window.removeEventListener('resize', this.handleResize);
+        window.removeEventListener('keydown', this.escFunction, false);
       }
 
       // link the function getResults to the datasource getter that we decided in the prop datasource
@@ -352,20 +354,16 @@ export default class Search extends Component<SearchProps, SearchState> {
         let filteredResults:Array<any> = this.applyFilters();
         return (
           <div>
-            <Paper style={{top: '15%',
-                          left: '10%',
-                          width: '80%',
-                          position: 'absolute',
-                          textAlign: 'center',
-                          backgroundColor: 'gray',
-                          zIndex: 1}}>
+            <Paper id="mainPaper">
               <input ref="inputRef" id="searchInput" type="text"
                 autoComplete="virtualflybrain"
                 onChange={ (e:any) => {
                   this.resultsHeight = e.currentTarget.parentNode.offsetHeight + e.currentTarget.parentNode.offsetTop + 10;
                   this.requestData(e);
                 }} />
-
+              <CloseIcon id="closeIcon" onClick={ () => {
+                this.openSearch(false);
+                }}/>
               <Filters
                 filters={this.state.filters}
                 setFilters={this.setFilters}
