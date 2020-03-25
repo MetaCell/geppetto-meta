@@ -82,10 +82,10 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
   if (state.open) {
     return (
       <span ref={paperRef}>
-        <FilterListIcon id="filterIcon" onClick={(e) => {
-            setState({ open: false, top: (240 - e.screenY).toString() + "px", left: (e.screenX - 280).toString() + "px"});
+        <FilterListIcon id="filterIcon" onClick={() => {
+            setState({ open: false, top: "0px", left: "0px" });
           }} />
-        <Paper id="paperFilters" style={{top: state.top, left: state.left}}>
+        <Paper id="paperFilters" style={{marginTop: "12px", right: "0px"}}>
           <MenuList>
             {filters.map((item, index) => {
               switch (item.type) {
@@ -155,7 +155,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
     return (
       <span ref={paperRef}>
         <FilterListIcon id="filterIcon" onClick={(e) => {
-          setState({ open: true, top: (280 - e.clientY).toString() + "px", left: (e.clientX - 240).toString() + "px"});
+          setState({ open: true, top: "0px", left: "0px" });
         }} />
       </span>
     );
