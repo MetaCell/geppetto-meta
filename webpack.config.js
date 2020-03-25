@@ -3,7 +3,8 @@ const path = require('path');
 
 module.exports = {
   entry: path.resolve(__dirname,"./geppetto-showcase/index.js"),
-
+  mode: "development",
+  devtool: "inline-source-map",
   resolve:{
     alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],

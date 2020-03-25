@@ -7,16 +7,6 @@ export default class ConnectivityShowcase extends Component {
   constructor (props) {
     super(props);
     GEPPETTO.Manager.loadModel(model);
-    this.data = Instances[0];
-    this.colorMap = "undefined";
-    this.size = { width: 600, height: 500 };
-    this.config = {
-      "matrix": {
-        layout: new Matrix(),
-        colors: ["#cb0000", "#003398"],
-        names: ["pyramidals_48", "baskets_12"],
-      }
-    };
     this.linkType = this.linkType.bind(this);
   }
 
@@ -25,17 +15,22 @@ export default class ConnectivityShowcase extends Component {
   }
 
   render () {
-    const matrix = this.config['matrix'];
+    const data = Instances[0];
+    const colorMap = "undefined";
+    const layout = new Matrix();
+    const colors = ["#cb0000", "#003398"];
+    const names = ["pyramidals_48", "baskets_12"];
+    const size = { width: 600, height: 500 };
 
     return (
       <ConnectivityComponent
         id="ConnectivityContainer"
-        size={this.size}
-        data={this.data}
-        colorMap={this.colorMap}
-        colors={matrix.colors}
-        names={matrix.names}
-        layout={matrix.layout}
+        size={size}
+        data={data}
+        colorMap={colorMap}
+        colors={colors}
+        names={names}
+        layout={layout}
         modelFactory={GEPPETTO.ModelFactory}
         resources={GEPPETTO.Resources}
         matrixOnClickHandler={() => console.log("Mock call to GEPPETTO.SceneController")}

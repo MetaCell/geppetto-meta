@@ -5,15 +5,16 @@ import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import Collapse from "@material-ui/core/Collapse";
 import { withStyles } from "@material-ui/core/styles";
-import ConnectivityShowcase
-  from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityShowcase";
-import MenuShowcase from "../../geppetto-ui/menu/showcase/MenuShowcase";
-import ListViewerShowcase from "../../geppetto-ui/listViewer/showcase/ListViewerShowcase";
-import PlotShowcase from "../../geppetto-ui/plot/showcase/PlotShowcase";
-import FlexLayoutShowcase from "../../geppetto-ui/flexLayout2/showcase/FlexLayoutShowcase";
-import MoviePlayerShowcase from "../../geppetto-ui/moviePlayer/showcase/MoviePlayerShowcase";
-import PythonConsoleShowcase from "../../geppetto-ui/pythonConsole/showcase/PythonConsoleShowcase";
-import GraphVisualizationShowcase from "../../geppetto-ui/graph-visualization/showcase/GraphVisualizationShowcase";
+import {ConnectivityConfig}
+  from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/ConnectivityConfig";
+import MenuShowcase from "../../../geppetto-ui/menu/showcase/MenuShowcase";
+import ListViewerShowcase from "../../../geppetto-ui/listViewer/showcase/ListViewerShowcase";
+import PlotShowcase from "../../../geppetto-ui/plot/showcase/PlotShowcase";
+import FlexLayoutShowcase from "../../../geppetto-ui/flexLayout2/showcase/FlexLayoutShowcase";
+import MoviePlayerShowcase from "../../../geppetto-ui/moviePlayer/showcase/MoviePlayerShowcase";
+import PythonConsoleShowcase from "../../../geppetto-ui/pythonConsole/showcase/PythonConsoleShowcase";
+import GraphVisualizationShowcase from "../../../geppetto-ui/graph-visualization/showcase/GraphVisualizationShowcase";
+import Showcase from "../Showcase";
 
 const styles = theme => ({
   nested: { paddingLeft: theme.spacing(4), },
@@ -55,7 +56,7 @@ class DrawerContent extends Component {
         "children": [
           {
             "name": "Connectivity",
-            "component": <ConnectivityShowcase/>
+            "component": <Showcase configs={ConnectivityConfig}/>
           },
           {
             "name": "Plot",

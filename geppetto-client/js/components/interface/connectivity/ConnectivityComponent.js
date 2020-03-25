@@ -83,7 +83,7 @@ class ConnectivityComponent extends Component {
 
 
     return (
-      <div style={{ height:size.height, width:size.width }} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
+      <div style={{ height:"100%", width:size.width }} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
         <Grid className={classes.connectivityContainer} container spacing={2}>
           <Grid item sm={12} xs={12} >
             <ConnectivityToolbar
