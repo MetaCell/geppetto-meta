@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import model from './model.json';
-import { Matrix } from "../layouts/Matrix";
-import ConnectivityComponent from "../ConnectivityComponent";
+import model from '../model.json';
+import { Matrix } from "../../layouts/Matrix";
+import ConnectivityComponent from "../../ConnectivityComponent";
 
-export default class ConnectivityShowcase extends Component {
+export default class ConnectivityShowcaseMatrix extends Component {
   constructor (props) {
     super(props);
     GEPPETTO.Manager.loadModel(model);
@@ -24,7 +24,7 @@ export default class ConnectivityShowcase extends Component {
 
     return (
       <ConnectivityComponent
-        id="ConnectivityContainer"
+        id="ConnectivityContainerMatrix"
         size={size}
         data={data}
         colorMap={colorMap}

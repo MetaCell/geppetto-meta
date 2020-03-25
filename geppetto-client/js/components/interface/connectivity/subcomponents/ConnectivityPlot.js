@@ -305,7 +305,7 @@ class ConnectivityPlot extends Component {
     const { id, classes, legendsVisibility, layout } = this.props;
 
     let legends = [];
-    if (layout && this.nodeColormap) {
+    if (layout && this.nodeColormap && this.dataset) {
       const layoutLegends = layout.getLegends(this);
       for (const obj of layoutLegends) {
         if (obj.title) {

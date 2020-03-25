@@ -5,7 +5,6 @@ export class Matrix {
     this.leftIndicator = 10;
     this.topIndicator = 10;
     this.order = "id";
-    this.legends = [];
   }
   
   draw (context) {

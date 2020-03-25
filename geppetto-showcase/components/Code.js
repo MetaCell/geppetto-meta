@@ -4,7 +4,7 @@ import IconButtonWithTooltip from "./IconButtonWithTooltip";
 import {faCode} from "@fortawesome/free-solid-svg-icons";
 import Toolbar from "@material-ui/core/Toolbar";
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 const styles = (theme) => ({
     toolbar: {
@@ -59,7 +59,7 @@ class Code extends Component {
                 <Toolbar className={classes.toolbar}>
                         {sourceButton}
                 </Toolbar>
-                <SyntaxHighlighter language="javascript" style={docco}>
+                <SyntaxHighlighter language="javascript" style={darcula}>
                     {content}
                 </SyntaxHighlighter>
             </div>
