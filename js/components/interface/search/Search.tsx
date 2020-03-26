@@ -6,7 +6,6 @@ import * as React from "react";
 import { Component, FC, useState, useRef, useEffect } from "react";
 import { getResultsSOLR } from "./datasources/SOLRclient";
 import { DatasourceTypes } from './datasources/datasources';
-import CloseIcon from '@material-ui/icons/Close';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { Checkbox, Paper, MenuList, MenuItem } from "@material-ui/core";
 
@@ -85,7 +84,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
         <FilterListIcon id="filterIcon" onClick={() => {
             setState({ open: false, top: "0px", left: "0px" });
           }} />
-        <Paper id="paperFilters" style={{marginTop: "12px", right: "0px"}}>
+        <Paper id="paperFilters">
           <MenuList>
             {filters.map((item, index) => {
               switch (item.type) {
@@ -358,7 +357,7 @@ export default class Search extends Component<SearchProps, SearchState> {
               <input ref="inputRef" id="searchInput" type="text"
                 autoComplete="virtualflybrain"
                 onChange={ (e:any) => {
-                  this.resultsHeight = e.currentTarget.parentNode.offsetHeight + e.currentTarget.parentNode.offsetTop + 10;
+                  this.resultsHeight = e.currentTarget.offsetTop + 65;
                   this.requestData(e);
                 }} />
 
@@ -370,15 +369,14 @@ export default class Search extends Component<SearchProps, SearchState> {
                 filters={this.state.filters}
                 setFilters={this.setFilters}
                 />
-            </Paper>
 
-            <Results
-              data={filteredResults}
-              mapping={this.props.searchConfiguration.resultsMapping}
-              closeHandler={this.openSearch}
-              clickHandler={this.props.searchConfiguration.clickHandler}
-              topAnchor={this.resultsHeight}
-            />
+              <Results
+                data={filteredResults}
+                mapping={this.props.searchConfiguration.resultsMapping}
+                closeHandler={this.openSearch}
+                clickHandler={this.props.searchConfiguration.clickHandler}
+                topAnchor={this.resultsHeight}/>
+            </Paper>
           </div>
         );
       }
