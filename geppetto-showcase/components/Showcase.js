@@ -19,7 +19,6 @@ class Showcase extends Component {
     render() {
         const {classes, configs} = this.props;
 
-        console.log(configs);
         return (
             <div className={classes.root}>
                 <h1>{configs.name}</h1>
