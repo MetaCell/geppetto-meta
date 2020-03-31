@@ -7,6 +7,8 @@ import Collapse from "@material-ui/core/Collapse";
 import { withStyles } from "@material-ui/core/styles";
 import {ConnectivityConfig}
   from "../../../geppetto-ui/src/components/connectivity-viewer/showcase/ConnectivityConfig";
+import {BigImageViewerConfig}
+  from "../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig";
 import MenuShowcase from "../../../geppetto-ui/src/components/menu/showcase/MenuShowcase";
 import ListViewerShowcase from "../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase";
 import PlotShowcase from "../../../geppetto-ui/src/components/plot/showcase/PlotShowcase";
@@ -54,6 +56,10 @@ class DrawerContent extends Component {
         "open": interfaceOpen,
         "handler": this.interfaceHandler,
         "children": [
+          {
+            "name": "BigImageViewer",
+            "component": <Showcase configs={BigImageViewerConfig}/>
+          },
           {
             "name": "Connectivity",
             "component": <Showcase configs={ConnectivityConfig}/>

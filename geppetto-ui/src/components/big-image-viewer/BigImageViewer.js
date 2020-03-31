@@ -4,8 +4,8 @@ define(function (require) {
 
   var React = require('react');
   var OpenSeaDragon = require('openseadragon');
-  var WidgetButtonBar = require('../../controls/widgetButtonBar/WidgetButtonBar');
-  var AbstractComponent = require('../../AComponent');
+  var WidgetButtonBar = require('@geppettoengine/geppetto-client/js/components/controls/widgetButtonBar/WidgetButtonBar');
+  var AbstractComponent = require('@geppettoengine/geppetto-client/js/components/AComponent');
 
   return class BigImageViewer extends AbstractComponent {
 
