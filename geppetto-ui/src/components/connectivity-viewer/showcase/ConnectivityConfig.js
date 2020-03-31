@@ -1,5 +1,6 @@
-import ConnectivityShowcaseMatrix from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/examples/ConnectivityShowcaseMatrix";
-import ConnectivityShowcaseForce from "@geppettoengine/geppetto-client/js/components/interface/connectivity/showcase/examples/ConnectivityShowcaseForce";
+import ConnectivityShowcaseMatrix from "./examples/ConnectivityShowcaseMatrix";
+import ConnectivityShowcaseForce from "./examples/ConnectivityShowcaseForce";
+
 
 export const ConnectivityConfig = {
     'name': "Connectivity Main Title",

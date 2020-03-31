@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as FlexLayout from "../../src/index";
+import * as FlexLayout from "../../src";
 var json = {
   global: {},
   layout: {

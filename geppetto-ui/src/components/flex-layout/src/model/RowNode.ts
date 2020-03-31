@@ -7,7 +7,7 @@ import Node from "./Node";
 import Model from "./Model";
 import TabSetNode from "./TabSetNode";
 import BorderNode from "./BorderNode";
-import DropInfo from "./../DropInfo";
+import DropInfo from "../DropInfo";
 import IDropTarget from "./IDropTarget";
 import IDraggable from "./IDraggable";
 

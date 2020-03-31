@@ -2,7 +2,7 @@ import Rect from "../Rect";
 import AttributeDefinitions from "../AttributeDefinitions";
 import Attribute from "../Attribute";
 import DockLocation from "../DockLocation";
-import DropInfo from "./../DropInfo";
+import DropInfo from "../DropInfo";
 import Node from "./Node";
 import Model from "./Model";
 import TabNode from "./TabNode";

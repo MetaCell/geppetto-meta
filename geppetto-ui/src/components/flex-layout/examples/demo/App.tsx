@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as FlexLayout from "../../src/index";
+import * as FlexLayout from "../../src";
 import Utils from "./Utils";
-import { Node, TabSetNode, TabNode, DropInfo, BorderNode } from "../../src/index";
+import { Node, TabSetNode, TabNode, DropInfo, BorderNode } from "../../src";
 
 var fields = ["Name", "ISIN", "Bid", "Ask", "Last", "Yield"];
 

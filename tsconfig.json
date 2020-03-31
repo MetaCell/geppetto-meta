@@ -15,7 +15,7 @@
     "types": [], // <--- this excludes node_modules/@types/** from implicit bundle
   },
   "include": [
-    "./geppetto-ui/flexLayout2/src/**/*",
-    "./geppetto-ui/flexLayout2/examples/demo/*"
+    "./geppetto-ui/src/components/flex-layout/src/**/*",
+    "./geppetto-ui/src/components/flex-layout/examples/demo/*"
   ]
 }
