@@ -171,9 +171,10 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
  */
 
 export default class Search extends Component<SearchProps, SearchState> {
-    private results:Array<any>;
-    private getResults:Function;
-    private resultsHeight:number;
+    private results: Array<any>;
+    private getResults: Function;
+    private resultsHeight: number;
+    private inputRef: any;
 
     constructor (props: SearchProps) {
         super(props);
@@ -217,14 +218,13 @@ export default class Search extends Component<SearchProps, SearchState> {
 
       // results handler, the name says everything
       handleResults(status:string, data:any, value:string) {
-        window.spotlightString = value;
         switch(status) {
             case "OK":
                 if (this.state.value !== value) {
                   if (value === "") {
                     this.results = [];
                   } else {
-                    this.results = data.sort(this.props.searchConfiguration.sorter);
+                    this.results = data;
                   }
                   this.setState({ value: value });
                 }
@@ -310,8 +310,10 @@ export default class Search extends Component<SearchProps, SearchState> {
 
       // wrapper to call the getter with all the required params for the generic datasource call.
       requestData(e) {
+        window.spotlightString = e.target.value;
         this.getResults(e.target.value,
                         this.handleResults,
+                        this.props.searchConfiguration.sorter,
                         this.props.datasourceConfiguration);
       };
 
@@ -327,6 +329,12 @@ export default class Search extends Component<SearchProps, SearchState> {
       escFunction(event){
         if(event.keyCode === 27) {
           this.openSearch(false);
+        }
+      }
+
+      componentDidUpdate() {
+        if (this.inputRef !== undefined && this.inputRef !== null) {
+          this.inputRef.focus();
         }
       }
 
@@ -354,7 +362,8 @@ export default class Search extends Component<SearchProps, SearchState> {
         return (
           <div>
             <Paper id="mainPaper">
-              <input ref="inputRef" id="searchInput" type="text"
+              <input id="searchInput" type="text"
+                ref={(input) => { this.inputRef = input; }}
                 autoComplete="virtualflybrain"
                 onChange={ (e:any) => {
                   this.resultsHeight = e.currentTarget.offsetTop + 65;
