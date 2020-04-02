@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as util from "../../../utilities/utilities";
+import * as util from "../../../utilities";
 import Instance from '@geppettoengine/geppetto-client/js/geppettoModel/model/Instance';
 import { withStyles } from '@material-ui/core';
 import IconText from "./IconText";

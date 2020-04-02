@@ -3,7 +3,7 @@ import ConnectivityDeck from "./ConnectivityDeck";
 import { withStyles } from '@material-ui/core';
 import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./MenuButton";
-import IconButtonWithTooltip from "../../../utilities/IconButtonWithTooltip";
+import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 import { faList, faSort } from "@fortawesome/free-solid-svg-icons";
 
 

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {withStyles} from '@material-ui/core';
 import OpenSeaDragon from 'openseadragon';
-import * as util from "../../utilities/utilities";
-import IconButtonWithTooltip from "../../utilities/IconButtonWithTooltip";
+import * as util from "../../utilities";
+import IconButtonWithTooltip from "../common/IconButtonWithTooltip";
 import Toolbar from "@material-ui/core/Toolbar";
 import { faHome, faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 
@@ -79,10 +79,6 @@ class BigImageViewer extends Component {
             this.state.settings.tileSources = this.state.file;
             this.viewer = OpenSeaDragon(this.state.settings);
         }
-    }
-
-    setData(data) {
-        this.setState({file: this.extractFilePath(data)});
     }
 
     // These four methods are not exposed by OpenSeaDragon

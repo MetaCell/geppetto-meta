@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import IconButtonWithTooltip from "../../../utilities/IconButtonWithTooltip";
+import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";
 import { Hive } from "../layouts/Hive";

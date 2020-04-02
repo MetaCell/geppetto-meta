@@ -32,7 +32,7 @@ class Code extends Component {
     getInstantiation(file, element) {
         let re = new RegExp(`<${element}(.|\\n)+?\\/>`);
         let matches = file.match(re);
-        return matches? matches: "Instantiation not found. Please check if your config.examples.element is correct.";
+        return matches? matches: "Instantiation not found.";
     }
 
 
@@ -57,7 +57,7 @@ class Code extends Component {
         return (
             <div>
                 <Toolbar className={classes.toolbar}>
-                        {sourceButton}
+                    {sourceButton}
                 </Toolbar>
                 <SyntaxHighlighter language="javascript" style={darcula}>
                     {content}
