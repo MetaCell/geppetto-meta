@@ -34,7 +34,8 @@ define(function (require) {
         },
         instances: []
       }
-
+      
+      this.initialCameraReset = false;
     }
 
     /**
@@ -59,6 +60,7 @@ define(function (require) {
       }
       if (added.length > 0) {
         this.engine.updateSceneWithNewInstances(added);
+        GEPPETTO.trigger(GEPPETTO.Events.Reset_camera);
         this.setDirty(true);
       }
 
@@ -763,6 +765,7 @@ define(function (require) {
       GEPPETTO.WidgetsListener.unsubscribe(this.engine);
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
+      GEPPETTO.off(GEPPETTO.Events.Reset_camera, null, this);
     }
 
     componentDidMount () {
@@ -790,7 +793,21 @@ define(function (require) {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
         }, false);
-
+        
+        GEPPETTO.on(GEPPETTO.Events.Reset_camera, () => {
+          let instancesFetched = window.Instances.length;
+          for ( var i = 0; i < window.Instances.length ; i++ ){
+            if ( !window.Instances[i].hasCapability('VisualCapability') ){
+              instancesFetched--;
+            }
+          }
+          if ( instancesFetched === Object.keys(this.engine.meshes).length && this.initialCameraReset){
+            this.resetCamera();
+            this.initialCameraReset = false;
+          }
+        }, this);
+        
+        this.initialCameraReset = true;
       }
     }
 
