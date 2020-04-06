@@ -180,7 +180,7 @@ define(function (require) {
             }
             // Don't sync if new value is emtpy string
             if (newValue !== '') {
-              this.syncValueWithPython(newValue, this.oldValue);
+              this.syncValueWithPython(newValue);
             }
             
             if (this.props.callback) {

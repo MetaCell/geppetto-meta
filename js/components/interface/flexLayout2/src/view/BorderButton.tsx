@@ -4,7 +4,6 @@ import Rect from "../Rect";
 import Actions from "../model/Actions";
 import TabNode from "../model/TabNode";
 import Layout from "./Layout";
-import Icon from '@material-ui/core/Icon'
 
 /** @hidden @internal */
 export interface IBorderButtonProps {
@@ -80,13 +79,7 @@ export class BorderButton extends React.Component<IBorderButtonProps, any> {
         let leadingContent = undefined;
 
         if (node.getIcon() !== undefined) {
-            if (node.getIcon().startsWith('fa ')) {
-                leadingContent = <Icon className={node.getIcon()}/>;
-            }
-            else {
-                leadingContent = <img src={node.getIcon()}/>;
-            }
-            
+            leadingContent = <img src={node.getIcon()}/>;
         }
 
         const content = <div ref={ref => this.contentsRef = (ref===null)?undefined:ref} className={cm("flexlayout__border_button_content")}>{node.getName()}</div>;

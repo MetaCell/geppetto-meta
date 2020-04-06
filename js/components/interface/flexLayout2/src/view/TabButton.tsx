@@ -5,7 +5,7 @@ import Actions from "../model/Actions";
 import TabNode from "../model/TabNode";
 import TabSetNode from "../model/TabSetNode";
 import Layout from "./Layout";
-import Icon from '@material-ui/core/Icon'
+
 /** @hidden @internal */
 export interface ITabButtonProps {
     layout: Layout,
@@ -130,13 +130,7 @@ export class TabButton extends React.Component<ITabButtonProps, any> {
         let leadingContent = undefined;
 
         if (node.getIcon() !== undefined) {
-            if (node.getIcon().startsWith('fa ')) {
-                leadingContent = <Icon className={node.getIcon()}/>;
-            }
-            else {
-                leadingContent = <img src={node.getIcon()}/>;
-            }
-            
+            leadingContent = <img src={node.getIcon()}/>;
         }
 
         // allow customization of leading contents (icon) and contents
