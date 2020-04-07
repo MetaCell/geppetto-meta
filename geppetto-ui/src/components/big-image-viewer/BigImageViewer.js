@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {withStyles} from '@material-ui/core';
 import OpenSeaDragon from 'openseadragon';
 import * as util from "../../utilities";
-import IconButtonWithTooltip from "../common/IconButtonWithTooltip";
-import Toolbar from "@material-ui/core/Toolbar";
 import { faHome, faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
+import CustomToolbar from "../common/CustomToolbar";
 
 
 
@@ -12,17 +11,6 @@ const styles = {
     bigImageViewer: {
         height: '800px',
     },
-    toolbar: {
-        padding: "0",
-        marginLeft: "5px"
-    },
-    toolbarBox: {backgroundColor: "rgb(0,0,0,0.5);",},
-    button: {
-        padding: "8px",
-        top: "0",
-        color: "#fc6320"
-    },
-
 };
 
 class BigImageViewer extends Component {
@@ -121,20 +109,7 @@ class BigImageViewer extends Component {
 
         return (
             <div className={classes.bigImageViewer}>
-                <Toolbar className={classes.toolbar}>
-                    <div className={classes.toolbarBox}>
-                        {customButtons.map(customButton =>
-                            <IconButtonWithTooltip
-                                key={customButton.id}
-                                disabled={false}
-                                onClick={() => customButton.action()}
-                                className={classes.button}
-                                tooltip={customButton.title}
-                                icon={customButton.icon}
-                            />
-                        )}
-                    </div>
-                </Toolbar>
+                <CustomToolbar buttons={customButtons}/>
                 <div id={this.props.id + "_component"} className={classes.bigImageViewer}/>
             </div>
         )

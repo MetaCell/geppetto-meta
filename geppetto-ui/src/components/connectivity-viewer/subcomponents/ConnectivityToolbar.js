@@ -27,14 +27,6 @@ class ConnectivityToolbar extends Component {
     super(props);
   }
 
-  /**
-   *
-   * Updates buttonVisibility true
-   *
-   * @command onHover (layout)
-   *
-   */
-
   render () {
     const {
       id, classes, layout, toolbarVisibility,
