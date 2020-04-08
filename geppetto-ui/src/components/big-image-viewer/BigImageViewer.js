@@ -7,7 +7,7 @@ import CustomToolbar from "../common/CustomToolbar";
 
 const styles = {
     bigImageViewer: {
-        height: '800px',
+        height: '100%',
     },
 };
 

@@ -1,23 +1,30 @@
 import React, {Component} from "react";
 import BigImageViewer from "../../BigImageViewer";
+import {withStyles} from "@material-ui/core";
 
-export default class BigImageViewerExample extends Component {
+const styles = {
+    bigImageViewer: {
+        height: '800px',
+    },
+};
+
+class BigImageViewerExample extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
         const data = 'https://s3.amazonaws.com/patient-hm-august-2017/Histology/HM_1243_FLIPPED_DZ_tif.dzi';
+        const {classes} = this.props
         return (
-            <div style={{position: 'relative'}}>
+            <div style={{position: 'relative'}} className={classes.bigImageViewer}>
                 <BigImageViewer
                     id="BigImageViewerContainer"
-                    name={"BigImageViewer"}
                     data={data}
-                    componentType={'BigImageViewer'}
-                    ref={"viewer"}
                 />
             </div>
         );
     }
 }
+
+export default withStyles(styles)(BigImageViewerExample);
