@@ -5,15 +5,15 @@ import Toolbar from "@material-ui/core/Toolbar";
 
 const styles = (theme) => ({
     toolbar: {
-        padding: "0",
-        marginLeft: "5px"
+        padding: theme.spacing(0),
+        marginLeft: theme.spacing(1)
     },
     button: {
-        padding: "8px",
-        top: "0",
-        color: "#fc6320"
+        padding: theme.spacing(1),
+        top: theme.spacing(0),
+        color: theme.palette.button.main
     },
-    toolbarBox: {backgroundColor: "rgb(0,0,0,0.5);",},
+    toolbarBox: {backgroundColor: theme.palette.toolbarBackground.main},
 });
 
 

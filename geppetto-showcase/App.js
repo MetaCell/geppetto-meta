@@ -46,6 +46,8 @@ export default class App extends Component {
         type: "dark",
         primary: { main: orange[500], },
         secondary: { main: blue[500], },
+        button: { main: "#fc6320", },
+        toolbarBackground: { main: "rgb(0,0,0,0.5)", },
       }
     });
     theme = responsiveFontSizes(theme);
