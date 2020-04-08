@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
@@ -7,7 +7,6 @@ Plotly.register([require('plotly.js/lib/scatter')]);
 const ScatterPlot = createPlotlyComponent(Plotly);
 import { unit } from 'mathjs';
 import PlotHeader from './PlotHeader';
-import AbstractComponent from '@geppettoengine/geppetto-client/js/components/AComponent';
 import { defaultLayout, defaultTrace, defaultLine, defaultConfig, defaultAxisLayout } from './configuration/plotConfiguration';
 import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
 import { withStyles } from '@material-ui/core';
@@ -24,7 +23,7 @@ const style = {
   }
 };
 
-class PlotComponent extends AbstractComponent {
+class PlotComponent extends Component {
 
   state = {};
   reset = true;
