@@ -36,7 +36,7 @@ class CustomToolbar extends Component {
                                 disabled={false}
                                 onClick={() => customButton.action()}
                                 className={classes.button}
-                                tooltip={customButton.title}
+                                tooltip={customButton.tooltip}
                                 icon={customButton.icon}
                             />
                         )}

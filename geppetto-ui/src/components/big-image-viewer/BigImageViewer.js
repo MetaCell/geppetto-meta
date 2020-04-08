@@ -97,9 +97,9 @@ class BigImageViewer extends Component {
 
     getCustomButtons() {
         const customButtons = [];
-        customButtons.push({'icon': faSearchMinus, 'id': 'zoom-out', 'title': 'Zoom Out', 'action': this.zoomOut});
-        customButtons.push({'icon': faSearchPlus, 'id': 'zoom-in', 'title': 'Zoom In', 'action': this.zoomIn});
-        customButtons.push({'icon': faHome, 'id': 'home', 'title': 'Center Image', 'action': this.goHome});
+        customButtons.push({'icon': faSearchMinus, 'id': 'zoom-out', 'tooltip': 'Zoom Out', 'action': this.zoomOut});
+        customButtons.push({'icon': faSearchPlus, 'id': 'zoom-in', 'tooltip': 'Zoom In', 'action': this.zoomIn});
+        customButtons.push({'icon': faHome, 'id': 'home', 'tooltip': 'Center Image', 'action': this.goHome});
         return customButtons;
     }
 

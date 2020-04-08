@@ -1,78 +1,70 @@
 import React, { Component } from 'react';
 import ConnectivityDeck from "./ConnectivityDeck";
-import { withStyles } from '@material-ui/core';
-import Toolbar from '@material-ui/core/Toolbar';
 import MenuButton from "./MenuButton";
-import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 import { faList, faSort } from "@fortawesome/free-solid-svg-icons";
+import CustomToolbar from "../../common/CustomToolbar";
 
 
-const styles = {
-
-  toolbar: {
-    padding: "0",
-    marginLeft:"5px"
-  },
-  toolbarBox: { backgroundColor: "rgb(0,0,0,0.5);", },
-  button: {
-    padding: "8px",
-    top: "0",
-    color: "#fc6320"
-  },
-
-};
-
-class ConnectivityToolbar extends Component {
+export default class ConnectivityToolbar extends Component {
   constructor (props) {
     super(props);
+    this.legendsTooltip = "Toggle legend";
+
   }
 
-  render () {
-    const {
-      id, classes, layout, toolbarVisibility,
-      deckHandler, legendHandler, sortOptionsHandler 
-    } = this.props;
+  getCustomButtons() {
+    const customButtons = [];
+    if (this.props.layout.hasToggle()) {
+      customButtons.push({
+        'icon': faList,
+        'id': 'legendButton',
+        'tooltip': this.legendsTooltip,
+        'action': () => this.props.legendHandler()
+      });
+      return customButtons;
+    }
+  }
 
-    const visibility = toolbarVisibility ? "visible" : "hidden";
-    const legendsTooltip = "Toggle legend";
+  getCustomElements() {
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
       'post_count': 'By # post'
     };
-    let selectButton;
-    let toggleButton;
-    if (layout.hasSelect()){
-      selectButton = (<MenuButton id={id + 'select'}
-        options={sortOptions}
-        handler = {sortOptionsHandler}
-        defaultOption = "id"
-        tooltip={"Order by"}
-        icon={faSort}
-      />);
-    }
-    if (layout.hasToggle()){
-      toggleButton = (<IconButtonWithTooltip
-        disabled={false}
-        onClick={() => legendHandler()}
-        className={classes.button}
-        tooltip={legendsTooltip}
-        icon={faList}
-      />);
-    }
+    const deck = (<ConnectivityDeck
+        key={this.props.id + '_deck'}
+        id={this.props.id + '_deck'}
+        ref={ deck => {this.deck = deck} }
+        handler={this.props.deckHandler}
+    />)
+    const customElements = [deck];
 
+    if (this.props.layout.hasSelect()) {
+      customElements.push((
+          <MenuButton
+              key={this.props.id + '_select'}
+              id={this.props.id + '_select'}
+              options={sortOptions}
+              handler = {this.props.sortOptionsHandler}
+              defaultOption = "id"
+              tooltip={"Order by"}
+              icon={faSort}
+      />));
+    }
+    return customElements;
+  }
+
+  render () {
+    const {toolbarVisibility} = this.props;
+    const visibility = toolbarVisibility ? "visible" : "hidden";
+
+    const customElements = this.getCustomElements();
+    const customButtons = this.getCustomButtons();
 
     return (
-      <Toolbar className={classes.toolbar}>
-        <div className={classes.toolbarBox + " visibility: " + visibility }>
-          <ConnectivityDeck ref={ deck => {
-            this.deck = deck
-          } } handler={deckHandler}/>
-          {selectButton}
-          {toggleButton}
-        </div>
-      </Toolbar>
-    )
+        <span style={{visibility: visibility }}>
+              <CustomToolbar buttons={customButtons} elements={customElements}/>
+        </span>
+  )
   }
 }
-export default withStyles(styles)(ConnectivityToolbar);
