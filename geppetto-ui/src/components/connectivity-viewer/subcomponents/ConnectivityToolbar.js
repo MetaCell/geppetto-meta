@@ -4,12 +4,11 @@ import MenuButton from "./MenuButton";
 import { faList, faSort } from "@fortawesome/free-solid-svg-icons";
 import CustomToolbar from "../../common/CustomToolbar";
 
+const LEGENDS_TOOLTIP = "Toggle legend"
 
 export default class ConnectivityToolbar extends Component {
   constructor (props) {
     super(props);
-    this.legendsTooltip = "Toggle legend";
-
   }
 
   getCustomButtons() {
@@ -18,7 +17,7 @@ export default class ConnectivityToolbar extends Component {
       customButtons.push({
         'icon': faList,
         'id': 'legendButton',
-        'tooltip': this.legendsTooltip,
+        'tooltip': LEGENDS_TOOLTIP,
         'action': () => this.props.legendHandler()
       });
       return customButtons;

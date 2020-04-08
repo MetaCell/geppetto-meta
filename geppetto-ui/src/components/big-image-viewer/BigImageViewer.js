@@ -5,13 +5,15 @@ import * as util from "../../utilities";
 import { faHome, faSearchPlus, faSearchMinus } from "@fortawesome/free-solid-svg-icons";
 import CustomToolbar from "../common/CustomToolbar";
 
-
-
 const styles = {
     bigImageViewer: {
         height: '800px',
     },
 };
+
+const ZOOM_OUT_TOOLTIP = "Zoom Out";
+const ZOOM_IN_TOOLTIP = "Zoom In";
+const CENTER_IMAGE_TOOLTIP = "Center Image";
 
 class BigImageViewer extends Component {
 
@@ -97,9 +99,9 @@ class BigImageViewer extends Component {
 
     getCustomButtons() {
         const customButtons = [];
-        customButtons.push({'icon': faSearchMinus, 'id': 'zoom-out', 'tooltip': 'Zoom Out', 'action': this.zoomOut});
-        customButtons.push({'icon': faSearchPlus, 'id': 'zoom-in', 'tooltip': 'Zoom In', 'action': this.zoomIn});
-        customButtons.push({'icon': faHome, 'id': 'home', 'tooltip': 'Center Image', 'action': this.goHome});
+        customButtons.push({'icon': faSearchMinus, 'id': 'zoom-out', 'tooltip': ZOOM_OUT_TOOLTIP, 'action': this.zoomOut});
+        customButtons.push({'icon': faSearchPlus, 'id': 'zoom-in', 'tooltip': ZOOM_IN_TOOLTIP, 'action': this.zoomIn});
+        customButtons.push({'icon': faHome, 'id': 'home', 'tooltip': CENTER_IMAGE_TOOLTIP, 'action': this.goHome});
         return customButtons;
     }
 

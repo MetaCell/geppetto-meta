@@ -13,23 +13,21 @@ const styles = {
   },
 };
 
+const LAYOUT_TOOLTIP = "Hover the squares to see the connections."
 
 class ConnectivityTooltip extends Component {
   constructor (props) {
     super(props);
-    this.state = { layoutTooltip: "Hover the squares to see the connections.", };
-
   }
 
   render () {
     const { classes, layout, } = this.props;
-    const { layoutTooltip } = this.state;
     const hasTooltip = layout.hasTooltip();
 
     return (
       <div>
         <Typography className={classes.matrixTooltip} variant="subtitle1" gutterBottom>
-          {hasTooltip ? layoutTooltip : ""}
+          {hasTooltip ? LAYOUT_TOOLTIP : ""}
         </Typography>
       </div>
     )

@@ -6,13 +6,12 @@ import { Matrix } from "./layouts/Matrix";
 import Grid from '@material-ui/core/Grid';
 
 
-const styles = {
+const styles = (theme) => ({
   container: {
     height: '100%',
     minHeight: '100%',
   },
-  connectivityContainer: { background: '#424242', },
-};
+  connectivityContainer: { background: theme.palette.background.paper }})
 
 class ConnectivityComponent extends Component {
   constructor (props) {

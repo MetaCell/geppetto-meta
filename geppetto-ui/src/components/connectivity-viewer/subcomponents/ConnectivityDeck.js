@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import Card from '@material-ui/core/Card';
 import Modal from '@material-ui/core/Modal';
 import { withStyles } from '@material-ui/core';
@@ -17,24 +16,24 @@ import ForceImg from '../images/force.svg';
 import HiveImg from '../images/hive.svg';
 import ChordImg from '../images/chord.svg';
 
-const styles = () => ({
+const styles = (theme) => ({
   cardDeckWrapper: { 
     border:0,
     outline: 0,
-    marginRight: "-15px",
-    marginLeft: "-15px"
+    marginRight: theme.spacing(-2),
+    marginLeft: theme.spacing(-2)
   },
   cardWrapperTitle: {
     fontSize:"40px",
     fontWeight: "300",
-    marginTop: "100px",
-    color: "#fc401a",
+    marginTop: theme.spacing(10),
+    color: theme.palette.button.main,
     textAlign: "center"
   },
   cardDeck:{
-    marginTop: "20px",
-    marginRight: "100px",
-    marginLeft: "100px",
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(10),
+    marginLeft: theme.spacing(10),
     display: "table",
     tableLayout: "fixed",
     borderSpacing: "15px 0"
@@ -43,14 +42,14 @@ const styles = () => ({
     borderRadius: 0,
     border:0,
     cursor:"pointer",
-    padding:"15px",
-    background: "rgba(50, 50, 53, 0.8)",
+    padding:theme.spacing(2),
+    background: theme.palette.background.default,
     display: "table-cell",
     width: "1%",
     verticalAlign: "top",
     "&:hover":{
       border:"1px solid",
-      borderColor:"#fc6320"
+      borderColor:theme.palette.button.main
     }
   },
   img: {
@@ -59,7 +58,7 @@ const styles = () => ({
     width: '100px',
   },
   cardText: { textAlign: 'center', color: "white" },
-  cardTitle: { marginTop: '10px', color: "#fc6320", marginBottom:"0.5em" },
+  cardTitle: { marginTop: theme.spacing(1), color: theme.palette.button.main, marginBottom:"0.5em" },
   cardAction: { height: "100%" },
   cardImgTopCenterBlock:{
     display: "block",
@@ -69,13 +68,11 @@ const styles = () => ({
   },
   cardActionDisabled: { height: "100%", opacity: "0.2" },
   button: {
-    padding: "8px",
-    top: "0",
-    color: "#fc6320"
+    padding: theme.spacing(1),
+    top: theme.spacing(0),
+    color: theme.palette.button.main
   },
-  toolBar: { background: "#778899", },
 });
-
 
 class ConnectivityDeck extends Component {
   constructor (props) {
@@ -123,7 +120,6 @@ class ConnectivityDeck extends Component {
     const { open } = this.state;
     const { classes } = this.props;
 
-
     return (
       <span>
         <IconButtonWithTooltip
@@ -167,9 +163,7 @@ class ConnectivityDeck extends Component {
           </div>
         </Modal>
       </span>
-
     )
   }
 }
-
 export default withStyles(styles)(ConnectivityDeck);

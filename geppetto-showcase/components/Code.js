@@ -18,14 +18,16 @@ const styles = (theme) => ({
     },
 });
 
+const SHOW_SOURCE_TOOLTIP = "Show the full source code";
+const HIDE_SOURCE_TOOLTIP = "Hide the full source code";
+const INSTANTIATION_NOT_FOUND = "Instantiation not found";
 
 class Code extends Component {
     constructor(props) {
         super(props);
-        const sourceTooltip = "Show the full source code";
         this.state = {
             source: false,
-            sourceTooltip: sourceTooltip,
+            sourceTooltip: SHOW_SOURCE_TOOLTIP,
         };
         this.handleSourceClick = this.handleSourceClick.bind(this)
     }
@@ -33,12 +35,12 @@ class Code extends Component {
     getInstantiation(file, element) {
         let re = new RegExp(`<${element}(.|\\n)+?\\/>`);
         let matches = file.match(re);
-        return matches? matches: "Instantiation not found.";
+        return matches? matches: INSTANTIATION_NOT_FOUND;
     }
 
 
     handleSourceClick() {
-        const sourceTooltip = this.state.source ? "Show the full source code" : "Hide the full source code";
+        const sourceTooltip = this.state.source ? SHOW_SOURCE_TOOLTIP : HIDE_SOURCE_TOOLTIP;
         this.setState({source: !this.state.source, sourceTooltip: sourceTooltip})
     }
 

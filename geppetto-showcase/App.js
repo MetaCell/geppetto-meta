@@ -4,8 +4,6 @@ import { blue, green, orange, purple } from "@material-ui/core/colors";
 import Main from "./components/ui/Main";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-
-// todo: Change to react context?
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 require('@geppettoengine/geppetto-client/js/common/GEPPETTO.Resources').default(GEPPETTO);

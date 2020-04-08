@@ -27,7 +27,6 @@ const styles = theme => ({
   },
 });
 
-
 class DrawerContent extends Component {
   constructor (props) {
     super(props);

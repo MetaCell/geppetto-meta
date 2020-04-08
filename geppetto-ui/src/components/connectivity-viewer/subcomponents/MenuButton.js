@@ -4,11 +4,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 
-const styles = () => ({
+const styles = (theme) => ({
   button: {
-    padding: "8px",
-    top: "0",
-    color: "#fc6320"
+    padding: theme.spacing(1),
+    top: theme.spacing(0),
+    color: theme.palette.button.main
   },
 });
 

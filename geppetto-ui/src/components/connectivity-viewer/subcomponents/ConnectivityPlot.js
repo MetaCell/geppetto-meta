@@ -9,16 +9,16 @@ import ConnectivityTooltip from "./ConnectivityTooltip";
 const d3 = require("d3");
 
 
-const styles = {
+const styles = (theme) => ({
   legends: {
-    marginTop: "35px",
-    marginLeft: "5px",
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(1),
   },
   legendTitle: {
     fontSize: "14px",
     color: "white",
   },
-};
+});
 
 class ConnectivityPlot extends Component {
   constructor (props) {
