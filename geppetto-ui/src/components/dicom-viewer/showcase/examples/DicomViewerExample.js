@@ -11,17 +11,14 @@ export default class DicomViewerExample extends Component {
         const data = "https://s3.amazonaws.com/patient-hm-august-2017/MRI/IN+SITU+2008+MPRAGE+1MM-ISO/IN-SITU-2008-MPRAGE-1MM-ISO-ALT2.nii.gz";
 
         return (
-            <div style={{position: 'relative'}}>
+            <div style={{position: 'relative', height: "800px", width: "100%"}}>
                 <DicomViewer
                     id="DicomViewerContainer"
-                    name={"Dicom Viewer 2"}
                     mode={'quad_view'}
-                    componentType={'DICOMVIEWER'}
                     data={data}
                     onShiftClick="goToPoint"
                     onCtrlClick="togglMode"
                     showDownloadButton={true}
-                    size={{height: "800px", width: "100%"}}
                 />
             </div>
         );

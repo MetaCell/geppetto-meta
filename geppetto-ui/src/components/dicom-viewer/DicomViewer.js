@@ -4,8 +4,6 @@ import {withStyles} from '@material-ui/core';
 import * as THREE from 'three';
 import DicomViewerUtils from './DicomViewerUtils';
 import {offset} from "../../utilities";
-import IconButtonWithTooltip from "../common/IconButtonWithTooltip";
-import Toolbar from "@material-ui/core/Toolbar";
 import {
     boundingBoxHelperFactory,
     VolumeLoader,
@@ -21,6 +19,7 @@ import {
     faExpandAlt,
     faCompressAlt
 } from "@fortawesome/free-solid-svg-icons";
+import CustomToolbar from "../common/CustomToolbar";
 
 const styles = {
     dicomViewer: {
@@ -473,13 +472,6 @@ class DicomViewer extends Component {
         this.r2.controls.addEventListener('OnScroll', onScroll);
         this.r3.controls.addEventListener('OnScroll', onScroll);
 
-        /*        // event listeners on resize
-                window.addEventListener('resize', function () {
-                    _this.setLayout();
-                }, false);
-                $(this.getContainer()).parent().on("resizeEnd", function (event, ui) {
-                    _this.setLayout()
-                });*/
     }
 
     setQuadLayout() {
@@ -591,20 +583,20 @@ class DicomViewer extends Component {
             customButtons.push({
                 'icon': faThLarge,
                 'id': 'Multi View',
-                'title': 'Multi View',
+                'tooltip': 'Multi View',
                 'action': this.changeMode
             });
             customButtons.push({
                 'icon': faExchangeAlt,
                 'id': 'Change Orientation',
-                'title': 'Change Orientation',
+                'tooltip': 'Change Orientation',
                 'action': this.changeOrientation
             });
         } else {
             customButtons.push({
                 'icon': faSquare,
                 'id': 'Single View',
-                'title': 'Single View',
+                'tooltip': 'Single View',
                 'action': this.changeMode
             });
         }
@@ -613,7 +605,7 @@ class DicomViewer extends Component {
             customButtons.push({
                 'icon': faDownload,
                 'id': 'Download',
-                'title': 'Download',
+                'tooltip': 'Download',
                 'action': this.download
             });
         }
@@ -622,14 +614,14 @@ class DicomViewer extends Component {
             customButtons.push({
                 'icon': faCompressAlt,
                 'id': 'Restore',
-                'title': 'Restore',
+                'tooltip': 'Restore',
                 'action': this.restore
             })
         } else {
             customButtons.push({
                 'icon': faExpandAlt,
                 'id': 'Maximize',
-                'title': 'Maximize',
+                'tooltip': 'Maximize',
                 'action': this.fullScreen
             })
         }
@@ -639,7 +631,7 @@ class DicomViewer extends Component {
 
     render() {
         const {classes} = this.props;
-        const {size, fullScreen} = this.state;
+        const {fullScreen} = this.state;
         const customButtons = this.getCustomButtons();
 
         const containerStyle = fullScreen ? {
@@ -656,21 +648,8 @@ class DicomViewer extends Component {
         return (
             <div ref={this.container} key={this.props.id + "_component"} id={this.props.id + "_component"}
                  style={containerStyle}>
-                <Toolbar className={classes.toolbar}>
-                    <div className={classes.toolbarBox}>
-                        {customButtons.map(customButton =>
-                            <IconButtonWithTooltip
-                                key={customButton.id}
-                                disabled={false}
-                                onClick={() => customButton.action()}
-                                className={classes.button}
-                                tooltip={customButton.title}
-                                icon={customButton.icon}
-                            />
-                        )}
-                    </div>
-                </Toolbar>
-                <div className={classes.dicomViewer} style={{height: size.height, width: size.width}}>
+                <CustomToolbar buttons={customButtons}/>
+                <div className={classes.dicomViewer} style={{height: "800px", width: "100%"}}>
                     <div id="r0" className={classes.renderer + " r0"} style={{
                         display: this.state.mode === 'single_view' && this.state.orientation !== '3d' ? 'none' : '',
                         width: this.state.mode === 'single_view' && this.state.orientation === '3d' ? '100%' : '50%',
