@@ -32,6 +32,7 @@
   "dependencies": {
     "@material-ui/icons": "^4.9.1",
     "@types/react-dom": "^16.9.5",
+    "ami.js": "^0.32.0",
     "file-loader": "^5.1.0",
     "font-awesome": "^4.7.0",
     "node-sass": "^4.13.1",

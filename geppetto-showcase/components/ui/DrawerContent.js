@@ -17,6 +17,7 @@ import MoviePlayerShowcase from "../../../geppetto-ui/src/components/movie-playe
 import PythonConsoleShowcase from "../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase";
 import GraphVisualizationShowcase from "../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase";
 import Showcase from "../Showcase";
+import {DicomViewerConfig} from "../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig";
 
 const styles = theme => ({
   nested: { paddingLeft: theme.spacing(4), },
@@ -26,6 +27,7 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
   },
 });
+
 
 class DrawerContent extends Component {
   constructor (props) {
@@ -64,20 +66,24 @@ class DrawerContent extends Component {
             "component": <Showcase configs={ConnectivityConfig}/>
           },
           {
-            "name": "Plot",
-            "component": <PlotShowcase/>
+            "name": "DicomViewer",
+            "component": <Showcase configs={DicomViewerConfig}/>
           },
           {
             "name": "FlexLayout",
             "component": <FlexLayoutShowcase/>
           },
           {
+            "name": "GraphVisualizer",
+            "component": <GraphVisualizationShowcase/>
+          },
+          {
             "name": "MoviePlayer",
             "component": <MoviePlayerShowcase/>
           },
           {
-            "name": "GraphVisualizer",
-            "component": <GraphVisualizationShowcase/>
+            "name": "Plot",
+            "component": <PlotShowcase/>
           },
           {
             "name": "PythonConsole",
@@ -101,37 +107,37 @@ class DrawerContent extends Component {
       },
     };
     return (
-      <nav className={classes.lists} aria-label="mailbox folders">
+        <nav className={classes.lists} aria-label="mailbox folders">
 
-        <li>
-          {Object.keys(content).map(key => {
-            const open = content[key].open;
-            const handler = content[key].handler;
-            const children = content[key].children;
-            return (
-              <List key={key}>
-                <ListItem key={key} button onClick={handler}>
-                  <ListItemText primary={key}/>
-                  {open != null ? open ? <ExpandLess/> : <ExpandMore/> : null}
-                </ListItem>
-                <Collapse component="li" in={open} timeout="auto" unmountOnExit>
-                  <List disablePadding>
-                    {children.map(value => {
-                      const name = value.name;
-                      const component = value.component;
-                      return (
-                        <ListItem key={value.name} button className={classes.nested} onClick={() => contentHandler(component)}>
-                          <ListItemText primary={name}/>
-                        </ListItem>
-                      )
-                    })}
+          <li>
+            {Object.keys(content).map(key => {
+              const open = content[key].open;
+              const handler = content[key].handler;
+              const children = content[key].children;
+              return (
+                  <List key={key}>
+                    <ListItem key={key} button onClick={handler}>
+                      <ListItemText primary={key}/>
+                      {open != null ? open ? <ExpandLess/> : <ExpandMore/> : null}
+                    </ListItem>
+                    <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+                      <List disablePadding>
+                        {children.map(value => {
+                          const name = value.name;
+                          const component = value.component;
+                          return (
+                              <ListItem key={value.name} button className={classes.nested} onClick={() => contentHandler(component)}>
+                                <ListItemText primary={name}/>
+                              </ListItem>
+                          )
+                        })}
+                      </List>
+                    </Collapse>
                   </List>
-                </Collapse>
-              </List>
-            )
-          })}
-        </li>
-      </nav>
+              )
+            })}
+          </li>
+        </nav>
     );
   }
 }
