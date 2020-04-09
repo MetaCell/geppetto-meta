@@ -20,6 +20,7 @@ import {
     faCompressAlt
 } from "@fortawesome/free-solid-svg-icons";
 import CustomToolbar from "../common/CustomToolbar";
+import {createZipFromRemoteFiles} from "../../../../geppetto-core/geppetto-js/Utility";
 
 const styles = {
     dicomViewer: {
@@ -50,7 +51,6 @@ class DicomViewer extends Component {
 
     constructor(props) {
         super(props);
-        require('@geppettoengine/geppetto-client/js/common/GEPPETTO.Utility')(GEPPETTO);
 
         this.state = {
             files: this.extractFilesPath(this.props.data),
@@ -565,7 +565,7 @@ class DicomViewer extends Component {
     }
 
     download() {
-        GEPPETTO.Utility.createZipFromRemoteFiles(this.state.files, "data.zip");
+        createZipFromRemoteFiles(this.state.files, "data.zip");
     }
 
     restore() {
