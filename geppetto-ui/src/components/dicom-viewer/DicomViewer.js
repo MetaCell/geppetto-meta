@@ -132,7 +132,7 @@ class DicomViewer extends Component {
         this.download = this.download.bind(this);
         this.restore = this.restore.bind(this);
         this.fullScreen = this.fullScreen.bind(this);
-        this.container = React.createRef();
+        this.containerRef = React.createRef();
     }
 
     extractFilesPath(data) {
@@ -215,10 +215,10 @@ class DicomViewer extends Component {
                 }
 
                 // renderers
-                DicomViewerUtils.initRenderer3D(_this.r0, _this.container.current);
-                DicomViewerUtils.initRenderer2D(_this.r1, _this.container.current);
-                DicomViewerUtils.initRenderer2D(_this.r2, _this.container.current);
-                DicomViewerUtils.initRenderer2D(_this.r3, _this.container.current);
+                DicomViewerUtils.initRenderer3D(_this.r0, _this.containerRef.current);
+                DicomViewerUtils.initRenderer2D(_this.r1, _this.containerRef.current);
+                DicomViewerUtils.initRenderer2D(_this.r2, _this.containerRef.current);
+                DicomViewerUtils.initRenderer2D(_this.r3, _this.containerRef.current);
 
                 // start rendering loop
                 animate();
@@ -639,17 +639,19 @@ class DicomViewer extends Component {
             top: '0',
             left: '0',
             zIndex: '9999',
-            background: "#121212"
+            background: "#121212",
+            height: '100%',
+            width: '100%',
         } : {
             height: '100%',
             width: '100%',
         };
 
         return (
-            <div ref={this.container} key={this.props.id + "_component"} id={this.props.id + "_component"}
+            <div ref={this.containerRef} key={this.props.id + "_component"} id={this.props.id + "_component"}
                  style={containerStyle}>
                 <CustomToolbar buttons={customButtons}/>
-                <div className={classes.dicomViewer} style={{height: "800px", width: "100%"}}>
+                <div className={classes.dicomViewer} style={{height: "100%", width: "100%"}}>
                     <div id="r0" className={classes.renderer + " r0"} style={{
                         display: this.state.mode === 'single_view' && this.state.orientation !== '3d' ? 'none' : '',
                         width: this.state.mode === 'single_view' && this.state.orientation === '3d' ? '100%' : '50%',
