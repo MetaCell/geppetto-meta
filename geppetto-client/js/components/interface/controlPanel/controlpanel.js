@@ -10,7 +10,7 @@ define(function (require) {
     document.getElementsByTagName("head")[0].appendChild(link);
   }
 
-  loadCss("geppetto/node_modules/@geppettoengine/geppetto-client/js/components/interface/controlPanel/vendor/css/bootstrap-colorpicker.min.css");
+  loadCss("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/components/interface/controlPanel/vendor/css/bootstrap-colorpicker.min.css");
 
   // require('./vendor/css/bootstrap-colorpicker.min.css'); Matteo: This require is not working?!?
   var React = require('react');

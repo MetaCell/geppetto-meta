@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { createMuiTheme, responsiveFontSizes, MuiThemeProvider } from "@material-ui/core/styles";
 import { blue, green, orange, purple } from "@material-ui/core/colors";
-import Main from "./ui/Main";
+import Main from "./components/ui/Main";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-
-// todo: Change to react context?
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 require('@geppettoengine/geppetto-client/js/common/GEPPETTO.Resources').default(GEPPETTO);
@@ -24,6 +22,19 @@ GEPPETTO.CommandController = {
   log: console.log,
   createTags: (a, b) => null
 };
+GEPPETTO.ComponentFactory ={
+  addExistingComponent: console.log,
+};
+GEPPETTO.on = console.log;
+GEPPETTO.off = console.log;
+GEPPETTO.UnitsController = {
+  getUnitLabel : function (unit){
+    return unit;
+  },
+  hasUnit : function (unit){
+    return true;
+  }
+};
 
 export default class App extends Component {
   render () {
@@ -33,6 +44,8 @@ export default class App extends Component {
         type: "dark",
         primary: { main: orange[500], },
         secondary: { main: blue[500], },
+        button: { main: "#fc6320", },
+        toolbarBackground: { main: "rgb(0,0,0,0.5)", },
       }
     });
     theme = responsiveFontSizes(theme);

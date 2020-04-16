@@ -3,8 +3,12 @@ const path = require('path');
 
 module.exports = {
   entry: path.resolve(__dirname,"./geppetto-showcase/index.js"),
-
-  resolve:{ alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") } },
+  mode: "development",
+  devtool: "inline-source-map",
+  resolve:{
+    alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") },
+    extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
+  },
   module: {
     rules: [
       {
@@ -15,6 +19,10 @@ module.exports = {
           presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react',
                     { 'plugins': ['@babel/plugin-proposal-class-properties'] }] 
         }
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
       },
       {
         test: /\.html$/,
@@ -37,7 +45,12 @@ module.exports = {
       { test: /\.(png|gif|jpg|cur)$/i, loader: 'url-loader', options: { limit: 8192 } },
       { test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff2' } },
       { test: /\.woff(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'url-loader', options: { limit: 10000, mimetype: 'application/font-woff' } },
-      { test: /\.(ttf|eot|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' }
+      { test: /\.(ttf|eot|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/i, loader: 'file-loader' },
+      {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader'
+      },
+
 
     ]
   },

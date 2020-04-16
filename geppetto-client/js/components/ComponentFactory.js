@@ -205,7 +205,7 @@ define(function (require) {
             case 'PYTHONCONSOLE': require(['./interface/pythonConsole/PythonConsole'],cb); break;
             case 'DICOMVIEWER': require(['./interface/dicomViewer/DicomViewer'],cb); break;
             case 'GOOGLEVIEWER': require(['./interface/googleViewer/GoogleViewer'],cb); break;
-            case 'BIGIMAGEVIEWER': require(['./interface/bigImageViewer/BigImageViewer'],cb); break;
+            case 'BIGIMAGEVIEWER': require(['../../../geppetto-ui/src/components/big-image-viewer/BigImageViewer'],cb); break;
             case 'CAROUSEL': require(['./interface/carousel/Carousel'],cb); break;
             case 'CANVAS': require(['./interface/3dCanvas/Canvas'],cb); break;
             case 'MOVIEPLAYER': require(['./interface/moviePlayer/MoviePlayer'],cb); break;
