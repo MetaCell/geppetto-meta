@@ -7,6 +7,7 @@ import Collapse from "@material-ui/core/Collapse";
 import { withStyles } from "@material-ui/core/styles";
 
 import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
+import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
 
 import {BigImageViewerConfig}
   from "../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig";
@@ -89,6 +90,10 @@ class DrawerContent extends Component {
           {
             "name": "PythonConsole",
             "component": <PythonConsoleShowcase/>
+          },
+          {
+            "name": "Tree",
+            "component": <Showcase markdown={TreeMarkdown}/>
           },
         ]
       },
