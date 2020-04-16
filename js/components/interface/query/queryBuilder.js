@@ -1040,6 +1040,13 @@ define(function (require) {
       var downloadCSV = function (args) {
         var data, filename, link, extension;
 
+        var isJson = data => {
+          try {
+            return (JSON.parse(data) && data);
+          } catch (e) {
+            return false;
+          }
+        }
         var records = args.data.map(function (record) {
           var instance = new Object();
           for (var counter = 0; counter < args.columnsPresent.length; counter++) {
@@ -1047,8 +1054,15 @@ define(function (require) {
               continue;
             }
             if (args.columnsPresent[counter] == "images") {
-              instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
-              continue;
+              if (isJson(record[args.columnsPresent[counter]])){
+                if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements) {
+                  instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.elements[0].initialValue.data;
+                  continue;
+                } else if (JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data) {
+                  instance[args.columnsPresent[counter]] = JSON.parse(record[args.columnsPresent[counter]]).initialValues[0].value.data;
+                  continue;
+                }
+              }
             }
             instance[args.columnsPresent[counter]] = record[args.columnsPresent[counter]];
           }
@@ -1180,6 +1194,10 @@ define(function (require) {
 
         markup = (
           <div id="query-results-container" className="center-content" ref={this.setWrapperRef}>
+            { this.props.showClose === true
+              ? <div onClick={this.close} className="fa fa-times" id="closeQuery" />
+              : undefined
+            }
             <MenuButton configuration={configuration} />
             {tabs}
             <button id="switch-view-btn" className="fa fa-angle-left querybuilder-button"
@@ -1225,9 +1243,14 @@ define(function (require) {
 
         var spinnerClass = this.state.showSpinner ? 'fa fa-cog fa-spin' : 'hide';
         var footerClass = this.state.showSpinner ? 'hide' : '';
+        var closeIconId = this.state.showSpinner ? 'hide' : 'closeQuery2';
 
         markup = (
           <div id="query-builder-container" ref={this.setWrapperRef}>
+            { this.props.showClose === true
+              ? <div onClick={this.close} className="fa fa-times" id={closeIconId} />
+              : undefined
+            }
             <div id="query-builder-items-container">
               {queryItems}
             </div>

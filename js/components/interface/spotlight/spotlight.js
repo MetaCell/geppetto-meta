@@ -938,7 +938,15 @@ define(function (require) {
     },
 
     render: function () {
-      return <input id = "typeahead" className = "typeahead" type = "text" placeholder = "Lightspeed Search" />
+      return (
+        <div className="typeaheadWrapper" >
+          { this.props.showClose === true
+            ? <div onClick={this.close} className="closeSpotlight fa fa-times" />
+            : undefined
+          }
+          <input id = "typeahead" className = "typeahead" type = "text" placeholder = "Lightspeed Search" />
+        </div>
+      )
     },
 
     setButtonBarConfiguration: function (config){

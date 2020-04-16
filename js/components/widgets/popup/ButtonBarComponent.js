@@ -1,6 +1,6 @@
 
 import React from 'react';
-import colorpicker from './vendor/bootstrap-colorpicker.min';
+import { SliderPicker } from 'react-color';
 import Tooltip from '@material-ui/core/Tooltip';
 import {
   createMuiTheme,
@@ -13,39 +13,32 @@ export default class ButtonBarComponent extends React.Component {
   constructor (props) {
     super(props);
 
+    this.state = {
+      displayColorPicker: false,
+      pickerPosition: "220px"
+    };
+
+    this.monitorMouseClick = this.monitorMouseClick.bind(this);
+
     this.colorPickerBtnId = '';
     this.colorPickerActionFn = '';
     this.theme = createMuiTheme({ overrides: { MuiTooltip: { tooltip: { fontSize: "12px" } } } });
+    this.colorPickerContainer = undefined;
+  }
+
+  monitorMouseClick (e) {
+    if ((this.colorPickerContainer !== undefined && this.colorPickerContainer !== null) && !this.colorPickerContainer.contains(e.target) && this.state.displayColorPicker === true) {
+      this.setState({ displayColorPicker: false });
+    }
   }
 
   componentDidMount () {
     var that = this;
 
+    document.addEventListener('mousedown', this.monitorMouseClick, false);
+
     if (that.props.instance != null || that.props.instance != undefined){
       that.props.resize();
-    }
-
-    // hookup color picker onChange
-    if (this.colorPickerBtnId != '') {
-      var path = this.props.instancePath;
-      var entity = eval(path);
-      var defColor = '0Xffffff';
-
-      // grab default color from instance
-      if (entity.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-        defColor = entity.getColor();
-      }
-
-      // init dat color picker
-      var coloPickerElement = $('#' + this.colorPickerBtnId);
-      coloPickerElement.colorpicker({ format: 'hex', customClass: 'buttonbar-colorpicker' });
-      coloPickerElement.colorpicker('setValue', defColor.replace(/0X/i, "#"));
-
-      // closure on local scope at this point - hook on change event
-      coloPickerElement.on('changeColor', function (e) {
-        that.colorPickerActionFn(e.color.toHex().replace("#", "0x"));
-        $(this).css("color", e.color.toHex());
-      });
     }
 
     if (this.props.buttonBarConfig.Events != null || this.props.buttonBarConfig.Events != undefined){
@@ -92,6 +85,7 @@ export default class ButtonBarComponent extends React.Component {
 
   componentWillUnmount () {
     this.props = {};
+    document.removeEventListener('mousedown', this.monitorMouseClick, false);
   }
 
   replaceTokensWithPath (inputStr, path) {
@@ -248,15 +242,42 @@ export default class ButtonBarComponent extends React.Component {
 
             return (
               <span key={id}>
-                <Tooltip placement="bottom" title={tooltip !== undefined ? tooltip : ""}>
+                <Tooltip placement="bottom-start" title={tooltip !== undefined ? tooltip : ""}>
                   <button id={idVal}
                     className={classVal}
                     style={styleVal}
                     onClick={
-                      controlConfig.id == "color" ? function (){} : actionFn
+                      controlConfig.id == "color"
+                        ? function (e){
+                          that.setState({
+                            displayColorPicker: !that.state.displayColorPicker,
+                            pickerPosition: e.target.offsetLeft + "px"
+                          })
+                        }
+                        : actionFn
                     }>
                   </button>
                 </Tooltip>
+                {/* 2 ternary conditions concatenad to check first if the controlconfig.id is color
+                  * so we can attach the color picker component to the button, and then the second
+                  * to check wether the colorPicker button has been clicked or not and open that.
+                */}
+                {controlConfig.id === "color"
+                  ? (that.state.displayColorPicker === true
+                    ? <div
+                      className="btnBar-color-picker"
+                      ref={ref => that.colorPickerContainer = ref}
+                      style={{ left: that.state.pickerPosition }}>
+                      <SliderPicker
+                        color={ Instances[path].getColor() }
+                        onChangeComplete={ (color, event) => {
+                          Instances[path].setColor(color.hex);
+                          that.setState({ displayColorPicker: true });
+                        }}
+                        style={{ zIndex: 10 }}/>
+                    </div>
+                    : undefined)
+                  : undefined}
               </span>
             )
           })}
