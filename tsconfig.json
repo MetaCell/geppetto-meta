@@ -2,17 +2,19 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "sourceMap": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "commonjs",
     "target": "es6",
-    "stripInternal":true,
-    "alwaysStrict":true,
+    "allowSyntheticDefaultImports": true,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "strict": true,
-    "noUnusedLocals": true,
+    "strict": false,
+    "noUnusedLocals": false,
     "jsx": "react",
-    "types": [], // <--- this excludes node_modules/@types/** from implicit bundle
+    "types": []
   },
   "include": [
     "./geppetto-ui/src/components/flex-layout/src/**/*",

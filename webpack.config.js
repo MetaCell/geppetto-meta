@@ -2,11 +2,11 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname,"./geppetto-showcase/index.js"),
+  entry: path.resolve(__dirname, "./geppetto-showcase/index.js"),
   mode: "development",
   devtool: "inline-source-map",
-  resolve:{
-    alias:{ "@geppettoengine/geppetto-client": path.resolve(__dirname,"./geppetto-client") },
+  resolve: {
+    alias: { "@geppettoengine/geppetto-client": path.resolve(__dirname, "./geppetto-client") },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
   },
   module: {
@@ -17,7 +17,7 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: [['@babel/preset-env', { "modules": false }], '@babel/preset-react',
-                    { 'plugins': ['@babel/plugin-proposal-class-properties'] }] 
+          { 'plugins': ['@babel/plugin-proposal-class-properties'] }]
         }
       },
       {
@@ -49,6 +49,11 @@ module.exports = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
+      },
+      {
+        test: /\.md$/,
+        use: [{ loader: "html-loader" }, { loader: "markdown-loader" }
+        ]
       },
 
 

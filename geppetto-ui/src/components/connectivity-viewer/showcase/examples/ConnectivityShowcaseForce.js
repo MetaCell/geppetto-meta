@@ -6,7 +6,7 @@ import ConnectivityComponent from "../../ConnectivityComponent";
 export default class ConnectivityShowcaseForce extends Component {
   constructor (props) {
     super(props);
-    //GEPPETTO.Manager.loadModel(model);
+    GEPPETTO.Manager.loadModel(model);
     this.linkType = this.linkType.bind(this);
   }
 

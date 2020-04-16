@@ -5,8 +5,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import List from "@material-ui/core/List";
 import Collapse from "@material-ui/core/Collapse";
 import { withStyles } from "@material-ui/core/styles";
-import {ConnectivityConfig}
-  from "../../../geppetto-ui/src/components/connectivity-viewer/showcase/ConnectivityConfig";
+
+import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
+
 import {BigImageViewerConfig}
   from "../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig";
 import MenuShowcase from "../../../geppetto-ui/src/components/menu/showcase/MenuShowcase";
@@ -16,7 +17,7 @@ import FlexLayoutShowcase from "../../../geppetto-ui/src/components/flex-layout/
 import MoviePlayerShowcase from "../../../geppetto-ui/src/components/movie-player/showcase/MoviePlayerShowcase";
 import PythonConsoleShowcase from "../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase";
 import GraphVisualizationShowcase from "../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase";
-import Showcase from "../Showcase";
+import Showcase from "../utilities/Showcase";
 import {DicomViewerConfig} from "../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig";
 
 const styles = theme => ({
@@ -57,18 +58,18 @@ class DrawerContent extends Component {
         "open": interfaceOpen,
         "handler": this.interfaceHandler,
         "children": [
-          {
-            "name": "BigImageViewer",
-            "component": <Showcase configs={BigImageViewerConfig}/>
-          },
+          // {
+          //   "name": "BigImageViewer",
+          //   "component": <Showcase configs={BigImageViewerConfig}/>
+          // },
           {
             "name": "Connectivity",
-            "component": <Showcase configs={ConnectivityConfig}/>
+            "component": <Showcase markdown={ConnectivityMarkdown}/>
           },
-          {
-            "name": "DicomViewer",
-            "component": <Showcase configs={DicomViewerConfig}/>
-          },
+          // {
+          //   "name": "DicomViewer",
+          //   "component": <Showcase configs={DicomViewerConfig}/>
+          // },
           {
             "name": "FlexLayout",
             "component": <FlexLayoutShowcase/>
@@ -108,8 +109,6 @@ class DrawerContent extends Component {
     };
     return (
         <nav className={classes.lists} aria-label="mailbox folders">
-
-          <li>
             {Object.keys(content).map(key => {
               const open = content[key].open;
               const handler = content[key].handler;
@@ -136,7 +135,6 @@ class DrawerContent extends Component {
                   </List>
               )
             })}
-          </li>
         </nav>
     );
   }
