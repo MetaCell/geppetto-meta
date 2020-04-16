@@ -8,6 +8,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
 import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
+import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
 
 import {BigImageViewerConfig}
   from "../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig";
@@ -64,7 +65,7 @@ class DrawerContent extends Component {
           //   "component": <Showcase configs={BigImageViewerConfig}/>
           // },
           {
-            "name": "Connectivity",
+            "name": "Connectivity Viewer",
             "component": <Showcase markdown={ConnectivityMarkdown}/>
           },
           // {
@@ -76,11 +77,15 @@ class DrawerContent extends Component {
             "component": <FlexLayoutShowcase/>
           },
           {
-            "name": "GraphVisualizer",
+            "name": "Graph Visualizer",
             "component": <GraphVisualizationShowcase/>
           },
           {
-            "name": "MoviePlayer",
+            "name": "HTML Viewer",
+            "component": <Showcase markdown={HTMLViewerMarkdown}/>
+          },
+          {
+            "name": "Movie Player",
             "component": <MoviePlayerShowcase/>
           },
           {
@@ -88,11 +93,11 @@ class DrawerContent extends Component {
             "component": <PlotShowcase/>
           },
           {
-            "name": "PythonConsole",
+            "name": "Python Console",
             "component": <PythonConsoleShowcase/>
           },
           {
-            "name": "Tree",
+            "name": "Tree Viewer",
             "component": <Showcase markdown={TreeMarkdown}/>
           },
         ]
@@ -102,7 +107,7 @@ class DrawerContent extends Component {
         "handler": this.controlsHandler,
         "children": [
           {
-            "name": "ListViewer",
+            "name": "List Viewer",
             "component": <ListViewerShowcase/>
           },
           {
