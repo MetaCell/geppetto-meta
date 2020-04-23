@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import ConnectivityToolbar from "./subcomponents/ConnectivityToolbar";
-import ConnectivityPlot from "./subcomponents/ConnectivityPlot";
-import { Matrix } from "./layouts/Matrix";
+import ConnectivityToolbar from './subcomponents/ConnectivityToolbar';
+import ConnectivityPlot from './subcomponents/ConnectivityPlot';
+import { Matrix } from './layouts/Matrix';
 import Grid from '@material-ui/core/Grid';
-
+import PropTypes from 'prop-types';
 
 const styles = (theme) => ({
   container: {
     height: '100%',
     minHeight: '100%',
   },
-  connectivityContainer: { background: theme.palette.background.paper }})
+  connectivityContainer: { background: theme.palette.background.paper },
+});
 
 class ConnectivityComponent extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
@@ -25,7 +26,6 @@ class ConnectivityComponent extends Component {
     this.deckHandler = this.deckHandler.bind(this);
     this.sortOptionsHandler = this.sortOptionsHandler.bind(this);
     this.plotRef = React.createRef();
-
   }
 
   /**
@@ -35,7 +35,7 @@ class ConnectivityComponent extends Component {
    * @command legendHandler ()
    *
    */
-  legendHandler () {
+  legendHandler() {
     this.setState(() => ({ legendsVisibility: !this.state.legendsVisibility }));
   }
 
@@ -46,7 +46,7 @@ class ConnectivityComponent extends Component {
    * @command toolbarHandler (visibility)
    *
    */
-  toolbarHandler (visibility) {
+  toolbarHandler(visibility) {
     this.setState(() => ({ toolbarVisibility: visibility }));
   }
 
@@ -58,7 +58,7 @@ class ConnectivityComponent extends Component {
    *
    * @param layout
    */
-  deckHandler (layout) {
+  deckHandler(layout) {
     this.setState(() => ({ layout: layout }));
   }
 
@@ -69,22 +69,37 @@ class ConnectivityComponent extends Component {
    * @command sortOptionsHandler (option)
    *
    */
-  sortOptionsHandler (option){
+  sortOptionsHandler(option) {
     this.state.layout.setOrder(this.plotRef.current, option);
   }
 
-  render () {
+  render() {
     const {
-      classes, id, size, data, colorMap, colors, names, modelFactory, resources,
-      matrixOnClickHandler, nodeType, linkWeight, linkType, library 
+      classes,
+      id,
+      size,
+      data,
+      colorMap,
+      colors,
+      names,
+      modelFactory,
+      resources,
+      matrixOnClickHandler,
+      nodeType,
+      linkWeight,
+      linkType,
+      library,
     } = this.props;
     const { layout, toolbarVisibility, legendsVisibility } = this.state;
 
-
     return (
-      <div style={{ height:"100%", width:size.width }} onMouseEnter={() => this.toolbarHandler(true)} onMouseLeave={() => this.toolbarHandler(false)}>
+      <div
+        style={{ height: '100%', width: size.width }}
+        onMouseEnter={() => this.toolbarHandler(true)}
+        onMouseLeave={() => this.toolbarHandler(false)}
+      >
         <Grid className={classes.connectivityContainer} container spacing={2}>
-          <Grid item sm={12} xs={12} >
+          <Grid item sm={12} xs={12}>
             <ConnectivityToolbar
               id={id}
               layout={layout}
@@ -97,7 +112,7 @@ class ConnectivityComponent extends Component {
           </Grid>
           <Grid item sm={12} xs>
             <ConnectivityPlot
-              ref = {this.plotRef}
+              ref={this.plotRef}
               id={id}
               size={size}
               data={data}
@@ -118,8 +133,24 @@ class ConnectivityComponent extends Component {
           </Grid>
         </Grid>
       </div>
-
-    )
+    );
   }
 }
+
+ConnectivityComponent.propTypes = {
+  id: PropTypes.string.isRequired,
+  colors: PropTypes.array.isRequired,
+  data: PropTypes.object.isRequired,
+  size: PropTypes.object.isRequired,
+  modelFactory: PropTypes.object.isRequired,
+  resources: PropTypes.object.isRequired,
+  matrixOnClickHandler: PropTypes.func.isRequired,
+  colorMap: PropTypes.func,
+  layout: PropTypes.object,
+  linkType: PropTypes.func,
+  linkWeight: PropTypes.func,
+  nodeType: PropTypes.func,
+  library: PropTypes.func,
+};
+
 export default withStyles(styles)(ConnectivityComponent);

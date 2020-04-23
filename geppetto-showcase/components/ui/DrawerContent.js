@@ -1,29 +1,28 @@
-import React, { Component } from "react";
-import ListItem from "@material-ui/core/ListItem";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import ListItemText from "@material-ui/core/ListItemText";
-import List from "@material-ui/core/List";
-import Collapse from "@material-ui/core/Collapse";
-import { withStyles } from "@material-ui/core/styles";
+import React, { Component } from 'react';
+import ListItem from '@material-ui/core/ListItem';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+import Collapse from '@material-ui/core/Collapse';
+import { withStyles } from '@material-ui/core/styles';
 
 import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
 import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
 
-import {BigImageViewerConfig}
-  from "../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig";
-import MenuShowcase from "../../../geppetto-ui/src/components/menu/showcase/MenuShowcase";
-import ListViewerShowcase from "../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase";
-import PlotShowcase from "../../../geppetto-ui/src/components/plot/showcase/PlotShowcase";
-import FlexLayoutShowcase from "../../../geppetto-ui/src/components/flex-layout/showcase/FlexLayoutShowcase";
-import MoviePlayerShowcase from "../../../geppetto-ui/src/components/movie-player/showcase/MoviePlayerShowcase";
-import PythonConsoleShowcase from "../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase";
-import GraphVisualizationShowcase from "../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase";
-import Showcase from "../utilities/Showcase";
-import {DicomViewerConfig} from "../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig";
+import { BigImageViewerConfig } from '../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig';
+import MenuShowcase from '../../../geppetto-ui/src/components/menu/showcase/MenuShowcase';
+import ListViewerShowcase from '../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase';
+import PlotShowcase from '../../../geppetto-ui/src/components/plot/showcase/PlotShowcase';
+import FlexLayoutShowcase from '../../../geppetto-ui/src/components/flex-layout/showcase/FlexLayoutShowcase';
+import MoviePlayerShowcase from '../../../geppetto-ui/src/components/movie-player/showcase/MoviePlayerShowcase';
+import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
+import GraphVisualizationShowcase from '../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase';
+import Showcase from '../utilities/Showcase';
+import { DicomViewerConfig } from '../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig';
 
-const styles = theme => ({
-  nested: { paddingLeft: theme.spacing(4), },
+const styles = (theme) => ({
+  nested: { paddingLeft: theme.spacing(4) },
 
   lists: {
     backgroundColor: theme.palette.background.paper,
@@ -31,121 +30,152 @@ const styles = theme => ({
   },
 });
 
-
 class DrawerContent extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      interfaceOpen: false,
-      controlsOpen: false
+      dataViewersOpen: true,
+      navigationLayoutOpen: true,
+      programmaticInterfacesOpen: true,
     };
-    this.interfaceHandler = this.interfaceHandler.bind(this);
-    this.controlsHandler = this.controlsHandler.bind(this);
+    this.dataViewersHandler = this.dataViewersHandler.bind(this);
+    this.navigationLayoutHandler = this.navigationLayoutHandler.bind(this);
+    this.programmaticInterfacesHandler = this.programmaticInterfacesHandler.bind(
+      this
+    );
   }
 
-  interfaceHandler () {
-    this.setState(() => ({ interfaceOpen: !this.state.interfaceOpen }))
+  dataViewersHandler() {
+    this.setState(() => ({ dataViewersOpen: !this.state.dataViewersOpen }));
   }
 
-  controlsHandler () {
-    this.setState(() => ({ controlsOpen: !this.state.controlsOpen }))
+  navigationLayoutHandler() {
+    this.setState(() => ({
+      navigationLayoutOpen: !this.state.navigationLayoutOpen,
+    }));
   }
 
-  render () {
-    const { interfaceOpen, controlsOpen } = this.state;
+  programmaticInterfacesHandler() {
+    this.setState(() => ({
+      programmaticInterfacesOpen: !this.state.programmaticInterfacesOpen,
+    }));
+  }
+
+  render() {
+    const {
+      dataViewersOpen,
+      navigationLayoutOpen,
+      programmaticInterfacesOpen,
+    } = this.state;
     const { classes, contentHandler } = this.props;
 
     const content = {
-      "Interface": {
-        "open": interfaceOpen,
-        "handler": this.interfaceHandler,
-        "children": [
+      'Data Viewers': {
+        open: dataViewersOpen,
+        handler: this.dataViewersHandler,
+        children: [
           // {
           //   "name": "BigImageViewer",
           //   "component": <Showcase configs={BigImageViewerConfig}/>
           // },
           {
-            "name": "Connectivity Viewer",
-            "component": <Showcase markdown={ConnectivityMarkdown}/>
+            name: 'Connectivity Viewer',
+            component: <Showcase markdown={ConnectivityMarkdown} />,
           },
           // {
           //   "name": "DicomViewer",
           //   "component": <Showcase configs={DicomViewerConfig}/>
           // },
+
           {
-            "name": "FlexLayout",
-            "component": <FlexLayoutShowcase/>
+            name: 'Graph Visualizer',
+            component: <GraphVisualizationShowcase />,
           },
           {
-            "name": "Graph Visualizer",
-            "component": <GraphVisualizationShowcase/>
+            name: 'HTML Viewer',
+            component: <Showcase markdown={HTMLViewerMarkdown} />,
           },
           {
-            "name": "HTML Viewer",
-            "component": <Showcase markdown={HTMLViewerMarkdown}/>
+            name: 'Movie Player',
+            component: <MoviePlayerShowcase />,
           },
           {
-            "name": "Movie Player",
-            "component": <MoviePlayerShowcase/>
+            name: 'Plot',
+            component: <PlotShowcase />,
           },
-          {
-            "name": "Plot",
-            "component": <PlotShowcase/>
-          },
-          {
-            "name": "Python Console",
-            "component": <PythonConsoleShowcase/>
-          },
-          {
-            "name": "Tree Viewer",
-            "component": <Showcase markdown={TreeMarkdown}/>
-          },
-        ]
+        ],
       },
-      "Controls": {
-        "open": controlsOpen,
-        "handler": this.controlsHandler,
-        "children": [
+      'Navigation/Layout': {
+        open: navigationLayoutOpen,
+        handler: this.navigationLayoutHandler,
+        children: [
           {
-            "name": "List Viewer",
-            "component": <ListViewerShowcase/>
+            name: 'FlexLayout',
+            component: <FlexLayoutShowcase />,
           },
           {
-            "name": "Menu",
-            "component": <MenuShowcase/>
+            name: 'List Viewer',
+            component: <ListViewerShowcase />,
           },
-        ]
+          {
+            name: 'Menu',
+            component: <MenuShowcase />,
+          },
+          {
+            name: 'Tree Viewer',
+            component: <Showcase markdown={TreeMarkdown} />,
+          },
+        ],
+      },
+      'Programmatic Interfaces': {
+        open: programmaticInterfacesOpen,
+        handler: this.programmaticInterfacesHandler,
+        children: [
+          {
+            name: 'Python Console',
+            component: <PythonConsoleShowcase />,
+          },
+          // {
+          //   name: 'Javascript Console',
+          //   component: <PythonConsoleShowcase />,
+          // },
+        ],
       },
     };
     return (
-        <nav className={classes.lists} aria-label="mailbox folders">
-            {Object.keys(content).map(key => {
-              const open = content[key].open;
-              const handler = content[key].handler;
-              const children = content[key].children;
-              return (
-                  <List key={key}>
-                    <ListItem key={key} button onClick={handler}>
-                      <ListItemText primary={key}/>
-                      {open != null ? open ? <ExpandLess/> : <ExpandMore/> : null}
-                    </ListItem>
-                    <Collapse component="li" in={open} timeout="auto" unmountOnExit>
-                      <List disablePadding>
-                        {children.map(value => {
-                          const name = value.name;
-                          const component = value.component;
-                          return (
-                              <ListItem key={value.name} button className={classes.nested} onClick={() => contentHandler(component)}>
-                                <ListItemText primary={name}/>
-                              </ListItem>
-                          )
-                        })}
-                      </List>
-                    </Collapse>
-                  </List>
-              )
-            })}
-        </nav>
+      <nav className={classes.lists} aria-label="mailbox folders">
+        {Object.keys(content).map((key) => {
+          const open = content[key].open;
+          const handler = content[key].handler;
+          const children = content[key].children;
+          return (
+            <List key={key}>
+              <ListItem key={key} button onClick={handler}>
+                <ListItemText primary={key} />
+                {open != null ? open ? <ExpandLess /> : <ExpandMore /> : null}
+              </ListItem>
+              <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+                <List disablePadding>
+                  {children.map((value) => {
+                    const name = value.name;
+                    const component = value.component;
+                    return (
+                      <ListItem
+                        key={value.name}
+                        button
+                        className={classes.nested}
+                        onClick={() => contentHandler(component)}
+                      >
+                        <ListItemText primary={name} />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Collapse>
+            </List>
+          );
+        })}
+      </nav>
     );
   }
 }
