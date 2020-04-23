@@ -1,8 +1,18 @@
-import React, { Component } from 'react'
-import SortableTree from 'react-sortable-tree'
-import { toggleExpandedForAll, changeNodeAtPath, walk } from 'react-sortable-tree'
-require("./Tree.less");
+import React, { Component } from 'react';
+import SortableTree from 'react-sortable-tree';
+import {
+  toggleExpandedForAll,
+  changeNodeAtPath,
+  walk,
+} from 'react-sortable-tree';
+import { withStyles } from '@material-ui/core';
+import 'react-sortable-tree/style.css';
 
+const styles = () => ({
+  treeViewer: {
+    height: '100%',
+  },
+});
 
 class Tree extends Component {
   constructor(props) {
@@ -11,7 +21,7 @@ class Tree extends Component {
     this.updateTreeData = this.updateTreeData.bind(this);
     this.expandAll = this.expandAll.bind(this);
     this.collapseAll = this.collapseAll.bind(this);
-    this.state = { treeData: this.props.treeData, };
+    this.state = { treeData: this.props.treeData };
   }
 
   updateTreeData(treeData) {
@@ -39,15 +49,18 @@ class Tree extends Component {
     const toggleMode = this.props.toggleMode;
     let currentTreeData = this.state.treeData;
     // If node has children, we expand/collapse the node
-    if (rowInfo.node.children != undefined && rowInfo.node.children.length > 0) {
+    if (
+      rowInfo.node.children != undefined &&
+      rowInfo.node.children.length > 0
+    ) {
       // If parents can be activate, iterate over the whole tree
       if (this.props.activateParentsNodeOnClick) {
         walk({
           treeData: currentTreeData,
           getNodeKey: ({ treeIndex }) => treeIndex,
           ignoreCollapsed: true,
-          callback: rowInfoIter => {
-            var isActive = (rowInfoIter.treeIndex == rowInfo.treeIndex);
+          callback: (rowInfoIter) => {
+            const isActive = rowInfoIter.treeIndex == rowInfo.treeIndex;
             /*
              * If toggleMode just toggle to activate/inactivate selected node and expand/collapse
              * If non toggle mode inactive all nodes but selected and expand/collapse
@@ -55,20 +68,44 @@ class Tree extends Component {
             if (isActive && toggleMode) {
               rowInfoIter.node.active = !rowInfoIter.node.active;
               rowInfoIter.node.expanded = !rowInfoIter.node.expanded;
-              currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+              currentTreeData = changeNodeAtPath({
+                treeData: currentTreeData,
+                path: rowInfoIter.path,
+                newNode: rowInfoIter.node,
+                getNodeKey: ({ treeIndex }) => treeIndex,
+                ignoreCollapsed: true,
+              });
             } else if (isActive && !toggleMode) {
               rowInfoIter.node.active = isActive;
               rowInfoIter.node.expanded = !rowInfoIter.node.expanded;
-              currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+              currentTreeData = changeNodeAtPath({
+                treeData: currentTreeData,
+                path: rowInfoIter.path,
+                newNode: rowInfoIter.node,
+                getNodeKey: ({ treeIndex }) => treeIndex,
+                ignoreCollapsed: true,
+              });
             } else if (isActive != rowInfoIter.node.active && !toggleMode) {
               rowInfoIter.node.active = isActive;
-              currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+              currentTreeData = changeNodeAtPath({
+                treeData: currentTreeData,
+                path: rowInfoIter.path,
+                newNode: rowInfoIter.node,
+                getNodeKey: ({ treeIndex }) => treeIndex,
+                ignoreCollapsed: true,
+              });
             }
-          }
+          },
         });
       } else {
         rowInfo.node.expanded = !rowInfo.node.expanded;
-        currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfo.path, newNode: rowInfo.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+        currentTreeData = changeNodeAtPath({
+          treeData: currentTreeData,
+          path: rowInfo.path,
+          newNode: rowInfo.node,
+          getNodeKey: ({ treeIndex }) => treeIndex,
+          ignoreCollapsed: true,
+        });
       }
     } else if (rowInfo.node.children == undefined) {
       // If node has no children, we select the node
@@ -76,25 +113,37 @@ class Tree extends Component {
         treeData: currentTreeData,
         getNodeKey: ({ treeIndex }) => treeIndex,
         ignoreCollapsed: true,
-        callback: rowInfoIter => {
-          var isActive = (rowInfoIter.treeIndex == rowInfo.treeIndex);
+        callback: (rowInfoIter) => {
+          const isActive = rowInfoIter.treeIndex == rowInfo.treeIndex;
           /*
            * If toggleMode just toggle to activate/inactivate selected node
            * If non toggle mode inactive all nodes but selected
            */
           if (isActive && toggleMode) {
             rowInfoIter.node.active = !rowInfoIter.node.active;
-            currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+            currentTreeData = changeNodeAtPath({
+              treeData: currentTreeData,
+              path: rowInfoIter.path,
+              newNode: rowInfoIter.node,
+              getNodeKey: ({ treeIndex }) => treeIndex,
+              ignoreCollapsed: true,
+            });
           } else if (isActive != rowInfoIter.node.active && !toggleMode) {
             rowInfoIter.node.active = isActive;
-            currentTreeData = changeNodeAtPath({ treeData: currentTreeData, path: rowInfoIter.path, newNode: rowInfoIter.node, getNodeKey: ({ treeIndex }) => treeIndex, ignoreCollapsed: true });
+            currentTreeData = changeNodeAtPath({
+              treeData: currentTreeData,
+              path: rowInfoIter.path,
+              newNode: rowInfoIter.node,
+              getNodeKey: ({ treeIndex }) => treeIndex,
+              ignoreCollapsed: true,
+            });
           }
-        }
+        },
       });
     }
 
     // Update tree with latest changes
-    this.updateTreeData(currentTreeData)
+    this.updateTreeData(currentTreeData);
 
     // If there is a callback, we use it
     if (this.props.handleClick != undefined) {
@@ -103,8 +152,8 @@ class Tree extends Component {
   }
 
   getNodeProps(rowInfo) {
-    var nodeProps = {};
-    nodeProps['onClick'] = event => this.handleClick(event, rowInfo);
+    let nodeProps = {};
+    nodeProps['onClick'] = (event) => this.handleClick(event, rowInfo);
 
     if (this.props.getButtons !== undefined) {
       nodeProps['buttons'] = this.props.getButtons(rowInfo);
@@ -122,21 +171,32 @@ class Tree extends Component {
   }
 
   render() {
+    const {
+      classes,
+      style,
+      rowHeight,
+      searchQuery,
+      onlyExpandSearchedNodes,
+    } = this.props;
     return (
-      <div key={this.props.id + "_component"} id={this.props.id + "_component"} className="treeViewer" style={this.props.style}>
+      <div className={classes.treeViewer} style={style}>
         <SortableTree
-          style={this.props.style}
+          style={style}
           treeData={this.state.treeData}
           canDrag={false}
-          rowHeight={this.props.rowHeight}
+          rowHeight={rowHeight}
           scaffoldBlockPxWidth={22}
-          generateNodeProps={rowInfo => (this.getNodeProps(rowInfo))}
-          onChange={treeData => this.updateTreeData(treeData)}
-          searchQuery={(this.props.searchQuery !== undefined) ? this.props.searchQuery : null}
-          onlyExpandSearchedNodes={this.props.onlyExpandSearchedNodes !== undefined ? this.props.onlyExpandSearchedNodes : false}
+          generateNodeProps={(rowInfo) => this.getNodeProps(rowInfo)}
+          onChange={(treeData) => this.updateTreeData(treeData)}
+          searchQuery={searchQuery !== undefined ? searchQuery : null}
+          onlyExpandSearchedNodes={
+            onlyExpandSearchedNodes !== undefined
+              ? onlyExpandSearchedNodes
+              : false
+          }
         />
       </div>
-    )
+    );
   }
 }
-export default (Tree);
+export default withStyles(styles)(Tree);
