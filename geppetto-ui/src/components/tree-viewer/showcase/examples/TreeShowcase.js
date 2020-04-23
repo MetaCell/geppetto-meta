@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import Tree from '../../Tree';
-import './TreeShowcase.less';
+import '../TreeShowcase.less';
 
 export default class TreeShowcase extends Component {
   constructor(props) {
     super(props);
-    this.toggleMode = false;
     this.getButtons = this.getButtons.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
@@ -13,12 +12,9 @@ export default class TreeShowcase extends Component {
   getButtons(rowInfo) {
     let buttons = [];
     if (rowInfo.node.children == undefined) {
-      const className =
-        this.toggleMode && !rowInfo.node.active
-          ? 'gpt-telescope_tbo_outline'
-          : 'gpt-telescope_tbo_full';
-
-      buttons.push(<i className={className} aria-hidden="true"></i>);
+      buttons.push(
+        <i className={'gpt-telescope_tbo_full'} aria-hidden="true"></i>
+      );
     }
     return buttons;
   }
@@ -67,6 +63,7 @@ export default class TreeShowcase extends Component {
     const id = 'TreeContainerMRI';
     const treeData = this.getTreeData();
     const rowHeight = 50;
+    const toggleMode = false;
 
     return (
       <Tree
@@ -76,7 +73,7 @@ export default class TreeShowcase extends Component {
         handleClick={this.handleClick}
         getButtons={this.getButtons}
         rowHeight={rowHeight}
-        toggleMode={this.toggleMode}
+        toggleMode={toggleMode}
       />
     );
   }

@@ -1,27 +1,25 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core';
 
 const styles = (theme) => ({
   htmlViewer: {
-    outline: "none",
-    fontSize: "14px",
+    outline: 'none',
+    fontSize: '14px',
     fontWeight: 200,
-    color: "white",
-    overflow: "auto !important",
-    userSelect: "text"
+    color: 'white',
+    overflow: 'auto !important',
+    userSelect: 'text',
   },
-})
+});
 
 class HTMLViewer extends Component {
-
   constructor(props) {
     super(props);
 
-    this.state = { content: this.props.content, };
+    this.state = { content: this.props.content };
     this.handleClick = this.handleClick.bind(this);
     this.htmlViewer = React.createRef();
-
   }
 
   setContent(content) {
@@ -49,10 +47,17 @@ class HTMLViewer extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div key={this.props.id + "_component"} id={this.props.id + "_component"} className={classes.htmlViewer} ref={this.htmlViewer} style={this.props.style}>
-        <div dangerouslySetInnerHTML={{ __html: this.state.content }} onClick={this.handleClick}></div>
+      <div
+        className={classes.htmlViewer}
+        ref={this.htmlViewer}
+        style={this.props.style}
+      >
+        <div
+          dangerouslySetInnerHTML={{ __html: this.state.content }}
+          onClick={this.handleClick}
+        ></div>
       </div>
-    )
+    );
   }
-};
+}
 export default withStyles(styles)(HTMLViewer);

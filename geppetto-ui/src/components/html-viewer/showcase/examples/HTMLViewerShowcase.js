@@ -1,23 +1,31 @@
-import React, { Component } from "react"
-import HTMLViewer from "../../HTMLViewer"
+import React, { Component } from 'react';
+import HTMLViewer from '../../HTMLViewer';
+require('../HTMLViewerShowcase.less');
 
 export default class HTMLViewerShowcase extends Component {
   constructor(props) {
     super(props);
-    this.htmlContent = "<img style=\"height: " + eval(window.outerHeight) + "px; width: 98%; margin: auto; display: block; padding-top: 25px\" src=\"https://upload.wikimedia.org/wikipedia/en/7/7c/Geppetto_1940_Pinocchio.jpeg\" />"
+    this.handleClick = this.handleClick.bind(this);
+    this.htmlContent = require('../HTMLViewerShowcase.html');
   }
 
+  handleClick(element, elementDataset) {
+    console.log('Click handler triggered.');
+    if (elementDataset.action) {
+      console.log(elementDataset.action);
+    }
+  }
   render() {
     return (
       <HTMLViewer
-        id="ButtonBarComponentViewerContainer"
         content={this.htmlContent}
         style={{
           width: '100%',
           height: '100%',
-          float: 'center'
+          float: 'center',
         }}
-        />
+        handleClick={this.handleClick}
+      />
     );
   }
 }
