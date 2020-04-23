@@ -27,8 +27,17 @@ const styles = (theme) => ({
   },
   toolbar: theme.mixins.toolbar,
   toolbarMainButton: {
-    color: 'black',
+    color: 'white',
+    opacity: '70%',
     fontSize: '16px',
+    fontWeight: '500',
+    letterSpacing: '0.0075em',
+    justifyContent: 'left',
+    flex: 1,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.main,
+      opacity: '60%',
+    },
   },
   searchIcon: {
     width: theme.spacing(7),
@@ -83,14 +92,24 @@ class Main extends Component {
       <div className={classes.root}>
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <Typography variant="h6" noWrap>
-              <Button
-                onClick={() => this.contentHandler(homeContent)}
-                className={classes.toolbarMainButton}
-              >
-                Geppetto Showcase
-              </Button>
-            </Typography>
+            <Button
+              onClick={() => this.contentHandler(homeContent)}
+              className={classes.toolbarMainButton}
+            >
+              Geppetto Showcase
+            </Button>
+            <Button href="http://www.geppetto.org" target="_blank">
+              Docs
+            </Button>
+            <Button
+              href="https://github.com/openworm/org.geppetto"
+              target="_blank"
+            >
+              Github
+            </Button>
+            <Button href="https://goo.gl/3ncZWn" target="_blank">
+              Slack
+            </Button>
           </Toolbar>
         </AppBar>
         <Drawer
