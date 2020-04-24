@@ -2,6 +2,8 @@
 
 Connectivity Main Description
 
+Connectivite detailed description
+
 ```element
 connectivity-viewer/ConnectivityComponent
 ```
@@ -24,6 +26,6 @@ Connectivity example using the force layout
 connectivity-viewer/showcase/examples/ConnectivityShowcaseForce
 ```
 
-#### Libraries
+## Libraries
 
 [d3](https://www.npmjs.com/package/d3)

@@ -9,6 +9,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
 
 const styles = (theme) => ({
   root: {
@@ -61,6 +62,9 @@ const styles = (theme) => ({
     display: 'table',
     margin: '0 auto',
   },
+  library: {
+    margin: theme.spacing(1),
+  },
 });
 
 class Showcase extends Component {
@@ -79,6 +83,9 @@ class Showcase extends Component {
         <div className={classes.root}>
           <h1 className={classes.mainTitle}>{configs.name}</h1>
           <p className={classes.mainDescription}>{configs.description}</p>
+          <p className={classes.secondaryDescription}>
+            {configs.detailedDescription}
+          </p>
           {configs.examples.map((obj) => {
             const file = obj.file.default.split('\n').join('\n');
             return (
@@ -137,6 +144,18 @@ class Showcase extends Component {
               </TableBody>
             </Table>
           </TableContainer>
+          <h2 className={classes.secondaryTitle}>Libraries</h2>
+          {configs.libraries.map((library) => (
+            <Chip
+              className={classes.library}
+              label={library.name}
+              component="a"
+              href={library.href}
+              target={'_blank'}
+              clickable
+              color="secondary"
+            />
+          ))}
         </div>
       </div>
     );

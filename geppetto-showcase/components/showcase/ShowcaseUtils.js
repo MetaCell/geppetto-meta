@@ -15,7 +15,7 @@ function getTitle(dom) {
 
 /**
  *
- * Gets the everything from the h1 element until the next pre element
+ * Gets the next sibling of the h1 element
  *
  * @command getDescription (dom)
  *
@@ -23,7 +23,20 @@ function getTitle(dom) {
  */
 
 function getDescription(dom) {
-  return getContentUntil('pre', dom.querySelector('h1'));
+  return dom.querySelector('h1').nextElementSibling.innerText;
+}
+
+/**
+ *
+ * Gets the everything from the first h1 sibling element until the next pre element
+ *
+ * @command getDetailedDescription (dom)
+ *
+ * @param dom
+ */
+
+function getDetailedDescription(dom) {
+  return getContentUntil('pre', dom.querySelector('h1').nextElementSibling);
 }
 
 /**
@@ -117,6 +130,27 @@ function getExample(start) {
   return example;
 }
 
+/**
+ *
+ * Gets an array with all the libraries
+ *
+ * @command getLibraries (dom)
+ *
+ * @param dom
+ */
+
+function getLibraries(dom) {
+  let libraries = [];
+  let librariesDOM = getElementsUntil('h2', dom.getElementById('libraries'));
+  for (let library of librariesDOM) {
+    libraries.push({
+      name: library.children[0].innerHTML,
+      href: library.children[0].href,
+    });
+  }
+  return libraries;
+}
+
 function getElementsUntil(selector, start, included = false) {
   let siblings = [];
   let elem = start.nextElementSibling;
@@ -145,8 +179,10 @@ export function getConfigFromMarkdown(markdown) {
   let configs = {};
   configs['name'] = getTitle(dom);
   configs['description'] = getDescription(dom);
+  configs['detailedDescription'] = getDetailedDescription(dom);
   configs['reactElement'] = getReactElement(dom);
   configs['props'] = getProps(dom);
   configs['examples'] = getExamples(dom);
+  configs['libraries'] = getLibraries(dom);
   return configs;
 }

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import IconButtonWithTooltip from './IconButtonWithTooltip';
-import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { faCode, faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
 import Toolbar from '@material-ui/core/Toolbar';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { darcula } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const styles = (theme) => ({
   toolbar: {
@@ -16,11 +16,22 @@ const styles = (theme) => ({
     top: theme.spacing(0),
     color: theme.palette.button.main,
   },
+  code: {
+    paddingTop: theme.spacing(0),
+    marginTop: theme.spacing(-1) + 'px!important',
+  },
+  pushRight: {
+    flex: 1,
+    visibility: 'hidden',
+    opacity: 0,
+  },
 });
 
 const SHOW_SOURCE_TOOLTIP = 'Show the full source code';
 const HIDE_SOURCE_TOOLTIP = 'Hide the full source code';
 const INSTANTIATION_NOT_FOUND = 'Instantiation not found';
+const EDIT_TOOLTIP = 'Edit in CodeSandbox';
+const COPY_SOUCE_TOOLTIP = 'Copy the source';
 
 class Code extends Component {
   constructor(props) {
@@ -30,12 +41,17 @@ class Code extends Component {
       sourceTooltip: SHOW_SOURCE_TOOLTIP,
     };
     this.handleSourceClick = this.handleSourceClick.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
+    this.handleCopySourceClick = this.handleCopySourceClick.bind(this);
   }
 
   getInstantiation(file, element) {
     let re = new RegExp(`<${element}(.|\\n)+?\\/>`);
     let matches = file.match(re);
-    return matches ? matches : INSTANTIATION_NOT_FOUND;
+    let match = matches[0]
+      .replace('        />', '/>')
+      .replace(new RegExp('        ', 'g'), '  ');
+    return matches ? match : INSTANTIATION_NOT_FOUND;
   }
 
   handleSourceClick() {
@@ -45,11 +61,18 @@ class Code extends Component {
     this.setState({ source: !this.state.source, sourceTooltip: sourceTooltip });
   }
 
-  render() {
-    const { classes, file, element } = this.props;
-    const { source, sourceTooltip } = this.state;
+  handleEditClick() {
+    console.log('Open CodeSandbox');
+  }
 
-    const content = source ? file : this.getInstantiation(file, element);
+  handleCopySourceClick() {
+    console.log('Copy Source, Show dialog');
+  }
+
+  getToolbarButtons() {
+    const { sourceTooltip } = this.state;
+    const { classes } = this.props;
+
     const sourceButton = (
       <IconButtonWithTooltip
         disabled={false}
@@ -59,11 +82,51 @@ class Code extends Component {
         tooltip={sourceTooltip}
       />
     );
+    const editButton = (
+      <IconButtonWithTooltip
+        disabled={true}
+        onClick={this.handleEditClick}
+        className={classes.button}
+        icon={faEdit}
+        tooltip={EDIT_TOOLTIP}
+      />
+    );
+    const copyButton = (
+      <IconButtonWithTooltip
+        disabled={true}
+        onClick={this.handleCopySourceClick}
+        className={classes.button}
+        icon={faCopy}
+        tooltip={COPY_SOUCE_TOOLTIP}
+      />
+    );
+    return (
+      <div>
+        {sourceButton}
+        {editButton}
+        {copyButton}
+      </div>
+    );
+  }
+
+  render() {
+    const { classes, file, element } = this.props;
+    const { source } = this.state;
+
+    const content = source ? file : this.getInstantiation(file, element);
+    const toolbarButtons = this.getToolbarButtons();
 
     return (
       <div>
-        <Toolbar className={classes.toolbar}>{sourceButton}</Toolbar>
-        <SyntaxHighlighter language="javascript" style={darcula}>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.pushRight} />
+          {toolbarButtons}
+        </Toolbar>
+        <SyntaxHighlighter
+          className={classes.code}
+          language="jsx"
+          style={darcula}
+        >
           {content}
         </SyntaxHighlighter>
       </div>
