@@ -1,20 +1,23 @@
-# Tree Viewer 
+# Tree Viewer
 
-Tree Viewer Description 
+Tree Viewer Description
 
-## Props
+Tree Viewer detailed description
 
-| Name | Type | Default | Description |
-|:-----|:-----|:--------|:------------|
-| <span class="prop-name">action</span> | <span class="prop-type">node</span> |  | The action to display. It renders after the message, at the end of the alert. |
+```element
+tree-viewer/Tree
+```
 
 ## Examples
 
-### Tree Viewer Example 1
+### TreeViewer Example 1
 
 TreeViewer Example 1
 
 ```
-Tree:tree-viewer/showcase/examples/TreeShowcase
+tree-viewer/showcase/examples/TreeShowcase
 ```
 
+## Libraries
+
+[react-sortable-tree](https://www.npmjs.com/package/react-sortable-tree)

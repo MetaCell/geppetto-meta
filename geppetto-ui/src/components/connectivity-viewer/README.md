@@ -2,7 +2,7 @@
 
 Connectivity Main Description
 
-Connectivite detailed description
+Connectivity detailed description
 
 ```element
 connectivity-viewer/ConnectivityComponent

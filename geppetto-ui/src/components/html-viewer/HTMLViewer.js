@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
-const styles = (theme) => ({
+const styles = () => ({
   htmlViewer: {
     outline: 'none',
     fontSize: '14px',
@@ -26,12 +27,6 @@ class HTMLViewer extends Component {
     this.setState({ content });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.content != this.props.content) {
-      this.setState({ content: nextProps.content });
-    }
-  }
-
   componentDidMount() {
     const element = ReactDOM.findDOMNode(this.htmlViewer.current);
     element.setAttribute('tabIndex', -1);
@@ -45,7 +40,7 @@ class HTMLViewer extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, content } = this.props;
     return (
       <div
         className={classes.htmlViewer}
@@ -53,11 +48,23 @@ class HTMLViewer extends Component {
         style={this.props.style}
       >
         <div
-          dangerouslySetInnerHTML={{ __html: this.state.content }}
+          dangerouslySetInnerHTML={{ __html: content }}
           onClick={this.handleClick}
         ></div>
       </div>
     );
   }
 }
+
+HTMLViewer.propTypes = {
+  /**
+   * Description of prop content.
+   */
+  content: PropTypes.string.isRequired,
+  /**
+   * Description of prop colors.
+   */
+  style: PropTypes.object.isRequired,
+};
+
 export default withStyles(styles)(HTMLViewer);

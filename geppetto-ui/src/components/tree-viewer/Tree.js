@@ -7,6 +7,7 @@ import {
 } from 'react-sortable-tree';
 import { withStyles } from '@material-ui/core';
 import 'react-sortable-tree/style.css';
+import PropTypes from 'prop-types';
 
 const styles = () => ({
   treeViewer: {
@@ -199,4 +200,40 @@ class Tree extends Component {
     );
   }
 }
+
+Tree.propTypes = {
+  /**
+   * Description of prop treeData.
+   */
+  treeData: PropTypes.string.isRequired,
+  /**
+   * Description of prop style
+   */
+  style: PropTypes.object.isRequired,
+  /**
+   * Description of prop rowHeight
+   */
+  rowHeight: PropTypes.number.isRequired,
+  /**
+   * Description of prop handleClick
+   */
+  handleClick: PropTypes.func.isRequired,
+  /**
+   * Description of prop getButtons
+   */
+  getButtons: PropTypes.func.isRequired,
+  /**
+   * Description of prop toggleMode
+   */
+  toggleMode: PropTypes.boolean,
+  /**
+   * Description of prop toggleactivateParentsNodeOnClickMode
+   */
+  activateParentsNodeOnClick: PropTypes.boolean,
+  /**
+   * Description of prop getNodesProps
+   */
+  getNodesProps: PropTypes.func,
+};
+
 export default withStyles(styles)(Tree);

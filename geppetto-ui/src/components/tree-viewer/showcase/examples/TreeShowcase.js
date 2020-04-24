@@ -67,7 +67,6 @@ export default class TreeShowcase extends Component {
 
     return (
       <Tree
-        id={id}
         style={style}
         treeData={treeData}
         handleClick={this.handleClick}
