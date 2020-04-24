@@ -14,6 +14,31 @@ const styles = (theme) => ({
   root: {
     width: '100%',
   },
+  mainTitle: {
+    margin: '16px 0',
+    fontSize: '40px',
+    lineHeight: 1.167,
+    letterSpacing: '0em',
+  },
+  mainDescription: {
+    margin: '0 0 40px',
+    fontSize: '1.5rem',
+    lineHeight: 1.334,
+    letterSpacing: '0em',
+  },
+  secondaryDescription: {
+    marginTop: '0',
+    marginBottom: '16px',
+    fontSize: '1rem',
+    lineHeight: 1.5,
+    letterSpacing: '0.00938em',
+  },
+  secondaryTitle: {
+    margin: '40px 0 16px',
+    fontSize: '30px',
+    lineHeight: 1.235,
+    letterSpacing: '0.00735em',
+  },
   table: {
     minWidth: 650,
     width: 'auto',
@@ -21,6 +46,7 @@ const styles = (theme) => ({
   },
   tableContainer: {
     display: 'inline-block',
+    width: 'auto',
   },
   tableName: {
     color: '#adc285',
@@ -30,6 +56,10 @@ const styles = (theme) => ({
   },
   tableRequired: {
     color: '#abaaab',
+  },
+  centerComponent: {
+    display: 'table',
+    margin: '0 auto',
   },
 });
 
@@ -47,9 +77,26 @@ class Showcase extends Component {
     return (
       <div className={classes.root}>
         <div className={classes.root}>
-          <h1>{configs.name}</h1>
-          <p>{configs.description}</p>
-          <h2>Props</h2>
+          <h1 className={classes.mainTitle}>{configs.name}</h1>
+          <p className={classes.mainDescription}>{configs.description}</p>
+          {configs.examples.map((obj) => {
+            const file = obj.file.default.split('\n').join('\n');
+            return (
+              <div key={obj.name}>
+                <h2 className={classes.secondaryTitle}>{obj.name}</h2>
+                <p className={classes.secondaryDescription}>
+                  {obj.description}
+                </p>
+                <Paper variant="outlined">
+                  <div className={classes.centerComponent}>
+                    <obj.component ref={this.componentRef} />
+                  </div>
+                </Paper>
+                <Code file={file} element={configs.reactElement}></Code>
+              </div>
+            );
+          })}
+          <h2 className={classes.secondaryTitle}>Props</h2>
           <TableContainer component={Paper} className={classes.tableContainer}>
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
@@ -90,17 +137,6 @@ class Showcase extends Component {
               </TableBody>
             </Table>
           </TableContainer>
-          {configs.examples.map((obj) => {
-            const file = obj.file.default.split('\n').join('\n');
-            return (
-              <div key={obj.name}>
-                <h2>{obj.name}</h2>
-                <p>{obj.description}</p>
-                <obj.component ref={this.componentRef} />
-                <Code file={file} element={configs.reactElement}></Code>
-              </div>
-            );
-          })}
         </div>
       </div>
     );

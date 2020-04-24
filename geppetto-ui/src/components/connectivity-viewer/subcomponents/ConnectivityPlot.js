@@ -57,6 +57,7 @@ class ConnectivityPlot extends Component {
     this.setData(this.props.data);
     this.setNodeColormap(this.props.colorMap);
     this.draw();
+    this.forceUpdate();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {

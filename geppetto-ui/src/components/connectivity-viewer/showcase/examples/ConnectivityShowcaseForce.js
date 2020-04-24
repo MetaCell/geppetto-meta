@@ -25,23 +25,25 @@ export default class ConnectivityShowcaseForce extends Component {
     const size = { width: 600, height: 500 };
 
     return (
-      <ConnectivityComponent
-        id="ConnectivityContainerForce"
-        size={size}
-        data={data}
-        colors={colors}
-        names={names}
-        layout={layout}
-        modelFactory={GEPPETTO.ModelFactory}
-        resources={GEPPETTO.Resources}
-        matrixOnClickHandler={() =>
-          console.log('Mock call to GEPPETTO.SceneController')
-        }
-        nodeType={null}
-        linkWeight={null}
-        linkType={this.linkType}
-        library={null}
-      />
+      <div style={size}>
+        <ConnectivityComponent
+          id="ConnectivityContainerForce"
+          size={size}
+          data={data}
+          colors={colors}
+          names={names}
+          layout={layout}
+          modelFactory={GEPPETTO.ModelFactory}
+          resources={GEPPETTO.Resources}
+          matrixOnClickHandler={() =>
+            console.log('Mock call to GEPPETTO.SceneController')
+          }
+          nodeType={null}
+          linkWeight={null}
+          linkType={this.linkType}
+          library={null}
+        />
+      </div>
     );
   }
 }

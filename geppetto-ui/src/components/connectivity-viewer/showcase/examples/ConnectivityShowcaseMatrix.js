@@ -25,23 +25,24 @@ export default class ConnectivityShowcaseMatrix extends Component {
     const size = { width: 600, height: 500 };
 
     return (
-      <ConnectivityComponent
-        id="ConnectivityContainerMatrix"
-        size={size}
-        data={data}
-        colors={colors}
-        names={names}
-        layout={layout}
-        modelFactory={GEPPETTO.ModelFactory}
-        resources={GEPPETTO.Resources}
-        matrixOnClickHandler={() =>
-          console.log('Mock call to GEPPETTO.SceneController')
-        }
-        nodeType={null}
-        linkWeight={null}
-        linkType={this.linkType}
-        library={null}
-      />
+      <div style={size}>
+        <ConnectivityComponent
+          id="ConnectivityContainerMatrix"
+          data={data}
+          colors={colors}
+          names={names}
+          layout={layout}
+          modelFactory={GEPPETTO.ModelFactory}
+          resources={GEPPETTO.Resources}
+          matrixOnClickHandler={() =>
+            console.log('Mock call to GEPPETTO.SceneController')
+          }
+          nodeType={null}
+          linkWeight={null}
+          linkType={this.linkType}
+          library={null}
+        />
+      </div>
     );
   }
 }

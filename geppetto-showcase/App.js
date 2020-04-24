@@ -51,7 +51,7 @@ GEPPETTO.UnitsController = {
 export default class App extends Component {
   render() {
     let theme = createMuiTheme({
-      typography: { fontFamily: 'Raleway, Arial' },
+      typography: { fontFamily: 'Roboto, Helvetica, Arial, sans-serif' },
       palette: {
         type: 'dark',
         primary: { main: orange[500] },

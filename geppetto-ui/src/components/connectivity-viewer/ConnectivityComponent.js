@@ -9,9 +9,8 @@ import PropTypes from 'prop-types';
 const styles = (theme) => ({
   container: {
     height: '100%',
-    minHeight: '100%',
+    width: '100%',
   },
-  connectivityContainer: { background: theme.palette.background.paper },
 });
 
 class ConnectivityComponent extends Component {
@@ -21,11 +20,13 @@ class ConnectivityComponent extends Component {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
       toolbarVisibility: true,
       legendsVisibility: true,
+      dimensions: null,
     };
     this.legendHandler = this.legendHandler.bind(this);
     this.deckHandler = this.deckHandler.bind(this);
     this.sortOptionsHandler = this.sortOptionsHandler.bind(this);
     this.plotRef = React.createRef();
+    this.containerRef = React.createRef();
   }
 
   /**
@@ -46,6 +47,7 @@ class ConnectivityComponent extends Component {
    * @command toolbarHandler (visibility)
    *
    */
+
   toolbarHandler(visibility) {
     this.setState(() => ({ toolbarVisibility: visibility }));
   }
@@ -73,11 +75,20 @@ class ConnectivityComponent extends Component {
     this.state.layout.setOrder(this.plotRef.current, option);
   }
 
-  render() {
+  componentDidMount() {
+    const toolbarHeight = 140;
+
+    this.setState({
+      dimensions: {
+        width: this.containerRef.current.clientWidth,
+        height: this.containerRef.current.clientHeight - toolbarHeight,
+      },
+    });
+  }
+
+  renderContent() {
     const {
-      classes,
       id,
-      size,
       data,
       colorMap,
       colors,
@@ -90,48 +101,64 @@ class ConnectivityComponent extends Component {
       linkType,
       library,
     } = this.props;
-    const { layout, toolbarVisibility, legendsVisibility } = this.state;
+    const {
+      layout,
+      toolbarVisibility,
+      legendsVisibility,
+      dimensions,
+    } = this.state;
 
     return (
+      <Grid container spacing={2}>
+        <Grid item sm={12} xs={12}>
+          <ConnectivityToolbar
+            id={id}
+            layout={layout}
+            toolbarVisibility={toolbarVisibility}
+            legendsVisibility={legendsVisibility}
+            legendHandler={this.legendHandler}
+            deckHandler={this.deckHandler}
+            sortOptionsHandler={this.sortOptionsHandler}
+          />
+        </Grid>
+        <Grid item sm={12} xs>
+          <ConnectivityPlot
+            ref={this.plotRef}
+            id={id}
+            size={dimensions}
+            data={data}
+            colorMap={colorMap}
+            colors={colors}
+            names={names}
+            layout={layout}
+            legendsVisibility={legendsVisibility}
+            toolbarVisibility={toolbarVisibility}
+            modelFactory={modelFactory}
+            resources={resources}
+            matrixOnClickHandler={matrixOnClickHandler}
+            nodeType={nodeType}
+            linkWeight={linkWeight}
+            linkType={linkType}
+            library={library}
+          />
+        </Grid>
+      </Grid>
+    );
+  }
+
+  render() {
+    const { classes } = this.props;
+    const { dimensions } = this.state;
+
+    const content = dimensions != null ? this.renderContent() : '';
+    return (
       <div
-        style={{ height: '100%', width: size.width }}
+        ref={this.containerRef}
+        className={classes.container}
         onMouseEnter={() => this.toolbarHandler(true)}
         onMouseLeave={() => this.toolbarHandler(false)}
       >
-        <Grid className={classes.connectivityContainer} container spacing={2}>
-          <Grid item sm={12} xs={12}>
-            <ConnectivityToolbar
-              id={id}
-              layout={layout}
-              toolbarVisibility={toolbarVisibility}
-              legendsVisibility={legendsVisibility}
-              legendHandler={this.legendHandler}
-              deckHandler={this.deckHandler}
-              sortOptionsHandler={this.sortOptionsHandler}
-            />
-          </Grid>
-          <Grid item sm={12} xs>
-            <ConnectivityPlot
-              ref={this.plotRef}
-              id={id}
-              size={size}
-              data={data}
-              colorMap={colorMap}
-              colors={colors}
-              names={names}
-              layout={layout}
-              legendsVisibility={legendsVisibility}
-              toolbarVisibility={toolbarVisibility}
-              modelFactory={modelFactory}
-              resources={resources}
-              matrixOnClickHandler={matrixOnClickHandler}
-              nodeType={nodeType}
-              linkWeight={linkWeight}
-              linkType={linkType}
-              library={library}
-            />
-          </Grid>
-        </Grid>
+        {content}
       </div>
     );
   }
@@ -150,10 +177,6 @@ ConnectivityComponent.propTypes = {
    * Description of prop data.
    */
   data: PropTypes.object.isRequired,
-  /**
-   * Description of prop size.
-   */
-  size: PropTypes.object.isRequired,
   /**
    * Description of prop modelFactory.
    */

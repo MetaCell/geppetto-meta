@@ -28,6 +28,13 @@ const styles = (theme) => ({
     backgroundColor: theme.palette.background.paper,
     marginTop: theme.spacing(1),
   },
+  listText: {
+    fontWeight: 400,
+    letterSpacing: 0,
+    textTransform: 'none',
+    fontSize: '0.875rem',
+    textAlign: 'left',
+  },
 });
 
 class DrawerContent extends Component {
@@ -151,7 +158,7 @@ class DrawerContent extends Component {
           return (
             <List key={key}>
               <ListItem key={key} button onClick={handler}>
-                <ListItemText primary={key} />
+                <ListItemText className={classes.listText} primary={key} />
                 {open != null ? open ? <ExpandLess /> : <ExpandMore /> : null}
               </ListItem>
               <Collapse component="li" in={open} timeout="auto" unmountOnExit>
@@ -166,7 +173,10 @@ class DrawerContent extends Component {
                         className={classes.nested}
                         onClick={() => contentHandler(component)}
                       >
-                        <ListItemText primary={name} />
+                        <ListItemText
+                          className={classes.listText}
+                          primary={name}
+                        />
                       </ListItem>
                     );
                   })}
