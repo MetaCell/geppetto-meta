@@ -128,7 +128,7 @@ class MenuSection extends React.Component {
         <Button
           style={buttonClasses}
           size='small'
-          id={this.props.button.label}
+          id={typeof this.props.button.label === 'string' ? this.props.button.label : 'geppetto-menu-btn'}
           variant="contained"
           aria-describedby={id}
           onClick={this.handleClick}

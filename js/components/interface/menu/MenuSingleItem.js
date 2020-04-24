@@ -127,6 +127,7 @@ class MenuSingleItem extends React.Component {
         } else {
           MenuItemClass = this.props.labelsStyle.standard;
         }
+        const { action, icon, ...others } = item
         return (
           <MenuItem
             key={index}
@@ -140,6 +141,7 @@ class MenuSingleItem extends React.Component {
             ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
             menuaction={item.action}
             style={MenuItemClass}
+            {...others}
           >
             {item.icon !== ""
               ? <span style={{ display: "inline-block", width: "25px" }}>
