@@ -142,10 +142,11 @@ class DrawerContent extends Component {
             name: 'Python Console',
             component: <PythonConsoleShowcase />,
           },
-          // {
-          //   name: 'Javascript Console',
-          //   component: <PythonConsoleShowcase />,
-          // },
+          {
+            name: 'Javascript Console',
+            component: '<JavascriptConsoleShowcase />',
+            disabled: true,
+          },
         ],
       },
     };
@@ -166,12 +167,14 @@ class DrawerContent extends Component {
                   {children.map((value) => {
                     const name = value.name;
                     const component = value.component;
+                    const disabled = value.disabled;
                     return (
                       <ListItem
                         key={value.name}
                         button
                         className={classes.nested}
                         onClick={() => contentHandler(component)}
+                        disabled={disabled}
                       >
                         <ListItemText
                           className={classes.listText}
