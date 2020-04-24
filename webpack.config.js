@@ -5,6 +5,9 @@ module.exports = {
   entry: path.resolve(__dirname, './geppetto-showcase/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
+  node: {
+    fs: 'empty',
+  },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(

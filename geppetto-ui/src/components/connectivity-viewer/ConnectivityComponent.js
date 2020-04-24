@@ -138,18 +138,57 @@ class ConnectivityComponent extends Component {
 }
 
 ConnectivityComponent.propTypes = {
+  /**
+   * Description of prop id.
+   */
   id: PropTypes.string.isRequired,
+  /**
+   * Description of prop colors.
+   */
   colors: PropTypes.array.isRequired,
+  /**
+   * Description of prop data.
+   */
   data: PropTypes.object.isRequired,
+  /**
+   * Description of prop size.
+   */
   size: PropTypes.object.isRequired,
+  /**
+   * Description of prop modelFactory.
+   */
   modelFactory: PropTypes.object.isRequired,
+  /**
+   * Description of prop resources.
+   */
   resources: PropTypes.object.isRequired,
+  /**
+   * Description of prop matrixOnClickHandler.
+   */
   matrixOnClickHandler: PropTypes.func.isRequired,
+  /**
+   * Description of prop colorMap.
+   */
   colorMap: PropTypes.func,
+  /**
+   * Description of prop layout.
+   */
   layout: PropTypes.object,
+  /**
+   * Description of prop linkType.
+   */
   linkType: PropTypes.func,
+  /**
+   * Description of prop linkWeight.
+   */
   linkWeight: PropTypes.func,
+  /**
+   * Description of prop nodeType.
+   */
   nodeType: PropTypes.func,
+  /**
+   * Description of prop library.
+   */
   library: PropTypes.func,
 };
 

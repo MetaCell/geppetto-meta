@@ -18,7 +18,7 @@ import FlexLayoutShowcase from '../../../geppetto-ui/src/components/flex-layout/
 import MoviePlayerShowcase from '../../../geppetto-ui/src/components/movie-player/showcase/MoviePlayerShowcase';
 import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
 import GraphVisualizationShowcase from '../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase';
-import Showcase from '../utilities/Showcase';
+import Showcase from '../showcase/Showcase';
 import { DicomViewerConfig } from '../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig';
 
 const styles = (theme) => ({

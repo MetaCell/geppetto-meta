@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
-import DrawerContent from './DrawerContent';
+import DrawerContent from './drawer/DrawerContent';
 import Button from '@material-ui/core/Button';
 
 const drawerWidth = 240;
