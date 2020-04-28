@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import MoviePlayer from "../MoviePlayer";
+import MoviePlayer from "./../MoviePlayer";
 
 export default class MoviePlayerShowcase extends Component {
     constructor (props) {

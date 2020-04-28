@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types';
 import * as d3 from 'd3-force-3d'
 import * as THREE from 'three'
 import ForceGraph2D from 'react-force-graph-2d';
@@ -385,3 +386,91 @@ export default class GeppettoGraphVisualization extends Component {
     return <ForceGraph3D {...commonProps} />
   }
 }
+
+Graph.propTypes = {
+	/**
+	 * Object with arrays of nodes and links used to render the graph.
+	 */
+	data: PropTypes.shape({ 
+			nodes : PropTypes.arrayOf(PropTypes.shape({
+						id : PropTypes.string.isRequired
+					})).isRequired,
+			links : PropTypes.arrayOf(PropTypes.shape({
+		     		source: PropTypes.number.isRequired,
+		     		target: PropTypes.number.isRequired
+		   			})).isRequired
+	}),
+	/**
+	 * If true, the graph would be 2D.
+	 * (Default : false)
+	 */
+	d2 : PropTypes.bool.isOptional,
+	/**
+	 * Specify the node label displayed in each node
+	 */
+	nodeLabel : PropTypes.func.isOptional,
+	/**
+	 * Specify the link label displayed in each node
+	 */
+	linkLabel : PropTypes.func.isOptional,
+	/**
+	 *  Specify a obj file URL to add to the scene.
+	 */
+	url : PropTypes.string.isOptional,
+	/**
+	 * Create a wireframe for the object.
+	 * (Default : true)
+	 */
+	wireframe : PropTypes.bool.isOptional,
+	/**
+	 * Specify the wireframe color (in hexadecimal).
+	 * (Default : "0x6893DE")
+	 */
+	wireframeColor : PropTypes.string.isOptional,
+	/**
+	 * Define width gap size with respect to the parent container.
+	 * (Default : 20)
+	 */
+	xGap : PropTypes.number.isOptional,
+	/**
+	 * Define height gap size with respect to the parent container.
+	 * (Default : 45)
+	 */
+	yGap : PropTypes.number.isOptional,
+	/**
+	 * Set the default font size and style inside the nodes.
+	 * (Default : "6px Source Sans Pro")
+	 */
+	font : PropTypes.string.isOptional,
+	/**
+	 * Adjust the size of the nodes.
+	 * (Default : 20)
+	 */
+	nodeRelSize : PropTypes.number.isOptional,
+	/**
+	 * Adjust the length of the spring simulated between two nodes.
+	 * (Default : 90)
+	 */
+	forceLinkDistance : PropTypes.number.isOptional,
+	/**
+	 * Adjust the stiffness coefficient for the spring simulated between two nodes
+	 * (Default : 0.7)
+	 */
+	forceLinkStrength : PropTypes.number.isOptional,
+	/**
+	 * Adjust the repulsion coefficient simulated between two nodes.
+	 * (Default : -200)
+	 */
+	forceChargeStrength : PropTypes.number.isOptional,
+	/**
+	 * Transition time in ms when centering camera in 2D Graph after window resize event. 
+	 * (Default : 0)
+	 */
+	timeToCenter2DCamera : PropTypes.number.isOptional,
+	/**
+	 * Creates a radial atractive force of radial circle equal to forceRadial. 
+	 * Useful to avoid nodes scattering away when they have no links. 
+	 * (Default : 1)
+	 */
+	forceRadial : PropTypes.number.isOptional
+};

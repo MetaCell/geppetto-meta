@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import GeppettoGraphVisualization from "../Graph";
+import React, { Component } from 'react';
+import GeppettoGraphVisualization from "./../../Graph";
 
 export default class GraphVisualizationShowcase extends Component {
 

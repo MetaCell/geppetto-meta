@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
@@ -401,5 +402,16 @@ class PlotComponent extends Component {
     )
   }
 }
+
+PlotComponent.propTypes = {
+	id: PropTypes.string.isRequired,
+	plots: PropTypes.arrayOf(PropTypes.shape({
+				x: React.PropTypes.number.isRequired,
+				y: React.PropTypes.number.isRequired
+			})).isRequired,
+	layout : PropTypes.object.isOptional,
+	getLegendName : PropTypes.func.isOptional,
+	extractLegendName : PropTypes.func.isOptional
+};
 
 export default withStyles(style)(PlotComponent)

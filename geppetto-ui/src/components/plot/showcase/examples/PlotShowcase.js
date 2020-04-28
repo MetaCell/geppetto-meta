@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import model from './model.json';
-import PlotComponent from "../PlotComponent";
+import PropTypes from 'prop-types';
+import model from './../model.json';
+import PlotComponent from "./../../PlotComponent";
 import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
 
 export default class PlotShowcase extends Component {
     constructor (props) {
         super(props);
         this.instancePath = "nwbfile.acquisition.test_sine_1";
-        GEPPETTO.Manager.loadModel(model);
         Instances.getInstance(this.instancePath);
         Instances.getInstance(`${this.instancePath}.data`);
         Instances.getInstance(`${this.instancePath}.timestamps`);

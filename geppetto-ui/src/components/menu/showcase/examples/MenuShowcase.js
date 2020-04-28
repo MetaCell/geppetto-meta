@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import Menu from "../Menu";
-import model from "./model.json";
+import Menu from "./../Menu";
+import model from "./../model.json";
 
 export default class MenuShowcase extends Component {
   constructor (props) {
     super(props);
-    GEPPETTO.Manager.loadModel(model);
-    this.menuConfiguration = require('./menuConfiguration').toolbarMenu;
+    this.menuConfiguration = require('./../menuConfiguration').toolbarMenu;
     this.menuHandler = this.menuHandler.bind(this);
   }
 

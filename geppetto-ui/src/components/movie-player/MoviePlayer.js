@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ReactPlayer from 'react-player';
 
 export default class MoviePlayer extends Component {
@@ -71,3 +72,14 @@ export default class MoviePlayer extends Component {
     }
 };
 
+MoviePlayer.propTypes = {
+	videoURL: PropTypes.string.isRequired,
+	controls: PropTypes.shape({
+		playAtStart : PropTypes.bool.isOptional,
+		loop : PropTypes.bool.isOptional,
+		volume : PropTypes.number.isOptional,
+		playbackRate : PropTypes.number.isOptional,
+	}).isOptional,
+	width : PropTypes.string.isOptional,
+	height : PropTypes.string.isOptional
+};
