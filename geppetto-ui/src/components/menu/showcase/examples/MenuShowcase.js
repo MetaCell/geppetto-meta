@@ -5,7 +5,7 @@ import model from "./../model.json";
 export default class MenuShowcase extends Component {
   constructor (props) {
     super(props);
-    this.menuConfiguration = require('./../menuConfiguration').toolbarMenu;
+    this.menuConfiguration = require('./../menuConfiguration').menuConfiguration;
     this.menuHandler = this.menuHandler.bind(this);
   }
 
