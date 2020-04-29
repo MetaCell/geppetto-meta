@@ -568,13 +568,63 @@ export class Layout extends React.Component<ILayoutProps, any> {
 }
 
 Layout.propTypes = {
-	model: PropTypes.object.isRequired,
-	factory: PropTypes.object.isRequired,
+	/**
+	 * The layout model used for rendering the flex layout
+	 */
+	model:  PropTypes.shape({  
+	  /**
+	   * Where global options are defined
+	   */
+	  global : PropTypes.object.isRequired,
+	  /**
+	   * Where up to 4 borders are defined ("top", "bottom", "left", "right"). 
+	   */
+	  borders : PropTypes.array.isOptional,
+	  /**
+	   * Where the main row/tabset/tabs layout hierarchy is defined
+	   */
+	  layout : PropTypes.shape({ 
+        type : PropTypes.string.isRequired,
+        weight : PropTypes.string.isRequired,
+        children : PropTypes.arrayOf(PropTypes.shape({
+          type : PropTypes.string.isRequired,
+          weight : PropTypes.string.isRequired,
+          selected : PropTypes.number.isRequired,
+          children : PropTypes.arrayOf(PropTypes.shape({
+             type : PropTypes.string.isRequired,
+             name : PropTypes.string.isRequired,
+             component : PropTypes.string.isRequired,
+           })).isRequired
+        })).isRequired
+      })).isRequired,
+	/**
+	 * A factory function for creating React components
+	 */
+	factory: PropTypes.func.isRequired,
+	/**
+	 * Function called when rendering a tab, allows leading (icon) and content sections to be customized
+	 */
 	onRenderTab : PropTypes.func.isOptional,
+	/**
+	 * Function called when rendering a tabset, allows header and buttons to be customized 
+	 */
 	onRenderTabSet : PropTypes.func.isOptional,
+	/**
+	 * The layout model used for rendering the flex layout
+	 */
 	clickOnBordersAction : PropTypes.func.isOptional,
+	/**
+	 * Function called when model has changed
+	 */
 	onModelChange : PropTypes.func.isOptional,
+	/**
+	 * Function called whenever the layout generates an action to update the model 
+	 * (allows for intercepting actions before they are dispatched to the model, for example, asking the user to confirm a tab close)
+	 */
 	onAction : PropTypes.func.isOptional,
+	/**
+	 * Function called with default css class name, return value is class name that will be used. Mainly for use with css modules.
+	 */
 	classNameMapper : PropTypes.func.isOptional
 };
 

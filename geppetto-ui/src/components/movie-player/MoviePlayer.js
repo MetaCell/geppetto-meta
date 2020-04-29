@@ -73,13 +73,25 @@ export default class MoviePlayer extends Component {
 };
 
 MoviePlayer.propTypes = {
+	/**
+	 * URL pointing to the video to be render in this component.
+	 */
 	videoURL: PropTypes.string.isRequired,
+	/**
+	 * Javascript object with playback settings.
+	 */
 	controls: PropTypes.shape({
 		playAtStart : PropTypes.bool.isOptional,
 		loop : PropTypes.bool.isOptional,
 		volume : PropTypes.number.isOptional,
 		playbackRate : PropTypes.number.isOptional,
 	}).isOptional,
+	/**
+	 * Width of the movie player
+	 */
 	width : PropTypes.string.isOptional,
+	/**
+	 * Height of the movie player
+	 */
 	height : PropTypes.string.isOptional
 };

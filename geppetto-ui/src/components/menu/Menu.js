@@ -165,8 +165,72 @@ class Menu extends React.Component {
 }
 
 Menu.propTypes = {
-  configuration: PropTypes.object.isRequired,
-  menuHandler: PropTypes.func.isRequired
+  configuration: PropTypes.shape({
+    /**
+     * The property button defines the list of buttons the menu will have at the first level
+     */
+    buttons : PropTypes.arrayOf(PropTypes.shape({
+      /**
+       * Defines the name displayed on the button itself. 
+       */
+      label : PropTypes.string.isRequired,
+      /**
+       * Defines where the window with the full menu expanded for that button has to appear. this might be one of the 
+       * following choices: 'bottom-end', 'bottom-start', 'bottom', 'left-end', 'left-start', 'left', 'right-end', 
+       * 'right-start', 'right', 'top-end', 'top-start', 'top'. 
+       */
+      position : PropTypes.string.isOptional,
+      /**
+       * Defines the list of objects that we need to use to populate the 1st level menu
+       */
+      list : PropTypes.arrayOf(PropTypes.shape({
+    	/**
+    	 * Defines the name displayed on the menu item.
+    	 */
+        label : PropTypes.string.isRequired,
+        /**
+         * Another object that contains handlerAction property, the handlerAction property function triggers when the 
+         * Menu item associated with it is clicked.
+         */
+        action : PropTypes.shape({
+          /**
+           * The name of the action to be triggered when the Menu item is clicked, will be used by the handler function to 
+           * decide which action has to be executed for this menu item.
+           */
+          handlerAction : PropTypes.string.isRequired,
+          /**
+           * Parameters associated with the handlerAction when needed.
+           */
+          parameters : PropTypes.arrayOf(PropTypes.string.isRequired)	
+        }).isRequired,
+      })).isRequired,
+      /**
+       * If the property 'list' is not provided we can use the property dynamicListInjector and connect this to the 
+       * menuHandler to feed this button with a dynamic list created by the menu handler.
+       */
+      dynamicListInjector : PropTypes.arrayOf(PropTypes.shape({
+          /**
+           * Defines the name displayed on the menu item.
+           */
+    	  label : PropTypes.string.isRequired,
+    	  /**
+           * Another object that contains handlerAction property, the handlerAction property function triggers when the 
+           * Menu item associated with it is clicked.
+           */
+    	  action : PropTypes.shape({
+    		  /**
+               * The name of the action to be triggered when the Menu item is clicked, will be used by the handler function to 
+               * decide which action has to be executed for this menu item.
+               */
+            handlerAction : PropTypes.string.isRequired,
+            /**
+             * Parameters associated with the handlerAction when needed.
+             */
+            parameters : PropTypes.arrayOf(PropTypes.string.isRequired)	
+          }).isRequired,
+      })).isOptional,
+    })).isRequired
+  }),
 };
 
 export default Menu;
