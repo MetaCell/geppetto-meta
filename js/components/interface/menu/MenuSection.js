@@ -89,12 +89,12 @@ class MenuSection extends React.Component {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;
-
+    const customStyle = this.props.itemOptions;
     let buttonClasses;
     if (open || this.state.hover) {
-      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.hover : undefined;
+      buttonClasses = { ...this.props.buttonsStyle?.standard, ...this.props.button?.style?.standard, ...this.props.buttonsStyle?.hover, ...this.props.button?.style?.hover };
     } else {
-      buttonClasses = this.props.buttonsStyle !== undefined ? this.props.buttonsStyle.standard : undefined;
+      buttonClasses = { ...this.props.buttonsStyle?.standard, ...this.props.button?.style?.standard };
     }
 
     return (
@@ -110,6 +110,7 @@ class MenuSection extends React.Component {
           onMouseOut={this.handleOut}>
           {this.props.button.icon !== "" ? <span style={{ display: "inline-block", width: "25px" }}><i className={this.props.button.icon}></i></span> : undefined}
           {this.props.button.label}
+          
         </Button>
         <MenuPopper
           parentRef={anchorEl}

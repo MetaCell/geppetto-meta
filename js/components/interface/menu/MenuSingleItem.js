@@ -1,9 +1,10 @@
 import React from 'react';
 import MenuPopper from './MenuPopper';
 import MenuItem from '@material-ui/core/MenuItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 class MenuSingleItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -32,11 +33,11 @@ class MenuSingleItem extends React.Component {
     }
   };
 
-  renderArrow() {
+  renderArrow () {
     const { customArrow } = this.props;
-    return customArrow ?
-      customArrow :
-      <i className="fa fa-chevron-right" style={{
+    return customArrow
+      ? customArrow
+      : <i className="fa fa-chevron-right" style={{
         marginLeft: '10px',
         position: 'absolute',
         marginRight: '0px',
@@ -46,22 +47,23 @@ class MenuSingleItem extends React.Component {
       />
   }
 
-  renderMenuItem(item, index) {
-    if(!item.label){
+  renderMenuItem (item, index) {
+    if (!item.label){
       return <React.Fragment key={index}>{item}</React.Fragment>; // Free markup, e.g. for dividers
     }
     const { anchorEl } = this.state;
-    const { classes } = this.props;
+    const { labelsStyle } = this.props;
     var menuToRender = undefined;
-    var MenuItemClass = anchorEl && index === Number(this.state.sectionOpened) ? this.props.labelsStyle.hover : this.props.labelsStyle.standard;
-    const { action, icon, ...others } = item;
+    
 
-
+    const { action, icon, style, ...others } = item;
+    const mergedStyle = { ...labelsStyle, ...style, hover: { ...labelsStyle?.hover, ...style?.hover }, standard: { ...labelsStyle?.standard, ...style?.standard } }
+    const appliedStyle = anchorEl && index === Number(this.state.sectionOpened) ? mergedStyle.hover : mergedStyle.standard;
 
     if (anchorEl && index === Number(this.state.sectionOpened)) {
-      var tempList = item.list ? item.list :
-        item.dynamicListInjector ? this.props.menuHandlerDirect(item.dynamicListInjector) :
-          null;
+      var tempList = item.list ? item.list
+        : item.dynamicListInjector ? this.props.menuHandlerDirect(item.dynamicListInjector)
+          : null;
       if (tempList) {
         menuToRender = (<MenuPopper
           position={item.position}
@@ -72,6 +74,7 @@ class MenuSingleItem extends React.Component {
           awayClickHandler={this.props.awayClickHandler}
           drawersStyle={this.props.drawersStyle}
           labelsStyle={this.props.labelsStyle}
+          itemOptions={{ customArrow: this.props.customArrow }}
         />);
       }
 
@@ -89,23 +92,23 @@ class MenuSingleItem extends React.Component {
         }}
         ContainerProps={{ menuHandlerDirect: this.props.menuHandlerDirect }}
         menuaction={item.action}
-        style={MenuItemClass}
+        style={appliedStyle}
         {...others}
       >
-        {item.icon !== ""
-          ? <span style={{ display: "inline-block", width: "25px" }}>
+        {item.icon 
+          ? <ListItemIcon>
             <i className={item.icon}></i>
-          </span>
+          </ListItemIcon>
           : undefined}
-        {item.label}
+        <span className="menu-item-label">{item.label}</span>
+        
         {item.list || item.dynamicListInjector ? <React.Fragment>{this.renderArrow()}{menuToRender}</React.Fragment> : ''}
       </MenuItem>
     );
   }
 
 
-
-  render() {
+  render () {
 
 
     let menuItems = this.props.menuList.map((item, index) => this.renderMenuItem(item, index));

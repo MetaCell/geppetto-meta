@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 
 const toolbarMenu = {
-  itemOptions: {
-    customArrow: <i className="fa fa-caret-right menu-caret" />
-  },
+  itemOptions: { customArrow: <i className="fa fa-caret-right menu-caret" /> },
   global: {
     buttonsStyle: {
       standard: {

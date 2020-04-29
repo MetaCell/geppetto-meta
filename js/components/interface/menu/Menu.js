@@ -120,9 +120,9 @@ class Menu extends React.Component {
   render () {
 
 
-    const buttonsStyle = {...menuStyle.buttonsStyle, ...this.props.configuration.global.buttonsStyle};
-    const drawersStyle = {...menuStyle.drawersStyle, ...this.props.configuration.global.drawersStyle};
-    const labelsStyle = {...menuStyle.labelsStyle, ...this.props.configuration.global.labelsStyle};
+    const buttonsStyle = { ...menuStyle.buttonsStyle, ...this.props.configuration.global.buttonsStyle };
+    const drawersStyle = { ...menuStyle.drawersStyle, ...this.props.configuration.global.drawersStyle };
+    const labelsStyle = { ...menuStyle.labelsStyle, ...this.props.configuration.global.labelsStyle };
     const itemOptions = this.props.configuration.itemOptions;
 
     var buttonsToRender = this.props.configuration.buttons.map((button, index) => (
