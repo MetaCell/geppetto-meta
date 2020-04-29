@@ -1,19 +1,50 @@
 # Movie Player Component
 
-Movie Player Component Main Description
+React component for playing videos.
 
-Movie Player Component detailed description
+The components loads the media from an URL passed to the component as a property.
+'react-player' library is used to load the media, which can be from different sources such as:
+YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, and Mixcloud 
 
-```element
-menu/Menu
-```
+[Movie Player Component](./MoviePlayer.js)
 
-## Examples
+### Component Properties
 
-### Movie Player Component Example
+## Example
 
-```
-movie-player/showcase/examples/MoviePlayer
+[Movie Player Example](./../showcase/examples/MoviePlayerShowcase.js)
+
+```javascript
+
+import React, { Component } from "react";
+import MoviePlayer from "./../MoviePlayer";
+
+export default class MoviePlayerShowcase extends Component {
+    constructor (props) {
+        super(props);
+    }
+
+    render () {
+        const controls = {
+            playAtStart: false,
+            loop: false,
+            volume: 1,
+            playbackRate: 1,
+        };
+        const videoURL = "https://youtu.be/OmwXCGPBhNo";
+        const width = "100%";
+        const height = "640px";
+
+        return (
+            <MoviePlayer
+                controls={controls}
+                videoURL={videoURL}
+                width={width}
+                height={height}
+            />
+        );
+    }
+}
 ```
 
 ## Libraries

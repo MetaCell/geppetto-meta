@@ -6,7 +6,7 @@ Uses canvas/WebGL for rendering and d3-force-3d for the underlying physics engin
 
 [Graph Component](./Graph.js)
 
-Component Properties:
+### Component Properties:
 
 #### Adding Data and Specifying dimensional space
 - **data**: Object (Required). Object with arrays of nodes and links used to render the graph.

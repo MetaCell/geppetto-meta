@@ -1,22 +1,74 @@
-# Menu Component
+# Plot Component
 
-Menu Component Main Description
+React Component use to visualize a data structure as a Plot graph. 
 
-Menu Component detailed description
+[Plot Component](./PlotComponent.js)
 
-```element
-menu/Menu
-```
+## Example
 
-## Examples
+[Plot Component Example](../showcase/examples/PlotShowcase)
 
-### Menu Component Example
+```javascript
 
-```
-menu/showcase/examples/MenuShowcase
+import React, { Component } from "react";
+import model from './../model.json';
+import PlotComponent from "./../../PlotComponent";
+
+export default class PlotShowcase extends Component {
+    constructor (props) {
+        super(props);
+        this.instancePath = "nwbfile.acquisition.test_sine_1";
+        Instances.getInstance(this.instancePath);
+        Instances.getInstance(`${this.instancePath}.data`);
+        Instances.getInstance(`${this.instancePath}.timestamps`);
+    }
+
+    extractLegendName (instanceY) {
+        let legendName = instanceY.getInstancePath()
+            .split('.')
+            .filter((word, index, arr) => index != 0 && index != arr.length - 1)
+            .join('.');
+
+        return legendName
+    }
+
+    render () {
+        const color = 'white';
+        const guestList = [];
+
+        const plots = [{
+            x: `${this.instancePath}.timestamps`,
+            y: `${this.instancePath}.data`,
+            lineOptions: { color: color }
+        }];
+
+        if (guestList && guestList.length > 0) {
+            plots.push(
+                ...guestList.map(guest => ({
+                    x: `${guest.instancePath}.timestamps`,
+                    y: `${guest.instancePath}.data`,
+                    lineOptions: { color: guest.color }
+                }))
+            )
+        }
+
+        return (
+            <PlotComponent
+                plots={plots}
+                id={this.instancePath ? this.instancePath : "empty"}
+                extractLegendName={this.extractLegendName}
+            />
+        );
+    }
+}
 ```
 
 ## Libraries
 
-[React](https://www.npmjs.com/package/react)
+[react](https://www.npmjs.com/package/react)
+[plotly.js](https://www.npmjs.com/package/plotly.js)
+[mathjs](https://www.npmjs.com/package/mathjs)
+[jszip](https://www.npmjs.com/package/jszip)
+[file-saver](https://www.npmjs.com/package/file-saver)
 [@Material-ui/core](https://www.npmjs.com/package/@material-ui/core)
+
