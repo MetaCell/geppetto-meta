@@ -4,7 +4,7 @@ React component use to display a list of options in a Drop-down menu style.
 
 [Menu Component](./Menu.js)
 
-Component Properties:
+### Component Properties:
 
 - **buttons**: The property button defines the list of buttons the menu will have at the first level. Each object defined inside the buttons list has the properties below:
 - **label** : defines the name displayed on the button itself. 
@@ -15,9 +15,7 @@ Component Properties:
 
 ## Example
 
-```
-menu/showcase/examples/MenuShowcase
-```
+[Menu Component Example](./showcase/examples/MenuShowcase)
 
 ```javascript
     

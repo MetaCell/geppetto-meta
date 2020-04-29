@@ -10,9 +10,14 @@ YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, and Mixcloud
 
 ### Component Properties
 
+- **controls**: Javascript object with playback settings.
+- **videoURL** : URL pointing to the video to be render in this component. 
+- **width** : Width of the movie player
+- **height** : Height of the movie player
+
 ## Example
 
-[Movie Player Example](./../showcase/examples/MoviePlayerShowcase.js)
+[Movie Player Example](./showcase/examples/MoviePlayerShowcase.js)
 
 ```javascript
 

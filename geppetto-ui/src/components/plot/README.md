@@ -6,7 +6,7 @@ React Component use to visualize a data structure as a Plot graph.
 
 ## Example
 
-[Plot Component Example](../showcase/examples/PlotShowcase)
+[Plot Component Example](./showcase/examples/PlotShowcase)
 
 ```javascript
 
