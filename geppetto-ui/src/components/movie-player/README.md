@@ -2,18 +2,31 @@
 
 React component for playing videos.
 
-The components loads the media from an URL passed to the component as a property.
-'react-player' library is used to load the media, which can be from different sources such as:
+The components loads media from an URL passed to the component as a property.
+THe 'react-player' library is used to load the media, which can be from different sources such as:
 YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, and Mixcloud 
 
 [Movie Player Component](./MoviePlayer.js)
 
 ### Component Properties
 
-- **controls**: Javascript object with playback settings.
-- **videoURL** : URL pointing to the video to be render in this component. 
-- **width** : Width of the movie player
-- **height** : Height of the movie player
+- **controls**: Object (Optional)
+	Javascript object with playback settings.
+	```
+	{
+		playAtStart: false,
+		loop: false,
+		volume: 1,
+		playbackRate: 1,
+	}
+	```
+
+- **videoURL** : String (Required)
+	URL pointing to the video to be render in this component. 
+- **width** : String (Optional)
+	Width of the movie player
+- **height** : String (Optional)
+	Height of the movie player
 
 ## Example
 

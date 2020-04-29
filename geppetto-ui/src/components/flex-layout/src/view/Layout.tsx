@@ -567,4 +567,15 @@ export class Layout extends React.Component<ILayoutProps, any> {
     }
 }
 
+Layout.propTypes = {
+	model: PropTypes.object.isRequired,
+	factory: PropTypes.object.isRequired,
+	onRenderTab : PropTypes.func.isOptional,
+	onRenderTabSet : PropTypes.func.isOptional,
+	clickOnBordersAction : PropTypes.func.isOptional,
+	onModelChange : PropTypes.func.isOptional,
+	onAction : PropTypes.func.isOptional,
+	classNameMapper : PropTypes.func.isOptional
+};
+
 export default Layout;

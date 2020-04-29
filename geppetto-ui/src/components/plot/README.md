@@ -2,8 +2,48 @@
 
 React Component use to visualize a data structure as a Plot graph. 
 
+The component can render basic line plots, as well as scatter plots. 
+
 [Plot Component](./PlotComponent.js)
 
+### Component Properties
+
+- **plots**: 
+	Array of objects, each one containing the x,y position of a point in the line/scatter plot. A third property named 
+	'lineOptions' can be given, this will be used for modifying the visualization of the line plots.
+	
+	```
+	[
+		{
+			x : 1,
+			y : 10,
+			lineOptions: { color: "red" }
+		},
+		{
+			x : 2,
+			y : 100,
+			lineOptions: { color: "white" }
+		},
+		{
+			x : 3, 
+			y : 1000,
+			lineOptions: { color: "blue" }
+		}
+	]
+	```
+	
+	For more lineOptions and other plot configurations check the [plotly documentation](https://plotly.com/javascript/configuration-options/).
+	 
+- **id** : String (Required)
+	The identifier used to name this Plot component.
+- **layout** : Object (Optional)
+	Configuration settings for the chart and line plots.
+	Checkout [plotly's configuration](https://plotly.com/javascript/configuration-options/) options to add in your layout object.
+- **extractLegendName** : Function (Optional)
+	Function used to overwrite and modify the legend name of the plot.
+- **getLegendName** : Function (Optional)
+	Function used to retrieve the legend name of a line plot.
+	
 ## Example
 
 [Plot Component Example](./showcase/examples/PlotShowcase)
