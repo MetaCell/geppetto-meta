@@ -5,7 +5,7 @@ React Component use to visualize a data structure as a Plot graph.
 The component can render basic line plots, as well as scatter plots. 
 
 ```
-plot/PlotComponent.
+plot/PlotComponent
 ```
 	
 ## Examples
