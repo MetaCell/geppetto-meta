@@ -4,18 +4,18 @@ React component used to visualized a graph data structure in 2D or 3D space usin
 
 Uses canvas/WebGL for rendering and d3-force-3d for the underlying physics engine.
 
-```
+```element
 graph-visualization/Graph
 ```
 
 ## Examples
 
-#### Graph Visualization Example 1
+### Graph Visualization Example 1
 
 Example of basic React Component class using the Graph Visualization Component.
 
 ```
-showcase/examples/GraphVisualizationShowcase
+graph-visualization/showcase/examples/GraphVisualizationShowcase
 ```
 
 ## Libraries

@@ -413,23 +413,23 @@ PlotComponent.propTypes = {
      * 'lineOptions' can be given, this will be used for modifying the visualization of the line plots.
 	 */
 	plots: PropTypes.arrayOf(PropTypes.shape({
-				x: PropTypes.number.isRequired,
-				y: PropTypes.number.isRequired,
-				lineOptions : PropTypes.object.isOptional
+				x: PropTypes.string.isRequired,
+				y: PropTypes.string.isRequired,
+				lineOptions : PropTypes.object
 			})).isRequired,
 	/**
 	 * Configuration settings for the chart and line plots.
      * Checkout [plotly's configuration](https://plotly.com/javascript/configuration-options/) options to add in your layout object.
 	 */
-    layout : PropTypes.object.isOptional,
+    layout : PropTypes.object,
 	/**
 	 * Function used to overwrite and modify the legend name of the plot.
 	 */
-    getLegendName : PropTypes.func.isOptional,
+    getLegendName : PropTypes.func,
 	/**
 	 * Function used to retrieve the legend name of a line plot.
 	 */
-    extractLegendName : PropTypes.func.isOptional
+    extractLegendName : PropTypes.func
 };
 
 export default withStyles(style)(PlotComponent)

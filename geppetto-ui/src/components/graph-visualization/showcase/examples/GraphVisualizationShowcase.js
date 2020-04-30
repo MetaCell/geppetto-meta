@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import GeppettoGraphVisualization from "./../../Graph";
+import Graph from "./../../Graph";
 
 export default class GraphVisualizationShowcase extends Component {
 
@@ -20,11 +20,13 @@ export default class GraphVisualizationShowcase extends Component {
 
     render () {
         return (
-            <GeppettoGraphVisualization
-                data={this.getData()}
-                nodeLabel={node => node.name}
-                linkLabel={link => link.name}
-            />
+        	<div style={{ width: 600, height: 500 }}>
+	        	<Graph
+	                data={this.getData()}
+	                nodeLabel={node => node.name}
+	                linkLabel={link => link.name}
+	            />
+            </div>
         )
     }
 }

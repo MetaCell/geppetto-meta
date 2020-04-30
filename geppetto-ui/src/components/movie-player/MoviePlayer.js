@@ -81,17 +81,17 @@ MoviePlayer.propTypes = {
 	 * Javascript object with playback settings.
 	 */
 	controls: PropTypes.shape({
-		playAtStart : PropTypes.bool.isOptional,
-		loop : PropTypes.bool.isOptional,
-		volume : PropTypes.number.isOptional,
-		playbackRate : PropTypes.number.isOptional,
-	}).isOptional,
+		playAtStart : PropTypes.bool,
+		loop : PropTypes.bool,
+		volume : PropTypes.number,
+		playbackRate : PropTypes.number,
+	}),
 	/**
 	 * Width of the movie player
 	 */
-	width : PropTypes.string.isOptional,
+	width : PropTypes.string,
 	/**
 	 * Height of the movie player
 	 */
-	height : PropTypes.string.isOptional
+	height : PropTypes.string
 };

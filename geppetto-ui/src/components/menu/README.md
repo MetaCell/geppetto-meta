@@ -2,7 +2,7 @@
 
 React component use to display a list of options in a Drop-down menu style. 
 
-```
+```element
 menu/Menu
 ```
 

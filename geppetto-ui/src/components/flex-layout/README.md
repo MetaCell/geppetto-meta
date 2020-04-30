@@ -2,18 +2,18 @@
 
 FlexLayout is a layout manager that arranges React components in multiple tab sets, these can be resized and moved.
 
-```
-flex-layout/src
+```element
+flex-layout/src/view/Layout.tsx
 ```
 
 ## Examples
 
-#### Flex Layout Example 1
+### Flex Layout Example 1
 
 Example of basic React Component class using the Flex Layout Component.
 
 ```
-showcase/examples/FlexLayoutShowcase
+flex-layout/showcase/examples/FlexLayoutShowcase
 ```
 
 ## Libraries

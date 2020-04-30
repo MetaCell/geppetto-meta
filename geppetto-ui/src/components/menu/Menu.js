@@ -179,7 +179,7 @@ Menu.propTypes = {
        * following choices: 'bottom-end', 'bottom-start', 'bottom', 'left-end', 'left-start', 'left', 'right-end', 
        * 'right-start', 'right', 'top-end', 'top-start', 'top'. 
        */
-      position : PropTypes.string.isOptional,
+      position : PropTypes.string,
       /**
        * Defines the list of objects that we need to use to populate the 1st level menu
        */
@@ -227,8 +227,8 @@ Menu.propTypes = {
              * Parameters associated with the handlerAction when needed.
              */
             parameters : PropTypes.arrayOf(PropTypes.string.isRequired)	
-          }).isRequired,
-      })).isOptional,
+          }),
+      })),
     })).isRequired
   }),
 };

@@ -387,13 +387,13 @@ export default class GeppettoGraphVisualization extends Component {
   }
 }
 
-Graph.propTypes = {
+GeppettoGraphVisualization.propTypes = {
 	/**
 	 * Object with arrays of nodes and links used to render the graph.
 	 */
 	data: PropTypes.shape({ 
 			nodes : PropTypes.arrayOf(PropTypes.shape({
-						id : PropTypes.string.isRequired
+						id : PropTypes.number.isRequired
 					})).isRequired,
 			links : PropTypes.arrayOf(PropTypes.shape({
 		     		source: PropTypes.number.isRequired,
@@ -404,73 +404,73 @@ Graph.propTypes = {
 	 * If true, the graph would be 2D.
 	 * (Default : false)
 	 */
-	d2 : PropTypes.bool.isOptional,
+	d2 : PropTypes.bool,
 	/**
 	 * Specify the node label displayed in each node
 	 */
-	nodeLabel : PropTypes.func.isOptional,
+	nodeLabel : PropTypes.func,
 	/**
 	 * Specify the link label displayed in each node
 	 */
-	linkLabel : PropTypes.func.isOptional,
+	linkLabel : PropTypes.func,
 	/**
 	 *  Specify a obj file URL to add to the scene.
 	 */
-	url : PropTypes.string.isOptional,
+	url : PropTypes.string,
 	/**
 	 * Create a wireframe for the object.
 	 * (Default : true)
 	 */
-	wireframe : PropTypes.bool.isOptional,
+	wireframe : PropTypes.bool,
 	/**
 	 * Specify the wireframe color (in hexadecimal).
 	 * (Default : "0x6893DE")
 	 */
-	wireframeColor : PropTypes.string.isOptional,
+	wireframeColor : PropTypes.string,
 	/**
 	 * Define width gap size with respect to the parent container.
 	 * (Default : 20)
 	 */
-	xGap : PropTypes.number.isOptional,
+	xGap : PropTypes.number,
 	/**
 	 * Define height gap size with respect to the parent container.
 	 * (Default : 45)
 	 */
-	yGap : PropTypes.number.isOptional,
+	yGap : PropTypes.number,
 	/**
 	 * Set the default font size and style inside the nodes.
 	 * (Default : "6px Source Sans Pro")
 	 */
-	font : PropTypes.string.isOptional,
+	font : PropTypes.string,
 	/**
 	 * Adjust the size of the nodes.
 	 * (Default : 20)
 	 */
-	nodeRelSize : PropTypes.number.isOptional,
+	nodeRelSize : PropTypes.number,
 	/**
 	 * Adjust the length of the spring simulated between two nodes.
 	 * (Default : 90)
 	 */
-	forceLinkDistance : PropTypes.number.isOptional,
+	forceLinkDistance : PropTypes.number,
 	/**
 	 * Adjust the stiffness coefficient for the spring simulated between two nodes
 	 * (Default : 0.7)
 	 */
-	forceLinkStrength : PropTypes.number.isOptional,
+	forceLinkStrength : PropTypes.number,
 	/**
 	 * Adjust the repulsion coefficient simulated between two nodes.
 	 * (Default : -200)
 	 */
-	forceChargeStrength : PropTypes.number.isOptional,
+	forceChargeStrength : PropTypes.number,
 	/**
 	 * Transition time in ms when centering camera in 2D Graph after window resize event. 
 	 * (Default : 0)
 	 */
-	timeToCenter2DCamera : PropTypes.number.isOptional,
+	timeToCenter2DCamera : PropTypes.number,
 	/**
 	 * Creates a radial atractive force of radial circle equal to forceRadial. 
 	 * Useful to avoid nodes scattering away when they have no links. 
 	 * (Default : 1)
 	 */
-	forceRadial : PropTypes.number.isOptional
+	forceRadial : PropTypes.number
 };
