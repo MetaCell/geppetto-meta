@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import model from './model.json';
-import PlotComponent from "../PlotComponent";
+import model from './../model.json';
+import PlotComponent from "./../../PlotComponent";
 import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
 
 export default class PlotShowcase extends Component {
@@ -43,11 +43,13 @@ export default class PlotShowcase extends Component {
         }
 
         return (
-            <PlotComponent
-                plots={plots}
-                id={this.instancePath ? this.instancePath : "empty"}
-                extractLegendName={this.extractLegendName}
-            />
+        	<div style={{ width: 600, height: 500 }}>
+	        	<PlotComponent
+	                plots={plots}
+	                id={this.instancePath ? this.instancePath : "empty"}
+	                extractLegendName={this.extractLegendName}
+	            />
+        	</div>
         );
     }
 }

@@ -1,19 +1,23 @@
 import React, { Component } from "react";
-import Menu from "../Menu";
-import model from "./model.json";
+import Menu from "./../../Menu";
+import model from "./../model.json";
 
 export default class MenuShowcase extends Component {
   constructor (props) {
     super(props);
-    GEPPETTO.Manager.loadModel(model);
-    this.menuConfiguration = require('./menuConfiguration').toolbarMenu;
+    this.menuConfiguration = require('./../menuConfiguration').toolbarMenu;
     this.menuHandler = this.menuHandler.bind(this);
   }
 
+  /**
+   * Handler function triggered when a Menu item is clicked. 
+   */
   menuHandler (click) {
     const historyList = [];
     console.log(click.handlerAction);
+    // Check the handlerAction associated with Menu item clicked
     if (click.handlerAction === 'historyMenuInjector') {
+      // Add to history List.
       historyList.push(
         {
           label: "adult brain template JFRC2",

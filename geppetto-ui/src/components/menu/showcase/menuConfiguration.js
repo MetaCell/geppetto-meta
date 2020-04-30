@@ -102,7 +102,6 @@ var toolbarMenu = {
     {
       label: "Virtual Fly Brain",
       icon: "",
-      action: "",
       position: "bottom-start",
       list: [
         {
@@ -177,7 +176,6 @@ var toolbarMenu = {
     {
       label: "Tools",
       icon: "",
-      action: "",
       position: "bottom-start",
       list: [
         {
@@ -239,7 +237,6 @@ var toolbarMenu = {
         {
           label: "NBLAST",
           icon: "",
-          action: "",
           position: "right-start",
           list: [
             {
@@ -263,7 +260,6 @@ var toolbarMenu = {
         {
           label: "CATMAID",
           icon: "",
-          action: "",
           position: "right-start",
           list: [
             {
@@ -351,7 +347,6 @@ var toolbarMenu = {
     {
       label: "History",
       icon: "",
-      action: "",
       position: "bottom-start",
       dynamicListInjector: {
         handlerAction: "historyMenuInjector",
@@ -361,7 +356,6 @@ var toolbarMenu = {
     {
       label: "Templates",
       icon: "",
-      action: "",
       position: "bottom-start",
       list: [
         {
@@ -431,7 +425,6 @@ var toolbarMenu = {
     {
       label: "Datasets",
       icon: "",
-      action: "",
       position: "bottom-start",
       list: [
         {
@@ -509,7 +502,6 @@ var toolbarMenu = {
     {
       label: "Help",
       icon: "",
-      action: "",
       position: "bottom-start",
       list: [
         {

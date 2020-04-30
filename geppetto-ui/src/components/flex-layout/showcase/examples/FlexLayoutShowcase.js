@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import * as FlexLayout from '../src';
+import * as FlexLayout from './../../src';
 
 const json = {
     global: {
