@@ -60,7 +60,6 @@ export default class TreeShowcase extends Component {
       width: 400,
       height: 250,
     };
-    const id = 'TreeContainerMRI';
     const treeData = this.getTreeData();
     const rowHeight = 50;
     const toggleMode = false;

@@ -1,6 +1,6 @@
 # HTML Viewer
 
-HTML Viewer can be used to visualize custom HTML
+Used to visualize custom HTML
 
 ```element
 html-viewer/HTMLViewer

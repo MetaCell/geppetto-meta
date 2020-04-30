@@ -203,35 +203,35 @@ class Tree extends Component {
 
 Tree.propTypes = {
   /**
-   * Description of prop treeData.
+   * Tree data with the following keys: title, subtitle, expanded, children
    */
   treeData: PropTypes.string.isRequired,
   /**
-   * Description of prop style
+   * Style applied to the container wrapping the tree
    */
   style: PropTypes.object.isRequired,
   /**
-   * Description of prop rowHeight
+   * Either a fixed row height (number) or a function that returns the height of a row given its index
    */
-  rowHeight: PropTypes.number.isRequired,
+  rowHeight: PropTypes.any.isRequired,
   /**
-   * Description of prop handleClick
+   * Function to handle node's click events
    */
   handleClick: PropTypes.func.isRequired,
   /**
-   * Description of prop getButtons
+   * Function to add buttons
    */
   getButtons: PropTypes.func.isRequired,
   /**
-   * Description of prop toggleMode
+   * Boolean to activate/inactivate selected node
    */
   toggleMode: PropTypes.boolean,
   /**
-   * Description of prop toggleactivateParentsNodeOnClickMode
+   * Boolean to allow parents activation or not
    */
   activateParentsNodeOnClick: PropTypes.boolean,
   /**
-   * Description of prop getNodesProps
+   * 	Generate an object with additional props to be passed to the node rendere
    */
   getNodesProps: PropTypes.func,
 };

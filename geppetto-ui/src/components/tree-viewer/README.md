@@ -1,8 +1,6 @@
 # Tree Viewer
 
-Tree Viewer Description
-
-Tree Viewer detailed description
+Suitable to visualize hierarchies
 
 ```element
 tree-viewer/Tree
@@ -12,7 +10,7 @@ tree-viewer/Tree
 
 ### TreeViewer Example 1
 
-TreeViewer Example 1
+Basic tree viewer example with general electric (GE) signa excite data
 
 ```
 tree-viewer/showcase/examples/TreeShowcase
