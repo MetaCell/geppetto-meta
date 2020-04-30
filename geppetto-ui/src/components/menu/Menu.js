@@ -173,7 +173,7 @@ class Menu extends React.Component {
 
 Menu.propTypes = {
   /**
-   * * All the required and optional configurations for instantiating a new instance of Menu
+   * All the required and optional configurations for instantiating a new instance of Menu
    * */
   configuration: PropTypes.shape({
     /**
