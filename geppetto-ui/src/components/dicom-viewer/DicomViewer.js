@@ -722,7 +722,7 @@ class DicomViewer extends Component {
         <CustomToolbar buttons={customButtons} />
         <div
           className={classes.dicomViewer}
-          style={{ height: '100%', width: '100%' }}
+          style={{ height: '90%', width: '100%' }}
         >
           <div
             id="r0"
