@@ -8,7 +8,7 @@ tree-viewer/Tree
 
 ## Examples
 
-### TreeViewer Example 1
+### TreeViewer Example
 
 Basic tree viewer example with general electric (GE) signa excite data
 

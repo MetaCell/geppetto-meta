@@ -9,8 +9,8 @@ import { withStyles } from '@material-ui/core/styles';
 import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
 import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
+import BigImageViewerMarkdown from '../../../geppetto-ui/src/components/big-image-viewer/README.md';
 
-import { BigImageViewerConfig } from '../../../geppetto-ui/src/components/big-image-viewer/showcase/BigImageViewerConfig';
 import MenuShowcase from '../../../geppetto-ui/src/components/menu/showcase/MenuShowcase';
 import ListViewerShowcase from '../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase';
 import PlotShowcase from '../../../geppetto-ui/src/components/plot/showcase/PlotShowcase';
@@ -81,10 +81,10 @@ class DrawerContent extends Component {
         open: dataViewersOpen,
         handler: this.dataViewersHandler,
         children: [
-          // {
-          //   "name": "BigImageViewer",
-          //   "component": <Showcase configs={BigImageViewerConfig}/>
-          // },
+          {
+            name: 'Big Image Viewer',
+            component: <Showcase markdown={BigImageViewerMarkdown} />,
+          },
           {
             name: 'Connectivity Viewer',
             component: <Showcase markdown={ConnectivityMarkdown} />,
