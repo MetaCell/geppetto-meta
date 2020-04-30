@@ -143,13 +143,13 @@ BigImageViewer.propTypes = {
    */
   id: PropTypes.string.isRequired,
   /**
-   * All required and optional settings for instantiating a new instance of an OpenSeadragon image viewer
-   */
-  settings: PropTypes.array.isRequired,
-  /**
    * Path/URL to image file (f.e. "/path/to/my/image.dzi")
    */
   data: PropTypes.string.isRequired,
+  /**
+   * All required and optional settings for instantiating a new instance of an OpenSeadragon image viewer
+   */
+  settings: PropTypes.array,
 };
 
 export default withStyles(styles)(BigImageViewer);
