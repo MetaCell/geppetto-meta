@@ -145,8 +145,9 @@ class Showcase extends Component {
             </Table>
           </TableContainer>
           <h2 className={classes.secondaryTitle}>Libraries</h2>
-          {configs.libraries.map((library) => (
+          {configs.libraries.map((library, i) => (
             <Chip
+              key={i}
               className={classes.library}
               label={library.name}
               component="a"
