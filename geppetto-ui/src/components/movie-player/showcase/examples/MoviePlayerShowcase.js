@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import MoviePlayer from "../MoviePlayer";
+import MoviePlayer from "./../../MoviePlayer";
 
 export default class MoviePlayerShowcase extends Component {
     constructor (props) {
@@ -14,7 +14,7 @@ export default class MoviePlayerShowcase extends Component {
             playbackRate: 1,
         };
         const videoURL = "https://youtu.be/OmwXCGPBhNo";
-        const width = "100%";
+        const width = "800px";
         const height = "640px";
 
         return (

@@ -10,16 +10,14 @@ import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivi
 import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
 import BigImageViewerMarkdown from '../../../geppetto-ui/src/components/big-image-viewer/README.md';
+import MenuMarkdown from '../../../geppetto-ui/src/components/menu/README.md';
+import MoviePlayerMarkdown from '../../../geppetto-ui/src/components/movie-player/README.md';
+import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
+import GraphVisualizationMarkdown from '../../../geppetto-ui/src/components/graph-visualization/README.md';
 
-import MenuShowcase from '../../../geppetto-ui/src/components/menu/showcase/MenuShowcase';
 import ListViewerShowcase from '../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase';
-import PlotShowcase from '../../../geppetto-ui/src/components/plot/showcase/PlotShowcase';
-import FlexLayoutShowcase from '../../../geppetto-ui/src/components/flex-layout/showcase/FlexLayoutShowcase';
-import MoviePlayerShowcase from '../../../geppetto-ui/src/components/movie-player/showcase/MoviePlayerShowcase';
 import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
-import GraphVisualizationShowcase from '../../../geppetto-ui/src/components/graph-visualization/showcase/GraphVisualizationShowcase';
 import Showcase from '../showcase/Showcase';
-import { DicomViewerConfig } from '../../../geppetto-ui/src/components/dicom-viewer/showcase/DicomViewerConfig';
 
 const styles = (theme) => ({
   nested: { paddingLeft: theme.spacing(4) },
@@ -96,7 +94,7 @@ class DrawerContent extends Component {
 
           {
             name: 'Graph Visualizer',
-            component: <GraphVisualizationShowcase />,
+            component: <Showcase markdown={GraphVisualizationMarkdown} />,
           },
           {
             name: 'HTML Viewer',
@@ -104,11 +102,11 @@ class DrawerContent extends Component {
           },
           {
             name: 'Movie Player',
-            component: <MoviePlayerShowcase />,
+            component: <Showcase markdown={MoviePlayerMarkdown} />,
           },
           {
             name: 'Plot',
-            component: <PlotShowcase />,
+            component: <Showcase markdown={PlotMarkdown} />,
           },
         ],
       },
@@ -116,17 +114,20 @@ class DrawerContent extends Component {
         open: navigationLayoutOpen,
         handler: this.navigationLayoutHandler,
         children: [
-          {
-            name: 'FlexLayout',
-            component: <FlexLayoutShowcase />,
-          },
+          /**
+           * Awaiting tsx support in showcase
+           * {
+           * name: 'FlexLayout',
+           * component: <Showcase markdown={FlexlayoutMarkdown} />,
+           * },
+           */
           {
             name: 'List Viewer',
             component: <ListViewerShowcase />,
           },
           {
             name: 'Menu',
-            component: <MenuShowcase />,
+            component: <Showcase markdown={MenuMarkdown} />,
           },
           {
             name: 'Tree Viewer',
