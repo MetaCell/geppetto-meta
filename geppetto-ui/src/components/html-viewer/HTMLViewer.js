@@ -58,13 +58,17 @@ class HTMLViewer extends Component {
 
 HTMLViewer.propTypes = {
   /**
-   * Description of prop content.
+   * HTML content to be displayed.
    */
   content: PropTypes.string.isRequired,
   /**
-   * Description of prop colors.
+   * Styles to apply to the HTML content container
    */
   style: PropTypes.object.isRequired,
+  /**
+   * Function to handle link's dataset actions
+   */
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(HTMLViewer);

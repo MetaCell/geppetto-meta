@@ -1,8 +1,6 @@
 # HTML Viewer
 
-HTML Viewer Description
-
-HTML Viewer detailed description
+HTML Viewer can be used to visualize custom HTML
 
 ```element
 html-viewer/HTMLViewer
@@ -12,7 +10,7 @@ html-viewer/HTMLViewer
 
 ### HTMLViewer Example 1
 
-HTMLViewer Example 1
+Basic example of usage of HTML Viewer. Link's dataset (f.e. data-action) are captured and handled by handleClick prop.
 
 ```
 html-viewer/showcase/examples/HTMLViewerShowcase
@@ -20,4 +18,4 @@ html-viewer/showcase/examples/HTMLViewerShowcase
 
 ## Libraries
 
-[d3](https://www.npmjs.com/package/d3)
+[React](https://www.npmjs.com/package/react)
