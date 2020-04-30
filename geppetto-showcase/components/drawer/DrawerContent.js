@@ -10,6 +10,7 @@ import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivi
 import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
 import BigImageViewerMarkdown from '../../../geppetto-ui/src/components/big-image-viewer/README.md';
+import DicomViewerMarkdown from '../../../geppetto-ui/src/components/dicom-viewer/README.md';
 import MenuMarkdown from '../../../geppetto-ui/src/components/menu/README.md';
 import MoviePlayerMarkdown from '../../../geppetto-ui/src/components/movie-player/README.md';
 import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
@@ -88,10 +89,10 @@ class DrawerContent extends Component {
             name: 'Connectivity Viewer',
             component: <Showcase markdown={ConnectivityMarkdown} />,
           },
-          // {
-          //   "name": "DicomViewer",
-          //   "component": <Showcase configs={DicomViewerConfig}/>
-          // },
+          {
+            name: 'Dicom Viewer',
+            component: <Showcase markdown={DicomViewerMarkdown} />,
+          },
 
           {
             name: 'Graph Visualizer',
