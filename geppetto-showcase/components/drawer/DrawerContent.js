@@ -14,6 +14,7 @@ import MenuMarkdown from '../../../geppetto-ui/src/components/menu/README.md';
 import MoviePlayerMarkdown from '../../../geppetto-ui/src/components/movie-player/README.md';
 import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
 import GraphVisualizationMarkdown from '../../../geppetto-ui/src/components/graph-visualization/README.md';
+import FlexlayoutMarkdown from '../../../geppetto-ui/src/components/flex-layout/README.md';
 
 import ListViewerShowcase from '../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase';
 import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
