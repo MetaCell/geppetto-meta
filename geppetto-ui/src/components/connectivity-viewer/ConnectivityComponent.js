@@ -166,51 +166,51 @@ class ConnectivityComponent extends Component {
 
 ConnectivityComponent.propTypes = {
   /**
-   * Description of prop id.
+   * Component identifier
    */
   id: PropTypes.string.isRequired,
   /**
-   * Description of prop colors.
+   * Array of colors to provide for each subtitle
    */
   colors: PropTypes.array.isRequired,
   /**
-   * Description of prop data.
+   * Model entities to be visualized
    */
   data: PropTypes.object.isRequired,
   /**
-   * Description of prop modelFactory.
+   * Geppetto Model Factory
    */
   modelFactory: PropTypes.object.isRequired,
   /**
-   * Description of prop resources.
+   * Geppetto Resources
    */
   resources: PropTypes.object.isRequired,
   /**
-   * Description of prop matrixOnClickHandler.
+   * Function to handle click events on Matrix layout
    */
   matrixOnClickHandler: PropTypes.func.isRequired,
   /**
-   * Description of prop colorMap.
+   * Function returning a d3 scaleOrdinal
    */
   colorMap: PropTypes.func,
   /**
-   * Description of prop layout.
+   * One of Matrix, Hive, Force or Chord objects. Defaults to Matrix
    */
   layout: PropTypes.object,
   /**
-   * Description of prop linkType.
+   * Function to colour links (synapses) by neurotransmitter
    */
   linkType: PropTypes.func,
   /**
-   * Description of prop linkWeight.
+   * Function to scale line widths based on the synaptic base conductance leve
    */
   linkWeight: PropTypes.func,
   /**
-   * Description of prop nodeType.
+   * Function that maps the connection source node (object of class EntityNode ) onto any type of value (coercible to string) which qualitatively identifies the node category
    */
   nodeType: PropTypes.func,
   /**
-   * Description of prop library.
+   * Geppetto library that supplies a network type
    */
   library: PropTypes.func,
 };
