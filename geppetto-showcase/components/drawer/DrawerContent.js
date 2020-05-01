@@ -116,12 +116,12 @@ class DrawerContent extends Component {
         handler: this.navigationLayoutHandler,
         children: [
           /**
-           * Awaiting tsx support in showcase
-           * {
-           * name: 'FlexLayout',
-           * component: <Showcase markdown={FlexlayoutMarkdown} />,
-           * },
-           */
+           * Awaiting tsx support in showcase~
+           *            */
+          {
+            name: 'FlexLayout',
+            component: <Showcase markdown={FlexlayoutMarkdown} />,
+          },
           {
             name: 'List Viewer',
             component: <Showcase markdown={ListViewerMarkdown} />,
