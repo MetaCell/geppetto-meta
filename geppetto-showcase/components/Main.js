@@ -77,7 +77,10 @@ class Main extends Component {
                   Geppetto Showcase
                 </Button>
               </Link>
-              <Button href="http://www.geppetto.org" target="_blank">
+              <Button
+                href="http://docs.geppetto.org/en/latest/"
+                target="_blank"
+              >
                 Docs
               </Button>
               <Button
