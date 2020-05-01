@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import IconButtonWithTooltip from './IconButtonWithTooltip';
 import { faCode, faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
 import Toolbar from '@material-ui/core/Toolbar';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Snackbar from '@material-ui/core/Snackbar';
+import Typography from '@material-ui/core/Typography';
 
 const styles = (theme) => ({
   toolbar: {
@@ -39,10 +41,13 @@ class Code extends Component {
     this.state = {
       source: false,
       sourceTooltip: SHOW_SOURCE_TOOLTIP,
+      snackbarOpen: false,
     };
+    this.snippet = this.getInstantiation(this.props.file, this.props.element);
     this.handleSourceClick = this.handleSourceClick.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleCopySourceClick = this.handleCopySourceClick.bind(this);
+    this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
   }
 
   getInstantiation(file, element) {
@@ -66,11 +71,22 @@ class Code extends Component {
   }
 
   handleCopySourceClick() {
-    console.log('Copy Source, Show dialog');
+    this.setState(
+      () => ({ snackbarOpen: true }),
+      () => {
+        const contentToCopy = this.state.source
+          ? this.props.file
+          : this.snippet;
+        navigator.clipboard.writeText(contentToCopy);
+      }
+    );
+  }
+  handleSnackbarClose() {
+    this.setState({ snackbarOpen: false });
   }
 
   getToolbarButtons() {
-    const { sourceTooltip } = this.state;
+    const { sourceTooltip, snackbarOpen } = this.state;
     const { classes } = this.props;
 
     const sourceButton = (
@@ -92,28 +108,39 @@ class Code extends Component {
       />
     );
     const copyButton = (
-      <IconButtonWithTooltip
-        disabled={true}
-        onClick={this.handleCopySourceClick}
-        className={classes.button}
-        icon={faCopy}
-        tooltip={COPY_SOUCE_TOOLTIP}
-      />
+      <Fragment>
+        <IconButtonWithTooltip
+          onClick={this.handleCopySourceClick}
+          className={classes.button}
+          icon={faCopy}
+          tooltip={COPY_SOUCE_TOOLTIP}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={snackbarOpen}
+          onClose={this.handleSnackbarClose}
+          autoHideDuration={6000}
+          message="The source code has been copied."
+        />
+      </Fragment>
     );
     return (
       <div>
         {sourceButton}
-        {editButton}
         {copyButton}
+        {editButton}
       </div>
     );
   }
 
   render() {
-    const { classes, file, element } = this.props;
+    const { classes, file } = this.props;
     const { source } = this.state;
 
-    const content = source ? file : this.getInstantiation(file, element);
+    const content = source ? file : this.snippet;
     const toolbarButtons = this.getToolbarButtons();
 
     return (
