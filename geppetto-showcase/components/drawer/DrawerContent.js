@@ -92,7 +92,6 @@ class DrawerContent extends Component {
             name: 'Dicom Viewer',
             component: <Showcase markdown={DicomViewerMarkdown} />,
           },
-
           {
             name: 'Graph Visualizer',
             component: <Showcase markdown={GraphVisualizationMarkdown} />,
@@ -108,6 +107,16 @@ class DrawerContent extends Component {
           {
             name: 'Plot',
             component: <Showcase markdown={PlotMarkdown} />,
+          },
+          {
+            name: '3D Canvas',
+            component: '<Showcase markdown={3DCanvasMarkdown} />',
+            disabled: true,
+          },
+          {
+            name: 'Stack Viewer',
+            component: '<Showcase markdown={StackViewerMarkdown} />',
+            disabled: true,
           },
         ],
       },
