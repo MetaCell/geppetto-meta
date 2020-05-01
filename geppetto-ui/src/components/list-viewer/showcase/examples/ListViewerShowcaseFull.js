@@ -158,7 +158,7 @@ export default class ListViewerShowcaseFull extends React.Component {
       <div
         style={{
           height: '900px',
-          width: '100%',
+          width: '1200px',
           display: 'flex',
           flexDirection: 'column',
         }}

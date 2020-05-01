@@ -5,7 +5,11 @@ import instances from '../instances-small.json';
 export default class ListViewerShowcaseFilter extends React.Component {
   render() {
     return (
-      <div>
+      <div
+        style={{
+          width: '1200px',
+        }}
+      >
         <ListViewer
           filter={(row) => row.metaType === 'CompositeType'}
           instances={instances}

@@ -9,7 +9,7 @@ export default class ListViewerShowcaseScroll extends React.Component {
         <div
           style={{
             height: '400px',
-            width: '100%',
+            width: '1200px',
             display: 'flex',
             flexDirection: 'column',
           }}
