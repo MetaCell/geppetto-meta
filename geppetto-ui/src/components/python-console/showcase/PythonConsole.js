@@ -10,7 +10,7 @@ class PythonConsole extends Component {
   }
 
   render() {
-    return <img src={pythonConsoleGif} />;
+    return <img src={`/${pythonConsoleGif}`} />;
   }
 }
 

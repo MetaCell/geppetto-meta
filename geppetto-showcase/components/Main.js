@@ -1,11 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import DrawerContent from './drawer/DrawerContent';
 import Button from '@material-ui/core/Button';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import pages from '../pages/Pages';
+import Home from '../pages/Home';
+import Showcase from './showcase/Showcase';
 
 const drawerWidth = 240;
 
@@ -60,71 +63,60 @@ const styles = (theme) => ({
   },
 });
 
-const homeContent = (
-  <Fragment>
-    <Typography paragraph>
-      Skip to the science. The visualisation and simulation platform focused on
-      what matters to you.
-    </Typography>
-    <Typography paragraph>
-      Some of the react components responsible for giving you an amazing
-      experience.
-    </Typography>
-  </Fragment>
-);
-
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { content: homeContent };
-    this.contentHandler = this.contentHandler.bind(this);
-  }
-
-  contentHandler(content) {
-    this.setState(() => ({ content: content }));
-  }
   render() {
     const { classes } = this.props;
-    const { content } = this.state;
 
     return (
-      <div className={classes.root}>
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Button
-              onClick={() => this.contentHandler(homeContent)}
-              className={classes.toolbarMainButton}
-            >
-              Geppetto Showcase
-            </Button>
-            <Button href="http://www.geppetto.org" target="_blank">
-              Docs
-            </Button>
-            <Button
-              href="https://github.com/openworm/org.geppetto"
-              target="_blank"
-            >
-              Github
-            </Button>
-            <Button href="https://goo.gl/3ncZWn" target="_blank">
-              Slack
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{ paper: classes.drawerPaper }}
-        >
-          <div className={classes.toolbar} />
-          <DrawerContent contentHandler={this.contentHandler} />
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <div className={classes.component}>{content}</div>
-        </main>
-      </div>
+      <Router>
+        <div className={classes.root}>
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Link to="/">
+                <Button className={classes.toolbarMainButton}>
+                  Geppetto Showcase
+                </Button>
+              </Link>
+              <Button href="http://www.geppetto.org" target="_blank">
+                Docs
+              </Button>
+              <Button
+                href="https://github.com/openworm/org.geppetto"
+                target="_blank"
+              >
+                Github
+              </Button>
+              <Button href="https://goo.gl/3ncZWn" target="_blank">
+                Slack
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}
+          >
+            <div className={classes.toolbar} />
+            <DrawerContent />
+          </Drawer>
+
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <div className={classes.component}>
+              <Switch>
+                {pages.map((page) => (
+                  <Route
+                    key={page.to}
+                    path={page.to}
+                    render={() => <Showcase markdown={page.markdown} />}
+                  />
+                ))}
+                <Route path="/" exact component={Home} />
+              </Switch>
+            </div>
+          </main>
+        </div>
+      </Router>
     );
   }
 }

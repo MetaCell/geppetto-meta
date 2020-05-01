@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import ListItem from '@material-ui/core/ListItem';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -73,7 +75,8 @@ class DrawerContent extends Component {
       navigationLayoutOpen,
       programmaticInterfacesOpen,
     } = this.state;
-    const { classes, contentHandler } = this.props;
+
+    const { classes } = this.props;
 
     const content = {
       'Data Viewers': {
@@ -82,40 +85,40 @@ class DrawerContent extends Component {
         children: [
           {
             name: 'Big Image Viewer',
-            component: <Showcase markdown={BigImageViewerMarkdown} />,
+            to: '/components/dataviewers/bigimgviewer',
           },
           {
             name: 'Connectivity Viewer',
-            component: <Showcase markdown={ConnectivityMarkdown} />,
+            to: '/components/dataviewers/connectivity',
           },
           {
             name: 'Dicom Viewer',
-            component: <Showcase markdown={DicomViewerMarkdown} />,
+            to: '/components/dataviewers/dicomviewer',
           },
           {
             name: 'Graph Visualizer',
-            component: <Showcase markdown={GraphVisualizationMarkdown} />,
+            to: '/components/dataviewers/graphvisualizer',
           },
           {
             name: 'HTML Viewer',
-            component: <Showcase markdown={HTMLViewerMarkdown} />,
+            to: '/components/dataviewers/htmlviewer',
           },
           {
             name: 'Movie Player',
-            component: <Showcase markdown={MoviePlayerMarkdown} />,
+            to: '/components/dataviewers/movieplayer',
           },
           {
             name: 'Plot',
-            component: <Showcase markdown={PlotMarkdown} />,
+            to: '/components/dataviewers/plot',
           },
           {
             name: '3D Canvas',
-            component: '<Showcase markdown={3DCanvasMarkdown} />',
+            to: '/components/dataviewers/canvas',
             disabled: true,
           },
           {
             name: 'Stack Viewer',
-            component: '<Showcase markdown={StackViewerMarkdown} />',
+            to: '/components/dataviewers/stackviewer',
             disabled: true,
           },
         ],
@@ -126,19 +129,19 @@ class DrawerContent extends Component {
         children: [
           {
             name: 'Flex Layout',
-            component: <Showcase markdown={FlexlayoutMarkdown} />,
+            to: '/components/navigation/flexlayout',
           },
           {
             name: 'List Viewer',
-            component: <Showcase markdown={ListViewerMarkdown} />,
+            to: '/components/navigation/listviewer',
           },
           {
             name: 'Menu',
-            component: <Showcase markdown={MenuMarkdown} />,
+            to: '/components/navigation/menu',
           },
           {
             name: 'Tree Viewer',
-            component: <Showcase markdown={TreeMarkdown} />,
+            to: '/components/navigation/treeviewer',
           },
         ],
       },
@@ -148,11 +151,11 @@ class DrawerContent extends Component {
         children: [
           {
             name: 'Python Console',
-            component: <Showcase markdown={PythonConsoleMarkdown} />,
+            to: '/components/programmatic/pythonconsole',
           },
           {
             name: 'Javascript Console',
-            component: '<JavascriptConsoleShowcase />',
+            to: '/components/programmatic/jsconsole',
             disabled: true,
           },
         ],
@@ -174,14 +177,15 @@ class DrawerContent extends Component {
                 <List disablePadding>
                   {children.map((value) => {
                     const name = value.name;
-                    const component = value.component;
+                    const to = value.to;
                     const disabled = value.disabled;
                     return (
                       <ListItem
                         key={value.name}
                         button
                         className={classes.nested}
-                        onClick={() => contentHandler(component)}
+                        component={Link}
+                        to={to}
                         disabled={disabled}
                       >
                         <ListItemText

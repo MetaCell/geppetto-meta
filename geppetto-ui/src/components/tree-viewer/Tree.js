@@ -205,7 +205,7 @@ Tree.propTypes = {
   /**
    * Tree data with the following keys: title, subtitle, expanded, children
    */
-  treeData: PropTypes.string.isRequired,
+  treeData: PropTypes.array.isRequired,
   /**
    * Style applied to the container wrapping the tree
    */
@@ -225,11 +225,11 @@ Tree.propTypes = {
   /**
    * Boolean to activate/inactivate selected node
    */
-  toggleMode: PropTypes.boolean,
+  toggleMode: PropTypes.bool,
   /**
    * Boolean to allow parents activation or not
    */
-  activateParentsNodeOnClick: PropTypes.boolean,
+  activateParentsNodeOnClick: PropTypes.bool,
   /**
    * 	Generate an object with additional props to be passed to the node rendere
    */
