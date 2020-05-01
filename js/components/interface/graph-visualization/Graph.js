@@ -376,8 +376,20 @@ export default class GeppettoGraphVisualization extends Component {
       return <ForceGraph2D 
         linkCanvasObjectMode={() => "replace"}
         linkCanvasObject={this.linkCanvasObject.bind(this)} 
-        nodeCanvasObject={this.nodeWithName.bind(this)} 
-        nodeRelSize={this.size} 
+        nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
+        nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
+        backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "black"}
+        dagMode = {this.props.dagMode ? this.props.dagMode : "bu"}
+        dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}
+        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : "#101020"}
+        linkColor={() => {
+          this.props.linkColor ? this.props.linkColor : "rgba(255,255,255,0.2)"
+        }
+        }
+        nodeId={this.props.nodeId ? this.props.nodeId : "path"}
+        nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
+        nodeLabel={this.props.nodeLabel ? this.props.nodeLabel : "path"}
+        nodeAutoColorBy={this.props.nodeAutoColorBy ? this.props.nodeAutoColorBy : "module"}
         {...commonProps}/>
     } 
     return <ForceGraph3D {...commonProps} />
