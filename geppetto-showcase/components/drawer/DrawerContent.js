@@ -17,7 +17,7 @@ import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
 import GraphVisualizationMarkdown from '../../../geppetto-ui/src/components/graph-visualization/README.md';
 import FlexlayoutMarkdown from '../../../geppetto-ui/src/components/flex-layout/README.md';
 import ListViewerMarkdown from '../../../geppetto-ui/src/components/list-viewer/README.md';
-import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
+import PythonConsoleMarkdown from '../../../geppetto-ui/src/components/python-console/README.md';
 import Showcase from '../showcase/Showcase';
 
 const styles = (theme) => ({
@@ -115,11 +115,8 @@ class DrawerContent extends Component {
         open: navigationLayoutOpen,
         handler: this.navigationLayoutHandler,
         children: [
-          /**
-           * Awaiting tsx support in showcase~
-           *            */
           {
-            name: 'FlexLayout',
+            name: 'Flex Layout',
             component: <Showcase markdown={FlexlayoutMarkdown} />,
           },
           {
@@ -142,7 +139,7 @@ class DrawerContent extends Component {
         children: [
           {
             name: 'Python Console',
-            component: <PythonConsoleShowcase />,
+            component: <Showcase markdown={PythonConsoleMarkdown} />,
           },
           {
             name: 'Javascript Console',

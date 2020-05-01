@@ -1,15 +1,16 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import PythonConsole from './PythonConsole';
 
 export default class PythonConsoleShowcase extends Component {
-    constructor (props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    render () {
-        return (
-            <div>
-                Work In Progress
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <PythonConsole pythonNotebookPath={'notebooks/notebook.ipynb'} />
+      </div>
+    );
+  }
 }
