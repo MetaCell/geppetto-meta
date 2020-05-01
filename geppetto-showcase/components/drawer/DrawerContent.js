@@ -16,8 +16,7 @@ import MoviePlayerMarkdown from '../../../geppetto-ui/src/components/movie-playe
 import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
 import GraphVisualizationMarkdown from '../../../geppetto-ui/src/components/graph-visualization/README.md';
 import FlexlayoutMarkdown from '../../../geppetto-ui/src/components/flex-layout/README.md';
-
-import ListViewerShowcase from '../../../geppetto-ui/src/components/list-viewer/showcase/ListViewerShowcase';
+import ListViewerMarkdown from '../../../geppetto-ui/src/components/list-viewer/README.md';
 import PythonConsoleShowcase from '../../../geppetto-ui/src/components/python-console/showcase/PythonConsoleShowcase';
 import Showcase from '../showcase/Showcase';
 
@@ -125,7 +124,7 @@ class DrawerContent extends Component {
            */
           {
             name: 'List Viewer',
-            component: <ListViewerShowcase />,
+            component: <Showcase markdown={ListViewerMarkdown} />,
           },
           {
             name: 'Menu',
