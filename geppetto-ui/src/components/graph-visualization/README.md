@@ -21,8 +21,13 @@ graph-visualization/showcase/examples/GraphVisualizationShowcase
 ## Libraries
 
 [react](https://www.npmjs.com/package/react)
+
 [react-dom](https://www.npmjs.com/package/react-dom)
+
 [d3-force-3d](https://www.npmjs.com/package/d3-force-3d)
+
 [three.js](https://www.npmjs.com/package/three)
+
 [react-force-graph-2d](https://www.npmjs.com/package/react-force-graph-2d)
+
 [react-force-graph-3d](https://www.npmjs.com/package/react-force-graph-3d)

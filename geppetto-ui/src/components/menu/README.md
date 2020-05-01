@@ -1,6 +1,6 @@
 # Menu Component
 
-React component use to display a list of options in a Drop-down menu style. 
+React component use to display a list of options in a Drop-down menu style.
 
 ```element
 menu/Menu
@@ -19,4 +19,5 @@ menu/showcase/examples/MenuShowcase
 ## Libraries
 
 [React](https://www.npmjs.com/package/react)
+
 [@Material-ui/core](https://www.npmjs.com/package/@material-ui/core)
