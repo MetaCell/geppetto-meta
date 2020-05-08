@@ -109,8 +109,8 @@ function getExample(start) {
   let elements = getElementsUntil('pre', start, true);
   let example = {
     name: start.innerHTML,
-    description: '',
   };
+  let description = [];
 
   for (let elem of elements) {
     if (elem.matches('pre')) {
@@ -124,10 +124,12 @@ function getExample(start) {
         path +
         '.js');
     } else {
-      example['description'] += elem.innerHTML;
+      let innerElements = parseInnerHTML(elem.innerHTML);
+      description.push(...innerElements);
     }
   }
-
+  const container = React.createElement('div', {}, description);
+  example['description'] = container;
   return example;
 }
 
@@ -173,24 +175,31 @@ function getContentUntil(selector, start) {
   const content = getElementsUntil(selector, start);
   for (let element of content) {
     let innerHTML = element.innerHTML;
-    let breaks = innerHTML.split('\n');
-    for (let i = 0; i < breaks.length; i++) {
-      const b = breaks[i];
-      const src = isImageTag(b);
-      if (src) {
-        const img = React.createElement('img', { src: src });
-        elements.push(img);
-      } else {
-        const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
-        elements.push(p);
-      }
-    }
+    let innerElements = parseInnerHTML(innerHTML);
+    elements.push(...innerElements);
     const br = React.createElement('br');
     elements.push(br);
   }
 
   const container = React.createElement('div', {}, elements);
   return container;
+}
+
+function parseInnerHTML(innerHTML) {
+  let breaks = innerHTML.split('\n');
+  let elements = [];
+  for (let i = 0; i < breaks.length; i++) {
+    const b = breaks[i];
+    const src = isImageTag(b);
+    if (src) {
+      const img = React.createElement('img', { src: src });
+      elements.push(img);
+    } else {
+      const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
+      elements.push(p);
+    }
+  }
+  return elements;
 }
 
 function isImageTag(text) {
