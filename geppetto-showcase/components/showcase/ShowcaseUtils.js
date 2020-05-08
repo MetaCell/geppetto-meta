@@ -179,6 +179,8 @@ function getContentUntil(selector, start) {
       const p = React.createElement('p', { key: i }, b);
       elements.push(p);
     }
+    const br = React.createElement('br');
+    elements.push(br);
   }
 
   const container = React.createElement('div', {}, elements);

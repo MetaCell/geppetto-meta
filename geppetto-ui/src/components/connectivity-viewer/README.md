@@ -5,6 +5,8 @@ Visualize connections between model entities.
 The way information is displayed is controlled via the layout prop. Currently, four layouts are supported: matrix, force, hive and chord.
 Multiple Lines
 
+Paragraph
+
 ```element
 connectivity-viewer/ConnectivityComponent
 ```
