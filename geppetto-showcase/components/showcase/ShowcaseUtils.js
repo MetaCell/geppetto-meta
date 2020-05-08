@@ -176,16 +176,27 @@ function getContentUntil(selector, start) {
     let breaks = innerHTML.split('\n');
     for (let i = 0; i < breaks.length; i++) {
       const b = breaks[i];
-      const p = React.createElement('p', { key: i }, b);
-      elements.push(p);
+      const src = isImageTag(b);
+      if (src) {
+        const img = React.createElement('img', { src: src });
+        elements.push(img);
+      } else {
+        const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
+        elements.push(p);
+      }
     }
     const br = React.createElement('br');
     elements.push(br);
   }
 
   const container = React.createElement('div', {}, elements);
-
   return container;
+}
+
+function isImageTag(text) {
+  let re = new RegExp('<img.*?src="(.*?)"');
+  let matches = text.match(re);
+  return matches ? matches[1] : false;
 }
 
 export function getConfigFromMarkdown(markdown) {
