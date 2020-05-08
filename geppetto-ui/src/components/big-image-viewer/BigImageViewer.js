@@ -12,7 +12,7 @@ import CustomToolbar from '../common/CustomToolbar';
 
 const styles = {
   bigImageViewer: {
-    height: '100%',
+    height: '90%',
   },
 };
 
