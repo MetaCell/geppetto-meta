@@ -265,17 +265,26 @@ export default class ListViewer extends React.Component {
     </div> );
   }
 
+  getPluggins () {
+    const { remoteInfiniteScroll = false, plugins:extraPlugins = [] } = this.props
+    if (remoteInfiniteScroll) {
+      return [plugins.PositionPlugin({ disablePointerEvents: true }), ...extraPlugins]
+    }
+    return this.props.infiniteScroll 
+      ? [plugins.LocalPlugin, plugins.PositionPlugin({ disablePointerEvents: true }), ...extraPlugins] 
+      : [plugins.LocalPlugin, ...extraPlugins]
+  }
+  
   render () {
     window.conf = this.columnConfiguration;
     const customComponents = this.props.customComponents ? this.props.customComponents : {}
+    const { events, ...others } = this.props
     return <section className="listviewer">
       <Griddle
         data={this.getData()}
-        plugins={this.props.infiniteScroll 
-          ? [plugins.LocalPlugin, plugins.PositionPlugin({})] 
-          : [plugins.LocalPlugin]
-        }
+        plugins={this.getPluggins()}
         components={{ Layout: this.getLayout(), ...customComponents }}
+        events={{ ...events }}
       >
         <RowDefinition>
           {
