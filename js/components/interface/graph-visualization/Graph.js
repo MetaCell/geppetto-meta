@@ -43,7 +43,7 @@ export default class GeppettoGraphVisualization extends Component {
       this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
       this.ggv.current.d3Force('charge').strength(forceChargeStrength)
       this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
-      this.ggv.current.d3Force('center', null)
+      this.ggv.current.d3Force('center', null);
     }
     if (url) {
       this.addToScene()
@@ -379,17 +379,16 @@ export default class GeppettoGraphVisualization extends Component {
         nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
         nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
         backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "black"}
-        dagMode = {this.props.dagMode ? this.props.dagMode : "bu"}
+        dagMode = {this.props.dagMode ? this.props.dagMode : "td"}
         dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}
-        backgroundColor={this.props.backgroundColor ? this.props.backgroundColor : "#101020"}
-        linkColor={() => {
-          this.props.linkColor ? this.props.linkColor : "rgba(255,255,255,0.2)"
-        }
-        }
         nodeId={this.props.nodeId ? this.props.nodeId : "path"}
         nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
-        nodeLabel={this.props.nodeLabel ? this.props.nodeLabel : "path"}
         nodeAutoColorBy={this.props.nodeAutoColorBy ? this.props.nodeAutoColorBy : "module"}
+        onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
+        enableNavigationControls = { this.props.enableNavigationControls ? this.props.enableNavigationControls : false }
+        enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
+        enableNodeDrag = { this.props.enableNodeDrag ? this.props.enableNodeDrag : true} 
+        linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
         {...commonProps}/>
     } 
     return <ForceGraph3D {...commonProps} />
