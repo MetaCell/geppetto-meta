@@ -71,10 +71,75 @@ class Showcase extends Component {
   constructor(props) {
     super(props);
     this.componentRef = React.createRef();
+    this.state = {
+      showTables: [],
+    };
+  }
+
+  generateTable(props) {
+    const { classes } = this.props;
+    const { showTables } = this.state;
+
+    let table = (
+      <TableContainer component={Paper} className={classes.tableContainer}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <b>Name</b>
+              </TableCell>
+              <TableCell>
+                <b>Type</b>
+              </TableCell>
+              <TableCell>
+                <b>Required</b>
+              </TableCell>
+              <TableCell>
+                <b>Description</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {Object.keys(props).map((key) => (
+              <TableRow key={key}>
+                <TableCell
+                  className={classes.tableName}
+                  component="th"
+                  scope="row"
+                >
+                  {props[key].value && props[key].value.value ? (
+                    <button
+                      onClick={() => this.generateTable(props[key].value.value)}
+                    >
+                      {key}
+                    </button>
+                  ) : (
+                    key
+                  )}
+                </TableCell>
+                <TableCell className={classes.tableType}>
+                  {props[key].name}
+                </TableCell>
+                <TableCell className={classes.tableRequired}>
+                  {props[key].required ? 'required' : 'optional'}
+                </TableCell>
+                <TableCell>{props[key].description}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+
+    showTables.push(table);
+    this.setState(() => {
+      return { showTables: showTables };
+    });
   }
 
   render() {
     const { classes, markdown } = this.props;
+    const { showTables } = this.state;
 
     const configs = getConfigFromMarkdown(markdown);
 
@@ -130,7 +195,17 @@ class Showcase extends Component {
                       component="th"
                       scope="row"
                     >
-                      {key}
+                      {configs.props[key].type.value ? (
+                        <button
+                          onClick={() =>
+                            this.generateTable(configs.props[key].type.value)
+                          }
+                        >
+                          {key}
+                        </button>
+                      ) : (
+                        key
+                      )}
                     </TableCell>
                     <TableCell className={classes.tableType}>
                       {configs.props[key].type.name}
@@ -144,6 +219,9 @@ class Showcase extends Component {
               </TableBody>
             </Table>
           </TableContainer>
+          {showTables.map((table) => {
+            return table;
+          })}
           <h2 className={classes.secondaryTitle}>Libraries</h2>
           {configs.libraries.map((library, i) => (
             <Chip
