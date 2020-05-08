@@ -8,22 +8,12 @@ import List from '@material-ui/core/List';
 import Collapse from '@material-ui/core/Collapse';
 import { withStyles } from '@material-ui/core/styles';
 
-import ConnectivityMarkdown from '../../../geppetto-ui/src/components/connectivity-viewer/README.md';
-import TreeMarkdown from '../../../geppetto-ui/src/components/tree-viewer/README.md';
-import HTMLViewerMarkdown from '../../../geppetto-ui/src/components/html-viewer/README.md';
-import BigImageViewerMarkdown from '../../../geppetto-ui/src/components/big-image-viewer/README.md';
-import DicomViewerMarkdown from '../../../geppetto-ui/src/components/dicom-viewer/README.md';
-import MenuMarkdown from '../../../geppetto-ui/src/components/menu/README.md';
-import MoviePlayerMarkdown from '../../../geppetto-ui/src/components/movie-player/README.md';
-import PlotMarkdown from '../../../geppetto-ui/src/components/plot/README.md';
-import GraphVisualizationMarkdown from '../../../geppetto-ui/src/components/graph-visualization/README.md';
-import FlexlayoutMarkdown from '../../../geppetto-ui/src/components/flex-layout/README.md';
-import ListViewerMarkdown from '../../../geppetto-ui/src/components/list-viewer/README.md';
-import PythonConsoleMarkdown from '../../../geppetto-ui/src/components/python-console/README.md';
-import Showcase from '../showcase/Showcase';
-
 const styles = (theme) => ({
-  nested: { paddingLeft: theme.spacing(4) },
+  nested: {
+    paddingLeft: theme.spacing(4),
+    textDecoration: 'none',
+    color: 'inherit',
+  },
 
   lists: {
     backgroundColor: theme.palette.background.paper,
@@ -45,6 +35,7 @@ class DrawerContent extends Component {
       dataViewersOpen: true,
       navigationLayoutOpen: true,
       programmaticInterfacesOpen: true,
+      previousTarget: null,
     };
     this.dataViewersHandler = this.dataViewersHandler.bind(this);
     this.navigationLayoutHandler = this.navigationLayoutHandler.bind(this);
@@ -67,6 +58,20 @@ class DrawerContent extends Component {
     this.setState(() => ({
       programmaticInterfacesOpen: !this.state.programmaticInterfacesOpen,
     }));
+  }
+
+  updateColor(evt) {
+    const { previousTarget } = this.state;
+    const { theme } = this.props;
+
+    if (previousTarget) {
+      previousTarget.style.color = 'inherit';
+    }
+    evt.currentTarget.style.color = theme.palette.primary.main;
+    const preTarget = evt.currentTarget;
+    this.setState(() => {
+      return { previousTarget: preTarget };
+    });
   }
 
   render() {
@@ -161,6 +166,7 @@ class DrawerContent extends Component {
         ],
       },
     };
+
     return (
       <nav className={classes.lists} aria-label="mailbox folders">
         {Object.keys(content).map((key) => {
@@ -187,6 +193,7 @@ class DrawerContent extends Component {
                         component={Link}
                         to={to}
                         disabled={disabled}
+                        onClick={(evt) => this.updateColor(evt)}
                       >
                         <ListItemText
                           className={classes.listText}

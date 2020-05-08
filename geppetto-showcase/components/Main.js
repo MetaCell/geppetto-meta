@@ -72,7 +72,7 @@ class Main extends Component {
         <div className={classes.root}>
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-              <Link to="/">
+              <Link to="/" style={{ textDecoration: 'none' }}>
                 <Button className={classes.toolbarMainButton}>
                   Geppetto Showcase
                 </Button>
