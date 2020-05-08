@@ -1,4 +1,5 @@
 const reactDocs = require('react-docgen');
+import React from 'react';
 
 /**
  *
@@ -168,10 +169,21 @@ function getElementsUntil(selector, start, included = false) {
 }
 
 function getContentUntil(selector, start) {
-  return getElementsUntil(selector, start).reduce(
-    (str, elem) => str + elem.innerHTML,
-    ''
-  );
+  let elements = [];
+  const content = getElementsUntil(selector, start);
+  for (let element of content) {
+    let innerHTML = element.innerHTML;
+    let breaks = innerHTML.split('\n');
+    for (let i = 0; i < breaks.length; i++) {
+      const b = breaks[i];
+      const p = React.createElement('p', { key: i }, b);
+      elements.push(p);
+    }
+  }
+
+  const container = React.createElement('div', {}, elements);
+
+  return container;
 }
 
 export function getConfigFromMarkdown(markdown) {
