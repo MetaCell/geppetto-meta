@@ -389,6 +389,8 @@ export default class GeppettoGraphVisualization extends Component {
         enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
         enableNodeDrag = { this.props.enableNodeDrag ? this.props.enableNodeDrag : true} 
         linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
+        onLinkHover = { this.props.onLinkHover ? this.props.onLinkHover : null }
+        onNodeHover = { this.props.onNodeHover ? this.props.onNodeHover : null }
         {...commonProps}/>
     } 
     return <ForceGraph3D {...commonProps} />
