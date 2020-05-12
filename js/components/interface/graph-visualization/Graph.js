@@ -43,7 +43,7 @@ export default class GeppettoGraphVisualization extends Component {
       this.ggv.current.d3Force('link').distance(forceLinkDistance).strength(forceLinkStrength)
       this.ggv.current.d3Force('charge').strength(forceChargeStrength)
       this.ggv.current.d3Force('radial', d3.forceRadial(this.props.forceRadial ? this.props.forceRadial : 1))
-      this.ggv.current.d3Force('center', null);
+      this.ggv.current.d3Force('center', null)
     }
     if (url) {
       this.addToScene()
@@ -374,23 +374,23 @@ export default class GeppettoGraphVisualization extends Component {
 
     if (d2) {
       return <ForceGraph2D 
-        linkCanvasObjectMode={() => "replace"}
-        linkCanvasObject={this.linkCanvasObject.bind(this)} 
+        linkCanvasObjectMode={ this.props.linkCanvasObjectMode ? this.props.linkCanvasObjectMode :  () => "replace" }
+        linkCanvasObject={ this.props.linkCanvasObject ? this.props.linkCanvasObject : this.linkCanvasObject.bind(this) }
+        linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
         nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
         nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
-        backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "black"}
-        dagMode = {this.props.dagMode ? this.props.dagMode : "td"}
-        dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}
         nodeId={this.props.nodeId ? this.props.nodeId : "path"}
         nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
         nodeAutoColorBy={this.props.nodeAutoColorBy ? this.props.nodeAutoColorBy : "module"}
-        onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
+        backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "black"}
+        dagMode = {this.props.dagMode ? this.props.dagMode : "td"}
+        dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}  
         enableNavigationControls = { this.props.enableNavigationControls ? this.props.enableNavigationControls : false }
         enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
         enableNodeDrag = { this.props.enableNodeDrag ? this.props.enableNodeDrag : true} 
-        linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
         onLinkHover = { this.props.onLinkHover ? this.props.onLinkHover : null }
         onNodeHover = { this.props.onNodeHover ? this.props.onNodeHover : null }
+        onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
         {...commonProps}/>
     } 
     return <ForceGraph3D {...commonProps} />
