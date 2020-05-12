@@ -373,17 +373,18 @@ export default class GeppettoGraphVisualization extends Component {
     }
 
     if (d2) {
-      return <ForceGraph2D 
+      return <div id={this.props.id ? this.props.id :  "graph-2d"} style={this.props.containerStyle ? this.props.containerStyle : null} >
+        { this.props.controls ? this.props.controls : null }
+        <ForceGraph2D 
         linkCanvasObjectMode={ this.props.linkCanvasObjectMode ? this.props.linkCanvasObjectMode :  () => "replace" }
         linkCanvasObject={ this.props.linkCanvasObject ? this.props.linkCanvasObject : this.linkCanvasObject.bind(this) }
         linkWidth = { this.props.linkWidth ? this.props.linkWidth : 1 }
         nodeCanvasObject={this.props.nodeCanvasObject ? this.props.nodeCanvasObject : this.nodeWithName.bind(this)}
         nodeCanvasObjectMode={this.props.nodeCanvasObjectMode ? this.props.nodeCanvasObjectMode : null}
-        nodeId={this.props.nodeId ? this.props.nodeId : "path"}
+        nodeRelSize={this.props.nodeRelSize ? this.props.nodeRelSize : this.size} 
         nodeVal={this.props.nodeVal ? this.props.nodeVal : node => 100 / (node.level + 1)}
-        nodeAutoColorBy={this.props.nodeAutoColorBy ? this.props.nodeAutoColorBy : "module"}
-        backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "black"}
-        dagMode = {this.props.dagMode ? this.props.dagMode : "td"}
+        backgroundColor = {this.props.backgroundColor ? this.props.backgroundColor : "transparent"}
+        dagMode = {this.props.dagMode ? this.props.dagMode : null}
         dagLevelDistance={this.props.dagLevelDistance ? this.props.dagLevelDistance : 100}  
         enableNavigationControls = { this.props.enableNavigationControls ? this.props.enableNavigationControls : false }
         enableZoomPanInteraction = { this.props.enableZoomPanInteraction ? this.props.enableZoomPanInteraction : false }
@@ -392,6 +393,7 @@ export default class GeppettoGraphVisualization extends Component {
         onNodeHover = { this.props.onNodeHover ? this.props.onNodeHover : null }
         onNodeClick = {this.props.onNodeClick ? this.props.onNodeClick : null }
         {...commonProps}/>
+        </div>
     } 
     return <ForceGraph3D {...commonProps} />
   }
