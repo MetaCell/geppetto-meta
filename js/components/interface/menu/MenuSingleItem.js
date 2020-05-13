@@ -53,6 +53,7 @@ class MenuSingleItem extends React.Component {
     }
     const { anchorEl } = this.state;
     const { labelsStyle } = this.props;
+    const { iconStyle } = this.props;
     var menuToRender = undefined;
     
 
@@ -74,6 +75,7 @@ class MenuSingleItem extends React.Component {
           awayClickHandler={this.props.awayClickHandler}
           drawersStyle={this.props.drawersStyle}
           labelsStyle={this.props.labelsStyle}
+          iconStyle={this.props.iconStyle}
           itemOptions={{ customArrow: this.props.customArrow }}
         />);
       }
@@ -95,8 +97,8 @@ class MenuSingleItem extends React.Component {
         style={appliedStyle}
         {...others}
       >
-        {item.icon 
-          ? <ListItemIcon>
+        {item.icon
+          ? <ListItemIcon style={ iconStyle }>
             <i className={item.icon}></i>
           </ListItemIcon>
           : undefined}

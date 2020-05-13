@@ -174,7 +174,7 @@ define(function (require) {
         clientID = id;
       },
 
-            /**
+      /**
        * Sets the id of the client
        */
       getClientID: function () {

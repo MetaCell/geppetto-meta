@@ -84,6 +84,12 @@ const menuStyle = {
       paddingTop: 0,
       paddingBottom: 0,
     }
+  },
+  iconStyle: {
+    display: "inline-block",
+    color: '#ffffff',
+    minWidth: '25px',
+    width: '25px',
   }
 };
 
@@ -123,6 +129,7 @@ class Menu extends React.Component {
     const buttonsStyle = { ...menuStyle.buttonsStyle, ...this.props.configuration.global.buttonsStyle };
     const drawersStyle = { ...menuStyle.drawersStyle, ...this.props.configuration.global.drawersStyle };
     const labelsStyle = { ...menuStyle.labelsStyle, ...this.props.configuration.global.labelsStyle };
+    const iconStyle = { ...menuStyle.iconStyle, ...this.props.configuration.global.iconStyle };
     const itemOptions = this.props.configuration.itemOptions;
 
     var buttonsToRender = this.props.configuration.buttons.map((button, index) => (
@@ -139,6 +146,7 @@ class Menu extends React.Component {
         buttonsStyle={buttonsStyle}
         drawersStyle={drawersStyle}
         labelsStyle={labelsStyle}
+        iconStyle={iconStyle}
         itemOptions={itemOptions}
       />
     ));

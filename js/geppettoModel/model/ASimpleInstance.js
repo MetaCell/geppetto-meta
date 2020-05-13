@@ -91,7 +91,7 @@ export default class ASimpleInstance extends ObjectWrapper{
   }
 
   getConnections (direction) {
-    if(direction) {
+    if (direction) {
       console.error('getConnections with param `direction` is not yet implemented for simple instances');
     }
     
@@ -102,4 +102,3 @@ export default class ASimpleInstance extends ObjectWrapper{
     this.connections.add(connection);
   }
 }
-

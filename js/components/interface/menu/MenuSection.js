@@ -122,6 +122,7 @@ class MenuSection extends React.Component {
           position={(this.props.button.position !== undefined) ? this.props.button.position : "right"}
           drawersStyle={this.props.drawersStyle}
           labelsStyle={this.props.labelsStyle}
+          iconStyle={this.props.iconStyle}
           itemOptions={this.props.itemOptions}
         />
       </span>
