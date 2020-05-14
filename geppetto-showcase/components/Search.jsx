@@ -44,7 +44,7 @@ const styles = (theme) => ({
 });
 class Search extends Component {
   render() {
-    const { classes } = this.props;
+    const { classes, searchHandler } = this.props;
 
     return (
       <div className={classes.search}>
@@ -58,6 +58,7 @@ class Search extends Component {
             input: classes.inputInput,
           }}
           inputProps={{ 'aria-label': 'search' }}
+          onChange={(event) => searchHandler(event.target.value)}
         />
       </div>
     );

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import IconButtonWithTooltip from './IconButtonWithTooltip';
+import IconButtonWithTooltip from '../utilities/IconButtonWithTooltip';
 import { faCode, faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
 import Toolbar from '@material-ui/core/Toolbar';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';

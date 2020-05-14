@@ -46,6 +46,7 @@
     "react-router-dom": "^5.1.2",
     "react-syntax-highlighter": "^12.2.1",
     "sass-loader": "^8.0.2",
+    "string-similarity": "^4.0.1",
     "url-loader": "^3.0.0"
   }
 }

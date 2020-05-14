@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Code from '../utilities/Code';
+import Code from './Code';
 import { getConfigFromMarkdown } from './ShowcaseUtils';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';

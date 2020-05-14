@@ -3,10 +3,10 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Drawer from '@material-ui/core/Drawer';
-import DrawerContent from './drawer/DrawerContent';
+import DrawerContent from './DrawerContent';
 import Button from '@material-ui/core/Button';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import pages from '../pages/Pages';
+import Pages from '../pages/Pages';
 import Home from '../pages/Home';
 import Showcase from './showcase/Showcase';
 import Search from './Search';
@@ -74,8 +74,23 @@ const styles = (theme) => ({
 });
 
 class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchFilter: '',
+    };
+    this.searchHandler = this.searchHandler.bind(this);
+  }
+
+  searchHandler(value) {
+    this.setState(() => {
+      return { searchFilter: value };
+    });
+  }
+
   render() {
     const { classes } = this.props;
+    const { searchFilter } = this.state;
 
     return (
       <Router>
@@ -87,7 +102,7 @@ class Main extends Component {
                   Geppetto Showcase
                 </Button>
               </Link>
-              <Search />
+              <Search searchHandler={this.searchHandler} />
               <div className={classes.grow} />
               <div className={classes.sectionDesktop}>
                 <Button
@@ -114,14 +129,14 @@ class Main extends Component {
             classes={{ paper: classes.drawerPaper }}
           >
             <div className={classes.toolbar} />
-            <DrawerContent />
+            <DrawerContent searchFilter={searchFilter} />
           </Drawer>
 
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <div className={classes.component}>
               <Switch>
-                {pages.map((page) => (
+                {Pages.map((page) => (
                   <Route
                     key={page.to}
                     path={page.to}

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
 import ListItem from '@material-ui/core/ListItem';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Collapse from '@material-ui/core/Collapse';
 import { withStyles } from '@material-ui/core/styles';
+import Pages from '../pages/Pages';
+import stringSimilarity from 'string-similarity';
 
 const styles = (theme) => ({
   nested: {
@@ -74,98 +75,74 @@ class DrawerContent extends Component {
     });
   }
 
-  render() {
+  filterContent(searchFilter) {
     const {
       dataViewersOpen,
       navigationLayoutOpen,
       programmaticInterfacesOpen,
     } = this.state;
 
-    const { classes } = this.props;
-
     const content = {
       'Data Viewers': {
         open: dataViewersOpen,
         handler: this.dataViewersHandler,
-        children: [
-          {
-            name: 'Big Image Viewer',
-            to: '/components/dataviewers/bigimgviewer',
-          },
-          {
-            name: 'Connectivity Viewer',
-            to: '/components/dataviewers/connectivity',
-          },
-          {
-            name: 'Dicom Viewer',
-            to: '/components/dataviewers/dicomviewer',
-          },
-          {
-            name: 'Graph Visualizer',
-            to: '/components/dataviewers/graphvisualizer',
-          },
-          {
-            name: 'HTML Viewer',
-            to: '/components/dataviewers/htmlviewer',
-          },
-          {
-            name: 'Movie Player',
-            to: '/components/dataviewers/movieplayer',
-          },
-          {
-            name: 'Plot',
-            to: '/components/dataviewers/plot',
-          },
-          {
-            name: '3D Canvas',
-            to: '/components/dataviewers/canvas',
-            disabled: true,
-          },
-          {
-            name: 'Stack Viewer',
-            to: '/components/dataviewers/stackviewer',
-            disabled: true,
-          },
-        ],
+        children: [],
       },
       'Navigation/Layout': {
         open: navigationLayoutOpen,
         handler: this.navigationLayoutHandler,
-        children: [
-          {
-            name: 'Flex Layout',
-            to: '/components/navigation/flexlayout',
-          },
-          {
-            name: 'List Viewer',
-            to: '/components/navigation/listviewer',
-          },
-          {
-            name: 'Menu',
-            to: '/components/navigation/menu',
-          },
-          {
-            name: 'Tree Viewer',
-            to: '/components/navigation/treeviewer',
-          },
-        ],
+        children: [],
       },
       'Programmatic Interfaces': {
         open: programmaticInterfacesOpen,
         handler: this.programmaticInterfacesHandler,
-        children: [
-          {
-            name: 'Python Console',
-            to: '/components/programmatic/pythonconsole',
-          },
-          {
-            name: 'Javascript Console',
-            to: '/components/programmatic/jsconsole',
-            disabled: true,
-          },
-        ],
+        children: [],
       },
     };
+
+    let componentsNames = Pages.map((page) => {
+      return page.name;
+    });
+
+    const matches = stringSimilarity.findBestMatch(
+      searchFilter,
+      componentsNames
+    );
+
+    const filteredContent = this.bestMatches(
+      matches.ratings,
+      matches.bestMatch.rating
+    );
+    let filteredComponentsNames = filteredContent.map((elem) => {
+      return elem.target.toLowerCase();
+    });
+
+    for (let page of Pages) {
+      if (filteredComponentsNames.includes(page.name.toLowerCase())) {
+        content[page.parent].children.push({
+          name: page.name,
+          to: page.to,
+        });
+      }
+    }
+
+    for (let key in content) {
+      if (content[key].children.length === 0) {
+        delete content[key];
+      }
+    }
+    return content;
+  }
+
+  bestMatches(ratings, bestRating, threshold = 0.2) {
+    return ratings.filter((rating) => {
+      return rating.rating >= bestRating - threshold;
+    });
+  }
+
+  render() {
+    const { classes, searchFilter } = this.props;
+    const content = this.filterContent(searchFilter);
 
     return (
       <nav className={classes.lists} aria-label="mailbox folders">
