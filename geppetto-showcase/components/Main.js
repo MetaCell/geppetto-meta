@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import pages from '../pages/Pages';
 import Home from '../pages/Home';
 import Showcase from './showcase/Showcase';
+import Search from './Search';
 
 const drawerWidth = 240;
 
@@ -61,6 +62,15 @@ const styles = (theme) => ({
       '&:focus': { width: 200 },
     },
   },
+  grow: {
+    flexGrow: 1,
+  },
+  sectionDesktop: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
+  },
 });
 
 class Main extends Component {
@@ -77,21 +87,25 @@ class Main extends Component {
                   Geppetto Showcase
                 </Button>
               </Link>
-              <Button
-                href="http://docs.geppetto.org/en/latest/"
-                target="_blank"
-              >
-                Docs
-              </Button>
-              <Button
-                href="https://github.com/openworm/org.geppetto"
-                target="_blank"
-              >
-                Github
-              </Button>
-              <Button href="https://goo.gl/3ncZWn" target="_blank">
-                Slack
-              </Button>
+              <Search />
+              <div className={classes.grow} />
+              <div className={classes.sectionDesktop}>
+                <Button
+                  href="http://docs.geppetto.org/en/latest/"
+                  target="_blank"
+                >
+                  Docs
+                </Button>
+                <Button
+                  href="https://github.com/openworm/org.geppetto"
+                  target="_blank"
+                >
+                  Github
+                </Button>
+                <Button href="https://goo.gl/3ncZWn" target="_blank">
+                  Slack
+                </Button>
+              </div>
             </Toolbar>
           </AppBar>
           <Drawer
