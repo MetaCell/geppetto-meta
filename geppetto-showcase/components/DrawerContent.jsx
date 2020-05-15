@@ -13,7 +13,18 @@ const styles = (theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
     textDecoration: 'none',
+    outline: 'none',
     color: 'inherit',
+    '&:hover': {
+      textDecoration: 'none',
+      outline: 'none',
+      color: 'inherit',
+    },
+    '&:focus': {
+      textDecoration: 'none',
+      outline: 'none',
+      color: 'inherit',
+    },
   },
 
   lists: {
