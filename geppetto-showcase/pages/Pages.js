@@ -58,13 +58,13 @@ const Pages = [
     parent: 'Data Viewers',
     name: '3D Canvas',
     to: '/components/dataviewers/canvas',
-    markdown: BigImageViewerMarkdown,
+    markdown: null,
   },
   {
     parent: 'Data Viewers',
     name: 'Stack Viewer',
     to: '/components/dataviewers/stackviewer',
-    markdown: BigImageViewerMarkdown,
+    markdown: null,
   },
   {
     parent: 'Navigation/Layout',
@@ -100,7 +100,7 @@ const Pages = [
     parent: 'Programmatic Interfaces',
     name: 'Javascript Console',
     to: '/components/programmatic/jsconsole',
-    markdown: BigImageViewerMarkdown,
+    markdown: null,
   },
 ];
 

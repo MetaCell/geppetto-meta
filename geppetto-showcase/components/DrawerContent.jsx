@@ -122,6 +122,7 @@ class DrawerContent extends Component {
         content[page.parent].children.push({
           name: page.name,
           to: page.to,
+          disabled: page.markdown === null,
         });
       }
     }
