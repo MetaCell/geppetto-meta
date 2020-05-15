@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Collapse from '@material-ui/core/Collapse';
 import { withStyles } from '@material-ui/core/styles';
-import Pages from '../pages/Pages';
+import pages from '../pages/Pages';
 import stringSimilarity from 'string-similarity';
 
 const styles = (theme) => ({
@@ -72,18 +72,9 @@ class DrawerContent extends Component {
     }));
   }
 
-  updateColor(evt) {
-    const { previousTarget } = this.state;
-    const { theme } = this.props;
-
-    if (previousTarget) {
-      previousTarget.style.color = 'inherit';
-    }
-    evt.currentTarget.style.color = theme.palette.primary.main;
-    const preTarget = evt.currentTarget;
-    this.setState(() => {
-      return { previousTarget: preTarget };
-    });
+  isActivePage(page) {
+    const { currentPage } = this.props;
+    return page === currentPage;
   }
 
   filterContent(searchFilter) {
@@ -111,7 +102,7 @@ class DrawerContent extends Component {
       },
     };
 
-    let componentsNames = Pages.map((page) => {
+    let componentsNames = pages.map((page) => {
       return page.name;
     });
 
@@ -128,7 +119,7 @@ class DrawerContent extends Component {
       return elem.target.toLowerCase();
     });
 
-    for (let page of Pages) {
+    for (let page of pages) {
       if (filteredComponentsNames.includes(page.name.toLowerCase())) {
         content[page.parent].children.push({
           name: page.name,
@@ -153,7 +144,7 @@ class DrawerContent extends Component {
   }
 
   render() {
-    const { classes, searchFilter } = this.props;
+    const { classes, theme, searchFilter, currentPageHandler } = this.props;
     const content = this.filterContent(searchFilter);
 
     return (
@@ -178,11 +169,14 @@ class DrawerContent extends Component {
                       <ListItem
                         key={value.name}
                         button
+                        {...(this.isActivePage(to) && {
+                          style: { color: theme.palette.primary.main },
+                        })}
                         className={classes.nested}
                         component={Link}
                         to={to}
                         disabled={disabled}
-                        onClick={(evt) => this.updateColor(evt)}
+                        onClick={() => currentPageHandler(to)}
                       >
                         <ListItemText
                           className={classes.listText}

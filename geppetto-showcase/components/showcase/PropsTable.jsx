@@ -63,7 +63,7 @@ class PropsTable extends Component {
           </TableHead>
           <TableBody>
             {Object.keys(props).map((key) => (
-              <Fragment>
+              <Fragment key={key}>
                 <TableRow key={key}>
                   <TableCell
                     className={classes.tableName}
@@ -114,7 +114,7 @@ class PropsTable extends Component {
         </TableRow>
         <Fragment>
           {Object.keys(props).map((key) => (
-            <Fragment>
+            <Fragment key={key}>
               <TableRow key={key} style={{ textIndent: indent }}>
                 <TableCell
                   className={classes.tableName}

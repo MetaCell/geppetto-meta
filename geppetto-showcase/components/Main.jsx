@@ -6,7 +6,7 @@ import Drawer from '@material-ui/core/Drawer';
 import DrawerContent from './DrawerContent';
 import Button from '@material-ui/core/Button';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import Pages from '../pages/Pages';
+import pages from '../pages/Pages';
 import Home from '../pages/Home';
 import Showcase from './showcase/Showcase';
 import Search from './Search';
@@ -78,8 +78,10 @@ class Main extends Component {
     super(props);
     this.state = {
       searchFilter: '',
+      currentPage: '/',
     };
     this.searchHandler = this.searchHandler.bind(this);
+    this.currentPageHandler = this.currentPageHandler.bind(this);
   }
 
   searchHandler(value) {
@@ -88,9 +90,15 @@ class Main extends Component {
     });
   }
 
+  currentPageHandler(value) {
+    this.setState(() => {
+      return { currentPage: value };
+    });
+  }
+
   render() {
     const { classes } = this.props;
-    const { searchFilter } = this.state;
+    const { searchFilter, currentPage } = this.state;
 
     return (
       <Router>
@@ -129,18 +137,27 @@ class Main extends Component {
             classes={{ paper: classes.drawerPaper }}
           >
             <div className={classes.toolbar} />
-            <DrawerContent searchFilter={searchFilter} />
+            <DrawerContent
+              searchFilter={searchFilter}
+              currentPage={currentPage}
+              currentPageHandler={this.currentPageHandler}
+            />
           </Drawer>
 
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <div className={classes.component}>
               <Switch>
-                {Pages.map((page) => (
+                {pages.map((page) => (
                   <Route
                     key={page.to}
                     path={page.to}
-                    render={() => <Showcase markdown={page.markdown} />}
+                    render={() => (
+                      <Showcase
+                        markdown={page.markdown}
+                        currentPageHandler={this.currentPageHandler}
+                      />
+                    )}
                   />
                 ))}
                 <Route path="/" exact component={Home} />

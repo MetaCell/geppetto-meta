@@ -11,7 +11,7 @@ import FlexlayoutMarkdown from '../../geppetto-ui/src/components/flex-layout/REA
 import ListViewerMarkdown from '../../geppetto-ui/src/components/list-viewer/README.md';
 import PythonConsoleMarkdown from '../../geppetto-ui/src/components/python-console/README.md';
 
-const Pages = [
+const pages = [
   {
     parent: 'Data Viewers',
     name: 'Big Image Viewer',
@@ -104,4 +104,4 @@ const Pages = [
   },
 ];
 
-export default Pages;
+export default pages;

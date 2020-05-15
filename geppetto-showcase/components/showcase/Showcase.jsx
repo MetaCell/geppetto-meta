@@ -5,14 +5,16 @@ import { getConfigFromMarkdown } from './ShowcaseUtils';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import PropsTable from './PropsTable';
+import BottomNavigation from '../BottomNavigation';
 
 const styles = (theme) => ({
   root: {
     width: '100%',
+    paddingBottom: theme.spacing(5),
   },
   innerRoot: {
     width: '100%',
-    paddingBottom: theme.spacing(5),
+    paddingBottom: theme.spacing(10),
   },
   mainTitle: {
     margin: '16px 0',
@@ -56,8 +58,7 @@ class Showcase extends Component {
   }
 
   render() {
-    const { classes, markdown } = this.props;
-
+    const { classes, markdown, currentPageHandler } = this.props;
     const configs = getConfigFromMarkdown(markdown);
 
     return (
@@ -101,6 +102,7 @@ class Showcase extends Component {
             />
           ))}
         </div>
+        <BottomNavigation currentPageHandler={currentPageHandler} />
       </div>
     );
   }
