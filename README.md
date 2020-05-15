@@ -6,6 +6,6 @@
 
 Geppetto's Website
 
-# Geppetto Showcase
+## Geppetto Showcase
 
 Geppetto's showcase of components & features
