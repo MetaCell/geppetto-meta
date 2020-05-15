@@ -12,9 +12,6 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import IconButton from '@material-ui/core/IconButton';
 
 const styles = (theme) => ({
-  tableContainer: {
-    display: 'inline-block',
-  },
   tableName: {
     color: '#adc285',
   },
@@ -23,6 +20,10 @@ const styles = (theme) => ({
   },
   tableRequired: {
     color: '#abaaab',
+  },
+  expandText: {
+    display: 'flex',
+    alignItems: 'center',
   },
 });
 
@@ -55,9 +56,11 @@ class PropsTable extends Component {
     const { propsExpand } = this.state;
 
     let table = (
-      <TableContainer component={Paper} className={classes.tableContainer}>
+      <TableContainer component={Paper}>
         <Table aria-label="simple table">
-          {this.genereateTableHead()}
+          <TableHead>
+            <TableRow>{this.genereateTableHead()}</TableRow>
+          </TableHead>
           <TableBody>
             {Object.keys(props).map((key) => (
               <Fragment>
@@ -87,7 +90,7 @@ class PropsTable extends Component {
                   <TableCell>{props[key].description}</TableCell>
                 </TableRow>
                 {propsExpand[key]
-                  ? this.generateInnerTable(props[key].type.value)
+                  ? this.generateInnerTable(props[key].type.value, 1)
                   : null}
               </Fragment>
             ))}
@@ -99,24 +102,27 @@ class PropsTable extends Component {
     return table;
   }
 
-  generateInnerTable(props) {
+  generateInnerTable(props, level = 1) {
     const { classes } = this.props;
     const { propsExpand } = this.state;
+    const indent = 40 * level;
 
     let table = (
-      <Table aria-label="simple table">
-        {this.genereateTableHead()}
-        <TableBody>
+      <Fragment>
+        <TableRow style={{ textIndent: indent }}>
+          {this.genereateTableHead()}
+        </TableRow>
+        <Fragment>
           {Object.keys(props).map((key) => (
             <Fragment>
-              <TableRow key={key}>
+              <TableRow key={key} style={{ textIndent: indent }}>
                 <TableCell
                   className={classes.tableName}
                   component="th"
                   scope="row"
                 >
                   {props[key].value && props[key].value.value ? (
-                    <span>
+                    <span className={classes.expandText}>
                       {key}
                       <IconButton onClick={() => this.handleExpand(key)}>
                         {propsExpand[key] ? <ExpandLess /> : <ExpandMore />}
@@ -135,34 +141,32 @@ class PropsTable extends Component {
                 <TableCell>{props[key].description}</TableCell>
               </TableRow>
               {propsExpand[key]
-                ? this.generateInnerTable(props[key].value.value)
+                ? this.generateInnerTable(props[key].value.value, ++level)
                 : null}
             </Fragment>
           ))}
-        </TableBody>
-      </Table>
+        </Fragment>
+      </Fragment>
     );
     return table;
   }
 
   genereateTableHead() {
     return (
-      <TableHead>
-        <TableRow>
-          <TableCell>
-            <b>Name</b>
-          </TableCell>
-          <TableCell>
-            <b>Type</b>
-          </TableCell>
-          <TableCell>
-            <b>Required</b>
-          </TableCell>
-          <TableCell>
-            <b>Description</b>
-          </TableCell>
-        </TableRow>
-      </TableHead>
+      <Fragment>
+        <TableCell>
+          <b>Name</b>
+        </TableCell>
+        <TableCell>
+          <b>Type</b>
+        </TableCell>
+        <TableCell>
+          <b>Required</b>
+        </TableCell>
+        <TableCell>
+          <b>Description</b>
+        </TableCell>
+      </Fragment>
     );
   }
 
