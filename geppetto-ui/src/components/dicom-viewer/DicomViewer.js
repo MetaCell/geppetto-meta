@@ -17,7 +17,7 @@ import {
   faCompressAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
-import { createZipFromRemoteFiles } from '../../../../geppetto-core/geppetto-js/Utility';
+import { createZipFromRemoteFiles } from '../../../../geppetto-core/src/Utility';
 
 const styles = {
   dicomViewer: {
@@ -230,7 +230,7 @@ class DicomViewer extends Component {
           }
 
           // request new frame
-          requestAnimationFrame(function() {
+          requestAnimationFrame(function () {
             animate();
           });
         }
@@ -256,7 +256,7 @@ class DicomViewer extends Component {
       let loader = new VolumeLoader();
       loader
         .load(this.state.files)
-        .then(function() {
+        .then(function () {
           let series = loader.data[0].mergeSeries(loader.data)[0];
           loader.free();
           loader = null;
@@ -330,7 +330,7 @@ class DicomViewer extends Component {
           _this.configureEvents();
           _this.ready = true;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           window.console.log('oops... something went wrong...');
           window.console.log(error);
         });
