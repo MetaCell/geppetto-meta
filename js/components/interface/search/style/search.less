@@ -22,17 +22,13 @@
     z-index: 5;
     cursor: pointer;
     font-size: 25px;
-    /* margin-top: 25px; */
-    /* margin-left: 5px; */
     position: absolute;
     color: black;
 }
 
 #closeIcon {
     position: relative;
-    color: #11bffe;
-    /* top: 13%; */
-    /* right: 9.5%; */
+    color: @primary_color
     bottom: 50px;
     right: 22px;
     font-weight: bold;
@@ -53,12 +49,6 @@
     z-index: 5;
 }
 
-/* can be used to customise the scroller
-* #paperResults::-webkit-scrollbar-thumb {
-*     background-color: @primary_color;
-* }
-*/
-
 #paperFilters {
     min-height: 280px;
     min-width: 240px;
@@ -67,7 +57,7 @@
     color: white;
     overflow: scroll;
     z-index: 6;
-    border: 3px solid #11bffe;
+    border: 3px solid @primary_color
     font-family: 'Khand', sans-serif;
     font-size: 16px;
     top: 58px;
