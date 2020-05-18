@@ -12,7 +12,7 @@ Geppetto's showcase of components & features
 
 
 ## How to develop
-1. `git clone https://github.com/MetaCell/geppetto-website.git`
+1. `git clone -b development https://github.com/MetaCell/geppetto-website.git`
 2. `cd geppetto-website`
 3. `git clone -b feature/252 https://github.com/openworm/geppetto-client/tree/feature/252`
 4. `npm install`
