@@ -29,7 +29,7 @@ class HTMLViewer extends Component {
   }
 
   render() {
-    const { classes, content } = this.props;
+    const { content } = this.props;
     return (
       <div ref={this.htmlViewer} style={this.props.style}>
         <div

@@ -141,7 +141,7 @@ BigImageViewer.propTypes = {
   /**
    * Path/URL to image file (f.e. "/path/to/my/image.dzi")
    */
-  data: PropTypes.string.isRequired,
+  dat.htmlviewer >a: PropTypes.string.isRequired,
   /**
    * All required and optional settings for instantiating a new instance of an OpenSeadragon image viewer
    */
