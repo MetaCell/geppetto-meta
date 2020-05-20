@@ -3,19 +3,8 @@ import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-const styles = () => ({
-  htmlViewer: {
-    outline: 'none',
-    fontSize: '14px',
-    fontWeight: 200,
-    color: 'white',
-    overflow: 'auto !important',
-    userSelect: 'text',
-  },
-});
-
 class HTMLViewer extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = { content: this.props.content };
@@ -23,30 +12,26 @@ class HTMLViewer extends Component {
     this.htmlViewer = React.createRef();
   }
 
-  setContent (content) {
+  setContent(content) {
     this.setState({ content });
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const element = ReactDOM.findDOMNode(this.htmlViewer.current);
     element.setAttribute('tabIndex', -1);
   }
 
-  handleClick (e) {
+  handleClick(e) {
     const element = e.target;
     if (element.matches('a') && element.dataset) {
       this.props.handleClick(element, element.dataset);
     }
   }
 
-  render () {
+  render() {
     const { classes, content } = this.props;
     return (
-      <div
-        className={classes.htmlViewer}
-        ref={this.htmlViewer}
-        style={this.props.style}
-      >
+      <div ref={this.htmlViewer} style={this.props.style}>
         <div
           dangerouslySetInnerHTML={{ __html: content }}
           onClick={this.handleClick}
@@ -71,4 +56,4 @@ HTMLViewer.propTypes = {
   handleClick: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(HTMLViewer);
+export default HTMLViewer;
