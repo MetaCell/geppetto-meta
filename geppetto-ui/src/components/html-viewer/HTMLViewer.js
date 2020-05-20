@@ -15,7 +15,7 @@ const styles = () => ({
 });
 
 class HTMLViewer extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = { content: this.props.content };
@@ -23,23 +23,23 @@ class HTMLViewer extends Component {
     this.htmlViewer = React.createRef();
   }
 
-  setContent(content) {
+  setContent (content) {
     this.setState({ content });
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const element = ReactDOM.findDOMNode(this.htmlViewer.current);
     element.setAttribute('tabIndex', -1);
   }
 
-  handleClick(e) {
+  handleClick (e) {
     const element = e.target;
     if (element.matches('a') && element.dataset) {
       this.props.handleClick(element, element.dataset);
     }
   }
 
-  render() {
+  render () {
     const { classes, content } = this.props;
     return (
       <div

@@ -14,7 +14,7 @@ const ControlsOrthographic = trackballOrthoControlFactory(THREE);
 const HelpersLocalizer = localizerHelperFactory(THREE);
 
 const dicomViewerUtils = {
-  windowResize2D: function(rendererObj) {
+  windowResize2D: function (rendererObj) {
     const newWidth = rendererObj.domElement.clientWidth;
     const newHeight = rendererObj.domElement.clientHeight;
     rendererObj.camera.canvas = {
@@ -36,7 +36,7 @@ const dicomViewerUtils = {
     rendererObj.localizerHelper.canvasHeight = newHeight;
   },
 
-  windowResize3D: function(rendererObj) {
+  windowResize3D: function (rendererObj) {
     const newWidth = rendererObj.domElement.clientWidth;
     const newHeight = rendererObj.domElement.clientHeight;
     rendererObj.camera.aspect = newWidth / newHeight;
@@ -44,7 +44,7 @@ const dicomViewerUtils = {
     rendererObj.renderer.setSize(newWidth, newHeight);
   },
 
-  dispose: function(rendererObj) {
+  dispose: function (rendererObj) {
     if (rendererObj.stackHelper) {
       rendererObj.stackHelper.dispose();
       if (rendererObj.stackHelper.stack) {
@@ -63,7 +63,7 @@ const dicomViewerUtils = {
     }
   },
 
-  initHelpersStack: function(rendererObj, stack) {
+  initHelpersStack: function (rendererObj, stack) {
     if (rendererObj.stackHelper) {
       rendererObj.stackHelper.dispose();
       if (rendererObj.stackHelper.stack) {
@@ -125,7 +125,7 @@ const dicomViewerUtils = {
     rendererObj.scene.add(rendererObj.stackHelper);
   },
 
-  initHelpersLocalizer: function(
+  initHelpersLocalizer: function (
     rendererObj,
     stack,
     referencePlane,
@@ -150,16 +150,16 @@ const dicomViewerUtils = {
       rendererObj.localizerHelper['color' + (i + 1)] = localizers[i].color;
     }
 
-    rendererObj.localizerHelper.canvasWidth =
-      rendererObj.domElement.clientWidth;
-    rendererObj.localizerHelper.canvasHeight =
-      rendererObj.domElement.clientHeight;
+    rendererObj.localizerHelper.canvasWidth
+      = rendererObj.domElement.clientWidth;
+    rendererObj.localizerHelper.canvasHeight
+      = rendererObj.domElement.clientHeight;
 
     rendererObj.localizerScene = new THREE.Scene();
     rendererObj.localizerScene.add(rendererObj.localizerHelper);
   },
 
-  updateLocalizer: function(refObj, targetLocalizersHelpers) {
+  updateLocalizer: function (refObj, targetLocalizersHelpers) {
     let refHelper = refObj.stackHelper;
     let localizerHelper = refObj.localizerHelper;
     let plane = refHelper.slice.cartesianEquation();
@@ -170,10 +170,10 @@ const dicomViewerUtils = {
       for (let j = 0; j < 4; j++) {
         let targetPlane = targetLocalizersHelpers[i]['plane' + (j + 1)];
         if (
-          targetPlane &&
-          plane.x === targetPlane.x &&
-          plane.y === targetPlane.y &&
-          plane.z === targetPlane.z
+          targetPlane
+          && plane.x === targetPlane.x
+          && plane.y === targetPlane.y
+          && plane.z === targetPlane.z
         ) {
           targetLocalizersHelpers[i]['plane' + (j + 1)] = plane;
         }
@@ -184,7 +184,7 @@ const dicomViewerUtils = {
     localizerHelper.geometry = refHelper.slice.geometry;
   },
 
-  initRenderer2D: function(rendererObj, parentContainer) {
+  initRenderer2D: function (rendererObj, parentContainer) {
     // renderer
     rendererObj.domElement = parentContainer.getElementsByClassName(
       rendererObj.domClass
@@ -226,7 +226,7 @@ const dicomViewerUtils = {
     rendererObj.scene = new THREE.Scene();
   },
 
-  initRenderer3D: function(renderObj, parentContainer) {
+  initRenderer3D: function (renderObj, parentContainer) {
     // renderer
     renderObj.domElement = parentContainer.getElementsByClassName(
       renderObj.domClass

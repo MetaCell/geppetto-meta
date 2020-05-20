@@ -9,14 +9,10 @@ import { withStyles } from '@material-ui/core';
 import 'react-sortable-tree/style.css';
 import PropTypes from 'prop-types';
 
-const styles = () => ({
-  treeViewer: {
-    height: '100%',
-  },
-});
+const styles = () => ({ treeViewer: { height: '100%', }, });
 
 class Tree extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.updateTreeData = this.updateTreeData.bind(this);
@@ -25,11 +21,11 @@ class Tree extends Component {
     this.state = { treeData: this.props.treeData };
   }
 
-  updateTreeData(treeData) {
+  updateTreeData (treeData) {
     this.setState({ treeData });
   }
 
-  expand(expanded) {
+  expand (expanded) {
     this.setState({
       treeData: toggleExpandedForAll({
         treeData: this.state.treeData,
@@ -38,21 +34,21 @@ class Tree extends Component {
     });
   }
 
-  expandAll() {
+  expandAll () {
     this.expand(true);
   }
 
-  collapseAll() {
+  collapseAll () {
     this.expand(false);
   }
 
-  handleClick(event, rowInfo) {
+  handleClick (event, rowInfo) {
     const toggleMode = this.props.toggleMode;
     let currentTreeData = this.state.treeData;
     // If node has children, we expand/collapse the node
     if (
-      rowInfo.node.children != undefined &&
-      rowInfo.node.children.length > 0
+      rowInfo.node.children != undefined
+      && rowInfo.node.children.length > 0
     ) {
       // If parents can be activate, iterate over the whole tree
       if (this.props.activateParentsNodeOnClick) {
@@ -60,7 +56,7 @@ class Tree extends Component {
           treeData: currentTreeData,
           getNodeKey: ({ treeIndex }) => treeIndex,
           ignoreCollapsed: true,
-          callback: (rowInfoIter) => {
+          callback: rowInfoIter => {
             const isActive = rowInfoIter.treeIndex == rowInfo.treeIndex;
             /*
              * If toggleMode just toggle to activate/inactivate selected node and expand/collapse
@@ -114,7 +110,7 @@ class Tree extends Component {
         treeData: currentTreeData,
         getNodeKey: ({ treeIndex }) => treeIndex,
         ignoreCollapsed: true,
-        callback: (rowInfoIter) => {
+        callback: rowInfoIter => {
           const isActive = rowInfoIter.treeIndex == rowInfo.treeIndex;
           /*
            * If toggleMode just toggle to activate/inactivate selected node
@@ -152,9 +148,9 @@ class Tree extends Component {
     }
   }
 
-  getNodeProps(rowInfo) {
+  getNodeProps (rowInfo) {
     let nodeProps = {};
-    nodeProps['onClick'] = (event) => this.handleClick(event, rowInfo);
+    nodeProps['onClick'] = event => this.handleClick(event, rowInfo);
 
     if (this.props.getButtons !== undefined) {
       nodeProps['buttons'] = this.props.getButtons(rowInfo);
@@ -171,7 +167,7 @@ class Tree extends Component {
     return nodeProps;
   }
 
-  render() {
+  render () {
     const {
       classes,
       style,
@@ -187,8 +183,8 @@ class Tree extends Component {
           canDrag={false}
           rowHeight={rowHeight}
           scaffoldBlockPxWidth={22}
-          generateNodeProps={(rowInfo) => this.getNodeProps(rowInfo)}
-          onChange={(treeData) => this.updateTreeData(treeData)}
+          generateNodeProps={rowInfo => this.getNodeProps(rowInfo)}
+          onChange={treeData => this.updateTreeData(treeData)}
           searchQuery={searchQuery !== undefined ? searchQuery : null}
           onlyExpandSearchedNodes={
             onlyExpandSearchedNodes !== undefined
@@ -231,7 +227,7 @@ Tree.propTypes = {
    */
   activateParentsNodeOnClick: PropTypes.bool,
   /**
-   * 	Generate an object with additional props to be passed to the node rendere
+   * Generate an object with additional props to be passed to the node render
    */
   getNodesProps: PropTypes.func,
 };

@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 class FlexLayoutPropTypes extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
-  render() {
+  render () {
     return <span />;
   }
 }
@@ -13,7 +13,8 @@ class FlexLayoutPropTypes extends React.Component {
 FlexLayoutPropTypes.propTypes = {
   /**
    * Test proptypes for FlexLayout
-   * */
+   * 
+   */
   test: PropTypes.bool,
 };
 

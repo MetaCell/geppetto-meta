@@ -3,19 +3,19 @@ import HTMLViewer from '../../HTMLViewer';
 require('../HTMLViewerShowcase.less');
 
 export default class HTMLViewerShowcase extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.htmlContent = require('../HTMLViewerShowcase.html');
   }
 
-  handleClick(element, elementDataset) {
+  handleClick (element, elementDataset) {
     console.log('Click handler triggered.');
     if (elementDataset.action) {
       console.log(elementDataset.action);
     }
   }
-  render() {
+  render () {
     return (
       <HTMLViewer
         content={this.htmlContent}

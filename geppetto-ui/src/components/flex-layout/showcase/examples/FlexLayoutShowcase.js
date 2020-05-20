@@ -71,16 +71,16 @@ const json = {
 };
 
 export default class FlexLayoutShowcase extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = { model: FlexLayout.Model.fromJson(json) };
   }
 
-  factory(node) {
+  factory (node) {
     return <div className="flexChildContainer">Content {node.getName()}</div>;
   }
 
-  render() {
+  render () {
     return (
       <div style={{ position: 'relative', height: '800px', width: '1200px' }}>
         <FlexLayout.Layout

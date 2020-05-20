@@ -88,7 +88,7 @@ const menuStyle = {
 };
 
 class Menu extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       menuOpen: false,
@@ -99,14 +99,14 @@ class Menu extends React.Component {
     this.menuHandler = this.menuHandler.bind(this);
   }
 
-  menuClick(clicked, index) {
+  menuClick (clicked, index) {
     this.setState({
       menuOpen: clicked,
       sectionOpened: index,
     });
   }
 
-  menuHandler(action) {
+  menuHandler (action) {
     this.setState(
       {
         menuOpen: false,
@@ -120,30 +120,30 @@ class Menu extends React.Component {
     );
   }
 
-  render() {
+  render () {
     var buttonsStyle = menuStyle.buttonsStyle;
     var drawersStyle = menuStyle.drawersStyle;
     var labelsStyle = menuStyle.labelsStyle;
     if (
-      this.props.configuration.global.buttonsStyle !== undefined &&
-      this.props.configuration.global.buttonsStyle.standard !== undefined &&
-      this.props.configuration.global.buttonsStyle.hover !== undefined
+      this.props.configuration.global.buttonsStyle !== undefined
+      && this.props.configuration.global.buttonsStyle.standard !== undefined
+      && this.props.configuration.global.buttonsStyle.hover !== undefined
     ) {
       buttonsStyle = this.props.configuration.global.buttonsStyle;
     }
 
     if (
-      this.props.configuration.global.drawersStyle !== undefined &&
-      this.props.configuration.global.drawersStyle.standard !== undefined &&
-      this.props.configuration.global.drawersStyle.hover !== undefined
+      this.props.configuration.global.drawersStyle !== undefined
+      && this.props.configuration.global.drawersStyle.standard !== undefined
+      && this.props.configuration.global.drawersStyle.hover !== undefined
     ) {
       drawersStyle = this.props.configuration.global.drawersStyle;
     }
 
     if (
-      this.props.configuration.global.labelsStyle !== undefined &&
-      this.props.configuration.global.labelsStyle.standard !== undefined &&
-      this.props.configuration.global.labelsStyle.hover !== undefined
+      this.props.configuration.global.labelsStyle !== undefined
+      && this.props.configuration.global.labelsStyle.standard !== undefined
+      && this.props.configuration.global.labelsStyle.hover !== undefined
     ) {
       labelsStyle = this.props.configuration.global.labelsStyle;
     }
@@ -174,7 +174,8 @@ class Menu extends React.Component {
 Menu.propTypes = {
   /**
    * All the required and optional configurations for instantiating a new instance of an OpenSeadragon image viewer
-   * */
+   * 
+   */
   configuration: PropTypes.shape({
     /**
      * The property button defines the list of buttons the menu will have at the first level

@@ -4,20 +4,20 @@ import { Matrix } from '../../layouts/Matrix';
 import ConnectivityComponent from '../../ConnectivityComponent';
 
 export default class ConnectivityShowcaseMatrix extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
-    //GEPPETTO.Manager.loadModel(model);
+    // GEPPETTO.Manager.loadModel(model);
     this.linkType = this.linkType.bind(this);
   }
 
-  linkType(c) {
+  linkType (c) {
     return GEPPETTO.ModelFactory.getAllVariablesOfType(
       c.getParent(),
       GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse
     )[0].getId();
   }
 
-  render() {
+  render () {
     const data = Instances[0];
     const layout = new Matrix();
     const colors = ['#cb0000', '#003398'];

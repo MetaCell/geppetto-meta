@@ -11,7 +11,7 @@ export default class ConnectivityToolbar extends Component {
     super(props);
   }
 
-  getCustomButtons() {
+  getCustomButtons () {
     const customButtons = [];
     if (this.props.layout.hasToggle()) {
       customButtons.push({
@@ -24,46 +24,48 @@ export default class ConnectivityToolbar extends Component {
     }
   }
 
-  getCustomElements() {
+  getCustomElements () {
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
       'post_count': 'By # post'
     };
     const deck = (<ConnectivityDeck
-        key={this.props.id + '_deck'}
-        id={this.props.id + '_deck'}
-        ref={ deck => {this.deck = deck} }
-        handler={this.props.deckHandler}
+      key={this.props.id + '_deck'}
+      id={this.props.id + '_deck'}
+      ref={ deck => {
+        this.deck = deck
+      } }
+      handler={this.props.deckHandler}
     />)
     const customElements = [deck];
 
     if (this.props.layout.hasSelect()) {
       customElements.push((
-          <MenuButton
-              key={this.props.id + '_select'}
-              id={this.props.id + '_select'}
-              options={sortOptions}
-              handler = {this.props.sortOptionsHandler}
-              defaultOption = "id"
-              tooltip={"Order by"}
-              icon={faSort}
-      />));
+        <MenuButton
+          key={this.props.id + '_select'}
+          id={this.props.id + '_select'}
+          options={sortOptions}
+          handler = {this.props.sortOptionsHandler}
+          defaultOption = "id"
+          tooltip={"Order by"}
+          icon={faSort}
+        />));
     }
     return customElements;
   }
 
   render () {
-    const {toolbarVisibility} = this.props;
+    const { toolbarVisibility } = this.props;
     const visibility = toolbarVisibility ? "visible" : "hidden";
 
     const customElements = this.getCustomElements();
     const customButtons = this.getCustomButtons();
 
     return (
-        <span style={{visibility: visibility }}>
-              <CustomToolbar buttons={customButtons} elements={customElements}/>
-        </span>
-  )
+      <span style={{ visibility: visibility }}>
+        <CustomToolbar buttons={customButtons} elements={customElements}/>
+      </span>
+    )
   }
 }

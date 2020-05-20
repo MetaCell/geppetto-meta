@@ -4,7 +4,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 
-const styles = (theme) => ({
+const styles = theme => ({
   button: {
     padding: theme.spacing(1),
     top: theme.spacing(0),

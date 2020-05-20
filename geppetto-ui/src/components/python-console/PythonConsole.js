@@ -9,7 +9,7 @@ define(function (require) {
   var CreateClass = require('create-react-class');
   var { CircularProgress } = require('@material-ui/core')
   require('./PythonConsole.less');
-  //$.widget.bridge('uitooltip', $.ui.tooltip);
+  // $.widget.bridge('uitooltip', $.ui.tooltip);
 
 
   return CreateClass({

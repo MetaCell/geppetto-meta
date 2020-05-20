@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import DicomViewer from '../../DicomViewer';
 
 export default class DicomViewerExample extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
-    const data =
-      'https://s3.amazonaws.com/patient-hm-august-2017/MRI/IN+SITU+2008+MPRAGE+1MM-ISO/IN-SITU-2008-MPRAGE-1MM-ISO-ALT2.nii.gz';
+  render () {
+    const data
+      = 'https://s3.amazonaws.com/patient-hm-august-2017/MRI/IN+SITU+2008+MPRAGE+1MM-ISO/IN-SITU-2008-MPRAGE-1MM-ISO-ALT2.nii.gz';
 
     return (
       <div

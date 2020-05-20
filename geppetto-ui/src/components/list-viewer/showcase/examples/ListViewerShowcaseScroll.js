@@ -3,7 +3,7 @@ import ListViewer from '../../ListViewer';
 import instances from '../instances-small.json';
 
 export default class ListViewerShowcaseScroll extends React.Component {
-  render() {
+  render () {
     return (
       <div>
         <div

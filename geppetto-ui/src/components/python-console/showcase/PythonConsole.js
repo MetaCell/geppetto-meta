@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import pythonConsoleGif from './console.gif';
 
 class PythonConsole extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
+  render () {
     return <img src={`/${pythonConsoleGif}`} />;
   }
 }

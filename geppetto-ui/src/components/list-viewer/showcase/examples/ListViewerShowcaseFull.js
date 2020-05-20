@@ -22,7 +22,7 @@ const conf = [
     title: 'Path',
     source: 'path', // entity.path. Same as (entity) => entity.path
     cssClassName: 'red', // custom css class
-    action: function(entity) {
+    action: function (entity) {
       return this.selectAction(entity); // 'this' is bound to the handler
     },
   },
@@ -51,7 +51,7 @@ const conf = [
     id: 'color',
     title: 'Color',
     customComponent: ColorComponent,
-    source: (entity) => entity.path,
+    source: entity => entity.path,
     configuration: {
       action: (model, color) => console.log(model, color, this), // Lambda will not be bound to the handler component. 'this' will refer to the current context
       defaultColor: '#FF0000',
@@ -63,13 +63,13 @@ const conf = [
     // Define a custom render component inline
     id: 'custom',
     title: 'Custom',
-    customComponent: (value) => (
+    customComponent: value => (
       <span>
         Inline <strong>custom</strong>
         <br /> component
       </span>
     ),
-    source: (entity) => entity.path, // Source is always optional. If not defined it will equal to entity => entity
+    source: entity => entity.path, // Source is always optional. If not defined it will equal to entity => entity
   },
   {
     // Input
@@ -91,7 +91,7 @@ const conf = [
   {
     // Group components under the same column
     id: 'controls',
-    source: (entity) => entity,
+    source: entity => entity,
     title: 'Controls',
     customComponent: GroupComponent,
     customHeadingComponent: CustomHeading, // Define also a custom heading (griddle api)
@@ -102,7 +102,7 @@ const conf = [
         id: 'plot',
         customComponent: 'IconComponent', // We can use the string for default components
         configuration: {
-          action: (entity) => alert('plot'),
+          action: entity => alert('plot'),
           icon: 'area-chart',
           tooltip: 'Plot time series',
         },
@@ -120,16 +120,16 @@ const conf = [
         // Multistatus implementing a toggle behaviour
         id: 'toggle',
         customComponent: MultiStatusComponent,
-        source: (entity) => entity.path,
+        source: entity => entity.path,
         configuration: [
           // Can define how many statuses as we want. They will be changed in sequence at each click
           {
-            action: (v) => alert('from on to off ' + v),
+            action: v => alert('from on to off ' + v),
             icon: 'hand-stop-o',
             tooltip: 'Turn off',
           },
           {
-            action: (v) => alert('from off to on ' + v),
+            action: v => alert('from off to on ' + v),
             icon: 'hand-rock-o',
             tooltip: 'Turn on',
           },
@@ -143,17 +143,17 @@ const conf = [
     id: 'pathHidden',
     displayName: 'Path',
     visible: false,
-    source: (entity) => entity.path,
+    source: entity => entity.path,
   },
 ];
 
 export default class ListViewerShowcaseFull extends React.Component {
-  zoomAction(param) {
+  zoomAction (param) {
     console.log(param);
     alert('zoom ' + param);
   }
 
-  render() {
+  render () {
     return (
       <div
         style={{

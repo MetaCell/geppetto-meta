@@ -3,13 +3,13 @@ import Tree from '../../Tree';
 import '../TreeShowcase.less';
 
 export default class TreeShowcase extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.getButtons = this.getButtons.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
 
-  getButtons(rowInfo) {
+  getButtons (rowInfo) {
     let buttons = [];
     if (rowInfo.node.children == undefined) {
       buttons.push(
@@ -19,7 +19,7 @@ export default class TreeShowcase extends Component {
     return buttons;
   }
 
-  getTreeData() {
+  getTreeData () {
     const treeData = [
       {
         title: 'San Diego, APRIL 25-26, 2009',
@@ -50,12 +50,12 @@ export default class TreeShowcase extends Component {
     return treeData;
   }
 
-  handleClick(event, rowInfo) {
+  handleClick (event, rowInfo) {
     console.log('Click handler triggered.');
     console.log('Node data: ' + rowInfo.node.data);
   }
 
-  render() {
+  render () {
     const style = {
       width: 400,
       height: 250,

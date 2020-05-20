@@ -32,7 +32,7 @@ export function extend (obj1, obj2){
  */
 
 
-export function offset(el){
+export function offset (el){
   const rect = el.getBoundingClientRect();
   return {
     top: rect.top + document.body.scrollTop,
