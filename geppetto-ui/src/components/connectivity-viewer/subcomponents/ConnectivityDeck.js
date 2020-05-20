@@ -16,7 +16,7 @@ import ForceImg from '../images/force.svg';
 import HiveImg from '../images/hive.svg';
 import ChordImg from '../images/chord.svg';
 
-const styles = (theme) => ({
+const styles = theme => ({
   cardDeckWrapper: { 
     border:0,
     outline: 0,

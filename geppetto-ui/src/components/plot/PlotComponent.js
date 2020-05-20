@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
@@ -401,5 +402,34 @@ class PlotComponent extends Component {
     )
   }
 }
+
+PlotComponent.propTypes = {
+  /**
+   * The identifier used to name this Plot component.
+   */
+  id: PropTypes.string.isRequired,
+  /**
+   * Array of objects, each one containing the x,y position of a point in the line/scatter plot. A third property named 
+   * 'lineOptions' can be given, this will be used for modifying the visualization of the line plots.
+   */
+  plots: PropTypes.arrayOf(PropTypes.shape({
+    x: PropTypes.string.isRequired,
+    y: PropTypes.string.isRequired,
+    lineOptions : PropTypes.object
+  })).isRequired,
+  /**
+   * Configuration settings for the chart and line plots.
+   * Checkout [plotly's configuration](https://plotly.com/javascript/configuration-options/) options to add in your layout object.
+   */
+  layout : PropTypes.object,
+  /**
+   * Function used to overwrite and modify the legend name of the plot.
+   */
+  getLegendName : PropTypes.func,
+  /**
+   * Function used to retrieve the legend name of a line plot.
+   */
+  extractLegendName : PropTypes.func
+};
 
 export default withStyles(style)(PlotComponent)

@@ -23,6 +23,24 @@ export function extend (obj1, obj2){
   return obj1
 }
 
+
+/**
+ *
+ * Gets the current coordinates of element relative to the document.
+ *
+ * @param el
+ */
+
+
+export function offset (el){
+  const rect = el.getBoundingClientRect();
+  return {
+    top: rect.top + document.body.scrollTop,
+    left: rect.left + document.body.scrollLeft
+  }
+}
+
+
 /**
  *
  * Copies the values of all enumerable own and inherited properties from one or more source objects to a target object.
