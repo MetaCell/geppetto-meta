@@ -40,6 +40,12 @@ define(function (require) {
     },
 
     render: function () {
+      if (this.props.data == undefined) {
+        return (
+          <div>
+          </div>
+        )
+      }
       var imgId = this.props.rowData.path.replace(/\./g, '_') + "_thumbnail";
       var titleValue = "<img src='" + this.props.data + "' class='thumbnail-img-tooltip'/>";
 
@@ -1583,27 +1589,26 @@ define(function (require) {
       }
     },
 
+    checkInstanceToFilter: function (instance, list) {
+      let condition = false;
+      for (var element of list) {
+        if (element.indexOf(instance) === -1) {
+          condition = true;
+          break;
+        }
+      }
+      return condition;
+    },
+
     deleteData: function (instancePaths) {
       if (instancePaths != undefined && instancePaths.length > 0) {
-        // grab existing input
-        var gridInput = this.state.data;
-        var newGridInput = [];
-        var needsUpdate = false;
-        
         // remove unwanted instances from grid input
-        for (var i = 0; i < instancePaths.length; i++) {
-          for (var j = 0; j < gridInput.length; j++) {
-            if (instancePaths[i].indexOf(gridInput[j].path) == -1) {
-              var index = gridInput.indexOf(gridInput[j].path);
-              gridInput.splice(index,1);
-              needsUpdate = true;
-            }
-          }
-        }
+        const newGridInput = this.state.data.filter( record =>
+          this.checkInstanceToFilter(record.path, instancePaths)
+        );
 
-        // set state to refresh grid
-        if (needsUpdate) {
-          this.setState({ data: gridInput });
+        if (newGridInput.length !== this.state.data.length) {
+          this.setState({ data: newGridInput });
         }
       }
     },
@@ -2096,6 +2101,10 @@ define(function (require) {
 
       return (
         <div id="controlpanel-container">
+          { this.props.showClose === true
+            ? <div onClick={this.close} className="closeControlPanel fa fa-times" />
+            : undefined
+          }
           {menuButtonMarkup}
           {filterMarkup}
           <Griddle columns={this.state.columns} results={this.state.data}

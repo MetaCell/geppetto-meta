@@ -57,6 +57,15 @@ export default function (GEPPETTO) {
 
       /**
        * Creates and populates Geppetto model
+       */
+      cleanModel: function() {
+        this.allPaths = [];
+        this.allStaticVarsPaths = {};
+        this.allPathsIndexing = [];
+      },
+
+      /**
+       * Creates and populates Geppetto model
        *
        * @param jsonModel
        * @param storeRaw - store the raw and object models in the model factory
@@ -99,6 +108,10 @@ export default function (GEPPETTO) {
           }
           if (jsonModel.worlds) {
             this.fillWorldsFromRawModel(geppettoModel, jsonModel);
+          }
+
+          if (jsonModel.tags) {
+            this.geppettoModel.tags = jsonModel.tags.map(wr => wr.name);
           }
 
 
@@ -154,10 +167,10 @@ export default function (GEPPETTO) {
       createStaticInstance: function (rawInstance) {
         let instance;
         switch (rawInstance.eClass) {
-        case SimpleInstance.name:
+        case GEPPETTO.Resources.SIMPLE_INSTANCE_NODE:
           instance = new SimpleInstance(rawInstance);
           break;
-        case SimpleConnectionInstance.name:
+        case GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE:
           instance = new SimpleConnectionInstance(rawInstance);
           break;
         default:
@@ -352,7 +365,7 @@ export default function (GEPPETTO) {
 
             node.superType = typeObjs;
           }
-        } else if (node.getMetaType() === SimpleInstance.name || node.getMetaType() === SimpleConnectionInstance.name) {
+        } else if (node.getMetaType() === GEPPETTO.Resources.SIMPLE_INSTANCE_NODE || node.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE) {
           node.type = this.resolve(node.getType().$ref);
         }
 
@@ -613,7 +626,7 @@ export default function (GEPPETTO) {
        */
       populateConnections: function (instance) {
         // check if it's a connection
-        if (instance.getMetaType() === SimpleConnectionInstance.name){
+        if (instance.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
           if (instance.a.$ref == undefined) {
             // Already populated
             return;
@@ -2190,6 +2203,9 @@ export default function (GEPPETTO) {
       /** Creates a type */
       createType: function (node, options) {
         var t = new Type(this.getTypeOptions(node, options));
+        if (node.tags) {
+          t.tags = node.tags.map(tag => this.resolve(tag.$ref));
+        }
         return t;
       },
 
@@ -2942,7 +2958,7 @@ export default function (GEPPETTO) {
           } else if (raw[i].indexOf('anonymousTypes') > -1) {
             reference = reference.getAnonymousTypes()[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 1) {
-            reference = this.rawGeppetoModel.tags[index]
+            reference = this.rawGeppetoModel.tags && this.rawGeppetoModel.tags.length >= index ? this.rawGeppetoModel.tags[index] : this.geppettoModel.tags[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 2) {
             reference = reference.tags[index];
           } else if (raw[i].indexOf('visualGroups') > -1) {
