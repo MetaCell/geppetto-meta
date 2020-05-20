@@ -301,9 +301,6 @@ class ConnectivityPlot extends Component {
    */
   drawLayout() {
     this.width = this.props.size.width;
-    // if (this.subRef.current !== null) {
-    //   this.width -= this.subRef.current.clientWidth;
-    // }
     this.height = this.props.size.height;
     this.cleanCanvas();
     this.svg = d3
