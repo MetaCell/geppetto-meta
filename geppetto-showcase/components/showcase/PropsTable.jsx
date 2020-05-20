@@ -109,14 +109,13 @@ class PropsTable extends Component {
 
     let table = (
       <Fragment>
-        <TableRow style={{ textIndent: indent }}>
-          {this.genereateTableHead()}
-        </TableRow>
+        <TableRow>{this.genereateTableHead(indent)}</TableRow>
         <Fragment>
           {Object.keys(props).map((key) => (
             <Fragment key={key}>
-              <TableRow key={key} style={{ textIndent: indent }}>
+              <TableRow key={key}>
                 <TableCell
+                  style={{ paddingLeft: indent }}
                   className={classes.tableName}
                   component="th"
                   scope="row"
@@ -151,10 +150,11 @@ class PropsTable extends Component {
     return table;
   }
 
-  genereateTableHead() {
+  genereateTableHead(indent) {
+    const style = indent ? { paddingLeft: indent } : {};
     return (
       <Fragment>
-        <TableCell>
+        <TableCell style={style}>
           <b>Name</b>
         </TableCell>
         <TableCell>
