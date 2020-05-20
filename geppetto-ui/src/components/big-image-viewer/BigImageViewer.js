@@ -10,7 +10,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
 
-const styles = { bigImageViewer: { height: '90%' } };
+const styles = (theme) => ({
+  bigImageViewer: {
+    height: '100%',
+    paddingBottom: theme.spacing(5),
+  },
+});
 
 const ZOOM_OUT_TOOLTIP = 'Zoom Out';
 const ZOOM_IN_TOOLTIP = 'Zoom In';
@@ -141,7 +146,7 @@ BigImageViewer.propTypes = {
   /**
    * Path/URL to image file (f.e. "/path/to/my/image.dzi")
    */
-  dat.htmlviewer >a: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired,
   /**
    * All required and optional settings for instantiating a new instance of an OpenSeadragon image viewer
    */
