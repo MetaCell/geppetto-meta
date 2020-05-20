@@ -1,31 +1,41 @@
 import React, { Component } from 'react';
-import model from '../model.json';
 import { Matrix } from '../../layouts/Matrix';
 import ConnectivityComponent from '../../ConnectivityComponent';
+import { withStyles } from '@material-ui/core';
 
-export default class ConnectivityShowcaseMatrix extends Component {
-  constructor (props) {
+const styles = {
+  connectivity: {
+    display: 'flex',
+    alignItems: 'stretch',
+    height: '600px',
+    width: '500px',
+  },
+};
+
+class ConnectivityShowcaseMatrix extends Component {
+  constructor(props) {
     super(props);
     // GEPPETTO.Manager.loadModel(model);
     this.linkType = this.linkType.bind(this);
   }
 
-  linkType (c) {
+  linkType(c) {
     return GEPPETTO.ModelFactory.getAllVariablesOfType(
       c.getParent(),
       GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse
     )[0].getId();
   }
 
-  render () {
+  render() {
     const data = Instances[0];
     const layout = new Matrix();
     const colors = ['#cb0000', '#003398'];
     const names = ['pyramidals_48', 'baskets_12'];
     const size = { width: 600, height: 500 };
+    const { classes } = this.props;
 
     return (
-      <div style={size}>
+      <div className={classes.connectivity}>
         <ConnectivityComponent
           id="ConnectivityContainerMatrix"
           data={data}
@@ -46,3 +56,5 @@ export default class ConnectivityShowcaseMatrix extends Component {
     );
   }
 }
+
+export default withStyles(styles)(ConnectivityShowcaseMatrix);

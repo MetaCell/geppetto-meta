@@ -8,8 +8,9 @@ import PropTypes from 'prop-types';
 
 const styles = (theme) => ({
   container: {
-    height: '100%',
-    width: '100%',
+    display: 'flex',
+    alignItems: 'stretch',
+    flex: 1,
   },
 });
 
@@ -88,6 +89,7 @@ class ConnectivityComponent extends Component {
 
   renderContent() {
     const {
+      classes,
       id,
       data,
       colorMap,
@@ -109,7 +111,7 @@ class ConnectivityComponent extends Component {
     } = this.state;
 
     return (
-      <Grid container spacing={2}>
+      <Grid className={classes.container} container spacing={2}>
         <Grid item sm={12} xs={12}>
           <ConnectivityToolbar
             id={id}

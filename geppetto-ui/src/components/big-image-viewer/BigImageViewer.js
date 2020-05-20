@@ -11,9 +11,17 @@ import {
 import CustomToolbar from '../common/CustomToolbar';
 
 const styles = (theme) => ({
-  bigImageViewer: {
-    height: '100%',
-    paddingBottom: theme.spacing(5),
+  bigImageViewerContainer: {
+    display: 'flex',
+    padding: theme.spacing(5),
+    alignItems: 'stretch',
+    flex: 1,
+  },
+  bigImageViewerContent: {
+    display: 'flex',
+    alignItems: 'stretch',
+    paddingLeft: theme.spacing(2),
+    flex: 1,
   },
 });
 
@@ -127,11 +135,11 @@ class BigImageViewer extends Component {
     const customButtons = this.getCustomButtons();
 
     return (
-      <div className={classes.bigImageViewer}>
+      <div className={classes.bigImageViewerContainer}>
         <CustomToolbar buttons={customButtons} />
         <div
           id={this.props.id + '_component'}
-          className={classes.bigImageViewer}
+          className={classes.bigImageViewerContent}
         />
       </div>
     );

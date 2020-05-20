@@ -2,8 +2,18 @@ import React, { Component } from 'react';
 import model from '../model.json';
 import { Force } from '../../layouts/Force';
 import ConnectivityComponent from '../../ConnectivityComponent';
+import { withStyles } from '@material-ui/core';
 
-export default class ConnectivityShowcaseForce extends Component {
+const styles = {
+  connectivity: {
+    display: 'flex',
+    alignItems: 'stretch',
+    height: '600px',
+    width: '500px',
+  },
+};
+
+class ConnectivityShowcaseForce extends Component {
   constructor(props) {
     super(props);
     GEPPETTO.Manager.loadModel(model);
@@ -23,12 +33,12 @@ export default class ConnectivityShowcaseForce extends Component {
     const colors = ['#cb0000', '#003398'];
     const names = ['pyramidals_48', 'baskets_12'];
     const size = { width: 600, height: 500 };
+    const { classes } = this.props;
 
     return (
-      <div style={size}>
+      <div className={classes.connectivity}>
         <ConnectivityComponent
           id="ConnectivityContainerForce"
-          size={size}
           data={data}
           colors={colors}
           names={names}
@@ -47,3 +57,5 @@ export default class ConnectivityShowcaseForce extends Component {
     );
   }
 }
+
+export default withStyles(styles)(ConnectivityShowcaseForce);
