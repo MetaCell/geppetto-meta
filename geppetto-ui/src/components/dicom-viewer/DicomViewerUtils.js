@@ -5,7 +5,7 @@ import {
   trackballControlFactory,
   trackballOrthoControlFactory,
   localizerHelperFactory,
-} from 'ami.js';
+} from './ami.min.js';
 
 const HelpersStack = stackHelperFactory(THREE);
 const CamerasOrthographic = orthographicCameraFactory(THREE);
