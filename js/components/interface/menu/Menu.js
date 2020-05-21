@@ -125,7 +125,7 @@ class Menu extends React.Component {
 
   componentDidUpdate (prevProps) {
     // We need a way to close the menu on zoom, scroll, right click, etc events on other parts of the application
-    if (prevProps.updateClose !== this.props.updateClose) {
+    if (this.props.open === false && prevProps.open === true) {
       this.menuHandler('')
     }
   }
