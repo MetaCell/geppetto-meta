@@ -258,6 +258,9 @@ export default class ListViewer extends React.Component {
   }
 
   getLayout () {
+    if(this.props.layout) {
+      return this.props.layout;
+    }
     return ({ Table, Pagination, Filter, SettingsWrapper }) => ( <div className="listviewer-container">
       <Filter />
       <Table />
@@ -265,7 +268,7 @@ export default class ListViewer extends React.Component {
     </div> );
   }
 
-  getPluggins () {
+  getPlugins () {
     const { remoteInfiniteScroll = false, plugins:extraPlugins = [] } = this.props
     if (remoteInfiniteScroll) {
       return [plugins.PositionPlugin({ disablePointerEvents: true }), ...extraPlugins]
@@ -276,13 +279,12 @@ export default class ListViewer extends React.Component {
   }
   
   render () {
-    window.conf = this.columnConfiguration;
     const customComponents = this.props.customComponents ? this.props.customComponents : {}
     const { events, ...others } = this.props
     return <section className="listviewer">
       <Griddle
         data={this.getData()}
-        plugins={this.getPluggins()}
+        plugins={this.getPlugins()}
         components={{ Layout: this.getLayout(), ...customComponents }}
         events={{ ...events }}
       >
