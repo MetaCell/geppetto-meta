@@ -89,7 +89,7 @@ define(function (require) {
           if (instances[0].getInstancePath().startsWith(this.state.imageID)) {
             // Give a second before updating the checkbox state, otherwise set State happens too fast
             setTimeout(
-              function() { 
+              function () { 
                 that.setState ( { imageInstanceLoading : false } ); 
               }, 1000);
           }
