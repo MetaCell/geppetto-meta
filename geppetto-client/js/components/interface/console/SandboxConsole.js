@@ -95,10 +95,24 @@ define(function (require) {
        */
       View: Backbone.View.extend({
         initialize: function (opts) {
-
-          this.render = this.render.bind(this);
-          this.updateConsole = this.updateConsole.bind(this);
-          this.updateInputArea = this.updateInputArea.bind(this);
+          _(this).bindAll(
+            'render',
+            'updateConsole',
+            'updateInputArea',
+            'focus',
+            'keydown',
+            'keyup',
+            'debugLog',
+            'showCommandsSuggestions',
+            'showMessage',
+            'executeCommand',
+            'loadScript',
+            'clear',
+            'getCaret',
+            'setCaret',
+            'setValue',
+            'specialCommands'
+          );
 
           // Set up the iframe sandbox if needed
           if (this.model.get('iframe')) {

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import DicomViewerUtils from './DicomViewerUtils';
 import { offset } from '../../utilities';
-import { boundingBoxHelperFactory, VolumeLoader, StackModel } from './ami.min.js';
+import { boundingBoxHelperFactory, VolumeLoader, StackModel } from 'ami.js';
 const HelpersBoundingBox = boundingBoxHelperFactory(THREE);
 
 import {
