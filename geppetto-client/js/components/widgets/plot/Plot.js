@@ -1058,7 +1058,7 @@ define(function (require) {
 
       // Parse func as a mathjs object
       var parser = math.parser();
-      var mathFunc = parser.eval(func);
+      var mathFunc = parser.evaluate(func);
       var data = [];
       data.name = options.legendText;
       data.data = {};
