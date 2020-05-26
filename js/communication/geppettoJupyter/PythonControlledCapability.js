@@ -13,6 +13,16 @@ define(function (require) {
 
   module.exports = {
     createPythonControlledComponent (WrappedComponent) {
+      if (typeof WrappedComponent !== "function") {
+        // Fixes components defined as objects (e.g. Material-ui components)
+        class Wrapper extends React.Component {
+          render () {
+            return <WrappedComponent {...this.props} />;
+          }
+        } 
+        WrappedComponent = Wrapper;
+      }
+      
       class PythonControlledComponent extends WrappedComponent {
         constructor (props) {
           super(props);
@@ -20,8 +30,9 @@ define(function (require) {
             this.state = {};
           }
           this.state.model = props.model;
-          this.state.componentType = WrappedComponent.name;
+          this.state.componentType = getNameFromWrappedComponent(WrappedComponent);
           this.id = (this.props.id == undefined) ? this.props.model : this.props.id;
+          
           this._isMounted = false;
         }
 
@@ -43,9 +54,10 @@ define(function (require) {
           this.disconnectFromPython();
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if (this.state.value != nextProps.value) {
@@ -63,6 +75,7 @@ define(function (require) {
             this.setState({ value: this.props.value });
           }
         }
+
       }
 
       return PythonControlledComponent;
@@ -85,6 +98,7 @@ define(function (require) {
           this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
           this.handleUpdateInput = this.handleUpdateInput.bind(this);
           this.handleUpdateCheckbox = this.handleUpdateCheckbox.bind(this);
+          
         }
 
         shouldComponentUpdate (nextProps, nextState) {
@@ -98,9 +112,10 @@ define(function (require) {
           }
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
@@ -118,15 +133,15 @@ define(function (require) {
         }
 
         componentDidUpdate (prevProps, prevState) {
-          switch (WrappedComponent.name) {
+          switch (getNameFromWrappedComponent(WrappedComponent)) {
           case 'AutoComplete':
             if (this.state.searchText !== prevState.searchText && this.props.onChange) {
               this.props.onChange(this.state.searchText);
             }
             break;
           case 'Checkbox':
-            if (this.state.checked !== prevState.checked && this.props.onCheck) {
-              this.props.onCheck(null, this.state.checked);
+            if (this.state.checked !== prevState.checked && this.props.onChange) {
+              this.props.onChange(null, this.state.checked);
             }
             break;
           default:
@@ -163,13 +178,16 @@ define(function (require) {
             default:
               break;
             }
+            // Don't sync if new value is emtpy string
             if (newValue !== '') {
               this.syncValueWithPython(newValue);
-              if (this.props.callback) {
-                this.props.callback(newValue, this.oldValue === undefined ? this.state.value : this.oldValue);
-                this.oldValue = newValue;
-              }
             }
+            
+            if (this.props.callback) {
+              this.props.callback(newValue, this.oldValue);
+            }
+            this.oldValue = undefined
+          
           }
           this.setState({ value: newValue, searchText: newValue, checked: newValue });
           this.forceUpdate();
@@ -188,6 +206,10 @@ define(function (require) {
           if (event != null && event.target.value != undefined) {
             targetValue = event.target.value;
           }
+          if (this.oldValue === undefined) {
+            this.oldValue = this.state.value
+          }
+          
           this.setState({ value: targetValue });
 
           if (this.props.validate) {
@@ -231,17 +253,17 @@ define(function (require) {
           if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
             wrappedComponentProps['helperText'] = this.state.errorMsg;
           }
-          if (WrappedComponent.name != 'ListComponent') {
+          if (getNameFromWrappedComponent(WrappedComponent) != 'ListComponent') {
             delete wrappedComponentProps.realType;
           }
 
-          switch (WrappedComponent.name) {
+          switch (getNameFromWrappedComponent(WrappedComponent)) {
           case 'AutoComplete':
             wrappedComponentProps['onUpdateInput'] = this.handleUpdateInput;
             wrappedComponentProps['searchText'] = this.state.searchText;
             break;
           case 'Checkbox':
-            wrappedComponentProps['onCheck'] = this.handleUpdateCheckbox;
+            wrappedComponentProps['onChange'] = this.handleUpdateCheckbox;
             wrappedComponentProps['checked'] = this.state.checked;
             delete wrappedComponentProps.searchText;
             delete wrappedComponentProps.dataSource;
@@ -250,7 +272,11 @@ define(function (require) {
             break;
           default:
             wrappedComponentProps['onChange'] = this.handleChange;
-            wrappedComponentProps['value'] = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
+            wrappedComponentProps.value = (typeof this.state.value === 'object' && this.state.value !== null && !Array.isArray(this.state.value)) ? JSON.stringify(this.state.value) : this.state.value;
+            // Fix case with multiple values: need to set an empty list in case the value is undefined
+            wrappedComponentProps.value = (wrappedComponentProps.multiple && 
+              wrappedComponentProps.value !== undefined 
+              && !wrappedComponentProps.value) ? [] : wrappedComponentProps.value;
             delete wrappedComponentProps.searchText;
             delete wrappedComponentProps.dataSource;
             break;
@@ -273,20 +299,20 @@ define(function (require) {
 
         constructor (props) {
           super(props);
-          this.state = $.extend(this.state, {
+          this.state = {
+            ...this.state,
             value: [],
-            items: [],
             pythonData: []
-          });
+          }
           // If a handleChange method is passed as a props it will overwrite the handleChange python controlled capability
           this.handleChange = (this.props.handleChange == undefined) ? this.handleChange.bind(this) : this.props.handleChange.bind(this);
-                    
           this.callPythonMethod();
         }
 
-        componentWillReceiveProps (nextProps) {
+        UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
+          
           GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           this.callPythonMethod();
@@ -353,6 +379,8 @@ define(function (require) {
           Utils.evalPythonMessage(this.props.method, []).then(response => {
             if (Object.keys(response).length != 0) {
               this.setState({ pythonData: response });
+            } else {
+              this.setState({ pythonData: [] });
             }
           });
         }
@@ -382,16 +410,18 @@ define(function (require) {
           if (wrappedComponentProps.id == undefined) {
             wrappedComponentProps.id = wrappedComponentProps.model;
           }
-          wrappedComponentProps['onChange'] = this.handleChange;
-          wrappedComponentProps['value'] = this.state.value;
+          wrappedComponentProps.onChange = this.handleChange;
+          wrappedComponentProps.value = wrappedComponentProps.multiple && this.state.value !== undefined && !this.state.value ? [] : this.state.value;
           delete wrappedComponentProps.model;
           delete wrappedComponentProps.postProcessItems;
           delete wrappedComponentProps.validate;
           delete wrappedComponentProps.prePythonSyncProcessing;
-                    
+          delete wrappedComponentProps.updates;
+
           if (this.props.postProcessItems) {
-            var items = this.props.postProcessItems(this.state.pythonData, this.state.value);
+            var items = this.props.postProcessItems(this.state.pythonData, wrappedComponentProps.value);
           }
+          
           return (
             <WrappedComponent {...wrappedComponentProps}>
               {items}
@@ -405,3 +435,7 @@ define(function (require) {
     },
   }
 })
+function getNameFromWrappedComponent(WrappedComponent) {
+  return WrappedComponent.name || WrappedComponent.Naked.render.name;
+}
+

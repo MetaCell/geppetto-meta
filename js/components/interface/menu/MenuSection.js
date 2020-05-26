@@ -79,7 +79,7 @@ class MenuSection extends React.Component {
     this.setState({ hover: false });
   };
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if ((nextProps.sectionOpened !== this.props.id) && (this.props.menuOpen === true) && (this.state.anchorEl !== null)) {
       this.setState({ anchorEl: null });
     }
