@@ -257,14 +257,12 @@ define(function (require) {
         clientID = id;
       },
 
-
       /**
-       * Gets the id of the client
+       * Sets the id of the client
        */
       getClientID: function () {
         return clientID;
       },
-
       /**
        * Creates a request id to send with the message to the server
        */
