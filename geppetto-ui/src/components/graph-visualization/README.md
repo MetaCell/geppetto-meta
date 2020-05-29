@@ -1,8 +1,13 @@
-# Graph Visualization Component
+# Graph Viewer
 
-React component used to visualized a graph data structure in 2D or 3D space using a force-directed iterative layout.
+A graph data viewer that can visualise graphs in 2D or 3D space using a force-directed iterative layout.
 
-Uses canvas/WebGL for rendering and d3-force-3d for the underlying physics engine.
+Features:
+* 2D graph visualisation 
+* 3D graph visualisation
+* Zoom (mouse wheel)
+* Rotation (Lef-click + drag)
+* Panning (Right-click + drag)
 
 ```element
 graph-visualization/Graph
@@ -12,7 +17,7 @@ graph-visualization/Graph
 
 ### Graph Visualization Example 1
 
-Example of basic React Component class using the Graph Visualization Component.
+Example of basic usage of the Graph Viewer.
 
 ```
 graph-visualization/showcase/examples/GraphVisualizationShowcase

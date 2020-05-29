@@ -1,6 +1,14 @@
 # Dicom Viewer
 
-Viewer for high-resolution zoomable images
+Viewer for any images in the DICOM format.
+
+Features:
+* Tiled view with separated orientations at a glance
+* Combined view with all orientations 
+* Single orientation view 
+* Navigate slice stack for each orientation (mouse wheel)
+* Rotate (Left-click + drag)
+* Download data (download button)
 
 ```element
 dicom-viewer/DicomViewer
@@ -10,7 +18,7 @@ dicom-viewer/DicomViewer
 
 ### Dicom Viewer Example
 
-The following example shows a tissue slice digitally photographed on large-format microscope scanners built at The Brain Observatory. The image in this section was acquired at 20× magnification (resolution: ∼0.4 μm/pixel) resulting in a very large file (dimensions in pixels are: 334,500 × 266,200 and file size on disk 250–400 GB).
+The following example shows a brain MRI in DICOM format acquired at The Brain Observatory.
 
 ```
 dicom-viewer/showcase/examples/DicomViewerExample
