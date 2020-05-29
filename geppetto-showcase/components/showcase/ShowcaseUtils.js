@@ -193,10 +193,13 @@ function parseInnerHTML(innerHTML) {
   let elements = [];
   for (let i = 0; i < breaks.length; i++) {
     const b = breaks[i];
-    const src = isImageTag(b);
-    if (src) {
-      const img = React.createElement('img', { src: src });
+    let el;
+    if ((el = isImageTag(b))) {
+      const img = React.createElement('img', { src: el });
       elements.push(img);
+    } else if ((el = isUnorderedList(b))) {
+      const list = React.createElement('li', {}, el);
+      elements.push(list);
     } else {
       const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
       elements.push(p);
@@ -207,6 +210,11 @@ function parseInnerHTML(innerHTML) {
 
 function isImageTag(text) {
   let re = new RegExp('<img.*?src="(.*?)"');
+  let matches = text.match(re);
+  return matches ? matches[1] : false;
+}
+function isUnorderedList(text) {
+  let re = new RegExp('<li>(.*?)</li>');
   let matches = text.match(re);
   return matches ? matches[1] : false;
 }
