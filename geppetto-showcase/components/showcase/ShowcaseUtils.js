@@ -180,8 +180,6 @@ function getContentUntil(selector, start) {
     let innerHTML = element.innerHTML;
     let innerElements = parseInnerHTML(innerHTML);
     elements.push(...innerElements);
-    const br = React.createElement('br');
-    elements.push(br);
   }
 
   const container = React.createElement('div', {}, elements);
@@ -189,25 +187,38 @@ function getContentUntil(selector, start) {
 }
 
 function parseInnerHTML(innerHTML) {
-  let breaks = innerHTML.split('\n');
+  let breaks = innerHTML.split(/\n/);
   let elements = [];
   for (let i = 0; i < breaks.length; i++) {
     const b = breaks[i];
     let el;
-    if ((el = isImageTag(b))) {
-      const img = React.createElement('img', { src: el });
-      elements.push(img);
-    } else if ((el = isUnorderedList(b))) {
-      const list = React.createElement('li', {}, el);
-      elements.push(list);
-    } else {
-      const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
-      elements.push(p);
+    if (!isEmpty(b)) {
+      if ((el = isLineBreak(b))) {
+        b = el;
+        const br = React.createElement('br');
+        elements.push(br);
+      }
+      if ((el = isImageTag(b))) {
+        const img = React.createElement('img', { src: el });
+        elements.push(img);
+      } else if ((el = isUnorderedList(b))) {
+        const list = React.createElement('li', {}, el);
+        elements.push(list);
+      } else {
+        const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
+        elements.push(p);
+      }
     }
   }
   return elements;
 }
 
+function isEmpty(text) {
+  return text == '';
+}
+function isLineBreak(text) {
+  return text.includes('<br>') ? text.replace('<br>', '') : false;
+}
 function isImageTag(text) {
   let re = new RegExp('<img.*?src="(.*?)"');
   let matches = text.match(re);
