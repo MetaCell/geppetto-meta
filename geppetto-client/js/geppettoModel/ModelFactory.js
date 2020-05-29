@@ -57,6 +57,15 @@ export default function (GEPPETTO) {
 
       /**
        * Creates and populates Geppetto model
+       */
+      cleanModel: function () {
+        this.allPaths = [];
+        this.allStaticVarsPaths = {};
+        this.allPathsIndexing = [];
+      },
+
+      /**
+       * Creates and populates Geppetto model
        *
        * @param jsonModel
        * @param storeRaw - store the raw and object models in the model factory
@@ -99,6 +108,10 @@ export default function (GEPPETTO) {
           }
           if (jsonModel.worlds) {
             this.fillWorldsFromRawModel(geppettoModel, jsonModel);
+          }
+
+          if (jsonModel.tags) {
+            this.geppettoModel.tags = jsonModel.tags.map(wr => wr.name);
           }
 
 
@@ -147,7 +160,7 @@ export default function (GEPPETTO) {
       },
 
       createStaticInstances: function (instances) {
-        return instances ? instances.map(instance => this.createStaticInstance(instance)) : [];
+        return instances ? instances.filter(inst => !inst.synched).map(instance => this.createStaticInstance(instance)) : [];
       },
 
 
@@ -614,25 +627,22 @@ export default function (GEPPETTO) {
       populateConnections: function (instance) {
         // check if it's a connection
         if (instance.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
-          if (instance.a.$ref == undefined) {
-            // Already populated
-            return;
-          }
-
-          const a = this.resolve(instance.a.$ref);
-          if (a) {
-            instance.a = a;
-            instance.a.addConnection(instance);
+          
+          
+          if (instance.a.$ref !== undefined) {
+            instance.a = this.resolve(instance.a.$ref);
+            if (instance.a) {
+              instance.a.addConnection(instance);
+            }
           }
           
-          const b = this.resolve(instance.b.$ref);
-          if (b) {
-            instance.b = b;
-            instance.b.addConnection(instance);
+          
+          if (instance.b.$ref !== undefined) {
+            instance.b = this.resolve(instance.b.$ref);
+            if (instance.b) {
+              instance.b.addConnection(instance);
+            }
           }
-          
-          // TODO this is a shortcut to add connections, verify it's equivalent
-          
           
           return;
         }
@@ -833,7 +843,6 @@ export default function (GEPPETTO) {
         const currentWorld = this.geppettoModel.getCurrentWorld();
         // STEP 3b: merge world.variables and instances
         if (currentWorld) {
-          this.populateInstanceReferences(diffModel);
           diffVars = diffModel.getCurrentWorld().getVariables();
           diffReport.worlds = rawModel.worlds.map(world => ({ ...world, variables: [], instances: [] }))
           
@@ -2190,6 +2199,9 @@ export default function (GEPPETTO) {
       /** Creates a type */
       createType: function (node, options) {
         var t = new Type(this.getTypeOptions(node, options));
+        if (node.tags) {
+          t.tags = node.tags.map(tag => this.resolve(tag.$ref));
+        }
         return t;
       },
 
@@ -2942,7 +2954,7 @@ export default function (GEPPETTO) {
           } else if (raw[i].indexOf('anonymousTypes') > -1) {
             reference = reference.getAnonymousTypes()[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 1) {
-            reference = this.rawGeppetoModel.tags[index]
+            reference = this.rawGeppetoModel.tags && this.rawGeppetoModel.tags.length >= index ? this.rawGeppetoModel.tags[index] : this.geppettoModel.tags[index];
           } else if (raw[i].indexOf('tags') > -1 && i === 2) {
             reference = reference.tags[index];
           } else if (raw[i].indexOf('visualGroups') > -1) {

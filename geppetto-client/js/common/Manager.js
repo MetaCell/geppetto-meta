@@ -56,7 +56,7 @@ Manager.prototype = {
    */
   loadModel: function (model) {
 
-
+    GEPPETTO.ModelFactory.cleanModel();
     console.timeEnd(GEPPETTO.Resources.PARSING_MODEL);
 
     console.time(GEPPETTO.Resources.CREATING_MODEL);
@@ -90,6 +90,7 @@ Manager.prototype = {
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
     GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    return window.Model;
   },
 
   /**

@@ -16,6 +16,12 @@ class HTMLViewer extends Component {
     this.setState({ content });
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.content != this.props.content) {
+      this.setState({ content: nextProps.content });
+    }
+  }
+
   componentDidMount() {
     const element = ReactDOM.findDOMNode(this.htmlViewer.current);
     element.setAttribute('tabIndex', -1);

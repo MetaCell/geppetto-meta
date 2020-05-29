@@ -51,6 +51,7 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.PROJECT_LOADED] = function (payload) {
     var message = JSON.parse(payload.project_loaded);
+    GEPPETTO.MessageSocket.projectId = message.project.id;
     GEPPETTO.Manager.loadProject(message.project, message.persisted);
   };
 
@@ -279,5 +280,3 @@ function MessageHandler (GEPPETTO) {
 // Compatibility with new imports and old require syntax
 MessageHandler.default = MessageHandler;
 module.exports = MessageHandler;
-
-
