@@ -1,6 +1,6 @@
-# Python Console Component
+# Python Console
 
-Enable Geppetto to expose the [Python API] from the frontend.
+Enables Geppetto users to interact with and making modification to the Geppetto model directly from the frontend.
 
 ```element
 python-console/showcase/PythonConsole
@@ -10,14 +10,12 @@ python-console/showcase/PythonConsole
 
 ### Python Console Example
 
-Interacting programmatically with NWB files using Python
+Example showing how we can interacti programmatically with NWB files using Python.
 
 ```
 python-console/showcase/PythonConsoleShowcase
 ```
 
 ## Libraries
-
-[React](https://www.npmjs.com/package/react)
 
 [@Material-ui/core](https://www.npmjs.com/package/@material-ui/core)
