@@ -1,4 +1,4 @@
-# Movie Player Component
+# Movie Player
 
 A component that can be used to embed playable videos. The components loads media from an URL passed as a property, while the 'react-player' library is used to load and play the videos.
 
@@ -17,9 +17,9 @@ movie-player/MoviePlayer
 
 ## Examples
 
-### Movie Player Example 1
+### Movie Player Example
 
-Movie Player Example 1
+Movie Player Example
 
 ```
 movie-player/showcase/examples/MoviePlayerShowcase
