@@ -182,6 +182,10 @@ function getContentUntil(selector, start) {
     if (isOrderedList(element.outerHTML)) {
       const orderedList = React.createElement('ol', {}, innerElements);
       elements.push(orderedList);
+    }
+    if (isUnorderedList(element.outerHTML)) {
+      const unorderedList = React.createElement('ul', {}, innerElements);
+      elements.push(unorderedList);
     } else {
       elements.push(...innerElements);
     }
@@ -205,6 +209,30 @@ function parseInnerHTML(innerHTML) {
       if ((el = isImageTag(b))) {
         const img = React.createElement('img', { src: el });
         elements.push(img);
+      } else if ((el = isLinkTag(b))) {
+        const children = [];
+        for (let j = 0; j < el.length - 2; ) {
+          let child;
+          if (el[j] == '"' || el[j] == "'") {
+            const href = el[j + 1];
+            const text = el[j + 2];
+            child = React.createElement(
+              'a',
+              { href: href, target: '_blank' },
+              text
+            );
+            j += 3;
+          } else {
+            child = el[j];
+            j += 1;
+          }
+          children.push(child);
+        }
+        const span = React.createElement('p', {
+          key: `${i}${b[0]}`,
+          children,
+        });
+        elements.push(span);
       } else if ((el = isList(b))) {
         const list = React.createElement('li', {}, el);
         elements.push(list);
@@ -229,8 +257,22 @@ function isImageTag(text) {
   return matches ? matches[1] : false;
 }
 
+function isLinkTag(text) {
+  let re = new RegExp(/<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1.*?>(.*?)<\/a>/);
+  let matches = text.split(re);
+  return matches.length > 1 ? matches : false;
+}
+
 function isOrderedList(text) {
+  // TODO: Improve regex expression to lookup for closing ol
   let re = new RegExp('<ol>');
+  let matches = text.match(re);
+  return matches ? true : false;
+}
+
+function isUnorderedList(text) {
+  // TODO: Improve regex expression to lookup for closing ul
+  let re = new RegExp('<ul>');
   let matches = text.match(re);
   return matches ? true : false;
 }
