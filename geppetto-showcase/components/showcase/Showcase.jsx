@@ -65,7 +65,7 @@ class Showcase extends Component {
       <div className={classes.root}>
         <div className={classes.innerRoot}>
           <h1 className={classes.mainTitle}>{configs.name}</h1>
-          <p className={classes.mainDescription}>{configs.description}</p>
+          <div className={classes.mainDescription}>{configs.description}</div>
           <p className={classes.secondaryDescription}>
             {configs.detailedDescription}
           </p>
