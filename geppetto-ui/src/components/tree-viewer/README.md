@@ -1,6 +1,11 @@
 # Tree Viewer
 
-Suitable to visualize hierarchies
+A tree viewer to visualise hierarchical structures. 
+
+Features: 
+* Tree style visulization with click navigation
+* Custom actions for menu item clicks
+* Customizable icons formenu items
 
 ```element
 tree-viewer/Tree
@@ -8,9 +13,9 @@ tree-viewer/Tree
 
 ## Examples
 
-### TreeViewer Example
+### Tree Viewer Example
 
-Basic tree viewer example with general electric (GE) signa excite data
+Basic tree viewer example with some sample hierarchy displayed, showing custom icons for nodes. 
 
 ```
 tree-viewer/showcase/examples/TreeShowcase

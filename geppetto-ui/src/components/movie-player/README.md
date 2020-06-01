@@ -1,10 +1,15 @@
-# Movie Player Component
+# Movie Player
 
-React component for playing videos.
+A component that can be used to embed playable videos. The components loads media from an URL passed as a property, while the 'react-player' library is used to load and play the videos.
 
-The components loads media from an URL passed to the component as a property.
-THe 'react-player' library is used to load the media, which can be from different sources such as:
-YouTube, Facebook, Twitch, SoundCloud, Streamable, Vimeo, and Mixcloud
+Supported sources:
+* YouTube
+* Facebook
+* Twitch
+* SoundCloud
+* Streamable
+* Vimeo
+* Mixcloud
 
 ```element
 movie-player/MoviePlayer
@@ -12,16 +17,14 @@ movie-player/MoviePlayer
 
 ## Examples
 
-### Movie Player Example 1
+### Movie Player Example
 
-Movie Player Example 1
+Movie Player Example
 
 ```
 movie-player/showcase/examples/MoviePlayerShowcase
 ```
 
 ## Libraries
-
-[React](https://www.npmjs.com/package/react)
 
 [ReactPlayer](https://www.npmjs.com/package/react-player)

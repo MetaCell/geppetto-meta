@@ -1,6 +1,6 @@
 # HTML Viewer
 
-Used to visualize custom HTML
+Simple HTML renderer - useful to display HTML formatted bits, with the option of specifying custom actions on link clicks. 
 
 ```element
 html-viewer/HTMLViewer
@@ -10,7 +10,7 @@ html-viewer/HTMLViewer
 
 ### HTMLViewer Example 1
 
-Basic example of usage of HTML Viewer. Link's dataset (f.e. data-action) are captured and handled by handleClick prop.
+Basic example usage of the HTML Viewer. Actions specified in the attribute "data-action" of anchor elements are captured and handled by the handleClick prop.
 
 ```
 html-viewer/showcase/examples/HTMLViewerShowcase

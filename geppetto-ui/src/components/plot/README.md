@@ -1,8 +1,14 @@
-# Plot Component
+# Plot Viewer
 
-React Component use to visualize a data structure as a Plot graph.
+A plot viewer component that can plot any time series. The viewer can render basic line plots, as well as scatter plots. This component wraps [plotly.js](https://www.npmjs.com/package/plotly.js) and augments it with some functionality. 
 
-The component can render basic line plots, as well as scatter plots.
+Notable features:
+* Plot zooming
+* Legend toggle on/off
+* Save plot as image (png, svg, jpeg)
+* Download plot data in original source format
+* Configurable plot analysis (e.g. average of various time series plotted) 
+* Navigation history support (revert to previous plots and navigate history)
 
 ```element
 plot/PlotComponent
@@ -10,17 +16,15 @@ plot/PlotComponent
 
 ## Examples
 
-### Plot Component Example 1
+### Plot Component Example
 
-Plot Component Example 1
+Plotting a simple sinusoid function.
 
 ```
 plot/showcase/examples/PlotShowcase
 ```
 
 ## Libraries
-
-[React](https://www.npmjs.com/package/react)
 
 [plotly.js](https://www.npmjs.com/package/plotly.js)
 
