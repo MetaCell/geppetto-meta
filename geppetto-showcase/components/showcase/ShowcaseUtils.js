@@ -179,9 +179,13 @@ function getContentUntil(selector, start) {
   for (let element of content) {
     let innerHTML = element.innerHTML;
     let innerElements = parseInnerHTML(innerHTML);
-    elements.push(...innerElements);
+    if (isOrderedList(element.outerHTML)) {
+      const orderedList = React.createElement('ol', {}, innerElements);
+      elements.push(orderedList);
+    } else {
+      elements.push(...innerElements);
+    }
   }
-
   const container = React.createElement('div', {}, elements);
   return container;
 }
@@ -201,7 +205,7 @@ function parseInnerHTML(innerHTML) {
       if ((el = isImageTag(b))) {
         const img = React.createElement('img', { src: el });
         elements.push(img);
-      } else if ((el = isUnorderedList(b))) {
+      } else if ((el = isList(b))) {
         const list = React.createElement('li', {}, el);
         elements.push(list);
       } else {
@@ -224,7 +228,14 @@ function isImageTag(text) {
   let matches = text.match(re);
   return matches ? matches[1] : false;
 }
-function isUnorderedList(text) {
+
+function isOrderedList(text) {
+  let re = new RegExp('<ol>');
+  let matches = text.match(re);
+  return matches ? true : false;
+}
+
+function isList(text) {
   let re = new RegExp('<li>(.*?)</li>');
   let matches = text.match(re);
   return matches ? matches[1] : false;
