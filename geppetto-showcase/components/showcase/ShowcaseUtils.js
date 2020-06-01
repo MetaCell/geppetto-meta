@@ -24,7 +24,11 @@ function getTitle(dom) {
  */
 
 function getDescription(dom) {
-  return dom.querySelector('h1').nextElementSibling.innerText;
+  const description = parseInnerHTML(
+    dom.querySelector('h1').nextElementSibling.innerHTML
+  );
+  const container = React.createElement('span', {}, description);
+  return container;
 }
 
 /**
