@@ -438,6 +438,6 @@ define(function (require) {
   }
 })
 function getNameFromWrappedComponent (WrappedComponent) {
-  return WrappedComponent.name || WrappedComponent.Naked.render.name;
+  return WrappedComponent.name || WrappedComponent.displayName || WrappedComponent.Naked.render.name;
 }
 
