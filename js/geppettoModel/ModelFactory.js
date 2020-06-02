@@ -1335,14 +1335,15 @@ export default function (GEPPETTO) {
           window.Instances[topInstances[k].getId()] = topInstances[k];
         }
 
-        newInstancesPaths.map(newInstance => {
+        for (let instanceCounter = 0; instanceCounter < newInstancesPaths.length; instanceCounter++) {
+          var newInstance = newInstancesPaths[instanceCounter];
           if (newInstance !== "time") {
             let instanceStrings = newInstance.split(".");
             if (window.Instances[instanceStrings[0]][instanceStrings[1]] !== undefined) {
               GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
             }
           }
-        });
+        }
       },
 
       /**
