@@ -186,7 +186,6 @@ define(function (require) {
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.checkStack();
             this.callPlaneEdges();
-            this.bufferStack();
             if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
               this.state.buffer[-1].text = '';
             }
