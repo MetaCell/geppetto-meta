@@ -184,7 +184,7 @@ define(function (require) {
             }
             switch (componentType){
             case 'FORM': require(['./interface/form/Form'], cb); break;
-            case 'PANEL': require(['./controls/panel/Panel'],cb); break; 
+            case 'PANEL': require(['./controls/panel/Panel'],cb); break;
             case 'LOGO': require(['./interface/logo/Logo'],cb); break;
             case 'LOADINGSPINNER': require(['./interface/loadingSpinner/LoadingSpinner'],cb); break;
             case 'SAVECONTROL': require(['./interface/save/SaveControl'],cb); break;
@@ -215,7 +215,6 @@ define(function (require) {
             case 'BUTTONBAR': require(['./interface/buttonBar/ButtonBar'], cb); break;
             case 'DRAWER': require(['./interface/drawer/TabbedDrawer'], cb); break;
             }
-                  
           });
         });
       },
@@ -252,7 +251,6 @@ define(function (require) {
             const component = this._createComponent(componentType, properties, document.getElementById('widgetContainer'), callback, true);
             resolve(component);
           });
-          
         } else {
           var isStateless = false;
           if (properties !== undefined && "isStateless" in properties) {

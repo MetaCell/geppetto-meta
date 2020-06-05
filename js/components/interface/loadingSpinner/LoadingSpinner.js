@@ -54,22 +54,29 @@ define(function (require) {
         that.setState({ text:GEPPETTO.Resources.SPOTLIGHT_HINT });
       }).bind(this), 5000);
     },
-    
+
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (this.props.spinnerVisible !== nextProps.spinnerVisible) {
+        if (nextProps.spinnerVisible) {
+          this.showSpinner(nextProps.spinnerMessage);
+        } else {
+          setTimeout(this.hideSpinner, 500);
+        }
+      }
+    },
+
     componentDidMount: function (){
-      var that = this;
-      
       GEPPETTO.Spinner = this;
-      
-      // Loading spinner initialization
-      GEPPETTO.on(GEPPETTO.Events.Show_spinner, function (label) {
-        that.showSpinner(label);
+
+      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER].list.push(action => {
+        this.showSpinner(action.data.message);
       });
-      
-      GEPPETTO.on(GEPPETTO.Events.Hide_spinner, function (label) {
-        setTimeout(that.hideSpinner, 500);
+
+      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER].list.push(action => {
+        setTimeout(this.hideSpinner, 500);
       });
     },
-    
+
     render: function () {
       if (this.visible){
         return (

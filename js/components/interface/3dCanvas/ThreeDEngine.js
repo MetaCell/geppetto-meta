@@ -2035,7 +2035,10 @@ define(['jquery'], function () {
           }
         }
       }
-      GEPPETTO.trigger(GEPPETTO.Events.Color_set, { instance: instance, color: randomColor });
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COLOR_SET]({
+        instance: instance,
+        color: randomColor
+      });
     }
 
     ,

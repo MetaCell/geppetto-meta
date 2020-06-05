@@ -767,6 +767,8 @@ define(function (require) {
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
       GEPPETTO.off(GEPPETTO.Events.Update_camera, null, this);
+
+      this.engine.colorController.unsubscribe();
     }
 
     componentDidMount () {

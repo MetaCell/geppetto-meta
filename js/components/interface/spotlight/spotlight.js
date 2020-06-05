@@ -26,6 +26,7 @@ define(function (require) {
     initialised:false,
     modifiable : true,
     plotController: new PlotController(),
+    projectStatus: null,
 
     // A sample suggestion, domain specific suggestions should go inside extension
     plotSample: {
@@ -39,7 +40,7 @@ define(function (require) {
 
     close : function () {
       $("#spotlight").hide();
-      GEPPETTO.trigger(GEPPETTO.Events.Spotlight_closed);
+      this.props.spotlightClosed();
     },
 
     addData : function (instances) {
@@ -53,6 +54,48 @@ define(function (require) {
       return { indexInstances: true };
     },
 
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (this.props.projectStatus !== nextProps.projectStatus) {
+        switch (nextProps.projectStatus) {
+        case GEPPETTO.StoreManager.clientActions.PROJECT_LOADED:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission());
+          break;
+        case GEPPETTO.StoreManager.clientActions.PROJECT_PERSISTED:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission());
+          break
+        default:
+          break;
+        }
+      }
+
+      if (this.props.experimentStatus !== nextProps.experimentStatus) {
+        switch (nextProps.experimentStatus) {
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission());
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_COMPLETED:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission(nextProps.experimentId));
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission());
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_ACTIVE:
+          this.updateToolBarVisibilityState(this.checkHasWritePermission());
+          break;
+        default:
+          break;
+        }
+      }
+
+      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === GEPPETTO.StoreManager.clientActions.MODEL_LOADED) {
+        if (this.initialised){
+          this.initialised = false;
+          this.instances.initialize(true);
+          this.addData(GEPPETTO.ModelFactory.allPathsIndexing);
+        }
+      }
+    },
+
     componentDidMount: function () {
 
       var space = 32;
@@ -62,7 +105,7 @@ define(function (require) {
 
       GEPPETTO.Spotlight = this;
 
-      GEPPETTO.trigger(GEPPETTO.Events.Spotlight_loaded);
+      this.props.spotlightLoaded();
 
       this.initTypeahead();
 
@@ -129,14 +172,6 @@ define(function (require) {
         $(this).trigger("keypress",{ keyCode: 13 });
       });
 
-      GEPPETTO.on(GEPPETTO.Events.Model_loaded, function () {
-        if (that.initialised){
-          that.initialised = false;
-          that.instances.initialize(true);
-          that.addData(GEPPETTO.ModelFactory.allPathsIndexing);
-        }
-      });
-
       // Initializing Bloodhound sources, we have one for instances and one for the suggestions
       this.instances = new Bloodhound({
         datumTokenizer: function (str) {
@@ -177,33 +212,6 @@ define(function (require) {
       if (GEPPETTO.ForegroundControls != undefined){
         GEPPETTO.ForegroundControls.refresh();
       }
-
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        // Hides or Shows tool bar depending on login user permissions
-        that.updateToolBarVisibilityState(that.checkHasWritePermission());
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Project_persisted, function () {
-        // Hides or Shows tool bar depending on login user permissions
-        that.updateToolBarVisibilityState(that.checkHasWritePermission());
-      });
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, function (experimentId) {
-        that.updateToolBarVisibilityState(that.checkHasWritePermission(experimentId));
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, function () {
-        // Hides or Shows tool bar depending on login user permissions
-        that.updateToolBarVisibilityState(that.checkHasWritePermission());
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, function () {
-        // Hides or Shows tool bar depending on login user permissions
-        that.updateToolBarVisibilityState(that.checkHasWritePermission());
-      });
-
-      GEPPETTO.on(GEPPETTO.Events.Experiment_active, function () {
-        that.updateToolBarVisibilityState(that.checkHasWritePermission());
-      });
 
       GEPPETTO.on(GEPPETTO.Events.Instances_created, function (instances){
         that.addData(GEPPETTO.ModelFactory.newPathsIndexing);

@@ -207,10 +207,10 @@ define(function (require) {
         var modalVisible = $('#tutorial_dialog').is(':visible');
 
         if (modalVisible) {
-          GEPPETTO.trigger(GEPPETTO.Events.Hide_Tutorial);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.HIDE_TUTORIAL;
         } else {
-          GEPPETTO.trigger(GEPPETTO.Events.Show_Tutorial);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.SHOW_TUTORIAL;
         }
         return returnMessage;

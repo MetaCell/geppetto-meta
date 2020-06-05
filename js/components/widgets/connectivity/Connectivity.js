@@ -155,7 +155,9 @@ define(function (require) {
       // track change in state of the widget
       this.dirtyView = true;
 
-      GEPPETTO.on(GEPPETTO.Events.Color_set, this.onColorChange(this));
+      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.COLOR_SET].list.push(action => {
+        this.onColorChange(action.data.instance);
+      });
 
       return this;
     },

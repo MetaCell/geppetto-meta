@@ -61,7 +61,7 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.MODEL_LOADED] = function (payload) {
     console.time(GEPPETTO.Resources.PARSING_MODEL);
-    GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.PARSING_MODEL);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.PARSING_MODEL);
 
     var model = JSON.parse(payload.geppetto_model_loaded);
     GEPPETTO.Manager.loadModel(model);
@@ -100,7 +100,7 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.EXPERIMENT_LOADING] = function (payload) {
-    GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_EXPERIMENT);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
   };
 
   messageHandler[messageTypes.PROJECT_MADE_PUBLIC] = function (payload) {
@@ -186,7 +186,7 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.WATCHED_VARIABLES_SET] = function (payload) {
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_updated);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The list of variables to watch was successfully updated.");
   };
 
@@ -198,7 +198,7 @@ function MessageHandler (GEPPETTO) {
 
   // received model tree from server
   messageHandler[messageTypes.UPDATE_MODEL_TREE] = function (payload) {
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_updated);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The model parameters were successfully updated.");
   };
 
@@ -252,7 +252,7 @@ function MessageHandler (GEPPETTO) {
   };
         
   messageHandler[messageTypes.DOWNLOAD_PROJECT] = function (payload) {
-    GEPPETTO.trigger(GEPPETTO.Events.Project_downloaded);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_DOWNLOADED]();
     GEPPETTO.CommandController.log("Project downloaded succesfully",true);
   };
 

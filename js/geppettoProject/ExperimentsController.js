@@ -87,7 +87,7 @@ define(function (require) {
             this.triggerPlayExperiment(experiment);
           }
 
-          GEPPETTO.trigger(GEPPETTO.Events.Experiment_updated);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED]()
         },
 
         /* 
@@ -145,7 +145,7 @@ define(function (require) {
           parameters["experimentId"] = experiment.id;
           parameters["projectId"] = experiment.getParent().getId();
 
-          GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_EXPERIMENT);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
           // before wiping widgets stop view monitoring otherwise we may wipe the experiment view
           GEPPETTO.ViewController.clearViewMonitor();
           // wipe widgets
@@ -295,7 +295,7 @@ define(function (require) {
         pause: function () {
           this.state = ExperimentStateEnum.PAUSED;
           this.getWorker().postMessage([GEPPETTO.Events.Experiment_pause]);
-          GEPPETTO.trigger(GEPPETTO.Events.Experiment_pause);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_PAUSE]();
         },
 
         isPaused: function () {
@@ -315,7 +315,7 @@ define(function (require) {
           if (this.isPaused()) {
             this.state = ExperimentStateEnum.PLAYING;
             GEPPETTO.ExperimentsController.getWorker().postMessage([GEPPETTO.Events.Experiment_resume]);
-            GEPPETTO.trigger(GEPPETTO.Events.Experiment_resume);
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RESUME]();
             return "Pause Experiment";
           }
         },
@@ -323,7 +323,7 @@ define(function (require) {
         stop: function () {
           this.terminateWorker();
           this.state = ExperimentStateEnum.STOPPED;
-          GEPPETTO.trigger(GEPPETTO.Events.Experiment_stop);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_STOP]();
         },
 
         closeCurrentExperiment: function () {
@@ -350,11 +350,11 @@ define(function (require) {
           }
 
           this.state = ExperimentStateEnum.PLAYING;
-          GEPPETTO.trigger(GEPPETTO.Events.Experiment_play, this.playOptions);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_PLAY](this.playOptions);
 
           if (this.playOptions.playAll) {
             GEPPETTO.ExperimentsController.terminateWorker();
-            GEPPETTO.trigger(GEPPETTO.Events.Experiment_update, {
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATE]({
               step: this.maxSteps - 1,
               playAll: true
             });
@@ -383,7 +383,7 @@ define(function (require) {
                   Project.getActiveExperiment().playAll();
                 }
               } else {
-                GEPPETTO.trigger(GEPPETTO.Events.Experiment_update, {
+                GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATE]({
                   step: currentStep,
                   playAll: false
                 });

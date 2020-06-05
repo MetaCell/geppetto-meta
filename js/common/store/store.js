@@ -1,23 +1,23 @@
 import {
+  compose,
   createStore,
   applyMiddleware,
-  compose,
   combineReducers,
 } from "redux";
 import { callbacksMiddleware } from '../middleware/geppettoMiddleware';
 
 // TO FIX: status is state
-import geppettoModelReducer, { modelInitialStatus } from '../reducer/geppettoModel';
+import geppettoLayoutReducer, { layoutInitialStatus } from '../reducer/geppettoLayout';
 import geppettoClientReducer, { clientInitialStatus } from '../reducer/geppettoClient';
 
 const initialState = {
-  model: modelInitialStatus,
-  client: clientInitialStatus
+  client: clientInitialStatus,
+  layout: layoutInitialStatus
 };
 
 const staticReducers = {
   client: geppettoClientReducer,
-  model: geppettoModelReducer
+  layout: geppettoLayoutReducer
 }
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

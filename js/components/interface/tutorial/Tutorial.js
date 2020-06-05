@@ -286,6 +286,47 @@ define(function (require) {
       }
     }
 
+    UNSAFE_componentWillReceiveProps (nextProps) {
+      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === GEPPETTO.StoreManager.clientActions.MODEL_LOADED) {
+        if (!this.dontShowTutorial) {
+          // default tutorial when user doesn't specify one for this event
+          if (this.props.tutorialURL != undefined) {
+            this.addTutorial(this.props.tutorialURL);
+          } else if (this.props.tutorialData != undefined) {
+            this.loadTutorial(this.props.tutorialData, true);
+          }
+          this.dontShowTutorial = true;
+        }
+      }
+
+      if (this.props.tutorialVisible !== nextProps.tutorialVisible) {
+        if (nextProps.tutorialVisible) {
+          // show tutorial from button
+          if (this.started == undefined) {
+            this.loadTutorial(this.props.tutorialData, true);
+            this.open(false);
+          } else if (this.started) {
+            this.open(false);
+          } else {
+            if (!this.state.visible) {
+              this.start();
+              this.open(false);
+            } else {
+              // default tutorial when user doesn't specify one for this event
+              if (this.state.tutorialData == {}) {
+                this.setTutorial("/org.geppetto.frontend/geppetto/node_modules/@geppettoengine/geppetto-client/js/components/interface/tutorial/configuration/experiment_loaded_tutorial.json", "Geppetto tutorial");
+              } else {
+                this.start();
+              }
+            }
+          }
+        } else {
+          // hide tutorial
+          this.close();
+        }
+      }
+    }
+
     componentDidMount () {
       this.close();
       var self = this;
@@ -294,46 +335,6 @@ define(function (require) {
         if (self.$el[0].id == id){
           self.forceUpdate();
         }
-      });
-
-      // launches specific tutorial is experiment is loaded
-      GEPPETTO.on(GEPPETTO.Events.Model_loaded, function () {
-        if (!self.dontShowTutorial) {
-          // default tutorial when user doesn't specify one for this event
-          if (self.props.tutorialURL != undefined) {
-            self.addTutorial(self.props.tutorialURL);
-          } else if (self.props.tutorialData != undefined) {
-            self.loadTutorial(self.props.tutorialData, true);
-          }
-          self.dontShowTutorial = true;
-        }
-      });
-
-      // Launches tutorial from button
-      GEPPETTO.on(GEPPETTO.Events.Show_Tutorial, function () {
-        if (self.started == undefined) {
-          self.loadTutorial(self.props.tutorialData, true);
-          self.open(false);
-        } else if (self.started) {
-          self.open(false);
-        } else {
-          if (!self.state.visible) {
-            self.start();
-            self.open(false);
-          } else {
-            // default tutorial when user doesn't specify one for this event
-            if (self.state.tutorialData == {}) {
-              self.setTutorial("/org.geppetto.frontend/geppetto/node_modules/@geppettoengine/geppetto-client/js/components/interface/tutorial/configuration/experiment_loaded_tutorial.json", "Geppetto tutorial");
-            } else {
-              self.start();
-            }
-          }
-        }
-      });
-
-      // Hides tutorial
-      GEPPETTO.on(GEPPETTO.Events.Hide_Tutorial, function () {
-        self.close();
       });
 
       GEPPETTO.Tutorial = this;

@@ -12,19 +12,23 @@ define(['jquery'], function () {
 
     var that = this;
 
-    GEPPETTO.on(GEPPETTO.Events.Experiment_update, function (parameters) {
-      if (parameters.playAll != null || parameters.step != undefined) {
+    var handleUpdates = () => {
+      if (GEPPETTO.StoreManager.store.getState().client.experiment.status === GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATE) {
+        var parameters = GEPPETTO.StoreManager.store.getState().client.experiment.parameters;
+        if (parameters.playAll != null || parameters.step != undefined) {
         // update scene brightness
-        for (var key in that.listeners) {
-          if (that.listeners[key] != null || undefined) {
-            for (var i = 0; i < that.listeners[key].length; i++) {
-              that.listeners[key][i](Instances.getInstance(key), parameters.step);
+          for (var key in that.listeners) {
+            if (that.listeners[key] != null || undefined) {
+              for (var i = 0; i < that.listeners[key].length; i++) {
+                that.listeners[key][i](Instances.getInstance(key), parameters.step);
+              }
             }
           }
         }
       }
-    });
+    };
 
+    this.unsubscriber = GEPPETTO.StoreManager.store.subscribe(handleUpdates);
   }
 
 

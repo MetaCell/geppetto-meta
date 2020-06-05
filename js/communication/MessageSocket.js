@@ -63,7 +63,7 @@ define(function (require) {
            * differently handle the reconnection scenario
            */
           if (messageHandlers.length > 0) {
-            GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
             var parameters = {};
             parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
             parameters["projectId"] = GEPPETTO.MessageSocket.projectId;

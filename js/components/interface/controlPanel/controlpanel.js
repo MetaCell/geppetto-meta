@@ -21,6 +21,9 @@ define(function (require) {
   var ToggleButton = require('./../../controls/toggleButton/ToggleButton');
   var colorpicker = require('./vendor/js/bootstrap-colorpicker.min');
   var PlotCtrlr = require('./../../widgets/plot/controllers/PlotsController');
+  
+  var { connect } = require('react-redux');
+
 
   $.widget.bridge('uitooltip', $.ui.tooltip);
 
@@ -149,7 +152,7 @@ define(function (require) {
     }
   });
 
-  GEPPETTO.ParameterInputComponent = CreateClass({
+  var _ParameterInputComponent = CreateClass({
     refresh: function () {
       this.forceUpdate();
     },
@@ -166,23 +169,31 @@ define(function (require) {
       });
     },
 
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.projectStatus) {
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_COMPLETED:
+          this.refresh();
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING:
+          this.refresh();
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
+          this.refresh();
+          break;
+        default:
+          break;
+        }
+      }
+    },
+
     componentDidMount: function () {
-      // listen to experiment status change and trigger a re-render to refresh input / read-only status
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, this.refresh, this);
       var status = window.Project.getActiveExperiment().getStatus();
       if (GEPPETTO.UserController.hasPersistence() && !window.Project.persisted) {
         this.attachTooltip("Save project (★) to enable editing.");
       } else if (status != GEPPETTO.Resources.ExperimentStatus.DESIGN) {
         this.attachTooltip("Experiment status is " + status + ". Create new experiment to enable parameter editing.");
       }
-    },
-
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Experiment_failed, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_completed, this.refresh, this);
     },
 
     render: function () {
@@ -270,7 +281,19 @@ define(function (require) {
     }
   });
 
-  GEPPETTO.ControlsComponent = CreateClass({
+  // Redux Wrapper to connect the GEPPETTO component
+  GEPPETTO.ParameterInputComponent = connect(
+    (state, ownProps) => ({
+      rowData: ownProps.rowData,
+      metadata: ownProps.metadata,
+      experimentStatus: state.client.experiment.status,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_ParameterInputComponent);
+
+  var _ControlsComponent = CreateClass({
     colorPickerBtnId: '',
     colorPickerActionFn: '',
 
@@ -357,19 +380,25 @@ define(function (require) {
           $(this).css("color", e.color.toHex());
         });
       }
-
-      // listen to experiment status change and trigger a re-render to update controls
-      GEPPETTO.on(GEPPETTO.Events.Experiment_completed, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.on(GEPPETTO.Events.Experiment_failed, this.refresh, this);
     },
 
-    componentWillUnmount: function () {
-      GEPPETTO.off(GEPPETTO.Events.Experiment_failed, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_running, this.refresh, this);
-      GEPPETTO.off(GEPPETTO.Events.Experiment_completed, this.refresh, this);
+    componentWillReceiveProps: function (nextProps) {
+      if (nextProps.experimentStatus !== this.props.experimentStatus) {
+        switch (nextProps.projectStatus) {
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_COMPLETED:
+          this.refresh();
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING:
+          this.refresh();
+          break;
+        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
+          this.refresh();
+          break;
+        default:
+          break;
+        }
+      }
     },
-
 
     // Utility method to iterate over a config property and populate a list of control buttons to be created
     addControlButtons: function (controlsConfig, showControlsConfig, configPropertyName, buttonsList, targetPath, projectId, experimentId) {
@@ -546,6 +575,17 @@ define(function (require) {
       )
     }
   });
+
+  GEPPETTO.ControlsComponent = connect(
+    (state, ownProps) => ({
+      rowData: ownProps.rowData,
+      metadata: ownProps.metadata,
+      experimentStatus: state.client.experiment.status,
+    }),
+    null,
+    null,
+    { withRef: true }
+  )(_ControlsComponent);
 
   var FilterComponent = CreateClass({
 
@@ -1988,6 +2028,12 @@ define(function (require) {
       return $("#controlpanel").is(':visible');
     },
 
+    UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.projectStatus === GEPPETTO.StoreManager.clientActions.PROJECT_LOADED) {
+        this.clearData();
+      }
+    },
+
     componentDidMount: function () {
       var escape = 27;
       var pKey = 80;
@@ -2017,11 +2063,6 @@ define(function (require) {
           that.close();
         }
       });
-
-      // listen to events we need to react to
-      GEPPETTO.on(GEPPETTO.Events.Project_loaded, function () {
-        that.clearData();
-      }, this);
 
       GEPPETTO.on(GEPPETTO.Events.Experiment_properties_saved, function () {
         if (that.isOpen()){
