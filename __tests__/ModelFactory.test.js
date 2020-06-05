@@ -18,9 +18,11 @@ GEPPETTO.CommandController = {
   createTags: (a, b) => null
 };
 
+
 test('load test model with new instances', () => {
   const geppettoModel = GEPPETTO.Manager.loadModel(testModel);
   expect(geppettoModel.getCurrentWorld().getInstances().length).toBe(7);
+  expect(Instances.getInstance('idonotexist')).toBe(undefined);
   expect(ModelFactory.allPaths.length).toBe(11);
   expect(Instances.length).toBe(7)
   expect(Instances.a.getValue().l[0]).toBe('x');
