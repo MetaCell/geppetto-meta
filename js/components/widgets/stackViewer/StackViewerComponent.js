@@ -1116,7 +1116,8 @@ define(function (require) {
         tempType: [],
         plane: null,
         initalised: false,
-        slice: false
+        slice: false,
+        lastUpdate: 0
       };
     },
 
