@@ -210,7 +210,6 @@ define(function (require) {
             var tileY = Number(result[1]);
             this.setState({ tileX: tileX, tileY: tileY });
             // console.log('Tile Size: ' + tileX + ', ' + tileY);
-            this.state.lastUpdate = 0;
             // update slice view
             this.checkStack();
             this.callPlaneEdges();
@@ -237,7 +236,6 @@ define(function (require) {
             this.setState(extent);
             this.props.setExtent(extent);
             // console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
-            this.state.lastUpdate = 0;
             // update slice view
             this.checkStack();
             this.callPlaneEdges();
