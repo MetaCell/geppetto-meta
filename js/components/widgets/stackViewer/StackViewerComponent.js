@@ -638,14 +638,14 @@ define(function (require) {
         this.createImages();
         this.updateImages(this.props);
         this.bufferStack();
-      } else if (!this.state.updating) {
-        this.state.updating = true;
-        var that = this;
-        window.setTimeout(function () {
-          that.state.updating = false;
-          that.checkStack();
-        }, 1000);
-      }
+      } // else if (!this.state.updating) {
+      //   this.state.updating = true;
+      //   var that = this;
+      //   window.setTimeout(function () {
+      //     that.state.updating = false;
+      //     that.checkStack();
+      //   }, 1000);
+      // }
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
         for (var i = 0; i < Object.keys(this.state.images).length; i++) {
