@@ -513,71 +513,70 @@ define(function (require) {
             imageLoader.add(image, image, loaderOptions);
             buffMax -= 1;
           }
-          if (buffMax < 1) {
-            break;
-          }
         }
       }
-      if (this.state.numTiles < 10) {
-        for (j in this.state.visibleTiles) {
-          for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
-              buffMax -= 1;
-            }
-            if (buffMax < 1) {
-              break;
-            }
-          }
-          var step;
-          if (this.state.orth == 0) {
-            step = this.state.voxelZ;
-          } else if (this.state.orth == 1) {
-            step = this.state.voxelY;
-          } else if (this.state.orth == 2) {
-            step = this.state.voxelX;
-          }
-          for (dst = 0; -dst > min || dst < max; dst += step) {
+      if (buffMax < 2000) { // only buffer surounding tiles if the main image has changed
+        if (this.state.numTiles < 10) {
+          for (j in this.state.visibleTiles) {
             for (i in this.state.stack) {
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+                // console.log('buffering ' + this.state.stack[i].toString() + '...');
                 imageLoader.add(image, image, loaderOptions);
-                buffMax -= 1;
               }
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
-                imageLoader.add(image, image, loaderOptions);
-                buffMax -= 1;
+              buffMax -= 1;
+              if (buffMax < 1) {
+                break;
               }
             }
-            if (buffMax < 1) {
-              break;
+            var step;
+            if (this.state.orth == 0) {
+              step = this.state.voxelZ * this.state.scl;
+            } else if (this.state.orth == 1) {
+              step = this.state.voxelY * this.state.scl;
+            } else if (this.state.orth == 2) {
+              step = this.state.voxelX * this.state.scl;
+            }
+            for (dst = 0; -dst > min || dst < max; dst += step) {
+              for (i in this.state.stack) {
+                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+                if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
+                  imageLoader.add(image, image, loaderOptions);
+                }
+                buffMax -= 1;
+                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+                if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
+                  imageLoader.add(image, image, loaderOptions);
+                }
+                buffMax -= 1;
+              }
+              if (buffMax < 1) {
+                break;
+              }
             }
           }
-        }
-      } else {
-        // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
-        for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
-          for (i in this.state.stack) {
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
+        } else {
+          // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
+          for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
+            for (i in this.state.stack) {
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+                // console.log('buffering ' + this.state.stack[i].toString() + '...');
+                imageLoader.add(image, image, loaderOptions);
+              }
               buffMax -= 1;
-            }
-            if (buffMax < 1) {
-              break;
-            }
-            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!PIXI.loader.resources[image] && !imageLoader.loading) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              imageLoader.add(image, image, loaderOptions);
+              if (buffMax < 1) {
+                break;
+              }
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+                // console.log('buffering ' + this.state.stack[i].toString() + '...');
+                imageLoader.add(image, image, loaderOptions);
+              }
               buffMax -= 1;
-            }
-            if (buffMax < 1) {
-              break;
+              if (buffMax < 1) {
+                break;
+              }
             }
           }
         }
@@ -826,7 +825,7 @@ define(function (require) {
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
         this.updateStatusText(nextProps);
       }
-      
+
       if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
         if (nextProps.orth !== this.state.orth) {
           this.state.recenter = true;
@@ -907,7 +906,7 @@ define(function (require) {
       this.state.text = text;
       this.state.txtUpdated = Date.now();
     },
-    
+
     setHoverText: function (x,y,text) {
       this.state.buffer[-1].x = -this.stage.position.x + this.disp.position.x + (this.stack.position.x * this.disp.scale.x) + (Number(x) * this.disp.scale.x) - 10;
       this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stack.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
@@ -1231,7 +1230,7 @@ define(function (require) {
           }
         }
         if (nextProps.voxel && nextProps.voxel != null) {
-          
+
           newState.voxelX = nextProps.voxel.x;
           newState.voxelY = nextProps.voxel.y; 
           newState.voxelZ = nextProps.voxel.z; 
