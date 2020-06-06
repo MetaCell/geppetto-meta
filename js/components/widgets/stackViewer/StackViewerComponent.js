@@ -1027,21 +1027,21 @@ define(function (require) {
           // update new position:
           this.state.posX = currentPosition.x;
           this.state.posY = currentPosition.y;
-          if (repeat) {
-            clearTimeout(oldEvent);
-            oldEvent = setTimeout(function (func, event) {
-              func(event, false);
-            }, 1000, this.onHoverEvent, event);
-          }
+          // if (repeat) {
+          //   clearTimeout(oldEvent);
+          //   oldEvent = setTimeout(function (func, event) {
+          //     func(event, false);
+          //   }, 1000, this.onHoverEvent, event);
+          // }
         }
-      } else if (this.state.loadingLabels) {
-        if (repeat) {
-          clearTimeout(oldEvent);
-          oldEvent = setTimeout(function (func, event) {
-            func(event, false);
-          }, 5000, this.onHoverEvent, event);
-        }
-      }
+      } // else if (this.state.loadingLabels) {
+      //   if (repeat) {
+      //     clearTimeout(oldEvent);
+      //     oldEvent = setTimeout(function (func, event) {
+      //       func(event, false);
+      //     }, 5000, this.onHoverEvent, event);
+      //   }
+      // }
       this.state.oldEvent = oldEvent;
     },
 
