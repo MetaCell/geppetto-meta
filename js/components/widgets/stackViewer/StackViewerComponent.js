@@ -647,7 +647,7 @@ define(function (require) {
 
       if (this.state.lastUpdate < (Date.now() - 2000)) {
         // console.log('Updating scene...');
-        this.createImages();
+        //this.createImages();
         this.updateImages(this.props);
         this.bufferStack();
         this.state.lastUpdate = Date.now();
@@ -791,7 +791,6 @@ define(function (require) {
           id: nextProps.id,
           serverUrl: nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol)
         });
-        this.createImages();
         this.updateImages(nextProps);
         this.checkStack();
       }
@@ -998,7 +997,7 @@ define(function (require) {
         this.state.data = null;
         this.state.dragging = false;
         this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
-        this.createImages();
+        this.updateImages(this.props);
       }
     },
 
