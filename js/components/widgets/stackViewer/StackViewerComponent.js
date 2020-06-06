@@ -580,12 +580,12 @@ define(function (require) {
             }
           }
         }
-      }
-      imageLoader
+        imageLoader
         .on('progress', loadProgressHandler.bind(this))
         .on('error', console.error)
         .on('complete', setup.bind(this))
         .load();
+      }
 
       function loadProgressHandler (loader, resource) {
         if (loader.progress < 100) {
