@@ -646,7 +646,7 @@ define(function (require) {
         }
       }
 
-      if (this.state.lastUpdate < (Date.now() - 2000)) {
+      if (this.state.lastUpdate < (Date.now() - 20)) {
         this.bufferStack();
         this.state.lastUpdate = Date.now();
         // console.log('Updating scene...');
