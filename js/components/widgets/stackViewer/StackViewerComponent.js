@@ -646,7 +646,7 @@ define(function (require) {
         }
       }
 
-      if (this.state.lastUpdate < (Date.now() - 20)) {
+      if (this.state.lastUpdate < (Date.now() - 2000)) {
         this.bufferStack();
         this.state.lastUpdate = Date.now();
         // console.log('Updating scene...');
@@ -1123,7 +1123,7 @@ define(function (require) {
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      if (this.state.lastUpdate < (Date.now() - 200)) {
+      if (this.state.lastUpdate < (Date.now() - 20)) {
         this.state.lastUpdate = Date.now();
         var newdst = this.state.dst;
         if (e.ctrlKey && e.wheelDelta > 0) {
