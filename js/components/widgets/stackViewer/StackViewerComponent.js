@@ -630,10 +630,6 @@ define(function (require) {
       if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
         this.state.buffer[-1].text = '';
       }
-      // console.log('Updating scene...');
-      this.bufferStack();
-      this.createImages();
-      this.updateImages(this.props);
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
         for (var i = 0; i < Object.keys(this.state.images).length; i++) {
@@ -649,6 +645,13 @@ define(function (require) {
         }
       }
 
+      if (this.state.lastUpdate < (Date.now() - 2000)) {
+        // console.log('Updating scene...');
+        this.createImages();
+        this.updateImages(this.props);
+        this.bufferStack();
+        this.state.lastUpdate = Date.now();
+      }
     },
 
     generateColor: function () {
