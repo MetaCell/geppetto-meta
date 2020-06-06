@@ -413,7 +413,6 @@ define(function (require) {
                   }
                 }
                 // update slice view
-                that.state.lastUpdate = 0;
                 that.checkStack();
               }
             },
@@ -478,8 +477,6 @@ define(function (require) {
                 if (i == 0) {
                   that.state.loadingLabels = false;
                 }
-                that.state.lastUpdate = 0;
-                that.checkStack();
               },
               error: function (xhr, status, err) {
                 that.state.loadingLabels = false;
