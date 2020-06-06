@@ -515,7 +515,8 @@ define(function (require) {
           }
         }
       }
-      if (buffMax < 2000) { // only buffer surounding tiles if the main image has changed
+      if (buffMax < 2000 || this.state.lastUpdate < (Date.now() - 600000)) { // only buffer surounding tiles if the main image has changed or 10 minute has passed
+        this.state.lastUpdate = Date.now();
         if (this.state.numTiles < 10) {
           for (j in this.state.visibleTiles) {
             for (i in this.state.stack) {
@@ -586,6 +587,7 @@ define(function (require) {
         .on('complete', setup.bind(this))
         .load();
         console.log('Buffered ' + (2000 - buffMax).toFixed(0) + ' Slice Tiles');
+        this.state.lastUpdate = Date.now();
       }
 
       function loadProgressHandler (loader, resource) {
@@ -630,23 +632,13 @@ define(function (require) {
         this.stack.removeChildren();
       }
 
-      if (this.state.lastUpdate < (Date.now() - 2000)) {
-        this.state.lastUpdate = Date.now();
-        if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-          this.state.buffer[-1].text = '';
-        }
-        // console.log('Updating scene...');
-        this.createImages();
-        this.updateImages(this.props);
-        this.bufferStack();
-      } // else if (!this.state.updating) {
-      //   this.state.updating = true;
-      //   var that = this;
-      //   window.setTimeout(function () {
-      //     that.state.updating = false;
-      //     that.checkStack();
-      //   }, 1000);
-      // }
+      if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+        this.state.buffer[-1].text = '';
+      }
+      // console.log('Updating scene...');
+      this.createImages();
+      this.updateImages(this.props);
+      this.bufferStack();
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
         for (var i = 0; i < Object.keys(this.state.images).length; i++) {
