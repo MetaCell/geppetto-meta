@@ -66,7 +66,7 @@ define(function (require) {
       this._isMounted = true;
 
       // console.log('Loading....');
-      
+
       // Setup PIXI Canvas in componentDidMount
       this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
       // maintain full window size
@@ -110,6 +110,7 @@ define(function (require) {
         .on('touchmove', this.onDragMove)
         .on('mousewheel', this.onWheelEvent)
         .on('wheel', this.onWheelEvent)
+        .on('scroll', this.onWheelEvent)
         .on('DOMMouseScroll', this.onWheelEvent);
 
       this.disp.addChild(this.stack);
@@ -1083,7 +1084,7 @@ define(function (require) {
 
   var StackViewerComponent = createClass({
     _isMounted: false,
-    
+
     getInitialState: function () {
       return {
         zoomLevel: 1.0,
@@ -1120,47 +1121,51 @@ define(function (require) {
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      var newdst = this.state.dst;
-      if (e.ctrlKey && e.wheelDelta > 0) {
-        this.onZoomIn();
-      } else if (e.ctrlKey && e.wheelDelta < 0) {
-        this.onZoomOut();
-      } else {
-        // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = -1 * e.wheelDelta;
-        // Max step of imposed
-        if (step > 0) {
-          if (this.state.orth == 0) {
-            step = this.state.voxelZ * this.state.scl;
-          } else if (this.state.orth == 1) {
-            step = this.state.voxelY * this.state.scl;
-          } else if (this.state.orth == 2) {
-            step = this.state.voxelX * this.state.scl;
-          }
-        } else if (step < 0) {
-          if (this.state.orth == 0) {
-            step = -this.state.voxelZ * this.state.scl;
-          } else if (this.state.orth == 1) {
-            step = -this.state.voxelY * this.state.scl;
-          } else if (this.state.orth == 2) {
-            step = -this.state.voxelX * this.state.scl;
-          }
-        }
-        if (e.shiftKey) {
-          newdst += step * 10;
+      if (this.state.lastUpdate < (Date.now() - 200)) {
+        this.state.lastUpdate = Date.now();
+        var newdst = this.state.dst;
+        if (e.ctrlKey && e.wheelDelta > 0) {
+          this.onZoomIn();
+        } else if (e.ctrlKey && e.wheelDelta < 0) {
+          this.onZoomOut();
         } else {
-          newdst += step;
-        }
+          // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
+          var step = -1 * e.wheelDelta;
+          // Max step of imposed
+          if (step > 0) {
+            if (this.state.orth == 0) {
+              step = this.state.voxelZ * this.state.scl;
+            } else if (this.state.orth == 1) {
+              step = this.state.voxelY * this.state.scl;
+            } else if (this.state.orth == 2) {
+              step = this.state.voxelX * this.state.scl;
+            }
+          } else if (step < 0) {
+            if (this.state.orth == 0) {
+              step = -this.state.voxelZ * this.state.scl;
+            } else if (this.state.orth == 1) {
+              step = -this.state.voxelY * this.state.scl;
+            } else if (this.state.orth == 2) {
+              step = -this.state.voxelX * this.state.scl;
+            }
+          }
+          if (e.shiftKey) {
+            newdst += step * 10;
+          } else {
+            newdst += step;
+          }
 
-        if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
-        } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.minDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'First slice!' });
-        } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.maxDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'Last slice!' });
+          if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+          } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.minDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'First slice!' });
+          } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.maxDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'Last slice!' });
+          }
         }
+        this.state.lastUpdate = Date.now();
       }
     },
 
@@ -1275,7 +1280,7 @@ define(function (require) {
             console.log(err.stack);
           }
         }
-        
+
         if (server != this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) && server != null) {
           newState.serverURL = server;
         }
@@ -1295,7 +1300,7 @@ define(function (require) {
         newState = { label: [], stack: [], id: [], color: [] };
       }
       if (JSON.stringify(newState) !== "{}") {
-        this.setState(newState);  
+        this.setState(newState);
       }
     },
 
@@ -1322,7 +1327,7 @@ define(function (require) {
       }
       if (zoomLevel < 10.0) {
         scale = Number(Math.ceil(zoomLevel).toFixed(1));
-        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')'; 
+        text = 'Zooming in to (X' + Number(zoomLevel).toFixed(1) + ')';
       } else {
         zoomLevel = 10;
         scale = 10;
@@ -1339,8 +1344,8 @@ define(function (require) {
         scl: scale,
         text: text,
         dst: newDst,
-        stackX: stackX, 
-        stackY: stackY 
+        stackX: stackX,
+        stackY: stackY
       });
     },
 
@@ -1410,7 +1415,7 @@ define(function (require) {
         scl: scale,
         text: text,
         dst: newDst,
-        stackX: stackX, 
+        stackX: stackX,
         stackY: stackY
       });
     },
@@ -1521,7 +1526,7 @@ define(function (require) {
 
       }, useCapture || false);
     },
-    
+
     render: function () {
       var homeClass = 'btn fa fa-home';
       var zoomInClass = 'btn fa fa-search-plus';
@@ -1631,10 +1636,10 @@ define(function (require) {
           </div>
         );
       }
-  
+
       return markup;
     }
   });
-  
+
   return StackViewerComponent;
 });
