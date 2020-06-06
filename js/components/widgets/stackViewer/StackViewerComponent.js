@@ -636,9 +636,9 @@ define(function (require) {
         this.state.buffer[-1].text = '';
       }
       // console.log('Updating scene...');
+      this.bufferStack();
       this.createImages();
       this.updateImages(this.props);
-      this.bufferStack();
 
       if (Object.keys(this.state.images).length > (this.state.stack.length * this.state.visibleTiles.length)) {
         for (var i = 0; i < Object.keys(this.state.images).length; i++) {
