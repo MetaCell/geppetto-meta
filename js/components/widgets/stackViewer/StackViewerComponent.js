@@ -585,6 +585,7 @@ define(function (require) {
         .on('error', console.error)
         .on('complete', setup.bind(this))
         .load();
+        console.log('Buffered ' + (2000 - buffMax).toFixed(0) + ' Slice Tiles');
       }
 
       function loadProgressHandler (loader, resource) {
