@@ -1145,9 +1145,9 @@ define(function (require) {
           }
         }
         if (e.shiftKey) {
-          this.state.scrollHits += step * 10 * this.state.scrollHits;
+          this.state.scrollHits += step * 10;
         } else {
-          this.state.scrollHits += step * this.state.scrollHits;
+          this.state.scrollHits += step;
         }
 
         if (this.state.lastUpdate < (Date.now() - 200)) {
