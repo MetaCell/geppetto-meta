@@ -434,6 +434,7 @@ define(function (require) {
         var i, j, result;
         var that = this;
         var callX = that.state.posX.toFixed(0), callY = that.state.posY.toFixed(0);
+
         $.each([this.state.stack[0]], function (i, item) {
           (function (i, that, shift) {
             if (i == 0) {
@@ -1015,41 +1016,31 @@ define(function (require) {
           return;
         }
         var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
-        currentPosition.x = Number(currentPosition.x.toFixed(0));
-        currentPosition.y = Number(currentPosition.y.toFixed(0));
-        if (this.state.hoverTime < Date.now() - 1000 && !(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) && this.state.posX == currentPosition.x && this.state.posY == currentPosition.y) {
+        // update new position:
+        this.state.posX = Number(currentPosition.x.toFixed(0));
+        this.state.posY = Number(currentPosition.y.toFixed(0));
+        if (!(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY)) {
           this.state.hoverTime = Date.now();
           this.listObjects();
           this.state.oldX = currentPosition.x;
           this.state.oldY = currentPosition.y;
         } else {
           // Timeout:
-          if (this.state.hoverTime < Date.now() - 5000) {
+          if (this.state.hoverTime < (Date.now() - 5000)) {
+            this.state.hoverTime = Date.now();
             this.listObjects();
+            this.state.oldX = currentPosition.x;
+            this.state.oldY = currentPosition.y;
           }
           // Check valid value:
           if (this.state.hoverTime > Date.now()) {
             this.state.hoverTime = Date.now();
             this.listObjects();
+            this.state.oldX = currentPosition.x;
+            this.state.oldY = currentPosition.y;
           }
-          // update new position:
-          this.state.posX = currentPosition.x;
-          this.state.posY = currentPosition.y;
-          // if (repeat) {
-          //   clearTimeout(oldEvent);
-          //   oldEvent = setTimeout(function (func, event) {
-          //     func(event, false);
-          //   }, 1000, this.onHoverEvent, event);
-          // }
         }
-      } // else if (this.state.loadingLabels) {
-      //   if (repeat) {
-      //     clearTimeout(oldEvent);
-      //     oldEvent = setTimeout(function (func, event) {
-      //       func(event, false);
-      //     }, 5000, this.onHoverEvent, event);
-      //   }
-      // }
+      }
       this.state.oldEvent = oldEvent;
     },
 
