@@ -1150,7 +1150,7 @@ define(function (require) {
           this.state.scrollHits += step;
         }
 
-        if (this.state.lastUpdate < (Date.now() - 200)) {
+        if (this.state.lastUpdate < (Date.now() - 100)) {
           this.state.lastUpdate = Date.now();
           newdst += this.state.scrollHits;
           this.state.scrollHits = 0;
