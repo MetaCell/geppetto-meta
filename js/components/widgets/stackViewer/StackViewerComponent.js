@@ -428,7 +428,7 @@ define(function (require) {
     },
 
     listObjects: function () {
-      if (!this.state.loadingLabels || this.state.lastLabelCall < (Date.now() - 2000)) {
+      if (!this.state.loadingLabels || this.state.lastLabelCall < (Date.now() - 500)) {
         this.state.lastLabelCall = Date.now();
         this.state.objects = [];
         var i, j, result;
