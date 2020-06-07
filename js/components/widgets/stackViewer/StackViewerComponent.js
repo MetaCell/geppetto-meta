@@ -1118,42 +1118,42 @@ define(function (require) {
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      this.state.scrollHits +=1;
-      if (this.state.lastUpdate < (Date.now() - 200)) {
-        this.state.lastUpdate = Date.now();
-        var newdst = this.state.dst;
-        if (e.ctrlKey && e.wheelDelta > 0) {
-          this.onZoomIn();
-        } else if (e.ctrlKey && e.wheelDelta < 0) {
-          this.onZoomOut();
+      var newdst = this.state.dst;
+      if (e.ctrlKey && e.wheelDelta > 0) {
+        this.onZoomIn();
+      } else if (e.ctrlKey && e.wheelDelta < 0) {
+        this.onZoomOut();
+      } else {
+        // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
+        var step = -1 * e.wheelDelta;
+        // Max step of imposed
+        if (step > 0) {
+          if (this.state.orth == 0) {
+            step = this.state.voxelZ * this.state.scl;
+          } else if (this.state.orth == 1) {
+            step = this.state.voxelY * this.state.scl;
+          } else if (this.state.orth == 2) {
+            step = this.state.voxelX * this.state.scl;
+          }
+        } else if (step < 0) {
+          if (this.state.orth == 0) {
+            step = -this.state.voxelZ * this.state.scl;
+          } else if (this.state.orth == 1) {
+            step = -this.state.voxelY * this.state.scl;
+          } else if (this.state.orth == 2) {
+            step = -this.state.voxelX * this.state.scl;
+          }
+        }
+        if (e.shiftKey) {
+          this.state.scrollHits += step * 10 * this.state.scrollHits;
         } else {
-          // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-          var step = -1 * e.wheelDelta;
-          // Max step of imposed
-          if (step > 0) {
-            if (this.state.orth == 0) {
-              step = this.state.voxelZ * this.state.scl;
-            } else if (this.state.orth == 1) {
-              step = this.state.voxelY * this.state.scl;
-            } else if (this.state.orth == 2) {
-              step = this.state.voxelX * this.state.scl;
-            }
-          } else if (step < 0) {
-            if (this.state.orth == 0) {
-              step = -this.state.voxelZ * this.state.scl;
-            } else if (this.state.orth == 1) {
-              step = -this.state.voxelY * this.state.scl;
-            } else if (this.state.orth == 2) {
-              step = -this.state.voxelX * this.state.scl;
-            }
-          }
-          if (e.shiftKey) {
-            newdst += step * 10 * this.state.scrollHits;
-          } else {
-            newdst += step * this.state.scrollHits;
-          }
-          this.state.scrollHits = 0;
+          this.state.scrollHits += step * this.state.scrollHits;
+        }
 
+        if (this.state.lastUpdate < (Date.now() - 200)) {
+          this.state.lastUpdate = Date.now();
+          newdst += this.state.scrollHits;
+          this.state.scrollHits = 0;
           if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
             this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
           } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
@@ -1164,7 +1164,6 @@ define(function (require) {
             this.setState({ dst: newdst, text: 'Last slice!' });
           }
         }
-        this.state.lastUpdate = Date.now();
       }
     },
 
