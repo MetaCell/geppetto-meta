@@ -426,7 +426,7 @@ define(function (require) {
     },
 
     listObjects: function () {
-      if (!this.state.loadingLabels) {
+      if (!this.state.loadingLabels || this.state.lastUpdate < (Date.now() - 10000)) {
         this.state.objects = [];
         var i, j, result;
         var that = this;
