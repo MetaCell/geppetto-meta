@@ -53,7 +53,8 @@ define(function (require) {
         txtUpdated: Date.now(),
         txtStay: 3000,
         objects: [],
-        hoverTime: Date.now()
+        hoverTime: Date.now(),
+        lastLabelCall: 0
       };
     },
     /**
@@ -426,7 +427,8 @@ define(function (require) {
     },
 
     listObjects: function () {
-      if (!this.state.loadingLabels || this.state.lastUpdate < (Date.now() - 10000)) {
+      if (!this.state.loadingLabels || this.state.lastLabelCall < (Date.now() - 2000)) {
+        this.state.lastLabelCall = Date.now();
         this.state.objects = [];
         var i, j, result;
         var that = this;
