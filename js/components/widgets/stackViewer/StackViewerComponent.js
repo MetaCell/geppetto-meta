@@ -54,7 +54,8 @@ define(function (require) {
         txtStay: 3000,
         objects: [],
         hoverTime: Date.now(),
-        lastLabelCall: 0
+        lastLabelCall: 0,
+        scrollHits: 0
       };
     },
     /**
@@ -1126,6 +1127,7 @@ define(function (require) {
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
+      this.state.scrollHits +=1;
       if (this.state.lastUpdate < (Date.now() - 200)) {
         this.state.lastUpdate = Date.now();
         var newdst = this.state.dst;
@@ -1155,10 +1157,11 @@ define(function (require) {
             }
           }
           if (e.shiftKey) {
-            newdst += step * 10;
+            newdst += step * 10 * this.state.scrollHits;
           } else {
-            newdst += step;
+            newdst += step * this.state.scrollHits;
           }
+          this.state.scrollHits = 0;
 
           if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
             this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
