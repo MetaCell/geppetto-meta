@@ -924,10 +924,10 @@ define(function (require) {
           image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
-            if (this.stack.imagesUrl[d] != image) {
+            if (this.state.imagesUrl[d] != image) {
               if (this.state.iBuffer[image] && this.state.iBuffer[image].texture && (this.state.iBuffer[image].texture.baseTexture !== null)) {
                 this.state.images[d].texture = this.state.iBuffer[image].texture;
-                this.stack.imagesUrl[d] = image;
+                this.state.imagesUrl[d] = image;
               } else {
                 if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
                   this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
