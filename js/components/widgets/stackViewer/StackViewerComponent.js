@@ -584,7 +584,7 @@ define(function (require) {
           this.state.lastUpdate = Date.now();
         }
       } else {
-        imageLoader.destroy();
+        imageLoader.destroy(true);
       }
 
       function loadProgressHandler (loader, resource) {
@@ -602,7 +602,7 @@ define(function (require) {
 
       function setup () {
         this.state.iBuffer = Object.assign({}, this.state.iBuffer, imageLoader.resources);
-        imageLoader.destroy();
+        imageLoader.destroy(true);
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
           // this.props.canvasRef.resetCamera();
