@@ -1139,6 +1139,9 @@ define(function (require) {
           newdst = ((this.state.maxDst / 10.0) * this.state.scl);
           this.setState({ dst: newdst, text: 'Last slice!' });
         }
+
+        this.updateImages(this.props);
+
       }
     },
 
