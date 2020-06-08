@@ -239,6 +239,7 @@ define(function (require) {
             // update slice view
             this.checkStack();
             this.callPlaneEdges();
+            this.createImages();
           }
         }.bind(this),
         error: function (xhr, status, err) {
