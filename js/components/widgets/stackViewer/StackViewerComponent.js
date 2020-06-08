@@ -498,7 +498,6 @@ define(function (require) {
       var max = (this.state.maxDst / 10.0) * this.state.scl;
       var buffMax = 2000;
       var imageLoader = PIXI.loader;
-      imageLoader.reset();
       var loaderOptions = {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
