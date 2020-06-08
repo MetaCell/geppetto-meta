@@ -602,7 +602,7 @@ define(function (require) {
 
       function setup () {
         this.state.iBuffer = Object.assign({}, this.state.iBuffer, imageLoader.resources);
-        this.imageLoader.destroy();
+        imageLoader.destroy();
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
           // this.props.canvasRef.resetCamera();
