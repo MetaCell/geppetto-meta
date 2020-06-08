@@ -55,7 +55,9 @@ define(function (require) {
         objects: [],
         hoverTime: Date.now(),
         lastLabelCall: 0,
-        scrollHits: 0
+        scrollHits: 0,
+        iBuffer: {},
+        imagesUrl: {}
       };
     },
     /**
@@ -497,13 +499,14 @@ define(function (require) {
       var min = (this.state.minDst / 10.0) * this.state.scl;
       var max = (this.state.maxDst / 10.0) * this.state.scl;
       var buffMax = 2000;
-      var imageLoader = PIXI.loader;
+      var imageLoader = new PIXI.loaders.Loader();
       var loaderOptions = {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
+      imageLoader.resources = this.stack.iBuffer;
 
-      if (!imageLoader.loading) {
+      if (!imageLoader.loading && this.state.lastUpdate < (Date.now() - 20000)) {
         for (j = 0; j < this.state.numTiles; j++) {
           for (i in this.state.stack) {
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
@@ -580,6 +583,8 @@ define(function (require) {
           console.log('Buffered ' + (2000 - buffMax).toFixed(0) + ' Slice Tiles');
           this.state.lastUpdate = Date.now();
         }
+      } else {
+        imageLoader.destroy();
       }
 
       function loadProgressHandler (loader, resource) {
@@ -596,6 +601,8 @@ define(function (require) {
       }
 
       function setup () {
+        this.stack.iBuffer = Object.assign({}, this.stack.iBuffer, this.imageLoader.resources);
+        this.imageLoader.destroy();
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
           // this.props.canvasRef.resetCamera();
@@ -701,6 +708,7 @@ define(function (require) {
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
                 // console.log(image);
                 this.state.images[d] = PIXI.Sprite.fromImage(image);
+                this.state.iBuffer[image] = this.state.images[d];
                 this.state.images[d].anchor.x = 0;
                 this.state.images[d].anchor.y = 0;
                 this.state.images[d].position.x = x;
@@ -916,33 +924,23 @@ define(function (require) {
           image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
-            if (PIXI.loader.resources[image] && PIXI.loader.resources[image].texture && (PIXI.loader.resources[image].texture.baseTexture !== null)) {
-              this.state.images[d].texture = PIXI.loader.resources[image].texture;
-            } else {
-              if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
-              }
-              this.state.images[d].texture = PIXI.Texture.fromImage(image);
-              if (!PIXI.loader.resources[image] && !PIXI.loader.loading) {
-                PIXI.loader.add(image, image, {
-                  loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
-                  xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
-                });
+            if (this.stack.imagesUrl[d] != image) {
+              if (this.state.iBuffer[image] && this.state.iBuffer[image].texture && (this.state.iBuffer[image].texture.baseTexture !== null)) {
+                this.state.images[d].texture = this.state.iBuffer[image].texture;
+                this.stack.imagesUrl[d] = image;
+              } else {
+                if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+                  this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
+                }
+                this.state.images[d].texture = PIXI.Texture.fromImage(image);
+                this.state.iBuffer[image].texture = this.state.images[d].texture;
               }
             }
             this.state.images[d].tint = this.state.color[i];
             this.state.images[d].zOrder = i;
-            // console.log([d,this.state.images[d].position.x,this.state.images[d].position.y,this.state.images[d].anchor.x,this.state.images[d].anchor.y])
-          }// else{
-          /*
-           *   console.log(d + ' not loaded!?');
-           *   console.log(this.state.images);
-           *   console.log(this.state.visibleTiles[j]);
-           * }
-           */
+          }
         }
       }
-      PIXI.loader.load();
     },
 
     /**
