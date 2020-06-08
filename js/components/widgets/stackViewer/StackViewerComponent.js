@@ -578,7 +578,7 @@ define(function (require) {
           imageLoader
           .on('progress', loadProgressHandler.bind(this))
           .on('error', console.error)
-          .on('complete', setup.bind(this))
+          .on('complete', setup.bind(this,imageLoader))
           .load();
           console.log('Buffered ' + (2000 - buffMax).toFixed(0) + ' Slice Tiles');
           this.state.lastUpdate = Date.now();
@@ -601,7 +601,7 @@ define(function (require) {
       }
 
       function setup () {
-        this.state.iBuffer = Object.assign({}, this.state.iBuffer, this.imageLoader.resources);
+        this.state.iBuffer = Object.assign({}, this.state.iBuffer, imageLoader.resources);
         this.imageLoader.destroy();
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
