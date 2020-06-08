@@ -98,7 +98,7 @@ define(function (require) {
 
       this.stack.interactive = true;
       this.stack.buttonMode = true;
-      this.stage.addEventListener('wheel', this.onWheelEvent);
+      this.stage.on('wheel', this.onWheelEvent);
       this.stack
         // events for drag start
         .on('mousedown', this.onDragStart)
