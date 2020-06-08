@@ -504,7 +504,7 @@ define(function (require) {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
-      imageLoader.resources = this.stack.iBuffer;
+      imageLoader.resources = this.state.iBuffer;
 
       if (!imageLoader.loading && this.state.lastUpdate < (Date.now() - 20000)) {
         for (j = 0; j < this.state.numTiles; j++) {
@@ -601,7 +601,7 @@ define(function (require) {
       }
 
       function setup () {
-        this.stack.iBuffer = Object.assign({}, this.stack.iBuffer, this.imageLoader.resources);
+        this.state.iBuffer = Object.assign({}, this.state.iBuffer, this.imageLoader.resources);
         this.imageLoader.destroy();
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
