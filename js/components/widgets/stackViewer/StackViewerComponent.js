@@ -98,6 +98,7 @@ define(function (require) {
 
       this.stack.interactive = true;
       this.stack.buttonMode = true;
+      this.stage.addEventListener('wheel', this.onWheelEvent);
       this.stack
         // events for drag start
         .on('mousedown', this.onDragStart)
@@ -109,8 +110,7 @@ define(function (require) {
         .on('touchendoutside', this.onDragEnd)
         // events for drag move
         .on('mousemove', this.onDragMove)
-        .on('touchmove', this.onDragMove)
-        .addEventListener('wheel', this.onWheelEvent);
+        .on('touchmove', this.onDragMove);
 
       this.disp.addChild(this.stack);
 
