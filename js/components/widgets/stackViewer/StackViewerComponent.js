@@ -498,6 +498,7 @@ define(function (require) {
       var max = (this.state.maxDst / 10.0) * this.state.scl;
       var buffMax = 2000;
       var imageLoader = PIXI.loader;
+      imageLoader.reset();
       var loaderOptions = {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
@@ -506,7 +507,7 @@ define(function (require) {
       for (j = 0; j < this.state.numTiles; j++) {
         for (i in this.state.stack) {
           image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-          if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+          if (!imageLoader.resources[image]) {
             // console.log('buffering ' + this.state.stack[i].toString() + '...');
             imageLoader.add(image, image, loaderOptions);
             buffMax -= 1;
@@ -519,7 +520,7 @@ define(function (require) {
           for (j in this.state.visibleTiles) {
             for (i in this.state.stack) {
               image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=0.0&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+              if (!imageLoader.resources[image]) {
                 // console.log('buffering ' + this.state.stack[i].toString() + '...');
                 imageLoader.add(image, image, loaderOptions);
               }
@@ -539,12 +540,12 @@ define(function (require) {
             for (dst = 0; -dst > min || dst < max; dst += step) {
               for (i in this.state.stack) {
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                if (dst < max && !PIXI.loader.resources[image] && !imageLoader.loading) {
+                if (dst < max && !imageLoader.resources[image]) {
                   imageLoader.add(image, image, loaderOptions);
                 }
                 buffMax -= 1;
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(-dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                if (-dst > min && !PIXI.loader.resources[image] && !imageLoader.loading) {
+                if (-dst > min && !imageLoader.resources[image]) {
                   imageLoader.add(image, image, loaderOptions);
                 }
                 buffMax -= 1;
@@ -559,7 +560,7 @@ define(function (require) {
           for (j = 0; j < this.state.numTiles && j < this.state.stack.length; j++) {
             for (i in this.state.stack) {
               image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst - 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+              if (!imageLoader.resources[image]) {
                 // console.log('buffering ' + this.state.stack[i].toString() + '...');
                 imageLoader.add(image, image, loaderOptions);
               }
@@ -568,7 +569,7 @@ define(function (require) {
                 break;
               }
               image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst + 0.1).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-              if (!PIXI.loader.resources[image] && !imageLoader.loading) {
+              if (!imageLoader.resources[image]) {
                 // console.log('buffering ' + this.state.stack[i].toString() + '...');
                 imageLoader.add(image, image, loaderOptions);
               }
