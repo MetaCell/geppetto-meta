@@ -933,7 +933,7 @@ define(function (require) {
                   this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
                 }
                 this.state.images[d].texture = PIXI.Texture.fromImage(image);
-                this.state.iBuffer[image].texture = this.state.images[d].texture;
+                this.state.iBuffer[image] = this.state.images[d];
               }
             }
             this.state.images[d].tint = this.state.color[i];
