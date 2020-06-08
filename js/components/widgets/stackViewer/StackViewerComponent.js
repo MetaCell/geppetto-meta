@@ -110,10 +110,7 @@ define(function (require) {
         // events for drag move
         .on('mousemove', this.onDragMove)
         .on('touchmove', this.onDragMove)
-        .on('mousewheel', this.onWheelEvent)
-        .on('wheel', this.onWheelEvent)
-        .on('scroll', this.onWheelEvent)
-        .on('DOMMouseScroll', this.onWheelEvent);
+        .addEventListener('wheel', this.onWheelEvent);
 
       this.disp.addChild(this.stack);
 
@@ -1125,44 +1122,29 @@ define(function (require) {
         this.onZoomOut();
       } else {
         // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = -1 * e.wheelDelta;
+        var step = e.deltaY * -0.01;
+        var stepDepth = 1;
         // Max step of imposed
-        if (step > 0) {
-          if (this.state.orth == 0) {
-            step = this.state.voxelZ * this.state.scl;
-          } else if (this.state.orth == 1) {
-            step = this.state.voxelY * this.state.scl;
-          } else if (this.state.orth == 2) {
-            step = this.state.voxelX * this.state.scl;
-          }
-        } else if (step < 0) {
-          if (this.state.orth == 0) {
-            step = -this.state.voxelZ * this.state.scl;
-          } else if (this.state.orth == 1) {
-            step = -this.state.voxelY * this.state.scl;
-          } else if (this.state.orth == 2) {
-            step = -this.state.voxelX * this.state.scl;
-          }
+        if (this.state.orth == 0) {
+          stepDepth = this.state.voxelZ * this.state.scl;
+        } else if (this.state.orth == 1) {
+          stepDepth = this.state.voxelY * this.state.scl;
+        } else if (this.state.orth == 2) {
+          stepDepth = this.state.voxelX * this.state.scl;
         }
         if (e.shiftKey) {
-          this.state.scrollHits += step * 10;
-        } else {
-          this.state.scrollHits += step;
+          stepDepth = stepDepth * 10;
         }
 
-        if (this.state.lastUpdate < (Date.now() - 100)) {
-          this.state.lastUpdate = Date.now();
-          newdst += this.state.scrollHits;
-          this.state.scrollHits = 0;
-          if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-            this.setState({ dst: newdst, text: 'Slice:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
-          } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
-            newdst = ((this.state.minDst / 10.0) * this.state.scl);
-            this.setState({ dst: newdst, text: 'First slice!' });
-          } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-            newdst = ((this.state.maxDst / 10.0) * this.state.scl);
-            this.setState({ dst: newdst, text: 'Last slice!' });
-          }
+        newdst += stepDepth * step;
+        if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+          this.setState({ dst: newdst, text: 'Depth:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+        } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+          newdst = ((this.state.minDst / 10.0) * this.state.scl);
+          this.setState({ dst: newdst, text: 'First slice!' });
+        } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+          newdst = ((this.state.maxDst / 10.0) * this.state.scl);
+          this.setState({ dst: newdst, text: 'Last slice!' });
         }
       }
     },
