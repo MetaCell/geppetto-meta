@@ -2873,7 +2873,7 @@ export default function (GEPPETTO) {
         // re-run model shortcuts
         this.populateChildrenShortcuts(this.geppettoModel);
 
-        GEPPETTO.trigger(GEPPETTO.Events.Instance_deleted, instancePath);
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCE_DELETE](instancePath);
       },
 
       /**

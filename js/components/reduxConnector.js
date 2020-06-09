@@ -3,7 +3,39 @@ import {
   showSpinner,
   spotlightClosed,
   spotlightLoaded,
+  updateCamera,
 } from '../common/actions/actions';
+
+import _Canvas from './interface/3dCanvas/Canvas';
+export const Canvas = connect(
+  (state, ownProps) => ({
+    id: ownProps.id,
+    name: ownProps.name,
+    style: ownProps.style,
+    baseZoom: ownProps.baseZoom,
+    wireframeEnabled: ownProps.wireframeEnabled,
+    hideCameraControls: ownProps.hideCameraControls,
+    geppettoInstances: state.client.instances,
+    latestUpdate: state.client.components.canvas.latestUpdate,
+  }),
+  dispatch => ({ updateCamera: () => dispatch(updateCamera()) }),
+  null,
+  { withRef: true }
+)(_Canvas);
+
+import _Console from './interface/console/Console';
+export const Console = connect(
+  (state, ownProps) => ({
+    id: ownProps.id,
+    settings: ownProps.settings,
+    log_mode: state.client.logs.mode,
+    log_message: state.client.logs.message,
+    log_timestamp: state.client.logs.timestamp,
+  }),
+  null,
+  null,
+  { withRef: true }
+)(_Console);
 
 import _ControlPanel from './interface/controlPanel/controlpanel';
 export const ControlPanel = connect(
@@ -13,7 +45,16 @@ export const ControlPanel = connect(
     useBuiltInFilters: ownProps.useBuiltInFilters,
     resultsPerPage: ownProps.resultsPerPage,
     enablePagination: ownProps.enablePagination,
+    showMenuButton: ownProps.showMenuButton,
+    menuButtonItems: ownProps.menuButtonItems,
+    showClose: ownProps.showClose,
+    menuButtonClickHandler: ownProps.menuButtonClickHandler,
+    listenToInstanceCreationEvents: ownProps.listenToInstanceCreationEvents,
     projectStatus: state.client.project.status,
+    projectSaved: state.client.project.properties.properties_saved,
+    experimentSaved: state.client.experiment.properties.properties_saved,
+    parametersSet: state.client.experiment.properties.parameters_set,
+    geppettoInstances: state.client.instances,
   }),
   null,
   null,
@@ -66,6 +107,19 @@ export const SaveControl = connect(
   { withRef: true }
 )(_SaveControl);
 
+import _SlideshowImageComponent from './interface/query/customComponents/slideshowImageComponent';
+export const SlideshowImageComponent = connect(
+  (state, ownProps) => ({
+    data: ownProps.data,
+    rowData: ownProps.rowData,
+    metadata: ownProps.metadata,
+    geppettoInstances: state.client.instances,
+  }),
+  null,
+  null,
+  { withRef: true }
+)(_SlideshowImageComponent);
+
 import _Spotlight from './interface/spotlight/spotlight';
 export const Spotlight = connect(
   (state, ownProps) => ({
@@ -74,6 +128,7 @@ export const Spotlight = connect(
     projectStatus: state.client.project.status,
     experimentId: state.client.experiment.id,
     experimentStatus: state.client.experiment.status,
+    geppettoInstances: state.client.instances,
   }),
   dispatch => ({
     spotlightClosed: () => dispatch(spotlightClosed()),
@@ -100,4 +155,3 @@ export const Tutorial = connect(
   null,
   { withRef: true }
 )(_Tutorial);
-

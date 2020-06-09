@@ -152,7 +152,10 @@ export default {
 
     GEPPETTO.SceneController.setColor(this.getInstancePath(), color);
 
-    GEPPETTO.trigger(GEPPETTO.Events.Color_set, { instance: this, color: color });
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COLOR_SET]({
+      instance: this,
+      color: color
+    });
 
     return this;
   },

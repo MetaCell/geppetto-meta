@@ -55,6 +55,11 @@ define(function (require) {
     commandLogDebug,
     commandLogRun,
     commandClear,
+    commandToggleImplicit,
+    receivePythonMessage,
+    errorWhileExecPythonCommand,
+    websocketDisconnected,
+    updateCamera
   } = require('./actions/actions');
 
 
@@ -146,8 +151,8 @@ define(function (require) {
         [clientActions.SPOTLIGHT_LOADED]: () => (
           GeppettoStore.dispatch(spotlightLoaded())
         ),
-        [clientActions.INSTANCE_DELETED]: instance => (
-          GeppettoStore.dispatch(instanceDeleted(instance))
+        [clientActions.INSTANCE_DELETED]: instancePath => (
+          GeppettoStore.dispatch(instanceDeleted(instancePath))
         ),
         [clientActions.INSTANCES_CREATED]: instances => (
           GeppettoStore.dispatch(instancesCreated(instances))
@@ -166,6 +171,60 @@ define(function (require) {
         ),
         [clientActions.COLOR_SET]: parameters => (
           GeppettoStore.dispatch(colorSet(parameters))
+        ),
+        [clientActions.CANVAS_INITIALISED]: () => (
+          GeppettoStore.dispatch(canvasInitialised())
+        ),
+        [clientActions.PROJECT_MADE_PUBLIC]: () => (
+          GeppettoStore.dispatch(projectMadePublic())
+        ),
+        [clientActions.CONTROL_PANEL_OPEN]: () => (
+          GeppettoStore.dispatch(controlPanelOpen())
+        ),
+        [clientActions.CONTROL_PANEL_CLOSE]: () => (
+          GeppettoStore.dispatch(controlPanelClose())
+        ),
+        [clientActions.LIT_ENTITIES_CHANGED]: () => (
+          GeppettoStore.dispatch(litEntitiesChanged())
+        ),
+        [clientActions.COMPONENT_DESTROYED]: () => (
+          GeppettoStore.dispatch(componentDestroyed())
+        ),
+        [clientActions.EXPERIMENT_PROPERTIES_SAVED]: () => (
+          GeppettoStore.dispatch(experimentPropertiesSaved())
+        ),
+        [clientActions.PROJECT_PROPERTIES_SAVED]: () => (
+          GeppettoStore.dispatch(projectPropertiesSaved())
+        ),
+        [clientActions.PARAMETERS_SET]: () => (
+          GeppettoStore.dispatch(parametersSet())
+        ),
+        [clientActions.COMMAND_LOG]: message => (
+          GeppettoStore.dispatch(commandLog(message))
+        ),
+        [clientActions.COMMAND_LOG_DEBUG]: message => (
+          GeppettoStore.dispatch(commandLogDebug(message))
+        ),
+        [clientActions.COMMAND_LOG_RUN]: message => (
+          GeppettoStore.dispatch(commandLogRun(message))
+        ),
+        [clientActions.COMMAND_CLEAR]: () => (
+          GeppettoStore.dispatch(commandClear())
+        ),
+        [clientActions.COMMAND_TOGGLE_IMPLICIT]: () => (
+          GeppettoStore.dispatch(commandToggleImplicit())
+        ),
+        [clientActions.RECEIVE_PYTHON_MESSAGE]: data => (
+          GeppettoStore.dispatch(receivePythonMessage(data))
+        ),
+        [clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND]: data => (
+          GeppettoStore.dispatch(errorWhileExecPythonCommand(data))
+        ),
+        [clientActions.WEBSOCKET_DISCONNECTED]: () => (
+          GeppettoStore.dispatch(websocketDisconnected())
+        ),
+        [clientActions.UPDATE_CAMERA]: () => (
+          GeppettoStore.dispatch(updateCamera())
         ),
       },
 

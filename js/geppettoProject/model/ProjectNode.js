@@ -237,8 +237,6 @@ define(['backbone'], function (require) {
         this.initializationTime = new Date();
         GEPPETTO.CommandController.log("Message sent : " + this.initializationTime.getTime(), true);
         GEPPETTO.CommandController.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
-        // trigger simulation restart event
-        GEPPETTO.trigger(GEPPETTO.Events.Simulation_restarted);
       } else {
         loadStatus = GEPPETTO.Resources.PROJECT_UNSPECIFIED;
       }

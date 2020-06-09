@@ -7,6 +7,8 @@ define(function (require) {
   var GEPPETTO = require('geppetto');
   var slick = require('slick-carousel');
 
+  const { diffArrays } = require('../../utils');
+
   class SlideshowImageComponent extends React.Component {
     constructor (props) {
       super(props);
@@ -17,12 +19,12 @@ define(function (require) {
 
       let initialCheckBoxState = this.getImageInstanceVisibility(this.props.rowData.id)
 
-      this.state = { 
-        carouselFullyLoaded: false, 
-        checked: initialCheckBoxState, 
-        imageID : '', 
+      this.state = {
+        carouselFullyLoaded: false,
+        checked: initialCheckBoxState,
+        imageID : '',
         imageInstanceLoading : false,
-        initialSlide : 0 
+        initialSlide : 0
       };
 
       this.isCarousel = false;
@@ -41,7 +43,7 @@ define(function (require) {
           initialCheckBoxState = imageVariable.isVisible();
         }
       } catch (e) {
-        console.info("Instance Variable not Found : " + path); 
+        console.info("Instance Variable not Found : " + path);
       }
 
       return initialCheckBoxState;
@@ -61,7 +63,7 @@ define(function (require) {
             actionStr = actionStr.replace(/\$entity\$/gi, that.state.imageID);
             GEPPETTO.CommandController.execute(actionStr);
 
-          }); 
+          });
         }
       };
 
@@ -113,15 +115,20 @@ define(function (require) {
           }
         }, { passive: true });
       }
-
-      GEPPETTO.on(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
-      GEPPETTO.on(GEPPETTO.Events.Instances_created, this.addedInstance, this);
     }
 
-    componentWillUnmount () {
-      // Remove listeners once unmounted
-      GEPPETTO.off(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
-      GEPPETTO.off(GEPPETTO.Events.Instances_created, this.addedInstance, this);
+    UNSAFE_componentWillReceiveProps (nextProps) {
+      var instancesToAdd = diffArrays(nextProps.geppettoInstances, this.props.geppettoInstances);
+      var instancesToDelete = diffArrays(this.props.geppettoInstances, nextProps.geppettoInstances);
+
+      if (instancesToAdd.length > 0) {
+        var instances = Instances.getInstance(instancesToAdd);
+        this.addedInstance(instances);
+      }
+
+      if (instancesToDelete.length > 0) {
+        this.deletedInstance(instancesToDelete);
+      }
     }
 
     /**

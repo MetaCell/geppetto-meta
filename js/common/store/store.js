@@ -6,6 +6,8 @@ import {
 } from "redux";
 import { callbacksMiddleware } from '../middleware/geppettoMiddleware';
 
+import { initLayoutManager } from '../layout/LayoutManager';
+
 // TO FIX: status is state
 import geppettoLayoutReducer, { layoutInitialStatus } from '../reducer/geppettoLayout';
 import geppettoClientReducer, { clientInitialStatus } from '../reducer/geppettoClient';
@@ -25,13 +27,13 @@ const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export function createReducerManager (initialReducers) {
   // Create an object which maps keys to reducers
   const reducers = { ...initialReducers }
-  
+
   // Create the initial combinedReducer
   let combinedReducer = combineReducers(reducers)
-  
+
   // An array which is used to delete state keys when reducers are removed
   let keysToRemove = []
-  
+
   return {
     getReducerMap: () => reducers,
     /*
@@ -80,10 +82,13 @@ export function createReducerManager (initialReducers) {
 export default function newStore ( state = initialState) {
   const reduceManager = createReducerManager(staticReducers);
 
+  const layoutManager = initLayoutManager(layoutInitialStatus)
+  const middlewares = [callbacksMiddleware, layoutManager.middleware];
+
   const store = createStore(
     reduceManager.reduce,
     state,
-    storeEnhancers(applyMiddleware(callbacksMiddleware))
+    storeEnhancers(applyMiddleware(...middlewares))
   );
 
   store.reduceManager = reduceManager;

@@ -83,7 +83,7 @@ define(function (require) {
             }
           }
 
-          GEPPETTO.trigger(GEPPETTO.Events.Component_destroyed, widgetID);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER](widgetID);
         });
 
         // register resize handler for widget

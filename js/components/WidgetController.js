@@ -45,8 +45,7 @@ class WidgetController {
       }
 
       // FIXME: Called twice
-      GEPPETTO.trigger(GEPPETTO.Events.Component_destroyed, widget.getId());
-
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER](widget.getId());
 
     });
 

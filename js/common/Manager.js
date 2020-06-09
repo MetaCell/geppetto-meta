@@ -86,10 +86,10 @@ Manager.prototype = {
     GEPPETTO.CommandController.log(GEPPETTO.Resources.MODEL_LOADED);
 
     // populate control panel with instances
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, window.Instances);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](window.Instances);
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
   },
 
   /**
@@ -149,7 +149,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new variables if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, newInstances);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](newInstances);
     console.timeEnd(GEPPETTO.Resources.ADDING_VARIABLE);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ADDED);
   },
@@ -190,7 +190,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new types if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, newInstances);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](newInstances);
 
     console.timeEnd(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
@@ -451,4 +451,3 @@ Manager.prototype = {
 
 
 }
-

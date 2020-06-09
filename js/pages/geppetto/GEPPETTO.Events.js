@@ -68,13 +68,6 @@ export default function (GEPPETTO) {
     Update_camera : "update_camera",
 
     listen: function () {
-      GEPPETTO.on(this.Lit_entities_changed, function (parameters) {
-        GEPPETTO.WidgetsListener.update(GEPPETTO.Events.Lit_entities_changed, parameters);
-      });
-
-      GEPPETTO.on(this.Component_destroyed, function () {
-        GEPPETTO.ViewController.anyComponentsDestroyed = true;
-      });
     }
   };
 }

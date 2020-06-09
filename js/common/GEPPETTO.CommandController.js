@@ -261,14 +261,14 @@ define(function (require) {
        * Clear commands
        */
       clear: function () {
-        GEPPETTO.trigger(GEPPETTO.Events.Command_clear);
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COMMAND_CLEAR]();
       },
 
       /**
        * Toggle implicit commands
        */
       toggleImplicit: function () {
-        GEPPETTO.trigger(GEPPETTO.Events.Command_toggle_implicit);
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT]();
       },
 
       /**
@@ -288,12 +288,12 @@ define(function (require) {
         }
 
         if (debug === true) {
-          GEPPETTO.trigger(GEPPETTO.Events.Command_log_debug, message);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COMMAND_LOG_DEBUG](message);
         } else {
           if (run){
-            GEPPETTO.trigger(GEPPETTO.Events.Command_log_run, message);
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COMMAND_LOG_RUN](message);
           } else {
-            GEPPETTO.trigger(GEPPETTO.Events.Command_log, message);
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COMMAND_LOG](message);
           }
         }
       },

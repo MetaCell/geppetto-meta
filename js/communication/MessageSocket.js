@@ -68,7 +68,7 @@ define(function (require) {
             parameters["connectionID"] = GEPPETTO.MessageSocket.lostConnectionId;
             parameters["projectId"] = GEPPETTO.MessageSocket.projectId;
             GEPPETTO.MessageSocket.send("reconnect", parameters);
-            GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
           } else {
             messageHandlers.push(GEPPETTO.MessageHandler);
             messageHandlers.push(GEPPETTO.GlobalHandler);
@@ -162,7 +162,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
           GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
         }
       },
 
@@ -198,7 +198,7 @@ define(function (require) {
           GEPPETTO.MessageSocket.socket.send(messageTemplate);
         } else if (this.isReady() > 1){
           // connection is either closing (2) or already closed (3).
-          GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
         } else {
           // must be in connecting (0) state
           var that = this;
@@ -220,7 +220,7 @@ define(function (require) {
         GEPPETTO.MessageSocket.socket.close();
         // dispose of handlers upon closing connection
         messageHandlers = [];
-        GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.WEBSOCKET_DISCONNECTED]();
 
       },
 

@@ -67,7 +67,7 @@ define(function (require) {
   };
 
   _.extend(GEPPETTO, Backbone.Events);
-  require('../../common/GEPPETTO.StoreManager')(GEPPETTO);
+  // require('../../common/GEPPETTO.StoreManager')(GEPPETTO);
 
   require('../../common/GEPPETTO.Resources').default(GEPPETTO);
   require('../../common/GEPPETTO.ViewController')(GEPPETTO);
@@ -78,6 +78,8 @@ define(function (require) {
   require('../../common/GEPPETTO.ScriptRunner')(GEPPETTO);
   require('../../common/GEPPETTO.UnitsController')(GEPPETTO);
 
+  GEPPETTO.StoreManager = require('../../common/StoreManager').default;
+  GEPPETTO.LayoutManager = require('../../common/layout/LayoutManager').getInstance();
   GEPPETTO.ModalFactory = new(require('../../components/controls/modals/ModalFactory'))();
   GEPPETTO.SceneController = new(require('../../components/interface/3dCanvas/SceneController'))();
 

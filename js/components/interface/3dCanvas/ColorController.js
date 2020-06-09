@@ -201,7 +201,7 @@ define(['jquery'], function () {
      */
     addColorListener: function (instance, modulation, colorfn) {
       var that = this;
-      GEPPETTO.trigger(GEPPETTO.Events.Lit_entities_changed);
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.LIT_ENTITIES_CHANGED]();
       this.addOnNodeUpdatedCallback(modulation, function (stateVariableInstance, step) {
         if ((stateVariableInstance.getTimeSeries() != undefined)
                     && (step < stateVariableInstance.getTimeSeries().length)) {
@@ -241,7 +241,7 @@ define(['jquery'], function () {
       if (i > -1) {
         this.litUpInstances.splice(i, 1);
       }
-      GEPPETTO.trigger(GEPPETTO.Events.Lit_entities_changed);
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.LIT_ENTITIES_CHANGED]();
       if (this.litUpInstances.length == 0) {
         this.colorFunctionSet = false;
       }
@@ -252,4 +252,3 @@ define(['jquery'], function () {
 
   return ColorController;
 });
-

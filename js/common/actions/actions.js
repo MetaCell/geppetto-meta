@@ -53,6 +53,7 @@ export const clientActions = {
   RECEIVE_PYTHON_MESSAGE: "RECEIVE_PYTHON_MESSAGE",
   WEBSOCKET_DISCONNECTED: "WEBSOCKET_DISCONNECTED",
   ERROR_WHILE_EXEC_PYTHON_COMMAND: "ERROR_WHILE_EXEC_PYTHON_COMMAND",
+  UPDATE_CAMERA: "UPDATE_CAMERA"
 };
 
 export const selectInstance = ( scope, geometryIdentifier, point ) => ({
@@ -208,14 +209,14 @@ export const spotlightClosed = () => ({ type: clientActions.SPOTLIGHT_CLOSED, })
 export const spotlightLoaded = () => ({ type: clientActions.SPOTLIGHT_LOADED, });
 
 // HERE
-export const instanceDeleted = () => ({
+export const instanceDeleted = instancePath => ({
   type: clientActions.INSTANCE_DELETED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+  data: instancePath,
 });
 
-export const instancesCreated = () => ({
+export const instancesCreated = instances => ({
   type: clientActions.INSTANCES_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+  data: instances,
 });
 
 export const showTutorial = () => ({ type: clientActions.SHOW_TUTORIAL, });
@@ -237,67 +238,84 @@ export const colorSet = parameters => ({
   },
 });
 
-export const canvasInitialised = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const canvasInitialised = () => ({ type: clientActions.CANVAS_INITIALISED, });
 
-export const projectMadePublic = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const projectMadePublic = () => ({ type: clientActions.PROJECT_MADE_PUBLIC, });
 
-export const controlPanelOpen = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const controlPanelOpen = () => ({ type: clientActions.CONTROL_PANEL_OPEN, });
 
-export const controlPanelClose = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const controlPanelClose = () => ({ type: clientActions.CONTROL_PANEL_CLOSE, });
 
-export const litEntitiesChanged = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const litEntitiesChanged = () => ({ type: clientActions.LIT_ENTITIES_CHANGED, });
 
-export const componentDestroyed = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const componentDestroyed = () => ({ type: clientActions.COMPONENT_DESTROYED, });
 
-export const experimentPropertiesSaved = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const experimentPropertiesSaved = () => ({ type: clientActions.EXPERIMENT_PROPERTIES_SAVED, });
 
-export const projectPropertiesSaved = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
-});
+export const projectPropertiesSaved = () => ({ type: clientActions.PROJECT_PROPERTIES_SAVED, });
 
 export const parametersSet = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+  type: clientActions.PARAMETERS_SET,
+  data: { timestamp: new Date().getTime().toString() },
 });
 
-export const commandLog = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+export const commandLog = message => ({
+  type: clientActions.COMMAND_LOG,
+  data: {
+    message: message,
+    timestamp: new Date().getTime().toString()
+  },
 });
 
-export const commandLogDebug = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+export const commandLogDebug = message => ({
+  type: clientActions.COMMAND_LOG_DEBUG,
+  data: {
+    message: message,
+    timestamp: new Date().getTime().toString()
+  },
 });
 
-export const commandLogRun = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+export const commandLogRun = message => ({
+  type: clientActions.COMMAND_LOG_RUN,
+  data: {
+    message: message,
+    timestamp: new Date().getTime().toString()
+  },
 });
 
 export const commandClear = () => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: { experiment_status: clientActions.EXPERIMENT_CREATED },
+  type: clientActions.COMMAND_CLEAR,
+  data: { timestamp: new Date().getTime().toString() },
+});
+
+export const commandToggleImplicit = () => ({
+  type: clientActions.COMMAND_TOGGLE_IMPLICIT,
+  data: { timestamp: new Date().getTime().toString() },
+});
+
+export const receivePythonMessage = data => ({
+  type: clientActions.COMMAND_TOGGLE_IMPLICIT,
+  data: {
+    id: data.id,
+    type: data.type,
+    response: data.response,
+    timestamp: new Date().getTime().toString()
+  },
+});
+
+export const errorWhileExecPythonCommand = data => ({
+  type: clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
+  data: {
+    id: undefined,
+    type: "ERROR",
+    response: data,
+    timestamp: new Date().getTime().toString()
+  },
+});
+
+export const websocketDisconnected = () => ({ type: clientActions.WEBSOCKET_DISCONNECTED, });
+
+export const updateCamera = () => ({
+  type: clientActions.UPDATE_CAMERA,
+  data: new Date().getTime().toString()
 });

@@ -49,11 +49,17 @@ export const callbacksList = {
   [clientActions.COMMAND_LOG]: { 'list': [] },
   [clientActions.COMMAND_LOG_DEBUG]: { 'list': [] },
   [clientActions.COMMAND_LOG_RUN]: { 'list': [] },
+  [clientActions.COMMAND_CLEAR]: { 'list': [] },
+  [clientActions.COMMAND_TOGGLE_IMPLICIT]: { 'list': [] },
+  [clientActions.RECEIVE_PYTHON_MESSAGE]: { 'list': [] },
+  [clientActions.WEBSOCKET_DISCONNECTED]: { 'list': [] },
+  [clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND]: { 'list': [] },
 }
 
 export function callbacksMiddleware ({ getState, dispatch }) {
   return function (next) {
     return function (action) {
+      //
       next(action);
 
       if (callbacksList[action.type] !== undefined && callbacksList[action.type].list.length > 0) {
@@ -83,7 +89,7 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         GEPPETTO.ProjectsController.refreshUserProjects();
         // From the GEPPETTO.Events
         if (GEPPETTO.UserController.isLoggedIn()) {
-          GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
         }
         break;
       case clientActions.EXPERIMENT_OVER:
@@ -104,6 +110,12 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         break;
       case clientActions.SPOTLIGHT_CLOSED:
         GEPPETTO.Flows.onSpotlightExitFlowCallback();
+        break;
+      case clientActions.LIT_ENTITIES_CHANGED:
+        GEPPETTO.WidgetsListener.update(GEPPETTO.Events.Lit_entities_changed, undefined);
+        break;
+      case clientActions.COMPONENT_DESTROYED:
+        GEPPETTO.ViewController.anyComponentsDestroyed = true;
         break;
       default:
         break;

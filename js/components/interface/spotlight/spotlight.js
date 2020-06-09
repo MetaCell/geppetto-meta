@@ -15,6 +15,8 @@ define(function (require) {
   var Instance = require('../../../geppettoModel/model/Instance');
   var Variable = require('../../../geppettoModel/model/Variable');
 
+  const { diffArrays } = require('../utils');
+
   var Spotlight = CreateClass({
 
     potentialSuggestions: {},
@@ -55,6 +57,11 @@ define(function (require) {
     },
 
     UNSAFE_componentWillReceiveProps: function (nextProps) {
+      var instancesToAdd = diffArrays(nextProps.geppettoInstances, this.props.geppettoInstances);
+      if (instancesToAdd.length > 0) {
+        this.addData(GEPPETTO.ModelFactory.newPathsIndexing);
+      }
+
       if (this.props.projectStatus !== nextProps.projectStatus) {
         switch (nextProps.projectStatus) {
         case GEPPETTO.StoreManager.clientActions.PROJECT_LOADED:
@@ -212,10 +219,6 @@ define(function (require) {
       if (GEPPETTO.ForegroundControls != undefined){
         GEPPETTO.ForegroundControls.refresh();
       }
-
-      GEPPETTO.on(GEPPETTO.Events.Instances_created, function (instances){
-        that.addData(GEPPETTO.ModelFactory.newPathsIndexing);
-      });
 
       this.updateToolBarVisibilityState(this.checkHasWritePermission());
       this.addData(GEPPETTO.ModelFactory.allPathsIndexing);

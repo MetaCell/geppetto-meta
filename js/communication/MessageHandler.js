@@ -96,7 +96,7 @@ function MessageHandler (GEPPETTO) {
 
     GEPPETTO.trigger('geppetto:error', error.msg);
     GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_LOADING] = function (payload) {
@@ -106,7 +106,7 @@ function MessageHandler (GEPPETTO) {
   messageHandler[messageTypes.PROJECT_MADE_PUBLIC] = function (payload) {
     var data = JSON.parse(payload.update);
     window.Project.isPublicProject = data.isPublic;
-    GEPPETTO.trigger(GEPPETTO.Events.Project_made_public);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_MADE_PUBLIC]();
     console.log("Project was made public");
   };
 
@@ -210,12 +210,12 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.PROJECT_PROPS_SAVED] = function (payload) {
     GEPPETTO.CommandController.log("Project saved succesfully");
-    GEPPETTO.trigger(GEPPETTO.Events.Project_properties_saved);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_PROPERTIES_SAVED]();
   };
-        
+
   messageHandler[messageTypes.SET_PARAMETERS] = function (payload) {
     GEPPETTO.CommandController.log("Set parameters succesfully");
-    GEPPETTO.trigger(GEPPETTO.Events.Parameters_set);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PARAMETERS_SET]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_PROPS_SAVED] = function (payload) {
@@ -230,8 +230,8 @@ function MessageHandler (GEPPETTO) {
     if (experiment.getStatus() != data.status) {
       experiment.setStatus(data.status);
     }
-            
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_properties_saved);
+
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_PROPERTIES_SAVED]();
   };
 
   messageHandler[messageTypes.DROPBOX_LINKED] = function (payload) {
@@ -250,7 +250,7 @@ function MessageHandler (GEPPETTO) {
   messageHandler[messageTypes.DOWNLOAD_MODEL] = function (payload) {
     GEPPETTO.CommandController.log("Model downloaded succesfully",true);
   };
-        
+
   messageHandler[messageTypes.DOWNLOAD_PROJECT] = function (payload) {
     GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_DOWNLOADED]();
     GEPPETTO.CommandController.log("Project downloaded succesfully",true);
