@@ -504,13 +504,12 @@ define(function (require) {
         loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
         xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
       };
-      imageLoader.resources = this.state.iBuffer;
 
       if (!imageLoader.loading && this.state.lastUpdate < (Date.now() - 20000)) {
         for (j = 0; j < this.state.numTiles; j++) {
           for (i in this.state.stack) {
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-            if (!imageLoader.resources[image]) {
+            if (!this.state.iBuffer[image]) {
               // console.log('buffering ' + this.state.stack[i].toString() + '...');
               imageLoader.add(image, image, loaderOptions);
               buffMax -= 1;
@@ -532,7 +531,7 @@ define(function (require) {
               for (i in this.state.stack) {
                 for (j in this.state.visibleTiles) {
                   image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                  if (dst < max && !imageLoader.resources[image]) {
+                  if (dst < max && !this.state.iBuffer[image]) {
                     imageLoader.add(image, image, loaderOptions);
                   }
                   buffMax -= 1;
@@ -546,7 +545,7 @@ define(function (require) {
               for (i in this.state.stack) {
                 for (j in this.state.visibleTiles) {
                   image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                  if (dst < max && !imageLoader.resources[image]) {
+                  if (dst < max && !this.state.iBuffer[image]) {
                     imageLoader.add(image, image, loaderOptions);
                   }
                   buffMax -= 1;
@@ -561,7 +560,7 @@ define(function (require) {
             for (j = 0; j < this.state.numTiles; j++) {
               for (i in this.state.stack) {
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-                if (!imageLoader.resources[image]) {
+                if (!this.state.iBuffer[image]) {
                   // console.log('buffering ' + this.state.stack[i].toString() + '...');
                   imageLoader.add(image, image, loaderOptions);
                 }
@@ -601,7 +600,9 @@ define(function (require) {
       }
 
       function setup () {
-        this.state.iBuffer = Object.assign({}, this.state.iBuffer, imageLoader.resources);
+        for (k in imageLoader.resources) {
+          this.state.iBuffer[k] = imageLoader.resources[k].texture;
+        }
         imageLoader.destroy(true);
         // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
         if (this._isMounted === true && this._initialized === false) {
@@ -707,8 +708,14 @@ define(function (require) {
                 // console.log('Adding ' + this.state.stack[i].toString());
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
                 // console.log(image);
-                this.state.images[d] = PIXI.Sprite.fromImage(image);
-                this.state.iBuffer[image] = this.state.images[d];
+                if (this.state.iBuffer[image]) {
+                  this.state.images[d] = PIXI.Sprite.from(this.state.iBuffer[image]);
+                  this.state.imagesUrl[d] = image;
+                } else {
+                  this.state.images[d] = PIXI.Sprite.fromImage(image);
+                  this.state.iBuffer[image] = this.state.images[d].texture;
+                  this.state.imagesUrl[d] = image;
+                }
                 this.state.images[d].anchor.x = 0;
                 this.state.images[d].anchor.y = 0;
                 this.state.images[d].position.x = x;
@@ -725,6 +732,19 @@ define(function (require) {
                 }
                 this.stack.addChild(this.state.images[d]);
               } else {
+                if (this.state.imagesUrl[d] != image) {
+                  if (this.state.iBuffer[image]) {
+                    this.state.images[d] = PIXI.Sprite.from(this.state.iBuffer[image]);
+                    this.state.imagesUrl[d] = image;
+                  } else {
+                    if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+                      this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
+                    }
+                    this.state.images[d].texture = PIXI.Texture.fromImage(image);
+                    this.state.iBuffer[image] = this.state.images[d].texture;
+                    this.state.imagesUrl[d] = image;
+                  }
+                }
                 this.state.images[d].anchor.x = 0;
                 this.state.images[d].anchor.y = 0;
                 this.state.images[d].position.x = x;
@@ -925,15 +945,16 @@ define(function (require) {
           d = i.toString() + ',' + this.state.visibleTiles[j].toString();
           if (this.state.images[d]) {
             if (this.state.imagesUrl[d] != image) {
-              if (this.state.iBuffer[image] && this.state.iBuffer[image].texture && (this.state.iBuffer[image].texture.baseTexture !== null)) {
-                this.state.images[d].texture = this.state.iBuffer[image].texture;
+              if (this.state.iBuffer[image]) {
+                this.state.images[d].texture = this.state.iBuffer[image];
                 this.state.imagesUrl[d] = image;
               } else {
                 if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
                   this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
                 }
                 this.state.images[d].texture = PIXI.Texture.fromImage(image);
-                this.state.iBuffer[image] = this.state.images[d];
+                this.state.iBuffer[image] = this.state.images[d].texture;
+                this.state.imagesUrl[d] = image;
               }
             }
             this.state.images[d].tint = this.state.color[i];
