@@ -515,7 +515,7 @@ define(function (require) {
             }
           }
         }
-        if (buffMax < 2000 || this.state.lastUpdate < (Date.now() - 600000)) { // only buffer surounding tiles if the main image has changed or 10 minute has passed
+        if (buffMax < 2000 || this.state.lastUpdate < (Date.now() - 60000)) { // only buffer surounding tiles if the main image has changed or 10 minute has passed
           this.state.lastUpdate = Date.now();
           var step;
           if (this.state.orth == 0) {
