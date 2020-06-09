@@ -1159,8 +1159,6 @@ define(function (require) {
           this.setState({ dst: newdst, text: 'Last slice!' });
         }
 
-        this.createImages();
-
       }
     },
 
