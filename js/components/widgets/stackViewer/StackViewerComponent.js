@@ -532,10 +532,10 @@ define(function (require) {
                 for (i in this.state.stack) {
                   for (j in this.state.visibleTiles) {
                     image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                    if (dst < max && !this.state.iBuffer[image]) {
+                    if (!this.state.iBuffer[image]) {
                       imageLoader.add(image, image, loaderOptions);
+                      buffMax -= 1;
                     }
-                    buffMax -= 1;
                   }
                 }
                 if (buffMax < 1000) {
@@ -546,10 +546,10 @@ define(function (require) {
                 for (i in this.state.stack) {
                   for (j in this.state.visibleTiles) {
                     image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                    if (dst < max && !this.state.iBuffer[image]) {
+                    if (!this.state.iBuffer[image]) {
                       imageLoader.add(image, image, loaderOptions);
+                      buffMax -= 1;
                     }
-                    buffMax -= 1;
                   }
                 }
                 if (buffMax < 1) {
@@ -564,8 +564,8 @@ define(function (require) {
                   if (!this.state.iBuffer[image]) {
                     // console.log('buffering ' + this.state.stack[i].toString() + '...');
                     imageLoader.add(image, image, loaderOptions);
+                    buffMax -= 1;
                   }
-                  buffMax -= 1;
                   if (buffMax < 1) {
                     break;
                   }
