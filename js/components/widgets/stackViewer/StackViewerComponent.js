@@ -740,7 +740,7 @@ define(function (require) {
                     this.state.imagesUrl[d] = image;
                   } else {
                     if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                      this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
+                      this.state.buffer[-1].text = 'Loading slice ' + Number(this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
                     }
                     this.state.images[d].texture = PIXI.Texture.fromImage(image);
                     this.state.iBuffer[image] = this.state.images[d].texture;
