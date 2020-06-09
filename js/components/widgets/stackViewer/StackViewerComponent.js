@@ -241,7 +241,6 @@ define(function (require) {
             // update slice view
             this.checkStack();
             this.callPlaneEdges();
-            this.createImages();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -656,7 +655,6 @@ define(function (require) {
         // console.log('Updating scene...');
         //this.createImages();
         this.createImages();
-        this.updateImages(this.props);
         this.state.lastUpdate = Date.now();
       }
     },
@@ -1015,7 +1013,7 @@ define(function (require) {
         this.state.data = null;
         this.state.dragging = false;
         this.props.setExtent({ stackX: this.stack.position.x, stackY: this.stack.position.y });
-        this.updateImages(this.props);
+        this.createImages();
       }
     },
 
@@ -1161,7 +1159,7 @@ define(function (require) {
           this.setState({ dst: newdst, text: 'Last slice!' });
         }
 
-        this.updateImages(this.props);
+        this.createImages();
 
       }
     },
