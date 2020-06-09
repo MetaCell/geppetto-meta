@@ -494,7 +494,7 @@ define(function (require) {
     },
 
     bufferStack: function () {
-      if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000) {
+      if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000)) {
         this.state.bufferRunning = true;
         var i, j, dst, image;
         var min = (this.state.minDst / 10.0) * this.state.scl;
@@ -655,13 +655,11 @@ define(function (require) {
         }
       }
 
-      if (this.state.lastUpdate < (Date.now() - 2000)) {
+      if (this.state.lastUpdate < (Date.now() - 200)) {
         this.bufferStack();
         this.state.lastUpdate = Date.now();
         // console.log('Updating scene...');
-        //this.createImages();
         this.createImages();
-        this.state.lastUpdate = Date.now();
       }
     },
 
