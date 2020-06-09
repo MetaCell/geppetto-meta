@@ -702,10 +702,10 @@ define(function (require) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
               d = i.toString() + ',' + t.toString();
+              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
+              // console.log(image);
               if (!this.state.images[d]) {
                 // console.log('Adding ' + this.state.stack[i].toString());
-                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + t.toString();
-                // console.log(image);
                 if (this.state.iBuffer[image]) {
                   this.state.images[d] = PIXI.Sprite.from(this.state.iBuffer[image]);
                   this.state.imagesUrl[d] = image;
