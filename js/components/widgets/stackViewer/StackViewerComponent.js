@@ -494,7 +494,7 @@ define(function (require) {
     },
 
     bufferStack: function () {
-      if (!this.state.bufferRunning) {
+      if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000) {
         this.state.bufferRunning = true;
         var i, j, dst, image;
         var min = (this.state.minDst / 10.0) * this.state.scl;
