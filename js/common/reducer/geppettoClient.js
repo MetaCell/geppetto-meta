@@ -725,6 +725,5 @@ function clientReducer (state, action) {
       controls_disabled: true,
     };
   default:
-    console.log("default scenario hit");
   }
 }
