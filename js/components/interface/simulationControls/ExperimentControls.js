@@ -7,7 +7,7 @@ define(function (require) {
   var PlayButton = require('./buttons/PlayButton');
   var PauseButton = require('./buttons/PauseButton');
   var StopButton = require('./buttons/StopButton');
-  var HelpButton = require('./buttons/HelpButton');
+  var { HelpButton } = require('../../reduxConnector');
   var MenuButton = require('../../controls/menuButton/MenuButton');
 
   var GEPPETTO = require('geppetto');
@@ -53,6 +53,10 @@ define(function (require) {
     },
 
     UNSAFE_componentWillReceiveProps: function (nextProps) {
+      if (nextProps.controlsDisabled && nextProps.controlsDisabled !== this.props.controlsDisabled) {
+        this.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
+      }
+
       if ((nextProps.experimentStatus !== this.props.experimentStatus)) {
         switch (nextProps.experimentStatus) {
         case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
@@ -81,10 +85,6 @@ define(function (require) {
 
     componentDidMount: function () {
       var self = this;
-
-      GEPPETTO.on('disable_all', function () {
-        self.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });
-      });
 
       this.updateStatus();
     },

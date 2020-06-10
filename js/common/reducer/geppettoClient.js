@@ -1,21 +1,49 @@
 import { clientActions } from '../actions/actions'
 
 export const clientInitialStatus = {
-  error: false,
-  instances: [],
-  instance_focused: undefined,
-  instance_selected: undefined,
-  model: {
-    id: undefined,
-    status: undefined
+  colorChanged: {
+    instance: undefined,
+    color: undefined,
   },
-  project: {
-    id: undefined,
-    status: undefined,
-    properties: {
-      public: false,
-      properties_saved: false,
+  components: {
+    canvas: {
+      available: false,
+      latestUpdate: undefined,
     },
+    control_panel: {
+      available: false,
+      visible: false,
+    },
+    help: {
+      available: false,
+      visible: false,
+    },
+    logo: {
+      latestUpdate: undefined,
+      running: false,
+    },
+    persist_spinner: { running: false },
+    queryBuilder: {
+      available: false,
+      visible: false,
+    },
+    spinner: {
+      visible: false,
+      message: undefined,
+    },
+    spotlight: {
+      available: false,
+      visible: false,
+    },
+    tutorial: {
+      running: false,
+      visible: false,
+    },
+  },
+  controls_disabled: false,
+  error: {
+    latestUpdate: undefined,
+    message: undefined,
   },
   experiment: {
     id: undefined,
@@ -26,36 +54,32 @@ export const clientInitialStatus = {
       properties_saved: false,
     },
   },
-  components: {
-    canvas: {
-      available: false,
-      latestUpdate: undefined,
-    },
-    spotlight: {
-      available: false,
-      visible: false,
-    },
-    control_panel: {
-      available: false,
-      visible: false,
-    },
-    spinner: {
-      visible: false,
-      message: undefined,
-    },
-    tutorial: {
-      available: false,
-      visible: false,
-    },
+  info: {
+    latestUpdate: undefined,
+    message: undefined,
   },
-  colorChanged: {
-    instance: undefined,
-    color: undefined,
-  },
+  instances: [],
+  instance_focused: undefined,
+  instance_selected: undefined,
+  jupyter_geppetto_extension: { loaded: false, },
   logs: {
     mode: undefined,
     message: undefined,
     timestamp: undefined,
+  },
+  model: {
+    id: undefined,
+    status: undefined
+  },
+  project: {
+    id: undefined,
+    status: undefined,
+    properties: {
+      public: false,
+      properties_saved: false,
+      config_loaded: false,
+      configuration: undefined,
+    },
   },
   pythonMessages: {
     id: undefined,
@@ -134,6 +158,18 @@ function clientReducer (state, action) {
       project: {
         ...state.project,
         status: action.data.project_status,
+      }
+    };
+  case clientActions.PROJECT_CONFIG_LOADED:
+    return {
+      ...state,
+      project: {
+        ...state.project,
+        properties: {
+          ...state.project.properties,
+          config_loaded: true,
+          configuration: action.data,
+        }
       }
     };
   case clientActions.PROJECT_PERSISTED:
@@ -347,6 +383,50 @@ function clientReducer (state, action) {
         }
       }
     };
+  case clientActions.SHOW_QUERYBUILDER:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        queryBuilder: {
+          ...state.components.queryBuilder,
+          visible: true,
+        }
+      }
+    };
+  case clientActions.HIDE_QUERYBUILDER:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        queryBuilder: {
+          ...state.components.queryBuilder,
+          visible: false,
+        }
+      }
+    };
+  case clientActions.START_TUTORIAL:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        tutorial: {
+          ...state.components.tutorial,
+          running: true,
+        }
+      }
+    };
+  case clientActions.STOP_TUTORIAL:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        tutorial: {
+          ...state.components.tutorial,
+          running: false,
+        }
+      }
+    };
   case clientActions.SHOW_SPINNER:
     return {
       ...state,
@@ -366,6 +446,28 @@ function clientReducer (state, action) {
         ...state.components,
         spinner: {
           ...state.components.spinner,
+          visible: false,
+        }
+      }
+    };
+  case clientActions.SHOW_HELP:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        help: {
+          ...state.components.help,
+          visible: true,
+        }
+      }
+    };
+  case clientActions.HIDE_HELP:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        help: {
+          ...state.components.help,
           visible: false,
         }
       }
@@ -546,6 +648,81 @@ function clientReducer (state, action) {
           latestUpdate: action.data,
         }
       }
+    };
+  case clientActions.SPIN_LOGO:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        logo: {
+          ...state.components.logo,
+          running: true,
+        }
+      }
+    };
+  case clientActions.STOP_LOGO:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        logo: {
+          ...state.components.logo,
+          running: false,
+        }
+      }
+    };
+  case clientActions.GEPPETTO_ERROR:
+    return {
+      ...state,
+      error: {
+        ...state.error,
+        latestUpdate: action.data.latestUpdate,
+        message: action.data.message,
+      }
+    };
+  case clientActions.GEPPETTO_INFO:
+    return {
+      ...state,
+      info: {
+        ...state.info,
+        latestUpdate: action.data.latestUpdate,
+        message: action.data.message,
+      }
+    };
+  case clientActions.SPIN_PERSIST:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        persist_spinner: {
+          ...state.components.persist_spinner,
+          running: true,
+        }
+      }
+    };
+  case clientActions.STOP_PERSIST:
+    return {
+      ...state,
+      components: {
+        ...state.components,
+        persist_spinner: {
+          ...state.components.persist_spinner,
+          running: false,
+        }
+      }
+    };
+  case clientActions.JUPYTER_GEPPETTO_EXTENSION_READY:
+    return {
+      ...state,
+      jupyter_geppetto_extension: {
+        ...state.jupyter_geppetto_extension,
+        loaded: true
+      }
+    };
+  case clientActions.DISABLE_CONTROLS:
+    return {
+      ...state,
+      controls_disabled: true,
     };
   default:
     console.log("default scenario hit");

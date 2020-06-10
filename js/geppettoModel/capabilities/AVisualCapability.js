@@ -55,7 +55,6 @@ export default {
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
     GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.VISIBILITY_CHANGED](this);
-    // GEPPETTO.trigger(GEPPETTO.Events.Visibility_changed, this);
 
     return message;
   },
@@ -98,7 +97,6 @@ export default {
     }
 
     GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.VISIBILITY_CHANGED](this);
-    // GEPPETTO.trigger(GEPPETTO.Events.Visibility_changed, this);
     return message;
   },
 
@@ -180,10 +178,7 @@ export default {
         GEPPETTO.SceneController.selectInstance(this.getInstancePath(), geometryIdentifier);
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
-        /*
-         * signal selection has changed in simulation pass instance
-         * GEPPETTO.trigger(GEPPETTO.Events.Select, this, geometryIdentifier, point);
-         */
+        // signal selection has changed in simulation pass instance
         GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SELECT](this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
@@ -232,7 +227,6 @@ export default {
         this.selected = false;
         // trigger event that selection has been changed
         GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SELECT](this, undefined, undefined);
-        // GEPPETTO.trigger(GEPPETTO.Events.Select, this);
       } else {
         message = GEPPETTO.Resources.ASPECT_NOT_SELECTED;
       }

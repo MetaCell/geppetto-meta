@@ -94,7 +94,7 @@ function MessageHandler (GEPPETTO) {
       }
     }
 
-    GEPPETTO.trigger('geppetto:error', error.msg);
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.GEPPETTO_ERROR](error.msg);
     GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
     GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
   };
@@ -116,30 +116,30 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.VARIABLE_FETCHED] = function (payload) {
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.variable_fetched);
     GEPPETTO.Manager.addVariableToModel(rawModel);
-    GEPPETTO.trigger('stop_spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.FETCHED] = function (payload) {
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.fetched);
     GEPPETTO.Manager.addVariableToModel(rawModel);
-    GEPPETTO.trigger('stop_spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.IMPORT_TYPE_RESOLVED] = function (payload) {
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.import_type_resolved);
     GEPPETTO.Manager.swapResolvedType(rawModel);
-    GEPPETTO.trigger('stop_spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.IMPORT_VALUE_RESOLVED] = function (payload) {
     var rawModel = JSON.parse(payload.import_value_resolved);
     GEPPETTO.Manager.swapResolvedValue(rawModel);
-    GEPPETTO.trigger('stop_spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.GET_EXPERIMENT_STATE] = function (payload) {
@@ -157,7 +157,7 @@ function MessageHandler (GEPPETTO) {
       GEPPETTO.ExperimentsController.addExternalExperimentState(experimentState);
     }
 
-    GEPPETTO.trigger("stop_spin_logo");
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_STATUS] = function (payload) {
@@ -171,12 +171,11 @@ function MessageHandler (GEPPETTO) {
     var activeExperimentID = message.activeExperimentID;
     GEPPETTO.Manager.persistProject(projectID, activeExperimentID);
     GEPPETTO.CommandController.log("Project persisted");
-    GEPPETTO.trigger("stop_spin_persist");
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_PERSIST]();
   };
 
   messageHandler[messageTypes.PROJECT_CONFIGURATION] = function (payload) {
-    GEPPETTO.trigger('project:configloaded', payload.configuration);
-
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_CONFIG_LOADED](payload.configuration);
   };
 
   messageHandler[messageTypes.EXPERIMENT_DELETED] = function (payload) {

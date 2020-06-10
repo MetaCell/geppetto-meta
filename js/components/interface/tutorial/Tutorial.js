@@ -325,17 +325,22 @@ define(function (require) {
           this.close();
         }
       }
+
+      /*
+       * If we want to refactor/adapt this component this logic needs to adapted to the layoutManager,
+       * Not sure what is the plan for this component at the moment so no spending time on this.
+       * 
+       * GEPPETTO.on("widgetRestored", function (id) {
+       *   if (self.$el[0].id == id){
+       *     self.forceUpdate();
+       *   }
+       * });
+       */
     }
 
     componentDidMount () {
       this.close();
       var self = this;
-
-      GEPPETTO.on("widgetRestored", function (id) {
-        if (self.$el[0].id == id){
-          self.forceUpdate();
-        }
-      });
 
       GEPPETTO.Tutorial = this;
 

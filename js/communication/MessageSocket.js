@@ -173,7 +173,7 @@ define(function (require) {
         if (GEPPETTO.MessageSocket.socketStatus === GEPPETTO.Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR,
             "Websocket connection currently not available, wait for reconnection and try again.");
-          GEPPETTO.trigger('stop_spin_logo');
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
           return;
         }
         var requestID = this.createRequestID();

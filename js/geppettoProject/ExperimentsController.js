@@ -289,7 +289,7 @@ define(function (require) {
           }
           // sending to the server request for data
           GEPPETTO.MessageSocket.send("get_experiment_state", parameters, callback);
-          GEPPETTO.trigger('spin_logo');
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
         },
 
         pause: function () {

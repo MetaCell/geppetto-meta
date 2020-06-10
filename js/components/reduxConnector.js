@@ -1,8 +1,14 @@
 import { connect } from "react-redux";
 import {
+  controlPanelOpen,
+  controlPanelClose,
   showSpinner,
+  spinLogo,
+  stopLogo,
+  spinPersist,
   spotlightClosed,
   spotlightLoaded,
+  startTutorial,
   updateCamera,
 } from '../common/actions/actions';
 
@@ -56,7 +62,10 @@ export const ControlPanel = connect(
     parametersSet: state.client.experiment.properties.parameters_set,
     geppettoInstances: state.client.instances,
   }),
-  null,
+  dispatch => ({
+    controlPanelOpen: () => dispatch(controlPanelOpen()),
+    controlPanelClose: () => dispatch(controlPanelClose()),
+  }),
   null,
   { withRef: true }
 )(_ControlPanel);
@@ -70,6 +79,7 @@ export const SimulationControls = connect(
     hidePlay: ownProps.hidePlay,
     hidePause: ownProps.hidePause,
     hideStop: ownProps.hideStop,
+    controlsDisabled: state.client.controls_disabled,
     experimentId: state.client.experiment.id,
     experimentStatus: state.client.experiment.status,
     projectStatus: state.client.project.status,
@@ -88,6 +98,29 @@ export const ExperimentsTable = connect(
   { withRef: true }
 )(_ExperimentsTable);
 
+import _HelpButton from './interface/simulationControls/buttons/HelpButton';
+export const HelpButton = connect(
+  (state, ownProps) => ({
+    id: ownProps.id,
+    icon: ownProps.icon,
+    label: ownProps.label,
+    className: ownProps.className,
+    helpVisible: state.client.components.help.visible,
+    projectStatus: state.client.project.status,
+  }),
+  null,
+  null,
+  { withRef: true }
+)(_HelpButton);
+
+import _HelpModal from './interface/simulationControls/HelpModal';
+export const HelpModal = connect(
+  null,
+  dispatch => ({ startTutorial: message => dispatch(startTutorial()) }),
+  null,
+  { withRef: true }
+)(_HelpModal);
+
 import _LoadingSpinner from './interface/loadingSpinner/LoadingSpinner';
 export const LoadingSpinner = connect(
   (state, ownProps) => ({
@@ -99,10 +132,37 @@ export const LoadingSpinner = connect(
   { withRef: true }
 )(_LoadingSpinner);
 
+
+import _Logo from './interface/logo/Logo';
+export const Logo = connect(
+  (state, ownProps) => ({
+    logo: ownProps.logo,
+    logoSpinning: state.client.components.logo.running,
+  }),
+  null,
+  null,
+  { withRef: true }
+)(_Logo);
+
+import _PythonConsole from './interface/pythonConsole/PythonConsole';
+export const PythonConsole = connect(
+  (state, ownProps) => ({
+    iframeHeight: ownProps.iframeHeight,
+    pythonNotebookPath: ownProps.pythonNotebookPath,
+    extensionLoaded: state.client.jupyter_geppetto_extension.loaded,
+  }),
+  null,
+  null,
+  { withRef: true }
+)(_PythonConsole);
+
 import _SaveControl from './interface/save/SaveControl';
 export const SaveControl = connect(
-  (state, ownProps) => ({ projectStatus: state.client.project.status }),
-  null,
+  (state, ownProps) => ({
+    projectStatus: state.client.project.status,
+    spinPersistRunning: state.client.components.persist_spinner.running,
+  }),
+  dispatch => ({ spinPersist: message => dispatch(spinPersist()) }),
   null,
   { withRef: true }
 )(_SaveControl);
@@ -137,6 +197,17 @@ export const Spotlight = connect(
   null,
   { withRef: true }
 )(_Spotlight);
+
+import _SpotlightButton from './interface/foregroundControls/buttons/SpotlightButton';
+export const SpotlightButton = connect(
+  null,
+  dispatch => ({
+    spinLogo: () => dispatch(spinLogo()),
+    stopLogo: () => dispatch(stopLogo()),
+  }),
+  null,
+  { withRef: true }
+)(_SpotlightButton);
 
 import _Tutorial from './interface/tutorial/Tutorial';
 export const Tutorial = connect(

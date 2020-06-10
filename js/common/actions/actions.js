@@ -7,6 +7,7 @@ export const clientActions = {
   PROJECT_LOADING: "PROJECT_LOADING",
   PROJECT_LOADED: "PROJECT_LOADED",
   PROJECT_DOWNLOADED: "PROJECT_DOWNLOADED",
+  PROJECT_CONFIG_LOADED: "PROJECT_CONFIG_LOADED",
   MODEL_LOADED: "MODEL_LOADED",
   EXPERIMENT_LOADED: "EXPERIMENT_LOADED",
   MODELTREE_POPULATED: "MODELTREE_POPULATED",
@@ -33,8 +34,14 @@ export const clientActions = {
   INSTANCES_CREATED: "INSTANCES_CREATED",
   SHOW_TUTORIAL: "SHOW_TUTORIAL",
   HIDE_TUTORIAL: "HIDE_TUTORIAL",
+  START_TUTORIAL: "SHOW_TUTORIAL",
+  STOP_TUTORIAL: "HIDE_TUTORIAL",
   SHOW_SPINNER: "SHOW_SPINNER",
   HIDE_SPINNER: "HIDE_SPINNER",
+  SHOW_HELP: "SHOW_HELP",
+  HIDE_HELP: "HIDE_HELP",
+  SHOW_QUERYBUILDER: "SHOW_QUERYBUILDER",
+  HIDE_QUERYBUILDER: "HIDE_QUERYBUILDER",
   COLOR_SET: "COLOR_SET",
   CANVAS_INITIALISED: "CANVAS_INITIALISED",
   PROJECT_MADE_PUBLIC: "PROJECT_MADE_PUBLIC",
@@ -53,7 +60,15 @@ export const clientActions = {
   RECEIVE_PYTHON_MESSAGE: "RECEIVE_PYTHON_MESSAGE",
   WEBSOCKET_DISCONNECTED: "WEBSOCKET_DISCONNECTED",
   ERROR_WHILE_EXEC_PYTHON_COMMAND: "ERROR_WHILE_EXEC_PYTHON_COMMAND",
-  UPDATE_CAMERA: "UPDATE_CAMERA"
+  UPDATE_CAMERA: "UPDATE_CAMERA",
+  SPIN_LOGO: "SPIN_LOGO",
+  STOP_LOGO: "STOP_LOGO",
+  SPIN_PERSIST: "SPIN_PERSIST",
+  STOP_PERSIST: "STOP_PERSIST",
+  GEPPETTO_ERROR: "ERROR",
+  GEPPETTO_INFO: "INFO",
+  JUPYTER_GEPPETTO_EXTENSION_READY: "JUPYTER_GEPPETTO_EXTENSION_READY",
+  DISABLE_CONTROLS: "DISABLE_CONTROLS",
 };
 
 export const selectInstance = ( scope, geometryIdentifier, point ) => ({
@@ -98,6 +113,11 @@ export const projectDownloaded = () => ({
 export const projectPersisted = () => ({
   type: clientActions.PROJECT_PERSISTED,
   data: { project_status: clientActions.PROJECT_PERSISTED },
+});
+
+export const projectConfigLoaded = configuration => ({
+  type: clientActions.PROJECT_CONFIG_LOADED,
+  data: configuration,
 });
 
 export const experimentOver = experiment => ({
@@ -223,12 +243,24 @@ export const showTutorial = () => ({ type: clientActions.SHOW_TUTORIAL, });
 
 export const hideTutorial = () => ({ type: clientActions.HIDE_TUTORIAL, });
 
+export const showQueryBuilder = () => ({ type: clientActions.SHOW_QUERYBUILDER, });
+
+export const hideQueryBuilder = () => ({ type: clientActions.HIDE_QUERYBUILDER, });
+
+export const startTutorial = () => ({ type: clientActions.START_TUTORIAL, });
+
+export const stopTutorial = () => ({ type: clientActions.STOP_TUTORIAL, });
+
 export const showSpinner = message => ({
   type: clientActions.SHOW_SPINNER,
   data: { message: message },
 });
 
 export const hideSpinner = () => ({ type: clientActions.HIDE_SPINNER, });
+
+export const showHelp = () => ({ type: clientActions.SHOW_HELP, });
+
+export const hideHelp = () => ({ type: clientActions.HIDE_HELP, });
 
 export const colorSet = parameters => ({
   type: clientActions.EXPERIMENT_CREATED,
@@ -319,3 +351,31 @@ export const updateCamera = () => ({
   type: clientActions.UPDATE_CAMERA,
   data: new Date().getTime().toString()
 });
+
+export const spinLogo = () => ({ type: clientActions.SPIN_LOGO, });
+
+export const stopLogo = () => ({ type: clientActions.STOP_LOGO, });
+
+export const geppettoError = message => ({
+  type: clientActions.GEPPETTO_ERROR,
+  data: {
+    latestUpdate: new Date().getTime().toString(),
+    message: message
+  }
+});
+
+export const geppettoInfo = message => ({
+  type: clientActions.GEPPETTO_INFO,
+  data: {
+    latestUpdate: new Date().getTime().toString(),
+    message: message
+  }
+});
+
+export const spinPersist = () => ({ type: clientActions.SPIN_PERSIST, });
+
+export const stopPersist = () => ({ type: clientActions.STOP_PERSIST, });
+
+export const jupyterGeppettoExtensionReady = () => ({ type: clientActions.JUPYTER_GEPPETTO_EXTENSION_READY, });
+
+export const disableControls = () => ({ type: clientActions.DISABLE_CONTROLS, });

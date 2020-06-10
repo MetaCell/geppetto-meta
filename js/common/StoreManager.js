@@ -16,6 +16,7 @@ const {
   projectLoaded,
   projectDownloaded,
   projectPersisted,
+  projectConfigLoaded,
   experimentOver,
   experimentLoaded,
   experimentPlay,
@@ -38,8 +39,14 @@ const {
   instancesCreated,
   showTutorial,
   hideTutorial,
+  startTutorial,
+  stopTutorial,
+  showQueryBuilder,
+  hideQueryBuilder,
   showSpinner,
   hideSpinner,
+  showHelp,
+  hideHelp,
   colorSet,
   canvasInitialised,
   projectMadePublic,
@@ -58,7 +65,15 @@ const {
   receivePythonMessage,
   errorWhileExecPythonCommand,
   websocketDisconnected,
-  updateCamera
+  updateCamera,
+  stopLogo,
+  spinLogo,
+  geppettoInfo,
+  geppettoError,
+  stopPersist,
+  spinPersist,
+  jupyterGeppettoExtensionReady,
+  disableControls,
 } = require('./actions/actions');
 
 
@@ -97,6 +112,9 @@ var StoreManager = (function () {
         ),
         [clientActions.PROJECT_DOWNLOADED]: () => (
           GeppettoStore.dispatch(projectDownloaded())
+        ),
+        [clientActions.PROJECT_CONFIG_LOADED]: configuration => (
+          GeppettoStore.dispatch(projectConfigLoaded(configuration))
         ),
         [clientActions.EXPERIMENT_OVER]: experiment => (
           GeppettoStore.dispatch(experimentOver(experiment))
@@ -167,11 +185,29 @@ var StoreManager = (function () {
         [clientActions.HIDE_TUTORIAL]: () => (
           GeppettoStore.dispatch(hideTutorial())
         ),
+        [clientActions.START_TUTORIAL]: () => (
+          GeppettoStore.dispatch(startTutorial())
+        ),
+        [clientActions.STOP_TUTORIAL]: () => (
+          GeppettoStore.dispatch(stopTutorial())
+        ),
+        [clientActions.SHOW_QUERYBUILDER]: () => (
+          GeppettoStore.dispatch(showQueryBuilder())
+        ),
+        [clientActions.HIDE_QUERYBUILDER]: () => (
+          GeppettoStore.dispatch(hideQueryBuilder())
+        ),
         [clientActions.SHOW_SPINNER]: message => (
           GeppettoStore.dispatch(showSpinner(message))
         ),
         [clientActions.HIDE_SPINNER]: () => (
           GeppettoStore.dispatch(hideSpinner())
+        ),
+        [clientActions.SHOW_HELP]: () => (
+          GeppettoStore.dispatch(showHelp())
+        ),
+        [clientActions.HIDE_HELP]: () => (
+          GeppettoStore.dispatch(hideHelp())
         ),
         [clientActions.COLOR_SET]: parameters => (
           GeppettoStore.dispatch(colorSet(parameters))
@@ -229,6 +265,30 @@ var StoreManager = (function () {
         ),
         [clientActions.UPDATE_CAMERA]: () => (
           GeppettoStore.dispatch(updateCamera())
+        ),
+        [clientActions.STOP_LOGO]: () => (
+          GeppettoStore.dispatch(stopLogo())
+        ),
+        [clientActions.SPIN_LOGO]: () => (
+          GeppettoStore.dispatch(spinLogo())
+        ),
+        [clientActions.GEPPETTO_ERROR]: message => (
+          GeppettoStore.dispatch(geppettoError(message))
+        ),
+        [clientActions.GEPPETTO_INFO]: message => (
+          GeppettoStore.dispatch(geppettoInfo(message))
+        ),
+        [clientActions.STOP_PERSIST]: () => (
+          GeppettoStore.dispatch(stopPersist())
+        ),
+        [clientActions.SPIN_PERSIST]: () => (
+          GeppettoStore.dispatch(spinPersist())
+        ),
+        [clientActions.JUPYTER_GEPPETTO_EXTENSION_READY]: () => (
+          GeppettoStore.dispatch(jupyterGeppettoExtensionReady())
+        ),
+        [clientActions.DISABLE_CONTROLS]: () => (
+          GeppettoStore.dispatch(disableControls())
         ),
       },
 

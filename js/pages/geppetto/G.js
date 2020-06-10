@@ -185,7 +185,7 @@ define(function (require) {
         var returnMessage;
 
         if (mode) {
-          GEPPETTO.trigger('simulation:show_helpwindow');
+          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_HELP]();
           returnMessage = GEPPETTO.Resources.SHOW_HELP_WINDOW;
         } else {
           var modalVisible = $('#help-modal').hasClass('in');
@@ -194,7 +194,7 @@ define(function (require) {
             returnMessage = GEPPETTO.Resources.HELP_ALREADY_HIDDEN;
           } else {
             // hide help window
-            GEPPETTO.trigger('simulation:hide_helpwindow');
+            GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_HELP]();
             returnMessage = GEPPETTO.Resources.HIDE_HELP_WINDOW;
             $('#help-modal').modal('hide');
           }

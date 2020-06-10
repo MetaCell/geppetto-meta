@@ -13,7 +13,7 @@ define(function (require) {
     ],
 
     startTutorial: function () {
-      GEPPETTO.trigger('start:tutorial');
+      this.props.startTutorial();
       GEPPETTO.tutorialEnabled = true;
       this.hide();
     },

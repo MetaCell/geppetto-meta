@@ -107,7 +107,7 @@ Manager.prototype = {
 
       var requestID = GEPPETTO.MessageSocket.send("fetch_variable", params, callback);
 
-      GEPPETTO.trigger('spin_logo');
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
 
     } else {
       GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ALREADY_EXISTS);
@@ -134,7 +134,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("fetch", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -174,7 +174,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_type", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -210,7 +210,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_value", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**

@@ -219,7 +219,8 @@ define(function (require) {
     keyCloseHandler (event){
       if (event.keyCode === this.escape) {
         this.close();
-        GEPPETTO.trigger("query_closed");
+        // TODO: plug the component in the redux connector and replace this with the function prop
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_QUERYBUILDER]();
       }
     }
 
@@ -240,7 +241,8 @@ define(function (require) {
     handleClickOutside (event) {
       if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
         this.close();
-        GEPPETTO.trigger("query_closed");
+        // TODO: plug the component in the redux connector and replace this with the function prop
+        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_QUERYBUILDER]();
       }
     }
 
@@ -1161,7 +1163,8 @@ define(function (require) {
         }, this);
 
         var loadHandler = function (self) {
-          GEPPETTO.on("query_closed", function () {
+          // TODO: plug the component in the redux connector and replace this with the prop passed from the store
+          GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.HIDE_QUERYBUILDER].list.push(action => {
             if (self.state.open) {
               self.toggleMenu();
             }

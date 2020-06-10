@@ -1733,10 +1733,6 @@ define(function (require) {
       GEPPETTO.ControlPanel = this;
     },
 
-    componentWillUnmount: function () {
-      GEPPETTO.off(null, null, this);
-    },
-
     setTab: function (filterTabOption){
       // only do something if builtin filters are being used
       if (this.props.useBuiltInFilters === true) {
@@ -1777,7 +1773,7 @@ define(function (require) {
       // refresh to reflect latest state (might have changed)
       this.refresh();
 
-      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.CONTROL_PANEL_OPEN]();
+      this.props.controlPanelOpen();
     },
 
     close: function () {
@@ -1786,7 +1782,7 @@ define(function (require) {
       // hide control panel
       $("#controlpanel").hide();
 
-      GEPPETTO.trigger(GEPPETTO.Events.Control_panel_close);
+      this.props.controlPanelClose();
     },
 
     setFilter: function (filterText) {

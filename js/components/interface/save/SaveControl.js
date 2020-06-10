@@ -60,20 +60,17 @@ define(function (require) {
           break;
         }
       }
+
+      if (nextProps.spinPersistRunning) {
+        this.setState({ icon: "fa fa-star fa-spin" });
+      } else {
+        this.setState({ icon: "fa fa-star" });
+      }
     },
 
     componentDidMount: function () {
 
       var self = this;
-
-      GEPPETTO.on('spin_persist', function () {
-        self.setState({ icon: "fa fa-star fa-spin" });
-      }.bind($(".saveButton")));
-
-      GEPPETTO.on('stop_spin_persist', function () {
-        self.setState({ icon: "fa fa-star" });
-      }.bind($(".saveButton")));
-
 
       self.attachTooltip();
 
@@ -91,11 +88,11 @@ define(function (require) {
       // update contents of what's displayed on tooltip
       $('.SaveButton').uitooltip({ content: "The project is getting persisted..." });
       $(".SaveButton").mouseover().delay(2000).queue(function () {
-        $(this).mouseout().dequeue(); 
+        $(this).mouseout().dequeue();
       });
       self.setState({ disableSave: true });
       GEPPETTO.CommandController.execute("Project.persist();");
-      GEPPETTO.trigger("spin_persist");
+      this.props.spinPersist();
     },
 
     render: function () {

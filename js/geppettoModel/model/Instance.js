@@ -328,7 +328,7 @@ class Instance {
    *
    */
   getConnections (direction) {
-    GEPPETTO.trigger('spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
     GEPPETTO.ModelFactory.updateConnectionInstances(this);
 
     var connections = this.connections;
@@ -358,7 +358,7 @@ class Instance {
       connections = filteredConnections;
     }
 
-    GEPPETTO.trigger('stop_spin_logo');
+    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
     return connections;
   }
 
