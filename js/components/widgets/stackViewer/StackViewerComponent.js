@@ -1110,7 +1110,6 @@ define(function (require) {
         this.onZoomOut();
       } else {
         // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = this.state.scrollTrack;
         this.state.scrollTrack += e.deltaY * 0.01;
 
         if (this.state.scrollTrack > 1 || this.state.scrollTrack < -1){
