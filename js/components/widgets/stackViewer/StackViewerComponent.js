@@ -999,16 +999,16 @@ define(function (require) {
         // update new position:
         this.state.posX = Number(currentPosition.x.toFixed(0));
         this.state.posY = Number(currentPosition.y.toFixed(0));
+        if (!(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY)) {
+          this.listObjects();
+          this.state.hoverTime = Date.now();
+        }
         if (this.state.hoverTime < (Date.now() - 1000) && this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) {
-          this.state.hoverTime = Date.now() + 60000;
+          this.state.hoverTime = Date.now() + 30000;
           this.listObjects();
         }
-        if (!(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY)) {
-          this.state.hoverTime = Date.now();
-          //this.listObjects();
-          this.state.oldX = Number(currentPosition.x.toFixed(0));
-          this.state.oldY = Number(currentPosition.y.toFixed(0));
-        }
+        this.state.oldX = Number(currentPosition.x.toFixed(0));
+        this.state.oldY = Number(currentPosition.y.toFixed(0));
       }
     },
 
