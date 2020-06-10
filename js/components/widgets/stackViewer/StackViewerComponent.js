@@ -56,7 +56,6 @@ define(function (require) {
         hoverTime: Date.now(),
         lastLabelCall: 0,
         bufferRunning: false,
-        scrollTrack: 0,
         iBuffer: {},
         imagesUrl: {}
       };
@@ -1128,7 +1127,8 @@ define(function (require) {
         plane: null,
         initalised: false,
         slice: false,
-        lastUpdate: 0
+        lastUpdate: 0,
+        scrollTrack: 0
       };
     },
 
