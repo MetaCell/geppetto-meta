@@ -1025,7 +1025,7 @@ define(function (require) {
         // console.log('Moving :'+xmove+','+ymove);
         this.state.buffer[-1].text = 'Moving stack... (X:' + Number(this.stack.position.x).toFixed(2) + ',Y:' + Number(this.stack.position.y).toFixed(2) + ')';
         // update slice view
-        this.checkStack();
+        this.createImages();
       } else {
         this.onHoverEvent(event);
       }
