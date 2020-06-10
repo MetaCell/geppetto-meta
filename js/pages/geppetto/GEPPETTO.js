@@ -5,7 +5,7 @@
  */
 define(function (require) {
 
-  var $ = require('jquery'), _ = require('underscore'), Backbone = require('backbone');
+  var $ = require('jquery'), _ = require('underscore');
   var THREEx = require('./THREEx.KeyboardState'); // Nothing to do with THREE
 
   /*
@@ -65,9 +65,6 @@ define(function (require) {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
     },
   };
-
-  _.extend(GEPPETTO, Backbone.Events);
-  // require('../../common/GEPPETTO.StoreManager')(GEPPETTO);
 
   require('../../common/GEPPETTO.Resources').default(GEPPETTO);
   require('../../common/GEPPETTO.ViewController')(GEPPETTO);
