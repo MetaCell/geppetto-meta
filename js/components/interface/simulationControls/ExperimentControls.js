@@ -7,7 +7,7 @@ define(function (require) {
   var PlayButton = require('./buttons/PlayButton');
   var PauseButton = require('./buttons/PauseButton');
   var StopButton = require('./buttons/StopButton');
-  var { HelpButton } = require('../../reduxConnector');
+  var HelpButton = require('./buttons/HelpButton');
   var MenuButton = require('../../controls/menuButton/MenuButton');
 
   var GEPPETTO = require('geppetto');

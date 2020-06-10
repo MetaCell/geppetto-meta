@@ -5,19 +5,19 @@ define(function (require) {
     ReactDOM = require('react-dom'),
     GEPPETTO = require('geppetto'),
     $ = require('jquery'),
-    { HelpModal } = require('../../../reduxConnector');
+    HelpModal = require('../HelpModal');
 
   return CreateClass({
     mixins: [require('../../../controls/mixins/Button')],
 
-    UNSAFE_componentWillReceiveProps: function (nextProps) {
-      if (nextProps.helpVisible && nextProps.helpVisible !== this.props.helpVisible) {
+    componentDidMount: function () {
+      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.SHOW_HELP].list.push(action => {
         ReactDOM.render(React.createFactory(HelpModal)({ show:true }), document.getElementById('modal-region'));
 
         $("#help-modal").css("margin-right", "-20px");
         $('#help-modal').css('max-height', $(window).height() * 0.7);
         $('#help-modal .modal-body').css('max-height', $(window).height() * 0.5);
-      }
+      });
     },
 
     getDefaultProps: function () {

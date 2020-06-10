@@ -13,7 +13,7 @@ define(function (require) {
     ],
 
     startTutorial: function () {
-      this.props.startTutorial();
+      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.START_TUTORIAL]();
       GEPPETTO.tutorialEnabled = true;
       this.hide();
     },

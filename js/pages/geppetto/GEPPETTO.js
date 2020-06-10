@@ -14,7 +14,6 @@ define(function (require) {
    */
   require('jquery-ui-bundle');
   require('bootstrap');
-    
 
   /**
    * Initialise Geppetto

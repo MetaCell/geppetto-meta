@@ -73,9 +73,7 @@ export const callbacksList = {
 export function callbacksMiddleware ({ getState, dispatch }) {
   return function (next) {
     return function (action) {
-      //
-      next(action);
-
+      var actionTriggered = false;
       if (callbacksList[action.type] !== undefined && callbacksList[action.type].list.length > 0) {
         callbacksList[action.type].list.map(item => {
           item(action);
@@ -117,6 +115,13 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         }
         break;
       case clientActions.EXPERIMENT_UPDATE:
+        /*
+         * This fix the tons of experiment_update action updates we trigger durint the experiment.
+         *
+         * if (this.getState().client.experiment.status === clientActions.EXPERIMENT_UPDATE) {
+         *   actionTriggered = true;
+         * }
+         */
         GEPPETTO.WidgetsListener.update(GEPPETTO.Events.Experiment_update, action.data.parameters);
         break;
       case clientActions.PROJECT_LOADED:
@@ -133,6 +138,10 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         break;
       default:
         break;
+      }
+
+      if (!actionTriggered) {
+        next(action);
       }
       return;
     }
