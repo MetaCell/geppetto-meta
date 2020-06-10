@@ -302,7 +302,7 @@ define(function (require) {
           }
         }
         // Pass Z coordinates
-        z = ((this.props.dst - ((this.state.minDst / 10.0) * this.state.scl)) / this.state.scl);
+        z = ((this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)) / this.state.scl);
         if (this.state.orth == 0) { // frontal
           this.state.plane[2] = z;
           this.state.plane[5] = z;
@@ -813,6 +813,12 @@ define(function (require) {
      */
     UNSAFE_componentWillReceiveProps: function (nextProps) {
       var updDst = false;
+      if (nextProps.dst !== this.state.dst) {
+        this.state.dst = nextProps.dst;
+        this.setState({ dst: nextProps.dst });
+        this.createImages();
+        return true;
+      }
       if (nextProps.stack !== this.state.stack || nextProps.color !== this.state.color || this.state.serverUrl !== nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol) || this.state.id !== nextProps.id) {
         this.setState({
           stack: nextProps.stack,
@@ -854,13 +860,7 @@ define(function (require) {
         this.changeOrth(nextProps);
         updDst = true;
       }
-      if (nextProps.dst !== this.state.dst) {
-        this.state.dst = nextProps.dst;
-        this.setState({ dst: nextProps.dst });
-        updDst = true;
-      }
       if (updDst) {
-        this.createImages();
         this.checkStack();
         this.callPlaneEdges();
         this.bufferStack();
