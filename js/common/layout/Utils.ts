@@ -1,4 +1,4 @@
-import { Widget } from './layout/model';
+import { Widget } from './model';
 
 /**
  * Transforms a widget configutation into a flexlayout node descriptor
@@ -46,15 +46,4 @@ export function isEqual (a: any, b: any): boolean {
     return false;
   }
   return keys.every(k => isEqual(a[k], b[k]));
-}
-
-
-export function extend (destObj: any, sourceObj: any) {
-
-  for (let v in sourceObj) {
-    if (destObj[v] !== undefined) {
-      console.warn('extending', destObj, 'with', sourceObj, 'is overriding field ' + v);
-    }
-    destObj[v] = sourceObj[v];
-  }
 }

@@ -11,7 +11,7 @@ import { WidgetStatus, Widget, ExtendedNode } from "./model";
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
-import { widget2Node, isEqual } from "../Utils";
+import { widget2Node, isEqual } from "./Utils";
 
 import {
   setLayout,
