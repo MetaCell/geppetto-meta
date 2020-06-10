@@ -43,7 +43,6 @@ define(function (require) {
         posY: 0,
         oldX: 0,
         oldY: 0,
-        oldEvent: 0,
         loadingLabels: false,
         orth: this.props.orth,
         data: {},
@@ -992,10 +991,8 @@ define(function (require) {
       }
     },
 
-    onHoverEvent: function (event, repeat) {
-      var oldEvent = this.state.oldEvent;
+    onHoverEvent: function (event) {
       if (!this.state.loadingLabels && !this.state.dragging) {
-        repeat = typeof repeat !== 'undefined' ? repeat : true;
         if (this.renderer === null ) {
           return;
         }
@@ -1003,29 +1000,17 @@ define(function (require) {
         // update new position:
         this.state.posX = Number(currentPosition.x.toFixed(0));
         this.state.posY = Number(currentPosition.y.toFixed(0));
+        if (this.state.hoverTime < (Date.now() - 1000) && this.state.posX == this.state.oldX && this.state.posY == this.state.oldY) {
+          this.state.hoverTime = Date.now() + 60000;
+          this.listObjects();
+        }
         if (!(this.state.posX == this.state.oldX && this.state.posY == this.state.oldY)) {
           this.state.hoverTime = Date.now();
-          this.listObjects();
-          this.state.oldX = currentPosition.x;
-          this.state.oldY = currentPosition.y;
-        } else {
-          // Timeout:
-          if (this.state.hoverTime < (Date.now() - 5000)) {
-            this.state.hoverTime = Date.now();
-            this.listObjects();
-            this.state.oldX = currentPosition.x;
-            this.state.oldY = currentPosition.y;
-          }
-          // Check valid value:
-          if (this.state.hoverTime > Date.now()) {
-            this.state.hoverTime = Date.now();
-            this.listObjects();
-            this.state.oldX = currentPosition.x;
-            this.state.oldY = currentPosition.y;
-          }
+          //this.listObjects();
+          this.state.oldX = Number(currentPosition.x.toFixed(0));
+          this.state.oldY = Number(currentPosition.y.toFixed(0));
         }
       }
-      this.state.oldEvent = oldEvent;
     },
 
     onDragMove: function (event) {
@@ -1285,7 +1270,6 @@ define(function (require) {
     },
 
     componentWillUnmount: function () {
-      clearTimeout(this.state.oldEvent);
       this._isMounted = false;
       return true;
     },
