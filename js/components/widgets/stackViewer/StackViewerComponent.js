@@ -821,7 +821,6 @@ define(function (require) {
           id: nextProps.id,
           serverUrl: nextProps.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol)
         });
-        this.updateImages(nextProps);
         this.checkStack();
       }
       if (nextProps.scl !== this.state.scl || nextProps.zoomLevel !== this.props.zoomLevel || nextProps.width !== this.props.width || nextProps.height !== this.props.height || nextProps.stackX !== this.stack.position.x || nextProps.stackY !== this.stack.position.y){
@@ -833,7 +832,8 @@ define(function (require) {
         this.stack.position.x = nextProps.stackX;
         this.stack.position.y = nextProps.stackY;
         this.state.scl = nextProps.scl;
-        this.setState({ scl: nextProps.scl });
+        this.state.iBuffer = {};
+        this.setState({ scl: nextProps.scl, iBuffer: {} });
         this.updateZoomLevel(nextProps);
         updDst = true;
       }
@@ -849,6 +849,7 @@ define(function (require) {
       if (nextProps.orth !== this.state.orth || nextProps.pit !== this.state.pit || nextProps.yaw !== this.state.yaw || nextProps.rol !== this.state.rol) {
         if (nextProps.orth !== this.state.orth) {
           this.state.recenter = true;
+          this.state.iBuffer = {};
         }
         this.changeOrth(nextProps);
         updDst = true;
@@ -859,9 +860,10 @@ define(function (require) {
         updDst = true;
       }
       if (updDst) {
-        this.updateImages(nextProps);
+        this.createImages();
         this.checkStack();
         this.callPlaneEdges();
+        this.bufferStack();
       }
     },
     /**
