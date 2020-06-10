@@ -56,6 +56,7 @@ define(function (require) {
         hoverTime: Date.now(),
         lastLabelCall: 0,
         bufferRunning: false,
+        scrollTrack: 0,
         iBuffer: {},
         imagesUrl: {}
       };
@@ -1141,44 +1142,41 @@ define(function (require) {
         this.onZoomOut();
       } else {
         // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = e.deltaY;
-        if (step < -200) {
-          step = -3;
-        } else if (step < -100) {
-          step = -2;
-        } else if (step < 0) {
-          step = -1;
-        } else if (step > 200) {
-          step = 3;
-        } else if (step > 100) {
-          step = 2;
-        } else if (step > 0) {
-          setp = 1;
-        } else {
-          setp = 0;
-        }
-        var stepDepth = 1;
-        // Max step of imposed
-        if (this.state.orth == 0) {
-          stepDepth = this.state.voxelZ * this.state.scl;
-        } else if (this.state.orth == 1) {
-          stepDepth = this.state.voxelY * this.state.scl;
-        } else if (this.state.orth == 2) {
-          stepDepth = this.state.voxelX * this.state.scl;
-        }
-        if (e.shiftKey) {
-          stepDepth = stepDepth * 10;
-        }
+        var step = this.state.scrollTrack;
+        this.state.scrollTrack += e.deltaY * 0.01;
 
-        newdst += stepDepth * step;
-        if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          this.setState({ dst: newdst, text: 'Depth:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
-        } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.minDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'First slice!' });
-        } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
-          newdst = ((this.state.maxDst / 10.0) * this.state.scl);
-          this.setState({ dst: newdst, text: 'Last slice!' });
+        if (this.state.scrollTrack > 1 || this.state.scrollTrack < -1){
+          var step = 0;
+          if (this.state.scrollTrack > 1) {
+            step = Math.ceil(this.state.scrollTrack) - 1;
+          } else {
+            step = Math.floor(this.state.scrollTrack) + 1;
+          }
+          this.state.scrollTrack = 0;
+          var stepDepth = 1;
+          // Max step of imposed
+          if (this.state.orth == 0) {
+            stepDepth = this.state.voxelZ * this.state.scl;
+          } else if (this.state.orth == 1) {
+            stepDepth = this.state.voxelY * this.state.scl;
+          } else if (this.state.orth == 2) {
+            stepDepth = this.state.voxelX * this.state.scl;
+          }
+          if (e.shiftKey) {
+            stepDepth = stepDepth * 10;
+          }
+
+          newdst += stepDepth * step;
+          if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            this.setState({ dst: newdst, text: 'Depth:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
+          } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.minDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'First slice!' });
+          } else if (newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
+            newdst = ((this.state.maxDst / 10.0) * this.state.scl);
+            this.setState({ dst: newdst, text: 'Last slice!' });
+          }
+
         }
 
       }
