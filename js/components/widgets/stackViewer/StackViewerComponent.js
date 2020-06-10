@@ -1139,11 +1139,11 @@ define(function (require) {
         this.onZoomOut();
       } else {
         // Mac keypad returns values (+/-)1-20 Mouse wheel (+/-)120
-        var step = e.deltaY * -0.01;
-        if (Math.sign(step) == 1) {
-          step = Math.ceil(step);
+        var step = 0;
+        if (Math.sign(e.wheelDelta) == 1) {
+          step = -1;
         } else {
-          step = Math.floor(step);
+          step = 1;
         }
         var stepDepth = 1;
         // Max step of imposed
