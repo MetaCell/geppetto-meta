@@ -938,38 +938,6 @@ define(function (require) {
     },
 
     /**
-     * Update the stage Image files when any change.
-     *
-     */
-    updateImages: function (props) {
-      var i, j, d, image;
-      // console.log(this.state.visibleTiles);
-      for (j in this.state.visibleTiles) {
-        for (i in this.state.stack) {
-          image = props.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + props.fxp.join(',') + '&scl=' + Number(props.scl).toFixed(1) + '&dst=' + Number(props.dst).toFixed(1) + '&pit=' + Number(props.pit).toFixed(0) + '&yaw=' + Number(props.yaw).toFixed(0) + '&rol=' + Number(props.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-          d = i.toString() + ',' + this.state.visibleTiles[j].toString();
-          if (this.state.images[d]) {
-            if (this.state.imagesUrl[d] != image) {
-              if (this.state.iBuffer[image]) {
-                this.state.images[d].texture = this.state.iBuffer[image];
-                this.state.imagesUrl[d] = image;
-              } else {
-                if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                  this.state.buffer[-1].text = 'Loading slice ' + Number(props.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
-                }
-                this.state.images[d].texture = PIXI.Texture.fromImage(image);
-                this.state.iBuffer[image] = this.state.images[d].texture;
-                this.state.imagesUrl[d] = image;
-              }
-            }
-            this.state.images[d].tint = this.state.color[i];
-            this.state.images[d].zOrder = i;
-          }
-        }
-      }
-    },
-
-    /**
      * Animation loop for updating Pixi Canvas
      *
      */
