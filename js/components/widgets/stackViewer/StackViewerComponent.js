@@ -652,12 +652,11 @@ define(function (require) {
           }
         }
       }
-
-      if (this.state.lastUpdate < (Date.now() - 200)) {
+      // console.log('Updating scene...');
+      this.createImages();
+      if (this.state.lastUpdate < (Date.now() - 30000)) {
         this.bufferStack();
         this.state.lastUpdate = Date.now();
-        // console.log('Updating scene...');
-        this.createImages();
       }
     },
 
