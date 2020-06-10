@@ -991,6 +991,8 @@ define(function (require) {
     },
 
     onHoverEvent: function (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
       if (!this.state.loadingLabels && !this.state.dragging) {
         if (this.renderer === null ) {
           return;
