@@ -1156,9 +1156,24 @@ define(function (require) {
       }
     },
 
-    UNSAFE_componentWillReceiveProps: function (nextProps) {
-      if (nextProps.data && nextProps.data != null) {
-        var newState = {}
+    componentDidUpdate: function (prevProps, prevState) {
+      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length != prevProps.data.instances.length ) {
+        if (this.props.data.instances && this.props.data.instances != null) {
+          this.handleInstances(this.props.data.instances);
+        }
+      }
+    },
+
+    handleInstances: function (instances) {
+      var newState = {}
+      if (instances && instances != null && instances.length > 0) {
+        var instance;
+        var data, vals;
+        var files = [];
+        var colors = [];
+        var labels = [];
+        var ids = [];
+        var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
         if (nextProps.data.height && nextProps.data.height != null) {
           newState.height = nextProps.data.height;
         }
@@ -1187,36 +1202,6 @@ define(function (require) {
             }
           }
         }
-        if (nextProps.voxel && nextProps.voxel != null) {
-
-          newState.voxelX = nextProps.voxel.x;
-          newState.voxelY = nextProps.voxel.y; 
-          newState.voxelZ = nextProps.voxel.z; 
-        }
-        if (nextProps.data.instances && nextProps.data.instances != null) {
-          if (JSON.stringify(newState) !== "{}"){
-            this.setState(newState, () => {
-              this.handleInstances(nextProps.data.instances);
-            });
-          } else {
-            this.handleInstances(nextProps.data.instances);
-          }
-        } else if (JSON.stringify(newState) !== "{}"){
-          this.setState(newState);
-        }
-      }
-    },
-
-    handleInstances: function (instances) {
-      var newState = {}
-      if (instances && instances != null && instances.length > 0) {
-        var instance;
-        var data, vals;
-        var files = [];
-        var colors = [];
-        var labels = [];
-        var ids = [];
-        var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
         for (instance in instances) {
           try {
             if ((instances[instance].id != undefined) && (instances[instance].parent != null) && (typeof instances[instance].parent.isSelected === "function") && (typeof instances[instance].parent.isVisible === "function" && instances[instance].parent.isVisible())){
