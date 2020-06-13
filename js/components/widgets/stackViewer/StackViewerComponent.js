@@ -1174,30 +1174,30 @@ define(function (require) {
         var labels = [];
         var ids = [];
         var server = this.props.config.serverUrl.replace('http:', location.protocol).replace('https:', location.protocol);
-        if (nextProps.data.height && nextProps.data.height != null) {
-          newState.height = nextProps.data.height;
+        if (this.props.data.height && this.props.data.height != null) {
+          newState.height = this.props.data.height;
         }
-        if (nextProps.data.width && nextProps.data.width != null) {
-          newState.width = nextProps.data.width;
+        if (this.props.data.width && this.props.data.width != null) {
+          newState.width = this.props.data.width;
         }
-        if (nextProps.config && nextProps.config != null && nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length && nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-          newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-          newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-          newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
+        if (this.props.config && this.props.config != null && this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length && this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+          newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+          newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+          newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
         }
-        if (nextProps.config && nextProps.config != null) {
-          if (nextProps.config.subDomains && nextProps.config.subDomains != null && nextProps.config.subDomains.length) {
-            if (nextProps.config.subDomains.length > 0 && nextProps.config.subDomains[0] && nextProps.config.subDomains[0].length && nextProps.config.subDomains[0].length > 2) {
-              newState.voxelX = Number(nextProps.config.subDomains[0][0] || 0.622088);
-              newState.voxelY = Number(nextProps.config.subDomains[0][1] || 0.622088);
-              newState.voxelZ = Number(nextProps.config.subDomains[0][2] || 0.622088);
+        if (this.props.config && this.props.config != null) {
+          if (this.props.config.subDomains && this.props.config.subDomains != null && this.props.config.subDomains.length) {
+            if (this.props.config.subDomains.length > 0 && this.props.config.subDomains[0] && this.props.config.subDomains[0].length && this.props.config.subDomains[0].length > 2) {
+              newState.voxelX = Number(this.props.config.subDomains[0][0] || 0.622088);
+              newState.voxelY = Number(this.props.config.subDomains[0][1] || 0.622088);
+              newState.voxelZ = Number(this.props.config.subDomains[0][2] || 0.622088);
             }
-            if (nextProps.config.subDomains.length > 4 && nextProps.config.subDomains[1] != null) {
-              newState.tempName = nextProps.config.subDomains[2];
-              newState.tempId = nextProps.config.subDomains[1];
-              newState.tempType = nextProps.config.subDomains[3];
-              if (nextProps.config.subDomains[4] && nextProps.config.subDomains[4].length && nextProps.config.subDomains[4].length > 0) {
-                newState.fxp = JSON.parse(nextProps.config.subDomains[4][0]);
+            if (this.props.config.subDomains.length > 4 && this.props.config.subDomains[1] != null) {
+              newState.tempName = this.props.config.subDomains[2];
+              newState.tempId = this.props.config.subDomains[1];
+              newState.tempType = this.props.config.subDomains[3];
+              if (this.props.config.subDomains[4] && this.props.config.subDomains[4].length && this.props.config.subDomains[4].length > 0) {
+                newState.fxp = JSON.parse(this.props.config.subDomains[4][0]);
               }
             }
           }
