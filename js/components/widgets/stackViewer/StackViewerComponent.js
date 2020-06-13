@@ -515,7 +515,7 @@ define(function (require) {
               }
             }
           }
-          if (buffMax > 1) {
+          if (buffMax > 1) { 
             var distance = Number(Number(this.state.dst).toFixed(1));
             this.state.lastUpdate = Date.now();
             var step = 0;
@@ -589,38 +589,34 @@ define(function (require) {
           this.state.bufferRunning = false;
         }
 
-        class loadProgressHandler {
-          constructor(loader, resource) {
-            if (loader.progress < 100) {
-              if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
-              }
+        function loadProgressHandler (loader, resource) {
+          if (loader.progress < 100) {
+            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+              this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
             }
-            // sort position after 10% loaded.
-            if (this._initialized === false && loader.progress > 5) {
-              this.props.onHome();
-              this._initialized = true;
-            }
+          }
+          // sort position after 10% loaded.
+          if (this._initialized === false && loader.progress > 5) {
+            this.props.onHome();
+            this._initialized = true;
           }
         }
 
-        class setup {
-          constructor() {
-            for (k in imageLoader.resources) {
-              this.state.iBuffer[k] = imageLoader.resources[k].texture;
-            }
-            imageLoader.destroy(true, true);
-            // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
-            if (this._isMounted === true && this._initialized === false) {
-              // this.props.canvasRef.resetCamera();
-              this.props.onHome();
-              this._initialized = true;
-            }
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-              this.state.buffer[-1].text = '';
-            }
-            this.state.bufferRunning = false;
+        function setup () {
+          for (k in imageLoader.resources) {
+            this.state.iBuffer[k] = imageLoader.resources[k].texture;
           }
+          imageLoader.destroy(true);
+          // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
+          if (this._isMounted === true && this._initialized === false) {
+            // this.props.canvasRef.resetCamera();
+            this.props.onHome();
+            this._initialized = true;
+          }
+          if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+            this.state.buffer[-1].text = '';
+          }
+          this.state.bufferRunning = false;
         }
       }
     },
@@ -897,13 +893,13 @@ define(function (require) {
       this.state.pit = props.pit;
       this.state.yaw = props.yaw;
       this.state.rol = props.rol;
-      // forcing the state change before size calls as setstate take time.
+      // forcing the state change before size calls as setstate take time. 
       this.setState({
         pit: props.pit,
         yaw: props.yaw,
         rol: props.rol,
         orth: props.orth
-      });
+      }); 
       this.state.images = [];
       this.stack.removeChildren();
       if (props.orth == 0) {
