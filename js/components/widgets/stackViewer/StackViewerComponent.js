@@ -516,8 +516,9 @@ define(function (require) {
             }
           }
           if (buffMax > 1) { 
+            var distance = Number(Number(this.state.dst).toFixed(1));
             this.state.lastUpdate = Date.now();
-            var step;
+            var step = 0;
             if (this.state.orth == 0) {
               step = this.state.voxelZ * this.state.scl;
             } else if (this.state.orth == 1) {
@@ -525,8 +526,9 @@ define(function (require) {
             } else if (this.state.orth == 2) {
               step = this.state.voxelX * this.state.scl;
             }
+            step = Number(Number(step).toFixed(1));
             if (this.state.numTiles < 10) {
-              for (maxDist = Number(this.state.dst).toFixed(1); maxDist < max; maxDist += step) {
+              for (maxDist = distance; maxDist < max; maxDist += step) {
                 for (i in this.state.stack) {
                   for (j in this.state.visibleTiles) {
                     image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
@@ -540,7 +542,7 @@ define(function (require) {
                   break;
                 }
               }
-              for (maxDist = Number(this.state.dst).toFixed(1); maxDist > min; maxDist -= step) {
+              for (maxDist = distance; maxDist > min; maxDist -= step) {
                 for (i in this.state.stack) {
                   for (j in this.state.visibleTiles) {
                     image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
@@ -1086,7 +1088,7 @@ define(function (require) {
     onWheelEvent: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      var newdst = this.state.dst;
+      var newdst = Number(Number(this.state.dst).toFixed(1));
       if (e.ctrlKey && e.wheelDelta > 0) {
         this.onZoomIn();
       } else if (e.ctrlKey && e.wheelDelta < 0) {
@@ -1115,8 +1117,9 @@ define(function (require) {
           if (e.shiftKey) {
             stepDepth = stepDepth * 10;
           }
+          stepDepth = Number(Number(stepDepth).toFixed(1))
 
-          newdst += stepDepth * step;
+          newdst += Number((stepDepth * step).toFixed(1));
           if (newdst < ((this.state.maxDst / 10.0) * this.state.scl) && newdst > ((this.state.minDst / 10.0) * this.state.scl)) {
             this.setState({ dst: newdst, text: 'Depth:' + (newdst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) });
           } else if (newdst < ((this.state.maxDst / 10.0) * this.state.scl)) {
@@ -1282,7 +1285,7 @@ define(function (require) {
       }
       if (Number(this.state.scl) < scale) {
         var baseDst = this.state.dst / this.state.scl;
-        newDst = baseDst * scale;
+        newDst = Number((baseDst * scale).toFixed(1));
         stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
@@ -1353,7 +1356,7 @@ define(function (require) {
       }
       if (Number(this.state.scl) > scale) {
         var baseDst = this.state.dst / this.state.scl;
-        newDst = baseDst * scale;
+        newDst = Number((baseDst * scale).toFixed(1));
         stackX = Math.ceil((this.state.stackX / (this.state.imageX / 10.0 * this.state.scl)) * (this.state.imageX / 10.0 * scale));
         stackY = Math.ceil((this.state.stackY / (this.state.imageY / 10.0 * this.state.scl)) * (this.state.imageY / 10.0 * scale));
       }
