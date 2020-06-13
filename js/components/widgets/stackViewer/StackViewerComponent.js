@@ -735,9 +735,8 @@ define(function (require) {
               } else {
                 if (this.state.imagesUrl[d] != image) {
                   if (this.state.iBuffer[image]) {
-                    this.state.images[d] = PIXI.Sprite.from(this.state.iBuffer[image]);
+                    this.state.images[d].texture = this.state.iBuffer[image];
                     this.state.imagesUrl[d] = image;
-                    this.stack.addChild(this.state.images[d]);
                   } else {
                     if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
                       this.state.buffer[-1].text = 'Loading slice ' + Number(this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
