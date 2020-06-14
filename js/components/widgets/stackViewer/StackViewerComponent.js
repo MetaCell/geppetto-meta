@@ -76,7 +76,7 @@ define(function (require) {
       this.refs.stackCanvas.appendChild(this.app.view);
 
       // create the root of the scene graph
-      this.stage = this.render.stage;
+      this.stage = this.app.stage;
       this.stage.pivot.x = 0;
       this.stage.pivot.y = 0;
       this.stage.position.x = 0;
