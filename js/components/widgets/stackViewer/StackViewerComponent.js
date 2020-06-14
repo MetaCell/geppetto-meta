@@ -787,20 +787,22 @@ define(function (require) {
                     this.state.iBuffer[image] = this.state.images[d].texture;
                     this.state.imagesUrl[d] = image;
                   }
+                  this.state.images[d].anchor.x = 0;
+                  this.state.images[d].anchor.y = 0;
+                  this.state.images[d].position.x = x;
+                  this.state.images[d].position.y = y;
+                  this.state.images[d].zOrder = i;
+                  this.state.images[d].visible = true;
+                  if (i > 0) {
+                    // this.state.images[d].alpha = 0.9;
+                    this.state.images[d].blendMode = PIXI.BLEND_MODES.SCREEN;
+                  }
                 }
-                this.state.images[d].anchor.x = 0;
-                this.state.images[d].anchor.y = 0;
-                this.state.images[d].position.x = x;
-                this.state.images[d].position.y = y;
-                this.state.images[d].zOrder = i;
-                this.state.images[d].visible = true;
                 if (!this.state.color[i]) {
                   this.generateColor();
                 }
-                this.state.images[d].tint = this.state.color[i];
-                if (i > 0) {
-                  // this.state.images[d].alpha = 0.9;
-                  this.state.images[d].blendMode = PIXI.BLEND_MODES.SCREEN;
+                if (this.state.images[d].tint !=  this.state.color[i]) {
+                  this.state.images[d].tint = this.state.color[i];
                 }
               }
             }
