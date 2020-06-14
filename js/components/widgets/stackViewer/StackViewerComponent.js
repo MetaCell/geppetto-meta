@@ -177,8 +177,7 @@ define(function (require) {
 
       function shallowCompare (instance, nextProps, nextState) {
         return (
-          !shallowEqual(instance.props, nextProps) ||
-          !shallowEqual(instance.state, nextState)
+          !shallowEqual(instance.props, nextProps) || !shallowEqual(instance.state, nextState)
         );
       }
     },
@@ -1226,8 +1225,7 @@ define(function (require) {
 
       function shallowCompare (instance, nextProps, nextState) {
         return (
-          !shallowEqual(instance.props, nextProps) ||
-          !shallowEqual(instance.state, nextState)
+          !shallowEqual(instance.props, nextProps) || !shallowEqual(instance.state, nextState)
         );
       }
     },
