@@ -1275,24 +1275,9 @@ define(function (require) {
         }
       } else {
         if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && prevProps.data !== undefined && prevProps.data.instances !== undefined) {
-          var a = prevProps.data.instances;
-          var b = this.props.data.instances;
-          if (a.length == b.length) {
-            for (var i = 0; i < a.length; i++) {
-              try {
-                if (a[i].parent.getColor() != b[i].parent.getColor()) {
-                  this.handleInstances(this.props.data.instances);
-                  return true;
-                }
-                if (a[i].parent.isVisible() != b[i].parent.isVisible()) {
-                  this.handleInstances(this.props.data.instances);
-                  return true;
-                }
-              } catch (ignore) { }
-            }
-          } else {
+          if (this.props.data.instances.length !== this.state.color.length) {
             this.handleInstances(this.props.data.instances);
-            return true;
+            return true
           }
         }
       }
