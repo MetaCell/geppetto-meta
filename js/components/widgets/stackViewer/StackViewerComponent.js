@@ -1184,7 +1184,7 @@ define(function (require) {
         return true;
       }
       if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && this.nextProps.data !== undefined && this.nextProps.data.instances !== undefined) {
-        var a = this.nextProps.data.instances;
+        var a = nextProps.data.instances;
         var b = this.props.data.instances;
         if (a.length == b.length) {
           for (var i = 0; i < a.length; i++) {
