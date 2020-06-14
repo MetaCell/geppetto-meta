@@ -510,6 +510,8 @@ define(function (require) {
                   }
                   if (objects !== '' && i == 0) {
                     that.setHoverText(callX,callY,list[0]);
+                  } else {
+                    that.setStatusText('');
                   }
                 }
                 // update slice view
