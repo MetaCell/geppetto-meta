@@ -170,8 +170,12 @@ define(function (require) {
           if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
             return false;
           }
+          if (["color","stack"].includes(keysA[i])) {
+            if (JSON.stringify(objA[keysA[i]]) !== JSON.stringify(objB[keysA[i]])) {
+              return false;
+            }
+          }
         }
-
         return true;
       }
 
