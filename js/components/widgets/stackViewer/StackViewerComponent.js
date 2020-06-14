@@ -539,130 +539,140 @@ define(function (require) {
     bufferStack: function () {
       if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000)) {
         this.state.bufferRunning = true;
+        var loadList = new Set();
         this.state.lastUpdate = Date.now();
         var i, j, dst, image;
         var min = (this.state.minDst / 10.0) * this.state.scl;
         var max = (this.state.maxDst / 10.0) * this.state.scl;
         var buffMax = 2000;
-        var imageLoader = new PIXI.loaders.Loader();
-        var loaderOptions = {
-          loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
-          xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
-        };
 
-        if (!imageLoader.loading) {
-          for (j = 0; j < this.state.numTiles; j++) {
-            for (i in this.state.stack) {
-              image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
-              if (!this.state.iBuffer[image]) {
-                // console.log('buffering ' + this.state.stack[i].toString() + '...');
-                imageLoader.add(image, image, loaderOptions);
-                buffMax -= 1;
-              }
+        for (j = 0; j < this.state.numTiles; j++) {
+          for (i in this.state.stack) {
+            image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+            if (!this.state.iBuffer[image]) {
+              // console.log('buffering ' + this.state.stack[i].toString() + '...');
+              //imageLoader.add(image, image, loaderOptions);
+              loadList.add(image);
+              buffMax -= 1;
             }
           }
-          if (buffMax > 1) { 
-            var distance = Number(Number(this.state.dst).toFixed(1));
-            this.state.lastUpdate = Date.now();
-            var step = 0;
-            if (this.state.orth == 0) {
-              step = this.state.voxelZ * this.state.scl;
-            } else if (this.state.orth == 1) {
-              step = this.state.voxelY * this.state.scl;
-            } else if (this.state.orth == 2) {
-              step = this.state.voxelX * this.state.scl;
-            }
-            step = Number(Number(step).toFixed(1));
-            if (this.state.numTiles < 10) {
-              for (maxDist = distance; maxDist < max; maxDist += step) {
-                for (i in this.state.stack) {
-                  for (j in this.state.visibleTiles) {
-                    image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                    if (!this.state.iBuffer[image]) {
-                      imageLoader.add(image, image, loaderOptions);
-                      buffMax -= 1;
-                    }
-                  }
-                }
-                if (buffMax < 1000) {
-                  break;
-                }
-              }
-              for (maxDist = distance; maxDist > min; maxDist -= step) {
-                for (i in this.state.stack) {
-                  for (j in this.state.visibleTiles) {
-                    image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
-                    if (!this.state.iBuffer[image]) {
-                      imageLoader.add(image, image, loaderOptions);
-                      buffMax -= 1;
-                    }
-                  }
-                }
-                if (buffMax < 1) {
-                  break;
-                }
-              }
-            } else {
-              // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
-              for (j = 0; j < this.state.numTiles; j++) {
-                for (i in this.state.stack) {
-                  image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+        }
+        if (buffMax > 1) { 
+          var distance = Number(Number(this.state.dst).toFixed(1));
+          this.state.lastUpdate = Date.now();
+          var step = 0;
+          if (this.state.orth == 0) {
+            step = this.state.voxelZ * this.state.scl;
+          } else if (this.state.orth == 1) {
+            step = this.state.voxelY * this.state.scl;
+          } else if (this.state.orth == 2) {
+            step = this.state.voxelX * this.state.scl;
+          }
+          step = Number(Number(step).toFixed(1));
+          if (this.state.numTiles < 10) {
+            for (maxDist = distance + step; maxDist < max; maxDist += step) {
+              for (i in this.state.stack) {
+                for (j in this.state.visibleTiles) {
+                  image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
                   if (!this.state.iBuffer[image]) {
-                    // console.log('buffering ' + this.state.stack[i].toString() + '...');
-                    imageLoader.add(image, image, loaderOptions);
+                    //imageLoader.add(image, image, loaderOptions);
+                    loadList.add(image);
                     buffMax -= 1;
                   }
-                  if (buffMax < 1) {
-                    break;
+                }
+              }
+              if (buffMax < 1000) {
+                break;
+              }
+            }
+            for (maxDist = distance - step; maxDist > min; maxDist -= step) {
+              for (i in this.state.stack) {
+                for (j in this.state.visibleTiles) {
+                  image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
+                  if (!this.state.iBuffer[image]) {
+                    //imageLoader.add(image, image, loaderOptions);
+                    loadList.add(image);
+                    buffMax -= 1;
                   }
+                }
+              }
+              if (buffMax < 1) {
+                break;
+              }
+            }
+          } else {
+            // console.log('Buffering neighbouring layers (' + this.state.numTiles.toString() + ') tiles...');
+            for (j = 0; j < this.state.numTiles; j++) {
+              for (i in this.state.stack) {
+                image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
+                if (!this.state.iBuffer[image]) {
+                  // console.log('buffering ' + this.state.stack[i].toString() + '...');
+                  //imageLoader.add(image, image, loaderOptions);
+                  loadList.add(image);
+                  buffMax -= 1;
                 }
                 if (buffMax < 1) {
                   break;
                 }
               }
+              if (buffMax < 1) {
+                break;
+              }
             }
-            imageLoader
-            .on('progress', loadProgressHandler.bind(this))
-            .on('error', console.error)
-            .on('complete', setup.bind(this,imageLoader))
-            .load();
-            console.log('Buffered ' + (2000 - buffMax).toFixed(0) + ' Slice Tiles');
+          }
+        }
+
+        if (loadList.size > 0) {
+          this.state.bufferRunning = true;
+          console.log('Loading ' + loadList.size + ' slices/tiles...');
+          function loadProgressHandler (loader, resource) {
+            if (loader.progress < 100) {
+              if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+                this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
+              }
+            }
+            // sort position after 10% loaded.
+            if (this._initialized === false && loader.progress > 5) {
+              this.props.onHome();
+              this._initialized = true;
+            }
+          }
+
+          function setup () {
+            for (k in imageLoader.resources) {
+              this.state.iBuffer[k] = imageLoader.resources[k].texture;
+            }
+            imageLoader.destroy(true);
+            // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
+            if (this._isMounted === true && this._initialized === false) {
+              // this.props.canvasRef.resetCamera();
+              this.props.onHome();
+              this._initialized = true;
+            }
+            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+              this.state.buffer[-1].text = '';
+            }
+            this.state.bufferRunning = false;
             this.state.lastUpdate = Date.now();
           }
-          if (buffMax = 2000) this.state.bufferRunning = false;
+
+          var imageLoader = new PIXI.loaders.Loader();
+          var loaderOptions = {
+            loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
+            xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
+          };
+          loadList.forEach(function(value) {
+            imageLoader.add(value, value, loaderOptions);
+          });
+          imageLoader
+          .on('progress', loadProgressHandler.bind(this))
+          .on('error', console.error)
+          .on('complete', setup.bind(this,imageLoader))
+          .load();
+
         } else {
-          imageLoader.destroy(true);
           this.state.bufferRunning = false;
-        }
-
-        function loadProgressHandler (loader, resource) {
-          if (loader.progress < 100) {
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-              this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
-            }
-          }
-          // sort position after 10% loaded.
-          if (this._initialized === false && loader.progress > 5) {
-            this.props.onHome();
-            this._initialized = true;
-          }
-        }
-
-        function setup () {
-          for (k in imageLoader.resources) {
-            this.state.iBuffer[k] = imageLoader.resources[k].texture;
-          }
-          imageLoader.destroy(true);
-          // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
-          if (this._isMounted === true && this._initialized === false) {
-            // this.props.canvasRef.resetCamera();
-            this.props.onHome();
-            this._initialized = true;
-          }
-          if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-            this.state.buffer[-1].text = '';
-          }
-          this.state.bufferRunning = false;
+          this.state.lastUpdate = Date.now();
         }
       }
     },
