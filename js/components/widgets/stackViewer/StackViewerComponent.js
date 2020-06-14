@@ -136,6 +136,7 @@ define(function (require) {
         this.props.onHome();
       }
       this.checkStack();
+      this.createImages();
       this.callPlaneEdges();
       this.animate();
     },
