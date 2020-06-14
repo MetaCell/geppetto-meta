@@ -1286,7 +1286,6 @@ define(function (require) {
                 }
               } catch (ignore) { }
             }
-            break;
           } else {
             this.handleInstances(this.props.data.instances);
             return true;
