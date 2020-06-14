@@ -1264,30 +1264,18 @@ define(function (require) {
       }.bind(this));
 
       if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
-        this.handleInstances(this.props.data.instances);
+        this.state = this.handleInstances(this.props.data.instances);
       }
     },
 
     componentDidUpdate: function (prevProps, prevState) {
-      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length != prevProps.data.instances.length ) {
-        if (this.props.data.instances && this.props.data.instances != null) {
-          this.handleInstances(this.props.data.instances);
-          return true;
-        }
-      } else {
-        if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && prevProps.data !== undefined && prevProps.data.instances !== undefined) {
-          if (this.state.loadChanges && this.props.data.instances.length > 1 && (this.props.data.instances.length - 1) !== this.state.color.length) {
-            this.state.loadChanges = false;
-            this.handleInstances(this.props.data.instances);
-            this.state.loadChanges = true;
-            return true;
-          }
-        }
-      }
+      if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined) {
+        this.state = this.handleInstances(this.props.data.instances);
+      } 
     },
 
     handleInstances: function (instances) {
-      var newState = {}
+      var newState = this.state;
       if (instances && instances != null && instances.length > 0) {
         var instance;
         var data, vals;
@@ -1366,12 +1354,8 @@ define(function (require) {
         if (colors && colors != null && colors.length > 0 && colors.toString() != this.state.color.toString()) {
           newState.color = colors;
         }
-      } else {
-        newState = { label: [], stack: [], id: [], color: [] };
-      }
-      if (JSON.stringify(newState) !== "{}") {
-        this.setState(newState);
-      }
+      } 
+      return newState;
     },
 
     componentWillUnmount: function () {
