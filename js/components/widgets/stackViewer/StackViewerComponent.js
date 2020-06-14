@@ -637,6 +637,7 @@ define(function (require) {
           }
 
           function setup () {
+            var k;
             for (k in imageLoader.resources) {
               this.state.iBuffer[k] = imageLoader.resources[k].texture;
             }
