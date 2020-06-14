@@ -613,11 +613,7 @@ define(function (require) {
           this.state.bufferRunning = true;
           console.log('Loading ' + loadList.size + ' slices/tiles...');
           function loadProgressHandler (loader, resource) {
-            if (loader.progress < 100) {
-              if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-                this.state.buffer[-1].text = 'Buffering stack ' + loader.progress.toFixed(1) + "%";
-              }
-            }
+            this.setStatusText('Buffering stack ' + loader.progress.toFixed(1) + "%");
             // sort position after 10% loaded.
             if (this._initialized === false && loader.progress > 5) {
               this.props.onHome();
@@ -637,7 +633,7 @@ define(function (require) {
               this.props.onHome();
               this._initialized = true;
             }
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
+            if (this.state.text.indexOf('Buffering stack') > -1) {
               this.state.buffer[-1].text = '';
             }
             this.state.bufferRunning = false;
@@ -855,7 +851,7 @@ define(function (require) {
       var updDst = false;
       if (nextProps.dst !== this.state.dst) {
         this.state.dst = nextProps.dst;
-        this.setState({ dst: nextProps.dst });
+        this.setStatusText(nextProps.statusText);
         this.createImages();
         return true;
       }
@@ -976,7 +972,6 @@ define(function (require) {
       this.state.buffer[-1].y = -this.stage.position.y + this.disp.position.y + (this.stack.position.y * this.disp.scale.y) + (Number(y) * this.disp.scale.y) + 15;
       this.state.buffer[-1].text = text;
       this.state.text = text;
-      this.state.txtUpdated = Date.now();
     },
 
     /**
