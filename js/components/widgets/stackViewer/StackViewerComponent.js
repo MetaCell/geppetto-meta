@@ -138,6 +138,7 @@ define(function (require) {
       }
       this.checkStack();
       this.callPlaneEdges();
+      this.animate();
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
@@ -999,7 +1000,7 @@ define(function (require) {
       if (this._isMounted) {
         // render the stage container (if the component is still mounted)
         this.renderer.render(this.stage);
-        this.frame = requestAnimationFrame(this.animate);
+        //this.frame = requestAnimationFrame(this.animate);
       }
     },
 
