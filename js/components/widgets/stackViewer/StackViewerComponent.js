@@ -1275,7 +1275,7 @@ define(function (require) {
         }
       } else {
         if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && prevProps.data !== undefined && prevProps.data.instances !== undefined) {
-          if (this.props.data.instances.length !== this.state.color.length) {
+          if ((this.props.data.instances.length - 1) !== this.state.color.length) {
             this.handleInstances(this.props.data.instances);
             return true
           }
