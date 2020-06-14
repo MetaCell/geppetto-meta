@@ -494,6 +494,7 @@ define(function (require) {
     bufferStack: function () {
       if (!this.state.bufferRunning && this.state.lastUpdate < (Date.now() - 60000)) {
         this.state.bufferRunning = true;
+        this.state.lastUpdate = Date.now();
         var i, j, dst, image;
         var min = (this.state.minDst / 10.0) * this.state.scl;
         var max = (this.state.maxDst / 10.0) * this.state.scl;
@@ -656,10 +657,6 @@ define(function (require) {
       }
       // console.log('Updating scene...');
       this.createImages();
-      if (this.state.lastUpdate < (Date.now() - 30000)) {
-        this.bufferStack();
-        this.state.lastUpdate = Date.now();
-      }
     },
 
     generateColor: function () {
@@ -839,11 +836,13 @@ define(function (require) {
         this.state.iBuffer = {};
         this.setState({ scl: nextProps.scl, iBuffer: {} });
         this.updateZoomLevel(nextProps);
+        this.bufferStack();
         updDst = true;
       }
       if (nextProps.fxp[0] !== this.props.fxp[0] || nextProps.fxp[1] !== this.props.fxp[1] || nextProps.fxp[2] !== this.props.fxp[2]) {
         this.state.dst = nextProps.dst;
         this.setState({ dst: nextProps.dst });
+        this.bufferStack();
         updDst = true;
       }
       if (nextProps.statusText !== this.props.statusText && nextProps.statusText.trim() !== '') {
@@ -856,12 +855,12 @@ define(function (require) {
           this.state.iBuffer = {};
         }
         this.changeOrth(nextProps);
+        this.bufferStack();
         updDst = true;
       }
       if (updDst) {
         this.checkStack();
         this.callPlaneEdges();
-        this.bufferStack();
       }
     },
     /**
@@ -893,13 +892,13 @@ define(function (require) {
       this.state.pit = props.pit;
       this.state.yaw = props.yaw;
       this.state.rol = props.rol;
-      // forcing the state change before size calls as setstate take time. 
+      // forcing the state change before size calls as setstate take time.
       this.setState({
         pit: props.pit,
         yaw: props.yaw,
         rol: props.rol,
         orth: props.orth
-      }); 
+      });
       this.state.images = [];
       this.stack.removeChildren();
       if (props.orth == 0) {
