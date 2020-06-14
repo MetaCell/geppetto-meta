@@ -1183,7 +1183,7 @@ define(function (require) {
       if (shallowCompare(this, nextProps, nextState)) {
         return true;
       }
-      if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && this.nextProps.data !== undefined && this.nextProps.data.instances !== undefined) {
+      if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && nextProps.data !== undefined && nextProps.data.instances !== undefined) {
         var a = nextProps.data.instances;
         var b = this.props.data.instances;
         if (a.length == b.length) {
