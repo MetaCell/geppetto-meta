@@ -1180,7 +1180,28 @@ define(function (require) {
     },
 
     shouldComponentUpdate: function (nextProps, nextState) {
-      return shallowCompare(this, nextProps, nextState);
+      if (shallowCompare(this, nextProps, nextState)) {
+        return true;
+      }
+      if (this.props.data !== undefined && this.props.data.instances !== undefined && this.nextProps.data !== undefined && this.nextProps.data.instances !== undefined) {
+        var a = this.nextProps.data.instances;
+        var b = this.props.data.instances;
+        if (a.length == b.length) {
+          for (var i = 0; i < a.length; i++) {
+            try {
+              if (a[i].parent.getColor() != b[i].parent.getColor()) {
+                return true;
+              }
+              if (a[i].parent.isVisible() != b[i].parent.isVisible()) {
+                return true;
+              }
+            } catch (ignore) { }
+          }
+          return false;
+        }
+        return true;
+      }
+      return false;
 
       /**
        * Performs equality by iterating through keys on an object and returning false
