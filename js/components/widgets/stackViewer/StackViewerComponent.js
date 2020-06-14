@@ -71,13 +71,12 @@ define(function (require) {
       // console.log('Loading....');
 
       // Setup PIXI Canvas in componentDidMount
-      this.renderer = PIXI.autoDetectRenderer(this.props.width, this.props.height);
+      this.app = new PIXI.Application(this.props.width, this.props.height);
       // maintain full window size
-      this.refs.stackCanvas.appendChild(this.renderer.view);
-
+      this.refs.stackCanvas.appendChild(this.app.view);
 
       // create the root of the scene graph
-      this.stage = new PIXI.Container();
+      this.stage = this.render.stage;
       this.stage.pivot.x = 0;
       this.stage.pivot.y = 0;
       this.stage.position.x = 0;
@@ -115,7 +114,7 @@ define(function (require) {
       this.disp.addChild(this.stack);
 
       // block move event outside stack
-      this.renderer.plugins.interaction.moveWhenInside = true;
+      this.app.renderer.plugins.interaction.moveWhenInside = true;
 
       // call metadata from server
       this.callDstRange();
@@ -132,8 +131,8 @@ define(function (require) {
 
     componentDidUpdate: function () {
       // console.log('Canvas update');
-      if (this.renderer.width !== Math.floor(this.props.width) || this.renderer.height !== Math.floor(this.props.height)) {
-        this.renderer.resize(this.props.width, this.props.height);
+      if (this.app.width !== Math.floor(this.props.width) || this.app.height !== Math.floor(this.props.height)) {
+        this.app.resize(this.props.width, this.props.height);
         this.props.onHome();
       }
       this.checkStack();
@@ -187,11 +186,9 @@ define(function (require) {
 
 
     componentWillUnmount: function () {
-      this.stage.destroy(true);
-      this.stage = null;
-      this.refs.stackCanvas.removeChild(this.renderer.view);
-      this.renderer.destroy(true);
-      this.renderer = null;
+      this.refs.stackCanvas.removeChild(this.app.view);
+      this.app.destroy(true,true);
+      this.app = null;
 
       if (this.props.canvasRef != null && this.props.canvasRef != undefined) {
         this.props.canvasRef.removeObject(this.state.stackViewerPlane);
@@ -312,8 +309,8 @@ define(function (require) {
           }
           coordinates[0] = x.toFixed(0);
           coordinates[1] = y.toFixed(0);
-          x = x + (this.renderer.width / (this.disp.scale.x * this.state.scl));
-          y = y + (this.renderer.height / (this.disp.scale.y * this.state.scl));
+          x = x + (this.app.width / (this.disp.scale.x * this.state.scl));
+          y = y + (this.app.height / (this.disp.scale.y * this.state.scl));
           coordinates[2] = x.toFixed(0);
           coordinates[3] = y.toFixed(0);
           if (this.state.orth == 0) { // frontal
@@ -753,7 +750,7 @@ define(function (require) {
           XboundMax = (this.props.width / (this.disp.scale.x)) + Xpos + (2 * (this.state.tileX * this.state.scl));
           Ypos = (this.stack.parent.position.y / (this.disp.scale.y)) + this.stack.position.y;
           YboundMin = Ypos - (2 * (this.state.tileY * this.state.scl));
-          YboundMax = (this.renderer.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
+          YboundMax = (this.app.view.height / (this.disp.scale.y)) + Ypos + (2 * (this.state.tileY * this.state.scl));
           if ((w * h < 3) || ((x + this.state.tileX) > XboundMin && x < XboundMax && (y + this.state.tileY) > YboundMin && y < YboundMax)) {
             this.state.visibleTiles.push(t);
             for (i in this.state.stack) {
@@ -763,10 +760,10 @@ define(function (require) {
               if (!this.state.images[d]) {
                 // console.log('Adding ' + this.state.stack[i].toString());
                 if (this.state.iBuffer[image]) {
-                  this.state.images[d] = PIXI.Sprite.from(this.state.iBuffer[image]);
+                  this.state.images[d] = new PIXI.Sprite.from(this.state.iBuffer[image]);
                   this.state.imagesUrl[d] = image;
                 } else {
-                  this.state.images[d] = PIXI.Sprite.fromImage(image);
+                  this.state.images[d] = new PIXI.Sprite.fromImage(image);
                   this.state.iBuffer[image] = this.state.images[d].texture;
                   this.state.imagesUrl[d] = image;
                 }
@@ -794,7 +791,7 @@ define(function (require) {
                     if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
                       this.state.buffer[-1].text = 'Loading slice ' + Number(this.state.dst - ((this.state.minDst / 10.0) * this.state.scl)).toFixed(1) + '...';
                     }
-                    this.state.images[d].texture = PIXI.Texture.fromImage(image);
+                    this.state.images[d].texture = new PIXI.Texture.fromImage(image);
                     this.state.iBuffer[image] = this.state.images[d].texture;
                     this.state.imagesUrl[d] = image;
                   }
@@ -844,7 +841,7 @@ define(function (require) {
           dropShadowAngle: Math.PI / 6,
           dropShadowDistance: 2,
           wordWrap: true,
-          wordWrapWidth: this.renderer.view.width,
+          wordWrapWidth: this.app.view.width,
           textAlign: 'right'
         };
         this.state.buffer[-1] = new PIXI.Text(this.state.text, style);
@@ -999,7 +996,7 @@ define(function (require) {
     animate: function () {
       if (this._isMounted) {
         // render the stage container (if the component is still mounted)
-        this.renderer.render(this.stage);
+        this.app.render();
         //this.frame = requestAnimationFrame(this.animate);
       }
     },
@@ -1049,10 +1046,10 @@ define(function (require) {
 
     onHoverEvent: function (event) {
       if (!this.state.loadingLabels && !this.state.dragging) {
-        if (this.renderer === null ) {
+        if (this.app === null ) {
           return;
         }
-        var currentPosition = this.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
+        var currentPosition = this.app.renderer.plugins.interaction.mouse.getLocalPosition(this.stack);
         // update new position:
         this.state.posX = Number(currentPosition.x.toFixed(0));
         this.state.posY = Number(currentPosition.y.toFixed(0));
