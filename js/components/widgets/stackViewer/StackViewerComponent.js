@@ -558,6 +558,7 @@ define(function (require) {
           var distance = Number(Number(this.state.dst).toFixed(1));
           this.state.lastUpdate = Date.now();
           var step = 0;
+          var maxDist = 0;
           if (this.state.orth == 0) {
             step = this.state.voxelZ * this.state.scl;
           } else if (this.state.orth == 1) {
