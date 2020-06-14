@@ -140,7 +140,7 @@ define(function (require) {
       this.animate();
     },
 
-    shouldComponentUpdate: function(nextProps, nextState) {
+    shouldComponentUpdate: function (nextProps, nextState) {
       return shallowCompare(this, nextProps, nextState);
 
       /**
@@ -148,7 +148,7 @@ define(function (require) {
        * when any key has values which are not strictly equal between the arguments.
        * Returns true when the values of all keys are strictly equal.
        */
-      function shallowEqual(objA, objB) {
+      function shallowEqual (objA, objB) {
         if (objA === objB) {
           return true;
         }
@@ -176,7 +176,7 @@ define(function (require) {
         return true;
       }
 
-      function shallowCompare(instance, nextProps, nextState) {
+      function shallowCompare (instance, nextProps, nextState) {
         return (
           !shallowEqual(instance.props, nextProps) ||
           !shallowEqual(instance.state, nextState)
