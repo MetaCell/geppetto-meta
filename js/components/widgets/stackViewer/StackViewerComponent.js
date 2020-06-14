@@ -250,8 +250,6 @@ define(function (require) {
             var tileX = Number(result[0]);
             var tileY = Number(result[1]);
             this.setState({ tileX: tileX, tileY: tileY });
-            // console.log('Tile Size: ' + tileX + ', ' + tileY);
-            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
@@ -276,8 +274,6 @@ define(function (require) {
             var extent = { imageX: imageX, imageY: imageY };
             this.setState(extent);
             this.props.setExtent(extent);
-            // console.log('Image Size: ' + (imageX / 10.0).toFixed(0) + ', ' + (imageY / 10.0).toFixed(0));
-            // update slice view
             this.checkStack();
             this.callPlaneEdges();
           }
@@ -528,7 +524,6 @@ define(function (require) {
             });
           })(i, that);
         });
-        //that.state.loadingLabels = false;
       }
     },
 
@@ -546,8 +541,6 @@ define(function (require) {
           for (i in this.state.stack) {
             image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
             if (!this.state.iBuffer[image]) {
-              // console.log('buffering ' + this.state.stack[i].toString() + '...');
-              //imageLoader.add(image, image, loaderOptions);
               loadList.add(image);
               buffMax -= 1;
             }
@@ -572,7 +565,6 @@ define(function (require) {
                 for (j in this.state.visibleTiles) {
                   image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
                   if (!this.state.iBuffer[image]) {
-                    //imageLoader.add(image, image, loaderOptions);
                     loadList.add(image);
                     buffMax -= 1;
                   }
@@ -587,7 +579,6 @@ define(function (require) {
                 for (j in this.state.visibleTiles) {
                   image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(maxDist).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + this.state.visibleTiles[j].toString();
                   if (!this.state.iBuffer[image]) {
-                    //imageLoader.add(image, image, loaderOptions);
                     loadList.add(image);
                     buffMax -= 1;
                   }
@@ -604,7 +595,6 @@ define(function (require) {
                 image = this.state.serverUrl.toString() + '?wlz=' + this.state.stack[i] + '&sel=0,255,255,255&mod=zeta&fxp=' + this.props.fxp.join(',') + '&scl=' + Number(this.state.scl).toFixed(1) + '&dst=' + Number(this.state.dst).toFixed(1) + '&pit=' + Number(this.state.pit).toFixed(0) + '&yaw=' + Number(this.state.yaw).toFixed(0) + '&rol=' + Number(this.state.rol).toFixed(0) + '&qlt=80&jtl=' + j.toString();
                 if (!this.state.iBuffer[image]) {
                   // console.log('buffering ' + this.state.stack[i].toString() + '...');
-                  //imageLoader.add(image, image, loaderOptions);
                   loadList.add(image);
                   buffMax -= 1;
                 }
@@ -997,7 +987,7 @@ define(function (require) {
       if (this._isMounted) {
         // render the stage container (if the component is still mounted)
         this.app.render();
-        //this.frame = requestAnimationFrame(this.animate);
+        // this.frame = requestAnimationFrame(this.animate);
       }
     },
 
