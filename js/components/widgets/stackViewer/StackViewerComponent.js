@@ -1270,6 +1270,30 @@ define(function (require) {
       if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined && this.props.data.instances.length != prevProps.data.instances.length ) {
         if (this.props.data.instances && this.props.data.instances != null) {
           this.handleInstances(this.props.data.instances);
+          return true;
+        }
+      } else {
+        if (this.props !== undefined && this.props.data !== undefined && this.props.data.instances !== undefined && prevProps.data !== undefined && prevProps.data.instances !== undefined) {
+          var a = prevProps.data.instances;
+          var b = this.props.data.instances;
+          if (a.length == b.length) {
+            for (var i = 0; i < a.length; i++) {
+              try {
+                if (a[i].parent.getColor() != b[i].parent.getColor()) {
+                  this.handleInstances(this.props.data.instances);
+                  return true;
+                }
+                if (a[i].parent.isVisible() != b[i].parent.isVisible()) {
+                  this.handleInstances(this.props.data.instances);
+                  return true;
+                }
+              } catch (ignore) { }
+            }
+            break;
+          } else {
+            this.handleInstances(this.props.data.instances);
+            return true;
+          }
         }
       }
     },
