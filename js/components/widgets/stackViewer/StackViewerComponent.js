@@ -649,14 +649,14 @@ define(function (require) {
             loadType: PIXI.loaders.Resource.LOAD_TYPE.IMAGE,
             xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BLOB
           };
-          loadList.forEach(function(value) {
+          loadList.forEach(function (value) {
             imageLoader.add(value, value, loaderOptions);
           });
           imageLoader
-          .on('progress', loadProgressHandler.bind(this))
-          .on('error', console.error)
-          .on('complete', setup.bind(this,imageLoader))
-          .load();
+            .on('progress', loadProgressHandler.bind(this))
+            .on('error', console.error)
+            .on('complete', setup.bind(this,imageLoader))
+            .load();
 
         } else {
           this.state.bufferRunning = false;
