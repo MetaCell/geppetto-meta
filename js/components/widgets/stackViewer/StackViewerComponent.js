@@ -799,7 +799,7 @@ define(function (require) {
                 if (!this.state.color[i]) {
                   this.generateColor();
                 }
-                if (this.state.images[d].tint !=  this.state.color[i]) {
+                if (this.state.images[d].tint != this.state.color[i]) {
                   this.state.images[d].tint = this.state.color[i];
                 }
               }
