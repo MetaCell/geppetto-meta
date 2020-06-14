@@ -131,8 +131,8 @@ define(function (require) {
 
     componentDidUpdate: function () {
       // console.log('Canvas update');
-      if (this.app.width !== Math.floor(this.props.width) || this.app.height !== Math.floor(this.props.height)) {
-        this.app.resize(this.props.width, this.props.height);
+      if (this.app.renderer.width !== Math.floor(this.props.width) || this.app.renderer.height !== Math.floor(this.props.height)) {
+        this.app.renderer.resize(this.props.width, this.props.height);
         this.props.onHome();
       }
       this.checkStack();
