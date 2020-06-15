@@ -1262,13 +1262,13 @@ define(function (require) {
       }.bind(this));
 
       if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
-        this.state = this.handleInstances(this.props.data.instances);
+        this.setState(this.handleInstances(this.props.data.instances));
       }
     },
 
     componentDidUpdate: function (prevProps, prevState) {
       if (prevProps.data != undefined && prevProps.data != null && prevProps.data.instances != undefined) {
-        this.state = this.handleInstances(this.props.data.instances);
+        this.setState(this.handleInstances(this.props.data.instances));
       } 
     },
 
