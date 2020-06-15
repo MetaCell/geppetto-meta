@@ -232,9 +232,8 @@ define(function (require) {
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.checkStack();
             this.callPlaneEdges();
-            if (this.state.txtUpdated < Date.now() - this.state.txtStay) {
-              this.state.buffer[-1].text = '';
-            }
+            this.bufferStack();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -257,6 +256,8 @@ define(function (require) {
             this.setState({ tileX: tileX, tileY: tileY });
             this.checkStack();
             this.callPlaneEdges();
+            this.bufferStack();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -281,6 +282,8 @@ define(function (require) {
             this.props.setExtent(extent);
             this.checkStack();
             this.callPlaneEdges();
+            this.bufferStack();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -553,7 +556,7 @@ define(function (require) {
             }
           }
         }
-        if (buffMax > 1) { 
+        if (buffMax > 1) {
           var distance = Number(Number(this.state.dst).toFixed(1));
           this.state.lastUpdate = Date.now();
           var step = 0;
