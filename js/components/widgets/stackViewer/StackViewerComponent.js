@@ -127,6 +127,8 @@ define(function (require) {
 
       this.callPlaneEdges();
 
+      setTimeout(this.bufferStack, 30000);
+
     },
 
     componentDidUpdate: function () {
