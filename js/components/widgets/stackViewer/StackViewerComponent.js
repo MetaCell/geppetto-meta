@@ -624,11 +624,6 @@ define(function (require) {
           console.log('Loading ' + loadList.size + ' slices/tiles...');
           function loadProgressHandler (loader, resource) {
             this.setStatusText('Buffering stack ' + loader.progress.toFixed(1) + "%");
-            // sort position after 10% loaded.
-            if (this._initialized === false && loader.progress > 5) {
-              this.props.onHome();
-              this._initialized = true;
-            }
           }
 
           function setup () {
@@ -640,8 +635,8 @@ define(function (require) {
             // console.log('Buffered ' + (1000 - buffMax).toString() + ' tiles');
             if (this._isMounted === true && this._initialized === false) {
               // this.props.canvasRef.resetCamera();
-              this.props.onHome();
               this._initialized = true;
+              this.props.onHome();
             }
             if (this.state.text.indexOf('Buffering stack') > -1) {
               this.state.buffer[-1].text = '';
@@ -1272,6 +1267,9 @@ define(function (require) {
       if (this.props.data && this.props.data != null && this.props.data.instances && this.props.data.instances != null) {
         this.setState(this.handleInstances(this.props.data.instances));
       }
+
+      setTimeout(this.onHome, 5000);
+
     },
 
     componentDidUpdate: function (prevProps, prevState) {
