@@ -233,7 +233,7 @@ define(function (require) {
             this.checkStack();
             this.callPlaneEdges();
             this.bufferStack();
-            this.animate();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -257,7 +257,7 @@ define(function (require) {
             this.checkStack();
             this.callPlaneEdges();
             this.bufferStack();
-            this.animate();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -283,7 +283,7 @@ define(function (require) {
             this.checkStack();
             this.callPlaneEdges();
             this.bufferStack();
-            this.animate();
+            animate();
           }
         }.bind(this),
         error: function (xhr, status, err) {
@@ -648,7 +648,7 @@ define(function (require) {
             }
             this.state.bufferRunning = false;
             this.state.lastUpdate = Date.now();
-            this.animate();
+            animate();
           }
 
           var imageLoader = new PIXI.loaders.Loader();
