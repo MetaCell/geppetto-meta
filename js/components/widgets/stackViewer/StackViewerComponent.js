@@ -648,6 +648,7 @@ define(function (require) {
             }
             this.state.bufferRunning = false;
             this.state.lastUpdate = Date.now();
+            animate();
           }
 
           var imageLoader = new PIXI.loaders.Loader();
