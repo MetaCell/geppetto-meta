@@ -234,6 +234,8 @@ define(function (require) {
             // console.log('Stack Depth: ' + ((max - min) / 10.0).toFixed(0));
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
             this.bufferStack();
             this.animate();
           }
@@ -258,6 +260,8 @@ define(function (require) {
             this.setState({ tileX: tileX, tileY: tileY });
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
             this.bufferStack();
             this.animate();
           }
@@ -284,6 +288,8 @@ define(function (require) {
             this.props.setExtent(extent);
             this.checkStack();
             this.callPlaneEdges();
+            this.iBuffer = {};
+            this.state.lastUpdate = 0;
             this.bufferStack();
             this.animate();
           }
