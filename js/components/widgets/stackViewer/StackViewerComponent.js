@@ -678,11 +678,6 @@ define(function (require) {
         return;
       }
 
-      if (this.disp.width > 1) {
-        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
-        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
-      }
-
       if (this.state.stack.length < 1) {
         this.state.images = [];
         this.stack.removeChildren();
@@ -707,6 +702,12 @@ define(function (require) {
       }
       // console.log('Updating scene...');
       this.createImages();
+
+      if (this.disp.width > 1) {
+        this.disp.position.x = ((this.props.width / 2) - ((((this.state.imageX / 10.0) * this.state.scl) * this.disp.scale.x) / 2));
+        this.disp.position.y = ((this.props.height / 2) - ((((this.state.imageY / 10.0) * this.state.scl) * this.disp.scale.y) / 2));
+      }
+
     },
 
     generateColor: function () {
