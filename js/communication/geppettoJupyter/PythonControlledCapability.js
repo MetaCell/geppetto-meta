@@ -286,7 +286,7 @@ define(function (require) {
           if (wrappedComponentProps.realType == 'func' || wrappedComponentProps.realType == 'float') {
             wrappedComponentProps['helperText'] = this.state.errorMsg;
           }
-          if (getNameFromWrappedComponent(WrappedComponent) != 'ListComponent') {
+          if (!getNameFromWrappedComponent(WrappedComponent).includes('ListComponent')) {
             delete wrappedComponentProps.realType;
           }
 
