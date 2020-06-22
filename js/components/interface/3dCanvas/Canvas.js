@@ -618,7 +618,7 @@ define(function (require) {
      * @return {Canvas}
      */
     autoRotate () {
-      this.engine.autoRotate();
+      this.engine.autoRotate({ movieFilter: this.props.movieFilter });
       return this;
     }
 
