@@ -11,18 +11,20 @@ define(function (require) {
     constructor (props) {
       super(props);
 
+      console.log("sto inizializzando il slideshow per l istanza " + this.props.rowData.id);
+
       this.checkboxAction = this.checkboxAction.bind(this);
       this.fireImageAction = this.fireImageAction.bind(this);
       this.getImageInstanceVisibility = this.getImageInstanceVisibility.bind(this);
 
       let initialCheckBoxState = this.getImageInstanceVisibility(this.props.rowData.id)
 
-      this.state = { 
-        carouselFullyLoaded: false, 
-        checked: initialCheckBoxState, 
-        imageID : '', 
+      this.state = {
+        carouselFullyLoaded: false,
+        checked: initialCheckBoxState,
+        imageID : '',
         imageInstanceLoading : false,
-        initialSlide : 0 
+        initialSlide : 0
       };
 
       this.isCarousel = false;
@@ -38,10 +40,14 @@ define(function (require) {
       try {
         let imageVariable = eval(path);
         if (imageVariable !== undefined) {
-          initialCheckBoxState = imageVariable.isVisible();
+          if (imageVariable.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
+            initialCheckBoxState = imageVariable.isVisible();
+          } else {
+            initialCheckBoxState = true;
+          }
         }
       } catch (e) {
-        console.info("Instance Variable not Found : " + path); 
+        console.info("Instance Variable not Found : " + path);
       }
 
       return initialCheckBoxState;
@@ -84,7 +90,14 @@ define(function (require) {
      */
     addedInstance (instances) {
       let that = this;
-      if (instances.length > 0) {
+      if (typeof instances === "string") {
+        if (instances.startsWith(this.state.imageID) || this.state.imageID === "") {
+          setTimeout(
+            function () {
+              that.setState ( { imageInstanceLoading : false } );
+            }, 1000);
+        }
+      } else {
         if (this.state.imageID !== "") {
           if (instances[0].getInstancePath().startsWith(this.state.imageID)) {
             // Give a second before updating the checkbox state, otherwise set State happens too fast
@@ -115,7 +128,7 @@ define(function (require) {
       }
 
       GEPPETTO.on(GEPPETTO.Events.Instance_deleted, this.deletedInstance, this);
-      GEPPETTO.on(GEPPETTO.Events.Instances_created, this.addedInstance, this);
+      GEPPETTO.on(GEPPETTO.Events.Instance_added, this.addedInstance, this);
     }
 
     componentWillUnmount () {
@@ -164,6 +177,10 @@ define(function (require) {
 
     buildImage (thumbImage, imageContainerId) {
       var action = this.getImageClickAction(thumbImage.reference);
+      var checked = this.state.checked;
+      if (this.state.imageID === "") {
+        checked = this.getImageInstanceVisibility(thumbImage.reference);
+      }
       const imgElement = <div id={imageContainerId} className="query-results-image collapse in">
         <a href='' onClick={action}>
           <img className="query-results-image invert" src={thumbImage.data} />
@@ -171,7 +188,7 @@ define(function (require) {
         {this.state.imageInstanceLoading
           ? (<div id={imageContainerId + "-loader"} className="loader"></div>)
           : (<input id={imageContainerId + "-checkbox"} className="query-results-checkbox" type="checkbox"
-            onChange={event => this.checkboxAction(event, thumbImage.reference)} checked={this.state.checked} />)
+            onChange={event => this.checkboxAction(event, thumbImage.reference)} checked={checked} />)
         }
       </div>
       return imgElement;
@@ -248,7 +265,6 @@ define(function (require) {
 
       return imgElement;
     }
-
 
     render () {
       var imgElement = "";
