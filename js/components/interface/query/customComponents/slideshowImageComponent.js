@@ -11,8 +11,6 @@ define(function (require) {
     constructor (props) {
       super(props);
 
-      console.log("sto inizializzando il slideshow per l istanza " + this.props.rowData.id);
-
       this.checkboxAction = this.checkboxAction.bind(this);
       this.fireImageAction = this.fireImageAction.bind(this);
       this.getImageInstanceVisibility = this.getImageInstanceVisibility.bind(this);
@@ -47,7 +45,7 @@ define(function (require) {
           }
         }
       } catch (e) {
-        console.info("Instance Variable not Found : " + path);
+        console.warn("Instance Variable not Found : " + path);
       }
 
       return initialCheckBoxState;
