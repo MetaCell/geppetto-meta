@@ -1600,7 +1600,7 @@ define(function (require) {
       var stepInClass = 'btn fa fa-chevron-down';
       var stepOutClass = 'btn fa fa-chevron-up';
       var pointerClass = 'btn fa fa-hand-pointer-o';
-      var orthClass = 'btn fa fa-refresh';
+      var orthClass = 'btn gpt-xyz';
       var toggleSliceClass = 'btn ';
       if (this.state.slice) {
         toggleSliceClass += 'gpt-hideplane';
@@ -1659,6 +1659,7 @@ define(function (require) {
               left: 15,
               top: startOffset + 60,
               padding: 0,
+              paddingTop: 3,
               border: 0,
               background: 'transparent'
             }} className={orthClass} onClick={this.toggleOrth} title={'Change Slice Plane Through Stack'} />
