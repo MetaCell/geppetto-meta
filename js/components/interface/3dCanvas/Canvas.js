@@ -34,7 +34,23 @@ define(function (require) {
         },
         instances: []
       }
+      
+      this.initialCameraReset = false;
+      this.animationRunning = false;
+    }
 
+    startAnimation () {
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        this.engine.animationRunning = true;
+        this.engine.animate();
+      }
+    }
+
+    stopAnimation () {
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        this.engine.animationRunning = false;
+        this.engine.animate();
+      }
     }
 
     /**
@@ -43,6 +59,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     display (instances) {
+      var that = this;
       if (this.isWidget()) {
         this.showOverlay(<div className="spinner-container">
           <div className={"fa fa-circle-o-notch fa-spin"}></div>
@@ -59,7 +76,20 @@ define(function (require) {
       }
       if (added.length > 0) {
         this.engine.updateSceneWithNewInstances(added);
+        // Trigger Update_camera event, camera position is reset when project is first loaded with initial instances
+        GEPPETTO.trigger(GEPPETTO.Events.Update_camera);
         this.setDirty(true);
+        // Handle the update for the prop onLoad
+        if (this.props.onLoad !== undefined) {
+          added.map(instance => {
+            let parent = instance.getParent();
+            if (parent !== null) {
+              that.props.onLoad(parent.getId());
+            } else {
+              that.props.onLoad(instance.getId());
+            }
+          });
+        }
       }
 
       if (this.isWidget()) {
@@ -98,6 +128,7 @@ define(function (require) {
      * @param object
      */
     removeObject (object) {
+      this.startAnimation();
       this.engine.removeObject(object);
     }
 
@@ -124,6 +155,7 @@ define(function (require) {
      * @return {Canvas}
      */
     selectInstance (instancePath, geometryIdentifier) {
+      this.startAnimation();
       this.engine.selectInstance(instancePath, geometryIdentifier);
       return this;
     }
@@ -135,6 +167,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     deselectInstance (instancePath) {
+      this.startAnimation();
       this.engine.deselectInstance(instancePath);
       return this;
     }
@@ -145,6 +178,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     assignRandomColor (instance) {
+      this.startAnimation();
       this.engine.assignRandomColor(instance);
       return this;
     }
@@ -155,6 +189,7 @@ define(function (require) {
      * @return {Canvas}
      */
     zoomTo (instances) {
+      this.startAnimation();
       this.engine.zoomTo(instances);
       return this;
     }
@@ -165,6 +200,7 @@ define(function (require) {
      * @return {Canvas}
      */
     setWireframe (wireframe) {
+      this.startAnimation();
       this.engine.setWireframe(wireframe);
       return this;
     }
@@ -175,6 +211,7 @@ define(function (require) {
      * @return {Canvas}
      */
     enablePicking (pickingEnabled) {
+      this.startAnimation();
       this.engine.enablePicking(pickingEnabled);
       return this;
     }
@@ -207,6 +244,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     add3DPlane (x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, textureURL) {
+      this.startAnimation();
       return this.engine.add3DPlane(x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, textureURL);
     }
 
@@ -229,6 +267,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     modify3DPlane (object, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4) {
+      this.startAnimation();
       return this.engine.modify3DPlane(object, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4);
     }
 
@@ -238,6 +277,7 @@ define(function (require) {
      *  @param {boolean} mode - Show or hide connection lines
      */
     showConnectionLines (instancePath, mode) {
+      this.startAnimation();
       this.engine.showConnectionLines(instancePath, mode);
       return this;
     }
@@ -249,6 +289,7 @@ define(function (require) {
      * @return {Canvas}
      */
     showInstance (instancePath) {
+      this.startAnimation();
       this.engine.showInstance(instancePath);
       return this;
     }
@@ -260,6 +301,7 @@ define(function (require) {
      * @return {Canvas}
      */
     hideInstance (instancePath) {
+      this.startAnimation();
       this.engine.hideInstance(instancePath);
       return this;
     }
@@ -270,6 +312,7 @@ define(function (require) {
      * @return {Canvas}
      */
     hideAllInstances () {
+      this.startAnimation();
       this.engine.hideAllInstances();
       return this;
     }
@@ -281,6 +324,7 @@ define(function (require) {
      * @return {Canvas}
      */
     setBackgroundColor (color) {
+      this.startAnimation();
       this.viewState.custom.backgroundColor = color;
       this.setDirty(true);
       $(this.getContainer()).css("background", color);
@@ -297,6 +341,7 @@ define(function (require) {
      * @return {Canvas}
      */
     setColor (path, color, recursion) {
+      this.startAnimation();
       if (recursion === undefined) {
         recursion = false;
       }
@@ -763,13 +808,17 @@ define(function (require) {
       GEPPETTO.WidgetsListener.unsubscribe(this.engine);
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
+      GEPPETTO.off(GEPPETTO.Events.Update_camera, null, this);
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        GEPPETTO.off(GEPPETTO.Events.selectInstance, null, this);
+        GEPPETTO.off(GEPPETTO.Events.deselectInstance, null, this);
+      }
     }
 
     componentDidMount () {
       if (!isWebglEnabled) {
         Detector.addGetWebGLMessage();
       } else {
-        // this.container = $("#" + this.props.id + "_component").get(0);
         var [width, height] = this.setContainerDimensions();
         this.engine = new ThreeDEngine(this.getContainer(), this.props.id);
         this.engine.setSize(width, height);
@@ -781,16 +830,53 @@ define(function (require) {
         GEPPETTO.WidgetsListener.subscribe(this.engine, this.id);
 
         var that = this;
-        $("#" + this.props.id).on("dialogresizestop resizeEnd", function (event, ui) {
-          var [width, height] = that.setContainerDimensions();
-          that.engine.setSize(width, height);
-        });
+
+        if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+          $("#" + this.props.id + "_component").on("mouseover", function (event, ui) {
+            that.startAnimation();
+          });
+
+          $("#" + this.props.id + "_component").on("mouseout", function (event, ui) {
+            that.stopAnimation();
+          });
+
+          GEPPETTO.on(GEPPETTO.Events.selectInstance, () => {
+            this.stopAnimation();
+          }, this);
+
+          GEPPETTO.on(GEPPETTO.Events.deselectInstance, () => {
+            this.stopAnimation();
+          }, this);
+        }
 
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
         }, false);
 
+        /*
+         * Update camera position call.
+         */
+        GEPPETTO.on(GEPPETTO.Events.Update_camera, () => {
+          let instancesFetched = window.Instances.length;
+          // Instances fetched were stored in window.Instances variable, get number of those with visual capability.
+          for ( var i = 0; i < window.Instances.length ; i++ ){
+            if ( !window.Instances[i].hasCapability('VisualCapability') ){
+              instancesFetched--;
+            }
+          }
+          /*
+           * Reset camera call, only done once after instances are rendered. Needed to position camera after initial loading
+           * instead of resetting the camera every time something is added to the Canvas.
+           */
+          if ( instancesFetched === Object.keys(this.engine.meshes).length && this.initialCameraReset){
+            this.resetCamera();
+            this.initialCameraReset = false;
+          }
+          this.startAnimation();
+        }, this);
+
+        this.initialCameraReset = true;
       }
     }
 

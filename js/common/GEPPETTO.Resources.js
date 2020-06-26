@@ -98,6 +98,14 @@ export default function (GEPPETTO) {
       GHOST: .3,
     },
 
+    SocketStatus: {
+      CLOSE: 0,
+      OPEN: 1,
+      RECONNECTING: 2,
+    },
+
+    RECONNECTION_ERROR: "The client was not able to reconnect to the Backend, the page will be reloaded.",
+
     PROJECT_LOADED: "Project loaded",
 
     MODEL_LOADED: "The model for the current project has been loaded",
@@ -141,8 +149,6 @@ export default function (GEPPETTO) {
     CREATING_SCENE: "Creating scene",
 
     ADDING_VARIABLE: "Adding variable",
-
-    SPOTLIGHT_HINT: "Did you know you can rapidly access the data once it gets loaded using Ctrl+Space?",
 
     LOADING_SIMULATION_SLOW: "Still loading, but things are taking longer than expected. Do you have a low bandwidth connection?",
 
@@ -333,6 +339,8 @@ export default function (GEPPETTO) {
     SIMULATOR_UNAVAILABLE: " is Unavailable",
 
     WEBSOCKET_CONNECTION_ERROR: "Server Connection Error",
+
+    WEBSOCKET_RECONNECTION: "Client is attempting to reconnect",
 
     STOP_SIMULATION_TUTORIAL: "Tutorial Starting",
 

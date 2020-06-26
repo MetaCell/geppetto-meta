@@ -43,6 +43,7 @@ export default function (GEPPETTO) {
     Spotlight_loaded: "spotlight:loaded",
     Instance_deleted: "instance:deleted",
     Instances_created: "instances:created",
+    Instance_added: "instance:added",
     Show_Tutorial: "show_tutorial",
     Hide_Tutorial: "hide_tutorial",
     Show_spinner: "spinner:show",
@@ -65,6 +66,7 @@ export default function (GEPPETTO) {
     Receive_Python_Message: "receive_python_message",
     Websocket_disconnected : "websocket_disconnected",
     Error_while_exec_python_command: "error_while_exec_python_command",
+    Update_camera : "update_camera",
 
     listen: function () {
       GEPPETTO.on(this.Select, function () {
