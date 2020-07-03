@@ -1,7 +1,7 @@
 import ConnectivityMarkdown from '../../geppetto-client/geppetto-ui/src/components/connectivity-viewer/README.md';
 import TreeMarkdown from '../../geppetto-client/geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/html-viewer/README.md';
-import SpinnerMarkdown from '../../geppetto-client/geppetto-ui/src/components/spinner/README.md';
+import LoaderMarkdown from '../../geppetto-client/geppetto-ui/src/components/loader/README.md';
 import BigImageViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/big-image-viewer/README.md';
 import DicomViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/dicom-viewer/README.md';
 import MenuMarkdown from '../../geppetto-client/geppetto-ui/src/components/menu/README.md';
@@ -69,9 +69,9 @@ const pages = [
   },
   {
     parent: 'Data Viewers',
-    name: 'Spinner',
-    to: '/components/dataviewers/spinner',
-    markdown: SpinnerMarkdown,
+    name: 'Loader',
+    to: '/components/dataviewers/loader',
+    markdown: LoaderMarkdown,
   },
   {
     parent: 'Navigation/Layout',
