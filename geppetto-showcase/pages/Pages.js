@@ -68,12 +68,6 @@ const pages = [
     markdown: null,
   },
   {
-    parent: 'Data Viewers',
-    name: 'Loader',
-    to: '/components/dataviewers/loader',
-    markdown: LoaderMarkdown,
-  },
-  {
     parent: 'Navigation/Layout',
     name: 'Flex Layout',
     to: '/components/navigation/flexlayout',
@@ -84,6 +78,12 @@ const pages = [
     name: 'List Viewer',
     to: '/components/navigation/listviewer',
     markdown: ListViewerMarkdown,
+  },
+  {
+    parent: 'Navigation/Layout',
+    name: 'Loader',
+    to: '/components/navigation/loader',
+    markdown: LoaderMarkdown,
   },
   {
     parent: 'Navigation/Layout',
