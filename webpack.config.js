@@ -61,7 +61,6 @@ module.exports = {
       {
         test: /\.(png|gif|jpg|cur)$/i,
         loader: 'url-loader',
-        options: { limit: 8192 },
       },
       {
         test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
