@@ -85,6 +85,17 @@ module.exports = {
         test: /\.md$/,
         use: [{ loader: 'html-loader' }, { loader: 'markdown-loader' }],
       },
+      {
+        test: /\.dat$/i,
+        use: [
+          {
+            loader: 'raw-loader',
+            options: {
+              esModule: false,
+            },
+          },
+        ],
+      },
     ],
   },
   plugins: [
