@@ -3,33 +3,27 @@ import Loader from '../../Loader';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core';
 
-const styles = () => ({
-  typography: {
-    textDecoration: 'underline',
-  },
-});
+const styles = () => ({ typography: { textDecoration: 'underline', }, });
 
 class LoaderShowcase7 extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.handleClose = this.handleClose.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
-    this.state = {
-      active: false,
-    };
+    this.state = { active: false, };
   }
 
-  handleClose() {
+  handleClose () {
     const { active } = this.state;
     this.setState({ active: !active });
   }
 
-  handleToggle() {
+  handleToggle () {
     const { active } = this.state;
     this.setState({ active: !active });
   }
 
-  render() {
+  render () {
     const { active } = this.state;
     const { classes } = this.props;
 

@@ -10,7 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
 
-const styles = (theme) => ({
+const styles = theme => ({
   bigImageViewerContainer: {
     display: 'flex',
     padding: theme.spacing(5),
@@ -30,7 +30,7 @@ const ZOOM_IN_TOOLTIP = 'Zoom In';
 const CENTER_IMAGE_TOOLTIP = 'Center Image';
 
 class BigImageViewer extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     const settings = {
@@ -53,22 +53,22 @@ class BigImageViewer extends Component {
     this.fullPage = this.fullPage.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate (prevProps, prevState, snapshot) {
     this.loadViewer();
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.loadViewer();
   }
 
-  extractFilePath(data) {
+  extractFilePath (data) {
     let file;
     if (data !== undefined) {
       if (data.getMetaType === undefined) {
         file = data;
       } else if (
-        data.getMetaType() === 'Instance' &&
-        data.getVariable().getInitialValues()[0].value.format === 'DZI'
+        data.getMetaType() === 'Instance'
+        && data.getVariable().getInitialValues()[0].value.format === 'DZI'
       ) {
         file = data.getVariable().getInitialValues()[0].value.data;
       }
@@ -76,7 +76,7 @@ class BigImageViewer extends Component {
     return file;
   }
 
-  loadViewer() {
+  loadViewer () {
     if (this.state.file !== undefined) {
       if (this.viewer !== undefined) {
         this.viewer.destroy();
@@ -87,27 +87,27 @@ class BigImageViewer extends Component {
   }
 
   // These four methods are not exposed by OpenSeaDragon
-  goHome() {
+  goHome () {
     this.viewer.viewport.goHome();
   }
 
-  zoomIn() {
+  zoomIn () {
     this.viewer.viewport.zoomBy(this.viewer.zoomPerClick / 1.0);
     this.viewer.viewport.applyConstraints();
   }
 
-  zoomOut() {
+  zoomOut () {
     this.viewer.viewport.zoomBy(1.0 / this.viewer.zoomPerClick);
     this.viewer.viewport.applyConstraints();
   }
 
-  fullPage() {
+  fullPage () {
     this.viewer.setFullScreen(true);
     this.viewer.fullPageButton.element.focus();
     this.viewer.viewport.applyConstraints();
   }
 
-  getCustomButtons() {
+  getCustomButtons () {
     const customButtons = [];
     customButtons.push({
       icon: faSearchMinus,
@@ -130,7 +130,7 @@ class BigImageViewer extends Component {
     return customButtons;
   }
 
-  render() {
+  render () {
     const { classes } = this.props;
     const customButtons = this.getCustomButtons();
 

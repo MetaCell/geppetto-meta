@@ -7,10 +7,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
-const styles = (theme) => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
+const styles = theme => ({
+  backdrop: { zIndex: theme.zIndex.drawer + 1, },
   root: {
     position: 'absolute',
     flex: '0 0 100%',
@@ -19,14 +17,12 @@ const styles = (theme) => ({
 });
 
 class Loader extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
-    this.state = {
-      messageIndex: 0,
-    };
+    this.state = { messageIndex: 0, };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { messagesInterval } = this.props;
 
     setInterval(() => {
@@ -36,7 +32,7 @@ class Loader extends Component {
     }, messagesInterval);
   }
 
-  render() {
+  render () {
     const {
       classes,
       active,
@@ -101,9 +97,7 @@ class Loader extends Component {
           onClick={handleClose}
           style={backgroundStyle}
           className={classes.backdrop}
-          classes={{
-            root: classes.root, // class name, e.g. `classes-nesting-root-x`
-          }}
+          classes={{ root: classes.root, }} // class name, e.g. `classes-nesting-root-x` 
         >
           {content}
         </Backdrop>

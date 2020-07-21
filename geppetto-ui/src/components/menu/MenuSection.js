@@ -3,7 +3,7 @@ import MenuPopper from './MenuPopper';
 import Button from '@material-ui/core/Button';
 
 class MenuSection extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
@@ -19,7 +19,7 @@ class MenuSection extends React.Component {
     this.tempList = undefined;
   }
 
-  handleClick = (event) => {
+  handleClick = event => {
     if (this.props.list === undefined || this.props.list.length === 0) {
       if (
         Object.prototype.hasOwnProperty.call(
@@ -36,7 +36,7 @@ class MenuSection extends React.Component {
         } else {
           this.props.menuClickHandler(true, this.props.id);
         }
-        this.setState((state) => ({
+        this.setState(state => ({
           anchorEl: state.anchorEl ? null : currentTarget,
           customList: this.tempList,
         }));
@@ -50,13 +50,11 @@ class MenuSection extends React.Component {
       } else {
         this.props.menuClickHandler(true, this.props.id);
       }
-      this.setState((state) => ({
-        anchorEl: state.anchorEl ? null : currentTarget,
-      }));
+      this.setState(state => ({ anchorEl: state.anchorEl ? null : currentTarget, }));
     }
   };
 
-  handleAwayListener = (event) => {
+  handleAwayListener = event => {
     const { currentTarget } = event;
     if (currentTarget.activeElement !== this.state.anchorEl) {
       this.props.menuClickHandler(false, undefined);
@@ -64,7 +62,7 @@ class MenuSection extends React.Component {
     }
   };
 
-  handleOver = (event) => {
+  handleOver = event => {
     const { currentTarget } = event;
     this.setState({ hover: true });
     if (this.props.menuOpen && this.props.sectionOpened !== this.props.id) {
@@ -94,21 +92,21 @@ class MenuSection extends React.Component {
     }
   };
 
-  handleOut = (event) => {
+  handleOut = event => {
     this.setState({ hover: false });
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (
-      nextProps.sectionOpened !== this.props.id &&
-      this.props.menuOpen === true &&
-      this.state.anchorEl !== null
+      nextProps.sectionOpened !== this.props.id
+      && this.props.menuOpen === true
+      && this.state.anchorEl !== null
     ) {
       this.setState({ anchorEl: null });
     }
   }
 
-  render() {
+  render () {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popper' : null;

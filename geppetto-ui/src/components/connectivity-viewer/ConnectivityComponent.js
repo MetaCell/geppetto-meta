@@ -6,7 +6,7 @@ import { Matrix } from './layouts/Matrix';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
-const styles = (theme) => ({
+const styles = theme => ({
   container: {
     display: 'flex',
     alignItems: 'stretch',
@@ -15,7 +15,7 @@ const styles = (theme) => ({
 });
 
 class ConnectivityComponent extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       layout: this.props.layout !== null ? this.props.layout : new Matrix(),
@@ -37,7 +37,7 @@ class ConnectivityComponent extends Component {
    * @command legendHandler ()
    *
    */
-  legendHandler() {
+  legendHandler () {
     this.setState(() => ({ legendsVisibility: !this.state.legendsVisibility }));
   }
 
@@ -49,7 +49,7 @@ class ConnectivityComponent extends Component {
    *
    */
 
-  toolbarHandler(visibility) {
+  toolbarHandler (visibility) {
     this.setState(() => ({ toolbarVisibility: visibility }));
   }
 
@@ -61,7 +61,7 @@ class ConnectivityComponent extends Component {
    *
    * @param layout
    */
-  deckHandler(layout) {
+  deckHandler (layout) {
     this.setState(() => ({ layout: layout }));
   }
 
@@ -72,11 +72,11 @@ class ConnectivityComponent extends Component {
    * @command sortOptionsHandler (option)
    *
    */
-  sortOptionsHandler(option) {
+  sortOptionsHandler (option) {
     this.state.layout.setOrder(this.plotRef.current, option);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const toolbarHeight = 140;
 
     this.setState({
@@ -87,7 +87,7 @@ class ConnectivityComponent extends Component {
     });
   }
 
-  renderContent() {
+  renderContent () {
     const {
       classes,
       id,
@@ -148,7 +148,7 @@ class ConnectivityComponent extends Component {
     );
   }
 
-  render() {
+  render () {
     const { classes } = this.props;
     const { dimensions } = this.state;
 

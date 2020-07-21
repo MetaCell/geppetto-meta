@@ -3,7 +3,7 @@ import Menu from './../../Menu';
 import model from './../model.json';
 
 export default class MenuShowcase extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.menuConfiguration = require('../menuConfiguration').default;
     this.menuHandler = this.menuHandler.bind(this);
@@ -12,7 +12,7 @@ export default class MenuShowcase extends Component {
   /**
    * Handler function triggered when a Menu item is clicked.
    */
-  menuHandler(click) {
+  menuHandler (click) {
     const historyList = [];
     console.log(click.handlerAction);
     // Check the handlerAction associated with Menu item clicked
@@ -30,7 +30,7 @@ export default class MenuShowcase extends Component {
     return historyList;
   }
 
-  render() {
+  render () {
     return (
       <Menu
         configuration={this.menuConfiguration}

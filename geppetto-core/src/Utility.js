@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 
-export function extractMethodsFromObject(object, original, nonCommands = []) {
+export function extractMethodsFromObject (object, original, nonCommands = []) {
   var proto = object.__proto__;
   var methods = [];
   if (original) {
@@ -28,7 +28,7 @@ export function extractMethodsFromObject(object, original, nonCommands = []) {
   return methods;
 }
 
-export function formatSelection(tree, formattedOutput, indentation) {
+export function formatSelection (tree, formattedOutput, indentation) {
   for (var e in tree) {
     var entity = tree[e];
     if (entity.selected == true) {
@@ -47,20 +47,20 @@ export function formatSelection(tree, formattedOutput, indentation) {
   return formattedOutput.replace(/"/g, '');
 }
 
-export function componentToHex(c) {
+export function componentToHex (c) {
   var hex = c.toString(16);
   return hex.length == 1 ? '0' + hex : hex;
 }
 
-export function rgbToHex(r, g, b) {
+export function rgbToHex (r, g, b) {
   return '0X' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-export function getContrast50(hexcolor) {
+export function getContrast50 (hexcolor) {
   return parseInt(hexcolor, 16) > 0xffffff / 2 ? 'black' : 'white';
 }
 
-export function getQueryStringParameter(name) {
+export function getQueryStringParameter (name) {
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
     results = regex.exec(location.search);
@@ -69,15 +69,15 @@ export function getQueryStringParameter(name) {
     : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-export function getPathStringParameters() {
+export function getPathStringParameters () {
   var paths = [];
   var locationPaths = location.pathname.split('/');
   for (var pathIndex in locationPaths) {
     var locationPath = locationPaths[pathIndex];
     if (
-      locationPath != 'geppetto' &&
-      locationPath != 'org.geppetto.frontend' &&
-      locationPath != ''
+      locationPath != 'geppetto'
+      && locationPath != 'org.geppetto.frontend'
+      && locationPath != ''
     ) {
       paths.push(locationPath);
     }
@@ -85,26 +85,26 @@ export function getPathStringParameters() {
   return paths;
 }
 
-export function extend(destObj, sourceObj) {
+export function extend (destObj, sourceObj) {
   for (let v in sourceObj) {
     destObj[v] = sourceObj[v];
   }
 }
 
-export function newObjectCreated(obj, createTagsCallback) {
+export function newObjectCreated (obj, createTagsCallback) {
   createTagsCallback(
     obj.getInstancePath ? obj.getInstancePath() : obj.getPath(),
     extractMethodsFromObject(obj, true)
   );
 }
 
-export function createZipFromRemoteFiles(files, zipName) {
+export function createZipFromRemoteFiles (files, zipName) {
   if (!(files instanceof Array)) {
     files = [files];
   }
 
   // Convert url to promise, returning uint8 array
-  function urlToPromise(url) {
+  function urlToPromise (url) {
     return new Promise(function (resolve, reject) {
       const oReq = new XMLHttpRequest();
       oReq.open('GET', url, true);
@@ -122,9 +122,7 @@ export function createZipFromRemoteFiles(files, zipName) {
   // Add an entry to zip per file
   const zip = new JSZip();
   files.forEach(function (filePath, i) {
-    zip.file(filePath.split('/').pop(), urlToPromise(filePath), {
-      binary: true,
-    });
+    zip.file(filePath.split('/').pop(), urlToPromise(filePath), { binary: true, });
   });
 
   // Send File

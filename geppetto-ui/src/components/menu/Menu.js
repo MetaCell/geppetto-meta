@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MenuSection from './MenuSection';
 
-//TODO: these styles are not in line with the new styling principles, currently needed for vfb as 05/20/2020
+// TODO: these styles are not in line with the new styling principles, currently needed for vfb as 05/20/2020
 const menuStyle = {
   buttonsStyle: {
     standard: {
@@ -95,7 +95,7 @@ const menuStyle = {
 };
 
 class Menu extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       menuOpen: false,
@@ -106,14 +106,14 @@ class Menu extends React.Component {
     this.menuHandler = this.menuHandler.bind(this);
   }
 
-  menuClick(clicked, index) {
+  menuClick (clicked, index) {
     this.setState({
       menuOpen: clicked,
       sectionOpened: index,
     });
   }
 
-  menuHandler(action) {
+  menuHandler (action) {
     this.setState(
       {
         menuOpen: false,
@@ -126,14 +126,14 @@ class Menu extends React.Component {
       }
     );
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     // We need a way to close the menu on zoom, scroll, right click, etc events on other parts of the application
     if (this.props.open === false && prevProps.open === true) {
       this.menuHandler('');
     }
   }
 
-  render() {
+  render () {
     const buttonsStyle = {
       ...menuStyle.buttonsStyle,
       ...this.props.configuration.global.buttonsStyle,

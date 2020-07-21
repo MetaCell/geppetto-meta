@@ -67,24 +67,24 @@ const json = {
 };
 
 class LoaderShowcase6 extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.handleClose = this.handleClose.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.state = { model: FlexLayout.Model.fromJson(json), active: false };
   }
 
-  handleClose() {
+  handleClose () {
     const { active } = this.state;
     this.setState({ active: !active });
   }
 
-  handleToggle() {
+  handleToggle () {
     const { active } = this.state;
     this.setState({ active: !active });
   }
 
-  factory(node) {
+  factory (node) {
     const { active } = this.state;
     const { classes } = this.props;
     const component = node.getComponent();
@@ -113,7 +113,7 @@ class LoaderShowcase6 extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div style={{ position: 'relative', height: '800px', width: '1200px' }}>
         <FlexLayout.Layout

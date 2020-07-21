@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import model from './../model.json';
 import PlotComponent from "./../../PlotComponent";
-import ExternalInstance from '@geppettoengine/geppetto-client/js/geppettoModel/model/ExternalInstance';
+import ExternalInstance from '@geppettoengine/geppetto-client/geppettoModel/model/ExternalInstance';
 
 export default class PlotShowcase extends Component {
   constructor (props) {

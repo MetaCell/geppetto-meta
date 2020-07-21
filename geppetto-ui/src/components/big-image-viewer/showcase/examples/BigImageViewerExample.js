@@ -12,13 +12,13 @@ const styles = {
 };
 
 class BigImageViewerExample extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
-    const data =
-      'https://s3.amazonaws.com/patient-hm-august-2017/Histology/HM_1243_FLIPPED_DZ_tif.dzi';
+  render () {
+    const data
+      = 'https://s3.amazonaws.com/patient-hm-august-2017/Histology/HM_1243_FLIPPED_DZ_tif.dzi';
     const { classes } = this.props;
     return (
       <div style={{ position: 'relative' }} className={classes.bigImageViewer}>

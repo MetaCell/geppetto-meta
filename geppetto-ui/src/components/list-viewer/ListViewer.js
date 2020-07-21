@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
  * Allows to group multiple components in a single column
  * @param {*} conf
  */
-export const GroupComponent = (conf) => ({ value }) =>
+export const GroupComponent = conf => ({ value }) =>
   conf.map(({ id, customComponent, configuration, source, visible }) => {
     if (value.get) {
       // is a map coming from griddle. instanceof Map does not work here
@@ -51,9 +51,7 @@ export const GroupComponent = (conf) => ({ value }) =>
  * Shows a fontAwesome icon. Allows an action to be specified
  * @param { icon, action, color, tooltip }
  */
-export const IconComponent = ({ icon, action, color, tooltip }) => ({
-  value,
-}) => (
+export const IconComponent = ({ icon, action, color, tooltip }) => ({ value, }) => (
   <BaseIconComponent
     color={color}
     title={tooltip}
@@ -62,16 +60,16 @@ export const IconComponent = ({ icon, action, color, tooltip }) => ({
   />
 );
 
-export const MultiStatusComponent = (availableStatuses) =>
+export const MultiStatusComponent = availableStatuses =>
   class Comp extends React.Component {
-    constructor(props) {
+    constructor (props) {
       super(props);
       // State contains the index of a circular list
       this.state = { statusIdx: 0 };
       this.value = props.value;
     }
 
-    render() {
+    render () {
       const { statusIdx } = this.state;
 
       const { tooltip, icon, action, color } = availableStatuses[
@@ -113,9 +111,7 @@ export const WrapperComponent = (action, customComponent) => ({ value }) => (
  *
  * @param { title, alt, defaultImg, action } configuration
  */
-export const ImageComponent = ({ title, alt, defaultImg, action }) => ({
-  value,
-}) => (
+export const ImageComponent = ({ title, alt, defaultImg, action }) => ({ value, }) => (
   <img
     src={value ? value : defaultImg}
     title={title}
@@ -147,8 +143,8 @@ export const ParameterInputComponent = ({
       defaultValue={
         defaultValue instanceof Function ? defaultValue(value) : defaultValue
       }
-      onBlur={(evt) => onBlur(value, evt.target.value)}
-      onKeyPress={(evt) => onKeyPress(value, evt.target.value)}
+      onBlur={evt => onBlur(value, evt.target.value)}
+      onKeyPress={evt => onKeyPress(value, evt.target.value)}
       className={classString}
       title=""
       readOnly={readOnly}
@@ -157,13 +153,11 @@ export const ParameterInputComponent = ({
   </React.Fragment>
 );
 
-export const ColorComponent = ({ action, defaultColor, icon }) => ({
-  value,
-}) => (
+export const ColorComponent = ({ action, defaultColor, icon }) => ({ value, }) => (
   <React.Fragment>
     <PopupColorPicker
       color={isString(defaultColor) ? defaultColor : defaultColor(value)}
-      action={(hex) =>
+      action={hex =>
         action({ ...(isString(value) ? { path: value } : value), color: hex })
       }
       icon={icon}
@@ -206,7 +200,7 @@ class ListViewer extends React.Component {
     ImageComponent,
   };
 
-  constructor(props, context) {
+  constructor (props, context) {
     super(props, context);
     this.preprocessColumnConfiguration = this.preprocessColumnConfiguration.bind(
       this
@@ -214,7 +208,7 @@ class ListViewer extends React.Component {
     this.handlerObject = this.props.handler;
   }
 
-  getColumnConfiguration() {
+  getColumnConfiguration () {
     return this.preprocessColumnConfiguration(
       this.props.columnConfiguration !== undefined
         ? this.props.columnConfiguration
@@ -222,7 +216,7 @@ class ListViewer extends React.Component {
     );
   }
 
-  getData() {
+  getData () {
     return extractGriddleData(
       this.props.filter
         ? this.props.instances.filter(this.props.filter)
@@ -235,7 +229,7 @@ class ListViewer extends React.Component {
    * Parses the configuration for further processing, inserting defaults and adjusting types
    * @param {id, action, customComponent, configuration} colConf
    */
-  preprocessColumnConfiguration(conf) {
+  preprocessColumnConfiguration (conf) {
     if (this.incrementalId === undefined) {
       this.incrementalId = 0;
     }
@@ -281,23 +275,23 @@ class ListViewer extends React.Component {
     };
   }
 
-  preprocessAction(action) {
+  preprocessAction (action) {
     if (isString(action)) {
       if (!this.handlerObject[action]) {
         throw new Error(
-          'Bad ListViewer configuration: the function ' +
-            action +
-            ' is not defined in the specified handler ' +
-            this.handlerObject
+          'Bad ListViewer configuration: the function '
+            + action
+            + ' is not defined in the specified handler '
+            + this.handlerObject
         );
       }
-      return (entity) => this.handlerObject[action](entity);
+      return entity => this.handlerObject[action](entity);
     } else {
       return action.bind(this.handlerObject);
     }
   }
 
-  preprocessComponent(customComponent) {
+  preprocessComponent (customComponent) {
     if (isString(customComponent)) {
       if (this.builtInComponents[customComponent]) {
         return this.builtInComponents[customComponent];
@@ -305,9 +299,9 @@ class ListViewer extends React.Component {
         return window[customComponent];
       } else {
         throw new Error(
-          'ListViewer configuration error: ' +
-            customComponent +
-            ' not defined. Try attach to the global (window) context or pass the imported object instead.'
+          'ListViewer configuration error: '
+            + customComponent
+            + ' not defined. Try attach to the global (window) context or pass the imported object instead.'
         );
       }
     }
@@ -319,7 +313,7 @@ class ListViewer extends React.Component {
    * <ColumnDefinition key="controls" id="actions" customHeadingComponent={CustomHeading} customComponent={CustomActions(buttonsConf)} />
    * @param {*} param0
    */
-  getColumnDefinition(conf) {
+  getColumnDefinition (conf) {
     let { id, customComponent, configuration, action } = conf;
 
     if (configuration && customComponent) {
@@ -339,13 +333,13 @@ class ListViewer extends React.Component {
     });
   }
 
-  getColumnDefinitions() {
-    return this.getColumnConfiguration().map((colConf) =>
+  getColumnDefinitions () {
+    return this.getColumnConfiguration().map(colConf =>
       this.getColumnDefinition(colConf)
     );
   }
 
-  getLayout() {
+  getLayout () {
     if (this.props.layout) {
       return this.props.layout;
     }
@@ -358,7 +352,7 @@ class ListViewer extends React.Component {
     );
   }
 
-  getPlugins() {
+  getPlugins () {
     const {
       remoteInfiniteScroll = false,
       plugins: extraPlugins = [],
@@ -371,14 +365,14 @@ class ListViewer extends React.Component {
     }
     return this.props.infiniteScroll
       ? [
-          plugins.LocalPlugin,
-          plugins.PositionPlugin({ disablePointerEvents: true }),
-          ...extraPlugins,
-        ]
+        plugins.LocalPlugin,
+        plugins.PositionPlugin({ disablePointerEvents: true }),
+        ...extraPlugins,
+      ]
       : [plugins.LocalPlugin, ...extraPlugins];
   }
 
-  render() {
+  render () {
     window.conf = this.columnConfiguration;
     const customComponents = this.props.customComponents
       ? this.props.customComponents
