@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import OpenSeaDragon from 'openseadragon';
 import PropTypes from 'prop-types';
-import * as util from '../../utilities';
+import * as util from '../utilities';
 import {
   faHome,
   faSearchPlus,
