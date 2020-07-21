@@ -32,14 +32,10 @@ define(function (require) {
         'MDMODAL': 'controls/modals/MarkDownModal',
         'QUERY': 'interface/query/queryBuilder',
         'TUTORIAL': 'interface/tutorial/Tutorial',
-        'PYTHONCONSOLE': 'interface/pythonConsole/PythonConsole',
         'DICOMVIEWER': 'interface/dicomViewer/DicomViewer',
-        'GOOGLEVIEWER': 'interface/googleViewer/GoogleViewer',
         'BIGIMAGEVIEWER': 'interface/bigImageViewer/BigImageViewer',
         'CAROUSEL': 'interface/carousel/Carousel',
         'CANVAS': 'interface/3dCanvas/Canvas',
-        'MOVIEPLAYER': 'interface/moviePlayer/MoviePlayer',
-        'TREE': 'interface/tree/Tree',
         'CONSOLE': 'interface/console/Console',
         'LINKBUTTON': 'interface/linkButton/LinkButton',
         'BUTTONBAR': 'interface/buttonBar/ButtonBar',
@@ -202,14 +198,9 @@ define(function (require) {
             case 'MDMODAL': require(['./controls/modals/MarkDownModal'],cb); break;
             case 'QUERY': require(['./interface/query/queryBuilder'],cb); break;
             case 'TUTORIAL': require(['./interface/tutorial/Tutorial'],cb); break;
-            case 'PYTHONCONSOLE': require(['./interface/pythonConsole/PythonConsole'],cb); break;
-            case 'DICOMVIEWER': require(['./interface/dicomViewer/DicomViewer'],cb); break;
-            case 'GOOGLEVIEWER': require(['./interface/googleViewer/GoogleViewer'],cb); break;
-            case 'BIGIMAGEVIEWER': require(['../../../geppetto-ui/src/components/big-image-viewer/BigImageViewer'],cb); break;
+            case 'BIGIMAGEVIEWER': require(['../../../geppetto-ui/src/big-image-viewer/BigImageViewer'],cb); break;
             case 'CAROUSEL': require(['./interface/carousel/Carousel'],cb); break;
             case 'CANVAS': require(['./interface/3dCanvas/Canvas'],cb); break;
-            case 'MOVIEPLAYER': require(['./interface/moviePlayer/MoviePlayer'],cb); break;
-            case 'TREE': require(['./interface/tree/Tree'],cb); break;
             case 'CONSOLE': require(['./interface/console/Console'],cb); break;
             case 'LINKBUTTON': require(['./interface/linkButton/LinkButton'],cb); break;
             case 'BUTTONBAR': require(['./interface/buttonBar/ButtonBar'], cb); break;
