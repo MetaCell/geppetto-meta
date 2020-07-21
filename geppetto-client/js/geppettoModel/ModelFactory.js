@@ -178,8 +178,6 @@ export default function (GEPPETTO) {
         }
         if (instance.value) {
           instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
-        } else {
-          console.error("Instance", instance, "has no value defined");
         }
           
         return instance;
@@ -1330,7 +1328,19 @@ export default function (GEPPETTO) {
           window[topInstances[k].getId()] = topInstances[k];
           window.Instances[topInstances[k].getId()] = topInstances[k];
         }
-        // TODO Should we trigger that instances were added?
+
+        newInstancesPaths.forEach(newInstance => {
+          if (newInstance !== "time") {
+            if (newInstance.includes('.')) {
+              let instanceStrings = newInstance.split(".");
+              if (window.Instances[instanceStrings[0]][instanceStrings[1]] !== undefined) {
+                GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
+              }
+            } else if (window.Instances[newInstance] !== undefined){
+              GEPPETTO.trigger(GEPPETTO.Events.Instance_added, newInstance);
+            }
+          }
+        })
       },
 
       /**
@@ -3021,4 +3031,3 @@ function createInstancePathObj (instance) {
     static: true
   };
 }
-

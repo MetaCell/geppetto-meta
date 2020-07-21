@@ -36,6 +36,7 @@ define(function (require) {
       }
       
       this.initialCameraReset = false;
+      this.animationRunning = false;
     }
 
     /**
@@ -44,6 +45,7 @@ define(function (require) {
      * @returns {Canvas}
      */
     display (instances) {
+      var that = this;
       if (this.isWidget()) {
         this.showOverlay(<div className="spinner-container">
           <div className={"fa fa-circle-o-notch fa-spin"}></div>
@@ -63,6 +65,17 @@ define(function (require) {
         // Trigger Update_camera event, camera position is reset when project is first loaded with initial instances
         GEPPETTO.trigger(GEPPETTO.Events.Update_camera);
         this.setDirty(true);
+        // Handle the update for the prop onLoad
+        if (this.props.onLoad !== undefined) {
+          added.map(instance => {
+            let parent = instance.getParent();
+            if (parent !== null) {
+              that.props.onLoad(parent.getId());
+            } else {
+              that.props.onLoad(instance.getId());
+            }
+          });
+        }
       }
 
       if (this.isWidget()) {
@@ -605,7 +618,7 @@ define(function (require) {
      * @return {Canvas}
      */
     autoRotate () {
-      this.engine.autoRotate();
+      this.engine.autoRotate({ movieFilter: this.props.movieFilter });
       return this;
     }
 
@@ -767,13 +780,16 @@ define(function (require) {
       GEPPETTO.off(GEPPETTO.Events.Instances_created, null, this);
       GEPPETTO.off(GEPPETTO.Events.Instance_deleted, null, this);
       GEPPETTO.off(GEPPETTO.Events.Update_camera, null, this);
+      if (this.props.minimiseAnimation !== undefined || this.props.minimiseAnimation) {
+        GEPPETTO.off(GEPPETTO.Events.selectInstance, null, this);
+        GEPPETTO.off(GEPPETTO.Events.deselectInstance, null, this);
+      }
     }
 
     componentDidMount () {
       if (!isWebglEnabled) {
         Detector.addGetWebGLMessage();
       } else {
-        // this.container = $("#" + this.props.id + "_component").get(0);
         var [width, height] = this.setContainerDimensions();
         this.engine = new ThreeDEngine(this.getContainer(), this.props.id);
         this.engine.setSize(width, height);
@@ -785,22 +801,18 @@ define(function (require) {
         GEPPETTO.WidgetsListener.subscribe(this.engine, this.id);
 
         var that = this;
-        $("#" + this.props.id).on("dialogresizestop resizeEnd", function (event, ui) {
-          var [width, height] = that.setContainerDimensions();
-          that.engine.setSize(width, height);
-        });
 
         window.addEventListener('resize', function () {
           var [width, height] = that.setContainerDimensions();
           that.engine.setSize(width, height);
         }, false);
-        
+
         /*
          * Update camera position call.
          */
         GEPPETTO.on(GEPPETTO.Events.Update_camera, () => {
           let instancesFetched = window.Instances.length;
-          // Instances fetched were stored in window.Instances variable, get number of those with visual capability. 
+          // Instances fetched were stored in window.Instances variable, get number of those with visual capability.
           for ( var i = 0; i < window.Instances.length ; i++ ){
             if ( !window.Instances[i].hasCapability('VisualCapability') ){
               instancesFetched--;
@@ -815,7 +827,7 @@ define(function (require) {
             this.initialCameraReset = false;
           }
         }, this);
-        
+
         this.initialCameraReset = true;
       }
     }
