@@ -7,7 +7,6 @@
  */
 define(function (require) {
   return function (GEPPETTO) {
-    require('babel-polyfill');
     var $ = require('jquery');
     var React = require('react');
     var path = require('path');
