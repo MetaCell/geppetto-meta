@@ -9,6 +9,7 @@
     "test": "jest"
   },
   "dependencies": {
+
     "@date-io/core": "1.3.6",
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
@@ -126,5 +127,12 @@
     "recompose": "^0.30.0",
     "react-select": "^2.1.2",
     "eslint-plugin-react": "^7.12.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "@geppettoengine/geppetto-client(.*)$": "<rootDir>/geppetto-client/js/$1",
+      "@geppettoengine/geppetto-core(.*)$": "<rootDir>/geppetto-core/src/$1",
+      "@geppettoengine/geppetto-ui(.*)$": "<rootDir>/geppetto-ui/src/$1"
+    }
   }
 }
