@@ -114,7 +114,6 @@ define(function (require) {
             'specialCommands'
           );
 
-
           // Set up the iframe sandbox if needed
           if (this.model.get('iframe')) {
             this.iframeSetup();
