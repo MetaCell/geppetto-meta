@@ -4,7 +4,6 @@
  */
 define(function (require) {
   return function (GEPPETTO) {
-    require('babel-polyfill');
 
     GEPPETTO.ViewController = {
       monitorInterval: undefined,

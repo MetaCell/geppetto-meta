@@ -1,5 +1,5 @@
 import ObjectWrapper from './ObjectWrapper';
-import { extend } from '../../common/Utils';
+import { extend } from '@geppettoengine/geppetto-core/common/Utils';
 
 export default class ASimpleInstance extends ObjectWrapper{
  

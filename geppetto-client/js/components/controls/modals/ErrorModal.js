@@ -8,7 +8,7 @@ var React = require('react');
 var CreateClass = require('create-react-class');
 
 var GEPPETTO = require('geppetto');
-require('../../../common/GEPPETTO.Resources').default(GEPPETTO);
+const Resources = require('@geppettoengine/geppetto-core/Resources').default;
    
 require("./ErrorModal.less");
 
@@ -19,19 +19,19 @@ const ErrorModal = CreateClass({
         
   getDefaultProps: function () {
     return {
-      title: GEPPETTO.Resources.ERROR_MODAL_TITLE,
+      title: Resources.ERROR_MODAL_TITLE,
       text: '',
       code: '',
       source: '',
       exception: '',
       githubButton : {
         enabled : true,
-        url :  GEPPETTO.Resources.ERROR_MODAL_NEW_ISSUE_URL
+        url :  Resources.ERROR_MODAL_NEW_ISSUE_URL
       },
       twitterButton : {
         enabled : true,
-        url : GEPPETTO.Resources.ERROR_MODAL_TWITTER_URL,
-        message : GEPPETTO.Resources.ERROR_MODAL_TWITTER_MESSAGE
+        url : Resources.ERROR_MODAL_TWITTER_URL,
+        message : Resources.ERROR_MODAL_TWITTER_MESSAGE
       }
     }
   },

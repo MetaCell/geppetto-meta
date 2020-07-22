@@ -3,10 +3,10 @@ define(function (require) {
   require('./Canvas.less');
 
   var React = require('react');
-  var Instance = require('../../../geppettoModel/model/Instance');
-  var ArrayInstance = require('../../../geppettoModel/model/ArrayInstance');
-  var Type = require('../../../geppettoModel/model/Type');
-  var Variable = require('../../../geppettoModel/model/Variable');
+  var Instance = require('@geppettoengine/geppetto-core/model/Instance');
+  var ArrayInstance = require('@geppettoengine/geppetto-core/model/ArrayInstance');
+  var Type = require('@geppettoengine/geppetto-core/model/Type');
+  var Variable = require('@geppettoengine/geppetto-core/model/Variable');
   var isWebglEnabled = require('detector-webgl');
   var ThreeDEngine = require('./ThreeDEngine');
   var CameraControls = require('../cameraControls/CameraControls');

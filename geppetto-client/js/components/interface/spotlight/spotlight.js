@@ -12,8 +12,8 @@ define(function (require) {
 
   var PlotController = require('./../../widgets/plot/controllers/PlotsController');
 
-  var Instance = require('../../../geppettoModel/model/Instance');
-  var Variable = require('../../../geppettoModel/model/Variable');
+  var Instance = require('@geppettoengine/geppetto-core/model/Instance');
+  var Variable = require('@geppettoengine/geppetto-core/model/Variable');
 
   var Spotlight = CreateClass({
 

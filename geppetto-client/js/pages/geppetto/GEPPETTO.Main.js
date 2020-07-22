@@ -13,7 +13,7 @@ define(function (require) {
     var path = require('path');
     var urljoin = require('url-join');
     var InfoModal = require('../../components/controls/modals/InfoModal');
-    var ProjectNode = require('../../geppettoProject/model/ProjectNode');
+    var ProjectNode = require('@geppettoengine/geppetto-core/model/ProjectNode');
     var ReactDOM = require('react-dom');
 
     /**

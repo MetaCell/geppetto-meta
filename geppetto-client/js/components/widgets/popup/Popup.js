@@ -9,7 +9,7 @@ define(function (require) {
 
   var Widget = require('../Widget');
   var $ = require('jquery');
-  var Type = require('../../../geppettoModel/model/Type');
+  var Type = require('@geppettoengine/geppetto-core/model/Type');
   var React = require('react');
   var ReactDOM = require('react-dom');
   var ButtonBarComponent = require('./ButtonBarComponent');

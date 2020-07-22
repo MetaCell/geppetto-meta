@@ -4,6 +4,7 @@ define(['jquery'], function () {
   var InfoModal = require('./InfoModal');
   var ErrorModal = require('./ErrorModal');
   var InputModal = require('./InputModal');
+  require('../mixins/bootstrap/modal.js')
   var ReactDOM = require('react-dom');
 
 

@@ -8,7 +8,7 @@
  * @author Matteo Cantarelli
  */
 const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('../../common/Utils').extend;
+const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
 const Variable = require('./Variable').default;
 
 function Type (options) {

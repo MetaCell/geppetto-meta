@@ -11,9 +11,7 @@
  * Simulation Object Resources
  */
 
-export default function (GEPPETTO) {
-
-  GEPPETTO.Resources = {
+export default  {
 
     Icon: {
       "ParameterType": "fa-sliders",
@@ -522,5 +520,5 @@ export default function (GEPPETTO) {
     DROPBOX_INTEGRATION : "DROPBOX_INTEGRATION",
     RUN_EXPERIMENT : "RUN_EXPERIMENT"
   }
-}
+
 

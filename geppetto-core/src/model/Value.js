@@ -1,5 +1,5 @@
 const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('../../common/Utils').extend;
+const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
 /**
  * Client class use to represent a variable.
  *

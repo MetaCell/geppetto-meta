@@ -7,7 +7,7 @@
  * @author Giovanni Idili
  */
 
-const extend = require('../../common/Utils').extend;
+const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
 const ObjectWrapper = require('./ObjectWrapper');
 
 function Variable (options) {
