@@ -265,7 +265,7 @@ export default class ListViewer extends React.Component {
     return ({ Table, Pagination, Filter, SettingsWrapper }) => (<div className="listviewer-container">
       <Filter />
       <Table />
-      <Pagination />
+      { this.props.showPagination === true ? <Pagination /> : null }
     </div>);
   }
 

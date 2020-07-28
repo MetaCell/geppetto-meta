@@ -108,7 +108,22 @@ class MenuSection extends React.Component {
           onClick={this.handleClick}
           onMouseOver={this.handleOver}
           onMouseOut={this.handleOut}>
-          {this.props.button.icon !== "" ? <span style={{ display: "inline-block", width: "25px" }}><i className={this.props.button.icon}></i></span> : undefined}
+          { this.props.button.icon !== ""
+            ? this.props.button.caret
+              ? this.props.button.caret.show
+                ? <span>
+                  <i className={this.props.button.icon}/>
+                  <i 
+                    className={this.props.button.caret.icon ? this.props.button.caret.icon : "fa fa-caret-down"}
+                    style={{ marginLeft : "5px" }}
+                  />
+                </span>
+                : undefined
+              : <span style={{ display: "inline-block", width: "25px" }}>
+                <i className={this.props.button.icon}/>
+              </span>
+            : undefined
+          }
           {this.props.button.label}
           
         </Button>
