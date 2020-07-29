@@ -111,7 +111,7 @@ class MenuSection extends React.Component {
           { this.props.button.icon !== ""
             ? this.props.button.caret
               ? this.props.button.caret.show
-                ? <span>
+                ? <span style={ { color : this.props.button.activeColor } }>
                   <i className={this.props.button.icon}/>
                   <i 
                     className={this.props.button.caret.icon ? this.props.button.caret.icon : "fa fa-caret-down"}
@@ -119,8 +119,8 @@ class MenuSection extends React.Component {
                   />
                 </span>
                 : undefined
-              : <span style={{ display: "inline-block", width: "25px" }}>
-                <i className={this.props.button.icon}/>
+              : <span style={{ display: "inline-block", width: "25px", color : this.props.button.activeColor }}>
+                <i className={this.props.button.icon} />
               </span>
             : undefined
           }
