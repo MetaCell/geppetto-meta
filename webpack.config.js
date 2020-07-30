@@ -61,7 +61,6 @@ module.exports = {
       {
         test: /\.(png|gif|jpg|cur)$/i,
         loader: 'url-loader',
-        options: { limit: 8192 },
       },
       {
         test: /\.woff2(\?v=[0-9]\.[0-9]\.[0-9])?$/i,
@@ -84,6 +83,17 @@ module.exports = {
       {
         test: /\.md$/,
         use: [{ loader: 'html-loader' }, { loader: 'markdown-loader' }],
+      },
+      {
+        test: /\.dat$/i,
+        use: [
+          {
+            loader: 'raw-loader',
+            options: {
+              esModule: false,
+            },
+          },
+        ],
       },
     ],
   },

@@ -1,4 +1,5 @@
 import ConnectivityMarkdown from '../../geppetto-client/geppetto-ui/src/components/connectivity-viewer/README.md';
+import CanvasVRMarkdown from '../../geppetto-client/geppetto-ui/src/components/canvas-vr/README.md';
 import TreeMarkdown from '../../geppetto-client/geppetto-ui/src/components/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/html-viewer/README.md';
 import LoaderMarkdown from '../../geppetto-client/geppetto-ui/src/components/loader/README.md';
@@ -54,6 +55,12 @@ const pages = [
     name: 'Plot',
     to: '/components/dataviewers/plot',
     markdown: PlotMarkdown,
+  },
+  {
+    parent: 'Data Viewers',
+    name: 'VR Canvas',
+    to: '/components/dataviewers/vrcanvas',
+    markdown: CanvasVRMarkdown,
   },
   {
     parent: 'Data Viewers',
