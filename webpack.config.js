@@ -12,7 +12,11 @@ module.exports = {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
         __dirname,
-        './geppetto-client/geppetto-client'
+        './geppetto-client/geppetto-client/js'
+      ),
+      '@geppettoengine/geppetto-core': path.resolve(
+        __dirname,
+        './geppetto-client/geppetto-core/src'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],

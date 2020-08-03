@@ -73,7 +73,7 @@ function getReactElement(dom) {
 function getProps(dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
   // TODO: What happens to this path if we use geppetto-client package instead of local file?
-  const src = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/components/' +
+  const src = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/' +
     path +
     '.js').default;
   const componentInfo = reactDocs.parse(src);
@@ -122,12 +122,12 @@ function getExample(start) {
       const path = elem.children[0].innerText.trim();
       example[
         'component'
-      ] = require('../../../geppetto-client/geppetto-ui/src/components/' +
+      ] = require('../../../geppetto-client/geppetto-ui/src/' +
         path +
         '.js').default;
       example[
         'file'
-      ] = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/components/' +
+      ] = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/' +
         path +
         '.js');
     } else {

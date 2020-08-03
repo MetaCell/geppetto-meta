@@ -1,119 +1,119 @@
-import ConnectivityMarkdown from '../../geppetto-client/geppetto-ui/src/components/connectivity-viewer/README.md';
-import CanvasVRMarkdown from '../../geppetto-client/geppetto-ui/src/components/canvas-vr/README.md';
-import TreeMarkdown from '../../geppetto-client/geppetto-ui/src/components/tree-viewer/README.md';
-import HTMLViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/html-viewer/README.md';
-import LoaderMarkdown from '../../geppetto-client/geppetto-ui/src/components/loader/README.md';
-import BigImageViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/big-image-viewer/README.md';
-import DicomViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/dicom-viewer/README.md';
-import MenuMarkdown from '../../geppetto-client/geppetto-ui/src/components/menu/README.md';
-import MoviePlayerMarkdown from '../../geppetto-client/geppetto-ui/src/components/movie-player/README.md';
-import PlotMarkdown from '../../geppetto-client/geppetto-ui/src/components/plot/README.md';
-import GraphVisualizationMarkdown from '../../geppetto-client/geppetto-ui/src/components/graph-visualization/README.md';
-import FlexlayoutMarkdown from '../../geppetto-client/geppetto-ui/src/components/flex-layout/README.md';
-import ListViewerMarkdown from '../../geppetto-client/geppetto-ui/src/components/list-viewer/README.md';
-import PythonConsoleMarkdown from '../../geppetto-client/geppetto-ui/src/components/python-console/README.md';
+import ConnectivityMarkdown from '../../geppetto-client/geppetto-ui/src/connectivity-viewer/README.md';
+// import CanvasVRMarkdown from '../../geppetto-client/geppetto-ui/src/canvas-vr/README.md';
+import TreeMarkdown from '../../geppetto-client/geppetto-ui/src/tree-viewer/README.md';
+import HTMLViewerMarkdown from '../../geppetto-client/geppetto-ui/src/html-viewer/README.md';
+import LoaderMarkdown from '../../geppetto-client/geppetto-ui/src/loader/README.md';
+import BigImageViewerMarkdown from '../../geppetto-client/geppetto-ui/src/big-image-viewer/README.md';
+import DicomViewerMarkdown from '../../geppetto-client/geppetto-ui/src/dicom-viewer/README.md';
+import MenuMarkdown from '../../geppetto-client/geppetto-ui/src/menu/README.md';
+import MoviePlayerMarkdown from '../../geppetto-client/geppetto-ui/src/movie-player/README.md';
+import PlotMarkdown from '../../geppetto-client/geppetto-ui/src/plot/README.md';
+import GraphVisualizationMarkdown from '../../geppetto-client/geppetto-ui/src/graph-visualization/README.md';
+import FlexlayoutMarkdown from '../../geppetto-client/geppetto-ui/src/flex-layout/README.md';
+import ListViewerMarkdown from '../../geppetto-client/geppetto-ui/src/list-viewer/README.md';
+import PythonConsoleMarkdown from '../../geppetto-client/geppetto-ui/src/python-console/README.md';
 
 const pages = [
   {
     parent: 'Data Viewers',
     name: 'Big Image Viewer',
-    to: '/components/dataviewers/bigimgviewer',
+    to: '/dataviewers/bigimgviewer',
     markdown: BigImageViewerMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'Connectivity Viewer',
-    to: '/components/dataviewers/connectivity',
+    to: '/dataviewers/connectivity',
     markdown: ConnectivityMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'Dicom Viewer',
-    to: '/components/dataviewers/dicomviewer',
+    to: '/dataviewers/dicomviewer',
     markdown: DicomViewerMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'Graph Visualizer',
-    to: '/components/dataviewers/graphvisualizer',
+    to: '/dataviewers/graphvisualizer',
     markdown: GraphVisualizationMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'HTML Viewer',
-    to: '/components/dataviewers/htmlviewer',
+    to: '/dataviewers/htmlviewer',
     markdown: HTMLViewerMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'Movie Player',
-    to: '/components/dataviewers/movieplayer',
+    to: '/dataviewers/movieplayer',
     markdown: MoviePlayerMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'Plot',
-    to: '/components/dataviewers/plot',
+    to: '/dataviewers/plot',
     markdown: PlotMarkdown,
   },
   {
     parent: 'Data Viewers',
     name: 'VR Canvas',
-    to: '/components/dataviewers/vrcanvas',
-    markdown: CanvasVRMarkdown,
+    to: '/dataviewers/vrcanvas',
+    markdown: null,
   },
   {
     parent: 'Data Viewers',
     name: '3D Canvas',
-    to: '/components/dataviewers/canvas',
+    to: '/dataviewers/canvas',
     markdown: null,
   },
   {
     parent: 'Data Viewers',
     name: 'Stack Viewer',
-    to: '/components/dataviewers/stackviewer',
+    to: '/dataviewers/stackviewer',
     markdown: null,
   },
   {
     parent: 'Navigation/Layout',
     name: 'Flex Layout',
-    to: '/components/navigation/flexlayout',
+    to: '/navigation/flexlayout',
     markdown: FlexlayoutMarkdown,
   },
   {
     parent: 'Navigation/Layout',
     name: 'List Viewer',
-    to: '/components/navigation/listviewer',
+    to: '/navigation/listviewer',
     markdown: ListViewerMarkdown,
   },
   {
     parent: 'Navigation/Layout',
     name: 'Loader',
-    to: '/components/navigation/loader',
+    to: '/navigation/loader',
     markdown: LoaderMarkdown,
   },
   {
     parent: 'Navigation/Layout',
     name: 'Menu',
-    to: '/components/navigation/menu',
+    to: '/navigation/menu',
     markdown: MenuMarkdown,
   },
   {
     parent: 'Navigation/Layout',
     name: 'Tree Viewer',
-    to: '/components/navigation/treeviewer',
+    to: '/navigation/treeviewer',
     markdown: TreeMarkdown,
   },
   {
     parent: 'Programmatic Interfaces',
     name: 'Python Console',
-    to: '/components/programmatic/pythonconsole',
+    to: '/programmatic/pythonconsole',
     markdown: PythonConsoleMarkdown,
   },
   {
     parent: 'Programmatic Interfaces',
     name: 'Javascript Console',
-    to: '/components/programmatic/jsconsole',
+    to: '/programmatic/jsconsole',
     markdown: null,
   },
 ];
