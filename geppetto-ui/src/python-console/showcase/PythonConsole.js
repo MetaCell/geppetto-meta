@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import pythonConsoleGif from './console.gif';
 
 class PythonConsole extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  render () {
-    return <img src={`/${pythonConsoleGif}`} />;
+  render() {
+    console.log(pythonConsoleGif);
+    return <img src={pythonConsoleGif} />;
   }
 }
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import * as THREE from 'three';
 import DicomViewerUtils from './DicomViewerUtils';
-import { offset } from '../../utilities';
+import { offset } from '../utilities';
 import { boundingBoxHelperFactory, VolumeLoader, StackModel } from 'ami.js';
 const HelpersBoundingBox = boundingBoxHelperFactory(THREE);
 
@@ -17,7 +17,7 @@ import {
   faCompressAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
-import { createZipFromRemoteFiles } from '../../../../geppetto-core/src/Utility';
+import { createZipFromRemoteFiles } from '@geppettoengine/geppetto-core/Utility';
 
 const styles = {
   dicomViewer: {
@@ -44,7 +44,7 @@ const styles = {
 };
 
 class DicomViewer extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -132,7 +132,7 @@ class DicomViewer extends Component {
     this.containerRef = React.createRef();
   }
 
-  extractFilesPath (data) {
+  extractFilesPath(data) {
     let files;
     if (data !== undefined) {
       if (data.getMetaType === undefined) {
@@ -150,7 +150,7 @@ class DicomViewer extends Component {
     return files;
   }
 
-  loadModel () {
+  loadModel() {
     if (this.state.files !== undefined && null != this.state.files) {
       this.ready = false;
       const _this = this;
@@ -158,17 +158,17 @@ class DicomViewer extends Component {
       /**
        * Init the quadview
        */
-      function init () {
+      function init() {
         /**
          * Called on each animation frame
          */
-        function animate () {
+        function animate() {
           // we are ready when both meshes have been loaded
           if (_this.ready) {
             if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === '3d')
-              || _this.state.mode === 'quad_view'
+              (_this.state.mode === 'single_view' &&
+                _this.state.orientation === '3d') ||
+              _this.state.mode === 'quad_view'
             ) {
               // render
               _this.r0.controls.update();
@@ -177,9 +177,9 @@ class DicomViewer extends Component {
             }
 
             if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'sagittal')
-              || _this.state.mode === 'quad_view'
+              (_this.state.mode === 'single_view' &&
+                _this.state.orientation === 'sagittal') ||
+              _this.state.mode === 'quad_view'
             ) {
               _this.r1.controls.update();
               // r1
@@ -195,9 +195,9 @@ class DicomViewer extends Component {
             }
 
             if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'axial')
-              || _this.state.mode === 'quad_view'
+              (_this.state.mode === 'single_view' &&
+                _this.state.orientation === 'axial') ||
+              _this.state.mode === 'quad_view'
             ) {
               _this.r2.controls.update();
               // r2
@@ -212,9 +212,9 @@ class DicomViewer extends Component {
             }
 
             if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'coronal')
-              || _this.state.mode === 'quad_view'
+              (_this.state.mode === 'single_view' &&
+                _this.state.orientation === 'coronal') ||
+              _this.state.mode === 'quad_view'
             ) {
               _this.r3.controls.update();
               // r3
@@ -337,10 +337,10 @@ class DicomViewer extends Component {
     }
   }
 
-  configureEvents () {
+  configureEvents() {
     const _this = this;
 
-    function goToPoint (event) {
+    function goToPoint(event) {
       const canvas = event.srcElement.parentElement;
       const id = event.target.id;
       const mouse = {
@@ -353,26 +353,26 @@ class DicomViewer extends Component {
       let stackHelper = null;
       let scene = null;
       switch (id) {
-      case '0':
-        camera = _this.r0.camera;
-        stackHelper = _this.r1.stackHelper;
-        scene = _this.r0.scene;
-        break;
-      case '1':
-        camera = _this.r1.camera;
-        stackHelper = _this.r1.stackHelper;
-        scene = _this.r1.scene;
-        break;
-      case '2':
-        camera = _this.r2.camera;
-        stackHelper = _this.r2.stackHelper;
-        scene = _this.r2.scene;
-        break;
-      case '3':
-        camera = _this.r3.camera;
-        stackHelper = _this.r3.stackHelper;
-        scene = _this.r3.scene;
-        break;
+        case '0':
+          camera = _this.r0.camera;
+          stackHelper = _this.r1.stackHelper;
+          scene = _this.r0.scene;
+          break;
+        case '1':
+          camera = _this.r1.camera;
+          stackHelper = _this.r1.stackHelper;
+          scene = _this.r1.scene;
+          break;
+        case '2':
+          camera = _this.r2.camera;
+          stackHelper = _this.r2.stackHelper;
+          scene = _this.r2.scene;
+          break;
+        case '3':
+          camera = _this.r3.camera;
+          stackHelper = _this.r3.stackHelper;
+          scene = _this.r3.scene;
+          break;
       }
 
       const raycaster = new THREE.Raycaster();
@@ -409,22 +409,22 @@ class DicomViewer extends Component {
       }
     }
 
-    function goToSingleView (event) {
+    function goToSingleView(event) {
       const id = event.target.id;
       let orientation = null;
       switch (id) {
-      case '0':
-        orientation = '3d';
-        break;
-      case '1':
-        orientation = 'sagittal';
-        break;
-      case '2':
-        orientation = 'axial';
-        break;
-      case '3':
-        orientation = 'coronal';
-        break;
+        case '0':
+          orientation = '3d';
+          break;
+        case '1':
+          orientation = 'sagittal';
+          break;
+        case '2':
+          orientation = 'axial';
+          break;
+        case '3':
+          orientation = 'coronal';
+          break;
       }
 
       if (orientation != null) {
@@ -432,7 +432,7 @@ class DicomViewer extends Component {
       }
     }
 
-    function togglMode (event) {
+    function togglMode(event) {
       if (_this.state.mode === 'single_view') {
         _this.changeMode();
       } else {
@@ -440,19 +440,19 @@ class DicomViewer extends Component {
       }
     }
 
-    function onScroll (event) {
+    function onScroll(event) {
       const id = event.target.domElement.id;
       let stackHelper = null;
       switch (id) {
-      case 'r1':
-        stackHelper = _this.r1.stackHelper;
-        break;
-      case 'r2':
-        stackHelper = _this.r2.stackHelper;
-        break;
-      case 'r3':
-        stackHelper = _this.r3.stackHelper;
-        break;
+        case 'r1':
+          stackHelper = _this.r1.stackHelper;
+          break;
+        case 'r2':
+          stackHelper = _this.r2.stackHelper;
+          break;
+        case 'r3':
+          stackHelper = _this.r3.stackHelper;
+          break;
       }
 
       if (event.delta > 0) {
@@ -481,12 +481,12 @@ class DicomViewer extends Component {
       ]);
     }
 
-    function performEventAction (action, event) {
+    function performEventAction(action, event) {
       // Check if it is a already defined action or a external one
       if (
-        action === 'goToPoint'
-        || action === 'goToSingleView'
-        || action === 'togglMode'
+        action === 'goToPoint' ||
+        action === 'goToSingleView' ||
+        action === 'togglMode'
       ) {
         eval(action + '(event)');
       } else {
@@ -494,24 +494,24 @@ class DicomViewer extends Component {
       }
     }
 
-    function eventHandling (event) {
+    function eventHandling(event) {
       if (event.type === 'click' && _this.props.onClick !== undefined) {
         performEventAction(_this.props.onClick, event);
       } else if (
-        event.type === 'click'
-        && (event.ctrlKey || event.metaKey)
-        && _this.props.onCtrlClick !== undefined
+        event.type === 'click' &&
+        (event.ctrlKey || event.metaKey) &&
+        _this.props.onCtrlClick !== undefined
       ) {
         performEventAction(_this.props.onCtrlClick, event);
       } else if (
-        event.type === 'click'
-        && event.shiftKey
-        && _this.props.onShiftClick !== undefined
+        event.type === 'click' &&
+        event.shiftKey &&
+        _this.props.onShiftClick !== undefined
       ) {
         performEventAction(_this.props.onShiftClick, event);
       } else if (
-        event.type === 'dblclick'
-        && _this.props.onDoubleClick !== undefined
+        event.type === 'dblclick' &&
+        _this.props.onDoubleClick !== undefined
       ) {
         performEventAction(_this.props.onDoubleClick, event);
       }
@@ -535,7 +535,7 @@ class DicomViewer extends Component {
     this.r3.controls.addEventListener('OnScroll', onScroll);
   }
 
-  setQuadLayout () {
+  setQuadLayout() {
     // update 3D
     DicomViewerUtils.windowResize3D(this.r0);
 
@@ -545,21 +545,21 @@ class DicomViewer extends Component {
     DicomViewerUtils.windowResize2D(this.r3);
   }
 
-  setSingleLayout () {
+  setSingleLayout() {
     let rendererObj;
     switch (this.state.orientation) {
-    case '3d':
-      rendererObj = this.r0;
-      break;
-    case 'sagittal':
-      rendererObj = this.r1;
-      break;
-    case 'axial':
-      rendererObj = this.r2;
-      break;
-    case 'coronal':
-      rendererObj = this.r3;
-      break;
+      case '3d':
+        rendererObj = this.r0;
+        break;
+      case 'sagittal':
+        rendererObj = this.r1;
+        break;
+      case 'axial':
+        rendererObj = this.r2;
+        break;
+      case 'coronal':
+        rendererObj = this.r3;
+        break;
     }
 
     if (this.state.orientation === '3d') {
@@ -569,7 +569,7 @@ class DicomViewer extends Component {
     }
   }
 
-  setLayout () {
+  setLayout() {
     if (this.state.mode === 'single_view') {
       this.setSingleLayout();
     } else {
@@ -577,18 +577,18 @@ class DicomViewer extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     DicomViewerUtils.dispose(this.r0);
     DicomViewerUtils.dispose(this.r1);
     DicomViewerUtils.dispose(this.r2);
     DicomViewerUtils.dispose(this.r3);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadModel();
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.files !== this.state.files) {
       this.loadModel();
     } else {
@@ -596,7 +596,7 @@ class DicomViewer extends Component {
     }
   }
 
-  changeMode () {
+  changeMode() {
     if (this.state.mode === 'single_view') {
       this.setState({ mode: 'quad_view' });
     } else {
@@ -604,40 +604,40 @@ class DicomViewer extends Component {
     }
   }
 
-  changeOrientation () {
+  changeOrientation() {
     let newOrientation;
     switch (this.state.orientation) {
-    case 'coronal':
-      newOrientation = 'sagittal';
-      break;
-    case 'sagittal':
-      newOrientation = 'axial';
-      break;
-    case 'axial':
-      newOrientation = '3d';
-      break;
-    case '3d':
-      newOrientation = 'coronal';
-      break;
-    default:
-      break;
+      case 'coronal':
+        newOrientation = 'sagittal';
+        break;
+      case 'sagittal':
+        newOrientation = 'axial';
+        break;
+      case 'axial':
+        newOrientation = '3d';
+        break;
+      case '3d':
+        newOrientation = 'coronal';
+        break;
+      default:
+        break;
     }
     this.setState({ orientation: newOrientation });
   }
 
-  download () {
+  download() {
     createZipFromRemoteFiles(this.state.files, 'data.zip');
   }
 
-  restore () {
+  restore() {
     this.setState({ fullScreen: false });
   }
 
-  fullScreen () {
-    this.setState({ fullScreen: true, });
+  fullScreen() {
+    this.setState({ fullScreen: true });
   }
 
-  getCustomButtons () {
+  getCustomButtons() {
     const customButtons = [];
 
     if (this.state.mode === 'single_view') {
@@ -690,25 +690,25 @@ class DicomViewer extends Component {
     return customButtons;
   }
 
-  render () {
+  render() {
     const { classes } = this.props;
     const { fullScreen } = this.state;
     const customButtons = this.getCustomButtons();
 
     const containerStyle = fullScreen
       ? {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        zIndex: '9999',
-        background: '#121212',
-        height: '100%',
-        width: '100%',
-      }
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          zIndex: '9999',
+          background: '#121212',
+          height: '100%',
+          width: '100%',
+        }
       : {
-        height: '100%',
-        width: '100%',
-      };
+          height: '100%',
+          width: '100%',
+        };
 
     return (
       <div
@@ -727,18 +727,18 @@ class DicomViewer extends Component {
             className={classes.renderer + ' r0'}
             style={{
               display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== '3d'
+                this.state.mode === 'single_view' &&
+                this.state.orientation !== '3d'
                   ? 'none'
                   : '',
               width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === '3d'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === '3d'
                   ? '100%'
                   : '50%',
               height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === '3d'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === '3d'
                   ? '100%'
                   : '50%',
             }}
@@ -748,18 +748,18 @@ class DicomViewer extends Component {
             className={classes.renderer + ' r1'}
             style={{
               display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'sagittal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation !== 'sagittal'
                   ? 'none'
                   : '',
               width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'sagittal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'sagittal'
                   ? '100%'
                   : '50%',
               height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'sagittal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'sagittal'
                   ? '100%'
                   : '50%',
             }}
@@ -769,18 +769,18 @@ class DicomViewer extends Component {
             className={classes.renderer + ' r2'}
             style={{
               display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'axial'
+                this.state.mode === 'single_view' &&
+                this.state.orientation !== 'axial'
                   ? 'none'
                   : '',
               width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'axial'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'axial'
                   ? '100%'
                   : '50%',
               height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'axial'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'axial'
                   ? '100%'
                   : '50%',
             }}
@@ -790,18 +790,18 @@ class DicomViewer extends Component {
             className={classes.renderer + ' r3'}
             style={{
               display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'coronal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation !== 'coronal'
                   ? 'none'
                   : '',
               width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'coronal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'coronal'
                   ? '100%'
                   : '50%',
               height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'coronal'
+                this.state.mode === 'single_view' &&
+                this.state.orientation === 'coronal'
                   ? '100%'
                   : '50%',
             }}
