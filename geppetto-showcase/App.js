@@ -10,20 +10,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-require('@geppettoengine/geppetto-client/js/common/GEPPETTO.Resources').default(
+GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
+require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(
   GEPPETTO
 );
-require('@geppettoengine/geppetto-client/js/pages/geppetto/GEPPETTO.Events').default(
-  GEPPETTO
-);
-const Manager = require('@geppettoengine/geppetto-client/js/common/Manager')
+const Manager = require('@geppettoengine/geppetto-client/common/Manager')
   .default;
-const ModelFactory = require('@geppettoengine/geppetto-client/js/geppettoModel/ModelFactory').default(
+const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(
   GEPPETTO
 );
-const testModel = require('@geppettoengine/geppetto-client/__tests__/resources/test_model.json');
-const AA = require('@geppettoengine/geppetto-client/js/geppettoModel/model/ArrayElementInstance')
-  .default;
 
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
@@ -40,10 +35,10 @@ GEPPETTO.ComponentFactory = {
 GEPPETTO.on = console.log;
 GEPPETTO.off = console.log;
 GEPPETTO.UnitsController = {
-  getUnitLabel: function(unit) {
+  getUnitLabel: function (unit) {
     return unit;
   },
-  hasUnit: function(unit) {
+  hasUnit: function (unit) {
     return true;
   },
 };
