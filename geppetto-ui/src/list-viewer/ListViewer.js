@@ -1,10 +1,8 @@
 import React from 'react';
-import Griddle, {
-  plugins,
-  ColumnDefinition,
-  RowDefinition,
-} from 'griddle-react';
+import { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
+import Griddle from './utils/Griddle';
 import BaseIconComponent from './BaseIconComponent';
+import PropTypes from 'prop-types';
 
 import PopupColorPicker from './PopupColorPicker';
 import './listviewer.less';
@@ -14,7 +12,6 @@ import {
   extractGriddleData,
   isString,
 } from './utils';
-import PropTypes from 'prop-types';
 
 /**
  * Allows to group multiple components in a single column
@@ -191,7 +188,7 @@ export const defaultColumnConfiguration = [
   },
 ];
 
-class ListViewer extends React.Component {
+export default class ListViewer extends React.Component {
   builtInComponents = {
     GroupComponent,
     IconComponent,
@@ -308,6 +305,10 @@ class ListViewer extends React.Component {
     return customComponent;
   }
 
+  getFilterFn () {
+    return this.props.filterFn ? this.props.filterFn : () => true;
+  }
+
   /**
    * <ColumnDefinition key="path" id="path" customComponent={CustomColumn} />,
    * <ColumnDefinition key="controls" id="actions" customHeadingComponent={CustomHeading} customComponent={CustomActions(buttonsConf)} />
@@ -373,12 +374,10 @@ class ListViewer extends React.Component {
   }
 
   render () {
-    window.conf = this.columnConfiguration;
     const customComponents = this.props.customComponents
       ? this.props.customComponents
       : {};
     const { events, ...others } = this.props;
-
     return (
       <section className="listviewer">
         <Griddle
@@ -419,5 +418,3 @@ ListViewer.propTypes = {
    */
   customComponents: PropTypes.object,
 };
-
-export default ListViewer;

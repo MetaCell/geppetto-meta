@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core';
 import 'react-sortable-tree/style.css';
 import PropTypes from 'prop-types';
 
-const styles = () => ({ treeViewer: { height: '100%', }, });
+const styles = () => ({ treeViewer: { height: '100%' } });
 
 class Tree extends Component {
   constructor (props) {
@@ -174,9 +174,11 @@ class Tree extends Component {
       rowHeight,
       searchQuery,
       onlyExpandSearchedNodes,
+      controls,
     } = this.props;
     return (
       <div className={classes.treeViewer} style={style}>
+        {controls ? controls : null}
         <SortableTree
           style={style}
           treeData={this.state.treeData}
@@ -230,6 +232,10 @@ Tree.propTypes = {
    * Generate an object with additional props to be passed to the node render
    */
   getNodesProps: PropTypes.func,
+  /**
+   * Controls
+   */
+  controls: PropTypes.obj,
 };
 
 export default withStyles(styles)(Tree);
