@@ -8,7 +8,6 @@ class PythonConsole extends Component {
   }
 
   render () {
-    console.log(pythonConsoleGif);
     return <img src={pythonConsoleGif} />;
   }
 }
