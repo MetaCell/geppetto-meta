@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import * as THREE from 'three';
 import DicomViewerUtils from './DicomViewerUtils';
-import { offset } from '../../utilities';
+import { offset } from '../utilities';
 import { boundingBoxHelperFactory, VolumeLoader, StackModel } from 'ami.js';
 const HelpersBoundingBox = boundingBoxHelperFactory(THREE);
 
@@ -17,7 +17,7 @@ import {
   faCompressAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
-import { createZipFromRemoteFiles } from '../../../../geppetto-core/src/Utility';
+import { createZipFromRemoteFiles } from '@geppettoengine/geppetto-core/Utility';
 
 const styles = {
   dicomViewer: {
@@ -634,7 +634,7 @@ class DicomViewer extends Component {
   }
 
   fullScreen () {
-    this.setState({ fullScreen: true, });
+    this.setState({ fullScreen: true });
   }
 
   getCustomButtons () {
