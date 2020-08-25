@@ -1,5 +1,6 @@
 import ConnectivityMarkdown from '../../geppetto-client/geppetto-ui/src/connectivity-viewer/README.md';
-// import CanvasVRMarkdown from '../../geppetto-client/geppetto-ui/src/canvas-vr/README.md';
+import CanvasVRMarkdown from '../../geppetto-client/geppetto-ui/src/vr-canvas/README.md';
+import Canvas3DMarkdown from '../../geppetto-client/geppetto-ui/src/3d-canvas/README.md';
 import TreeMarkdown from '../../geppetto-client/geppetto-ui/src/tree-viewer/README.md';
 import HTMLViewerMarkdown from '../../geppetto-client/geppetto-ui/src/html-viewer/README.md';
 import LoaderMarkdown from '../../geppetto-client/geppetto-ui/src/loader/README.md';
@@ -14,6 +15,12 @@ import ListViewerMarkdown from '../../geppetto-client/geppetto-ui/src/list-viewe
 import PythonConsoleMarkdown from '../../geppetto-client/geppetto-ui/src/python-console/README.md';
 
 const pages = [
+  {
+    parent: 'Data Viewers',
+    name: '3D Canvas',
+    to: '/dataviewers/canvas',
+    markdown: Canvas3DMarkdown,
+  },
   {
     parent: 'Data Viewers',
     name: 'Big Image Viewer',
@@ -60,7 +67,7 @@ const pages = [
     parent: 'Data Viewers',
     name: 'VR Canvas',
     to: '/dataviewers/vrcanvas',
-    markdown: null,
+    markdown: CanvasVRMarkdown,
   },
   {
     parent: 'Data Viewers',
