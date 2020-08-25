@@ -18,6 +18,10 @@ module.exports = {
         __dirname,
         './geppetto-client/geppetto-core/src'
       ),
+      '@geppettoengine/geppetto-ui': path.resolve(
+        __dirname,
+        './geppetto-client/geppetto-ui/src'
+      ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
   },
