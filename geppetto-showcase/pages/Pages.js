@@ -69,12 +69,7 @@ const pages = [
     to: '/dataviewers/vrcanvas',
     markdown: CanvasVRMarkdown,
   },
-  {
-    parent: 'Data Viewers',
-    name: '3D Canvas',
-    to: '/dataviewers/canvas',
-    markdown: null,
-  },
+
   {
     parent: 'Data Viewers',
     name: 'Stack Viewer',
