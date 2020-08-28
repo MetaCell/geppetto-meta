@@ -140,7 +140,24 @@ class MenuSection extends React.Component {
           aria-describedby={id}
           onClick={this.handleClick}
           onMouseOver={this.handleOver}
-          onMouseOut={this.handleOut}
+          onMouseOut={this.handleOut}>
+          { this.props.button.icon !== ""
+            ? this.props.button.caret
+              ? this.props.button.caret.show
+                ? <span style={ { color : this.props.button.activeColor } }>
+                  <i className={this.props.button.icon}/>
+                  <i 
+                    className={this.props.button.caret.icon ? this.props.button.caret.icon : "fa fa-caret-down"}
+                    style={{ marginLeft : "5px" }}
+                  />
+                </span>
+                : undefined
+              : <span style={{ display: "inline-block", width: "25px", color : this.props.button.activeColor }}>
+                <i className={this.props.button.icon} />
+              </span>
+            : undefined
+          }
+        {this.props.button.label}
         >
           {this.props.button.icon !== '' ? (
             <span style={{ display: 'inline-block', width: '25px' }}>
