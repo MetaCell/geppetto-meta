@@ -157,7 +157,7 @@ class MenuSection extends React.Component {
               </span>
             : undefined
           }
-        {this.props.button.label}
+          {this.props.button.label}
         >
           {this.props.button.icon !== '' ? (
             <span style={{ display: 'inline-block', width: '25px' }}>
