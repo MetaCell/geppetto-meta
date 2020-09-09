@@ -417,4 +417,8 @@ ListViewer.propTypes = {
    * Components passed in with a matching name will override the default in Griddle
    */
   customComponents: PropTypes.object,
+  /**
+   * Show Pagination button, used for changing pages
+   */
+  showPagination:  PropTypes.bool
 };

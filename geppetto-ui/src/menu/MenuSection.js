@@ -145,14 +145,11 @@ class MenuSection extends React.Component {
             ? this.props.button.caret
               ? this.props.button.caret.show
                 ? <span style={ { color : this.props.button.activeColor } }>
-                  <i className={this.props.button.icon}/>
-                  <i 
-                    className={this.props.button.caret.icon ? this.props.button.caret.icon : "fa fa-caret-down"}
-                    style={{ marginLeft : "5px" }}
-                  />
+                  {this.props.button.icon ? this.props.button.icon : null}
+                  {this.props.button.caret.icon ? this.props.button.caret.icon : <i className="fa fa-caret-down" /> }
                 </span>
                 : undefined
-              : <span style={{ display: "inline-block", width: "25px", color : this.props.button.activeColor }}>
+              : <span style={{ display: "inline-block", color : this.props.button.activeColor }}>
                 <i className={this.props.button.icon} />
               </span>
             : undefined
