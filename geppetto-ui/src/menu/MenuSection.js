@@ -140,27 +140,23 @@ class MenuSection extends React.Component {
           aria-describedby={id}
           onClick={this.handleClick}
           onMouseOver={this.handleOver}
-          onMouseOut={this.handleOut}>
+          onMouseOut={this.handleOut}
+        >
           { this.props.button.icon !== ""
             ? this.props.button.caret
               ? this.props.button.caret.show
                 ? <span style={ { color : this.props.button.activeColor } }>
                   {this.props.button.icon ? this.props.button.icon : null}
-                  {this.props.button.caret.icon ? this.props.button.caret.icon : <i className="fa fa-caret-down" /> }
+                  {this.props.menuOpen ? this.props.button.caret.closedIcon : this.props.button.caret.expandedIcon }
                 </span>
-                : undefined
+                : <span style={{ display: "inline-block", color : this.props.button.activeColor }}>
+                  {this.props.button.icon ? this.props.button.icon : null}
+                </span>
               : <span style={{ display: "inline-block", color : this.props.button.activeColor }}>
-                <i className={this.props.button.icon} />
+                {this.props.button.icon ? this.props.button.icon : null}
               </span>
             : undefined
           }
-          {this.props.button.label}
-        >
-          {this.props.button.icon !== '' ? (
-            <span style={{ display: 'inline-block', width: '25px' }}>
-              <i className={this.props.button.icon}></i>
-            </span>
-          ) : undefined}
           {this.props.button.label}
         </Button>
         <MenuPopper
