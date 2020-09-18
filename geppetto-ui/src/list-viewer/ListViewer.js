@@ -379,7 +379,7 @@ export default class ListViewer extends React.Component {
       : {};
     const { events, ...others } = this.props;
     return (
-      <section className="listviewer">
+      <section className={ this.props.className ? this.props.className : "listviewer" }>
         <Griddle
           data={this.getData()}
           plugins={this.getPlugins()}
