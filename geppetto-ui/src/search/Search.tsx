@@ -3,6 +3,7 @@
  */
 
 import * as React from "react";
+import PropTypes from 'prop-types';
 import { getResultsSOLR } from "./datasources/SOLRclient";
 import { DatasourceTypes } from './datasources/datasources';
 import { Component, FC, useState, useRef, useEffect } from "react";
@@ -21,6 +22,101 @@ declare global {
 }
 
 let style = require('./style/search.less');
+
+let globalStyle = {
+  inputWrapper: {
+      "position": "absolute",
+      "paddingLeft": "2.5%",
+      "height": "100%",
+      "width": "100%",
+      "top": "10%"
+  },
+  searchText: {
+      "width": "100vh",
+      "zIndex": "1",
+      "fontSize": "22px",
+      "color": "black",
+      "backgroundColor": "white",
+      "padding": "12px 20px 12px 20px",
+      "border": "3px solid #11bffe",
+      "marginRight": "-8px",
+  },
+  filterIcon: {
+      "right": "25px",
+      "bottom": "15px",
+      "zIndex": "5",
+      "cursor": "pointer",
+      "fontSize": "25px",
+      "position": "absolute",
+      "color": "black",
+  },
+  closeIcon: {
+      "position": "relative",
+      "color": "#11bffe",
+      "bottom": "50px",
+      "right": "22px",
+      "fontWeight": "bold",
+      "fontSize": "20px",
+      "cursor": "pointer",
+  },
+  paperResults: {
+      "left": "15%",
+      "height": "50%",
+      "width": "70%",
+      "position": "absolute",
+      "textAlign": "center",
+      "backgroundColor": "#333333",
+      "margin": "10px 10px 10px 10px",
+      "padding": "12px 20px 12px 20px",
+      "overflow": "scroll",
+      "zIndex": "5",
+  },
+  paperFilters: {
+      "minHeight": "280px",
+      "minWidth": "240px",
+      "position": "absolute",
+      "backgroundColor": "#141313",
+      "color": "white",
+      "overflow": "scroll",
+      "zIndex": "6",
+      "border": "3px solid #11bffe",
+      "fontFamily": "Barlow, Khand, sans-serif",
+      "fontSize": "16px",
+      "top": "58px",
+      "right": "0px",
+      "userSelect": "none",
+      "-moz-user-select": "none",
+      "-khtml-user-select": "none",
+      "-webkit-user-select": "none",
+      "-o-user-select": "none",
+
+      "&::focus": {
+        "outline": "0 !important",
+      },
+  },
+  singleResult: {
+      "color": "white",
+      "&:hover": {
+        "color": "#11bffe",
+        "background-color": "#252323",
+      },
+  },
+  main: {
+      "position": "absolute",
+      "top": "0px",
+      "left": "0px",
+      "width": "100%",
+      "height": "100%",
+      "margin": "0",
+      "padding": "0",
+      "zIndex": "3",
+      "backgroundColor": "rgba(51, 51, 51, 0.7)",
+      "textAlign": "center",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "center",
+  }
+};
 
 /*
  * Results Functional Component
@@ -142,14 +238,16 @@ function StyledCheckbox(props) {
   }
 }
 
-const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, topAnchor }) => {
+const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, topAnchor, searchStyle }) => {
   // if data are available we display the list of results
   if (data == undefined || data.length == 0) return null;
+  let clone = Object.assign({}, searchStyle.paperResults);
+  clone.top = topAnchor.toString() + "px";
   return (
-      <Paper id="paperResults" style={{top: topAnchor + "px"}}>
+      <Paper style={ searchStyle.paperResults }>
         <MenuList>
           {data.map((item, index) => {
-            return ( <MenuItem id="singleResult" style={{ fontSize: "16px" }}
+            return ( <MenuItem style={ searchStyle.singleResult }
               key={index}
               onClick={() => {
                 clickHandler(item[mapping["id"]]);
@@ -159,7 +257,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
             </MenuItem> );
           })}
         </MenuList>
-        </Paper>
+      </Paper>
   );
 };
 
@@ -170,7 +268,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
  * @param openFilters: Function
  */
 
-const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
+const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters }) => {
   var paperRef = useRef(null);
   const [ state, setState ] = useState({ open: false, top: "0", left: "0" });
 
@@ -247,12 +345,12 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
   if (state.open) {
     return (
       <span ref={paperRef}>
-        <FilterListIcon id="filterIcon" onClick={ (event:any) => {
+        <FilterListIcon style={ searchStyle.filterIcon } onClick={ (event:any) => {
             // let heightPosition = (event.currentTarget as HTMLDivElement).offsetTop + 15;
             let heightPosition = event.pageY + 30;
             setState(() => { return { open: false, top: heightPosition + "px", left: "0px" } });
           }} />
-        <Paper id="paperFilters">
+        <Paper id="paperFilters" style={ searchStyle.paperFilters } >
           <MenuList>
             {filters.map((item, index) => {
               switch (item.type) {
@@ -326,7 +424,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
   } else {
     return (
       <span ref={paperRef}>
-        <FilterListIcon id="filterIcon" onClick={ (event:any) => {
+        <FilterListIcon style={ searchStyle.filterIcon } onClick={ (event:any) => {
           // let heightPosition = (event.currentTarget as HTMLDivElement).offsetTop + 15;
           let heightPosition = event.pageY + 30;
           setState(() => { return { open: true, top: heightPosition + "px", left: "0px" } });
@@ -345,7 +443,7 @@ const Filters: FC<FiltersProps> = ({ filters, setFilters, openFilters }) => {
  * @param customDatasourceHandler?: Function
  */
 
-export default class Search extends Component<SearchProps, SearchState> {
+class Search extends Component<SearchProps, SearchState> {
     private results: Array<any>;
     private getResults: Function;
     private resultsHeight: number;
@@ -561,14 +659,15 @@ export default class Search extends Component<SearchProps, SearchState> {
           return null;
         }
 
+        let searchStyle = (this.props.searchStyle !== undefined) ? this.props.searchStyle : globalStyle;
         let filteredResults:Array<any> = this.applyFilters();
         return (
           <div>
-            <Paper id="mainPaper">
-              <div id="inputContainer" ref="containerRef">
+            <Paper id="mainPaper" style={searchStyle.main}>
+              <div style={searchStyle.inputWrapper} ref="containerRef">
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Input id="searchInput" type="text"
+                    <Input style={searchStyle.searchText} type="text"
                     ref={(input) => { this.inputRef = input; }}
                     autoComplete="virtualflybrain"
                     onChange={ (e:any) => {
@@ -578,17 +677,19 @@ export default class Search extends Component<SearchProps, SearchState> {
                     endAdornment={
                       <InputAdornment position="end">
                         <Filters
+                          searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />
                       </InputAdornment>}
                     />
 
-                  <span id="closeIcon" className="fa fa-times" onClick={ () => {
+                  <span style={searchStyle.closeIcon} className="fa fa-times" onClick={ () => {
                     this.openSearch(false); }}/>
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Results
                       data={filteredResults}
+                      searchStyle={searchStyle}
                       mapping={this.props.searchConfiguration.resultsMapping}
                       closeHandler={this.openSearch}
                       clickHandler={this.props.searchConfiguration.clickHandler}
@@ -602,3 +703,5 @@ export default class Search extends Component<SearchProps, SearchState> {
         );
       }
 };
+
+export default Search;
