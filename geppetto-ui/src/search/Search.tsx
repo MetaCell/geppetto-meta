@@ -641,6 +641,9 @@ class Search extends Component<SearchProps, SearchState> {
         window.addEventListener('resize', this.handleResize);
         window.addEventListener('keydown', this.escFunction, false);
         window.addEventListener("click", this.handleClickOutside, false);
+        if (this.inputRef !== undefined && this.inputRef !== null) {
+          this.inputRef.focus();
+        }
       }
 
       componentWillUnmount() {
@@ -670,6 +673,7 @@ class Search extends Component<SearchProps, SearchState> {
                     <Input style={searchStyle.searchText} type="text"
                     ref={(input) => { this.inputRef = input; }}
                     autoComplete="virtualflybrain"
+                    autoFocus={true}
                     onChange={ (e:any) => {
                       this.resultsHeight = e.currentTarget.offsetTop + 65;
                       this.requestData(e);
