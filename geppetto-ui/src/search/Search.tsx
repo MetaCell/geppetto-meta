@@ -672,6 +672,7 @@ class Search extends Component<SearchProps, SearchState> {
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Input style={searchStyle.searchText} type="text"
                     ref={(input) => { this.inputRef = input; }}
+                    id="searchInput"
                     autoComplete="virtualflybrain"
                     autoFocus={true}
                     onChange={ (e:any) => {
