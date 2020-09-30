@@ -693,6 +693,7 @@ class Search extends Component<SearchProps, SearchState> {
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Results
+                      id="paperResults"
                       data={filteredResults}
                       searchStyle={searchStyle}
                       mapping={this.props.searchConfiguration.resultsMapping}
