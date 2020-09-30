@@ -244,7 +244,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
   let clone = Object.assign({}, searchStyle.paperResults);
   clone.top = topAnchor.toString() + "px";
   return (
-      <Paper style={ searchStyle.paperResults }>
+      <Paper style={ searchStyle.paperResults } id="paperResults" >
         <MenuList>
           {data.map((item, index) => {
             return ( <MenuItem style={ searchStyle.singleResult }
@@ -693,7 +693,6 @@ class Search extends Component<SearchProps, SearchState> {
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Results
-                      id="paperResults"
                       data={filteredResults}
                       searchStyle={searchStyle}
                       mapping={this.props.searchConfiguration.resultsMapping}
