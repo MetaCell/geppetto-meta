@@ -688,7 +688,7 @@ class Search extends Component<SearchProps, SearchState> {
                       </InputAdornment>}
                     />
 
-                  <span style={searchStyle.closeIcon} className="fa fa-times" onClick={ () => {
+                  <span style={searchStyle.closeIcon} id="closeIcon" className="fa fa-times" onClick={ () => {
                     this.openSearch(false); }}/>
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
