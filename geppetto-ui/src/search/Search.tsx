@@ -244,7 +244,7 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
   let clone = Object.assign({}, searchStyle.paperResults);
   clone.top = topAnchor.toString() + "px";
   return (
-      <Paper style={ searchStyle.paperResults }>
+      <Paper style={ searchStyle.paperResults } id="paperResults">
         <MenuList>
           {data.map((item, index) => {
             return ( <MenuItem style={ searchStyle.singleResult }
@@ -268,9 +268,9 @@ const Results: FC<ResultsProps> = ({ data, mapping, closeHandler, clickHandler, 
  * @param openFilters: Function
  */
 
-const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters }) => {
+const Filters: FC<FiltersProps> = ({ filters, searchStyle, setFilters, openFilters, filters_expanded }) => {
   var paperRef = useRef(null);
-  const [ state, setState ] = useState({ open: false, top: "0", left: "0" });
+  const [ state, setState ] = useState({ open: filters_expanded, top: "0", left: "0" });
 
   // hook for the event listener to detect when we click outside the component
   useEffect(() => {
@@ -672,6 +672,7 @@ class Search extends Component<SearchProps, SearchState> {
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Input style={searchStyle.searchText} type="text"
                     ref={(input) => { this.inputRef = input; }}
+                    id="searchInput"
                     autoComplete="virtualflybrain"
                     autoFocus={true}
                     onChange={ (e:any) => {
@@ -681,13 +682,14 @@ class Search extends Component<SearchProps, SearchState> {
                     endAdornment={
                       <InputAdornment position="end">
                         <Filters
+                          filters_expanded={this.props.searchConfiguration.filters_expanded}
                           searchStyle={searchStyle}
                           filters={this.state.filters}
                           setFilters={this.setFilters} />
                       </InputAdornment>}
                     />
 
-                  <span style={searchStyle.closeIcon} className="fa fa-times" onClick={ () => {
+                  <span style={searchStyle.closeIcon} id="closeIcon" className="fa fa-times" onClick={ () => {
                     this.openSearch(false); }}/>
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
