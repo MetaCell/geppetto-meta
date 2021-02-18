@@ -8,7 +8,7 @@ import DrawerContent from './DrawerContent';
 import Button from '@material-ui/core/Button';
 import Search from './Search';
 import pages from '../pages/index'
-
+import Loader from '@geppettoengine/geppetto-ui/loader/Loader'
 const Home = lazy(() => import('../pages/home'));
 
 const drawerWidth = 240;
@@ -101,7 +101,7 @@ class Main extends Component {
 
         return (
             <Router>
-                <Suspense fallback={<div>Loading...</div>}>
+                <Suspense fallback={<Loader active={true}/>}>
                     <div className={classes.root}>
                         <AppBar position="fixed" className={classes.appBar}>
                             <Toolbar>
