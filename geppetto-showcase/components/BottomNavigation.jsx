@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import pages from '../pages/Pages';
+import pages from '../pages/index';
 import { Link } from 'react-router-dom';
 
 const styles = (theme) => ({
@@ -28,7 +28,7 @@ class BottomNavigation extends Component {
     let next = 1;
     let previous = -1;
     const activePages = pages.filter((page) => {
-      return page.markdown != null;
+      return page.component != null;
     });
     for (let i = 0; i < activePages.length; i++) {
       let page = activePages[i];

@@ -8,19 +8,35 @@ module.exports = {
   node: {
     fs: 'empty',
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    },
+    usedExports: true
+  },
+  output: {
+    chunkFilename: '[name].[chunkhash].js',
+    publicPath: '/dist/'
+  },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-client/js'
+          __dirname,
+          './geppetto-client/geppetto-client/js'
       ),
       '@geppettoengine/geppetto-core': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-core/src'
+          __dirname,
+          './geppetto-client/geppetto-core/src'
       ),
       '@geppettoengine/geppetto-ui': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-ui/src'
+          __dirname,
+          './geppetto-client/geppetto-ui/src'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
