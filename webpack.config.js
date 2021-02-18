@@ -1,4 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
 
 module.exports = {
@@ -11,17 +12,24 @@ module.exports = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        commons: {
+        defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
           name: 'vendors',
           chunks: 'all'
-        }
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+          name: 'geppetto-website'
+        },
       }
     },
     usedExports: true
   },
   output: {
-    chunkFilename: '[name].[chunkhash].js',
     publicPath: '/'
   },
   resolve: {
@@ -127,5 +135,7 @@ module.exports = {
       filename: './index.html',
       favicon: './geppetto-client/geppetto-client/style/favicon.png',
     }),
+    new BundleAnalyzerPlugin()
+
   ],
 };
