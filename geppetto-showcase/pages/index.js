@@ -17,16 +17,16 @@ const TreeViewer = lazy(() => import(/* webpackChunkName: "treeviewer" */'./navi
 const PythonConsole = lazy(() => import(/* webpackChunkName: "pythonconsole" */'./programmatic/pythonconsole'));
 const pages = [
     {
-        component: BigImgViewer,
-        parent: 'Data Viewers',
-        name: 'Big Image Viewer',
-        to: '/dataviewers/bigimgviewer',
-    },
-    {
         component: Canvas,
         parent: 'Data Viewers',
         name: '3D Canvas',
         to: '/dataviewers/canvas',
+    },
+    {
+        component: BigImgViewer,
+        parent: 'Data Viewers',
+        name: 'Big Image Viewer',
+        to: '/dataviewers/bigimgviewer',
     },
     {
         component: ConnectivityViewer,
