@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    [
+      "prismjs",
+      {
+        "languages": ["jsx"],
+        "plugins": [],
+        "theme": "tomorrow",
+        "css": true
+      }
+    ]
+  ]
+}
