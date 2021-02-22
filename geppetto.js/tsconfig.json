@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es6",
+    "allowSyntheticDefaultImports": true,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": false,
+    "noUnusedLocals": false,
+    "jsx": "react",
+    "types": []
+  },
+  "include": [
+    "geppetto-ui/src/flex-layout/src/**/*",
+    "geppetto-ui/src/flex-layout/examples/demo/*"
+  ]
+}
