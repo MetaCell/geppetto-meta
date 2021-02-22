@@ -1,0 +1,4 @@
+ipywidgets==7.5.1
+jupyter==1.0.0
+pygeppetto==0.8.0
+widgetsnbextension==3.5.1
