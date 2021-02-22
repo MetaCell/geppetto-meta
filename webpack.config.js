@@ -1,4 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const path = require('path');
 
 module.exports = {
@@ -8,19 +9,42 @@ module.exports = {
   node: {
     fs: 'empty',
   },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+          name: 'vendors',
+          chunks: 'all'
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+          name: 'geppetto-website'
+        },
+      }
+    },
+    usedExports: true
+  },
+  output: {
+    publicPath: '/'
+  },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-client/js'
+          __dirname,
+          './geppetto-client/geppetto-client/js'
       ),
       '@geppettoengine/geppetto-core': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-core/src'
+          __dirname,
+          './geppetto-client/geppetto-core/src'
       ),
       '@geppettoengine/geppetto-ui': path.resolve(
-        __dirname,
-        './geppetto-client/geppetto-ui/src'
+          __dirname,
+          './geppetto-client/geppetto-ui/src'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
@@ -111,5 +135,7 @@ module.exports = {
       filename: './index.html',
       favicon: './geppetto-client/geppetto-client/style/favicon.png',
     }),
+    new BundleAnalyzerPlugin()
+
   ],
 };
