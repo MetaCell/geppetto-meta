@@ -19,7 +19,7 @@ Geppetto's showcase of components & features
 5. `npm start`
 
 
-# Subtree for management
+# Subtree fork management
 
 To pull from a dedicated open source repo:
 
