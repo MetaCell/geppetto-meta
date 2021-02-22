@@ -17,3 +17,24 @@ Geppetto's showcase of components & features
 3. `git clone -b development https://github.com/openworm/geppetto-client.git`
 4. `yarn`
 5. `npm start`
+
+
+# Subtree for management
+
+To pull from a dedicated open source repo:
+
+```
+git remote add js https://github.com/openworm/geppetto-client.git
+git remote pull --prefix geppetto.js js [BRANCH_NAME]
+```
+
+
+```
+git remote add pygeppetto https://github.com/openworm/pygeppetto.git
+git remote pull --prefix pygeppetto pygeppetto [BRANCH_NAME]
+```
+
+```
+git remote add jupyter https://github.com/openworm/org.geppetto.frontend.jupyter.git
+git remote pull --prefix jupyter-geppetto jupyter [BRANCH_NAME]
+```
