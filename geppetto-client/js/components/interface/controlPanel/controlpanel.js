@@ -23,7 +23,7 @@ define(function (require) {
   var PlotCtrlr = require('./../../widgets/plot/controllers/PlotsController');
   
   var { connect } = require('react-redux');
-  const { diffArrays } = require('../utils');
+  const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
 
 
   $.widget.bridge('uitooltip', $.ui.tooltip);

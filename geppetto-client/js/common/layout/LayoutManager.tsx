@@ -3,10 +3,10 @@
  * of the layout and the components displayed.
  */
 import * as React from 'react';
-import * as FlexLayout from "../../components/interface/flexLayout2/src/index";
-import Actions from "../../components/interface/flexLayout2/src/model/Actions";
-import DockLocation from "../../components/interface/flexLayout2/src/DockLocation";
-import Model from "../../components/interface/flexLayout2/src/model/Model";
+import * as FlexLayout from "../../../../geppetto-ui/src//flex-layout/src/index";
+import Actions from "../../../../geppetto-ui/src/flex-layout/src/model/Actions";
+import DockLocation from "../../../../geppetto-ui/src/flex-layout/src/DockLocation";
+import Model from "../../../../geppetto-ui/src/flex-layout/src/model/Model";
 import { WidgetStatus, Widget, ExtendedNode } from "./model";
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";

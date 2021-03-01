@@ -14,7 +14,7 @@ define(function (require) {
 
   var d3 = require("d3");
 
-  const { diffArrays } = require('../utils');
+  const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
 
   return class Canvas extends AbstractComponent {
 

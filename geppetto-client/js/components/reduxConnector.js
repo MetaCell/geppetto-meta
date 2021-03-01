@@ -144,7 +144,7 @@ export const Logo = connect(
   { withRef: true }
 )(_Logo);
 
-import _PythonConsole from './interface/pythonConsole/PythonConsole';
+import _PythonConsole from '../../../geppetto-ui/src/python-console/PythonConsole';
 export const PythonConsole = connect(
   (state, ownProps) => ({
     iframeHeight: ownProps.iframeHeight,

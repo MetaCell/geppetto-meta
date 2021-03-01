@@ -1,4 +1,4 @@
-import Node from "../../components/interface/flexLayout2/src/model/Node";
+import Node from "../../../../geppetto-ui/src/flex-layout/src/model/Node";
 
 /*
  * status can be one of:

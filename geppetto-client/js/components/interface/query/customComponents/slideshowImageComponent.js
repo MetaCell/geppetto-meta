@@ -7,7 +7,7 @@ define(function (require) {
   var GEPPETTO = require('geppetto');
   var slick = require('slick-carousel');
 
-  const { diffArrays } = require('../../utils');
+  const { diffArrays } = require('../../../../../../geppetto-ui/src/utils');
 
   class SlideshowImageComponent extends React.Component {
     constructor (props) {

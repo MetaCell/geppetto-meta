@@ -15,7 +15,7 @@ define(function (require) {
   var Instance = require('@geppettoengine/geppetto-core/model/Instance');
   var Variable = require('@geppettoengine/geppetto-core/model/Variable');
 
-  const { diffArrays } = require('../utils');
+  const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
 
   var Spotlight = CreateClass({
 
