@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Snackbar from '@material-ui/core/Snackbar';
-import Typography from '@material-ui/core/Typography';
 
 const styles = (theme) => ({
   toolbar: {
