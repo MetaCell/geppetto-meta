@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import ListViewerMarkdown from "../../../geppetto-client/geppetto-ui/src/list-viewer/README.md";
+import ListViewerMarkdown from "@geppettoengine/geppetto-ui/list-viewer/README.md";
 
 
 export default class ListViewer extends Component {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import MenuMarkdown from "../../../geppetto-client/geppetto-ui/src/menu/README.md";
+import MenuMarkdown from "@geppettoengine/geppetto-ui/menu/README.md";
 
 
 export default class Menu extends Component {
