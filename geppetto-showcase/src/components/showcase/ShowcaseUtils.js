@@ -27,8 +27,7 @@ function getDescription(dom) {
   const description = parseInnerHTML(
     dom.querySelector('h1').nextElementSibling.innerHTML
   );
-  const container = React.createElement('span', {}, description);
-  return container;
+  return React.createElement('span', {}, description);
 }
 
 /**
@@ -73,7 +72,7 @@ function getReactElement(dom) {
 function getProps(dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
   // TODO: What happens to this path if we use geppetto-client package instead of local file?
-  const src = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/' +
+  const src = require('!raw-loader!@geppettoengine/geppetto-ui/' +
     path +
     '.js').default;
   const componentInfo = reactDocs.parse(src);
@@ -122,12 +121,12 @@ function getExample(start) {
       const path = elem.children[0].innerText.trim();
       example[
         'component'
-      ] = require('../../../geppetto-client/geppetto-ui/src/' +
+      ] = require('@geppettoengine/geppetto-ui/' +
         path +
         '.js').default;
       example[
         'file'
-      ] = require('!raw-loader!../../../geppetto-client/geppetto-ui/src/' +
+      ] = require('!raw-loader!@geppettoengine/geppetto-ui/' +
         path +
         '.js');
     } else {
@@ -135,8 +134,7 @@ function getExample(start) {
       description.push(...innerElements);
     }
   }
-  const container = React.createElement('div', {}, description);
-  example['description'] = container;
+  example['description'] = React.createElement('div', {}, description);
   return example;
 }
 
@@ -194,15 +192,14 @@ function getContentUntil(selector, start) {
       elements.push(...innerElements);
     }
   }
-  const container = React.createElement('div', {}, elements);
-  return container;
+  return React.createElement('div', {}, elements);
 }
 
 function parseInnerHTML(innerHTML) {
   let breaks = innerHTML.split(/\n/);
   let elements = [];
   for (let i = 0; i < breaks.length; i++) {
-    const b = breaks[i];
+    let b = breaks[i];
     let el;
     if (!isEmpty(b)) {
       if ((el = isLineBreak(b))) {
@@ -217,7 +214,7 @@ function parseInnerHTML(innerHTML) {
         const children = [];
         for (let j = 0; j < el.length - 2; ) {
           let child;
-          if (el[j] == '"' || el[j] == "'") {
+          if (el[j] === '"' || el[j] === "'") {
             const href = el[j + 1];
             const text = el[j + 2];
             child = React.createElement(
@@ -250,7 +247,7 @@ function parseInnerHTML(innerHTML) {
 }
 
 function isEmpty(text) {
-  return text == '';
+  return text === '';
 }
 function isLineBreak(text) {
   return text.includes('<br>') ? text.replace('<br>', '') : false;

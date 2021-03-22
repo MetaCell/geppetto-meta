@@ -8,6 +8,12 @@ module.exports = {
   node: {
     fs: 'empty',
   },
+  output: {
+    path: path.resolve(__dirname, '/'),
+    filename: "[name].bundle.js",
+    chunkFilename: "[name].chunk.js",
+    publicPath: '/'
+  },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
