@@ -4,14 +4,14 @@ import BigImageViewerMarkdown from "@geppettoengine/geppetto-ui/big-image-viewer
 
 
 export default class BigImageViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={BigImageViewerMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={BigImageViewerMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

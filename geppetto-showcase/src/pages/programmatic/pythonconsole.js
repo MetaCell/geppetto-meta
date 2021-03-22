@@ -4,14 +4,14 @@ import PythonConsoleMarkdown from "@geppettoengine/geppetto-ui/python-console/RE
 
 
 export default class PythonConsole extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={PythonConsoleMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={PythonConsoleMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

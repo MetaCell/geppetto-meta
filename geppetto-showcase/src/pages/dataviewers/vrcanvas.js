@@ -4,14 +4,14 @@ import CanvasVRMarkdown from "@geppettoengine/geppetto-ui/vr-canvas/README.md";
 
 
 export default class VRCanvasPage extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={CanvasVRMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={CanvasVRMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

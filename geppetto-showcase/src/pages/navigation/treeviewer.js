@@ -4,14 +4,14 @@ import TreeMarkdown from "@geppettoengine/geppetto-ui/tree-viewer/README.md";
 
 
 export default class TreeViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={TreeMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={TreeMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

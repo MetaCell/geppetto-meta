@@ -5,9 +5,7 @@ module.exports = {
   entry: path.resolve(__dirname, './src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
-  node: {
-    fs: 'empty',
-  },
+  node: { fs: 'empty', },
   output: {
     path: path.resolve(__dirname, '/'),
     filename: "[name].bundle.js",
@@ -108,9 +106,7 @@ module.exports = {
         use: [
           {
             loader: 'raw-loader',
-            options: {
-              esModule: false,
-            },
+            options: { esModule: false, },
           },
         ],
       },

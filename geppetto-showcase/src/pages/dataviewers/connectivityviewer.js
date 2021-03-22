@@ -4,14 +4,14 @@ import ConnectivityMarkdown from "@geppettoengine/geppetto-ui/connectivity-viewe
 
 
 export default class ConnectivityViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={ConnectivityMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={ConnectivityMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

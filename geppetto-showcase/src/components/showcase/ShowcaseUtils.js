@@ -10,7 +10,7 @@ import React from 'react';
  * @param dom
  */
 
-function getTitle(dom) {
+function getTitle (dom) {
   return dom.querySelector('h1').innerHTML;
 }
 
@@ -23,7 +23,7 @@ function getTitle(dom) {
  * @param dom
  */
 
-function getDescription(dom) {
+function getDescription (dom) {
   const description = parseInnerHTML(
     dom.querySelector('h1').nextElementSibling.innerHTML
   );
@@ -39,7 +39,7 @@ function getDescription(dom) {
  * @param dom
  */
 
-function getDetailedDescription(dom) {
+function getDetailedDescription (dom) {
   return getContentUntil('pre', dom.querySelector('h1').nextElementSibling);
 }
 
@@ -52,7 +52,7 @@ function getDetailedDescription(dom) {
  * @param dom
  */
 
-function getReactElement(dom) {
+function getReactElement (dom) {
   return dom
     .getElementsByClassName('language-element')[0]
     .innerHTML.split('/')
@@ -69,12 +69,12 @@ function getReactElement(dom) {
  * @param dom
  */
 
-function getProps(dom) {
+function getProps (dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
   // TODO: What happens to this path if we use geppetto-client package instead of local file?
-  const src = require('!raw-loader!@geppettoengine/geppetto-ui/' +
-    path +
-    '.js').default;
+  const src = require('!raw-loader!@geppettoengine/geppetto-ui/'
+    + path
+    + '.js').default;
   const componentInfo = reactDocs.parse(src);
   return componentInfo.props;
 }
@@ -88,11 +88,11 @@ function getProps(dom) {
  * @param dom
  */
 
-function getExamples(dom) {
+function getExamples (dom) {
   let examplesDom = getElementsUntil(
     'h2',
     dom.getElementById('examples')
-  ).filter((elem) => elem.matches('h3'));
+  ).filter(elem => elem.matches('h3'));
   let examples = [];
   while (examplesDom.length) {
     examples.push(getExample(examplesDom.pop()));
@@ -109,11 +109,9 @@ function getExamples(dom) {
  * @param start
  */
 
-function getExample(start) {
+function getExample (start) {
   let elements = getElementsUntil('pre', start, true);
-  let example = {
-    name: start.innerHTML,
-  };
+  let example = { name: start.innerHTML, };
   let description = [];
 
   for (let elem of elements) {
@@ -121,14 +119,14 @@ function getExample(start) {
       const path = elem.children[0].innerText.trim();
       example[
         'component'
-      ] = require('@geppettoengine/geppetto-ui/' +
-        path +
-        '.js').default;
+      ] = require('@geppettoengine/geppetto-ui/'
+        + path
+        + '.js').default;
       example[
         'file'
-      ] = require('!raw-loader!@geppettoengine/geppetto-ui/' +
-        path +
-        '.js');
+      ] = require('!raw-loader!@geppettoengine/geppetto-ui/'
+        + path
+        + '.js');
     } else {
       let innerElements = parseInnerHTML(elem.innerHTML);
       description.push(...innerElements);
@@ -147,7 +145,7 @@ function getExample(start) {
  * @param dom
  */
 
-function getLibraries(dom) {
+function getLibraries (dom) {
   let libraries = [];
   let librariesDOM = getElementsUntil('h2', dom.getElementById('libraries'));
   for (let library of librariesDOM) {
@@ -159,7 +157,7 @@ function getLibraries(dom) {
   return libraries;
 }
 
-function getElementsUntil(selector, start, included = false) {
+function getElementsUntil (selector, start, included = false) {
   let siblings = [];
   let elem = start.nextElementSibling;
   while (elem) {
@@ -175,7 +173,7 @@ function getElementsUntil(selector, start, included = false) {
   return siblings;
 }
 
-function getContentUntil(selector, start) {
+function getContentUntil (selector, start) {
   let elements = [];
   const content = getElementsUntil(selector, start);
   for (let element of content) {
@@ -195,7 +193,7 @@ function getContentUntil(selector, start) {
   return React.createElement('div', {}, elements);
 }
 
-function parseInnerHTML(innerHTML) {
+function parseInnerHTML (innerHTML) {
   let breaks = innerHTML.split(/\n/);
   let elements = [];
   for (let i = 0; i < breaks.length; i++) {
@@ -246,45 +244,45 @@ function parseInnerHTML(innerHTML) {
   return elements;
 }
 
-function isEmpty(text) {
+function isEmpty (text) {
   return text === '';
 }
-function isLineBreak(text) {
+function isLineBreak (text) {
   return text.includes('<br>') ? text.replace('<br>', '') : false;
 }
-function isImageTag(text) {
+function isImageTag (text) {
   let re = new RegExp('<img.*?src="(.*?)"');
   let matches = text.match(re);
   return matches ? matches[1] : false;
 }
 
-function isLinkTag(text) {
+function isLinkTag (text) {
   let re = new RegExp(/<a\s+(?:[^>]*?\s+)?href=(["'])(.*?)\1.*?>(.*?)<\/a>/);
   let matches = text.split(re);
   return matches.length > 1 ? matches : false;
 }
 
-function isOrderedList(text) {
+function isOrderedList (text) {
   // TODO: Improve regex expression to lookup for closing ol
   let re = new RegExp('<ol>');
   let matches = text.match(re);
-  return matches ? true : false;
+  return !!matches;
 }
 
-function isUnorderedList(text) {
+function isUnorderedList (text) {
   // TODO: Improve regex expression to lookup for closing ul
   let re = new RegExp('<ul>');
   let matches = text.match(re);
-  return matches ? true : false;
+  return !!matches;
 }
 
-function isList(text) {
+function isList (text) {
   let re = new RegExp('<li>(.*?)</li>');
   let matches = text.match(re);
   return matches ? matches[1] : false;
 }
 
-export function getConfigFromMarkdown(markdown) {
+export function getConfigFromMarkdown (markdown) {
   let dom = new DOMParser().parseFromString(markdown, 'text/html');
   let configs = {};
   configs['name'] = getTitle(dom);

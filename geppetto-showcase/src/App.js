@@ -22,16 +22,14 @@ const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').defau
 
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
-GEPPETTO.trigger = (evt) => console.log(evt, 'triggered');
+GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();
 console.warn = () => null;
 GEPPETTO.CommandController = {
   log: console.log,
   createTags: (a, b) => null,
 };
-GEPPETTO.ComponentFactory = {
-  addExistingComponent: console.log,
-};
+GEPPETTO.ComponentFactory = { addExistingComponent: console.log, };
 GEPPETTO.on = console.log;
 GEPPETTO.off = console.log;
 GEPPETTO.UnitsController = {
@@ -44,7 +42,7 @@ GEPPETTO.UnitsController = {
 };
 
 export default class App extends Component {
-  render() {
+  render () {
     let theme = createMuiTheme({
       typography: { fontFamily: 'Roboto, Helvetica, Arial, sans-serif' },
       palette: {

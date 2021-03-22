@@ -4,14 +4,14 @@ import HTMLViewerMarkdown from "@geppettoengine/geppetto-ui/html-viewer/README.m
 
 
 export default class HtmlViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={HTMLViewerMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={HTMLViewerMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

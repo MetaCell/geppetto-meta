@@ -4,14 +4,14 @@ import GraphVisualizationMarkdown from "@geppettoengine/geppetto-ui/graph-visual
 
 
 export default class GraphVisualizer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={GraphVisualizationMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={GraphVisualizationMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

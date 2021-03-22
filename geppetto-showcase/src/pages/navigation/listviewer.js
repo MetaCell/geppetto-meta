@@ -4,14 +4,14 @@ import ListViewerMarkdown from "@geppettoengine/geppetto-ui/list-viewer/README.m
 
 
 export default class ListViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={ListViewerMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={ListViewerMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

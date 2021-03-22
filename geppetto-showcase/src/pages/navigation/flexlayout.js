@@ -4,14 +4,14 @@ import FlexlayoutMarkdown from "@geppettoengine/geppetto-ui/flex-layout/README.m
 
 
 export default class FlexLayout extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={FlexlayoutMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={FlexlayoutMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

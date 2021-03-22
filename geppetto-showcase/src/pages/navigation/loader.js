@@ -4,14 +4,14 @@ import LoaderMarkdown from "@geppettoengine/geppetto-ui/loader/README.md";
 
 
 export default class Loader extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={LoaderMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={LoaderMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

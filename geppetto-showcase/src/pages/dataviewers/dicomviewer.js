@@ -4,14 +4,14 @@ import DicomViewerMarkdown from "@geppettoengine/geppetto-ui/dicom-viewer/README
 
 
 export default class DicomViewer extends Component {
-    render() {
-        const { currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
 
-        return (
-            <Showcase
-                markdown={DicomViewerMarkdown}
-                currentPageHandler={currentPageHandler}
-            />
-        );
-    }
+    return (
+      <Showcase
+        markdown={DicomViewerMarkdown}
+        currentPageHandler={currentPageHandler}
+      />
+    );
+  }
 }

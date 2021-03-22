@@ -2,7 +2,7 @@ import Typography from '@material-ui/core/Typography';
 import React, { Component, Fragment } from 'react';
 
 export default class Home extends Component {
-  render() {
+  render () {
     return (
       <Fragment>
         <Typography paragraph>
