@@ -71,7 +71,6 @@ function getReactElement (dom) {
 
 function getProps (dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
-  // TODO: What happens to this path if we use geppetto-client package instead of local file?
   const src = require('!raw-loader!@geppettoengine/geppetto-ui/'
     + path
     + '.js').default;
