@@ -2,25 +2,33 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, './geppetto-showcase/index.js'),
+  entry: path.resolve(__dirname, './src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
-  node: {
-    fs: 'empty',
+  node: { fs: 'empty', },
+  output: {
+    path: path.resolve(__dirname, '/'),
+    filename: "[name].bundle.js",
+    chunkFilename: "[name].chunk.js",
+    publicPath: '/'
   },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
         __dirname,
-        './geppetto-client/geppetto-client/js'
+        'node_modules/@geppettoengine/geppetto-client/geppetto-client/js'
       ),
       '@geppettoengine/geppetto-core': path.resolve(
         __dirname,
-        './geppetto-client/geppetto-core/src'
+        'node_modules/@geppettoengine/geppetto-client/geppetto-core/src'
       ),
       '@geppettoengine/geppetto-ui': path.resolve(
         __dirname,
-        './geppetto-client/geppetto-ui/src'
+        'node_modules/@geppettoengine/geppetto-client/geppetto-ui/src'
+      ),
+      '@geppettoengine/geppetto-client-style': path.resolve(
+        __dirname,
+        'node_modules/@geppettoengine/geppetto-client/geppetto-client/style'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
@@ -29,7 +37,8 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
+
+        exclude:/node_modules\/(?!(@geppettoengine)\/).*/,
         loader: 'babel-loader',
         query: {
           presets: [
@@ -97,9 +106,7 @@ module.exports = {
         use: [
           {
             loader: 'raw-loader',
-            options: {
-              esModule: false,
-            },
+            options: { esModule: false, },
           },
         ],
       },
@@ -107,9 +114,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: './geppetto-showcase/index.html',
+      template: './src/index.html',
       filename: './index.html',
-      favicon: './geppetto-client/geppetto-client/style/favicon.png',
+      favicon: 'node_modules/@geppettoengine/geppetto-client/geppetto-client/style/favicon.png',
     }),
   ],
 };

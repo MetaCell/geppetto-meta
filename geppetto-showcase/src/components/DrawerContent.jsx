@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Collapse from '@material-ui/core/Collapse';
 import { withStyles } from '@material-ui/core/styles';
-import pages from '../pages/Pages';
+import pages from '../pages/index';
 import stringSimilarity from 'string-similarity';
 
 const styles = (theme) => ({
@@ -124,7 +124,7 @@ class DrawerContent extends Component {
         content[page.parent].children.push({
           name: page.name,
           to: page.to,
-          disabled: page.markdown === null,
+          disabled: page.component === null,
         });
       }
     }
