@@ -1,4 +1,4 @@
-name: Geppetto Application Workflow
+name: Geppetto Client Workflow
 
 on:
   push:
