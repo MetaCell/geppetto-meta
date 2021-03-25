@@ -329,6 +329,7 @@ class DicomViewer extends Component {
 
           _this.configureEvents();
           _this.ready = true;
+          _this.props.onLoad()
         })
         .catch(function (error) {
           window.console.log('oops... something went wrong...');
@@ -812,6 +813,11 @@ class DicomViewer extends Component {
   }
 }
 
+DicomViewer.defaultProps = {
+  onLoad: () => {},
+};
+
+
 DicomViewer.propTypes = {
   /**
    * Component identifier
@@ -849,6 +855,10 @@ DicomViewer.propTypes = {
    * Bool that defines the showing or not of the download button
    */
   showDownloadButton: PropTypes.bool,
+  /**
+   * Callback function to be called after load is complete
+   */
+  onLoad: PropTypes.func,
 };
 
 export default withStyles(styles)(DicomViewer);
