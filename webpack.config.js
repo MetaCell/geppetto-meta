@@ -2,7 +2,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
+  entry: path.resolve(__dirname, './geppetto-showcase/src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
   node: { fs: 'empty', },
@@ -16,19 +16,19 @@ module.exports = {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
         __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/js'
+        './geppetto.js/geppetto-client/js'
       ),
       '@geppettoengine/geppetto-core': path.resolve(
         __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-core/src'
+        './geppetto.js/geppetto-core/src'
       ),
       '@geppettoengine/geppetto-ui': path.resolve(
         __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-ui/src'
+        './geppetto.js/geppetto-ui/src'
       ),
       '@geppettoengine/geppetto-client-style': path.resolve(
         __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/style'
+        './geppetto.js/geppetto-client/style'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
@@ -38,7 +38,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
 
-        exclude:/node_modules\/(?!(@geppettoengine)\/).*/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
           presets: [
@@ -114,9 +114,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: './src/index.html',
+      template: './geppetto-showcase/src/index.html',
       filename: './index.html',
-      favicon: 'node_modules/@geppettoengine/geppetto-client/geppetto-client/style/favicon.png',
+      favicon: './geppetto.js/geppetto-client/style/favicon.png',
     }),
   ],
 };
