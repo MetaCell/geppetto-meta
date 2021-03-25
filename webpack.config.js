@@ -5,30 +5,49 @@ module.exports = {
   entry: path.resolve(__dirname, './geppetto-showcase/src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
-  node: { fs: 'empty', },
+  node: {
+    fs: 'empty',
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+          name: 'vendors',
+          chunks: 'all'
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true,
+          name: 'geppetto-website'
+        },
+      }
+    },
+    usedExports: true
+  },
   output: {
-    path: path.resolve(__dirname, '/'),
-    filename: "[name].bundle.js",
-    chunkFilename: "[name].chunk.js",
     publicPath: '/'
   },
   resolve: {
     alias: {
       '@geppettoengine/geppetto-client': path.resolve(
-        __dirname,
-        './geppetto.js/geppetto-client/js'
+          __dirname,
+          './geppetto.js/geppetto-client/js'
       ),
       '@geppettoengine/geppetto-core': path.resolve(
-        __dirname,
-        './geppetto.js/geppetto-core/src'
+          __dirname,
+          './geppetto.js/geppetto-core/src'
       ),
       '@geppettoengine/geppetto-ui': path.resolve(
-        __dirname,
-        './geppetto.js/geppetto-ui/src'
+          __dirname,
+          './geppetto.js/geppetto-ui/src'
       ),
       '@geppettoengine/geppetto-client-style': path.resolve(
-        __dirname,
-        './geppetto.js/geppetto-client/style'
+          __dirname,
+          './geppetto.js/geppetto-client/style'
       ),
     },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
@@ -37,7 +56,6 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
@@ -106,7 +124,9 @@ module.exports = {
         use: [
           {
             loader: 'raw-loader',
-            options: { esModule: false, },
+            options: {
+              esModule: false,
+            },
           },
         ],
       },
@@ -118,5 +138,6 @@ module.exports = {
       filename: './index.html',
       favicon: './geppetto.js/geppetto-client/style/favicon.png',
     }),
+
   ],
 };

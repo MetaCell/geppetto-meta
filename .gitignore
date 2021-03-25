@@ -1,1 +1,5 @@
 .idea/
+dist/
+node_modules/
+geppetto-client/
+yarn-error.log
