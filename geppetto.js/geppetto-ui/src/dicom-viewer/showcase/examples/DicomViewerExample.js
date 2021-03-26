@@ -4,31 +4,27 @@ import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 
 export default class DicomViewerExample extends Component {
   constructor (props) {
-      super(props);
-      this.state = {ready: true};
-      this.onLoaded = this.onLoaded.bind(this)
+    super(props);
+    this.state = { ready: true };
+    this.onLoaded = this.onLoaded.bind(this)
 
   }
 
-  componentDidMount() {
-      this.setState({
-          ready: false
-      });
+  componentDidMount () {
+    this.setState({ ready: false });
   }
 
-    onLoaded(){
-      this.setState({
-          ready: true
-      });
+  onLoaded (){
+    this.setState({ ready: true });
   }
 
   render () {
     const data
       = 'https://s3.amazonaws.com/patient-hm-august-2017/MRI/IN+SITU+2008+MPRAGE+1MM-ISO/IN-SITU-2008-MPRAGE-1MM-ISO-ALT2.nii.gz';
 
-    const {ready} = this.state
+    const { ready } = this.state
 
-    return ready? (
+    return ready ? (
       <div
         style={{
           position: 'relative',
@@ -48,6 +44,6 @@ export default class DicomViewerExample extends Component {
           onLoaded={this.onLoaded}
         />
       </div>
-    ): <Loader/>
+    ) : <Loader/>
   }
 }

@@ -813,9 +813,7 @@ class DicomViewer extends Component {
   }
 }
 
-DicomViewer.defaultProps = {
-  onLoaded: () => {},
-};
+DicomViewer.defaultProps = { onLoaded: () => {}, };
 
 
 DicomViewer.propTypes = {
