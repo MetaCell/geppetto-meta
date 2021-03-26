@@ -235,7 +235,7 @@ Tree.propTypes = {
   /**
    * Controls
    */
-  controls: PropTypes.obj,
+  controls: PropTypes.object,
 };
 
 export default withStyles(styles)(Tree);

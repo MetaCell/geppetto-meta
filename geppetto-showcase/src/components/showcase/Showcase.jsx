@@ -66,17 +66,17 @@ class Showcase extends Component {
         <div className={classes.innerRoot}>
           <h1 className={classes.mainTitle}>{configs.name}</h1>
           <div className={classes.mainDescription}>{configs.description}</div>
-          <p className={classes.secondaryDescription}>
+          <span className={classes.secondaryDescription}>
             {configs.detailedDescription}
-          </p>
+          </span>
           {configs.examples.map((obj) => {
             const file = obj.file.default.split('\n').join('\n');
             return (
               <div key={obj.name}>
                 <h2 className={classes.secondaryTitle}>{obj.name}</h2>
-                <p className={classes.secondaryDescription}>
+                <span className={classes.secondaryDescription}>
                   {obj.description}
-                </p>
+                </span>
                 <Paper variant="outlined">
                   <div className={classes.centerComponent}>
                     <obj.component ref={this.componentRef} />
