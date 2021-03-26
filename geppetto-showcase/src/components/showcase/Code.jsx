@@ -50,22 +50,22 @@ class Code extends Component {
   }
 
   getInstantiation(file, element) {
-    let re = new RegExp(`<${element}(.|\\n)+?\\/>`);
+    let re = new RegExp(`<${element}(.|\\n)+?\\>`);
     let matches = file.match(re);
     if (!matches) {
       re = new RegExp(`<${element}(.|\\n)+>(.|\n)*<\/${element}>`);
       matches = file.match(re);
     }
     let match = matches[0]
-      .replace('        />', '/>')
-      .replace(new RegExp('        ', 'g'), '  ');
+        .replace('        />', '/>')
+        .replace(new RegExp('        ', 'g'), '  ');
     return matches ? match : INSTANTIATION_NOT_FOUND;
   }
 
   handleSourceClick() {
     const sourceTooltip = this.state.source
-      ? SHOW_SOURCE_TOOLTIP
-      : HIDE_SOURCE_TOOLTIP;
+        ? SHOW_SOURCE_TOOLTIP
+        : HIDE_SOURCE_TOOLTIP;
     this.setState({ source: !this.state.source, sourceTooltip: sourceTooltip });
   }
 
@@ -75,13 +75,13 @@ class Code extends Component {
 
   handleCopySourceClick() {
     this.setState(
-      () => ({ snackbarOpen: true }),
-      () => {
-        const contentToCopy = this.state.source
-          ? this.props.file
-          : this.snippet;
-        navigator.clipboard.writeText(contentToCopy);
-      }
+        () => ({ snackbarOpen: true }),
+        () => {
+          const contentToCopy = this.state.source
+              ? this.props.file
+              : this.snippet;
+          navigator.clipboard.writeText(contentToCopy);
+        }
     );
   }
   handleSnackbarClose() {
@@ -93,49 +93,49 @@ class Code extends Component {
     const { classes } = this.props;
 
     const sourceButton = (
-      <IconButtonWithTooltip
-        disabled={false}
-        onClick={this.handleSourceClick}
-        className={classes.button}
-        icon={faCode}
-        tooltip={sourceTooltip}
-      />
+        <IconButtonWithTooltip
+            disabled={false}
+            onClick={this.handleSourceClick}
+            className={classes.button}
+            icon={faCode}
+            tooltip={sourceTooltip}
+        />
     );
     const editButton = (
-      <IconButtonWithTooltip
-        disabled={true}
-        onClick={this.handleEditClick}
-        className={classes.button}
-        icon={faEdit}
-        tooltip={EDIT_TOOLTIP}
-      />
+        <IconButtonWithTooltip
+            disabled={true}
+            onClick={this.handleEditClick}
+            className={classes.button}
+            icon={faEdit}
+            tooltip={EDIT_TOOLTIP}
+        />
     );
     const copyButton = (
-      <Fragment>
-        <IconButtonWithTooltip
-          onClick={this.handleCopySourceClick}
-          className={classes.button}
-          icon={faCopy}
-          tooltip={COPY_SOUCE_TOOLTIP}
-        />
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-          }}
-          open={snackbarOpen}
-          onClose={this.handleSnackbarClose}
-          autoHideDuration={6000}
-          message="The source code has been copied."
-        />
-      </Fragment>
+        <Fragment>
+          <IconButtonWithTooltip
+              onClick={this.handleCopySourceClick}
+              className={classes.button}
+              icon={faCopy}
+              tooltip={COPY_SOUCE_TOOLTIP}
+          />
+          <Snackbar
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              open={snackbarOpen}
+              onClose={this.handleSnackbarClose}
+              autoHideDuration={6000}
+              message="The source code has been copied."
+          />
+        </Fragment>
     );
     return (
-      <div>
-        {sourceButton}
-        {copyButton}
-        {editButton}
-      </div>
+        <div>
+          {sourceButton}
+          {copyButton}
+          {editButton}
+        </div>
     );
   }
 
@@ -147,19 +147,19 @@ class Code extends Component {
     const toolbarButtons = this.getToolbarButtons();
 
     return (
-      <div>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.pushRight} />
-          {toolbarButtons}
-        </Toolbar>
-        <SyntaxHighlighter
-          className={classes.code}
-          language="jsx"
-          style={darcula}
-        >
-          {content}
-        </SyntaxHighlighter>
-      </div>
+        <div>
+          <Toolbar className={classes.toolbar}>
+            <div className={classes.pushRight} />
+            {toolbarButtons}
+          </Toolbar>
+          <SyntaxHighlighter
+              className={classes.code}
+              language="jsx"
+              style={darcula}
+          >
+            {content}
+          </SyntaxHighlighter>
+        </div>
     );
   }
 }
