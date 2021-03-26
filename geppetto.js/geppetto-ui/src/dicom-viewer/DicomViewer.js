@@ -329,7 +329,7 @@ class DicomViewer extends Component {
 
           _this.configureEvents();
           _this.ready = true;
-          _this.props.onLoad()
+          _this.props.onLoaded()
         })
         .catch(function (error) {
           window.console.log('oops... something went wrong...');
@@ -814,7 +814,7 @@ class DicomViewer extends Component {
 }
 
 DicomViewer.defaultProps = {
-  onLoad: () => {},
+  onLoaded: () => {},
 };
 
 
@@ -858,7 +858,7 @@ DicomViewer.propTypes = {
   /**
    * Callback function to be called after load is complete
    */
-  onLoad: PropTypes.func,
+  onLoaded: PropTypes.func,
 };
 
 export default withStyles(styles)(DicomViewer);

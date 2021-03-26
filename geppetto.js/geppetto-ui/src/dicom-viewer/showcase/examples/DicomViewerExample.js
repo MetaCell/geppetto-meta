@@ -6,7 +6,7 @@ export default class DicomViewerExample extends Component {
   constructor (props) {
       super(props);
       this.state = {ready: true};
-      this.onLoad = this.onLoad.bind(this)
+      this.onLoaded = this.onLoaded.bind(this)
 
   }
 
@@ -16,7 +16,7 @@ export default class DicomViewerExample extends Component {
       });
   }
 
-    onLoad(){
+    onLoaded(){
       this.setState({
           ready: true
       });
@@ -45,7 +45,7 @@ export default class DicomViewerExample extends Component {
           onShiftClick="goToPoint"
           onCtrlClick="togglMode"
           showDownloadButton={true}
-          onLoad={this.onLoad}
+          onLoaded={this.onLoaded}
         />
       </div>
     ): <Loader/>
