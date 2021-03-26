@@ -13,6 +13,7 @@ const FlexLayout = lazy(() => import(/* webpackChunkName: "flexlayout" */'./navi
 const ListViewer = lazy(() => import(/* webpackChunkName: "listviewer" */'./navigation/listviewer'));
 const Loader = lazy(() => import(/* webpackChunkName: "loader" */'./navigation/loader'));
 const Menu = lazy(() => import(/* webpackChunkName: "menu" */'./navigation/menu'));
+const Search = lazy(() => import(/* webpackChunkName: "menu" */'./navigation/search'));
 const TreeViewer = lazy(() => import(/* webpackChunkName: "treeviewer" */'./navigation/treeviewer'));
 const PythonConsole = lazy(() => import(/* webpackChunkName: "pythonconsole" */'./programmatic/pythonconsole'));
 const pages = [
@@ -103,6 +104,12 @@ const pages = [
     parent: 'Navigation/Layout',
     name: 'Menu',
     to: '/navigation/menu',
+  },
+  {
+    component: Search,
+    parent: 'Navigation/Layout',
+    name: 'Search',
+    to: '/navigation/search',
   },
   {
     component: TreeViewer,

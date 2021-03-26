@@ -50,7 +50,7 @@ class Code extends Component {
   }
 
   getInstantiation(file, element) {
-    let re = new RegExp(`<${element}(.|\\n)+?\\/>`);
+    let re = new RegExp(`<${element}(.|\\n)+?\\>`);
     let matches = file.match(re);
     if (!matches) {
       re = new RegExp(`<${element}(.|\\n)+>(.|\n)*<\/${element}>`);
