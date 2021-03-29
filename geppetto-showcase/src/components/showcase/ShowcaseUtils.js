@@ -72,8 +72,8 @@ function getReactElement (dom) {
 function getProps (dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
   const src = require('!raw-loader!@geppettoengine/geppetto-ui/'
-    + path
-    + '.js').default;
+      + path
+      + '.js').default;
   const componentInfo = reactDocs.parse(src);
   return componentInfo.props;
 }
@@ -119,13 +119,13 @@ function getExample (start) {
       example[
         'component'
       ] = require('@geppettoengine/geppetto-ui/'
-        + path
-        + '.js').default;
+          + path
+          + '.js').default;
       example[
         'file'
       ] = require('!raw-loader!@geppettoengine/geppetto-ui/'
-        + path
-        + '.js');
+          + path
+          + '.js');
     } else {
       let innerElements = parseInnerHTML(elem.innerHTML);
       description.push(...innerElements);
@@ -175,15 +175,16 @@ function getElementsUntil (selector, start, included = false) {
 function getContentUntil (selector, start) {
   let elements = [];
   const content = getElementsUntil(selector, start);
-  for (let element of content) {
+  for (let i = 0; i < content.length; i++) {
+    const element = content[i]
     let innerHTML = element.innerHTML;
     let innerElements = parseInnerHTML(innerHTML);
     if (isOrderedList(element.outerHTML)) {
-      const orderedList = React.createElement('ol', {}, innerElements);
+      const orderedList = React.createElement('ol', { key:i }, innerElements);
       elements.push(orderedList);
     }
     if (isUnorderedList(element.outerHTML)) {
-      const unorderedList = React.createElement('ul', {}, innerElements);
+      const unorderedList = React.createElement('ul', { key:i }, innerElements);
       elements.push(unorderedList);
     } else {
       elements.push(...innerElements);
@@ -232,7 +233,7 @@ function parseInnerHTML (innerHTML) {
         });
         elements.push(span);
       } else if ((el = isList(b))) {
-        const list = React.createElement('li', {}, el);
+        const list = React.createElement('li', { key:i }, el);
         elements.push(list);
       } else {
         const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
