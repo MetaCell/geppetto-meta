@@ -25,7 +25,7 @@ function getTitle (dom) {
 
 function getDescription (dom) {
   const description = parseInnerHTML(
-      dom.querySelector('h1').nextElementSibling.innerHTML
+    dom.querySelector('h1').nextElementSibling.innerHTML
   );
   return React.createElement('span', {}, description);
 }
@@ -54,10 +54,10 @@ function getDetailedDescription (dom) {
 
 function getReactElement (dom) {
   return dom
-      .getElementsByClassName('language-element')[0]
-      .innerHTML.split('/')
-      .pop()
-      .trim();
+    .getElementsByClassName('language-element')[0]
+    .innerHTML.split('/')
+    .pop()
+    .trim();
 }
 
 /**
@@ -89,8 +89,8 @@ function getProps (dom) {
 
 function getExamples (dom) {
   let examplesDom = getElementsUntil(
-      'h2',
-      dom.getElementById('examples')
+    'h2',
+    dom.getElementById('examples')
   ).filter(elem => elem.matches('h3'));
   let examples = [];
   while (examplesDom.length) {
@@ -117,13 +117,13 @@ function getExample (start) {
     if (elem.matches('pre')) {
       const path = elem.children[0].innerText.trim();
       example[
-          'component'
-          ] = require('@geppettoengine/geppetto-ui/'
+        'component'
+      ] = require('@geppettoengine/geppetto-ui/'
           + path
           + '.js').default;
       example[
-          'file'
-          ] = require('!raw-loader!@geppettoengine/geppetto-ui/'
+        'file'
+      ] = require('!raw-loader!@geppettoengine/geppetto-ui/'
           + path
           + '.js');
     } else {
@@ -175,16 +175,16 @@ function getElementsUntil (selector, start, included = false) {
 function getContentUntil (selector, start) {
   let elements = [];
   const content = getElementsUntil(selector, start);
-  for (let i=0; i < content.length; i++) {
+  for (let i = 0; i < content.length; i++) {
     const element = content[i]
     let innerHTML = element.innerHTML;
     let innerElements = parseInnerHTML(innerHTML);
     if (isOrderedList(element.outerHTML)) {
-      const orderedList = React.createElement('ol', {key:i}, innerElements);
+      const orderedList = React.createElement('ol', { key:i }, innerElements);
       elements.push(orderedList);
     }
     if (isUnorderedList(element.outerHTML)) {
-      const unorderedList = React.createElement('ul', {key:i}, innerElements);
+      const unorderedList = React.createElement('ul', { key:i }, innerElements);
       elements.push(unorderedList);
     } else {
       elements.push(...innerElements);
@@ -216,9 +216,9 @@ function parseInnerHTML (innerHTML) {
             const href = el[j + 1];
             const text = el[j + 2];
             child = React.createElement(
-                'a',
-                { href: href, target: '_blank' },
-                text
+              'a',
+              { href: href, target: '_blank' },
+              text
             );
             j += 3;
           } else {
@@ -233,7 +233,7 @@ function parseInnerHTML (innerHTML) {
         });
         elements.push(span);
       } else if ((el = isList(b))) {
-        const list = React.createElement('li', {key:i}, el);
+        const list = React.createElement('li', { key:i }, el);
         elements.push(list);
       } else {
         const p = React.createElement('p', { key: `${i}${b[0]}` }, b);
