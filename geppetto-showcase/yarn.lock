@@ -1835,9 +1835,9 @@ ajv@^6.10.0, ajv@^6.12.4, ajv@^6.7.0:
     uri-js "^4.2.2"
 
 ajv@^7.0.2:
-  version "7.2.4"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-7.2.4.tgz#8e239d4d56cf884bccca8cca362f508446dc160f"
-  integrity sha512-nBeQgg/ZZA3u3SYxyaDvpvDtgZ/EZPF547ARgZBrG9Bhu1vKDwAIjtIf+sDtJUKa2zOcEbmRLBRSyMraS/Oy1A==
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-7.2.3.tgz#ca78d1cf458d7d36d1c3fa0794dd143406db5772"
+  integrity sha512-idv5WZvKVXDqKralOImQgPM9v6WOdLNa0IY3B3doOjw/YxRGT8I+allIJ6kd7Uaj+SF1xZUSU+nPM5aDNBVtnw==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -12628,15 +12628,10 @@ three-trackballcontrols@^0.0.8:
   resolved "https://registry.yarnpkg.com/three-trackballcontrols/-/three-trackballcontrols-0.0.8.tgz#4af85312d211387e451023f9bef576094993a118"
   integrity sha512-9my4rB/ILaJw8E6khOcC6d8F8kEe6BvRtCer9bFJGZOh9txy4BqzwPrG7d8YCKK9MfcyTUoLsB5LKIsbtsZRTg==
 
-three@^0.126.1, three@latest:
-  version "0.126.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.126.1.tgz#cf4e4e52060fd952f6f0d5440cbd422c66bc4be7"
-  integrity sha512-eOEXnZeE1FDV0XgL1u08auIP13jxdN9LQBAEmlErYzMxtIIfuGIAZbijOyookALUhqVzVOx0Tywj6n192VM+nQ==
-
-three@^0.87.0:
-  version "0.87.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.87.1.tgz#466a34edc4543459ced9b9d7d276b65216fe2ba8"
-  integrity sha1-Rmo07cRUNFnO2bnX0na2Uhb+K6g=
+three@0.115.0, three@^0.126.1, three@^0.87.0, three@latest:
+  version "0.115.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.115.0.tgz#540d800c381b9da2334c024f0fbe4d23f84eb05e"
+  integrity sha512-mAV2Ky3RdcbdSbR9capI+tKLvRldWYxd4151PZTT/o7+U2jh9Is3a4KmnYwzyUAhB2ZA3pXSgCd2DOY4Tj5kow==
 
 through2@^0.6.3:
   version "0.6.5"
