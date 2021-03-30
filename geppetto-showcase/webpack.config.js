@@ -5,6 +5,9 @@ module.exports = {
   entry: path.resolve(__dirname, './src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
+  devServer: {
+    historyApiFallback: true
+  },
   node: { fs: 'empty', },
   output: {
     path: path.resolve(__dirname, '/'),
@@ -37,8 +40,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-
-        exclude:/node_modules\/(?!(@geppettoengine)\/).*/,
+        exclude: /node_modules\/(?!(@geppettoengine)\/).*/,
         loader: 'babel-loader',
         query: {
           presets: [
