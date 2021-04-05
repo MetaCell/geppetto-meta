@@ -171,10 +171,10 @@ class Tree extends Component {
     const {
       classes,
       style,
-      rowHeight,
       searchQuery,
       onlyExpandSearchedNodes,
       controls,
+      ...others
     } = this.props;
     return (
       <div className={classes.treeViewer} style={style}>
@@ -183,7 +183,6 @@ class Tree extends Component {
           style={style}
           treeData={this.state.treeData}
           canDrag={false}
-          rowHeight={rowHeight}
           scaffoldBlockPxWidth={22}
           generateNodeProps={rowInfo => this.getNodeProps(rowInfo)}
           onChange={treeData => this.updateTreeData(treeData)}
@@ -193,6 +192,7 @@ class Tree extends Component {
               ? onlyExpandSearchedNodes
               : false
           }
+          {...others}
         />
       </div>
     );
