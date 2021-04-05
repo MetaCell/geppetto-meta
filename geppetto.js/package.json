@@ -103,9 +103,6 @@
     "eslint": "^6.0.1",
     "jest": "^24.9.0"
   },
-  "resolutions": {
-    "three":"0.115.0"
-  },
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {
