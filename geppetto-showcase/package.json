@@ -54,8 +54,5 @@
     "react-router-dom": "^5.1.2",
     "react-syntax-highlighter": "^12.2.1",
     "string-similarity": "^4.0.1"
-  },
-  "resolutions": {
-    "three":"0.115.0"
   }
 }
