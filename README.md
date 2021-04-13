@@ -4,7 +4,7 @@
 
 # Geppetto Meta
 
-Geppetto's Meta
+Geppetto MetaCell distribution
 
 # Subtree management
 
