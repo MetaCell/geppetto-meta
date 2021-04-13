@@ -2,7 +2,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
+  entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
@@ -10,9 +10,9 @@ module.exports = {
   },
   node: { fs: 'empty', },
   output: {
-    path: path.resolve(__dirname, '/'),
-    filename: "[name].bundle.js",
-    chunkFilename: "[name].chunk.js",
+    path: __dirname + 'dist',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: '/'
   },
   resolve: {
