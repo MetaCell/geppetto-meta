@@ -2,6 +2,9 @@
 # See: https://github.com/sass/node-sass/releases/tag/v4.14.1
 FROM node:14.16.1-alpine3.10 AS build-stage
 
+# NGINX PORT
+EXPOSE 80
+
 WORKDIR /app
 
 # YARN REQUIRES GIT BINARY
