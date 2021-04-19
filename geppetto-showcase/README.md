@@ -8,17 +8,18 @@ Geppetto Meta showcase of components & features
 
 ## Development
 
-1. `cd geppetto.js`
-2. `yalc publish`
-3. `cd ../geppetto-showcase`   
-4. `yalc add @geppettoengine/geppetto-client`   
-5. `yarn`
-6. `yarn start`
+1. `yarn global add yalc`
+2. `cd geppetto.js`
+3. `yalc publish`
+4. `cd ../geppetto-showcase`   
+5. `yalc add @geppettoengine/geppetto-client`   
+6. `yarn`
+7. `yarn start`
 
-(optional)
-7. `npm install -g nodemon`
-8. `cd ../geppetto.js`
-9. `nodemon -x 'yalc push'`
+(optional for hot reloading)
+8. `yarn global add nodemon`
+9. `cd ../geppetto.js`
+10. `nodemon -x 'yalc push'`
 
 
 
