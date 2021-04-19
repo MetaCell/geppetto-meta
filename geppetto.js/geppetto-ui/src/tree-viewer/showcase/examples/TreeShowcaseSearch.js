@@ -3,7 +3,7 @@ import Tree from '../../Tree';
 import '../TreeShowcase.less';
 
 
-export default class App extends Component {
+export default class TreeShowcaseSearch extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -13,6 +13,7 @@ export default class App extends Component {
       treeData: this.getTreeData()
     }
   }
+
   getTreeData () {
     return [
       {
@@ -43,29 +44,33 @@ export default class App extends Component {
     ];
   }
 
+  // Case insensitive search of `node.title`
+  customSearchMethod = ({ node, searchQuery }) =>
+    searchQuery
+      && node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+
+  selectPrevMatch = () => {
+    const { searchFocusIndex, searchFoundCount } = this.state;
+    this.setState({
+      searchFocusIndex:
+          searchFocusIndex !== null
+            ? (searchFoundCount + searchFocusIndex - 1) % searchFoundCount
+            : searchFoundCount - 1,
+    });
+  }
+
+  selectNextMatch = () => {
+    const { searchFocusIndex, searchFoundCount } = this.state;
+    this.setState({
+      searchFocusIndex:
+          searchFocusIndex !== null
+            ? (searchFocusIndex + 1) % searchFoundCount
+            : 0,
+    });
+  }
+
   render () {
     const { searchString, searchFocusIndex, searchFoundCount } = this.state;
-
-    // Case insensitive search of `node.title`
-    const customSearchMethod = ({ node, searchQuery }) =>
-      searchQuery
-        && node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
-
-    const selectPrevMatch = () =>
-      this.setState({
-        searchFocusIndex:
-              searchFocusIndex !== null
-                ? (searchFoundCount + searchFocusIndex - 1) % searchFoundCount
-                : searchFoundCount - 1,
-      });
-
-    const selectNextMatch = () =>
-      this.setState({
-        searchFocusIndex:
-              searchFocusIndex !== null
-                ? (searchFocusIndex + 1) % searchFoundCount
-                : 0,
-      });
 
     return (
       <div>
@@ -86,23 +91,20 @@ export default class App extends Component {
               this.setState({ searchString: event.target.value })
             }
           />
-
           <button
             type="button"
             disabled={!searchFoundCount}
-            onClick={selectPrevMatch}
+            onClick={this.selectPrevMatch}
           >
               &lt;
           </button>
-
           <button
             type="submit"
             disabled={!searchFoundCount}
-            onClick={selectNextMatch}
+            onClick={this.selectNextMatch}
           >
               &gt;
           </button>
-
           <span>
             &nbsp;
             {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
@@ -110,7 +112,6 @@ export default class App extends Component {
             {searchFoundCount || 0}
           </span>
         </form>
-
         <div style={{ height: 300 }}>
           <Tree
             treeData={this.state.treeData}
@@ -122,7 +123,7 @@ export default class App extends Component {
              * the title and subtitle values.
              * see `defaultSearchMethod` in https://github.com/frontend-collective/react-sortable-tree/blob/master/src/utils/default-handlers.js
              */
-            searchMethod={customSearchMethod}
+            searchMethod={this.customSearchMethod}
             /*
              * 
              * The query string used in the search. This is required for searching.
@@ -145,8 +146,7 @@ export default class App extends Component {
             searchFinishCallback={matches =>
               this.setState({
                 searchFoundCount: matches.length,
-                searchFocusIndex:
-                          matches.length > 0 ? searchFocusIndex % matches.length : 0,
+                searchFocusIndex: matches.length > 0 ? searchFocusIndex % matches.length : 0,
               })
             }
           />

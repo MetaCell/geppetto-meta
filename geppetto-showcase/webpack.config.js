@@ -5,9 +5,7 @@ module.exports = {
   entry: path.resolve(__dirname, './src/index.js'),
   mode: 'development',
   devtool: 'inline-source-map',
-  devServer: {
-    historyApiFallback: true
-  },
+  devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
     path: path.resolve(__dirname, '/'),
