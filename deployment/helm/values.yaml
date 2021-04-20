@@ -1,4 +1,4 @@
-local: true
+local: false
 secured_gatekeepers: false
 nameOverride: ''
 fullnameOverride: ''
@@ -49,7 +49,7 @@ env:
 - name: CH_CHART_VERSION
   value: 0.0.1
 - name: CH_DOMAIN
-  value: metacell.cloudharness.org
+  value: geppetto.org
 - name: CH_IMAGE_REGISTRY
   value: ''
 - name: CH_IMAGE_TAG
