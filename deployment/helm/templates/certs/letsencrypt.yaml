@@ -1,0 +1,16 @@
+{{- if and (not .Values.local) (not (not .Values.tls)) }}
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: {{ printf "%s-%s" "letsencrypt" .Values.namespace }}
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email:  {{ .Values.ingress.letsencrypt.email }}
+    privateKeySecretRef:
+      name: tls-secret
+    solvers:
+    - http01:
+        ingress:
+          ingressName: cloudharness-ingress
+{{ end }}

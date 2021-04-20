@@ -1,0 +1,67 @@
+local: true
+secured_gatekeepers: false
+nameOverride: ''
+fullnameOverride: ''
+domain: geppetto.org
+namespace: geppetto
+mainapp: showcase
+registry:
+  name: ''
+  secret: ''
+tag: latest
+apps:
+  showcase:
+    harness:
+      subdomain: meta
+      domain: geppetto.org
+      secured: false
+      deployment:
+        auto: true
+        replicas: 1
+        image: geppetto-showcase:latest
+        name: showcase
+        port: 80
+        resources: &id001
+          requests:
+            memory: 512Mi
+            cpu: 10m
+          limits:
+            memory: 1024Mi
+            cpu: 500m
+      service:
+        auto: true
+        name: showcase
+        port: 80
+      database:
+        auto: false
+      use_services: []
+      name: showcase
+      resource:
+    enabled: true
+    harvest: true
+    image: geppetto-showcase:latest
+    name: showcase
+    port: 80
+    resources: *id001
+env:
+- name: CH_VERSION
+  value: 0.0.1
+- name: CH_CHART_VERSION
+  value: 0.0.1
+- name: CH_DOMAIN
+  value: metacell.cloudharness.org
+- name: CH_IMAGE_REGISTRY
+  value: ''
+- name: CH_IMAGE_TAG
+  value: latest
+privenv:
+- name: CH_SECRET
+  value: "In God we trust; all others must bring data. \u2015 W. Edwards Deming"
+ingress:
+  enabled: true
+  name: cloudharness-ingress
+  ssl_redirect: false
+  letsencrypt:
+    email: filippo@metacell.us
+backup:
+  active: false
