@@ -1,14 +1,14 @@
 import { lazy } from "react";
 
 const BigImgViewer = lazy(() => import(/* webpackChunkName: "bigimageviewer" */'./dataviewers/bigimgviewer'));
-// const Canvas = lazy(() => import(/* webpackChunkName: "canvas" */'./dataviewers/canvas'));
+const Canvas = lazy(() => import(/* webpackChunkName: "canvas" */'./dataviewers/canvas'));
 const ConnectivityViewer = lazy(() => import(/* webpackChunkName: "connectivityviewer" */'./dataviewers/connectivityviewer'));
 const DicomViewer = lazy(() => import(/* webpackChunkName: "dicomviewer" */'./dataviewers/dicomviewer'));
 const GraphVisualizer = lazy(() => import(/* webpackChunkName: "graphvisualizer" */'./dataviewers/graphvisualizer'));
 const HTMLViewer = lazy(() => import(/* webpackChunkName: "htmlviewer" */'./dataviewers/htmlviewer'));
 const MoviePlayer = lazy(() => import(/* webpackChunkName: "movieplayer" */'./dataviewers/movieplayer'));
 const Plot = lazy(() => import(/* webpackChunkName: "plot" */'./dataviewers/plot'));
-// const VRCanvas = lazy(() => import(/* webpackChunkName: "vrcanvas" */'./dataviewers/vrcanvas'));
+const VRCanvas = lazy(() => import(/* webpackChunkName: "vrcanvas" */'./dataviewers/vrcanvas'));
 const FlexLayout = lazy(() => import(/* webpackChunkName: "flexlayout" */'./navigation/flexlayout'));
 const ListViewer = lazy(() => import(/* webpackChunkName: "listviewer" */'./navigation/listviewer'));
 const Loader = lazy(() => import(/* webpackChunkName: "loader" */'./navigation/loader'));
@@ -19,7 +19,7 @@ const PythonConsole = lazy(() => import(/* webpackChunkName: "pythonconsole" */'
 const pages = [
   
   {
-    component: null,
+    component: Canvas,
     parent: 'Data Viewers',
     name: '3D Canvas',
     to: '/dataviewers/canvas',
@@ -75,7 +75,7 @@ const pages = [
   },
   
   {
-    component: null,
+    component: VRCanvas,
     parent: 'Data Viewers',
     name: 'VR Canvas',
     to: '/dataviewers/vrcanvas',
