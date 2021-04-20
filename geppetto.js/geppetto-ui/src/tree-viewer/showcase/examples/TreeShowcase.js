@@ -11,20 +11,20 @@ export default class TreeShowcase extends Component {
 
   getButtons (rowInfo) {
     let buttons = [];
-    if (rowInfo.node.children == undefined) {
+    if (rowInfo.node.children === undefined) {
       buttons.push(
-        <i className={'gpt-telescope_tbo_full'} aria-hidden="true"></i>
+        <i className={'gpt-telescope_tbo_full'} aria-hidden="true"/>
       );
     }
     return buttons;
   }
 
   getTreeData () {
-    const treeData = [
+    return [
       {
         title: 'San Diego, APRIL 25-26, 2009',
         subtitle:
-          '1.5 T General Electric (GE) Signa Excite. 8-channel, transmit-receive head coil',
+            '1.5 T General Electric (GE) Signa Excite. 8-channel, transmit-receive head coil',
         expanded: true,
         children: [
           {
@@ -47,7 +47,6 @@ export default class TreeShowcase extends Component {
         ],
       },
     ];
-    return treeData;
   }
 
   handleClick (event, rowInfo) {
