@@ -28,7 +28,7 @@ steps:
         - DOMAIN=${{DOMAIN}}
         image_name: geppetto-showcase
         title: Showcase
-        working_directory: ./geppetto-showcase
+        working_directory: ./
   deployment:
     stage: deploy
     image: codefresh/cfstep-helm:3.4.1
