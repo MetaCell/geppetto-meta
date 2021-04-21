@@ -21,11 +21,6 @@ steps:
         tag: '${{CF_BUILD_ID}}'
         dockerfile: Dockerfile
         registry: '${{CODEFRESH_REGISTRY}}'
-        build_arguments:
-        - REGISTRY=${{REGISTRY}}/
-        - TAG=${{CF_BUILD_ID}}
-        - NAMESPACE=${{NAMESPACE}}
-        - DOMAIN=${{DOMAIN}}
         image_name: geppetto-showcase
         title: Showcase
         working_directory: ./
@@ -43,3 +38,5 @@ steps:
     - HELM_REPO_CONTEXT_PATH=
     - TIMEOUT=600s
     - VALUESFILE_values=./deployment/helm/values.yaml
+    - CUSTOM_tag=${{CF_BUILD_ID}}
+    - CUSTOM_apps_showcase_harness_deployment_image=geppetto-showcase:${{CF_BUILD_ID}}

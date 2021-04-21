@@ -2,7 +2,7 @@ local: false
 secured_gatekeepers: false
 nameOverride: ''
 fullnameOverride: ''
-domain: geppetto.org
+domain: geppetto.metacell.us
 namespace: geppetto
 mainapp: showcase
 registry:
@@ -13,7 +13,7 @@ apps:
   showcase:
     harness:
       subdomain: meta
-      domain: geppetto.org
+      domain: geppetto.metacell.us
       secured: false
       deployment:
         auto: true
@@ -49,7 +49,7 @@ env:
 - name: CH_CHART_VERSION
   value: 0.0.1
 - name: CH_DOMAIN
-  value: geppetto.org
+  value: geppetto.metacell.us
 - name: CH_IMAGE_REGISTRY
   value: ''
 - name: CH_IMAGE_TAG
@@ -60,7 +60,7 @@ privenv:
 ingress:
   enabled: true
   name: cloudharness-ingress
-  ssl_redirect: false
+  ssl_redirect: true
   letsencrypt:
     email: filippo@metacell.us
 backup:
