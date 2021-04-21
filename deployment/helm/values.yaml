@@ -3,7 +3,7 @@ secured_gatekeepers: false
 nameOverride: ''
 fullnameOverride: ''
 domain: geppetto.metacell.us
-namespace: geppetto
+namespace: geppetto-meta
 mainapp: showcase
 registry:
   name: ''
