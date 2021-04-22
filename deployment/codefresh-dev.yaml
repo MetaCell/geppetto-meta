@@ -39,5 +39,5 @@ steps:
     - TIMEOUT=600s
     - VALUESFILE_values=./deployment/helm/values.yaml
     - CUSTOM_tag=${{CF_BUILD_ID}}
-    - CUSTOM_apps_showcase_harness_deployment_image=geppetto-showcase:${{CF_BUILD_ID}}
+    - CUSTOM_apps_showcase_harness_deployment_image=${{REGISTRY}}/geppetto-showcase:${{CF_BUILD_ID}}
     - CUSTOM_namespace=${{NAMESPACE}}
