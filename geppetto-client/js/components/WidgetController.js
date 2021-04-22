@@ -1,3 +1,5 @@
+var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+
 class WidgetController {
 
   constructor (componentID) {
@@ -45,7 +47,7 @@ class WidgetController {
       }
 
       // FIXME: Called twice
-      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER](widget.getId());
+      StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER](widget.getId());
 
     });
 
@@ -182,5 +184,3 @@ class WidgetController {
 }
 
 module.exports = WidgetController;
-
-

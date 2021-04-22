@@ -1,6 +1,8 @@
 /**
  * Handles incoming messages associated with Simulation
  */
+
+var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 function MessageHandler (GEPPETTO) {
 
   var messageTypes = {
@@ -61,7 +63,7 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.MODEL_LOADED] = function (payload) {
     console.time(GEPPETTO.Resources.PARSING_MODEL);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.PARSING_MODEL);
+    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.PARSING_MODEL);
 
     var model = JSON.parse(payload.geppetto_model_loaded);
     GEPPETTO.Manager.loadModel(model);
@@ -94,19 +96,19 @@ function MessageHandler (GEPPETTO) {
       }
     }
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.GEPPETTO_ERROR](error.msg);
+    StoreManager.actionsHandler[StoreManager.clientActions.GEPPETTO_ERROR](error.msg);
     GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
+    StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_LOADING] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
+    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
   };
 
   messageHandler[messageTypes.PROJECT_MADE_PUBLIC] = function (payload) {
     var data = JSON.parse(payload.update);
     window.Project.isPublicProject = data.isPublic;
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_MADE_PUBLIC]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_MADE_PUBLIC]();
     console.log("Project was made public");
   };
 
@@ -116,30 +118,30 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.VARIABLE_FETCHED] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.variable_fetched);
     GEPPETTO.Manager.addVariableToModel(rawModel);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.FETCHED] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.fetched);
     GEPPETTO.Manager.addVariableToModel(rawModel);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.IMPORT_TYPE_RESOLVED] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
     var rawModel = JSON.parse(payload.import_type_resolved);
     GEPPETTO.Manager.swapResolvedType(rawModel);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.IMPORT_VALUE_RESOLVED] = function (payload) {
     var rawModel = JSON.parse(payload.import_value_resolved);
     GEPPETTO.Manager.swapResolvedValue(rawModel);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.GET_EXPERIMENT_STATE] = function (payload) {
@@ -157,7 +159,7 @@ function MessageHandler (GEPPETTO) {
       GEPPETTO.ExperimentsController.addExternalExperimentState(experimentState);
     }
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_LOGO]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_STATUS] = function (payload) {
@@ -171,11 +173,11 @@ function MessageHandler (GEPPETTO) {
     var activeExperimentID = message.activeExperimentID;
     GEPPETTO.Manager.persistProject(projectID, activeExperimentID);
     GEPPETTO.CommandController.log("Project persisted");
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.STOP_PERSIST]();
+    StoreManager.actionsHandler[StoreManager.clientActions.STOP_PERSIST]();
   };
 
   messageHandler[messageTypes.PROJECT_CONFIGURATION] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_CONFIG_LOADED](payload.configuration);
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_CONFIG_LOADED](payload.configuration);
   };
 
   messageHandler[messageTypes.EXPERIMENT_DELETED] = function (payload) {
@@ -185,7 +187,7 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.WATCHED_VARIABLES_SET] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The list of variables to watch was successfully updated.");
   };
 
@@ -197,7 +199,7 @@ function MessageHandler (GEPPETTO) {
 
   // received model tree from server
   messageHandler[messageTypes.UPDATE_MODEL_TREE] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The model parameters were successfully updated.");
   };
 
@@ -209,12 +211,12 @@ function MessageHandler (GEPPETTO) {
 
   messageHandler[messageTypes.PROJECT_PROPS_SAVED] = function (payload) {
     GEPPETTO.CommandController.log("Project saved succesfully");
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_PROPERTIES_SAVED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_PROPERTIES_SAVED]();
   };
 
   messageHandler[messageTypes.SET_PARAMETERS] = function (payload) {
     GEPPETTO.CommandController.log("Set parameters succesfully");
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PARAMETERS_SET]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PARAMETERS_SET]();
   };
 
   messageHandler[messageTypes.EXPERIMENT_PROPS_SAVED] = function (payload) {
@@ -230,7 +232,7 @@ function MessageHandler (GEPPETTO) {
       experiment.setStatus(data.status);
     }
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_PROPERTIES_SAVED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_PROPERTIES_SAVED]();
   };
 
   messageHandler[messageTypes.DROPBOX_LINKED] = function (payload) {
@@ -251,7 +253,7 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.DOWNLOAD_PROJECT] = function (payload) {
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_DOWNLOADED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_DOWNLOADED]();
     GEPPETTO.CommandController.log("Project downloaded succesfully",true);
   };
 

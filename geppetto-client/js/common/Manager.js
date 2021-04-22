@@ -5,6 +5,7 @@
  * @author Matteo Cantarelli
  */
 
+import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
 
 export default function Manager (options) {
 
@@ -27,7 +28,7 @@ Manager.prototype = {
     window.Project.persisted = true;
     window.Project.readOnly = false;
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_PERSISTED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_PERSISTED]();
     GEPPETTO.CommandController.log("The project has been persisted  [id=" + projectID + "].");
   },
 
@@ -37,7 +38,7 @@ Manager.prototype = {
    */
   loadProject: function (project, persisted) {
     // we remove anything from any previous loaded project if there was one
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
+    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
     if (Project) {
       Project.initialize();
     }
@@ -46,7 +47,7 @@ Manager.prototype = {
     window.Project = GEPPETTO.ProjectFactory.createProjectNode(project, persisted);
     window.Project.readOnly = !persisted;
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.PROJECT_LOADED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.PROJECT_LOADED]();
     GEPPETTO.CommandController.log(GEPPETTO.Resources.PROJECT_LOADED);
   },
 
@@ -60,13 +61,13 @@ Manager.prototype = {
     console.timeEnd(GEPPETTO.Resources.PARSING_MODEL);
 
     console.time(GEPPETTO.Resources.CREATING_MODEL);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_MODEL);
+    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_MODEL);
     // build Geppetto model here (once off operation when project is loaded)
     window.Model = GEPPETTO.ModelFactory.createGeppettoModel(model, true, true);
     console.timeEnd(GEPPETTO.Resources.CREATING_MODEL);
 
     console.time(GEPPETTO.Resources.CREATING_INSTANCES);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_INSTANCES);
+    StoreManager.actionsHandler[StoreManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_INSTANCES);
 
     // Initialize instances with static instances already present in the model
     if (window.Model.getCurrentWorld()) {
@@ -81,14 +82,14 @@ Manager.prototype = {
     this.augmentInstancesArray(window.Instances);
     console.timeEnd(GEPPETTO.Resources.CREATING_INSTANCES);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.MODEL_LOADED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.MODEL_LOADED]();
     GEPPETTO.CommandController.log(GEPPETTO.Resources.MODEL_LOADED);
 
     // populate control panel with instances
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](window.Instances);
+    StoreManager.actionsHandler[StoreManager.clientActions.INSTANCES_CREATED](window.Instances);
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER]();
+    StoreManager.actionsHandler[StoreManager.clientActions.HIDE_SPINNER]();
   },
 
   /**
@@ -106,7 +107,7 @@ Manager.prototype = {
 
       var requestID = GEPPETTO.MessageSocket.send("fetch_variable", params, callback);
 
-      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+      StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
 
     } else {
       GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ALREADY_EXISTS);
@@ -133,7 +134,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("fetch", params, callback);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -148,7 +149,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new variables if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](newInstances);
+    StoreManager.actionsHandler[StoreManager.clientActions.INSTANCES_CREATED](newInstances);
     console.timeEnd(GEPPETTO.Resources.ADDING_VARIABLE);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ADDED);
   },
@@ -173,7 +174,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_type", params, callback);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -189,7 +190,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new types if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.INSTANCES_CREATED](newInstances);
+    StoreManager.actionsHandler[StoreManager.clientActions.INSTANCES_CREATED](newInstances);
 
     console.timeEnd(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
@@ -209,7 +210,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_value", params, callback);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SPIN_LOGO]();
+    StoreManager.actionsHandler[StoreManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -342,7 +343,7 @@ Manager.prototype = {
     GEPPETTO.ExperimentsController.updateExperiment(experiment, recordedVariables, setParameters);
     console.timeEnd(GEPPETTO.Resources.LOADING_EXPERIMENT);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_LOADED]();
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_LOADED]();
     GEPPETTO.ViewController.resolveViews();
 
     // after applying views, run script if any
@@ -367,7 +368,7 @@ Manager.prototype = {
     GEPPETTO.ExperimentsController.closeCurrentExperiment();
     window.Project.setActiveExperiment(newExperiment);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.EXPERIMENT_CREATED);
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_CREATED](newExperiment.getId());
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_CREATED](newExperiment.getId());
 
     return newExperiment;
   },
@@ -382,7 +383,7 @@ Manager.prototype = {
       var newExperiment = GEPPETTO.ProjectFactory.createExperimentNode(experiments[i]);
       window.Project.getExperiments().push(newExperiment);
       newExperiment.setParent(window.Project);
-      GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_CREATED](newExperiment.getId());
+      StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_CREATED](newExperiment.getId());
     }
     GEPPETTO.CommandController.log(GEPPETTO.Resources.EXPERIMENT_BATCH_CREATED);
   },
@@ -407,7 +408,7 @@ Manager.prototype = {
         window.Project.activeExperiment = null;
       }
     }
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_DELETED](experiment.getId());
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_DELETED](experiment.getId());
   },
 
   updateExperimentsStatus: function (experimentsStatus){
@@ -424,28 +425,28 @@ Manager.prototype = {
             if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.RUNNING && status == GEPPETTO.Resources.ExperimentStatus.COMPLETED) {
               experiments[e].setDetails("");
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_COMPLETED](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_COMPLETED](experimentID);
             } else if (status == GEPPETTO.Resources.ExperimentStatus.ERROR) {
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_FAILED](experimentID);
             } else if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.DESIGN && status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
             } else if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.QUEUED && status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
             } else if (status == GEPPETTO.Resources.ExperimentStatus.QUEUED) {
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
             } else if (status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
               experiments[e].setStatus(status);
-              GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
+              StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RUNNING](experimentID);
             } 
           }
         }
       }
     }
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_STATUS_CHECK]();
+    StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_STATUS_CHECK]();
   }
 
 

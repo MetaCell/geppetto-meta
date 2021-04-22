@@ -9,6 +9,7 @@ define(function (require) {
   var StopButton = require('./buttons/StopButton');
   var HelpButton = require('./buttons/HelpButton');
   var MenuButton = require('../../controls/menuButton/MenuButton');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var GEPPETTO = require('geppetto');
 
@@ -59,7 +60,7 @@ define(function (require) {
 
       if ((nextProps.experimentStatus !== this.props.experimentStatus)) {
         switch (nextProps.experimentStatus) {
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
+        case StoreManager.clientActions.EXPERIMENT_FAILED:
           var activeExperiment = window.Project.getActiveExperiment();
           if (activeExperiment != null || undefined){
             if (activeExperiment.getId() == nextProps.experimentId){
@@ -67,7 +68,7 @@ define(function (require) {
             }
           }
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_DELETED:
+        case StoreManager.clientActions.EXPERIMENT_DELETED:
           var experiment = window.Project.getActiveExperiment();
           if (experiment == null || undefined){
             this.setState({ disableRun: true, disablePlay: true, disablePause: true, disableStop: true });

@@ -6,12 +6,13 @@ define(function (require) {
     GEPPETTO = require('geppetto'),
     $ = require('jquery'),
     HelpModal = require('../HelpModal');
+    var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return CreateClass({
     mixins: [require('../../../controls/mixins/Button')],
 
     componentDidMount: function () {
-      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.SHOW_HELP].list.push(action => {
+      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_HELP].list.push(action => {
         ReactDOM.render(React.createFactory(HelpModal)({ show:true }), document.getElementById('modal-region'));
 
         $("#help-modal").css("margin-right", "-20px");
@@ -28,7 +29,7 @@ define(function (require) {
         icon:'fa fa-info-circle',
         onClick: function (){
           // GEPPETTO.CommandController.execute("G.showHelpWindow(true)", true);
-          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SHOW_HELP]();
+          StoreManager.actionsHandler[StoreManager.clientActions.SHOW_HELP]();
         }
       }
     }

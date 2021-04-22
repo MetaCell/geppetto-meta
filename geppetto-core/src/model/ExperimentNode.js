@@ -4,6 +4,8 @@
  * @module model/ExperimentNode
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
+var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+
 define(['backbone'], function (require) {
 
   return Backbone.Model.extend({
@@ -148,7 +150,7 @@ define(['backbone'], function (require) {
       if (this.writePermission && this.getParent().persisted && this.login) {
         this.saveExperimentProperties({ "name": newname });
         this.name = newname;
-        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RENAMED]();
+        StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RENAMED]();
       } else {
         return GEPPETTO.Utility.persistedAndWriteMessage(this);
       }
@@ -196,7 +198,7 @@ define(['backbone'], function (require) {
         if (this.status == GEPPETTO.Resources.ExperimentStatus.DESIGN || this.status == GEPPETTO.Resources.ExperimentStatus.ERROR) {
 
           this.setStatus(GEPPETTO.Resources.ExperimentStatus.QUEUED);
-          GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING]();
+          StoreManager.actionsHandler[StoreManager.clientActions.EXPERIMENT_RUNNING]();
           var parameters = {};
           parameters["experimentId"] = this.id;
           parameters["projectId"] = this.getParent().getId();

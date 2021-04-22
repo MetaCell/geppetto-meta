@@ -311,4 +311,6 @@ var StoreManager = (function () {
   }
 })();
 
-module.exports = { StoreManager };
+const GeppettoStoreManager = StoreManager.getInstance();
+
+export default GeppettoStoreManager

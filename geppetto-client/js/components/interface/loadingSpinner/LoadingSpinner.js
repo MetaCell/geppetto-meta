@@ -2,6 +2,7 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class');
   var GEPPETTO = require('geppetto');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   require('./LoadingSpinner.less');
 
@@ -62,11 +63,11 @@ define(function (require) {
     componentDidMount: function (){
       GEPPETTO.Spinner = this;
 
-      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.SHOW_SPINNER].list.push(action => {
+      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_SPINNER].list.push(action => {
         this.showSpinner(action.data.message);
       });
 
-      GEPPETTO.StoreManager.eventsCallback[GEPPETTO.StoreManager.clientActions.HIDE_SPINNER].list.push(action => {
+      StoreManager.eventsCallback[StoreManager.clientActions.HIDE_SPINNER].list.push(action => {
         setTimeout(this.hideSpinner, 500);
       });
     },

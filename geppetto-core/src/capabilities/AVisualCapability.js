@@ -7,6 +7,7 @@
  * @author Giovanni Idili
  */
 
+import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
 
 var Instance = require('../model/Instance').default;
 var ArrayInstance = require('../model/ArrayInstance').default;
@@ -54,7 +55,7 @@ export default {
 
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.VISIBILITY_CHANGED](this);
+    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
 
     return message;
   },
@@ -96,7 +97,7 @@ export default {
       var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
     }
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.VISIBILITY_CHANGED](this);
+    StoreManager.actionsHandler[StoreManager.clientActions.VISIBILITY_CHANGED](this);
     return message;
   },
 
@@ -150,7 +151,7 @@ export default {
 
     GEPPETTO.SceneController.setColor(this.getInstancePath(), color);
 
-    GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.COLOR_SET]({
+    StoreManager.actionsHandler[StoreManager.clientActions.COLOR_SET]({
       instance: this,
       color: color
     });
@@ -179,7 +180,7 @@ export default {
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
         // signal selection has changed in simulation pass instance
-        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SELECT](this, geometryIdentifier, point)
+        StoreManager.actionsHandler[StoreManager.clientActions.SELECT](this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
       }
@@ -226,7 +227,7 @@ export default {
         GEPPETTO.SceneController.deselectInstance(this.getInstancePath());
         this.selected = false;
         // trigger event that selection has been changed
-        GEPPETTO.StoreManager.actionsHandler[GEPPETTO.StoreManager.clientActions.SELECT](this, undefined, undefined);
+        StoreManager.actionsHandler[StoreManager.clientActions.SELECT](this, undefined, undefined);
       } else {
         message = GEPPETTO.Resources.ASPECT_NOT_SELECTED;
       }

@@ -8,6 +8,7 @@ define(function (require) {
   var React = require('react');
   var CreateClass = require('create-react-class'), $ = require('jquery');
   var GEPPETTO = require('geppetto');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var { connect } = require('react-redux');
 
@@ -175,7 +176,7 @@ define(function (require) {
     UNSAFE_componentWillReceiveProps: function (nextProps) {
       if (nextProps.experimentStatus !== this.props.experimentStatus) {
         switch (nextProps.experimentStatus) {
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_UPDATED:
+        case StoreManager.clientActions.EXPERIMENT_UPDATED:
           this.refresh();
           break;
         }
@@ -564,29 +565,29 @@ define(function (require) {
     UNSAFE_componentWillReceiveProps: function (nextProps) {
       if (nextProps.projectStatus !== this.props.projectStatus) {
         switch (nextProps.projectStatus) {
-        case GEPPETTO.StoreManager.clientActions.PROJECT_LOADED:
+        case StoreManager.clientActions.PROJECT_LOADED:
           this.projectLoaded();
           break;
-        case GEPPETTO.StoreManager.clientActions.PROJECT_PERSISTED:
+        case StoreManager.clientActions.PROJECT_PERSISTED:
           this.refresh();
           break;
         }
       }
       if (nextProps.experimentStatus !== this.props.experimentStatus) {
         switch (nextProps.experimentStatus) {
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_DELETED:
+        case StoreManager.clientActions.EXPERIMENT_DELETED:
           this.experimentDeleted();
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_LOADED:
+        case StoreManager.clientActions.EXPERIMENT_LOADED:
           this.updateExperimentStatus();
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_STATUS_CHECK:
+        case StoreManager.clientActions.EXPERIMENT_STATUS_CHECK:
           this.updateExperimentsTableStatus();
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_CREATED:
+        case StoreManager.clientActions.EXPERIMENT_CREATED:
           this.newExperiment();
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_RENAMED:
+        case StoreManager.clientActions.EXPERIMENT_RENAMED:
           this.refresh();
           break;
         }

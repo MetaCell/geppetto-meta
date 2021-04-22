@@ -7,6 +7,7 @@ define(function (require) {
   require('./SandboxConsole')(GEPPETTO);
   require('./console.less');
   require('./jsConsole.less');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   return class Console extends AbstractComponent {
     constructor (props) {
@@ -349,19 +350,19 @@ define(function (require) {
     UNSAFE_componentWillReceiveProps (nextProps) {
       if (nextProps.log_timestamp !== this.props.log_timestamp) {
         switch (nextProps.log_mode) {
-        case GEPPETTO.StoreManager.clientActions.COMMAND_LOG:
+        case StoreManager.clientActions.COMMAND_LOG:
           this.log(nextProps.log_message);
           break;
-        case GEPPETTO.StoreManager.clientActions.COMMAND_LOG_RUN:
+        case StoreManager.clientActions.COMMAND_LOG_RUN:
           this.logRunCommand(nextProps.log_message);
           break;
-        case GEPPETTO.StoreManager.clientActions.COMMAND_LOG_DEBUG:
+        case StoreManager.clientActions.COMMAND_LOG_DEBUG:
           this.debugLog(nextProps.log_message);
           break
-        case GEPPETTO.StoreManager.clientActions.COMMAND_CLEAR:
+        case StoreManager.clientActions.COMMAND_CLEAR:
           this.clear();
           break;
-        case GEPPETTO.StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT:
+        case StoreManager.clientActions.COMMAND_TOGGLE_IMPLICIT:
           this.toggleImplicitCommands()
           break;
         default:

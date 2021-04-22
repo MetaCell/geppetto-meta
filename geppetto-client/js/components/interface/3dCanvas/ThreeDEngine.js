@@ -13,6 +13,7 @@ define(['jquery'], function () {
   var ArrayInstance = require('@geppettoengine/geppetto-core/model/ArrayInstance');
   var Type = require('@geppettoengine/geppetto-core/model/Type');
   var Variable = require('@geppettoengine/geppetto-core/model/Variable');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   var THREE = require('three');
 

@@ -14,6 +14,7 @@ define(function (require) {
 
   var Instance = require('@geppettoengine/geppetto-core/model/Instance');
   var Variable = require('@geppettoengine/geppetto-core/model/Variable');
+  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
 
   const { diffArrays } = require('../../../../../geppetto-ui/src/utils');
 
@@ -64,10 +65,10 @@ define(function (require) {
 
       if (this.props.projectStatus !== nextProps.projectStatus) {
         switch (nextProps.projectStatus) {
-        case GEPPETTO.StoreManager.clientActions.PROJECT_LOADED:
+        case StoreManager.clientActions.PROJECT_LOADED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case GEPPETTO.StoreManager.clientActions.PROJECT_PERSISTED:
+        case StoreManager.clientActions.PROJECT_PERSISTED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break
         default:
@@ -77,16 +78,16 @@ define(function (require) {
 
       if (this.props.experimentStatus !== nextProps.experimentStatus) {
         switch (nextProps.experimentStatus) {
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_RUNNING:
+        case StoreManager.clientActions.EXPERIMENT_RUNNING:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_COMPLETED:
+        case StoreManager.clientActions.EXPERIMENT_COMPLETED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission(nextProps.experimentId));
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_FAILED:
+        case StoreManager.clientActions.EXPERIMENT_FAILED:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
-        case GEPPETTO.StoreManager.clientActions.EXPERIMENT_ACTIVE:
+        case StoreManager.clientActions.EXPERIMENT_ACTIVE:
           this.updateToolBarVisibilityState(this.checkHasWritePermission());
           break;
         default:
@@ -94,7 +95,7 @@ define(function (require) {
         }
       }
 
-      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === GEPPETTO.StoreManager.clientActions.MODEL_LOADED) {
+      if (this.props.modelStatus !== nextProps.modelStatus && nextProps.modelStatus === StoreManager.clientActions.MODEL_LOADED) {
         if (this.initialised){
           this.initialised = false;
           this.instances.initialize(true);
