@@ -1,4 +1,5 @@
 local: false
+tls: true
 secured_gatekeepers: false
 nameOverride: ''
 fullnameOverride: ''
@@ -55,11 +56,9 @@ env:
 - name: CH_IMAGE_TAG
   value: latest
 privenv:
-- name: CH_SECRET
-  value: "In God we trust; all others must bring data. \u2015 W. Edwards Deming"
 ingress:
   enabled: true
-  name: cloudharness-ingress
+  name: geppetto-meta-ingress
   ssl_redirect: true
   letsencrypt:
     email: filippo@metacell.us
