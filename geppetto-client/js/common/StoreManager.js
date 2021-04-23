@@ -79,6 +79,8 @@ const {
 
 const GeppettoStore = newStore();
 
+
+
 var StoreManager = (function () {
   var instance;
 
@@ -86,7 +88,6 @@ var StoreManager = (function () {
     // Private methods and variables
 
     return {
-
       // Public methods and variables
       store: GeppettoStore,
       clientActions: clientActions,
@@ -290,6 +291,262 @@ var StoreManager = (function () {
         [clientActions.DISABLE_CONTROLS]: () => (
           GeppettoStore.dispatch(disableControls())
         ),
+      },
+
+      select: function (scope, geometryIdentifier, point ) {
+        this.actionsHandler[clientActions.SELECT](scope, geometryIdentifier, point )
+      },
+
+      changeVisibility: function (instance) {
+        this.actionsHandler[clientActions.VISIBILITY_CHANGED](instance)
+      },
+
+      changeFocus: function (instance) {
+        this.actionsHandler[clientActions.FOCUS_CHANGED](instance)
+      },
+
+      modelLoaded: function () {
+        this.actionsHandler[clientActions.MODEL_LOADED]()
+      },
+
+      projectLoaded: function () {
+        this.actionsHandler[clientActions.PROJECT_LOADED]()
+      },
+
+      projectDownloaded: function () {
+        this.actionsHandler[clientActions.PROJECT_DOWNLOADED]()
+      },
+
+      projectConfigLoaded: function (configuration) {
+        this.actionsHandler[clientActions.PROJECT_CONFIG_LOADED](configuration)
+      },
+
+      experimentOver: function (experiment) {
+        this.actionsHandler[clientActions.EXPERIMENT_OVER](experiment)
+      },
+
+      experimentLoaded: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_LOADED]()
+      },
+
+      playExperiment: function (parameters) {
+        this.actionsHandler[clientActions.EXPERIMENT_PLAY](parameters)
+      },
+
+      pauseExperiment: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_PAUSE]()
+      },
+
+      resumeExperiment: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_RESUME]()
+      },
+
+      experimentStatusCheck: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_STATUS_CHECK]()
+      },
+
+      experimentRunning: function (id) {
+        this.actionsHandler[clientActions.EXPERIMENT_RUNNING](id)
+      },
+
+      stopExperiment: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_STOP]()
+      },
+
+      experimentCompleted: function (id) {
+        this.actionsHandler[clientActions.EXPERIMENT_COMPLETED](id)
+      },
+
+      experimentFailed: function (id) {
+        this.actionsHandler[clientActions.EXPERIMENT_FAILED](id)
+      },
+
+      updateExperiment: function (parameters) {
+        this.actionsHandler[clientActions.EXPERIMENT_UPDATE](parameters)
+      },
+
+      experimentUpdated: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_UPDATED]()
+      },
+
+      experimentRenamed: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_RENAMED]()
+      },
+
+      experimentDeleted: function (id) {
+        this.actionsHandler[clientActions.EXPERIMENT_DELETED](id)
+      },
+
+      activeExperiment: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_ACTIVE]()
+      },
+
+      experimentCreated: function (id) {
+        this.actionsHandler[clientActions.EXPERIMENT_CREATED](id)
+      },
+
+      projectPersisted: function () {
+        this.actionsHandler[clientActions.PROJECT_PERSISTED]()
+      },
+
+      spotlightClosed: function () {
+        this.actionsHandler[clientActions.SPOTLIGHT_CLOSED]()
+      },
+
+      spotlightLoaded: function () {
+        this.actionsHandler[clientActions.SPOTLIGHT_LOADED]()
+      },
+
+      instanceDeleted: function (instancePath) {
+        this.actionsHandler[clientActions.INSTANCE_DELETED](instancePath)
+      },
+
+      instancesCreated: function (instances) {
+        this.actionsHandler[clientActions.INSTANCES_CREATED](instances)
+      },
+
+      showTutorial: function () {
+        this.actionsHandler[clientActions.SHOW_TUTORIAL]()
+      },
+
+      hideTutorial: function () {
+        this.actionsHandler[clientActions.HIDE_TUTORIAL]()
+      },
+
+      startTutorial: function () {
+        this.actionsHandler[clientActions.START_TUTORIAL]()
+      },
+
+      stopTutorial: function () {
+        this.actionsHandler[clientActions.STOP_TUTORIAL]()
+      },
+
+      showQueryBuilder: function () {
+        this.actionsHandler[clientActions.SHOW_QUERYBUILDER]()
+      },
+
+      hideQueryBuilder: function () {
+        this.actionsHandler[clientActions.HIDE_QUERYBUILDER]()
+      },
+
+      showSpinner: function (message) {
+        this.actionsHandler[clientActions.SHOW_SPINNER](message)
+      },
+
+      showHelp: function () {
+        this.actionsHandler[clientActions.SHOW_HELP]()
+      },
+
+      hideHelp: function () {
+        this.actionsHandler[clientActions.HIDE_HELP]()
+      },
+
+      setColor: function (parameters) {
+        this.actionsHandler[clientActions.COLOR_SET](parameters)
+      },
+
+      canvasInitialised: function () {
+        this.actionsHandler[clientActions.CANVAS_INITIALISED]()
+      },
+
+      projectMadePublic: function () {
+        this.actionsHandler[clientActions.PROJECT_MADE_PUBLIC]()
+      },
+
+      openControlPanel: function () {
+        this.actionsHandler[clientActions.CONTROL_PANEL_OPEN]()
+      },
+
+      closeControlPanel: function () {
+        this.actionsHandler[clientActions.CONTROL_PANEL_CLOSE]()
+      },
+
+      litEntitiesChanged: function () {
+        this.actionsHandler[clientActions.LIT_ENTITIES_CHANGED]()
+      },
+
+      componentDestroyed: function () {
+        this.actionsHandler[clientActions.COMPONENT_DESTROYED]()
+      },
+
+      experimentPropertiesSaved: function () {
+        this.actionsHandler[clientActions.EXPERIMENT_PROPERTIES_SAVED]()
+      },
+
+      projectPropertiesSaved: function () {
+        this.actionsHandler[clientActions.PROJECT_PROPERTIES_SAVED]()
+      },
+
+      parametersSet: function () {
+        this.actionsHandler[clientActions.PARAMETERS_SET]()
+      },
+
+      commandLog: function (message) {
+        this.actionsHandler[clientActions.COMMAND_LOG](message)
+      },
+
+      commandLogDebug: function (message) {
+        this.actionsHandler[clientActions.COMMAND_LOG_DEBUG](message)
+      },
+
+      commandLogRun: function (message) {
+        this.actionsHandler[clientActions.COMMAND_LOG_RUN](message)
+      },
+
+      commandClear: function () {
+        this.actionsHandler[clientActions.COMMAND_CLEAR]()
+      },
+
+      commandToggleImplicit: function () {
+        this.actionsHandler[clientActions.COMMAND_TOGGLE_IMPLICIT]()
+      },
+
+      receivePythonMessage: function (data) {
+        this.actionsHandler[clientActions.RECEIVE_PYTHON_MESSAGE](data)
+      },
+
+      errorWhileExecPythonCommand: function (data) {
+        this.actionsHandler[clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND](data)
+      },
+
+      websocketDisconnected: function () {
+        this.actionsHandler[clientActions.WEBSOCKET_DISCONNECTED]()
+      },
+
+      updateCamera: function () {
+        this.actionsHandler[clientActions.UPDATE_CAMERA]()
+      },
+
+      stopLogo: function () {
+        this.actionsHandler[clientActions.STOP_LOGO]()
+      },
+
+      spinLogo: function () {
+        this.actionsHandler[clientActions.SPIN_LOGO]()
+      },
+
+      geppettoError: function (message) {
+        this.actionsHandler[clientActions.GEPPETTO_ERROR](message)
+      },
+
+      geppettoInfo: function (message) {
+        this.actionsHandler[clientActions.GEPPETTO_INFO](message)
+      },
+
+      stopPersist: function () {
+        this.actionsHandler[clientActions.STOP_PERSIST]()
+      },
+
+      spinPersist: function () {
+        this.actionsHandler[clientActions.SPIN_PERSIST]()
+      },
+
+      jupyterGeppettoExtensionReady: function () {
+        this.actionsHandler[clientActions.JUPYTER_GEPPETTO_EXTENSION_READY]()
+      },
+
+      disableControls: function () {
+        this.actionsHandler[clientActions.DISABLE_CONTROLS]()
       },
 
       injectReducer: function (key, reducer) {
