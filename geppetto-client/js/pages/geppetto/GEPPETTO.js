@@ -76,6 +76,18 @@ define(function (require) {
         StoreManager.actionsHandler[GEPPETTO.eventsMapping[_event]](...args);
       }
     },
+
+    on: function () {
+      console.warn("WARNING - This function has been removed due to the Redux refactoring.")
+      console.warn("Please look into the PR 282 in geppetto-client and PR 52 in geppetto-application " +
+        "for more information on how to migrate this to the new eventsCallback mechanism.");
+    },
+
+    off: function () {
+      console.warn("WARNING - This function has been removed due to the Redux refactoring.")
+      console.warn("Please look into the PR 282 in geppetto-client and PR 52 in geppetto-application " +
+        "for more information on how to migrate this to the new eventsCallback mechanism.");
+    },
   };
 
   GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
