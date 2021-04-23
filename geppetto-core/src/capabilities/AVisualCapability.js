@@ -180,7 +180,7 @@ export default {
         message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
 
         // signal selection has changed in simulation pass instance
-        StoreManager.actionsHandler[StoreManager.clientActions.SELECT](this, geometryIdentifier, point)
+        StoreManager.select(this, geometryIdentifier, point)
       } else {
         message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
       }
