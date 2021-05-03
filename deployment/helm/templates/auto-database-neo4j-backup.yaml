@@ -1,2 +1,0 @@
-{{- define "deploy_utils.database.neo4j.backup" }}
-{{- end }}
