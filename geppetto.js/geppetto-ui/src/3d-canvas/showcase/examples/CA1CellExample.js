@@ -57,7 +57,6 @@ class CA1Example extends Component {
           instance: CameraControls,
           props: {}
         },
-        flip:[],
       },
     };
 

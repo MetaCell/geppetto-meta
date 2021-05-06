@@ -86,7 +86,6 @@ class VFBExample extends Component {
         instance: CameraControls,
         props: { wireframeButtonEnabled: true, }
       },
-      flip: ['y', 'z'],
       rotateSpeed: 3,
     }
 

@@ -164,7 +164,6 @@ class AuditoryCortexExample2 extends Component {
         ...cameraOptions,
         position: this.lastCameraUpdate.position,
         zoomTo: [],
-        flip: []
       };
       if (this.lastCameraUpdate.rotation.radius){
         camOptions = {

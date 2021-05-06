@@ -165,7 +165,6 @@ Canvas.defaultProps = {
     reset: false,
     autorotate:false,
     wireframe:false,
-    flip: [],
     zoomTo: [],
     cameraControls:  { 
       instance: null,

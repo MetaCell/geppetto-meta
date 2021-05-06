@@ -60,7 +60,6 @@ class AuditoryCortexExample extends Component {
         wireframe: false,
         position: { x: 230.357, y: 256.435, z: 934.238 },
         rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
-        flip: []
       },
     };
 

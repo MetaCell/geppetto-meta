@@ -19,7 +19,6 @@ export default class CameraManager {
 
   update (cameraOptions) {
     const {
-      flip,
       position,
       rotation,
       autoRotate,
@@ -35,11 +34,6 @@ export default class CameraManager {
     ) {
       this.resetCamera();
     } else {
-      if (flip && Array.isArray(flip)) {
-        flip.forEach(element => {
-          this.flipCamera(element);
-        });
-      }
       if (position) {
         this.setCameraPosition(position.x, position.y, position.z);
       }
@@ -64,35 +58,6 @@ export default class CameraManager {
         this.engine.controls.rotateSpeed = rotateSpeed
       }
     }
-  }
-  /**
-   *
-   * @param axis
-   */
-  flipCamera (axis) {
-    if (axis === 'y') {
-      this.flipCameraY();
-    } else if (axis === 'z') {
-      this.flipCameraZ();
-    }
-  }
-
-  /**
-   * Reinitializes the camera with the Y axis flipped
-   */
-  flipCameraY () {
-    this.camera.up = new THREE.Vector3(0, -1, 0);
-    this.engine.setupControls();
-    this.resetCamera();
-  }
-
-  /**
-   *
-   */
-  flipCameraZ () {
-    this.camera.direction = new THREE.Vector3(0, 0, -1);
-    this.engine.setupControls();
-    this.resetCamera();
   }
 
   /**
