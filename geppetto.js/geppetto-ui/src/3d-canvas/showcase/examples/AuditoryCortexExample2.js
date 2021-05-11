@@ -22,6 +22,7 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
+
 class AuditoryCortexExample2 extends Component {
   constructor (props) {
     super(props);
@@ -84,9 +85,11 @@ class AuditoryCortexExample2 extends Component {
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
+
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
+
   handleClickOutside (event) {
 
     if (this.node && !this.node.contains(event.target)) {

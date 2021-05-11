@@ -86,7 +86,6 @@ class AuditoryCortexExample extends Component {
   }
   
   handleClickOutside (event) {
-
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){
         this.setState({ hasModelLoaded: false })
@@ -187,8 +186,7 @@ class AuditoryCortexExample extends Component {
     this.setState(() => ({ data: newData, selected: newSelected }));
   }
 
-  hoverHandler (obj) {
-  }
+  hoverHandler (obj) {}
 
   render () {
     const { classes } = this.props;
