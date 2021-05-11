@@ -13,18 +13,15 @@ RUN apk add git
 # COPY PACKAGE MANAGEMENT FILES + DEPENDENCIES
 COPY geppetto-showcase/package*.json geppetto-showcase/
 COPY geppetto-showcase/yarn.lock geppetto-showcase/
-COPY geppetto-showcase/.yalc geppetto-showcase/.yalc
-COPY geppetto-showcase/yalc.lock geppetto-showcase/
 COPY geppetto.js geppetto.js
 
 # Prepare geppetto-client dependency
 RUN yarn global add yalc
-WORKDIR gepppeto.js
+WORKDIR /app/geppetto.js
 RUN yalc publish
-WORKDIR ..
 
 # INSTALL PACKAGES
-WORKDIR geppetto-showcase
+WORKDIR /app/geppetto-showcase
 RUN yalc add @geppettoengine/geppetto-client
 RUN yarn
 
