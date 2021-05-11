@@ -5,12 +5,10 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
-  devServer: {
-    historyApiFallback: true
-  },
+  devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
-    path: __dirname + 'dist',
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     chunkFilename: '[name].chunk.js',
     publicPath: '/'

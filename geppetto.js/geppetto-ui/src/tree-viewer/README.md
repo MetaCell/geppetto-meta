@@ -13,13 +13,24 @@ tree-viewer/Tree
 
 ## Examples
 
-### Tree Viewer Example
 
-Basic tree viewer example with some sample hierarchy displayed, showing custom icons for nodes. 
+### Tree Viewer Search Example
+
+Tree viewer search example
+
+```
+tree-viewer/showcase/examples/TreeShowcaseSearch
+```
+
+### Tree Viewer Basic Example
+
+Basic tree viewer example with some sample hierarchy displayed, showing custom icons for nodes.
 
 ```
 tree-viewer/showcase/examples/TreeShowcase
 ```
+
+
 
 ## Libraries
 

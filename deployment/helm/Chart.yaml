@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "0.0.1"
+description: Geppetto Meta Helm Chart
+name: geppetto-meta
+version: 0.0.1
+maintainers:
+  - name: Filippo Ledda
+    email: filippo@metacell.us
+  - name: Lucas Rebscher
+    email: lucas@metacell.us

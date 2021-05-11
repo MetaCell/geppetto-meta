@@ -1,0 +1,66 @@
+local: false
+tls: true
+secured_gatekeepers: false
+nameOverride: ''
+fullnameOverride: ''
+domain: geppetto.metacell.us
+namespace: geppetto-meta
+mainapp: showcase
+registry:
+  name: ''
+  secret: ''
+tag: latest
+apps:
+  showcase:
+    harness:
+      subdomain: meta
+      domain: geppetto.metacell.us
+      secured: false
+      deployment:
+        auto: true
+        replicas: 1
+        image: geppetto-showcase:latest
+        name: showcase
+        port: 80
+        resources: &id001
+          requests:
+            memory: 512Mi
+            cpu: 10m
+          limits:
+            memory: 1024Mi
+            cpu: 500m
+      service:
+        auto: true
+        name: showcase
+        port: 80
+      database:
+        auto: false
+      use_services: []
+      name: showcase
+      resource:
+    enabled: true
+    harvest: true
+    image: geppetto-showcase:latest
+    name: showcase
+    port: 80
+    resources: *id001
+env:
+- name: CH_VERSION
+  value: 0.0.1
+- name: CH_CHART_VERSION
+  value: 0.0.1
+- name: CH_DOMAIN
+  value: geppetto.metacell.us
+- name: CH_IMAGE_REGISTRY
+  value: ''
+- name: CH_IMAGE_TAG
+  value: latest
+privenv:
+ingress:
+  enabled: true
+  name: geppetto-meta-ingress
+  ssl_redirect: true
+  letsencrypt:
+    email: filippo@metacell.us
+backup:
+  active: false
