@@ -8,10 +8,20 @@ Geppetto Meta showcase of components & features
 
 ## Development
 
-1. `git clone -b development https://github.com/MetaCell/geppetto-meta.git`
-2. `cd geppetto-meta/geppetto-showcase`
-4. `yarn`
-5. `yarn start`
+1. `yarn global add yalc`
+2. `cd geppetto.js`
+3. `yalc publish`
+4. `cd ../geppetto-showcase`   
+5. `yalc add @geppettoengine/geppetto-client`   
+6. `yarn`
+7. `yarn start`
+
+(optional for hot reloading)
+8. `yarn global add nodemon`
+9. `cd ../geppetto.js`
+10. `nodemon -x 'yalc push'`
+
+
 
 ## Deployment
 
