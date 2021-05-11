@@ -32,7 +32,6 @@ class Canvas extends Component {
       hoverListeners,
       onMount
     } = this.props;
-    // TODO: pass props instead?
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,

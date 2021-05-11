@@ -76,19 +76,17 @@ class VFBExample extends Component {
       ],
       selected: {},
       threeDObjects: [],
-      modelVersion:0
+      modelVersion:0,
+      cameraOptions: {
+        position: { x: 319.7, y: 153.12, z: -494.2 },
+        rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
+        cameraControls: {
+          instance: CameraControls,
+          props: { wireframeButtonEnabled: true, }
+        },
+        rotateSpeed: 3,
+      }
     };
-
-    this.cameraOptions = {
-      position: { x: 319.7, y: 153.12, z: -494.2 },
-      rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
-      cameraControls: { 
-        instance: CameraControls,
-        props: { wireframeButtonEnabled: true, }
-      },
-      rotateSpeed: 3,
-    }
-
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
@@ -278,12 +276,12 @@ class VFBExample extends Component {
 
   render () {
     const { classes } = this.props;
-    const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader } = this.state;
+    const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
 
-    let camOptions = this.cameraOptions;
+    let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
       camOptions = {
-        ...this.cameraOptions,
+        ...cameraOptions,
         position: this.lastCameraUpdate.position,
         rotation: this.lastCameraUpdate.rotation,
       };
