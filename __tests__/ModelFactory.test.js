@@ -43,6 +43,8 @@ test('load test model with new instances', () => {
 });
 
 test('Merge models', () => {
+
+  
   const geppettoModel = GEPPETTO.Manager.loadModel(testModel);
 
   expect(ModelFactory.allPaths.length).toBe(11);
@@ -50,7 +52,17 @@ test('Merge models', () => {
   expect(Instances.length).toBe(7);
   
   let diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
-  expect(diffReport.variables.length).toBe(0);
+  // expect(diffReport.variables.length).toBe(0);
+
+  testModel.worlds[0].instances[0].name = 'aa';
+  testModel.worlds[0].instances[0].value.json = "{\"l\": [\"xx\", \"y\"]}";
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  // expect(diffReport.variables.length).toBe(1);
+  
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getName()).toBe('aa');
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getValue().l[0]).toBe('xx');
+  expect(Instances.a.getName()).toBe('aa');
+  expect(Instances.a.getValue().l[0]).toBe('xx');
 
   expect(ModelFactory.allPaths.length).toBe(11);
   GEPPETTO.Manager.addVariableToModel(testModel);
