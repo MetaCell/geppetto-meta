@@ -137,7 +137,6 @@ class Main extends Component {
 
           <main className={classes.content}>
             <Suspense fallback={<Loader active={true}/>}>
-
               <div className={classes.toolbar}/>
               <div className={classes.component}>
                 <Switch>n
