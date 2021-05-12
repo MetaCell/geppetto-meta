@@ -85,7 +85,7 @@
     "stats.js": "^0.17.0",
     "styled-components": "^4.3.2",
     "text": "^0.1.0",
-    "three": "<0.125.0",
+    "three": "<0.111.0",
     "three-render-objects": "1.13.3",
     "typeahead.js": "^0.11.1",
     "typeface-roboto": "^0.0.54",
@@ -104,9 +104,6 @@
     "babel-polyfill": "^6.26.0",
     "eslint": "^6.0.1",
     "jest": "^24.9.0"
-  },
-  "resolutions": {
-    "three":"0.124.0"
   },
   "buildOptions": {
     "emitEntryPoint": true,
