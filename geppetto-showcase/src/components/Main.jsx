@@ -139,7 +139,7 @@ class Main extends Component {
             <Suspense fallback={<Loader active={true}/>}>
               <div className={classes.toolbar}/>
               <div className={classes.component}>
-                <Switch>n
+                <Switch>
                   {pages.filter(page => page.component != null).map(page => (
                     <Route
                       key={page.to}
