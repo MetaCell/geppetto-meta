@@ -56,7 +56,7 @@ class Code extends Component {
       re = new RegExp(`<${element}(.|\\n)+>(.|\n)*<\/${element}>`);
       matches = file.match(re);
     }
-    let match = matches[0].replace(/  +/g, '  ').replace('  />', '/>')
+    let match = matches[0].replace(/  +/g, '  ').replace(/ +\/>/g, '/>').replace(/ +<\//g, '</')
     return matches ? match : INSTANTIATION_NOT_FOUND;
   }
 
