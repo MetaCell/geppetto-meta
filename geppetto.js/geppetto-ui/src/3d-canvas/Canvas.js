@@ -23,6 +23,7 @@ class Canvas extends Component {
   componentDidMount () {
     const {
       data,
+      threeDObjects,
       cameraOptions,
       cameraHandler,
       selectionHandler,
@@ -43,7 +44,7 @@ class Canvas extends Component {
       linesThreshold,
       hoverListeners
     );
-    this.threeDEngine.start(data, cameraOptions, true);
+    this.threeDEngine.start(data, cameraOptions, threeDObjects, true);
     onMount(this.threeDEngine.scene)
   }
 

@@ -1,4 +1,4 @@
-import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
+import * as THREE from 'three';
 
 export const json = {
   global: {
@@ -64,27 +64,9 @@ export const json = {
   },
 };
 
-const instanceTemplate = {
-  "eClass": "SimpleInstance",
-  "id": "MG_C_3260_BROD_AREA",
-  "name": "Brodmann Area 1: primary somatosensory cortex - left",
-  "position": {
-    "eClass": "Point",
-    "x": -45.4,
-    "y": -24.6,
-    "z": 51.9
-  },
-  "type": { "eClass": "SimpleType" },
-  "value": {
-    "eClass": "JSON",
-    "json": "{\"synonyms\": []}"
-  }
-}
-
-export function getInstances (){
-  GEPPETTO.ModelFactory.cleanModel();
-  const instance = new SimpleInstance(instanceTemplate)
-  window.Instances = [instance]
-  GEPPETTO.Manager.augmentInstancesArray(window.Instances);
-  return window.Instances.map(i => ({ instancePath: i.getId() }))
+export function getThreeJSObjects (){
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  const cube = new THREE.Mesh( geometry, material );
+  return [cube]
 }

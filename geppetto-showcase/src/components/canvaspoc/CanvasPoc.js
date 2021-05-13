@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import * as FlexLayout from '@geppettoengine/geppetto-ui/flex-layout/src';
 import Canvas from "@geppettoengine/geppetto-ui/3d-canvas/Canvas";
 import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
-import { getInstances, json } from "./util";
+import { getThreeJSObjects, json } from "./util";
 import { withStyles } from '@material-ui/core';
+import * as THREE from 'three';
+
 
 const styles = () => ({
   container: {
@@ -20,11 +22,12 @@ class CanvasPoc extends Component {
     this.state = {
       firstRender: true,
       model: FlexLayout.Model.fromJson(json),
-      data: getInstances(),
+      data: [],
+      threeDObjects: getThreeJSObjects(),
       cameraOptions: {
-        angle: 60,
-        near: 10,
-        far: 2000000,
+        angle: 75,
+        near: 0.1,
+        far: 1000,
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
@@ -33,7 +36,7 @@ class CanvasPoc extends Component {
         reset: false,
         autorotate: false,
         wireframe: false,
-        position: { x: 0, y: 0, z: 0 },
+        position: { x: 0, y: 0, z: 5 },
         rotation: { rx: 0, ry: 0, rz: 0, radius: 0 },
       },
     };
@@ -42,6 +45,7 @@ class CanvasPoc extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
+    this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
   }
 
@@ -55,7 +59,7 @@ class CanvasPoc extends Component {
   }
 
   factory (node) {
-    const { data, cameraOptions, firstRender } = this.state
+    const { data, cameraOptions, firstRender, threeDObjects } = this.state
     const { classes } = this.props
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -73,28 +77,32 @@ class CanvasPoc extends Component {
       <div className={classes.container}>
         <Canvas
           data={data}
+          threeDObjects={threeDObjects}
           cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
-          backgroundColor={0x0000ff}
+          backgroundColor={0x505050}
           hoverListeners={[this.hoverHandler]}
+          onMount={this.onMount}
         />
       </div>
     );
   }
 
-  cameraHandler (obj) {
-    console.log("camera handler" + obj)
-    this.lastCameraUpdate = obj;
+  onMount (scene) {
+    const axesHelper = new THREE.AxesHelper();
+    scene.add( axesHelper );
 
+  }
+
+  cameraHandler (obj) {
+    this.lastCameraUpdate = obj;
   }
 
   selectionHandler (selectedMap) {
-    console.log("selection handler" + selectedMap)
   }
 
   hoverHandler (obj) {
-    console.log("hover handler" + obj)
   }
 
 

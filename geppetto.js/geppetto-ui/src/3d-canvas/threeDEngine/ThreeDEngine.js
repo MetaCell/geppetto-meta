@@ -691,8 +691,8 @@ export default class ThreeDEngine {
     
   }
 
-  start (proxyInstances, cameraOptions, toTraverse) {
-    this.update(proxyInstances, cameraOptions, [], toTraverse);
+  start (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    this.update(proxyInstances, cameraOptions, threeDObjects, toTraverse);
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);
     }
