@@ -106,27 +106,12 @@ class Main extends Component {
               <Toolbar>
                 <Link to="/" style={{ textDecoration: 'none' }}>
                   <Button className={classes.toolbarMainButton}>
-                                        Geppetto Showcase
+                                        Neuroscan Showcase
                   </Button>
                 </Link>
-                <Search searchHandler={this.searchHandler}/>
                 <div className={classes.grow}/>
                 <div className={classes.sectionDesktop}>
-                  <Button
-                    href="http://docs.geppetto.org/en/latest/"
-                    target="_blank"
-                  >
-                                        Docs
-                  </Button>
-                  <Button
-                    href="https://github.com/openworm/org.geppetto"
-                    target="_blank"
-                  >
-                                        Github
-                  </Button>
-                  <Button href="https://goo.gl/3ncZWn" target="_blank">
-                                        Slack
-                  </Button>
+                  <Button onClick={this.canvasCounter} variant="contained">Add more</Button>
                 </div>
               </Toolbar>
             </AppBar>
@@ -142,7 +127,7 @@ class Main extends Component {
                 currentPageHandler={this.currentPageHandler}
               />
             </Drawer>*/}
-            <Button onClick={this.canvasCounter} variant="contained" style={{ zIndex: 100000, position:"fixed" }}>Add more</Button>
+
 
             <main className={classes.content}>
               <div className={classes.toolbar}/>
@@ -156,8 +141,7 @@ class Main extends Component {
                         currentPageHandler={this.currentPageHandler}/>)}
                     />
                   ))}
-                  <Route exact path="/" component={Home}/>
-                  <Route exact path="/canvaspoc" render={props => (
+                  <Route exact path="/" render={props => (
                     <CanvasPoc {...props} canvas={this.state.canvas} />
                   )}/>
                 </Switch>
