@@ -3,11 +3,22 @@ import * as FlexLayout from '@geppettoengine/geppetto-ui/flex-layout/src';
 import Canvas from "@geppettoengine/geppetto-ui/3d-canvas/Canvas";
 import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
 import { getInstances, json } from "./util";
+import { withStyles } from '@material-ui/core';
+
+const styles = () => ({
+  container: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+  },
+});
+
 
 class CanvasPoc extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      firstRender: true,
       model: FlexLayout.Model.fromJson(json),
       data: getInstances(),
       cameraOptions: {
@@ -44,7 +55,8 @@ class CanvasPoc extends Component {
   }
 
   factory (node) {
-    const { data, cameraOptions } = this.state
+    const { data, cameraOptions, firstRender } = this.state
+    const { classes } = this.props
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
       camOptions = {
@@ -53,15 +65,22 @@ class CanvasPoc extends Component {
         rotation: this.lastCameraUpdate.rotation,
       };
     }
-    return <div>
-      <Canvas
-        data={data}
-        cameraOptions={camOptions}
-        cameraHandler={this.cameraHandler}
-        selectionHandler={this.selectionHandler}
-        backgroundColor={0x505050}
-        hoverListeners={[this.hoverHandler]}
-      /></div>;
+    if (firstRender) {
+      this.setState({ firstRender:false })
+      return <div className={classes.container}/>;
+    }
+    return (
+      <div className={classes.container}>
+        <Canvas
+          data={data}
+          cameraOptions={camOptions}
+          cameraHandler={this.cameraHandler}
+          selectionHandler={this.selectionHandler}
+          backgroundColor={0x0000ff}
+          hoverListeners={[this.hoverHandler]}
+        />
+      </div>
+    );
   }
 
   cameraHandler (obj) {
@@ -93,4 +112,4 @@ class CanvasPoc extends Component {
   }
 }
 
-export default CanvasPoc;
+export default withStyles(styles)(CanvasPoc);
