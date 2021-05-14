@@ -6,6 +6,8 @@ import { cameraControlsActions } from "@geppettoengine/geppetto-ui/camera-contro
 
 const styles = () => ({
   container: {
+    height: '100%',
+    width: '100%',
     display: 'flex',
     alignItems: 'stretch',
     flex: 1,

@@ -37,6 +37,7 @@ export default class ThreeDEngine {
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
 
+    this.containerRef = containerRef
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
 
@@ -678,6 +679,7 @@ export default class ThreeDEngine {
   }
 
   update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    this.resize()
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);
       threeDObjects.forEach(element => {
@@ -689,6 +691,14 @@ export default class ThreeDEngine {
     this.updateInstancesConnectionLines(proxyInstances);
     this.cameraManager.update(cameraOptions);
     
+  }
+
+  resize () {
+    this.width = this.containerRef.clientWidth;
+    this.height = this.containerRef.clientHeight;
+    this.cameraManager.camera.aspect = this.width / this.height;
+    this.cameraManager.camera.updateProjectionMatrix();
+    this.renderer.setSize(this.width, this.height);
   }
 
   start (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
