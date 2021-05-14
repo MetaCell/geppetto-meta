@@ -15,6 +15,29 @@ const styles = () => ({
   },
 });
 
+class MeshState {
+  constructor (){
+    this.ref = React.createRef()
+    this.data = []
+    this.threeDObjects = getThreeJSObjects()
+    this.cameraOptions = {
+      angle: 75,
+      near: 0.1,
+      far: 1000,
+      baseZoom: 1,
+      cameraControls: {
+        instance: CameraControls,
+        props: { wireframeButtonEnabled: false, },
+      },
+      reset: false,
+      autorotate: false,
+      wireframe: false,
+      position: { x: 0, y: 0, z: 5 },
+      rotation: { rx: 0, ry: 0, rz: 0, radius: 0 },
+    }
+  }
+}
+
 
 class CanvasPoc extends Component {
   constructor (props) {
@@ -22,26 +45,9 @@ class CanvasPoc extends Component {
     this.state = {
       firstRender: true,
       model: FlexLayout.Model.fromJson(json),
-      data: [],
-      threeDObjects: getThreeJSObjects(),
-      cameraOptions: {
-        angle: 75,
-        near: 0.1,
-        far: 1000,
-        baseZoom: 1,
-        cameraControls: {
-          instance: CameraControls,
-          props: { wireframeButtonEnabled: false, },
-        },
-        reset: false,
-        autorotate: false,
-        wireframe: false,
-        position: { x: 0, y: 0, z: 5 },
-        rotation: { rx: 0, ry: 0, rz: 0, radius: 0 },
-      },
+      meshStates: []
     };
     this.canvasIndex = 3
-    this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
@@ -59,16 +65,10 @@ class CanvasPoc extends Component {
   }
 
   factory (node) {
-    const { data, cameraOptions, firstRender, threeDObjects } = this.state
+    const { data, cameraOptions, threeDObjects, ref } = new MeshState()
     const { classes } = this.props
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
+    const { firstRender } = this.state
+
     if (firstRender) {
       this.setState({ firstRender:false })
       return <div className={classes.container}/>;
@@ -76,9 +76,10 @@ class CanvasPoc extends Component {
     return (
       <div className={classes.container}>
         <Canvas
+          ref={ref}
           data={data}
           threeDObjects={threeDObjects}
-          cameraOptions={camOptions}
+          cameraOptions={cameraOptions}
           cameraHandler={this.cameraHandler}
           selectionHandler={this.selectionHandler}
           backgroundColor={0x505050}
@@ -92,11 +93,9 @@ class CanvasPoc extends Component {
   onMount (scene) {
     const axesHelper = new THREE.AxesHelper();
     scene.add( axesHelper );
-
   }
 
   cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
   }
 
   selectionHandler (selectedMap) {
