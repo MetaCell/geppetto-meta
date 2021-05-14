@@ -47,7 +47,8 @@ export default class PlotShowcase extends Component {
         <PlotComponent
           plots={plots}
           id={this.instancePath ? this.instancePath : "empty"}
-          extractLegendName={this.extractLegendName} />
+          extractLegendName={this.extractLegendName}
+        />
       </div>
     );
   }

@@ -69,89 +69,68 @@ export default class TreeShowcaseSearch extends Component {
     });
   }
 
-  render () {
-    const { searchString, searchFocusIndex, searchFoundCount } = this.state;
+    searchFinishCallback = matches => {
+      const { searchFocusIndex } = this.state;
+      this.setState({
+        searchFoundCount: matches.length,
+        searchFocusIndex: matches.length > 0 ? searchFocusIndex % matches.length : 0,
+      })
+    }
 
-    return (
-      <div>
-        <h2>Search</h2>
-        <form
-          style={{ display: 'inline-block' }}
-          onSubmit={event => {
-            event.preventDefault();
-          }}
-        >
-          <input
-            id="find-box"
-            type="text"
-            placeholder="Search..."
-            style={{ fontSize: '1rem' }}
-            value={searchString}
-            onChange={event =>
-              this.setState({ searchString: event.target.value })
-            }
-          />
-          <button
-            type="button"
-            disabled={!searchFoundCount}
-            onClick={this.selectPrevMatch}
+    render () {
+      const { searchString, searchFocusIndex, searchFoundCount } = this.state;
+
+      return (
+        <div>
+          <h2>Search</h2>
+          <form
+            style={{ display: 'inline-block' }}
+            onSubmit={event => {
+              event.preventDefault();
+            }}
           >
+            <input
+              id="find-box"
+              type="text"
+              placeholder="Search..."
+              style={{ fontSize: '1rem' }}
+              value={searchString}
+              onChange={event =>
+                this.setState({ searchString: event.target.value })
+              }
+            />
+            <button
+              type="button"
+              disabled={!searchFoundCount}
+              onClick={this.selectPrevMatch}
+            >
               &lt;
-          </button>
-          <button
-            type="submit"
-            disabled={!searchFoundCount}
-            onClick={this.selectNextMatch}
-          >
+            </button>
+            <button
+              type="submit"
+              disabled={!searchFoundCount}
+              onClick={this.selectNextMatch}
+            >
               &gt;
-          </button>
-          <span>
+            </button>
+            <span>
             &nbsp;
-            {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
+              {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
               &nbsp;/&nbsp;
-            {searchFoundCount || 0}
-          </span>
-        </form>
-        <div style={{ height: 300 }}>
-          <Tree
-            treeData={this.state.treeData}
-            onChange={treeData => this.setState({ treeData })}
-            /*
-             * 
-             * Custom comparison for matching during search.
-             * This is optional, and defaults to a case sensitive search of
-             * the title and subtitle values.
-             * see `defaultSearchMethod` in https://github.com/frontend-collective/react-sortable-tree/blob/master/src/utils/default-handlers.js
-             */
-            searchMethod={this.customSearchMethod}
-            /*
-             * 
-             * The query string used in the search. This is required for searching.
-             */
-            searchQuery={searchString}
-            /*
-             * 
-             * When matches are found, this property lets you highlight a specific
-             * match and scroll to it. This is optional.
-             */
-            searchFocusOffset={searchFocusIndex}
-            /*
-             * 
-             * This callback returns the matches from the search,
-             * including their `node`s, `treeIndex`es, and `path`s
-             * Here I just use it to note how many matches were found.
-             * This is optional, but without it, the only thing searches
-             * do natively is outline the matching nodes.
-             */
-            searchFinishCallback={matches =>
-              this.setState({
-                searchFoundCount: matches.length,
-                searchFocusIndex: matches.length > 0 ? searchFocusIndex % matches.length : 0,
-              })
-            }
-          />
+              {searchFoundCount || 0}
+            </span>
+          </form>
+          <div style={{ height: 300 }}>
+            <Tree
+              treeData={this.state.treeData}
+              onChange={treeData => this.setState({ treeData })}
+              searchMethod={this.customSearchMethod}
+              searchQuery={searchString}
+              searchFocusOffset={searchFocusIndex}
+              searchFinishCallback={this.searchFinishCallback}
+            />
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 }
