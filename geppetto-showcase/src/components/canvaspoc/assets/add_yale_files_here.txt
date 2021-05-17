@@ -1,2 +1,3 @@
-SketchVolumeViewer_RIH_RIH_1_1_0000.mtl
+SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj
 SketchVolumeViewer_RIH_RIH_1_1_0000.obj
+SketchVolumeViewer_SABD_SABD_1_1_0000.obj

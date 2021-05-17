@@ -50,14 +50,31 @@ export const json = {
         ],
       },
       {
-        type: 'tabset',
-        weight: 45,
+        type: 'row',
+        weight: 55,
         selected: 0,
         children: [
           {
-            type: 'tab',
-            name: 'Canvas 3',
-            component: 'canvas',
+            type: 'tabset',
+            weight: 36,
+            children: [
+              {
+                type: 'tab',
+                name: 'Canvas 3',
+                component: 'canvas',
+              },
+            ],
+          },
+          {
+            type: 'tabset',
+            weight: 64,
+            children: [
+              {
+                type: 'tab',
+                name: 'Canvas 4',
+                component: 'canvas',
+              },
+            ],
           },
         ],
       },

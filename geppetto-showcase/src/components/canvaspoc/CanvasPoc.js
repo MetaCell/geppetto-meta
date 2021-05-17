@@ -6,7 +6,7 @@ import { getThreeJSObjects, json } from "./util";
 import { withStyles } from '@material-ui/core';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import neuronOBJ from './assets/SketchVolumeViewer_RIH_RIH_1_1_0000.obj';
+import neuronOBJ from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
 
 
 const styles = () => ({
@@ -48,7 +48,7 @@ class CanvasPoc extends Component {
       firstRender: true,
       model: FlexLayout.Model.fromJson(json),
     };
-    this.canvasIndex = 3
+    this.canvasIndex = 4
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
@@ -123,6 +123,12 @@ class CanvasPoc extends Component {
       scene.children[0].lookAt(center);
 
       scene.add( object );
+      for (let i = 0; i < 5; i++){
+        const clone = object.clone()
+        clone.position.z += i * 1000
+        clone.name = object.name + i
+        scene.add(clone)
+      }
     })
   }
 

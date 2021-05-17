@@ -48,12 +48,14 @@
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
     "@types/react-dom": "^16.9.5",
+    "copy-webpack-plugin": "^8.1.1",
     "font-awesome": "^4.7.0",
     "prismjs": "^1.20.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.1.2",
     "react-syntax-highlighter": "^12.2.1",
+    "stats.js": "^0.17.0",
     "string-similarity": "^4.0.1"
   },
   "resolutions": {

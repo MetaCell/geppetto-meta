@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import Stats from 'stats.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
@@ -41,11 +42,13 @@ export default class ThreeDEngine {
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
 
+    this.setupStats()
+
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
 
     // Setup Renderer
-    this.setupRenderer(containerRef);
+    this.setupRenderer();
 
     // Setup Lights
     this.setupLights();
@@ -60,6 +63,15 @@ export default class ThreeDEngine {
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.stop = this.stop.bind(this);
+  }
+
+  setupStats (){
+    this.stats = [new Stats(), new Stats(), new Stats()]
+    for (let i = 0; i < this.stats.length; i++){
+      this.stats[i].showPanel(i)
+      this.stats[i].domElement.style.cssText = `position:absolute;top:0px;left:${i * 80}px;`;
+      this.containerRef.appendChild( this.stats[i].dom );
+    }
   }
 
   /**
@@ -78,12 +90,12 @@ export default class ThreeDEngine {
    * Setups the renderer
    * @param containerRef
    */
-  setupRenderer (containerRef) {
+  setupRenderer () {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.autoClear = false;
-    containerRef.appendChild(this.renderer.domElement);
+    this.containerRef.appendChild(this.renderer.domElement);
     this.configureRenderer(false);
   }
 
@@ -709,6 +721,9 @@ export default class ThreeDEngine {
   }
 
   animate () {
+    for (const stat of this.stats){
+      stat.update()
+    }
     this.controls.update();
     this.renderScene();
     this.frameId = window.requestAnimationFrame(this.animate);
