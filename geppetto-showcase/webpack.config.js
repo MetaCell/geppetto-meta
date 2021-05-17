@@ -5,9 +5,7 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
-  devServer: {
-    historyApiFallback: true
-  },
+  devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
     path: __dirname + 'dist',
@@ -111,6 +109,10 @@ module.exports = {
             options: { esModule: false, },
           },
         ],
+      },
+      {
+        test: /\.obj$/,
+        loader: 'url-loader',
       },
     ],
   },

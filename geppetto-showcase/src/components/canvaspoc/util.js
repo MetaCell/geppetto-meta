@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+
 export const json = {
   global: {
     tabEnableClose: true,
@@ -64,9 +65,27 @@ export const json = {
   },
 };
 
-export function getThreeJSObjects (){
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-  const cube = new THREE.Mesh( geometry, material );
-  return [cube]
+export function getThreeJSObjects () {
+/*
+ *  const geometry = new THREE.BoxGeometry();
+ *  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+ *  const cube = new THREE.Mesh(geometry, material);
+ */
+
+  // createObject(neuronOBJ, 'neuron')
+
+  return []
 }
+
+/*
+ * function createObject ( objFile, objName ) {
+ *   const loader = new OBJLoader();
+ * 
+ *   const container = new THREE.Object3D();
+ *   loader.load( objFile , function ( object ) {
+ *     object.name = objName;
+ *     container.add( object );
+ *   })
+ *   return container;
+ * }
+ */

@@ -1,0 +1,2 @@
+SketchVolumeViewer_RIH_RIH_1_1_0000.mtl
+SketchVolumeViewer_RIH_RIH_1_1_0000.obj
