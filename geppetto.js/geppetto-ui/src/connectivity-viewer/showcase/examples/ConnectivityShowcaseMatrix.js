@@ -19,6 +19,10 @@ class ConnectivityShowcaseMatrix extends Component {
     this.linkType = this.linkType.bind(this);
   }
 
+  matrixHandler = () => {
+    console.log('Mock call to GEPPETTO.SceneController')
+  }
+
   linkType (c) {
     return GEPPETTO.ModelFactory.getAllVariablesOfType(
       c.getParent(),
@@ -31,7 +35,6 @@ class ConnectivityShowcaseMatrix extends Component {
     const layout = new Matrix();
     const colors = ['#cb0000', '#003398'];
     const names = ['pyramidals_48', 'baskets_12'];
-    const size = { width: 600, height: 500 };
     const { classes } = this.props;
 
     return (
@@ -44,9 +47,7 @@ class ConnectivityShowcaseMatrix extends Component {
           layout={layout}
           modelFactory={GEPPETTO.ModelFactory}
           resources={GEPPETTO.Resources}
-          matrixOnClickHandler={() =>
-            console.log('Mock call to GEPPETTO.SceneController')
-          }
+          matrixOnClickHandler={this.matrixHandler}
           nodeType={null}
           linkWeight={null}
           linkType={this.linkType}

@@ -27,12 +27,15 @@ class ConnectivityShowcaseForce extends Component {
     )[0].getId();
   }
 
+  matrixHandler = () => {
+    console.log('Mock call to GEPPETTO.SceneController')
+  }
+
   render () {
     const data = Instances[0];
     const layout = new Force();
     const colors = ['#cb0000', '#003398'];
     const names = ['pyramidals_48', 'baskets_12'];
-    const size = { width: 600, height: 500 };
     const { classes } = this.props;
 
     return (
@@ -45,9 +48,7 @@ class ConnectivityShowcaseForce extends Component {
           layout={layout}
           modelFactory={GEPPETTO.ModelFactory}
           resources={GEPPETTO.Resources}
-          matrixOnClickHandler={() =>
-            console.log('Mock call to GEPPETTO.SceneController')
-          }
+          matrixOnClickHandler={this.matrixHandler}
           nodeType={null}
           linkWeight={null}
           linkType={this.linkType}

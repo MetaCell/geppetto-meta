@@ -19,11 +19,7 @@ export default class HTMLViewerShowcase extends Component {
     return (
       <HTMLViewer
         content={this.htmlContent}
-        style={{
-          width: '100%',
-          height: '100%',
-          float: 'center',
-        }}
+        style={{ width: '100%', height: '100%', float: 'center' }}
         handleClick={this.handleClick}
       />
     );

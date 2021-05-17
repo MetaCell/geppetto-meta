@@ -7,7 +7,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Snackbar from '@material-ui/core/Snackbar';
 
-const styles = (theme) => ({
+const styles = theme => ({
   toolbar: {
     padding: theme.spacing(0),
     marginLeft: theme.spacing(1),
@@ -35,7 +35,7 @@ const EDIT_TOOLTIP = 'Edit in CodeSandbox';
 const COPY_SOUCE_TOOLTIP = 'Copy the source';
 
 class Code extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       source: false,
@@ -49,97 +49,95 @@ class Code extends Component {
     this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
   }
 
-  getInstantiation(file, element) {
-    let re = new RegExp(`<${element}(.|\\n)+?\\>`);
+  getInstantiation (file, element) {
+    let re = new RegExp(`<${element}(.|\\n)+?\/>`);
     let matches = file.match(re);
     if (!matches) {
       re = new RegExp(`<${element}(.|\\n)+>(.|\n)*<\/${element}>`);
       matches = file.match(re);
     }
-    let match = matches[0]
-        .replace('        />', '/>')
-        .replace(new RegExp('        ', 'g'), '  ');
+    let match = matches[0].replace(/  +/g, '  ').replace(/ +\/>/g, '/>').replace(/ +<\//g, '</')
     return matches ? match : INSTANTIATION_NOT_FOUND;
   }
 
-  handleSourceClick() {
+  handleSourceClick () {
     const sourceTooltip = this.state.source
-        ? SHOW_SOURCE_TOOLTIP
-        : HIDE_SOURCE_TOOLTIP;
+      ? SHOW_SOURCE_TOOLTIP
+      : HIDE_SOURCE_TOOLTIP;
     this.setState({ source: !this.state.source, sourceTooltip: sourceTooltip });
   }
 
-  handleEditClick() {
+  handleEditClick () {
     console.log('Open CodeSandbox');
   }
 
-  handleCopySourceClick() {
+  handleCopySourceClick () {
     this.setState(
-        () => ({ snackbarOpen: true }),
-        () => {
-          const contentToCopy = this.state.source
-              ? this.props.file
-              : this.snippet;
-          navigator.clipboard.writeText(contentToCopy);
-        }
+      () => ({ snackbarOpen: true }),
+      () => {
+        const contentToCopy = this.state.source
+          ? this.props.file
+          : this.snippet;
+        navigator.clipboard.writeText(contentToCopy);
+      }
     );
   }
-  handleSnackbarClose() {
+  handleSnackbarClose () {
     this.setState({ snackbarOpen: false });
   }
 
-  getToolbarButtons() {
+  getToolbarButtons () {
     const { sourceTooltip, snackbarOpen } = this.state;
     const { classes } = this.props;
 
     const sourceButton = (
-        <IconButtonWithTooltip
-            disabled={false}
-            onClick={this.handleSourceClick}
-            className={classes.button}
-            icon={faCode}
-            tooltip={sourceTooltip}
-        />
+      <IconButtonWithTooltip
+        disabled={false}
+        onClick={this.handleSourceClick}
+        className={classes.button}
+        icon={faCode}
+        tooltip={sourceTooltip}
+      />
     );
     const editButton = (
-        <IconButtonWithTooltip
-            disabled={true}
-            onClick={this.handleEditClick}
-            className={classes.button}
-            icon={faEdit}
-            tooltip={EDIT_TOOLTIP}
-        />
+      <IconButtonWithTooltip
+        disabled={true}
+        onClick={this.handleEditClick}
+        className={classes.button}
+        icon={faEdit}
+        tooltip={EDIT_TOOLTIP}
+      />
     );
     const copyButton = (
-        <Fragment>
-          <IconButtonWithTooltip
-              onClick={this.handleCopySourceClick}
-              className={classes.button}
-              icon={faCopy}
-              tooltip={COPY_SOUCE_TOOLTIP}
-          />
-          <Snackbar
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              open={snackbarOpen}
-              onClose={this.handleSnackbarClose}
-              autoHideDuration={6000}
-              message="The source code has been copied."
-          />
-        </Fragment>
+      <Fragment>
+        <IconButtonWithTooltip
+          onClick={this.handleCopySourceClick}
+          className={classes.button}
+          icon={faCopy}
+          tooltip={COPY_SOUCE_TOOLTIP}
+        />
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={snackbarOpen}
+          onClose={this.handleSnackbarClose}
+          autoHideDuration={6000}
+          message="The source code has been copied."
+        />
+      </Fragment>
     );
     return (
-        <div>
-          {sourceButton}
-          {copyButton}
-          {editButton}
-        </div>
+      <div>
+        {sourceButton}
+        {copyButton}
+        {editButton}
+      </div>
     );
   }
 
-  render() {
+  render () {
     const { classes, file } = this.props;
     const { source } = this.state;
 
@@ -147,19 +145,19 @@ class Code extends Component {
     const toolbarButtons = this.getToolbarButtons();
 
     return (
-        <div>
-          <Toolbar className={classes.toolbar}>
-            <div className={classes.pushRight} />
-            {toolbarButtons}
-          </Toolbar>
-          <SyntaxHighlighter
-              className={classes.code}
-              language="jsx"
-              style={darcula}
-          >
-            {content}
-          </SyntaxHighlighter>
-        </div>
+      <div>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.pushRight} />
+          {toolbarButtons}
+        </Toolbar>
+        <SyntaxHighlighter
+          className={classes.code}
+          language="jsx"
+          style={darcula}
+        >
+          {content}
+        </SyntaxHighlighter>
+      </div>
     );
   }
 }
