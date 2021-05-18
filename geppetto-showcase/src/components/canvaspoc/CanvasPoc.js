@@ -5,8 +5,9 @@ import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraCo
 import { getThreeJSObjects, json } from "./util";
 import { withStyles } from '@material-ui/core';
 import * as THREE from 'three';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import neuronOBJ from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
+// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import neuronMesh from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.drc';
 
 
 const styles = () => ({
@@ -99,8 +100,13 @@ class CanvasPoc extends Component {
   }
 
   onMount (scene) {
-    const loader = new OBJLoader();
-    loader.load( neuronOBJ , function ( object ) {
+    const loader = new DRACOLoader();
+    loader.setDecoderPath( 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/' );
+    loader.preload();
+
+    loader.load( neuronMesh , function ( geometry ) {
+      const material = new THREE.MeshStandardMaterial( { color: 0xffffff } );
+      const object = new THREE.Mesh( geometry, material );
       object.name = 'neuron';
       const box = new THREE.Box3().setFromObject(object);
       const size = box.getSize(new THREE.Vector3()).length();
@@ -123,7 +129,7 @@ class CanvasPoc extends Component {
       scene.children[0].lookAt(center);
 
       scene.add( object );
-      for (let i = 0; i < 5; i++){
+      for (let i = 0; i < 20; i++){
         const clone = object.clone()
         clone.position.z += i * 1000
         clone.name = object.name + i

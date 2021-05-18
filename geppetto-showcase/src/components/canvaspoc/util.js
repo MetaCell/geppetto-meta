@@ -65,17 +65,6 @@ export const json = {
               },
             ],
           },
-          {
-            type: 'tabset',
-            weight: 64,
-            children: [
-              {
-                type: 'tab',
-                name: 'Canvas 4',
-                component: 'canvas',
-              },
-            ],
-          },
         ],
       },
     ],

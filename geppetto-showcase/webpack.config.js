@@ -111,7 +111,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.obj$/,
+        test: /\.obj|\.drc/,
         loader: 'url-loader',
       },
     ],
