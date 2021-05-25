@@ -74,6 +74,7 @@ export default class MeshFactory {
     }
   }
 
+  // FIXME: hasVisualValue should be implemented by all types of Instance @afonsobspinto
   hasVisualValue (instance) {
     try {
       return instance.hasVisualValue()
@@ -182,6 +183,7 @@ export default class MeshFactory {
   }
 
   walkVisTreeGen3DObjsVisualValue (instance, materials) {
+    // FIXME: Is it possible that we need to iterate over children of instance? @afonsobspinto
     const visualValue = instance.getVisualValue();
     const threeDeeObj = this.create3DObjectFromInstance(
       instance,
@@ -295,8 +297,10 @@ export default class MeshFactory {
 
     if (threeObject) {
       threeObject.visible = true;
-      // FIXME: this is empty for collada and obj nodes
-
+      /*
+       * FIXME: this is empty for collada and obj nodes
+       * FIXME: ASimpleInstance doesn't have id @afonsobspinto
+       */
       const instancePath = id ? `${instance.getInstancePath()}.${id}` : instance.getInstancePath()
       threeObject.instancePath = instancePath;
       threeObject.highlighted = false;
@@ -495,7 +499,7 @@ export default class MeshFactory {
       ? this.particleTexture
       : textureLoader.load(particle);
 
-    const scene = loader.parse(node.obj, particleTexture);
+    const scene = loader.parse(this.parseBase64(node.obj), particleTexture);
     const that = this;
     scene.traverse(function (child) {
       if (child instanceof that.THREE.Mesh) {
@@ -514,6 +518,14 @@ export default class MeshFactory {
     return scene;
   }
 
+  parseBase64 (str){
+    try {
+      return atob(str.split('base64,')[1]);
+    } catch (e) {
+      return str
+    }
+  }
+
   init3DObject (meshes, instance) {
     const instancePath = instance.getInstancePath();
     const position = instance.getPosition();
@@ -521,7 +533,10 @@ export default class MeshFactory {
       const mesh = meshes[m];
 
       mesh.instancePath = instancePath;
-      // if the model file is specifying a position for the loaded meshes then we translate them here
+      /*
+       * if the model file is specifying a position for the loaded meshes then we translate them here
+       * FIXME visualValue with obj can't have position but that isn't enforced by the model @afonsobspinto
+       */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
         mesh.geometry.verticesNeedUpdate = true;

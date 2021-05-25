@@ -4,17 +4,13 @@ import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraCo
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import cube from './cube.obj';
+import * as THREE from 'three';
+
 
 const instanceTemplate = {
   "eClass": "SimpleInstance",
-  "id": "MG_C_3260_BROD_AREA",
-  "name": "Brodmann Area 1: primary somatosensory cortex - left",
-  "position": {
-    "eClass": "Point",
-    "x": -45.4,
-    "y": -24.6,
-    "z": 51.9
-  },
+  "id": "ACube",
+  "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": GEPPETTO.Resources.OBJ,
@@ -45,9 +41,9 @@ class SimpleInstancesExample extends Component {
     this.state = {
       data: getInstances(),
       cameraOptions: {
-        angle: 60,
-        near: 10,
-        far: 2000000,
+        angle: 50,
+        near: 0.01,
+        far: 1000,
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
@@ -56,8 +52,6 @@ class SimpleInstancesExample extends Component {
         reset: false,
         autorotate: false,
         wireframe: false,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { rx: 0, ry: 0, rz: 0, radius: 0 },
       },
     };
     this.canvasIndex = 3
@@ -65,7 +59,31 @@ class SimpleInstancesExample extends Component {
     this.cameraHandler = this.cameraHandler.bind(this);
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
+    this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
+  }
+  
+  onMount (scene){
+    const object = scene.children[3];
+    const box = new THREE.Box3().setFromObject(object);
+    const size = box.getSize(new THREE.Vector3()).length();
+    const center = box.getCenter(new THREE.Vector3());
+
+
+    object.position.x += (object.position.x - center.x);
+    object.position.y += (object.position.y - center.y);
+    object.position.z += (object.position.z - center.z);
+
+
+    scene.children[0].near = size / 100;
+    scene.children[0].far = size * 100;
+    scene.children[0].updateProjectionMatrix();
+
+    scene.children[0].position.copy(center);
+    scene.children[0].position.x += size / 2.0;
+    scene.children[0].position.y += size / 5.0;
+    scene.children[0].position.z += size / 2.0;
+    scene.children[0].lookAt(center);
   }
 
   cameraHandler (obj) {
@@ -102,6 +120,7 @@ class SimpleInstancesExample extends Component {
         selectionHandler={this.selectionHandler}
         backgroundColor={0x505050}
         hoverListeners={[this.hoverHandler]}
+        onMount={this.onMount}
       />
     </div>
   }
