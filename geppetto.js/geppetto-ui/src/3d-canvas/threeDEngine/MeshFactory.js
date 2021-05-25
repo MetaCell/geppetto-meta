@@ -51,7 +51,7 @@ export default class MeshFactory {
     try {
       if (this.hasVisualValue(instance)) {
         this.buildVisualInstance(instance)
-      } else if (instance.hasVisualType()) {
+      } else if (instance.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if (
           instance.getType().getMetaType()

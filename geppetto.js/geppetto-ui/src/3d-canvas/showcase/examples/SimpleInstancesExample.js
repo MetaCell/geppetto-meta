@@ -23,7 +23,7 @@ function getInstances () {
   const instance = new SimpleInstance(instanceTemplate)
   window.Instances = [instance]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
-  return window.Instances.map(i => ({ instancePath: i.getId() }))
+  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: 0, g: 0.29, b: 0.71, a: 1 } }))
 }
 
 const styles = () => ({
