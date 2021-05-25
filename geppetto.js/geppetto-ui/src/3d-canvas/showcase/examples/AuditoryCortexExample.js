@@ -29,7 +29,7 @@ class AuditoryCortexExample extends Component {
     this.canvasRef = React.createRef();
     this.state = {
       hasModelLoaded: false,
-      showLoader: true,
+      showLoader: false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -73,12 +73,7 @@ class AuditoryCortexExample extends Component {
   }
 
   componentDidMount () {
-    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
-      GEPPETTO.Manager.loadModel(model);
-      Instances.getInstance(INSTANCE_NAME);
-      this.setState({ hasModelLoaded: true, showLoader: false })
-      document.addEventListener('mousedown', this.handleClickOutside);
-    })
+    document.addEventListener('mousedown', this.handleClickOutside);
   }
   
   componentWillUnmount () {

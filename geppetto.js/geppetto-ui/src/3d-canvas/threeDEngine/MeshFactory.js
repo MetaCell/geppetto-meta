@@ -1,4 +1,5 @@
 import particle from '../textures/particle.png';
+
 require('./OBJLoader');
 
 export default class MeshFactory {
@@ -47,23 +48,37 @@ export default class MeshFactory {
   }
 
   checkVisualInstance (instance) {
-    if (instance.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-      // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
-      if (
-        instance.getType().getMetaType()
-          !== GEPPETTO.Resources.ARRAY_TYPE_NODE
-        && instance.getVisualType()
-      ) {
-        this.buildVisualInstance(instance);
+    try {
+      if (this.hasVisualValue(instance)) {
+        this.buildVisualInstance(instance)
+      } else if (instance.hasVisualType()) {
+        // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
+        if (
+          instance.getType().getMetaType()
+                    !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+                    && instance.getVisualType()
+        ) {
+          this.buildVisualInstance(instance);
+        }
+        // this block keeps traversing the instances
+        if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+          this.traverseInstances(instance.getChildren());
+        } else if (
+          instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+        ) {
+          this.traverseInstances(instance);
+        }
       }
-      // this block keeps traversing the instances
-      if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
-        this.traverseInstances(instance.getChildren());
-      } else if (
-        instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
-      ) {
-        this.traverseInstances(instance);
-      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  hasVisualValue (instance) {
+    try {
+      return instance.hasVisualValue()
+    } catch (e) {
+      return false
     }
   }
 
@@ -150,8 +165,8 @@ export default class MeshFactory {
       threeColor.setHex(color);
     } else if (
       Object.prototype.hasOwnProperty.call(color, 'r')
-      && Object.prototype.hasOwnProperty.call(color, 'g')
-      && Object.prototype.hasOwnProperty.call(color, 'b')
+            && Object.prototype.hasOwnProperty.call(color, 'g')
+            && Object.prototype.hasOwnProperty.call(color, 'b')
     ) {
       threeColor.r = color.r;
       threeColor.g = color.g;
@@ -162,6 +177,24 @@ export default class MeshFactory {
   }
 
   walkVisTreeGen3DObjs (instance, materials) {
+    return this.hasVisualValue(instance) ? this.walkVisTreeGen3DObjsVisualValue(instance, materials) 
+      : this.walkVisTreeGen3DObjsVisualType(instance, materials)
+  }
+
+  walkVisTreeGen3DObjsVisualValue (instance, materials) {
+    const visualValue = instance.getVisualValue();
+    const threeDeeObj = this.create3DObjectFromInstance(
+      instance,
+      visualValue,
+      null,
+      materials
+    );
+    if (threeDeeObj) {
+      return [threeDeeObj]
+    }
+  }
+
+  walkVisTreeGen3DObjsVisualType (instance, materials) {
     let threeDeeObj = null;
     const threeDeeObjList = [];
     let visualType = instance.getVisualType();
@@ -191,7 +224,7 @@ export default class MeshFactory {
       }
     } else if (
       visualType.getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE
-      && visualType.getId() == 'particles'
+            && visualType.getId() == 'particles'
     ) {
       const visualValue = instance.getVariable().getWrappedObj()
         .initialValues[0].value;
@@ -264,7 +297,7 @@ export default class MeshFactory {
       threeObject.visible = true;
       // FIXME: this is empty for collada and obj nodes
 
-      const instancePath = `${instance.getInstancePath()}.${id}`;
+      const instancePath = id ? `${instance.getInstancePath()}.${id}` : instance.getInstancePath()
       threeObject.instancePath = instancePath;
       threeObject.highlighted = false;
 
@@ -507,7 +540,7 @@ export default class MeshFactory {
         for (const splitMesh in splitMeshes) {
           if (
             splitMeshes[splitMesh].instancePath == instancePath
-            && splitMesh != instancePath
+                        && splitMesh != instancePath
           ) {
             const visualObject = splitMesh.substring(instancePath.length + 1);
             elements[visualObject] = '';
@@ -574,6 +607,7 @@ export default class MeshFactory {
 
     return ret;
   }
+
   /**
    * Split merged mesh into individual meshes
    *
@@ -817,7 +851,7 @@ export default class MeshFactory {
    */
   hasMesh (instance) {
     const instancePath
-      = typeof instance == 'string' ? instance : instance.getInstancePath();
+            = typeof instance == 'string' ? instance : instance.getInstancePath();
     return this.meshes[instancePath] != undefined;
   }
 
@@ -851,7 +885,7 @@ export default class MeshFactory {
    */
   getLinePrecision () {
     this.rayCasterLinePrecision
-      = this.sceneMaxRadius / this.linePrecisionMinRadius;
+            = this.sceneMaxRadius / this.linePrecisionMinRadius;
     if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
       this.rayCasterLinePrecision = this.minAllowedLinePrecision;
     }

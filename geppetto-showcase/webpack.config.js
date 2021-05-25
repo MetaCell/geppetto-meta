@@ -110,6 +110,10 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.obj|\.drc/,
+        loader: 'url-loader',
+      },
     ],
   },
   plugins: [
