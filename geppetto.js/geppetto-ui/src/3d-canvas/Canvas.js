@@ -156,15 +156,14 @@ class Canvas extends Component {
 
 Canvas.defaultProps = {
   cameraOptions: {
-    angle: 60,
-    near: 10,
-    far: 2000000,
-    position: { x: 0, y: 0, z: 0 },
+    angle: 50,
+    near: 0.01,
+    far: 1000,
     baseZoom: 1,
     reset: false,
     autorotate:false,
     wireframe:false,
-    zoomTo: [],
+    zoomTo: undefined,
     cameraControls:  { 
       instance: null,
       props: {},

@@ -95,24 +95,10 @@ export default class MeshFactory {
   }
 
   generate3DObjects (instance) {
-    const previous3DObject = this.meshes[instance.getInstancePath()];
-    let color;
-    if (previous3DObject) {
-      if (previous3DObject.material) {
-        color = previous3DObject.material.defaultColor;
-      }
-      this.scene.remove(previous3DObject);
-      const { splitMeshes } = this;
-      for (const m in splitMeshes) {
-        if (m.indexOf(instance.getInstancePath()) !== -1) {
-          this.scene.remove(splitMeshes[m]);
-        }
-      }
-    }
 
     const materials = {
-      mesh: this.getMeshPhongMaterial(color),
-      line: this.getLineMaterial(color),
+      mesh: this.getMeshPhongMaterial(),
+      line: this.getLineMaterial(),
     };
 
     const instanceObjects = [];
@@ -189,7 +175,7 @@ export default class MeshFactory {
       const threeDObj = this.create3DObjectFromInstance(
         instance,
         visualValue,
-        null,
+        instance.getId(),
         materials
       );
       if (threeDObj) {
@@ -304,9 +290,8 @@ export default class MeshFactory {
       threeObject.visible = true;
       /*
        * FIXME: this is empty for collada and obj nodes
-       * FIXME: ASimpleInstance doesn't have id @afonsobspinto
        */
-      const instancePath = id ? `${instance.getInstancePath()}.${id}` : instance.getInstancePath()
+      const instancePath = `${instance.getInstancePath()}.${id}`
       threeObject.instancePath = instancePath;
       threeObject.highlighted = false;
 

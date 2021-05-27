@@ -64,26 +64,6 @@ class SimpleInstancesExample extends Component {
   }
   
   onMount (scene){
-    const object = scene.children[3];
-    const box = new THREE.Box3().setFromObject(object);
-    const size = box.getSize(new THREE.Vector3()).length();
-    const center = box.getCenter(new THREE.Vector3());
-
-
-    object.position.x += (object.position.x - center.x);
-    object.position.y += (object.position.y - center.y);
-    object.position.z += (object.position.z - center.z);
-
-
-    scene.children[0].near = size / 100;
-    scene.children[0].far = size * 100;
-    scene.children[0].updateProjectionMatrix();
-
-    scene.children[0].position.copy(center);
-    scene.children[0].position.x += size / 2.0;
-    scene.children[0].position.y += size / 5.0;
-    scene.children[0].position.z += size / 2.0;
-    scene.children[0].lookAt(center);
   }
 
   cameraHandler (obj) {

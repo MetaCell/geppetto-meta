@@ -50,7 +50,6 @@ class AuditoryCortexExample2 extends Component {
         angle: 60,
         near: 10,
         far: 2000000,
-        flip: ['z'],
         baseZoom: 1,
         zoomTo: ['acnet2.baskets_12[7]'],
         cameraControls: { 

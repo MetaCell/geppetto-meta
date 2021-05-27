@@ -69,7 +69,7 @@ export default class ThreeDEngine {
   setupCamera (cameraOptions, aspect) {
     this.cameraManager = new CameraManager(this, {
       ...cameraOptions,
-      ...{ aspect: aspect },
+      aspect,
     });
   }
 
