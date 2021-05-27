@@ -7,7 +7,7 @@
  * @author Giovanni Idili
  */
 
-const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
+const extend = require('../common/Utils').extend;
 const ObjectWrapper = require('./ObjectWrapper');
 
 function Variable (options) {
@@ -82,7 +82,7 @@ Variable.prototype.getValue = function () {
     return values;
   }
 };
-    
+
 /**
  * Get the list of values for this variable
  *

@@ -1,18 +1,32 @@
 {
   "name": "@geppettoengine/geppetto-core",
   "version": "3.0.0",
-  "description": "Geppetto web frontend. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
-  "repository": "http://git.geppetto.org",
+  "description": "The core functionality of Geppetto-Meta to build and simulate neuroscience data and models.",
+  "keywords": [
+    "geppetto",
+    "neuroscience"
+  ],
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaCell/geppetto-meta"
+  },
   "license": "MIT",
   "scripts": {
     "lint-fix": "eslint . --fix",
     "lint": "eslint .",
-    "test": "jest",
-    "transpile": "babel . -d dist"
+    "test": "jest"
   },
   "dependencies": {
-    
+    "jszip": "^3.2.1",
+    "file-saver": "^1.3.3",
+    "backbone": "^1.3.3",
+    "jquery": "^3.4.0",
+    "underscore": "~1.9.1"
   },
+  "files": [
+    "src"
+  ],
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {
@@ -21,5 +35,4 @@
       ]
     }
   }
-  
 }

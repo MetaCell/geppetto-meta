@@ -1,5 +1,5 @@
 const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
+const extend = require('../common/Utils').extend;
 /**
  * Client class use to represent a variable.
  *
@@ -28,7 +28,7 @@ class Value extends ObjectWrapper{
       return { 'value': this.getObject(rawValue.value) }
     default:{
       let obj = { ...rawValue };
-      
+
       if (obj.value && obj.value.eClass) {
         extend(obj, this.getObject(obj.value));
       }
@@ -53,7 +53,7 @@ class Value extends ObjectWrapper{
     }
     return obj;
   }
-  
+
 }
 
 // Compatibility with new imports and old require syntax
