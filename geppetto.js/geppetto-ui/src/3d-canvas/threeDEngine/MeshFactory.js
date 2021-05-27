@@ -31,7 +31,7 @@ export default class MeshFactory {
   }
 
   getMeshes () {
-    const meshes = this.splitMeshes;
+    const meshes = { ...this.splitMeshes };
     for (const m in this.meshes) {
       if (!(m in meshes)) {
         meshes[m] = this.meshes[m];
@@ -124,7 +124,7 @@ export default class MeshFactory {
   }
 
   getMeshPhongMaterial (color) {
-    if (color == undefined) {
+    if (color === undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.MeshPhongMaterial({
@@ -141,7 +141,7 @@ export default class MeshFactory {
   }
 
   getLineMaterial (color) {
-    if (color == undefined) {
+    if (color === undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.LineBasicMaterial();
@@ -347,7 +347,7 @@ export default class MeshFactory {
 
   create3DLineFromNode (node, material) {
     let threeObject = null;
-    if (node.eClass == GEPPETTO.Resources.CYLINDER) {
+    if (node.eClass === GEPPETTO.Resources.CYLINDER) {
       const bottomBasePos = new this.THREE.Vector3(
         node.position.x,
         node.position.y,
@@ -381,7 +381,7 @@ export default class MeshFactory {
       );
 
       threeObject.geometry.verticesNeedUpdate = true;
-    } else if (node.eClass == GEPPETTO.Resources.SPHERE) {
+    } else if (node.eClass === GEPPETTO.Resources.SPHERE) {
       const sphere = new this.THREE.SphereGeometry(node.radius, 20, 20);
       threeObject = new this.THREE.Mesh(sphere, material);
       threeObject.position.set(
@@ -544,8 +544,8 @@ export default class MeshFactory {
         const elements = {};
         for (const splitMesh in splitMeshes) {
           if (
-            splitMeshes[splitMesh].instancePath == instancePath
-                        && splitMesh != instancePath
+            splitMeshes[splitMesh].instancePath === instancePath
+                        && splitMesh !== instancePath
           ) {
             const visualObject = splitMesh.substring(instancePath.length + 1);
             elements[visualObject] = '';
@@ -616,10 +616,10 @@ export default class MeshFactory {
   /**
    * Split merged mesh into individual meshes
    *
-   * @param {String}
    *            instance - original instance
-   * @param {object}
    *            groups - The groups that we need to split mesh into
+   * @param instance
+   * @param groupElements
    */
   splitGroups (instance, groupElements) {
     if (!this.hasMesh(instance)) {
@@ -662,7 +662,7 @@ export default class MeshFactory {
      */
 
     for (const v in map) {
-      if (v != undefined) {
+      if (v !== undefined) {
         const m = this.visualModelMap[map[v]];
 
         // eslint-disable-next-line no-eval
@@ -682,8 +682,7 @@ export default class MeshFactory {
           );
         } else {
           // get group elements list for object
-          const groupElementsReference = object.getInitialValue().value
-            .groupElements;
+          const groupElementsReference = object.getInitialValue().value.groupElements;
           for (let i = 0; i < groupElementsReference.length; i++) {
             const objectGroup = GEPPETTO.ModelFactory.resolve(
               groupElementsReference[i].$ref
@@ -727,14 +726,14 @@ export default class MeshFactory {
   /**
    * Add mesh to geometry groups
    *
-   * @param {String}
    *            instancePath - Path of aspect, corresponds to original merged mesh
-   * @param {String}
    *            id - local path to the group
-   * @param {object}
    *            groups - The groups that we need to split mesh into
-   * @param {object}
    *            m - current mesh
+   * @param instance
+   * @param id
+   * @param geometryGroups
+   * @param m
    */
   addMeshToGeometryGroup (instance, id, geometryGroups, m) {
     if (!this.hasMesh(instance)) {
@@ -832,8 +831,8 @@ export default class MeshFactory {
   /**
    * Get Meshes associated to an instance
    *
-   * @param {String}
    *            instancePath - Path of the instance
+   * @param instancePath
    */
   getRealMeshesForInstancePath (instancePath) {
     const meshes = [];
@@ -857,7 +856,7 @@ export default class MeshFactory {
   hasMesh (instance) {
     const instancePath
             = typeof instance == 'string' ? instance : instance.getInstancePath();
-    return this.meshes[instancePath] != undefined;
+    return this.meshes[instancePath] !== undefined;
   }
 
   /**
@@ -869,7 +868,7 @@ export default class MeshFactory {
     let currentRadius = 0;
     if (object.children.length > 0) {
       for (let i = 0; i < object.children.length; i++) {
-        if (object.children[i] != undefined) {
+        if (object.children[i] !== undefined) {
           this.calculateSceneMaxRadius(object.children[i]);
         }
       }
@@ -889,10 +888,9 @@ export default class MeshFactory {
    * Calculates linePrecision used by raycaster when picking objects.
    */
   getLinePrecision () {
-    this.rayCasterLinePrecision
-            = this.sceneMaxRadius / this.linePrecisionMinRadius;
+    this.rayCasterLinePrecision = this.sceneMaxRadius / this.linePrecisionMinRadius;
     if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
-      this.rayCasterLinePrecision = this.minAllowedLinePrecision;
+      this.rayCasterLinePrecision = this .minAllowedLinePrecision;
     }
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
