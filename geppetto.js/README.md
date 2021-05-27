@@ -12,8 +12,8 @@ For information about how this fits into [Geppetto](http://www.geppetto.org/) re
 
 # Geppetto Core
 
-The Core components of Geppetto Client (work in progress)
+The Core components of Geppetto.js (work in progress)
 
 # Geppetto UI
 
-The UI components of Geppetto Client (work in progress)
+The UI components of Geppetto.js (work in progress)
