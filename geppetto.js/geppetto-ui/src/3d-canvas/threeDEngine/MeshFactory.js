@@ -3,7 +3,6 @@ import particle from '../textures/particle.png';
 require('./OBJLoader');
 
 export default class MeshFactory {
-  // TODO: Make all arguments props
   constructor (
     scene,
     linesThreshold = 2000,
@@ -43,6 +42,9 @@ export default class MeshFactory {
 
   traverseInstances (instances) {
     for (let j = 0; j < instances.length; j++) {
+      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())){
+        continue
+      }
       this.checkVisualInstance(instances[j]);
     }
   }
@@ -51,7 +53,7 @@ export default class MeshFactory {
     try {
       if (this.hasVisualValue(instance)) {
         this.buildVisualInstance(instance)
-      } else if (instance.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
+      } else if (this.hasVisualType(instance)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if (
           instance.getType().getMetaType()
@@ -74,7 +76,6 @@ export default class MeshFactory {
     }
   }
 
-  // FIXME: hasVisualValue should be implemented by all types of Instance @afonsobspinto
   hasVisualValue (instance) {
     try {
       return instance.hasVisualValue()
@@ -83,7 +84,12 @@ export default class MeshFactory {
     }
   }
 
+  hasVisualType (instance){
+    return instance.getVisualType() !== undefined || instance.getChildren().some(i => this.hasVisualType(i))
+  }
+
   buildVisualInstance (instance) {
+
     const meshes = this.generate3DObjects(instance);
     this.init3DObject(meshes, instance);
   }
@@ -98,7 +104,7 @@ export default class MeshFactory {
       this.scene.remove(previous3DObject);
       const { splitMeshes } = this;
       for (const m in splitMeshes) {
-        if (m.indexOf(instance.getInstancePath()) != -1) {
+        if (m.indexOf(instance.getInstancePath()) !== -1) {
           this.scene.remove(splitMeshes[m]);
         }
       }
@@ -123,7 +129,7 @@ export default class MeshFactory {
           instanceObjects.push(threeDeeObjList[obj]);
         }
       }
-    } else if (threeDeeObjList.length == 1) {
+    } else if (threeDeeObjList.length === 1) {
       // only one object in list, add it to local array and set
       instanceObjects.push(threeDeeObjList[0]);
       instanceObjects[0].instancePath = instance.getInstancePath();
@@ -178,42 +184,43 @@ export default class MeshFactory {
   }
 
   walkVisTreeGen3DObjs (instance, materials) {
-    return this.hasVisualValue(instance) ? this.walkVisTreeGen3DObjsVisualValue(instance, materials) 
-      : this.walkVisTreeGen3DObjsVisualType(instance, materials)
-  }
-
-  walkVisTreeGen3DObjsVisualValue (instance, materials) {
-    // FIXME: Is it possible that we need to iterate over children of instance? @afonsobspinto
-    const visualValue = instance.getVisualValue();
-    const threeDeeObj = this.create3DObjectFromInstance(
-      instance,
-      visualValue,
-      null,
-      materials
-    );
-    if (threeDeeObj) {
-      return [threeDeeObj]
+    if (this.hasVisualValue(instance)){
+      const visualValue = instance.getVisualValue();
+      const threeDObj = this.create3DObjectFromInstance(
+        instance,
+        visualValue,
+        null,
+        materials
+      );
+      if (threeDObj) {
+        return [threeDObj]
+      }
+    }
+    let visualType
+    try {
+      visualType = instance.getVisualType();
+    } catch (e){
+      visualType = undefined
+    }
+    if (visualType === undefined) {
+      return [];
+    } else if (visualType.isArray) {
+      const threeDObjList = []
+      visualType.forEach(vt => threeDObjList.push(this.walkVisTreeGen3DObjsVisualType(vt, instance, materials)))
+      return threeDObjList
+    } else {
+      return this.walkVisTreeGen3DObjsVisualType(visualType, instance, materials)
     }
   }
 
-  walkVisTreeGen3DObjsVisualType (instance, materials) {
-    let threeDeeObj = null;
+  walkVisTreeGen3DObjsVisualType (visualType, instance, materials){
     const threeDeeObjList = [];
-    let visualType = instance.getVisualType();
-    if (visualType == undefined) {
-      return threeDeeObjList;
-    }
-    if (visualType.isArray) {
-      // FIXME: if there is more than one visual type we need to display all of them
-      visualType = visualType[0];
-    }
+    let threeDeeObj = null;
     if (
-      visualType.getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
+      visualType.getMetaType() === GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
     ) {
-      // eslint-disable-next-line guard-for-in
       for (const v in visualType.getVariables()) {
-        const visualValue = visualType.getVariables()[v].getWrappedObj()
-          .initialValues[0].value;
+        const visualValue = visualType.getVariables()[v].getWrappedObj().initialValues[0].value;
         threeDeeObj = this.create3DObjectFromInstance(
           instance,
           visualValue,
@@ -225,11 +232,10 @@ export default class MeshFactory {
         }
       }
     } else if (
-      visualType.getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE
-            && visualType.getId() == 'particles'
+      visualType.getMetaType() === GEPPETTO.Resources.VISUAL_TYPE_NODE
+        && visualType.getId() === 'particles'
     ) {
-      const visualValue = instance.getVariable().getWrappedObj()
-        .initialValues[0].value;
+      const visualValue = instance.getVariable().getWrappedObj().initialValues[0].value;
       threeDeeObj = this.create3DObjectFromInstance(
         instance,
         visualValue,
@@ -251,14 +257,13 @@ export default class MeshFactory {
         threeDeeObjList.push(threeDeeObj);
       }
     }
-
-    return threeDeeObjList;
+    return threeDeeObjList
   }
 
   create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
 
-    const lines = this.getDefaultGeometryType() == 'lines';
+    const lines = this.getDefaultGeometryType() === 'lines';
 
     const material = lines ? materials.line : materials.mesh;
 
@@ -582,7 +587,7 @@ export default class MeshFactory {
         }
         mergedLines.vertices.push(obj.geometry.vertices[0]);
         mergedLines.vertices.push(obj.geometry.vertices[1]);
-      } else if (obj.geometry.type == 'Geometry') {
+      } else if (obj.geometry.type === 'Geometry') {
         // This catches both Collada an OBJ
         if (objArray.length > 1) {
           throw Error('Merging of multiple OBJs or Colladas not supported');
@@ -609,7 +614,7 @@ export default class MeshFactory {
       ret = new that.THREE.Mesh(mergedMeshes, materials.mesh);
     } else {
       ret = new that.THREE.LineSegments(mergedLines, materials.line);
-      if (mergedMeshes != undefined) {
+      if (mergedMeshes !== undefined) {
         // we merge into a single mesh both types of geometries (from lines and 3D objects)
         const tempmesh = new that.THREE.Mesh(mergedMeshes, materials.mesh);
         ret.geometry.merge(tempmesh.geometry, tempmesh.matrix);
