@@ -143,9 +143,9 @@ class Canvas extends Component {
       <div className={classes.container} ref={this.sceneRef}>
         {
           <cameraOptions.cameraControls.instance
-            ref={this.cameraControls} 
-            wireframeButtonEnabled={cameraControls.props.wireframeButtonEnabled}
+            ref={this.cameraControls}
             cameraControlsHandler={cameraControlsHandler}
+            {...cameraControls.props}
           />
         }
       </div>
