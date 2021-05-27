@@ -33,7 +33,7 @@ class CA1Example extends Component {
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
           visualGroups: {
-            index: 0,
+            index: 4,
             custom: {
               soma_group: { color: COLORS[0], },
               dendrite_group: { color: COLORS[1], },
