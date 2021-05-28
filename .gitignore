@@ -1,2 +1,5 @@
 .idea/
-*.iml
+**/*.iml
+**/.yalc
+**/yalc.lock
+.vscode/

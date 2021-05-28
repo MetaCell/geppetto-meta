@@ -6,7 +6,7 @@
     "geppetto",
     "neuroscience"
   ],
-  "main": "js/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaCell/geppetto-meta"
@@ -14,15 +14,15 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "build": "yarn build:js && yarn build:package",
+    "build:js": "babel js -d build",
+    "build:package": "cp package.json build",
+    "publish": "cd build && yarn publish"
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/preset-env": "^7.7.1",
     "@material-ui/core": "^4.1.3",
     "anchorme": "^0.7.1",
-    "babel-jest": "^24.9.0",
-    "babel-polyfill": "^6.26.0",
     "backbone": "^1.3.3",
     "backbone-associations": "^0.6.2",
     "backbone.localstorage": "^1.1.16",
@@ -61,15 +61,20 @@
     "underscore": "~1.9.1",
     "url-join": "^4.0.0"
   },
+  "peerDependencies": {
+    "@geppettoengine/geppetto-core": "3.0.0"
+  },
   "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/preset-react": "^7.13.13",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^6.0.1",
     "jest": "^24.9.0"
   },
-  "files": [
-    "js",
-    "style"
-  ],
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {

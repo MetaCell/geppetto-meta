@@ -6,7 +6,7 @@
     "geppetto",
     "neuroscience"
   ],
-  "main": "src/index.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaCell/geppetto-meta"
@@ -15,7 +15,11 @@
   "scripts": {
     "lint-fix": "eslint . --fix",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "build": "yarn build:js && yarn build:package",
+    "build:js": "babel src -d build",
+    "build:package": "cp package.json build",
+    "publish": "cd build && yarn publish"
   },
   "dependencies": {
     "jszip": "^3.2.1",
@@ -24,9 +28,16 @@
     "jquery": "^3.4.0",
     "underscore": "~1.9.1"
   },
-  "files": [
-    "src"
-  ],
+  "devDependencies": {
+    "@babel/cli": "^7.14.3",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^6.0.1",
+    "jest": "^24.9.0"
+  },
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {
