@@ -21,7 +21,8 @@
     "build:ts": "tsc",
     "build:src": "rm -rf build && mkdir build && cp -r src/. build && yarn build:package",
     "build:package": "cp package.json build",
-    "publish": "cd build && yarn publish"
+    "dist": "cd build && yarn publish",
+    "publish:yalc": "cd build && yalc publish"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",

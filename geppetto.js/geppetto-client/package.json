@@ -19,7 +19,8 @@
     "build:js": "babel js -d build",
     "build:style": "cp -r style build",
     "build:package": "cp package.json build",
-    "publish": "cd build && yarn publish"
+    "dist": "cd build && yarn publish",
+    "publish:yalc": "cd build && yalc publish"
   },
   "dependencies": {
     "@material-ui/core": "^4.1.3",

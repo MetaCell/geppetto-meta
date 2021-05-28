@@ -15,14 +15,23 @@ COPY geppetto-showcase/package*.json geppetto-showcase/
 COPY geppetto-showcase/yarn.lock geppetto-showcase/
 COPY geppetto.js geppetto.js
 
-# Prepare geppetto-client dependency
+# Prepare geppetto-client/core/ui dependencies
 RUN yarn global add yalc
-WORKDIR /app/geppetto.js
-RUN yalc publish
+WORKDIR /app/geppetto.js/geppetto-ui
+# Only build src since we parse the src files to extract e.g. React props
+RUN yarn && yarn build:src && yarn publish:yalc
+
+WORKDIR /app/geppetto.js/geppetto-core
+RUN yarn && yarn build && yarn publish:yalc
+
+WORKDIR /app/geppetto.js/geppetto-client
+RUN yarn && yarn build && yarn publish:yalc
 
 # INSTALL PACKAGES
 WORKDIR /app/geppetto-showcase
+RUN yalc add @geppettoengine/geppetto-ui
 RUN yalc add @geppettoengine/geppetto-client
+RUN yalc add @geppettoengine/geppetto-core
 RUN yarn
 
 # COPY SOURCE CODE
