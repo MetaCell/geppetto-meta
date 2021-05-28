@@ -63,7 +63,7 @@ yarn start
 ```bash
 yarn global add nodemon
 cd ../geppetto.js/geppetto-ui
-nodemon -x 'yalc push'
+nodemon -w ./src -x 'yarn build:src && yalc push build'
 ```
 
 ## Deployment
