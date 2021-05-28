@@ -18,6 +18,8 @@
     "build": "yarn build:js && yarn build:types && yarn build:package",
     "build:js": "babel src -d build --copy-files",
     "build:types": "tsc --emitDeclarationOnly",
+    "build:ts": "tsc",
+    "build:src": "rm -rf build && mkdir build && cp -r src/. build && yarn build:package",
     "build:package": "cp package.json build",
     "publish": "cd build && yarn publish"
   },
@@ -28,6 +30,8 @@
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.11.2",
     "@types/react-dom": "^16.9.5",
+    "aframe": "^1.2.0",
+    "aframe-slice9-component": "^1.0.0",
     "ami.js": "^0.32.0",
     "axios": "^0.21.1",
     "create-react-class": "^15.6.3",
