@@ -30,6 +30,7 @@ class Canvas extends Component {
       pickingEnabled,
       linesThreshold,
       hoverListeners,
+      setColorHandler,
       onMount
     } = this.props;
     this.threeDEngine = new ThreeDEngine(
@@ -40,7 +41,8 @@ class Canvas extends Component {
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      hoverListeners
+      hoverListeners,
+      setColorHandler 
     );
     this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -177,6 +179,7 @@ Canvas.defaultProps = {
   threeDObjects: [],
   cameraHandler: () => {},
   selectionHandler: () => {},
+  setColorHandler: () => true,
   onMount: () => {},
   modelVersion: 0
 };
@@ -205,7 +208,11 @@ Canvas.propTypes = {
   /**
    * Function to callback on selection changes
    */
-  selectionHandler: PropTypes.func,
+  selectionHandler: PropTypes.func,  
+  /**
+   * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
+   */
+  setColorHandler: PropTypes.func,
   /**
    * Function to callback on component did mount with scene
    */

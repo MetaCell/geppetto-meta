@@ -4,7 +4,6 @@ import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraCo
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import cube from './cube.obj';
-import * as THREE from 'three';
 
 
 const instanceTemplate = {
@@ -23,7 +22,7 @@ function getInstances () {
   const instance = new SimpleInstance(instanceTemplate)
   window.Instances = [instance]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
-  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: 0, g: 0.29, b: 0.71, a: 1 } }))
+  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: 1, g: 0, b: 0, a: 1 } }))
 }
 
 const styles = () => ({

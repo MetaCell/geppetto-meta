@@ -89,7 +89,6 @@ export default class MeshFactory {
   }
 
   buildVisualInstance (instance) {
-
     const meshes = this.generate3DObjects(instance);
     this.init3DObject(meshes, instance);
   }
@@ -807,12 +806,12 @@ export default class MeshFactory {
     if (!this.hasMesh(instancePath)) {
       return;
     }
-    var meshes = this.getRealMeshesForInstancePath(instancePath);
+    const meshes = this.getRealMeshesForInstancePath(instancePath);
     if (meshes.length > 0) {
-      for (var i = 0; i < meshes.length; i++) {
-        var mesh = meshes[i];
+      for (let i = 0; i < meshes.length; i++) {
+        const mesh = meshes[i];
         if (mesh) {
-          var that = this;
+          const that = this;
           mesh.traverse(function (object) {
             if (Object.prototype.hasOwnProperty.call(object, 'material')) {
               that.setThreeColor(object.material.color, color);
@@ -854,8 +853,7 @@ export default class MeshFactory {
    * @param instance
    */
   hasMesh (instance) {
-    const instancePath
-            = typeof instance == 'string' ? instance : instance.getInstancePath();
+    const instancePath = typeof instance == 'string' ? instance : instance.getInstancePath();
     return this.meshes[instancePath] !== undefined;
   }
 

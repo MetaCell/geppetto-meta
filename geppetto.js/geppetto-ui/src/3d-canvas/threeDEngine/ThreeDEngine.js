@@ -12,6 +12,7 @@ import Instance from '@geppettoengine/geppetto-core/model/Instance';
 import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
 import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
+import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 require('./TrackballControls');
 
 export default class ThreeDEngine {
@@ -23,7 +24,8 @@ export default class ThreeDEngine {
     backgroundColor,
     pickingEnabled,
     linesThreshold,
-    hoverListeners
+    hoverListeners,
+    setColorHandler,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -36,6 +38,7 @@ export default class ThreeDEngine {
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
+    this.setColorHandler = setColorHandler;
 
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
@@ -236,13 +239,13 @@ export default class ThreeDEngine {
   /**
    * Sets the color of the instances
    *
-   * @param proxyInstances
+   * @param path
    * @param color
    */
   setInstanceColor (path, color) {
     const entity = Instances.getInstance(path);
-    if (entity.hasCapability('VisualCapability')) {
-      if (entity instanceof Instance || entity instanceof ArrayInstance) {
+    if (entity && this.setColorHandler(entity)) {
+      if (entity instanceof Instance || entity instanceof ArrayInstance || entity instanceof SimpleInstance) {
         this.meshFactory.setColor(path, color);
 
         if (typeof entity.getChildren === 'function') {
@@ -259,7 +262,6 @@ export default class ThreeDEngine {
         }
       }
     }
-    return this;
   }
 
   /**
