@@ -15,8 +15,9 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "build": "yarn build:js && yarn build:package",
+    "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:js": "babel js -d build",
+    "build:style": "cp -r style build",
     "build:package": "cp package.json build",
     "publish": "cd build && yarn publish"
   },
