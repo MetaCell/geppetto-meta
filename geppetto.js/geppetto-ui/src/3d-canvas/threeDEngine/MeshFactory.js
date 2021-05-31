@@ -1,4 +1,5 @@
 import particle from '../textures/particle.png';
+import { hasVisualType } from "./util";
 
 require('./OBJLoader');
 
@@ -53,7 +54,7 @@ export default class MeshFactory {
     try {
       if (this.hasVisualValue(instance)) {
         this.buildVisualInstance(instance)
-      } else if (this.hasVisualType(instance)) {
+      } else if (hasVisualType(instance)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if (
           instance.getType().getMetaType()
@@ -82,10 +83,6 @@ export default class MeshFactory {
     } catch (e) {
       return false
     }
-  }
-
-  hasVisualType (instance){
-    return instance.getVisualType() !== undefined || instance.getChildren().some(i => this.hasVisualType(i))
   }
 
   buildVisualInstance (instance) {

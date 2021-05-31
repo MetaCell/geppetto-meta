@@ -13,6 +13,8 @@ import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
 import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
+import { hasVisualType } from "./util";
+
 require('./TrackballControls');
 
 export default class ThreeDEngine {
@@ -94,7 +96,7 @@ export default class ThreeDEngine {
    * @param shaders
    */
   configureRenderer (shaders) {
-    if (shaders == undefined) {
+    if (shaders === undefined) {
       shaders = false;
     }
 
@@ -165,8 +167,8 @@ export default class ThreeDEngine {
 
     const visibleChildren = [];
     this.scene.traverse(function (child) {
-      if (child.visible && !(child.clickThrough == true)) {
-        if (child.geometry != null && child.geometry != undefined) {
+      if (child.visible && !(child.clickThrough === true)) {
+        if (child.geometry != null) {
           if (child.type !== 'Points') {
             child.geometry.computeBoundingBox();
           }
@@ -175,10 +177,8 @@ export default class ThreeDEngine {
       }
     });
 
-    const intersected = raycaster.intersectObjects(visibleChildren);
-
     // returns an array containing all objects in the scene with which the ray intersects
-    return intersected;
+    return raycaster.intersectObjects(visibleChildren);
   }
 
   /**
@@ -326,7 +326,7 @@ export default class ThreeDEngine {
         let color = visualElements[j].getColor();
         if (visualElements[j].getValue() != null) {
           let intensity = 1;
-          if (maxDensity != minDensity) {
+          if (maxDensity !== minDensity) {
             intensity
               = (visualElements[j].getValue() - minDensity)
               / (maxDensity - minDensity);
@@ -357,7 +357,7 @@ export default class ThreeDEngine {
    * @param {boolean} mode - Show or hide connection lines
    */
   showConnectionLines (instancePath, mode) {
-    if (mode == null || mode == undefined) {
+    if (mode == null) {
       mode = true;
     }
     const entity = Instances.getInstance(instancePath);
@@ -372,7 +372,7 @@ export default class ThreeDEngine {
       // fetch all instances for the given type or variable and call hide on each
       const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
       for (let j = 0; j < instances.length; j++) {
-        if (instances[j].hasCapability('VisualCapability')) {
+        if (hasVisualType(instances[j])) {
           this.showConnectionLines(instances[j], mode);
         }
       }
@@ -395,12 +395,12 @@ export default class ThreeDEngine {
     for (let c = 0; c < connections.length; c++) {
 
       const connection = connections[c];
-      const type = connection.getA().getPath() == instance.getInstancePath()
+      const type = connection.getA().getPath() === instance.getInstancePath()
         ? GEPPETTO.Resources.OUTPUT
         : GEPPETTO.Resources.INPUT;
 
-      const thisEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getA() : connection.getB();
-      const otherEnd = connection.getA().getPath() == instance.getInstancePath() ? connection.getB() : connection.getA();
+      const thisEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getA() : connection.getB();
+      const otherEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getB() : connection.getA();
       const otherEndPath = otherEnd.getPath();
 
       const otherEndMesh = this.meshFactory.meshes[otherEndPath];
@@ -408,7 +408,7 @@ export default class ThreeDEngine {
       let destination;
       let origin;
 
-      if (thisEnd.getPoint() == undefined) {
+      if (thisEnd.getPoint() === undefined) {
         // same as before
         origin = defaultOrigin;
       } else {
@@ -417,7 +417,7 @@ export default class ThreeDEngine {
         origin = new THREE.Vector3(p.x + mesh.position.x, p.y + mesh.position.y, p.z + mesh.position.z);
       }
 
-      if (otherEnd.getPoint() == undefined) {
+      if (otherEnd.getPoint() === undefined) {
         // same as before
         destination = otherEndMesh.position.clone();
       } else {
@@ -435,7 +435,7 @@ export default class ThreeDEngine {
       let colour = null;
 
 
-      if (type == GEPPETTO.Resources.INPUT) {
+      if (type === GEPPETTO.Resources.INPUT) {
 
         colour = GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED;
 
@@ -450,7 +450,7 @@ export default class ThreeDEngine {
           inputs[otherEndPath] = [];
           inputs[otherEndPath].push(connection.getInstancePath());
         }
-      } else if (type == GEPPETTO.Resources.OUTPUT) {
+      } else if (type === GEPPETTO.Resources.OUTPUT) {
 
         colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
         // figure out if connection is both, input and output
@@ -488,7 +488,7 @@ export default class ThreeDEngine {
    * @param instance - optional, instance for which we want to remove the connections
    */
   removeConnectionLines (instance) {
-    if (instance != undefined) {
+    if (instance !== undefined) {
       const connections = instance.getConnections();
       // get connections for given instance and remove only those
       const lines = this.meshFactory.connectionLines;
@@ -531,7 +531,7 @@ export default class ThreeDEngine {
     this.renderer.domElement.addEventListener(
       'mouseup',
       function (event) {
-        if (event.target == that.renderer.domElement) {
+        if (event.target === that.renderer.domElement) {
           const x = event.clientX;
           const y = event.clientY;
 
@@ -539,8 +539,8 @@ export default class ThreeDEngine {
           if (
             typeof that.clientX === 'undefined'
             || typeof that.clientY === 'undefined'
-            || x != that.clientX
-            || y != that.clientY
+            || x !== that.clientX
+            || y !== that.clientY
           ) {
             return;
           }
@@ -560,7 +560,7 @@ export default class ThreeDEngine {
               * 2
             - 1;
 
-          if (event.button == 0) {
+          if (event.button === 0) {
             // only for left click
             if (that.pickingEnabled) {
               const intersects = that.getIntersectedObjects();
@@ -611,7 +611,7 @@ export default class ThreeDEngine {
                       instancePath
                     )
                   ) {
-                    if (geometryIdentifier == undefined) {
+                    if (geometryIdentifier === undefined) {
                       geometryIdentifier = '';
                     }
                     if (!(instancePath in selectedMap)) {
@@ -653,7 +653,7 @@ export default class ThreeDEngine {
         if (that.hoverListeners) {
           const intersects = that.getIntersectedObjects();
           for (const listener in that.hoverListeners) {
-            if (intersects.length != 0) {
+            if (intersects.length !== 0) {
               that.hoverListeners[listener](intersects);
             }
           }
@@ -672,7 +672,7 @@ export default class ThreeDEngine {
     const that = this;
     this.scene.traverse(function (child) {
       if (child instanceof THREE.Mesh) {
-        if (!(child.material.nowireframe == true)) {
+        if (!(child.material.nowireframe === true)) {
           child.material.wireframe = that.wireframe;
         }
       }
