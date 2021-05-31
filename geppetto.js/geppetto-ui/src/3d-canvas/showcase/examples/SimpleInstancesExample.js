@@ -4,6 +4,7 @@ import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraCo
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import cube from './cube.obj';
+import Button from "@material-ui/core/Button";
 
 
 const instanceTemplate = {
@@ -16,13 +17,30 @@ const instanceTemplate = {
     'obj': cube
   }
 }
+const instanceTemplate2 = {
+  "eClass": "SimpleInstance",
+  "id": "ASecondCube",
+  "name": "The second SimpleInstance to be render with Geppetto Canvas",
+  "type": { "eClass": "SimpleType" },
+  "position": {
+    "eClass": "Point",
+    "x": 0,
+    "y": 0,
+    "z": 1
+  },
+  "visualValue": {
+    "eClass": GEPPETTO.Resources.OBJ,
+    'obj': cube
+  }
+}
 
 function getInstances () {
   GEPPETTO.ModelFactory.cleanModel();
   const instance = new SimpleInstance(instanceTemplate)
-  window.Instances = [instance]
+  const instance2 = new SimpleInstance(instanceTemplate2)
+  window.Instances = [instance, instance2]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
-  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: 1, g: 0, b: 0, a: 1 } }))
+  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: Math.random(), g: Math.random(), b: Math.random(), a: 1 } }))
 }
 
 const styles = () => ({
@@ -51,6 +69,7 @@ class SimpleInstancesExample extends Component {
         reset: false,
         autorotate: false,
         wireframe: false,
+        showModel: false
       },
     };
     this.canvasIndex = 3
@@ -59,7 +78,17 @@ class SimpleInstancesExample extends Component {
     this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
     this.onMount = this.onMount.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
     this.layoutRef = React.createRef();
+  }
+
+  componentDidMount () {
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('mousedown', this.handleClickOutside);
   }
   
   onMount (scene){
@@ -77,10 +106,22 @@ class SimpleInstancesExample extends Component {
   hoverHandler (obj) {
     console.log("hover handler" + obj)
   }
+  handleToggle () {
+    this.setState({ showModel: true })
+  }
+
+
+  handleClickOutside (event) {
+    if (this.node && !this.node.contains(event.target)) {
+      if (event.offsetX <= event.target.clientWidth){
+        this.setState({ showModel: false })
+      }
+    }
+  }
 
 
   render () {
-    const { data, cameraOptions } = this.state
+    const { data, cameraOptions, showModel } = this.state
     const { classes } = this.props
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -90,7 +131,7 @@ class SimpleInstancesExample extends Component {
         rotation: this.lastCameraUpdate.rotation,
       };
     }
-    return <div ref={node => this.node = node} className={classes.container}>
+    return showModel ? <div ref={node => this.node = node} className={classes.container}>
       <Canvas
         ref={this.canvasRef}
         data={data}
@@ -101,7 +142,13 @@ class SimpleInstancesExample extends Component {
         hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />
-    </div>
+    </div> : <Button
+      variant="outlined"
+      color="primary"
+      onClick={this.handleToggle}
+    >
+      Show Example
+    </Button>
   }
 }
 

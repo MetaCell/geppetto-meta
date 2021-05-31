@@ -521,12 +521,9 @@ export default class MeshFactory {
       mesh.instancePath = instancePath;
       /*
        * if the model file is specifying a position for the loaded meshes then we translate them here
-       * FIXME visualValue with obj can't have position but that isn't enforced by the model @afonsobspinto
        */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
-        mesh.geometry.verticesNeedUpdate = true;
-        mesh.updateMatrix();
       }
       this.meshes[instancePath] = mesh;
       this.meshes[instancePath].visible = true;
