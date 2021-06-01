@@ -323,7 +323,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_SimulatorRow);
 
   /**

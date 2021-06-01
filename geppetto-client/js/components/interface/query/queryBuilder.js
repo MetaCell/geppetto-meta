@@ -1165,7 +1165,7 @@ define(function (require) {
 
         var loadHandler = function (self) {
           // TODO: plug the component in the redux connector and replace this with the prop passed from the store
-          StoreManager.eventsCallback[StoreManager.clientActions.HIDE_QUERYBUILDER].list.push(action => {
+          StoreManager.eventsCallback[StoreManager.clientActions.HIDE_QUERYBUILDER].add(action => {
             if (self.state.open) {
               self.toggleMenu();
             }

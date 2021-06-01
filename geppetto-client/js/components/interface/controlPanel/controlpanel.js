@@ -292,7 +292,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_ParameterInputComponent);
 
   var _ControlsComponent = CreateClass({
@@ -586,7 +586,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_ControlsComponent);
 
   var _FilterComponent = CreateClass({
@@ -1015,7 +1015,7 @@ define(function (require) {
     }),
     null,
     null,
-    { withRef: true }
+    { forwardRef: true }
   )(_FilterComponent);
 
   // Control panel default configuration

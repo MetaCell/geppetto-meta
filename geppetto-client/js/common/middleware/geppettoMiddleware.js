@@ -1,17 +1,15 @@
-import { clientActions } from '../actions/actions';
-import StoreManager from '@geppettoengine/geppetto-client/common/StoreManager';
+import { clientActions } from '../actions';
+import StoreManager, { callbacksList } from '@geppettoengine/geppetto-client/common/StoreManager';
 
-export const callbacksList = {}
-for ( const action in clientActions ) {
-  callbacksList [action] = { 'list': []}
-}
 
 export function callbacksMiddleware ({ getState, dispatch }) {
   return function (next) {
     return function (action) {
+      
+      console.debug(action);
       var actionTriggered = false;
-      if (callbacksList[action.type] !== undefined && callbacksList[action.type].list.length > 0) {
-        callbacksList[action.type].list.map(item => {
+      if (callbacksList[action.type] !== undefined && callbacksList[action.type].size > 0) {
+        callbacksList[action.type].forEach(item => {
           item(action);
         });
       }

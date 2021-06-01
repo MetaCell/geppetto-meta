@@ -38,7 +38,7 @@ const execPythonMessage = function (command, callback = handle_output) {
   var messageID = kernel.execute(command, { iopub: { output: callback } }, { silent: false, stop_on_error: true, store_history: true });
 
   return new Promise((resolve, reject) =>
-    StoreManager.eventsCallback[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE].list.push(action => {
+    StoreManager.eventsCallback[StoreManager.clientActions.RECEIVE_PYTHON_MESSAGE].add(action => {
       if (action.data.id == messageID) {
         resolve(action.data.response);
       }

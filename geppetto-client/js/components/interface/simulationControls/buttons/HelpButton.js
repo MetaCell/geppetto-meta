@@ -12,7 +12,7 @@ define(function (require) {
     mixins: [require('../../../controls/mixins/Button')],
 
     componentDidMount: function () {
-      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_HELP].list.push(action => {
+      StoreManager.eventsCallback[StoreManager.clientActions.SHOW_HELP].add(action => {
         ReactDOM.render(React.createFactory(HelpModal)({ show:true }), document.getElementById('modal-region'));
 
         $("#help-modal").css("margin-right", "-20px");

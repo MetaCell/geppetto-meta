@@ -65,29 +65,41 @@ define(function (require) {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
     },
 
-    trigger: function () {
-      var args = [];
-      Array.prototype.push.apply( args, arguments );
+    trigger: function (...args) {
       if (args.length == 0){
         console.error("Trigger should be provided of the event to trigger");
         return;
       } else {
-        _event = args.shift();
-        StoreManager.actionsHandler[GEPPETTO.eventsMapping[_event]](...args);
+        const _event = args.shift();
+        const handleFn = StoreManager.actionsHandler[GEPPETTO.eventsMapping[_event]];
+        if (handleFn) {
+          handleFn(...args);
+        }
+        
       }
     },
 
-    on: function () {
-      console.warn("WARNING - This function has been removed due to the Redux refactoring.")
-      console.warn("Please look into the PR 282 in geppetto-client and PR 52 in geppetto-application " +
-        "for more information on how to migrate this to the new eventsCallback mechanism.");
+    on: function (eventName, callback) {
+      StoreManager.eventsCallback[GEPPETTO.eventsMapping[eventName]].add(callback)
     },
 
-    off: function () {
-      console.warn("WARNING - This function has been removed due to the Redux refactoring.")
-      console.warn("Please look into the PR 282 in geppetto-client and PR 52 in geppetto-application " +
-        "for more information on how to migrate this to the new eventsCallback mechanism.");
+    off: function (eventName, callback = null) {
+      if (!eventName && callback) {
+        for (const l of Object.values(StoreManager.eventsCallback)) {
+          StoreManager.eventsCallback[GEPPETTO.eventsMapping[l]].delete(callback)
+        }
+      } else if (eventName && !callback) {
+        StoreManager.eventsCallback[GEPPETTO.eventsMapping[eventName]].clear()
+      } else if (eventName && callback) {
+        StoreManager.eventsCallback[GEPPETTO.eventsMapping[eventName]].delete(callback)
+      } else {
+        for (const l of Object.values(StoreManager.eventsCallback)) {
+          StoreManager.eventsCallback[GEPPETTO.eventsMapping[l]].clear(callback)
+        }
+      }
+  
     },
+    
   };
 
   GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
@@ -99,7 +111,6 @@ define(function (require) {
   require('../../common/GEPPETTO.ScriptRunner')(GEPPETTO);
   require('../../common/GEPPETTO.UnitsController')(GEPPETTO);
 
-  GEPPETTO.LayoutManager = require('../../common/layout/LayoutManager').getInstance();
   GEPPETTO.ModalFactory = new(require('../../components/controls/modals/ModalFactory'))();
   GEPPETTO.SceneController = new(require('../../components/interface/3dCanvas/SceneController'))();
 
@@ -120,7 +131,8 @@ define(function (require) {
   require('../../geppettoModel/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);
 
-  eventsMapping = {
+  
+  GEPPETTO.eventsMapping = {
     [GEPPETTO.Events.Select]: StoreManager.clientActions.SELECT,
     [GEPPETTO.Events.Visibility_changed]: StoreManager.clientActions.VISIBILITY_CHANGED,
     [GEPPETTO.Events.Focus_changed]: StoreManager.clientActions.FOCUS_CHANGED,
@@ -177,7 +189,6 @@ define(function (require) {
     [GEPPETTO.Events.Error_while_exec_python_command]: StoreManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
     [GEPPETTO.Events.Update_camera]: StoreManager.clientActions.UPDATE_CAMERA,
   };
-
   return GEPPETTO;
 
 });
