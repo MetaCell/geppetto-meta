@@ -1,0 +1,39 @@
+*.DS_Store
+node_modules/
+node/
+
+# Build Folders
+geppetto-client/build
+geppetto-ui/build
+geppetto-core/build
+
+# Editor byproducts
+.idea/
+.vscode/
+*.swp
+/target
+/bin
+.idea/
+*.iml
+*~
+.imdone/
+/.externalToolBuilders/
+
+#WormSim specific stuff
+*.css-e
+*.less-e
+js/components/dev/customrenderer/
+js/components/dev/wormsimbuttonbar/
+js/components/dev/wormsimlogo/
+js/components/dev/wormsimsimulationcontrols/
+js/components/dev/wormsimtutorialhandler/
+js/components/wormsim.*
+
+#other local directories that may get installed
+org.geppetto.core/
+org.geppetto.model/
+org.geppetto.simulation/
+/libjhdf5.jnilib
+
+# redis cache files
+*.rdb

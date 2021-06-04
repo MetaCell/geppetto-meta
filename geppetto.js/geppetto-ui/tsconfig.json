@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "outDir": "./build/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es6",
+    "allowSyntheticDefaultImports": true,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": false,
+    "noUnusedLocals": false,
+    "jsx": "react",
+    "types": [
+      "jest",
+      "mocha",
+      "node"
+    ],
+    "declaration": true
+  },
+  "include": [
+    "src"
+  ]
+}
