@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -53,7 +53,7 @@ class AuditoryCortexExample2 extends Component {
         flip: ['z'],
         baseZoom: 1,
         zoomTo: ['acnet2.baskets_12[7]'],
-        cameraControls: { 
+        cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false, },
           incrementPan: {
@@ -98,7 +98,7 @@ class AuditoryCortexExample2 extends Component {
       }
     }
   }
-  
+
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
   }

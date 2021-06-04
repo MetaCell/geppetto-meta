@@ -68,7 +68,7 @@ define(function (require) {
 
   _.extend(GEPPETTO, Backbone.Events);
 
-  GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
+  GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
   require('../../common/GEPPETTO.ViewController')(GEPPETTO);
   require('../../common/GEPPETTO.CommandController')(GEPPETTO);
   require('./GEPPETTO.Events').default(GEPPETTO);
@@ -92,8 +92,8 @@ define(function (require) {
   require('./G')(GEPPETTO);
   require('./GEPPETTO.Main')(GEPPETTO);
   require("../../components/widgets/includeWidget")(GEPPETTO);
-  require('@geppettoengine/geppetto-core/ProjectFactory')(GEPPETTO);
-  require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
+  require('@metacell/geppetto-meta-core/ProjectFactory')(GEPPETTO);
+  require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
   require('../../geppettoProject/ExperimentsController')(GEPPETTO);
   require('../../geppettoModel/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);

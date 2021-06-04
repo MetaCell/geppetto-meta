@@ -6,8 +6,8 @@
 define(function (require) {
   return function (GEPPETTO) {
 
-    var AParameterCapability = require('@geppettoengine/geppetto-core/capabilities/AParameterCapability');
-    var AStateVariableCapability = require('@geppettoengine/geppetto-core/capabilities/AStateVariableCapability');
+    var AParameterCapability = require('@metacell/geppetto-meta-core/capabilities/AParameterCapability');
+    var AStateVariableCapability = require('@metacell/geppetto-meta-core/capabilities/AStateVariableCapability');
 
     var ExperimentStateEnum = {
       STOPPED: 0,

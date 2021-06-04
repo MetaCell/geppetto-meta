@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import PythonConsoleMarkdown from "@geppettoengine/geppetto-ui/python-console/README.md";
+import PythonConsoleMarkdown from "@metacell/geppetto-meta-ui/python-console/README.md";
 
 
 export default class PythonConsole extends Component {

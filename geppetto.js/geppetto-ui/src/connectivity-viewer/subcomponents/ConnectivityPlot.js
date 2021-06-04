@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as util from '../../utilities';
-import Instance from '@geppettoengine/geppetto-core/model/Instance';
+import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import { withStyles } from '@material-ui/core';
 import IconText from './IconText';
 import Grid from '@material-ui/core/Grid';

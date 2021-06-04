@@ -8,20 +8,63 @@ Geppetto Meta showcase of components & features
 
 ## Development
 
-1. `yarn global add yalc`
-2. `cd geppetto.js`
-3. `yalc publish`
-4. `cd ../geppetto-showcase`   
-5. `yalc add @geppettoengine/geppetto-client`   
-6. `yarn`
-7. `yarn start`
+The geppetto-showcase depends on three local packages: geppetto-client, geppetto-ui, geppetto-core.
+
+We use [yalc](https://github.com/wclr/yalc) as a local repository to manage these dependencies.
+
+Install yalc
+```bash
+yarn global add yalc
+```
+
+Install geppetto-client
+
+```bash
+cd geppetto.js/geppetto-client
+yarn && yarn build && yarn publish:yalc
+```
+
+Install geppetto-ui
+
+```bash
+cd geppetto.js/geppetto-ui
+yarn && yarn build:src && yarn publish:yalc
+```
+
+Install geppetto-core
+
+```bash
+cd geppetto.js/geppetto-core
+yarn && yarn build && yarn publish:yalc
+```
+
+Add these packages to geppetto-showcase
+
+```bash
+yalc add @geppettoengine/geppetto-client
+yalc add @geppettoengine/geppetto-core
+yalc add @geppettoengine/geppetto-ui
+```   
+
+Install dependencies
+
+```bash
+yarn
+```
+
+Start development server
+
+```bash
+yarn start
+```
 
 (optional for hot reloading)
-8. `yarn global add nodemon`
-9. `cd ../geppetto.js`
-10. `nodemon -x 'yalc push'`
 
-
+```bash
+yarn global add nodemon
+cd ../geppetto.js/geppetto-ui
+nodemon -w ./src -x 'yarn build:src && yalc push build'
+```
 
 ## Deployment
 

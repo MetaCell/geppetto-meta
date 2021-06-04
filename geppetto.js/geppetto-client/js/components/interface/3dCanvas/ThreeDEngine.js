@@ -9,10 +9,10 @@
  */
 define(['jquery'], function () {
 
-  var Instance = require('@geppettoengine/geppetto-core/model/Instance');
-  var ArrayInstance = require('@geppettoengine/geppetto-core/model/ArrayInstance');
-  var Type = require('@geppettoengine/geppetto-core/model/Type');
-  var Variable = require('@geppettoengine/geppetto-core/model/Variable');
+  var Instance = require('@metacell/geppetto-meta-core/model/Instance');
+  var ArrayInstance = require('@metacell/geppetto-meta-core/model/ArrayInstance');
+  var Type = require('@metacell/geppetto-meta-core/model/Type');
+  var Variable = require('@metacell/geppetto-meta-core/model/Variable');
 
   var THREE = require('three');
 

@@ -9,7 +9,7 @@ const ScatterPlot = createPlotlyComponent(Plotly);
 import { unit } from 'mathjs';
 import PlotHeader from './PlotHeader';
 import { defaultLayout, defaultTrace, defaultLine, defaultConfig, defaultAxisLayout } from './configuration/plotConfiguration';
-import ExternalInstance from '@geppettoengine/geppetto-core/model/ExternalInstance';
+import ExternalInstance from '@metacell/geppetto-meta-core/model/ExternalInstance';
 import { withStyles } from '@material-ui/core';
 
 const style = { 

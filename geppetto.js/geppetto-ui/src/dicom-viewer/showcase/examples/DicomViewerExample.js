@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DicomViewer from '../../DicomViewer';
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 
 export default class DicomViewerExample extends Component {
   constructor (props) {

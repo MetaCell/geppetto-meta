@@ -10,13 +10,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
-require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(
+GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
+require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(
   GEPPETTO
 );
-const Manager = require('@geppettoengine/geppetto-client/common/Manager')
+const Manager = require('@metacell/geppetto-meta-client/common/Manager')
   .default;
-const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(
+const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(
   GEPPETTO
 );
 

@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
 
 const INSTANCES = [

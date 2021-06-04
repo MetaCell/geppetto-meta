@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
-import { cameraControlsActions } from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
+import { cameraControlsActions } from "../camera-controls/CameraControls";
 
 const styles = () => ({
   container: {
@@ -119,8 +119,8 @@ class Canvas extends Component {
       }
     }
   }
-  
-  
+
+
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
     return true;
@@ -143,7 +143,7 @@ class Canvas extends Component {
       <div className={classes.container} ref={this.sceneRef}>
         {
           <cameraOptions.cameraControls.instance
-            ref={this.cameraControls} 
+            ref={this.cameraControls}
             wireframeButtonEnabled={cameraControls.props.wireframeButtonEnabled}
             cameraControlsHandler={cameraControlsHandler}
           />
@@ -165,7 +165,7 @@ Canvas.defaultProps = {
     autorotate:false,
     wireframe:false,
     zoomTo: [],
-    cameraControls:  { 
+    cameraControls:  {
       instance: null,
       props: {},
     },

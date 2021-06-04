@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./build/",
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "commonjs",
@@ -14,7 +14,11 @@
     "strict": false,
     "noUnusedLocals": false,
     "jsx": "react",
-    "types": ["jest", "mocha", "node"],
+    "types": [
+      "jest",
+      "mocha",
+      "node"
+    ],
     "declaration": true
   },
   "include": [

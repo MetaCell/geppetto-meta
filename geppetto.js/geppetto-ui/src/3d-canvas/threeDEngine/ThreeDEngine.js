@@ -8,10 +8,10 @@ import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
 
 import MeshFactory from './MeshFactory';
 import CameraManager from './CameraManager';
-import Instance from '@geppettoengine/geppetto-core/model/Instance';
-import ArrayInstance from '@geppettoengine/geppetto-core//model/ArrayInstance';
-import Type from '@geppettoengine/geppetto-core/model/Type';
-import Variable from '@geppettoengine/geppetto-core/model/Variable';
+import Instance from '@metacell/geppetto-meta-core/model/Instance';
+import ArrayInstance from '@metacell/geppetto-meta-core//model/ArrayInstance';
+import Type from '@metacell/geppetto-meta-core/model/Type';
+import Variable from '@metacell/geppetto-meta-core/model/Variable';
 require('./TrackballControls');
 
 export default class ThreeDEngine {

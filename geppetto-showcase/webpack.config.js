@@ -14,31 +14,13 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    alias: {
-      '@geppettoengine/geppetto-client': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/js'
-      ),
-      '@geppettoengine/geppetto-core': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-core/src'
-      ),
-      '@geppettoengine/geppetto-ui': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-ui/src'
-      ),
-      '@geppettoengine/geppetto-client-style': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/style'
-      ),
-    },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules\/(?!(@geppettoengine)\/).*/,
+        exclude: /node_modules\/(?!(@metacell)\/).*/,
         loader: 'babel-loader',
         query: {
           presets: [
@@ -116,7 +98,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-      favicon: 'node_modules/@geppettoengine/geppetto-client/geppetto-client/style/favicon.png',
+      favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
   ],
 };

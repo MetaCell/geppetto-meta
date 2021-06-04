@@ -1,8 +1,8 @@
 import ObjectWrapper from './ObjectWrapper';
-import { extend } from '@geppettoengine/geppetto-core/common/Utils';
+import { extend } from '../common/Utils';
 
 export default class ASimpleInstance extends ObjectWrapper{
- 
+
   constructor (node) {
     super({ wrappedObj: node });
 
@@ -16,19 +16,19 @@ export default class ASimpleInstance extends ObjectWrapper{
   getTypes () {
     return [this.getType()];
   }
-        
+
   getValues () {
     return [this.getValue()];
   }
-  
+
   getType () {
     return this.type;
   }
-        
+
   getValue () {
     return this.value;
   }
-  
+
   getVisualValue () {
     return this.wrappedObj.visualValue;
   }
@@ -94,7 +94,7 @@ export default class ASimpleInstance extends ObjectWrapper{
     if (direction) {
       console.error('getConnections with param `direction` is not yet implemented for simple instances');
     }
-    
+
     return Array.from(this.connections);
   }
 

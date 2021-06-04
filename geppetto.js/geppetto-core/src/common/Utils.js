@@ -1,4 +1,3 @@
-
 export function extend (destObj, sourceObj) {
 
   for (let v in sourceObj) {
@@ -7,5 +6,4 @@ export function extend (destObj, sourceObj) {
     }
     destObj[v] = sourceObj[v];
   }
-  
 }

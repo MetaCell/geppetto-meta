@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
 
 const INSTANCE_NAME = 'acnet2';
@@ -80,11 +80,11 @@ class AuditoryCortexExample extends Component {
       document.addEventListener('mousedown', this.handleClickOutside);
     })
   }
-  
+
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
-  
+
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){

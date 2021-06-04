@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import FlexlayoutMarkdown from "@geppettoengine/geppetto-ui/flex-layout/README.md";
+import FlexlayoutMarkdown from "@metacell/geppetto-meta-ui/flex-layout/README.md";
 
 
 export default class FlexLayout extends Component {
