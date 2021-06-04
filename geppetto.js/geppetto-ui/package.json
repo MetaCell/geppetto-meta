@@ -21,7 +21,7 @@
     "build:ts": "tsc",
     "build:remove-showcase": "rm -rf ./build/**/showcase",
     "build:src": "rm -rf build && mkdir build && cp -r src/. build && yarn build:package",
-    "build:package": "cp package.json build",
+    "build:package": "cp {package.json,README.md,LICENSE} build",
     "dist": "cd build && yarn publish",
     "publish:yalc": "cd build && yalc publish"
   },
