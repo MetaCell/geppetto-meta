@@ -19,7 +19,7 @@ class WidgetFactory {
 
   private componentMap: ComponentMap = {};
 
-  private store: Store;
+  private store: Store<any>;
 
   // didn't found a way to make standard refs work here, so using a custom callback
   private refs: { [id: string]: React.RefObject<WidgetComponent> } = {};
@@ -29,7 +29,7 @@ class WidgetFactory {
     this.componentMap = componentMap;
   }
 
-  setStore(store: Store) {
+  setStore(store: Store<any>) {
     this.store = store;
   }
 
