@@ -90,6 +90,7 @@ Manager.prototype = {
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
     EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
+    return window.Model;
   },
 
   /**

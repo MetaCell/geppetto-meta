@@ -7,6 +7,9 @@ const Manager = require('@geppettoengine/geppetto-client/common/Manager').defaul
 const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
 const testModel = require('./resources/test_model.json');
 const AA = require('@geppettoengine/geppetto-core/model/ArrayElementInstance').default;
+const EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default;
+
+EventManager.setStore({ dispatch: m => null })
 
 GEPPETTO.ModelFactory = ModelFactory;
 GEPPETTO.Utility = {};
