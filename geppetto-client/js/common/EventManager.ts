@@ -81,7 +81,7 @@ for (const action in clientActions) {
   callbacksList[action] = new Set<Function>()
 }
 
-class StoreManager {
+class EventManager {
   store: Store<any, GeppettoAction>;
 
   setStore(store: Store<any, GeppettoAction>) {
@@ -562,4 +562,4 @@ class StoreManager {
 
 
 
-export default new StoreManager();
+export default new EventManager();

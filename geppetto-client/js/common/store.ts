@@ -2,7 +2,7 @@ import * as redux from "redux";
 import { callbacksMiddleware } from './middleware/geppettoMiddleware';
 
 import { initLayoutManager } from './layout/LayoutManager';
-import StoreManager from './StoreManager';
+import EventManager from './EventManager';
 import { layoutInitialState, LayoutState, layout, widgets } from './reducer/geppettoLayout';
 import geppettoClientReducer, { clientInitialState, ClientState } from './reducer/geppettoClient';
 import { WidgetMap, ComponentMap } from "./layout/model";
@@ -49,7 +49,7 @@ export function createStore(
     {...initialState, ...state },
     storeEnhancers(redux.applyMiddleware(...allMiddlewares))
   );
-  StoreManager.setStore(store);
+  EventManager.setStore(store);
 
   return store;
 }

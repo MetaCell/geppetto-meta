@@ -38,7 +38,7 @@ export default function (GEPPETTO) {
   var AStateVariableCapability = require('./capabilities/AStateVariableCapability').default;
   var ADerivedStateVariableCapability = require('./capabilities/ADerivedStateVariableCapability').default;
 
-  var StoreManager = require('@geppettoengine/geppetto-client/common/StoreManager').default
+  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 
   /**
    * @class GEPPETTO.ModelFactory
@@ -2887,7 +2887,7 @@ export default function (GEPPETTO) {
         // re-run model shortcuts
         this.populateChildrenShortcuts(this.geppettoModel);
 
-        StoreManager.actionsHandler[StoreManager.clientActions.INSTANCE_DELETE](instancePath);
+        EventManager.actionsHandler[EventManager.clientActions.INSTANCE_DELETE](instancePath);
       },
 
       /**
