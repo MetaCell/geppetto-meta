@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import HTMLViewerMarkdown from "@geppettoengine/geppetto-ui/html-viewer/README.md";
+import HTMLViewerMarkdown from "@metacell/geppetto-meta-ui/html-viewer/README.md";
 
 
 export default class HtmlViewer extends Component {

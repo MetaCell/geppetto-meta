@@ -10,7 +10,7 @@ define(function (require) {
   var Widget = require('../Widget');
   var $ = require('jquery');
   var _ = require('underscore');
-  var Instance = require('@geppettoengine/geppetto-core/model/Instance');
+  var Instance = require('@metacell/geppetto-meta-core/model/Instance');
   require('../../controls/mixins/bootstrap/modal.js')
 
   var d3 = require("d3");

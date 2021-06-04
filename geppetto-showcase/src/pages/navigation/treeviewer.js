@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import TreeMarkdown from "@geppettoengine/geppetto-ui/tree-viewer/README.md";
+import TreeMarkdown from "@metacell/geppetto-meta-ui/tree-viewer/README.md";
 
 
 export default class TreeViewer extends Component {

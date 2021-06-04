@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import MoviePlayerMarkdown from "@geppettoengine/geppetto-ui/movie-player/README.md";
+import MoviePlayerMarkdown from "@metacell/geppetto-meta-ui/movie-player/README.md";
 
 
 export default class MoviePlayer extends Component {

@@ -12,7 +12,7 @@ define(function (require) {
   var $ = require('jquery');
   var math = require('mathjs');
   var Plotly = require('plotly.js/lib/core');
-  var AStateVariableCapability = require('@geppettoengine/geppetto-core/capabilities/AStateVariableCapability');
+  var AStateVariableCapability = require('@metacell/geppetto-meta-core/capabilities/AStateVariableCapability');
 
   Plotly.register([
     require('plotly.js/lib/heatmap'),
@@ -25,7 +25,7 @@ define(function (require) {
 
   require("./Plot.less");
 
-  var ExternalInstance = require('@geppettoengine/geppetto-core/model/ExternalInstance');
+  var ExternalInstance = require('@metacell/geppetto-meta-core/model/ExternalInstance');
 
   return Widget.View.extend({
     plotly: null,

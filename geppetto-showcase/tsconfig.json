@@ -17,7 +17,7 @@
     "types": []
   },
   "include": [
-    "./geppetto-ui/components/flex-layout/src/**/*",
-    "./geppetto-ui/components/flex-layout/examples/demo/*"
+    "./geppetto-meta-ui/components/flex-layout/src/**/*",
+    "./geppetto-meta-ui/components/flex-layout/examples/demo/*"
   ]
 }

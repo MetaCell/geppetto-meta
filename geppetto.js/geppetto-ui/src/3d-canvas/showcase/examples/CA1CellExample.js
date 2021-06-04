@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "../../../loader/Loader";
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -53,7 +53,7 @@ class CA1Example extends Component {
         autoRotate: false,
         movieFilter: true,
         reset: false,
-        cameraControls: { 
+        cameraControls: {
           instance: CameraControls,
           props: {}
         },

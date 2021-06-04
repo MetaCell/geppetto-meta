@@ -8,7 +8,7 @@ var React = require('react');
 var CreateClass = require('create-react-class');
 
 var GEPPETTO = require('geppetto');
-const Resources = require('@geppettoengine/geppetto-core/Resources').default;
+const Resources = require('@metacell/geppetto-meta-core/Resources').default;
    
 require("./ErrorModal.less");
 

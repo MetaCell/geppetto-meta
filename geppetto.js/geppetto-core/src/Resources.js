@@ -117,7 +117,7 @@ export default {
   EXPERIMENT_CREATED: "New experiment created",
 
   EXPERIMENT_BATCH_CREATED: "New experiment batch created",
-            
+
   EXPERIMENT_CLONED: "Experiment cloned",
 
   EXPERIMENT_DELETED: "Experiment Deleted",
@@ -133,11 +133,11 @@ export default {
   LOADING_PROJECT: "Loading Project",
 
   LOADING_EXPERIMENT: "Loading Experiment",
-            
+
   FETCHING_RESULTS: "Fetching Experiment Results",
-            
+
   RESOLVING_TYPES: "Resolving types",
-                        
+
   PARSING_MODEL: "Parsing model",
 
   CREATING_MODEL: "Creating model",
@@ -179,15 +179,15 @@ export default {
   SIMULATION_SET_WATCHED_VARIABLES: "Watch variables requested",
 
   SIMULATION_CLEAR_WATCH: 'Clear watched variables requested',
-            
+
   NO_WATCHED_VARIABLES : "No Recorded Variables",
 
   NO_FEATURE: "The feature is not avaialble for the current service",
-            
+
   TIME_VARIABLE_NOT_DEFINED : "Time Variable not defined, can't show time",
-            
+
   DISABLED_COLOR_PLOTTING : "Color Plotting Disabled",
-            
+
   ENABLED_COLOR_PLOTTING : "Color Plotting Enabled",
 
   /**
@@ -278,7 +278,7 @@ export default {
   RETRIEVING_VISUALIZATION_TREE: 'Visualization tree: ',
 
   DOWNLOADING_MODEL: 'Downloading model as ',
-            
+
   DOWNLOADING_PROJECT: 'Downloading Project',
 
   ERROR_DOWNLOADING_MODEL: "Error downloading model",
@@ -391,10 +391,10 @@ export default {
    * Error Modal Message
    */
   ERROR_MODAL_TITLE : "There was an error",
-  ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @geppettoengine help!",
+  ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @metacell help!",
   ERROR_MODAL_TWITTER_URL : "http://geppetto.org",
-  ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/openworm/org.geppetto/issues/new",
-      
+  ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/MetaCell/geppetto-meta/issues/new",
+
   /**
    * GEPPETTO resources
    */
@@ -512,7 +512,7 @@ export default {
   MODEL_PREFIX_CLIENT: 'Model', // DO NOT ADD A DOT HERE THANKS
   // CONTROL PANEL
   CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT: 'Control Panel - error running source script:',
-            
+
   // USER PRIVILEGES
   WRITE_PROJECT : "WRITE_PROJECT",
   READ_PROJECT : "READ_PROJECT",

@@ -29,9 +29,9 @@ RUN yarn && yarn build && yarn publish:yalc
 
 # INSTALL PACKAGES
 WORKDIR /app/geppetto-showcase
-RUN yalc add @geppettoengine/geppetto-ui
-RUN yalc add @geppettoengine/geppetto-client
-RUN yalc add @geppettoengine/geppetto-core
+RUN yalc add @metacell/geppetto-meta-ui
+RUN yalc add @metacell/geppetto-meta-client
+RUN yalc add @metacell/geppetto-meta-core
 RUN yarn
 
 # COPY SOURCE CODE

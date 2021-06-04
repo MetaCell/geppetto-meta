@@ -20,7 +20,7 @@ module.exports = {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules\/(?!(@geppettoengine)\/).*/,
+        exclude: /node_modules\/(?!(@metacell)\/).*/,
         loader: 'babel-loader',
         query: {
           presets: [
@@ -98,7 +98,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-      favicon: 'node_modules/@geppettoengine/geppetto-client/style/favicon.png',
+      favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
   ],
 };
