@@ -7,7 +7,7 @@
  * @author Giovanni Idili
  */
 
-import EventManager from '@geppettoengine/geppetto-client/common/EventManager';
+import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
 
 var Instance = require('../model/Instance').default;
 var ArrayInstance = require('../model/ArrayInstance').default;

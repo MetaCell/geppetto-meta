@@ -38,7 +38,7 @@ export default function (GEPPETTO) {
   var AStateVariableCapability = require('./capabilities/AStateVariableCapability').default;
   var ADerivedStateVariableCapability = require('./capabilities/ADerivedStateVariableCapability').default;
 
-  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+  var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
   /**
    * @class GEPPETTO.ModelFactory

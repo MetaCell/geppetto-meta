@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import Loader from '@geppettoengine/geppetto-ui/loader/Loader';
+import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
 
 export default class LoadingSpinner extends React.Component{
 

@@ -7,7 +7,7 @@
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
 
-var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
 define(['backbone'], function (require) {
 

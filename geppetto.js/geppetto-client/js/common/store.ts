@@ -8,7 +8,7 @@ import geppettoClientReducer, { clientInitialState, ClientState } from './reduce
 import { WidgetMap, ComponentMap } from "./layout/model";
 import TabsetIconFactory from "./layout/TabsetIconFactory";
 import { reducerDecorator } from "./reducer/reducerDecorator"
-import { GeppettoAction } from "@geppettoengine/geppetto-client/geppetto-client/js/common/actions";
+import { GeppettoAction } from "@metacell/geppetto-meta-client/geppetto-client/js/common/actions";
 
 declare var window: any;
 

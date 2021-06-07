@@ -9,7 +9,7 @@
 
 var ObjectWrapper = require('./ObjectWrapper').default;
 var ImportType = require('./ImportType').default;
-var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
 function Library (options) {
   ObjectWrapper.prototype.constructor.call(this, options);

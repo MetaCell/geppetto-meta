@@ -1,4 +1,4 @@
-import EventManager from '@geppettoengine/geppetto-client/common/EventManager';
+import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
 
 const handle_output = function (data) {
   // data is the object passed to the callback from the kernel execution

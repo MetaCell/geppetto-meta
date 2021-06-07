@@ -1,5 +1,5 @@
 import { clientActions } from '../actions';
-import EventManager, { callbacksList } from '@geppettoengine/geppetto-client/common/EventManager';
+import EventManager, { callbacksList } from '@metacell/geppetto-meta-client/common/EventManager';
 
 
 export function callbacksMiddleware ({ getState, dispatch }) {

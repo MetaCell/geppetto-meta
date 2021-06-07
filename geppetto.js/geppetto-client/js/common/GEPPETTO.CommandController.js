@@ -3,7 +3,7 @@
  *
  */
 define(function (require) {
-  var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+  var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
   return function (GEPPETTO) {
     GEPPETTO.CommandController = {

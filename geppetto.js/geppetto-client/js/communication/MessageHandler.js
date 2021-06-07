@@ -2,7 +2,7 @@
  * Handles incoming messages associated with Simulation
  */
 
-var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 function MessageHandler (GEPPETTO) {
 
   var messageTypes = {

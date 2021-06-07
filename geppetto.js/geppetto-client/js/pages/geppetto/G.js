@@ -12,7 +12,7 @@ define(function (require) {
     var $ = require('jquery');
     var React = require('react');
     var ClipboardModal = require('../../components/interface/jsEditor/ClipboardModal');
-    var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+    var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
     /**
      * @exports geppetto-objects/G
@@ -122,7 +122,7 @@ define(function (require) {
        * @returns {String} All commands and descriptions for G.
        */
       help: function () {
-        GEPPETTO.Utility.extractCommandsFromFile("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/pages/geppetto/G.js", GEPPETTO.G, "G");
+        GEPPETTO.Utility.extractCommandsFromFile("geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/js/pages/geppetto/G.js", GEPPETTO.G, "G");
         return this;
       },
 

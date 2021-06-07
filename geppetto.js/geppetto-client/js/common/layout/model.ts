@@ -1,4 +1,4 @@
-import Node from "@geppettoengine/geppetto-ui/flex-layout/src/model/Node";
+import Node from "@metacell/geppetto-meta-ui/flex-layout/src/model/Node";
 
 /*
  * status can be one of:
