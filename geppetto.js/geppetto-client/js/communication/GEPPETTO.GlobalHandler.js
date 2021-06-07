@@ -1,6 +1,8 @@
 /**
  * Handles general incoming messages, excluding Simulation
  */
+
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
 function GlobalHandler (GEPPETTO) {
 
   var messageTypes
@@ -37,45 +39,45 @@ function GlobalHandler (GEPPETTO) {
 
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.ERROR_LOADING_SIM] = function (payload) {
-    GEPPETTO.trigger('geppetto:error', payload.message);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](payload.message);
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.INVALID_SIMULATION_FILE, payload.message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.ERROR_LOADING_PROJECT] = function (payload) {
-    GEPPETTO.trigger('geppetto:error', payload.message);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](payload.message);
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR_LOADING_PROJECT, payload.message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.ERROR_DOWNLOADING_MODEL] = function (payload) {
-    GEPPETTO.trigger('geppetto:error', payload.message);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](payload.message);
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR_DOWNLOADING_MODEL, payload.message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.ERROR_DOWNLOADING_RESULTS] = function (payload) {
-    GEPPETTO.trigger('geppetto:error', payload.message);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](payload.message);
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR_DOWNLOADING_RESULTS, payload.message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   // Error loading simulation, invalid url or simulation file
   messageHandler[messageTypes.INFO_MESSAGE] = function (payload) {
     var message = JSON.parse(payload.message);
-    GEPPETTO.trigger('geppetto:info', message);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_INFO](message);
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.INCOMING_MESSAGE, message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   messageHandler[messageTypes.ERROR] = function (payload) {
     var error = JSON.parse(payload.message);
-    GEPPETTO.trigger('geppetto:error', error.msg);
+    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](error.msg);
     GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   messageHandler[messageTypes.GEPPETTO_VERSION] = function (payload) {
@@ -96,14 +98,14 @@ function GlobalHandler (GEPPETTO) {
   // Simulation server became available
   messageHandler[messageTypes.SERVER_AVAILABLE] = function (payload) {
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.SERVER_AVAILABLE, payload.message);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
   };
 
   messageHandler[messageTypes.RECONNECTION_ERROR] = function (payload) {
     GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.RECONNECTION_ERROR, payload.message);
-    GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
-    GEPPETTO.trigger(GEPPETTO.Events.Websocket_disconnected);
+    GEPPETTO.MessageSocket.SocketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
+    EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
   };
 
   GEPPETTO.GlobalHandler

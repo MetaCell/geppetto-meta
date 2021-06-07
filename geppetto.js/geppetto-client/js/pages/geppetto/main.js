@@ -7,13 +7,11 @@
  */
 define(function (require) {
   require('../../../style/less/main.less');
-  
+
   var GEPPETTO = require('geppetto');
-  
+
   require('../../components/ComponentFactory')(GEPPETTO);
   require('../../components/WidgetFactory')(GEPPETTO);
-  
-  GEPPETTO.ComponentFactory.loadSpinner();
   window.GEPPETTO = GEPPETTO
 
   // start project node which will be used as a Singleton to store current project info

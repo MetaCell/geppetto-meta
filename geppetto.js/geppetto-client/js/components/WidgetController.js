@@ -1,3 +1,5 @@
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+
 class WidgetController {
 
   constructor (componentID) {
@@ -45,8 +47,7 @@ class WidgetController {
       }
 
       // FIXME: Called twice
-      GEPPETTO.trigger(GEPPETTO.Events.Component_destroyed, widget.getId());
-
+      EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER](widget.getId());
 
     });
 
@@ -183,5 +184,3 @@ class WidgetController {
 }
 
 module.exports = WidgetController;
-
-

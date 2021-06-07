@@ -1,4 +1,5 @@
 const extend = require('../common/Utils').extend;
+
 /**
  * Client class use to represent an instance object (instantiation of a variable).
  *
@@ -328,7 +329,7 @@ class Instance {
    *
    */
   getConnections (direction) {
-    GEPPETTO.trigger('spin_logo');
+
     GEPPETTO.ModelFactory.updateConnectionInstances(this);
 
     var connections = this.connections;
@@ -358,7 +359,6 @@ class Instance {
       connections = filteredConnections;
     }
 
-    GEPPETTO.trigger('stop_spin_logo');
     return connections;
   }
 

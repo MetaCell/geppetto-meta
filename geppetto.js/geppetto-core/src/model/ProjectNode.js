@@ -6,6 +6,9 @@
  * @module model/ProjectNode
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
+
+var EventManager = require('@geppettoengine/geppetto-client/common/EventManager').default
+
 define(['backbone'], function (require) {
 
   return Backbone.Model.extend({
@@ -123,7 +126,7 @@ define(['backbone'], function (require) {
     setActiveExperiment: function (experiment) {
       if (GEPPETTO.UserController.isLoggedIn()){
         this.activeExperiment = experiment;
-        GEPPETTO.trigger(GEPPETTO.Events.Experiment_active);
+        EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_ACTIVE]();
       } else {
         return GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN;
       }
@@ -193,9 +196,9 @@ define(['backbone'], function (require) {
     loadFromID: function (projectID, experimentID) {
 
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
-      GEPPETTO.trigger(GEPPETTO.Events.Project_loading);
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 
@@ -226,8 +229,8 @@ define(['backbone'], function (require) {
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
 
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      GEPPETTO.trigger(GEPPETTO.Events.Project_loading);
-      GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 
@@ -237,8 +240,6 @@ define(['backbone'], function (require) {
         this.initializationTime = new Date();
         GEPPETTO.CommandController.log("Message sent : " + this.initializationTime.getTime(), true);
         GEPPETTO.CommandController.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
-        // trigger simulation restart event
-        GEPPETTO.trigger(GEPPETTO.Events.Simulation_restarted);
       } else {
         loadStatus = GEPPETTO.Resources.PROJECT_UNSPECIFIED;
       }
@@ -255,11 +256,11 @@ define(['backbone'], function (require) {
      */
     loadFromContent: function (content) {
 
-      GEPPETTO.trigger(GEPPETTO.Events.Project_loading);
+      EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
 
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
-      GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
       var loadStatus = GEPPETTO.Resources.LOADING_PROJECT;
 
