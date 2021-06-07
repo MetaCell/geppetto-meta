@@ -18,7 +18,7 @@
     "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:js": "babel js -d build",
     "build:style": "cp -r style build",
-    "build:package": "cp {package.json,README.md,LICENSE} build",
+    "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
     "publish:yalc": "cd build && yalc publish"
   },
