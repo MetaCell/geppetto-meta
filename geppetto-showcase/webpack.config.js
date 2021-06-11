@@ -22,7 +22,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules\/(?!(@metacell)\/).*/,
         loader: 'babel-loader',
-        query: {
+        options: {
           presets: [
             ['@babel/preset-env', { modules: false }],
             '@babel/preset-react',
@@ -32,7 +32,7 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
       },
       {
         test: /\.html$/,
@@ -47,7 +47,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader',
+        use: ['style-loader', 'css-loader', 'less-loader']
       },
       {
         test: /\.s[a|c]ss$/,
@@ -77,7 +77,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.md$/,
