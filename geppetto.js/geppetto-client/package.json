@@ -64,7 +64,7 @@
     "url-join": "^4.0.0"
   },
   "peerDependencies": {
-    "@metacell/geppetto-meta-core": "0.0.1"
+    "@metacell/geppetto-meta-core": "0.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.14.3",
