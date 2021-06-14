@@ -1,7 +1,9 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
 
-module.exports = {
+module.exports = smp.wrap({
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
@@ -101,4 +103,4 @@ module.exports = {
       favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
   ],
-};
+});
