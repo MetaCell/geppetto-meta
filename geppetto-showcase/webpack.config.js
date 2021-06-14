@@ -6,7 +6,6 @@ const smp = new SpeedMeasurePlugin();
 module.exports = smp.wrap({
   entry: './src/index.js',
   mode: 'development',
-  devtool: 'inline-source-map',
   devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
