@@ -95,8 +95,8 @@
     "velocity.java": "^1.3.1"
   },
   "peerDependencies": {
-    "@metacell/geppetto-meta-core": "0.0.1",
-    "@metacell/geppetto-meta-client": "0.0.1"
+    "@metacell/geppetto-meta-core": "0.0.2",
+    "@metacell/geppetto-meta-client": "0.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -115,7 +115,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "eslint": "^6.0.1",
     "jest": "^24.9.0",
-    "typescript": "^4.2.4"
+    "typescript": "^4.3.2"
   },
   "buildOptions": {
     "emitEntryPoint": true,
