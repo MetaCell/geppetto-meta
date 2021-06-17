@@ -3,7 +3,7 @@ import * as FlexLayout from "@metacell/geppetto-meta-ui/flex-layout/src/index";
 import Actions from "@metacell/geppetto-meta-ui/flex-layout/src/model/Actions";
 import DockLocation from "@metacell/geppetto-meta-ui/flex-layout/src/DockLocation";
 import Model from "@metacell/geppetto-meta-ui/flex-layout/src/model/Model";
-import { WidgetStatus, Widget, ExtendedNode, ComponentMap } from "./model";
+import { WidgetStatus, Widget, ComponentMap } from "./model";
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";

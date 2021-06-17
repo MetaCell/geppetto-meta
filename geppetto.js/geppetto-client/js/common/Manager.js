@@ -5,7 +5,7 @@
  * @author Matteo Cantarelli
  */
 
-import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
+import EventManager from '../common/EventManager';
 
 export default function Manager (options) {
 

@@ -544,6 +544,7 @@ class Search extends Component<SearchProps, SearchState> {
                   allFiltersDisabled = false;
                   return true;
                 }
+                return false;
               });
               if (filtersList.length > 0) {
                 let newFilter = { ...filter }

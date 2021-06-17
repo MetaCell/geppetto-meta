@@ -8,7 +8,7 @@ import geppettoClientReducer, { clientInitialState, ClientState } from './reduce
 import { WidgetMap, ComponentMap } from "./layout/model";
 import TabsetIconFactory from "./layout/TabsetIconFactory";
 import { reducerDecorator } from "./reducer/reducerDecorator"
-import { GeppettoAction } from "@metacell/geppetto-meta-client/geppetto-client/js/common/actions";
+import { GeppettoAction } from "../common/actions";
 
 declare var window: any;
 
@@ -42,8 +42,6 @@ export function createStore(
   const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory)
   const allMiddlewares = [...enhancers, callbacksMiddleware, layoutManager.middleware];
 
-  
- 
   const store = redux.createStore(
     reducerDecorator(redux.combineReducers({...staticReducers, ...reducers})),
     {...initialState, ...state },
