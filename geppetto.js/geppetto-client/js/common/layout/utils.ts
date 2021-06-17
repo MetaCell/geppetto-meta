@@ -1,7 +1,7 @@
 import { WidgetStatus, Widget } from './model';
 
 /**
- * Transforms a widget configutation into a flexlayout node descriptor
+ * Transforms a widget configuration into a flexlayout node descriptor
  */
 export function widget2Node (configuration: Widget) {
   const { id, name, component, status, panelName, enableClose = true, ...others } = configuration;
