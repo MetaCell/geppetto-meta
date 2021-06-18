@@ -2341,7 +2341,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bezier-js@^4.1.1:
+bezier-js@4.1.1, bezier-js@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/bezier-js/-/bezier-js-4.1.1.tgz#414df656833104e86765c0fa5e31439fb3e83a34"
   integrity sha512-oVOS6SSFFFlfnZdzC+lsfvhs/RRcbxJ47U04M4s5QIBaJmr3YWmTIL3qmrOK9uW+nUUcl9Jccmo/xpTrG+bBoQ==
@@ -9320,7 +9320,7 @@ react-dnd@^11.1.3:
     recompose "^0.30.0"
     shallowequal "^1.1.0"
 
-react-dnd@^7.3.0:
+react-dnd@^7.7.0:
   version "7.7.0"
   resolved "https://registry.yarnpkg.com/react-dnd/-/react-dnd-7.7.0.tgz#9d983331ecf87ba33d058d861e6ca9adb8253a2e"
   integrity sha512-anpJDKMgdXE6kXvtBFmIAe1fuaexpVy7meUyNjiTfCnjQ1mRvnttGTVvcW9fMKijsUQYadiyvzd3BRxteFuVXg==

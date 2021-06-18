@@ -11,6 +11,5 @@ module.exports = {
   "plugins": [
     "@babel/plugin-transform-regenerator",
     "@babel/plugin-proposal-class-properties",
-    
   ],
 };

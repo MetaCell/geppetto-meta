@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "test": "jest",
     "build": "yarn build:js && yarn build:types && yarn build:remove-showcase && yarn build:package",
-    "build:js": "babel src -d build --copy-files",
+    "build:js": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx'",
     "build:types": "tsc --emitDeclarationOnly",
     "build:ts": "tsc",
     "build:remove-showcase": "rm -rf ./build/**/showcase",
