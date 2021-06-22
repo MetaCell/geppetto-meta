@@ -7,6 +7,9 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { blue, orange } from '@material-ui/core/colors';
+import { initGeppetto } from 'geppetto';
+
+initGeppetto();
 
 let theme = createMuiTheme({
   typography: { fontFamily: 'Roboto, Helvetica, Arial, sans-serif' },
@@ -23,7 +26,7 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
-      <App />
+        <App />
       </MuiThemeProvider>
     </Provider>
   </React.StrictMode>,
