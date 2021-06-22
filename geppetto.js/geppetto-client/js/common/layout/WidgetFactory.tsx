@@ -44,7 +44,8 @@ class WidgetFactory {
 
   private WidgetToComponent = ({ widgetConfig }: { widgetConfig: Widget }) => {
     this.refs[widgetConfig.id] = React.createRef();
-    const Component = this.componentMap[widgetConfig.component] as any;
+    // TODO: widgetConfig.component or id?
+    const Component = this.componentMap[widgetConfig.id] as any;
     const proto = Component.WrappedComponent ? Component.WrappedComponent.prototype: Component.prototype;
     const ref = proto.importSession ? {ref: this.refs[widgetConfig.id]}: {};
 
