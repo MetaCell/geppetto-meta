@@ -11,7 +11,6 @@ export const layoutActions = {
   DESTROY_WIDGET: 'DESTROY_WIDGET'
 };
 
-
 export const newWidget = ({ path, component, panelName, ...others }) => ({
   type: layoutActions.ADD_WIDGET,
   data: {
@@ -45,13 +44,10 @@ export const updateWidget = (newConf => ({
   data: newConf
 }))
 
-
-
 export const setLayout = (newLayout => ({
   type: layoutActions.SET_LAYOUT,
   data: newLayout
 }))
-
 
 export const minimizeWidget = id => ({
   type: layoutActions.UPDATE_WIDGET,
@@ -59,7 +55,6 @@ export const minimizeWidget = id => ({
     id,
     status: WidgetStatus.MINIMIZED
   }
-
 });
 
 export const maximizeWidget = id => ({
@@ -69,16 +64,15 @@ export const maximizeWidget = id => ({
     status: WidgetStatus.MAXIMIZED
   }
 });
+
 export const activateWidget = id => ({
   type: layoutActions.ACTIVATE_WIDGET,
   data: { id }
-
 });
 
 export const destroyWidget = id => ({
   type: layoutActions.DESTROY_WIDGET,
   data: { id }
-
 });
 
 export const resetLayout = { type: layoutActions.RESET_LAYOUT, };

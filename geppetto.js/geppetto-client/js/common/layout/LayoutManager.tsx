@@ -109,9 +109,9 @@ class LayoutManager {
     if (panel.getType() === "tabset" && this.enableMinimize) {
       if (panel.getId() != 'leftPanel' && panel.getChildren().length > 0) {
         renderValues.buttons.push(<div key={panel.getId()} className="fa fa-window-minimize customIconFlexLayout"
-                                       onClick={() => {
-                                         this.minimizeWidget(panel.getActiveNode().getId())
-                                       }}/>);
+          onClick={() => {
+            this.minimizeWidget(panel.getActiveNode().getId())
+          }} />);
       }
     }
   }
@@ -236,10 +236,9 @@ class LayoutManager {
   middleware = (store) => (next) => (action) => {
     this.store = store;
     this.widgetFactory.setStore(store)
-    
+
     let nextAction = true;
     let nextSetLayout = true;
-
 
     switch (action.type) {
       case layoutActions.ADD_WIDGET: {
@@ -254,13 +253,11 @@ class LayoutManager {
         this.updateWidget(action.data);
         break;
       }
-
       case layoutActions.DESTROY_WIDGET: {
         const widget = action.data;
         this.deleteWidget(widget);
         break;
       }
-
       case layoutActions.ACTIVATE_WIDGET: {
         action.data.status = WidgetStatus.ACTIVE;
         const widget = this.getWidget(action.data.id)
@@ -277,9 +274,7 @@ class LayoutManager {
         }
         this.addWidgets(Object.values(newWidgets));
         break;
-
       }
-
       case layoutActions.SET_LAYOUT: {
         if (!isEqual(this.model.toJson(), action.data)) {
           this.model = FlexLayout.Model.fromJson(action.data);
@@ -293,7 +288,6 @@ class LayoutManager {
 
         nextSetLayout = false;
       }
-
       default: {
         nextSetLayout = false;
       }

@@ -74,7 +74,7 @@ export const clientActions = {
 
 export const IMPORT_APPLICATION_STATE = 'IMPORT_APPLICATION_STATE';
 
-export const selectInstance = ( scope, geometryIdentifier, point ) => ({
+export const selectInstance = (scope, geometryIdentifier, point) => ({
   type: clientActions.SELECT,
   data: {
     scope: scope,
@@ -254,7 +254,7 @@ export const startTutorial = () => ({ type: clientActions.START_TUTORIAL, });
 
 export const stopTutorial = () => ({ type: clientActions.STOP_TUTORIAL, });
 
-export const showSpinner = (message, offAction=null) => ({
+export const showSpinner = (message, offAction = null) => ({
   type: clientActions.SHOW_SPINNER,
   data: { message, offAction },
 });
