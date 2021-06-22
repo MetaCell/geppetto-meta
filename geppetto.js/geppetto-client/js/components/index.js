@@ -1,16 +1,7 @@
 import { connect } from "react-redux";
 import {
-  controlPanelOpen,
-  controlPanelClose,
   hideSpinner,
   showSpinner,
-  spinLogo,
-  stopLogo,
-  spinPersist,
-  spotlightClosed,
-  spotlightLoaded,
-  startTutorial,
-  updateCamera,
 } from '../common/actions/actions';
 
 

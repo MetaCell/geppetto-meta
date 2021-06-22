@@ -1,32 +1,32 @@
 
 import React from 'react';
-
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
 
-export default class LoadingSpinner extends React.Component{
+export default class LoadingSpinner extends React.Component {
 
   /**
    * Legacy way to hide the spinner
    */
-  hideSpinner (){
+  hideSpinner() {
     this.props.hideSpinner();
   }
-  
+
   /**
    * Legacy way to show the spinner
    * @param {} label 
    */
-  showSpinner (label){
+  showSpinner(label) {
     this.props.showSpinner(label);
   }
 
-  componentDidMount (){
-    GEPPETTO.Spinner = this;
+  componentDidMount() {
+    if (window.GEPPETTO) {
+      GEPPETTO.Spinner = this;
+    }
   }
 
-  render () {
+  render() {
     const { spinner } = this.props;
-      
 
     return (
       <Loader
@@ -37,7 +37,5 @@ export default class LoadingSpinner extends React.Component{
       />
     );
   }
-    
-            
 }
 
