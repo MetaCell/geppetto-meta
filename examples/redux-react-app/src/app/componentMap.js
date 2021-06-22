@@ -1,6 +1,6 @@
 import React from 'react';
 import { MyComponent } from '../components/MyComponent';
-import BigImageViewerExample from '../components/ImageViewer';
+import BigImageViewerExample from '@metacell/geppetto-meta-ui/big-image-viewer/showcase/examples/BigImageViewerExample';
 
 class Wrapper extends React.Component {
 

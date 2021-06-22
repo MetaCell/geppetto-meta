@@ -3,7 +3,7 @@ import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useStore } from 'react-redux';
 
-const FlexLayoutShowcase = () => {
+const MainLayout = () => {
 
     const store = useStore();
     const [Component, setComponent] = useState(undefined);
@@ -29,4 +29,4 @@ const FlexLayoutShowcase = () => {
     );
 }
 
-export default FlexLayoutShowcase;
+export default MainLayout;

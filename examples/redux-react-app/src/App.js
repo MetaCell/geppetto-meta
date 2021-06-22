@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 // import './flexlayout.css';
-import FlexLayoutShowcase from './app/showcase';
+import MainLayout from './app/showcase';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { _ } from 'core-js';
 import { Button } from '@material-ui/core';
@@ -84,7 +84,7 @@ const App = () => {
         </Grid>
 
         <Grid container item xs={12} spacing={1}>
-          <FlexLayoutShowcase />
+          <MainLayout />
         </Grid>
       </Grid>
       <LoadingSpinner />
