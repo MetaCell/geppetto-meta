@@ -10,7 +10,7 @@ import { activateWidget, addWidget, destroyWidget, maximizeWidget, minimizeWidge
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components/index';
 import Grid from '@material-ui/core/Grid';
 import { ButtonGroup } from '@material-ui/core';
-import { MyComponentWidget, ImageViewerWidget } from 'widgets';
+import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget } from 'widgets';
 import { layout } from 'app/layout';
 
 const newTabset = {
@@ -32,7 +32,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   const onCustomWidgetClick = () => dispatch(addWidget(MyComponentWidget));
-  const onImageViewerClick = () => dispatch(addWidget(ImageViewerWidget));
+  const onAddWidgetClick = (widget) => dispatch(addWidget(widget));
   const onRemove = (id) => dispatch(destroyWidget(id));
   const onMaximize = (id) => dispatch(maximizeWidget(id));
   const onMinimize = (id) => dispatch(minimizeWidget(id));
@@ -75,8 +75,13 @@ const App = () => {
           </ButtonGroup>
 
           <ButtonGroup color="secondary" aria-label="outlined primary button group">
-            <Button color="secondary" onClick={onImageViewerClick}>Add Big Image Viewer</Button>
+            <Button color="secondary" onClick={() => onAddWidgetClick(ImageViewerWidget)}>Add Big Image Viewer</Button>
             <Button color="secondary" onClick={() => onRemove('imageViewer')}>Remove Big Image Viewer</Button>
+          </ButtonGroup>
+
+          <ButtonGroup color="secondary" aria-label="outlined primary button group">
+            <Button color="secondary" onClick={() => onAddWidgetClick(DicomViewerWidget)}>Add DICOM Viewer</Button>
+            <Button color="secondary" onClick={() => onRemove('dicomViewer')}>Remove DICOM Viewer</Button>
           </ButtonGroup>
 
           <Button color="secondary" onClick={onLoad}>Load</Button>

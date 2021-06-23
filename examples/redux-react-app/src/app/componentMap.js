@@ -1,6 +1,7 @@
 import React from 'react';
 import { MyComponent } from '../components/MyComponent';
 import BigImageViewerExample from '@metacell/geppetto-meta-ui/big-image-viewer/showcase/examples/BigImageViewerExample';
+import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/showcase/examples/DicomViewerExample';
 
 class Wrapper extends React.Component {
 
@@ -20,6 +21,7 @@ const componentMap = {
     // Does not support functional components or withStyles !
     'myComponent': Wrapper,
     'imageViewer': ImageViewerWrapper,
+    'dicomViewer': DicomViewerExample,
 };
 
 export default componentMap

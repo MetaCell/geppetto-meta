@@ -12,3 +12,10 @@ export const ImageViewerWidget = {
     panelName: "leftPanel",
     enableClose: false,
 };
+
+export const DicomViewerWidget = {
+    id: 'dicomViewer',
+    component: "dicomViewer",
+    panelName: "leftPanel",
+    enableClose: false,
+};
