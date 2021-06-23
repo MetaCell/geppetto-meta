@@ -1,4 +1,4 @@
-import { WidgetStatus, Widget } from './model';
+import { Widget } from './model';
 
 /**
  * Transforms a widget configuration into a flexlayout node descriptor

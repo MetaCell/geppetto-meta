@@ -364,16 +364,17 @@ class LayoutManager {
         break;
       }
       case Actions.MAXIMIZE_TOGGLE:
+        // TODO: why is this disabled?
         // this.onActionMaximizeWidget(action);
         break;
       case Actions.ADJUST_SPLIT:
         break;
       case Actions.ADD_NODE: {
+        // TODO: why is this disabled?
         // action.data.index = this.findWidgetInsertionIndex(action);
         break;
       }
       case Actions.MOVE_NODE: {
-
         break;
       }
       default: {
@@ -384,12 +385,10 @@ class LayoutManager {
       this.model.doAction(action);
     }
 
-
     const newModel = this.model.toJson();
     if (!isEqual(oldModel, newModel)) {
       this.store.dispatch(setLayout(newModel));
     }
-
 
     window.dispatchEvent(new Event("resize"));
   }

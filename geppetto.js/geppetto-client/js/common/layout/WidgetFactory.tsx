@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Store } from 'redux';
 
 import { WidgetComponent, Widget, ComponentMap } from './model';
-
 import { updateWidget } from './actions';
 
 /**
@@ -40,7 +39,6 @@ class WidgetFactory {
   updateComponentMapping(componentMap: ComponentMap) {
     this.componentMap = { ...this.componentMap, ...componentMap }
   }
-
 
   private WidgetToComponent = ({ widgetConfig }: { widgetConfig: Widget }) => {
     this.refs[widgetConfig.id] = React.createRef();
