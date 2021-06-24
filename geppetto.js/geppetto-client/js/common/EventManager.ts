@@ -63,6 +63,8 @@ for (const action in clientActions) {
 
 /**
  * Workaround to enable the use of EventManager without requiring a redux store.
+ * 
+ * EventManager is used across geppetto-core, but not every application has a redux store.
  */
 interface MockStore {
   dispatch: Function
