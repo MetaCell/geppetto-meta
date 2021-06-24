@@ -384,7 +384,6 @@ export default {
    * Node Resources
    */
   PROJECT_NODE: "ProjectNode",
-  EXPERIMENT_NODE: "ExperimentNode",
   SIMULATOR_CONFIGURATION_NODE: "SimulatorConfigurationNode",
   VISUAL_GROUP_NODE: "VisualGroup",
   VISUAL_GROUP_ELEMENT_NODE: "VisualGroupElement",
@@ -463,8 +462,6 @@ export default {
   WRITE_PROJECT : "WRITE_PROJECT",
   READ_PROJECT : "READ_PROJECT",
   DOWNLOAD : "DOWNLOAD",
-  DROPBOX_INTEGRATION : "DROPBOX_INTEGRATION",
-  RUN_EXPERIMENT : "RUN_EXPERIMENT"
 }
 
 

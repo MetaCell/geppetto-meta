@@ -2310,12 +2310,11 @@ export default function (GEPPETTO) {
       },
 
       /** Creates an instance */
-      createExternalInstance: function (path, projectId, experimentId) {
+      createExternalInstance: function (path, projectId) {
         var options = {
           _metaType: GEPPETTO.Resources.INSTANCE_NODE,
           path: path,
           projectId: projectId,
-          experimentId: experimentId
         };
           
         return new ExternalInstance(options);

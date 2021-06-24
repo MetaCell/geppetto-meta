@@ -72,8 +72,6 @@ Manager.prototype = {
     } else {
       window.Instances = GEPPETTO.ModelFactory.instantiateVariables(window.Model);
     }
-    
-    // add dynamic instance tree (instance tree will be populated with state info for each experiment)
 
     this.augmentInstancesArray(window.Instances);
     console.timeEnd(GEPPETTO.Resources.CREATING_INSTANCES);

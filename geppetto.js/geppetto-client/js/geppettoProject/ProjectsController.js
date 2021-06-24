@@ -69,6 +69,9 @@ define(function (require) {
           return data;
         },
 
+        /**
+         * @depreacted relies on experiments.
+         */
         getData: function (project, dataType) {
           var data = [];
 

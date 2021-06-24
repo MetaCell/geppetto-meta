@@ -114,7 +114,6 @@ define(function (require) {
   require('./GEPPETTO.Main')(GEPPETTO);
   require('@metacell/geppetto-meta-core/ProjectFactory')(GEPPETTO);
   require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
-  require('../../geppettoModel/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);
 
   GEPPETTO.eventsMapping = {
@@ -142,7 +141,6 @@ define(function (require) {
     [GEPPETTO.Events.Control_panel_close]: EventManager.clientActions.CONTROL_PANEL_CLOSE,
     [GEPPETTO.Events.Lit_entities_changed]: EventManager.clientActions.LIT_ENTITIES_CHANGED,
     [GEPPETTO.Events.Component_destroyed]: EventManager.clientActions.COMPONENT_DESTROYED,
-    [GEPPETTO.Events.Experiment_properties_saved]: EventManager.clientActions.EXPERIMENT_PROPERTIES_SAVED,
     [GEPPETTO.Events.Project_properties_saved]: EventManager.clientActions.PROJECT_PROPERTIES_SAVED,
     [GEPPETTO.Events.Parameters_set]: EventManager.clientActions.PARAMETERS_SET,
     [GEPPETTO.Events.Command_log]: EventManager.clientActions.COMMAND_LOG,

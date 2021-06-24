@@ -11,17 +11,10 @@ export default function (GEPPETTO) {
    * @class GEPPETTO.Events
    */
   GEPPETTO.Events = {
-    Select: "experiment:selection_changed",
-    Visibility_changed: "experiment:visibility_changed",
-    Focus_changed: "experiment:focus_changed",
-    Experiment_over: "experiment:over",
     Project_loading: "project:loading",
     Project_loaded: "project:loaded",
     Project_downloaded: "project:downloaded",
     Model_loaded: "model:loaded",
-    Experiment_loaded: "experiment:loaded",
-    ModelTree_populated: "experiment:modeltreepopulated",
-    SimulationTree_populated: "experiment:simulationtreepopulated",
     Project_persisted: "project:persisted",
     Instance_deleted: "instance:deleted",
     Instances_created: "instances:created",
@@ -37,7 +30,6 @@ export default function (GEPPETTO) {
     Control_panel_close: "control_panel:close",
     Lit_entities_changed: "lit_entities_changed",
     Component_destroyed: "component_destroyed",
-    Experiment_properties_saved : "experiment_properties_saved",
     Project_properties_saved : "project_properties_saved",
     Parameters_set : "parameters_set",
     Command_log : "command:log",

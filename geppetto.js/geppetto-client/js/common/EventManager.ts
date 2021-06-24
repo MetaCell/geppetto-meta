@@ -299,10 +299,6 @@ class EventManager {
     this.actionsHandler[clientActions.COMPONENT_DESTROYED]()
   }
 
-  experimentPropertiesSaved() {
-    this.actionsHandler[clientActions.EXPERIMENT_PROPERTIES_SAVED]()
-  }
-
   projectPropertiesSaved() {
     this.actionsHandler[clientActions.PROJECT_PROPERTIES_SAVED]()
   }

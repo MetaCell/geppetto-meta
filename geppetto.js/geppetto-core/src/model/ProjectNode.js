@@ -33,7 +33,6 @@ define(['backbone'], function (require) {
       for (var entity in this.runTimeTree) {
         GEPPETTO.CommandController.removeCommands(entity);
       }
-      this.experiments = [];
       this.runTimeTree = {};
       if (options) {
         this.name = options.name;
@@ -84,7 +83,7 @@ define(['backbone'], function (require) {
      * @param {URL} projectID - Id of project to load
      * @returns {String}  Status of attempt to load simulation using url.
      */
-    loadFromID: function (projectID, experimentID) {
+    loadFromID: function (projectID) {
       EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
       EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
@@ -93,7 +92,6 @@ define(['backbone'], function (require) {
 
       if (projectID != null && projectID != "") {
         var parameters = {};
-        parameters["experimentId"] = experimentID;
         parameters["projectId"] = projectID;
         GEPPETTO.MessageSocket.send("load_project_from_id", parameters);
         this.initializationTime = new Date();
@@ -211,7 +209,6 @@ define(['backbone'], function (require) {
     downloadModel : function (path, format) {
       if (this.downloadPermission){
         var parameters = {};
-        parameters["experimentId"] = this.getActiveExperiment().getId();
         parameters["projectId"] = this.getId();
         parameters["instancePath"] = path;
         parameters["format"] = format;
@@ -269,8 +266,7 @@ define(['backbone'], function (require) {
      */
     print: function () {
       return "Name : " + this.name + "\n" + "    Id: " + this.id + "\n"
-                + "    InstancePath : " + this.instancePath + "\n"
-                + "    Properties : " + this.experiments + "\n";
+                + "    InstancePath : " + this.instancePath + "\n";
     }
   });
 });
