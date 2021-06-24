@@ -1,3 +1,8 @@
+/**
+ * The default layout of the application.
+ * 
+ * Will be loaded by FlexLayout.
+ */
 export const layout = {
   global: {
     tabEnableClose: true,

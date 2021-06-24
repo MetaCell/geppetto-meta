@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import { ButtonGroup } from '@material-ui/core';
 import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget } from 'widgets';
 import { layout } from 'app/layout';
+import * as Actions from 'redux/actions';
 
 const newTabset = {
   "type": "row",
@@ -31,6 +32,7 @@ const App = () => {
 
   const dispatch = useDispatch();
 
+  // Click callbacks
   const onCustomWidgetClick = () => dispatch(addWidget(MyComponentWidget));
   const onAddWidgetClick = (widget) => dispatch(addWidget(widget));
   const onRemove = (id) => dispatch(destroyWidget(id));
@@ -49,14 +51,10 @@ const App = () => {
   }));
 
   const onLoad = () => {
-    dispatch({
-      type: "LOADING_START"
-    })
-
+    dispatch({ type: Actions.DATA_LOADING_START })
+    
     setTimeout(() => {
-      dispatch({
-        type: 'LOADING_END'
-      })
+      dispatch({ type: Actions.DATA_LOADING_END })
     }, 4000);
   }
 

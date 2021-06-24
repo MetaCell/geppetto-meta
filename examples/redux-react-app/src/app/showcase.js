@@ -3,6 +3,9 @@ import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useStore } from 'react-redux';
 
+/**
+ * The component that renders the FlexLayout component of the LayoutManager.
+ */
 const MainLayout = () => {
 
     const store = useStore();
@@ -12,6 +15,7 @@ const MainLayout = () => {
         // Workaround because getLayoutManagerInstance 
         // is undefined when calling it in global scope
         // Need to wait until store is ready ...
+        // TODO: find better way to retrieve the LayoutManager component!
         if (Component === undefined) {
             const myManager = getLayoutManagerInstance();
             if (myManager) {
@@ -22,9 +26,7 @@ const MainLayout = () => {
 
     return (
         <div style={{ position: 'relative', height: '100%', width: '100%', minHeight: '500px' }}>
-            {
-                Component === undefined ? <CircularProgress /> : <Component />
-            }
+            {Component === undefined ? <CircularProgress /> : <Component />}
         </div>
     );
 }
