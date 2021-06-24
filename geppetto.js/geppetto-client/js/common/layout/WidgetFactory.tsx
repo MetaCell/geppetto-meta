@@ -43,8 +43,8 @@ class WidgetFactory {
   private WidgetToComponent = ({ widgetConfig }: { widgetConfig: Widget }) => {
     this.refs[widgetConfig.id] = React.createRef();
     const Component = this.componentMap[widgetConfig.component] as any;
-    const proto = Component.WrappedComponent ? Component.WrappedComponent.prototype: Component.prototype;
-    const ref = proto.importSession ? {ref: this.refs[widgetConfig.id]}: {};
+    const proto = Component.WrappedComponent ? Component.WrappedComponent.proto: Component.proto;
+    const ref = proto && proto.importSession ? {ref: this.refs[widgetConfig.id]}: {};
 
     // Note: the sessionChange is an option that is available to save components sessions within the widget itself
     // It's a more reacty way than using references and also works for functional components, but it's not 
