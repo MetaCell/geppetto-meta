@@ -1,5 +1,7 @@
 /**
  * Utility class for helper functions
+ * 
+ * @depreacted
  */
 define(function (require) {
   return function (GEPPETTO) {

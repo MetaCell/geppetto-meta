@@ -19,7 +19,6 @@ export function widget2Node (configuration: Widget) {
   };
 }
 
-
 /**
  * Deep object comparison
  * @param {*} a 

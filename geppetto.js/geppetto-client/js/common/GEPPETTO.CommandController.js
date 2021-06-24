@@ -1,5 +1,7 @@
 /**
  * Controls execution and propagation of commands and command related logic
+ * 
+ * @deprecated
  *
  */
 define(function (require) {

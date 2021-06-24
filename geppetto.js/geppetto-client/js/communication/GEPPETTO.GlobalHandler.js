@@ -3,6 +3,10 @@
  */
 
 var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
+
+/**
+ * @depreacted
+ */
 function GlobalHandler (GEPPETTO) {
 
   var messageTypes
@@ -14,10 +18,7 @@ function GlobalHandler (GEPPETTO) {
           ERROR_DOWNLOADING_RESULTS: "error_downloading_results",
           ERROR: "generic_error",
           INFO_MESSAGE: "info_message",
-          GEPPETTO_VERSION: "geppetto_version",
           READ_URL_PARAMS: "read_url_parameters",
-          SCRIPT_FETCHED: "script_fetched",
-          DATASOURCE_FETCHED: "data_source_results_fetched",
           SERVER_AVAILABLE: "server_available",
           SERVER_UNAVAILABLE: "server_unavailable",
           USER_PRIVILEGES : "user_privileges",
@@ -30,11 +31,6 @@ function GlobalHandler (GEPPETTO) {
   // sets client id
   messageHandler[messageTypes.CLIENT_ID] = function (payload) {
     GEPPETTO.MessageSocket.setClientID(payload.clientID);
-  };
-
-  messageHandler[messageTypes.USER_PRIVILEGES] = function (payload) {
-    var user_privileges = JSON.parse(payload.user_privileges);
-    GEPPETTO.UserController.setUserPrivileges(user_privileges);
   };
 
   // Error loading simulation, invalid url or simulation file
@@ -78,21 +74,6 @@ function GlobalHandler (GEPPETTO) {
     EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](error.msg);
     GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
     EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
-  };
-
-  messageHandler[messageTypes.GEPPETTO_VERSION] = function (payload) {
-    var version = payload.geppetto_version;
-    var geppettoVersion = GEPPETTO.Resources.GEPPETTO_VERSION_HOLDER.replace("$1", version);
-    GEPPETTO.CommandController.log(geppettoVersion);
-  };
-
-  messageHandler[messageTypes.SCRIPT_FETCHED] = function (payload) {
-    GEPPETTO.ScriptRunner.runScript(payload.script_fetched);
-  };
-
-  messageHandler[messageTypes.DATASOURCE_FETCHED] = function (payload) {
-    var message = JSON.parse(payload.data_source_results_fetched);
-    GEPPETTO.Spotlight.updateDataSourceResults(message.data_source_name,JSON.parse(message.results));
   };
 
   // Simulation server became available

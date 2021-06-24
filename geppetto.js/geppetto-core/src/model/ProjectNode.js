@@ -1,5 +1,4 @@
 
-
 /**
  * Client class for Project node.
  *
@@ -9,19 +8,17 @@
 
 var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
+/**
+ * @depreacted
+ */
 define(['backbone'], function (require) {
 
   return Backbone.Model.extend({
-    experiments: null,
-    activeExperiment: null,
     initializationTime: null,
     name: "",
     id: "",
     persisted: false,
     runTimeTree: {},
-    writePermission :  null,
-    runPermission : null,
-    downloadPermission : null,
     readOnly : true,
     isPublicProject : false,
     view: {},
@@ -33,10 +30,6 @@ define(['backbone'], function (require) {
      *                           node
      */
     initialize: function (options) {
-      for (var experiment in this.experiments) {
-        GEPPETTO.ExperimentsController.terminateWorker();               
-        delete this.experiments[experiment];
-      }
       for (var entity in this.runTimeTree) {
         GEPPETTO.CommandController.removeCommands(entity);
       }
@@ -46,10 +39,6 @@ define(['backbone'], function (require) {
         this.name = options.name;
         this.id = options.id;
       }
-            
-      this.writePermission = GEPPETTO.UserController.hasPermission(GEPPETTO.Resources.WRITE_PROJECT);
-      this.runPermission = GEPPETTO.UserController.hasPermission(GEPPETTO.Resources.RUN_EXPERIMENT);
-      this.downloadPermission = GEPPETTO.UserController.hasPermission(GEPPETTO.Resources.DOWNLOAD);
     },
 
     /**
@@ -70,7 +59,7 @@ define(['backbone'], function (require) {
      *
      */
     setName: function (newname) {
-      if (this.writePermission && this.persisted && GEPPETTO.UserController.isLoggedIn()){
+      if (this.writePermission && this.persisted){
         this.saveProjectProperties({ "name": newname });
         this.name = newname;
       } else {
@@ -89,104 +78,6 @@ define(['backbone'], function (require) {
     },
 
     /**
-     * Get experiments for this project
-     *
-     * @command ProjectNode.getExperiments()
-     * @returns {Array} Array of ExperimentNodes
-     */
-    getExperiments: function () {
-      return this.experiments;
-    },
-
-    /**
-     * Get experiment by id
-     *
-     * @command ProjectNode.getExperimentById(id)
-     * @returns {Array} Array of ExperimentNodes
-     */
-    getExperimentById: function (id) {
-      var experiment = null;
-
-      for (var i = 0; i < this.experiments.length; i++) {
-        if (this.experiments[i].getId() == id) {
-          experiment = this.experiments[i];
-          break;
-        }
-      }
-
-      return experiment;
-    },
-
-    /**
-     * Set active experiment for this project
-     *
-     * @command ProjectNode.setActiveExperiment()
-     * @param {ExperimentNode} experiment - Active Experiment
-     */
-    setActiveExperiment: function (experiment) {
-      if (GEPPETTO.UserController.isLoggedIn()){
-        this.activeExperiment = experiment;
-        EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_ACTIVE]();
-      } else {
-        return GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN;
-      }
-    },
-
-    /**
-     * Get active experiment for this project
-     *
-     * @command ProjectNode.getActiveExperiment()
-     * @returns ExperimentNode
-     */
-    getActiveExperiment: function () {
-      return this.activeExperiment;
-    },
-
-    /**
-     * Gets an experiment from this project.
-     *
-     * @command ProjectNode.getExperiment(name)
-     * @returns {ExperimentNode} ExperimentNode for given name
-     */
-    getExperiment: function (name) {
-      return this.experiments[name];
-    },
-
-    /**
-     * Create new experiment for this project.
-     *
-     * @command ProjectNode.newExperiment()
-     * @returns {ExperimentNode} Creates a new ExperimentNode
-     */
-    newExperiment: function () {
-      if (this.writePermission && this.persisted && GEPPETTO.UserController.isLoggedIn()){
-        var parameters = {};
-        parameters["projectId"] = this.id;
-        GEPPETTO.MessageSocket.send("new_experiment", parameters);
-      } else {
-        return GEPPETTO.Utility.persistedAndWriteMessage(this);
-      }
-    },
-
-    /**
-     * Create a set of new experiments for this project.
-     *
-     * @command ProjectNode.newExperiment()
-     * @returns {ExperimentNode} Creates a new ExperimentNode
-     */
-    newExperimentBatch: function (experimentData, callback) {
-      if (this.writePermission && this.persisted && GEPPETTO.UserController.isLoggedIn()){
-        var parameters = {
-          projectId: this.id,
-          experiments: experimentData
-        };
-        GEPPETTO.MessageSocket.send("new_experiment_batch", JSON.stringify(parameters), callback);
-      } else {
-        return GEPPETTO.Utility.persistedAndWriteMessage(this);
-      }
-    },
-
-    /**
      * Loads a project from content.
      *
      * @command Project.loadFromContent(projectID)
@@ -194,8 +85,6 @@ define(['backbone'], function (require) {
      * @returns {String}  Status of attempt to load simulation using url.
      */
     loadFromID: function (projectID, experimentID) {
-
-      GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
       EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
       EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
@@ -225,9 +114,6 @@ define(['backbone'], function (require) {
      * @returns {String}  Status of attempt to load project using url.
      */
     loadFromURL: function (projectURL) {
-
-      GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
-
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
       EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
       EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
@@ -255,10 +141,7 @@ define(['backbone'], function (require) {
      * @returns {String}  Status of attempt to load project
      */
     loadFromContent: function (content) {
-
       EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADING]();
-      GEPPETTO.WidgetsListener.update(GEPPETTO.WidgetsListener.WIDGET_EVENT_TYPE.DELETE);
-
       console.time(GEPPETTO.Resources.LOADING_PROJECT);
       EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
 
@@ -280,7 +163,7 @@ define(['backbone'], function (require) {
     },
 
     saveProjectProperties: function (properties) {
-      if (this.writePermission && this.persisted && GEPPETTO.UserController.isLoggedIn() && !this.isReadOnly()){
+      if (this.writePermission && this.persisted && !this.isReadOnly()){
         var parameters = {};
         parameters["projectId"] = this.getId();
         parameters["properties"] = properties;
@@ -291,7 +174,7 @@ define(['backbone'], function (require) {
     },
 
     persist: function () {
-      if (this.writePermission && GEPPETTO.UserController.isLoggedIn()){
+      if (this.writePermission){
         var parameters = {};
         parameters["projectId"] = this.id;
         GEPPETTO.MessageSocket.send("persist_project", parameters);
@@ -301,7 +184,7 @@ define(['backbone'], function (require) {
     },
         
     makePublic : function (mode){
-      if (this.writePermission && GEPPETTO.UserController.isLoggedIn()){
+      if (this.writePermission){
         var parameters = {};
         parameters["projectId"] = this.id;
         parameters["isPublic"] = mode;
@@ -326,7 +209,7 @@ define(['backbone'], function (require) {
      * * @param {String} name - File format to download
      */
     downloadModel : function (path, format) {
-      if (this.downloadPermission && GEPPETTO.UserController.isLoggedIn()){
+      if (this.downloadPermission){
         var parameters = {};
         parameters["experimentId"] = this.getActiveExperiment().getId();
         parameters["projectId"] = this.getId();
@@ -337,15 +220,8 @@ define(['backbone'], function (require) {
         var formatMessage = (format == "") ? "default format" : format;
         return GEPPETTO.Resources.DOWNLOADING_MODEL + formatMessage;
       } else {
-        var message = GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.USER_NOT_LOGIN;
-        if (!GEPPETTO.UserController.isLoggedIn()){
-          return message;
-        } else {
-          message = GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.DOWNLOAD_PRIVILEGES_NOT_SUPPORTED;
-        }
-              
+        message = GEPPETTO.Resources.OPERATION_NOT_SUPPORTED + GEPPETTO.Resources.DOWNLOAD_PRIVILEGES_NOT_SUPPORTED;
         GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.ERROR, message);
-            
         return message;
       }
     },
@@ -357,7 +233,6 @@ define(['backbone'], function (require) {
      */
     setView: function (view){
       this.set('view', JSON.stringify(view));
-      GEPPETTO.ExperimentsController.setView(view);
     },
 
     /**

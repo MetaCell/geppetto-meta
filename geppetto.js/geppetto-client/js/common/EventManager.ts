@@ -15,26 +15,9 @@ import {
   projectDownloaded,
   projectPersisted,
   projectConfigLoaded,
-  experimentOver,
-  experimentLoaded,
-  experimentPlay,
-  experimentStatusCheck,
-  experimentPause,
-  experimentResume,
-  experimentRunning,
-  experimentStop,
-  experimentCompleted,
-  experimentFailed,
-  experimentUpdate,
-  experimentUpdated,
-  experimentRenamed,
-  experimentDeleted,
-  experimentActive,
-  experimentCreated,
-  spotlightClosed,
-  spotlightLoaded,
   instanceDeleted,
   instancesCreated,
+  // TODO: why are these imports unused?
   showTutorial,
   hideTutorial,
   startTutorial,
@@ -45,15 +28,12 @@ import {
   hideSpinner,
   showHelp,
   hideHelp,
-  colorSet,
   canvasInitialised,
   projectMadePublic,
   controlPanelOpen,
   controlPanelClose,
   litEntitiesChanged,
   componentDestroyed,
-  experimentPropertiesSaved,
-  projectPropertiesSaved,
   parametersSet,
   commandLog,
   commandLogDebug,
@@ -81,23 +61,41 @@ for (const action in clientActions) {
   callbacksList[action] = new Set<Function>()
 }
 
+/**
+ * Workaround to enable the use of EventManager without requiring a redux store.
+ */
+interface MockStore {
+  dispatch: Function
+}
+
+/**
+ * @deprecated
+ */
 class EventManager {
-  store: Store<any, GeppettoAction>;
+
+  store: Store<any, GeppettoAction> | MockStore;
+  initialized: boolean = false;
+
+  constructor() {
+    this.store = {
+      dispatch: (_: any) => { }
+    }
+  }
 
   setStore(store: Store<any, GeppettoAction>) {
-    if (this.store) {
+    if (this.initialized) {
       throw Error("Cannot set the store more than once")
     }
     this.store = store;
+    this.initialized = true;
   }
+
   clientActions = clientActions;
   eventsCallback = callbacksList;
-
 
   action(action, params) {
     this.store.dispatch({ type: action, data: { ...params } });
   }
-
 
   actionsHandler: { [id: string]: Function } = {
     [clientActions.SELECT]: (scope, geometryIdentifier, point) => (
@@ -124,125 +122,14 @@ class EventManager {
     [clientActions.PROJECT_CONFIG_LOADED]: configuration => (
       this.store.dispatch(projectConfigLoaded(configuration))
     ),
-    [clientActions.EXPERIMENT_OVER]: experiment => (
-      this.store.dispatch(experimentOver(experiment))
-    ),
-    [clientActions.EXPERIMENT_LOADED]: () => (
-      this.store.dispatch(experimentLoaded())
-    ),
-    [clientActions.EXPERIMENT_PLAY]: parameters => (
-      this.store.dispatch(experimentPlay(parameters))
-    ),
-    [clientActions.EXPERIMENT_PAUSE]: () => (
-      this.store.dispatch(experimentPause())
-    ),
-    [clientActions.EXPERIMENT_RESUME]: () => (
-      this.store.dispatch(experimentResume())
-    ),
-    [clientActions.EXPERIMENT_STATUS_CHECK]: () => (
-      this.store.dispatch(experimentStatusCheck())
-    ),
-    [clientActions.EXPERIMENT_RUNNING]: id => (
-      this.store.dispatch(experimentRunning(id))
-    ),
-    [clientActions.EXPERIMENT_STOP]: () => (
-      this.store.dispatch(experimentStop())
-    ),
-    [clientActions.EXPERIMENT_COMPLETED]: id => (
-      this.store.dispatch(experimentCompleted(id))
-    ),
-    [clientActions.EXPERIMENT_FAILED]: id => (
-      this.store.dispatch(experimentFailed(id))
-    ),
-    [clientActions.EXPERIMENT_UPDATE]: parameters => (
-      this.store.dispatch(experimentUpdate(parameters))
-    ),
-    [clientActions.EXPERIMENT_UPDATED]: () => (
-      this.store.dispatch(experimentUpdated())
-    ),
-    [clientActions.EXPERIMENT_RENAMED]: () => (
-      this.store.dispatch(experimentRenamed())
-    ),
-    [clientActions.EXPERIMENT_DELETED]: id => (
-      this.store.dispatch(experimentDeleted(id))
-    ),
-    [clientActions.EXPERIMENT_ACTIVE]: () => (
-      this.store.dispatch(experimentActive())
-    ),
-    [clientActions.EXPERIMENT_CREATED]: id => (
-      this.store.dispatch(experimentCreated(id))
-    ),
     [clientActions.PROJECT_PERSISTED]: () => (
       this.store.dispatch(projectPersisted())
-    ),
-    [clientActions.SPOTLIGHT_CLOSED]: () => (
-      this.store.dispatch(spotlightClosed())
-    ),
-    [clientActions.SPOTLIGHT_LOADED]: () => (
-      this.store.dispatch(spotlightLoaded())
     ),
     [clientActions.INSTANCE_DELETED]: instancePath => (
       this.store.dispatch(instanceDeleted(instancePath))
     ),
     [clientActions.INSTANCES_CREATED]: instances => (
       this.store.dispatch(instancesCreated(instances))
-    ),
-    [clientActions.SHOW_TUTORIAL]: () => (
-      this.store.dispatch(showTutorial())
-    ),
-    [clientActions.HIDE_TUTORIAL]: () => (
-      this.store.dispatch(hideTutorial())
-    ),
-    [clientActions.START_TUTORIAL]: () => (
-      this.store.dispatch(startTutorial())
-    ),
-    [clientActions.STOP_TUTORIAL]: () => (
-      this.store.dispatch(stopTutorial())
-    ),
-    [clientActions.SHOW_QUERYBUILDER]: () => (
-      this.store.dispatch(showQueryBuilder())
-    ),
-    [clientActions.HIDE_QUERYBUILDER]: () => (
-      this.store.dispatch(hideQueryBuilder())
-    ),
-    [clientActions.SHOW_SPINNER]: message => (
-      this.store.dispatch(showSpinner(message))
-    ),
-    [clientActions.HIDE_SPINNER]: () => (
-      this.store.dispatch(hideSpinner())
-    ),
-    [clientActions.SHOW_HELP]: () => (
-      this.store.dispatch(showHelp())
-    ),
-    [clientActions.HIDE_HELP]: () => (
-      this.store.dispatch(hideHelp())
-    ),
-    [clientActions.COLOR_SET]: parameters => (
-      this.store.dispatch(colorSet(parameters))
-    ),
-    [clientActions.CANVAS_INITIALISED]: () => (
-      this.store.dispatch(canvasInitialised())
-    ),
-    [clientActions.PROJECT_MADE_PUBLIC]: () => (
-      this.store.dispatch(projectMadePublic())
-    ),
-    [clientActions.CONTROL_PANEL_OPEN]: () => (
-      this.store.dispatch(controlPanelOpen())
-    ),
-    [clientActions.CONTROL_PANEL_CLOSE]: () => (
-      this.store.dispatch(controlPanelClose())
-    ),
-    [clientActions.LIT_ENTITIES_CHANGED]: () => (
-      this.store.dispatch(litEntitiesChanged())
-    ),
-    [clientActions.COMPONENT_DESTROYED]: () => (
-      this.store.dispatch(componentDestroyed())
-    ),
-    [clientActions.EXPERIMENT_PROPERTIES_SAVED]: () => (
-      this.store.dispatch(experimentPropertiesSaved())
-    ),
-    [clientActions.PROJECT_PROPERTIES_SAVED]: () => (
-      this.store.dispatch(projectPropertiesSaved())
     ),
     [clientActions.PARAMETERS_SET]: () => (
       this.store.dispatch(parametersSet())
@@ -298,6 +185,12 @@ class EventManager {
     [clientActions.DISABLE_CONTROLS]: () => (
       this.store.dispatch(disableControls())
     ),
+    [clientActions.SHOW_SPINNER]: (message) => {
+      this.store.dispatch(showSpinner(message))
+    },
+    [clientActions.HIDE_SPINNER]: () => {
+      this.store.dispatch(hideSpinner())
+    },
   };
 
   select(scope, geometryIdentifier, point) {
@@ -328,81 +221,8 @@ class EventManager {
     this.actionsHandler[clientActions.PROJECT_CONFIG_LOADED](configuration)
   }
 
-  experimentOver(experiment) {
-    this.actionsHandler[clientActions.EXPERIMENT_OVER](experiment)
-  }
-
-  experimentLoaded() {
-    this.actionsHandler[clientActions.EXPERIMENT_LOADED]()
-  }
-
-  playExperiment(parameters) {
-    this.actionsHandler[clientActions.EXPERIMENT_PLAY](parameters)
-  }
-
-  pauseExperiment() {
-    this.actionsHandler[clientActions.EXPERIMENT_PAUSE]()
-  }
-
-  resumeExperiment() {
-    this.actionsHandler[clientActions.EXPERIMENT_RESUME]()
-  }
-
-  experimentStatusCheck() {
-    this.actionsHandler[clientActions.EXPERIMENT_STATUS_CHECK]()
-  }
-
-
-  experimentRunning(id) {
-    this.actionsHandler[clientActions.EXPERIMENT_RUNNING](id)
-  }
-
-  stopExperiment() {
-    this.actionsHandler[clientActions.EXPERIMENT_STOP]()
-  }
-
-  experimentCompleted(id) {
-    this.actionsHandler[clientActions.EXPERIMENT_COMPLETED](id)
-  }
-
-  experimentFailed(id) {
-    this.actionsHandler[clientActions.EXPERIMENT_FAILED](id)
-  }
-
-  updateExperiment(parameters) {
-    this.actionsHandler[clientActions.EXPERIMENT_UPDATE](parameters)
-  }
-
-  experimentUpdated() {
-    this.actionsHandler[clientActions.EXPERIMENT_UPDATED]()
-  }
-
-  experimentRenamed() {
-    this.actionsHandler[clientActions.EXPERIMENT_RENAMED]()
-  }
-
-  experimentDeleted(id) {
-    this.actionsHandler[clientActions.EXPERIMENT_DELETED](id)
-  }
-
-  activeExperiment() {
-    this.actionsHandler[clientActions.EXPERIMENT_ACTIVE]()
-  }
-
-  experimentCreated(id) {
-    this.actionsHandler[clientActions.EXPERIMENT_CREATED](id)
-  }
-
   projectPersisted() {
     this.actionsHandler[clientActions.PROJECT_PERSISTED]()
-  }
-
-  spotlightClosed() {
-    this.actionsHandler[clientActions.SPOTLIGHT_CLOSED]()
-  }
-
-  spotlightLoaded() {
-    this.actionsHandler[clientActions.SPOTLIGHT_LOADED]()
   }
 
   instanceDeleted(instancePath) {
@@ -556,10 +376,6 @@ class EventManager {
   disableControls() {
     this.actionsHandler[clientActions.DISABLE_CONTROLS]()
   }
-
-
 }
-
-
 
 export default new EventManager();

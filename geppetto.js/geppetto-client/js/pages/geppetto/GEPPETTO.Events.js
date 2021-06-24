@@ -3,10 +3,11 @@
  * Events
  *
  * Different types of events that exist
+ * 
+ * @deprecated
  *
  * @enum
  */
-
 export default function (GEPPETTO) {
   /**
    * @class GEPPETTO.Events
@@ -23,24 +24,7 @@ export default function (GEPPETTO) {
     Experiment_loaded: "experiment:loaded",
     ModelTree_populated: "experiment:modeltreepopulated",
     SimulationTree_populated: "experiment:simulationtreepopulated",
-    Do_experiment_play: "experiment:doPlay",
-    Experiment_play: "experiment:play",
-    Experiment_status_check: "experiment:status_check",
-    Experiment_pause: "experiment:pause",
-    Experiment_resume: "experiment:resume",
-    Experiment_running: "experiment:running",
-    Experiment_stop: "experiment:stop",
-    Experiment_completed: "experiment:completed",
-    Experiment_failed: "experiment:failed",
-    Experiment_update: "experiment:update",
-    Experiment_updated: "experiment:updated",
-    Experiment_renamed: "experiment:renamed",
-    Experiment_deleted: "experiment_deleted",
-    Experiment_active: "experiment_active",
-    Experiment_created: "experiment:created",
     Project_persisted: "project:persisted",
-    Spotlight_closed: "spotlight:closed",
-    Spotlight_loaded: "spotlight:loaded",
     Instance_deleted: "instance:deleted",
     Instances_created: "instances:created",
     Instance_added: "instance:added",

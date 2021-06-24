@@ -3,33 +3,14 @@ export const clientActions = {
   SELECT: "SELECTION_CHANGED",
   VISIBILITY_CHANGED: "VISIBILITY_CHANGED",
   FOCUS_CHANGED: "FOCUS_CHANGED",
-  EXPERIMENT_OVER: "EXPERIMENT_OVER",
   PROJECT_LOADING: "PROJECT_LOADING",
   PROJECT_LOADED: "PROJECT_LOADED",
   PROJECT_DOWNLOADED: "PROJECT_DOWNLOADED",
   PROJECT_CONFIG_LOADED: "PROJECT_CONFIG_LOADED",
   MODEL_LOADED: "MODEL_LOADED",
-  EXPERIMENT_LOADED: "EXPERIMENT_LOADED",
   MODELTREE_POPULATED: "MODELTREE_POPULATED",
   SIMULATIONTREE_POPULATED: "SIMULATIONTREE_POPULATED",
-  DO_EXPERIMENT_PLAY: "DO_EXPERIMENT_PLAY",
-  EXPERIMENT_PLAY: "EXPERIMENT_PLAY",
-  EXPERIMENT_STATUS_CHECK: "EXPERIMENT_STATUS_CHECK",
-  EXPERIMENT_PAUSE: "EXPERIMENT_PAUSE",
-  EXPERIMENT_RESUME: "EXPERIMENT_RESUME",
-  EXPERIMENT_RUNNING: "EXPERIMENT_RUNNING",
-  EXPERIMENT_STOP: "EXPERIMENT_STOP",
-  EXPERIMENT_COMPLETED: "EXPERIMENT_COMPLETED",
-  EXPERIMENT_FAILED: "EXPERIMENT_FAILED",
-  EXPERIMENT_UPDATE: "EXPERIMENT_UPDATE",
-  EXPERIMENT_UPDATED: "EXPERIMENT_UPDATED",
-  EXPERIMENT_RENAMED: "EXPERIMENT_RENAMED",
-  EXPERIMENT_DELETED: "EXPERIMENT_DELETED",
-  EXPERIMENT_ACTIVE: "EXPERIMENT_ACTIVE",
-  EXPERIMENT_CREATED: "EXPERIMENT_CREATED",
   PROJECT_PERSISTED: "PROJECT_PERSISTED",
-  SPOTLIGHT_CLOSED: "SPOTLIGHT_CLOSED",
-  SPOTLIGHT_LOADED: "SPOTLIGHT_LOADED",
   INSTANCE_ADDED: "INSTANCE_ADDED",
   INSTANCE_DELETED: "INSTANCE_DELETED",
   INSTANCES_CREATED: "INSTANCES_CREATED",
@@ -50,7 +31,6 @@ export const clientActions = {
   CONTROL_PANEL_CLOSE: "CONTROL_PANEL_CLOSE",
   LIT_ENTITIES_CHANGED: "LIT_ENTITIES_CHANGED",
   COMPONENT_DESTROYED: "COMPONENT_DESTROYED",
-  EXPERIMENT_PROPERTIES_SAVED: "EXPERIMENT_PROPERTIES_SAVED",
   PROJECT_PROPERTIES_SAVED: "PROJECT_PROPERTIES_SAVED",
   PARAMETERS_SET: "PARAMETERS_SET",
   COMMAND_LOG: "COMMAND_LOG",
@@ -123,114 +103,6 @@ export const projectConfigLoaded = configuration => ({
   data: configuration,
 });
 
-export const experimentOver = experiment => ({
-  type: clientActions.EXPERIMENT_OVER,
-  data: {
-    experiment: experiment,
-    experiment_status: clientActions.EXPERIMENT_OVER,
-  },
-});
-
-export const experimentLoaded = () => ({
-  type: clientActions.EXPERIMENT_LOADED,
-  data: { experiment_status: clientActions.EXPERIMENT_OVER },
-});
-
-export const experimentPlay = parameters => ({
-  type: clientActions.EXPERIMENT_PLAY,
-  data: {
-    parameters: parameters,
-    experiment_status: clientActions.EXPERIMENT_PLAY
-  },
-});
-
-export const experimentStatusCheck = () => ({
-  type: clientActions.EXPERIMENT_STATUS_CHECK,
-  data: { experiment_status: clientActions.EXPERIMENT_STATUS_CHECK },
-});
-
-export const experimentPause = () => ({
-  type: clientActions.EXPERIMENT_PAUSE,
-  data: { experiment_status: clientActions.EXPERIMENT_PAUSE },
-});
-
-export const experimentResume = () => ({
-  type: clientActions.EXPERIMENT_RESUME,
-  data: { experiment_status: clientActions.EXPERIMENT_RESUME },
-});
-
-export const experimentRunning = id => ({
-  type: clientActions.EXPERIMENT_RUNNING,
-  data: {
-    experiment_id: id,
-    experiment_status: clientActions.EXPERIMENT_RUNNING
-  },
-});
-
-export const experimentStop = () => ({
-  type: clientActions.EXPERIMENT_STOP,
-  data: { experiment_status: clientActions.EXPERIMENT_STOP },
-});
-
-export const experimentCompleted = id => ({
-  type: clientActions.EXPERIMENT_COMPLETED,
-  data: {
-    experiment_id: id,
-    experiment_status: clientActions.EXPERIMENT_COMPLETED
-  },
-});
-
-export const experimentFailed = id => ({
-  type: clientActions.EXPERIMENT_FAILED,
-  data: {
-    experiment_id: id,
-    experiment_status: clientActions.EXPERIMENT_COMPLETED
-  },
-});
-
-export const experimentUpdate = parameters => ({
-  type: clientActions.EXPERIMENT_UPDATE,
-  data: {
-    parameters: parameters,
-    experiment_status: clientActions.EXPERIMENT_UPDATE
-  },
-});
-
-export const experimentUpdated = () => ({
-  type: clientActions.EXPERIMENT_UPDATED,
-  data: { experiment_status: clientActions.EXPERIMENT_UPDATED },
-});
-
-export const experimentRenamed = () => ({
-  type: clientActions.EXPERIMENT_RENAMED,
-  data: { experiment_status: clientActions.EXPERIMENT_RENAMED },
-});
-
-export const experimentDeleted = id => ({
-  type: clientActions.EXPERIMENT_DELETED,
-  data: {
-    experiment_id: id,
-    experiment_status: clientActions.EXPERIMENT_DELETED
-  },
-});
-
-export const experimentActive = () => ({
-  type: clientActions.EXPERIMENT_ACTIVE,
-  data: { experiment_status: clientActions.EXPERIMENT_ACTIVE },
-});
-
-export const experimentCreated = id => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: {
-    experiment_id: id,
-    experiment_status: clientActions.EXPERIMENT_CREATED
-  },
-});
-
-export const spotlightClosed = () => ({ type: clientActions.SPOTLIGHT_CLOSED, });
-
-export const spotlightLoaded = () => ({ type: clientActions.SPOTLIGHT_LOADED, });
-
 // HERE
 export const instanceDeleted = instancePath => ({
   type: clientActions.INSTANCE_DELETED,
@@ -267,14 +139,6 @@ export const showHelp = () => ({ type: clientActions.SHOW_HELP, });
 
 export const hideHelp = () => ({ type: clientActions.HIDE_HELP, });
 
-export const colorSet = parameters => ({
-  type: clientActions.EXPERIMENT_CREATED,
-  data: {
-    color: parameters.color,
-    instance: parameters.instance,
-  },
-});
-
 export const canvasInitialised = () => ({ type: clientActions.CANVAS_INITIALISED, });
 
 export const projectMadePublic = () => ({ type: clientActions.PROJECT_MADE_PUBLIC, });
@@ -286,8 +150,6 @@ export const controlPanelClose = () => ({ type: clientActions.CONTROL_PANEL_CLOS
 export const litEntitiesChanged = () => ({ type: clientActions.LIT_ENTITIES_CHANGED, });
 
 export const componentDestroyed = () => ({ type: clientActions.COMPONENT_DESTROYED, });
-
-export const experimentPropertiesSaved = () => ({ type: clientActions.EXPERIMENT_PROPERTIES_SAVED, });
 
 export const projectPropertiesSaved = () => ({ type: clientActions.PROJECT_PROPERTIES_SAVED, });
 

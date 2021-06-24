@@ -1,6 +1,6 @@
 import { layoutActions } from './actions';
 import * as General from '../actions';
-import { WidgetStatus, Widget, WidgetMap, ExtendedNode } from './model'
+import { WidgetStatus, WidgetMap, ExtendedNode } from './model'
 import layoutInitialState from './defaultLayout';
 export {layoutInitialState};
 
@@ -25,8 +25,6 @@ export interface LayoutState {
   }
 }
 
-
-
 /**
  * Layout state update handling.
  * Logic comes from the layout manager.
@@ -49,10 +47,6 @@ export const layout = (state = layoutInitialState, action) => {
     default:
       return state
   }
-}
-
-function filterWidgets(widgets: WidgetMap, filterFn) {
-  return Object.fromEntries(Object.values(widgets).filter(filterFn));
 }
 
 /**

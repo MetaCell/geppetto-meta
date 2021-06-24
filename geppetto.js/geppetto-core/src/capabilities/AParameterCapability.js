@@ -124,13 +124,7 @@ export default {
     }
 
     // always set this regardless of variable vs instance (so the value will be in the call below)
-    this.value = value;
-            
-    if (updateServer) {
-      GEPPETTO.ExperimentsController.setParameters([this]);
-    }
-
-
+    this.value = value;         
     return this;
   }
 }

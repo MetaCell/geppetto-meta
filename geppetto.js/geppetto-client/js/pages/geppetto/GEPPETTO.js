@@ -23,8 +23,8 @@ define(function (require) {
    */
   var GEPPETTO = {
 
-    debug : false,
-    keyboard : new THREEx.KeyboardState(),
+    debug: false,
+    keyboard: new THREEx.KeyboardState(),
     /**
      * @param{String} key - The pressed key
      * @returns {boolean} True if the key is pressed
@@ -32,7 +32,6 @@ define(function (require) {
     isKeyPressed: function (key) {
       return this.keyboard.pressed(key);
     },
-
 
     /**
      * @param msg
@@ -66,7 +65,7 @@ define(function (require) {
     },
 
     trigger: function (...args) {
-      if (args.length == 0){
+      if (args.length == 0) {
         console.error("Trigger should be provided of the event to trigger");
         return;
       } else {
@@ -75,7 +74,6 @@ define(function (require) {
         if (handleFn) {
           handleFn(...args);
         }
-        
       }
     },
 
@@ -97,71 +95,38 @@ define(function (require) {
           EventManager.eventsCallback[GEPPETTO.eventsMapping[l]].clear(callback)
         }
       }
-  
     },
-    
   };
 
   GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
-  require('../../common/GEPPETTO.ViewController')(GEPPETTO);
   require('../../common/GEPPETTO.CommandController')(GEPPETTO);
   require('./GEPPETTO.Events').default(GEPPETTO);
-  require('../../common/GEPPETTO.UserController')(GEPPETTO);
-  require('./GEPPETTO.Flows')(GEPPETTO);
-  require('../../common/GEPPETTO.ScriptRunner')(GEPPETTO);
-  require('../../common/GEPPETTO.UnitsController')(GEPPETTO);
-
-  GEPPETTO.ModalFactory = new(require('../../components/controls/modals/ModalFactory'))();
-  GEPPETTO.SceneController = new(require('../../components/interface/3dCanvas/SceneController'))();
 
   require('../../common/GEPPETTO.Utility')(GEPPETTO);
-  require('../../components/widgets/MenuManager')(GEPPETTO);
   require('../../communication/MessageSocket')(GEPPETTO);
   require('../../communication/GEPPETTO.GlobalHandler')(GEPPETTO);
 
-  GEPPETTO.Manager = new(require('../../common/Manager').default)();
+  GEPPETTO.Manager = new (require('../../common/Manager').default)();
 
   require('../../communication/MessageHandler')(GEPPETTO);
   require('./G')(GEPPETTO);
   require('./GEPPETTO.Main')(GEPPETTO);
-  require("../../components/widgets/includeWidget")(GEPPETTO);
   require('@metacell/geppetto-meta-core/ProjectFactory')(GEPPETTO);
   require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
-  require('../../geppettoProject/ExperimentsController')(GEPPETTO);
   require('../../geppettoModel/QueriesController')(GEPPETTO);
   require('../../geppettoProject/ProjectsController')(GEPPETTO);
 
-  
   GEPPETTO.eventsMapping = {
     [GEPPETTO.Events.Select]: EventManager.clientActions.SELECT,
     [GEPPETTO.Events.Visibility_changed]: EventManager.clientActions.VISIBILITY_CHANGED,
     [GEPPETTO.Events.Focus_changed]: EventManager.clientActions.FOCUS_CHANGED,
-    [GEPPETTO.Events.Experiment_over]: EventManager.clientActions.EXPERIMENT_OVER,
     [GEPPETTO.Events.Project_loading]: EventManager.clientActions.PROJECT_LOADING,
     [GEPPETTO.Events.Project_loaded]: EventManager.clientActions.PROJECT_LOADED,
     [GEPPETTO.Events.Project_downloaded]: EventManager.clientActions.PROJECT_DOWNLOADED,
     [GEPPETTO.Events.Model_loaded]: EventManager.clientActions.MODEL_LOADED,
-    [GEPPETTO.Events.Experiment_loaded]: EventManager.clientActions.EXPERIMENT_LOADED,
     [GEPPETTO.Events.ModelTree_populated]: EventManager.clientActions.MODELTREE_POPULATED,
     [GEPPETTO.Events.SimulationTree_populated]: EventManager.clientActions.SIMULATIONTREE_POPULATED,
-    [GEPPETTO.Events.Do_experiment_play]: EventManager.clientActions.DO_EXPERIMENT_PLAY,
-    [GEPPETTO.Events.Experiment_play]: EventManager.clientActions.EXPERIMENT_PLAY,
-    [GEPPETTO.Events.Experiment_status_check]: EventManager.clientActions.EXPERIMENT_STATUS_CHECK,
-    [GEPPETTO.Events.Experiment_pause]: EventManager.clientActions.EXPERIMENT_PAUSE,
-    [GEPPETTO.Events.Experiment_resume]: EventManager.clientActions.EXPERIMENT_RESUME,
-    [GEPPETTO.Events.Experiment_running]: EventManager.clientActions.EXPERIMENT_RUNNING,
-    [GEPPETTO.Events.Experiment_stop]: EventManager.clientActions.EXPERIMENT_STOP,
-    [GEPPETTO.Events.Experiment_completed]: EventManager.clientActions.EXPERIMENT_COMPLETED,
-    [GEPPETTO.Events.Experiment_failed]: EventManager.clientActions.EXPERIMENT_FAILED,
-    [GEPPETTO.Events.Experiment_update]: EventManager.clientActions.EXPERIMENT_UPDATE,
-    [GEPPETTO.Events.Experiment_updated]: EventManager.clientActions.EXPERIMENT_UPDATED,
-    [GEPPETTO.Events.Experiment_renamed]: EventManager.clientActions.EXPERIMENT_RENAMED,
-    [GEPPETTO.Events.Experiment_deleted]: EventManager.clientActions.EXPERIMENT_DELETED,
-    [GEPPETTO.Events.Experiment_active]: EventManager.clientActions.EXPERIMENT_ACTIVE,
-    [GEPPETTO.Events.Experiment_created]: EventManager.clientActions.EXPERIMENT_CREATED,
     [GEPPETTO.Events.Project_persisted]: EventManager.clientActions.PROJECT_PERSISTED,
-    [GEPPETTO.Events.Spotlight_closed]: EventManager.clientActions.SPOTLIGHT_CLOSED,
-    [GEPPETTO.Events.Spotlight_loaded]: EventManager.clientActions.SPOTLIGHT_LOADED,
     [GEPPETTO.Events.Instance_deleted]: EventManager.clientActions.INSTANCE_DELETED,
     [GEPPETTO.Events.Instances_created]: EventManager.clientActions.INSTANCES_CREATED,
     [GEPPETTO.Events.Instance_added]: EventManager.clientActions.INSTANCE_ADDED,

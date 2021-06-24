@@ -4,7 +4,6 @@
  *
  * @author  Jesus R. Martinez (jesus@metacell.us)
  */
-
 define(function (require) {
   var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 

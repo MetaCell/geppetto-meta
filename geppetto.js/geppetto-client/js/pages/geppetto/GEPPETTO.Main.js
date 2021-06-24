@@ -118,7 +118,6 @@ define(function (require) {
         console.log("Host for MessageSocket to connect: " + host);
         GEPPETTO.Events.listen();
         this.createChannel();
-        GEPPETTO.CommandController.log(GEPPETTO.Resources.GEPPETTO_INITIALIZED, true);
         GEPPETTO.MessageSocket.send("geppetto_version", null);
       },
 
@@ -168,8 +167,6 @@ define(function (require) {
               GEPPETTO.Main.idleTime = 0;
               GEPPETTO.Main.disconnected = true;
               GEPPETTO.MessageSocket.close();
-
-
             }
           }
         }

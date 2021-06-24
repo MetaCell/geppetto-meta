@@ -6,33 +6,23 @@ var EventManager = require('@metacell/geppetto-meta-client/common/EventManager')
 function MessageHandler (GEPPETTO) {
 
   var messageTypes = {
-    EXPERIMENT_UPDATE: "experiment_update",
     SIMULATION_CONFIGURATION: "project_configuration",
     PROJECT_LOADED: "project_loaded",
     DOWNLOAD_PROJECT : "download_project",
     MODEL_LOADED: "geppetto_model_loaded",
     PROJECT_PROPS_SAVED: "project_props_saved",
-    EXPERIMENT_PROPS_SAVED: "experiment_props_saved",
-    EXPERIMENT_CREATED: "experiment_created",
-    EXPERIMENT_CLONED: "experiment_cloned",
-    EXPERIMENT_BATCH_CREATED: "experiment_batch_created",
-    EXPERIMENT_LOADING: "experiment_loading",
-    EXPERIMENT_LOADED: "experiment_loaded",
+ 
     VARIABLE_FETCHED: "variable_fetched",
     IMPORT_TYPE_RESOLVED: "import_type_resolved",
     IMPORT_VALUE_RESOLVED: "import_value_resolved",
-    GET_EXPERIMENT_STATE: "get_experiment_state",
     SET_WATCHED_VARIABLES: "set_watched_variables",
     WATCHED_VARIABLES_SET: "watched_variables_set",
     CLEAR_WATCH: "clear_watch",
-    EXPERIMENT_OVER: "experiment_over",
     GET_MODEL_TREE: "get_model_tree",
     GET_SIMULATION_TREE: "get_simulation_tree",
     SET_PARAMETERS: "set_parameters",
     NO_FEATURE: "no_feature",
-    EXPERIMENT_STATUS: "experiment_status",
     GET_SUPPORTED_OUTPUTS: "get_supported_outputs",
-    EXPERIMENT_DELETED: "experiment_deleted",
     PROJECT_PERSISTED: "project_persisted",
     PROJECT_PERSISTENCE_STATE: "project_persistence_state",
     DROPBOX_LINKED: "dropbox_linked",
@@ -43,7 +33,6 @@ function MessageHandler (GEPPETTO) {
     UPDATE_MODEL_TREE: "update_model_tree",
     DOWNLOAD_MODEL: "download_model",
     DOWNLOAD_RESULTS: "download_results",
-    ERROR_RUNNING_EXPERIMENT: "error_running_experiment",
     PROJECT_MADE_PUBLIC: "project_made_public",
     FETCHED: "fetched",
   };
@@ -57,52 +46,12 @@ function MessageHandler (GEPPETTO) {
     GEPPETTO.Manager.loadProject(message.project, message.persisted);
   };
 
-  messageHandler[messageTypes.GET_DROPBOX_TOKEN] = function (payload) {
-    GEPPETTO.UserController.setDropboxToken(payload.get_dropbox_token);
-  }
-
   messageHandler[messageTypes.MODEL_LOADED] = function (payload) {
     console.time(GEPPETTO.Resources.PARSING_MODEL);
     EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.PARSING_MODEL);
 
     var model = JSON.parse(payload.geppetto_model_loaded);
     GEPPETTO.Manager.loadModel(model);
-    if (Project.getActiveExperiment() == "" || Project.getActiveExperiment() == null || Project.getActiveExperiment() == undefined) {
-      GEPPETTO.ViewController.resolveViews();
-    }
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_CREATED] = function (payload) {
-    var experiment = JSON.parse(payload.experiment_created);
-    GEPPETTO.Manager.createExperiment(experiment);
-    GEPPETTO.CommandController.log("Experiment created succesfully");
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_BATCH_CREATED] = function (payload) {
-    var experiments = JSON.parse(payload.experiment_batch_created);
-    GEPPETTO.Manager.createExperimentBatch(experiments);
-  };
-
-  messageHandler[messageTypes.ERROR_RUNNING_EXPERIMENT] = function (payload) {
-    var error = JSON.parse(payload.error_running_experiment);
-    var experiments = window.Project.getExperiments();
-    var experimentID = error.id;
-
-    // changing status in matched experiment
-    for (var e in experiments) {
-      if (experiments[e].getId() == experimentID) {
-        experiments[e].setDetails(error);
-        break;
-      }
-    }
-
-    EventManager.actionsHandler[EventManager.clientActions.GEPPETTO_ERROR](error.msg);
-    GEPPETTO.ModalFactory.errorDialog(GEPPETTO.Resources.ERROR, error.message, error.code, error.exception);
-    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_LOADING] = function (payload) {
-    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_EXPERIMENT);
   };
 
   messageHandler[messageTypes.PROJECT_MADE_PUBLIC] = function (payload) {
@@ -110,11 +59,6 @@ function MessageHandler (GEPPETTO) {
     window.Project.isPublicProject = data.isPublic;
     EventManager.actionsHandler[EventManager.clientActions.PROJECT_MADE_PUBLIC]();
     console.log("Project was made public");
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_LOADED] = function (payload) {
-    var experimentState = JSON.parse(payload.experiment_loaded);
-    GEPPETTO.Manager.loadExperiment(experimentState.experimentId, experimentState);
   };
 
   messageHandler[messageTypes.VARIABLE_FETCHED] = function (payload) {
@@ -144,34 +88,10 @@ function MessageHandler (GEPPETTO) {
     EventManager.actionsHandler[EventManager.clientActions.STOP_LOGO]();
   };
 
-  messageHandler[messageTypes.GET_EXPERIMENT_STATE] = function (payload) {
-
-    var experimentState = JSON.parse(payload.update);
-    var experiment = window.Project.getActiveExperiment();
-
-    if (
-      experimentState.projectId == window.Project.getId()
-                && experiment != undefined
-                && experimentState.experimentId == experiment.getId()) {
-      // if we fetched data for the current project/experiment 
-      GEPPETTO.ExperimentsController.updateExperiment(experiment, experimentState);
-    } else {
-      GEPPETTO.ExperimentsController.addExternalExperimentState(experimentState);
-    }
-
-    EventManager.actionsHandler[EventManager.clientActions.STOP_LOGO]();
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_STATUS] = function (payload) {
-    var experimentsStatus = JSON.parse(payload.update);
-    GEPPETTO.Manager.updateExperimentsStatus(experimentsStatus);
-  };
-
   messageHandler[messageTypes.PROJECT_PERSISTED] = function (payload) {
     var message = JSON.parse(payload.update);
     var projectID = message.projectID;
-    var activeExperimentID = message.activeExperimentID;
-    GEPPETTO.Manager.persistProject(projectID, activeExperimentID);
+    GEPPETTO.Manager.persistProject(projectID);
     GEPPETTO.CommandController.log("Project persisted");
     EventManager.actionsHandler[EventManager.clientActions.STOP_PERSIST]();
   };
@@ -180,14 +100,7 @@ function MessageHandler (GEPPETTO) {
     EventManager.actionsHandler[EventManager.clientActions.PROJECT_CONFIG_LOADED](payload.configuration);
   };
 
-  messageHandler[messageTypes.EXPERIMENT_DELETED] = function (payload) {
-    var data = JSON.parse(payload.update);
-    GEPPETTO.Manager.deleteExperiment(data);
-    GEPPETTO.CommandController.log("Experiment deleted succesfully");
-  };
-
   messageHandler[messageTypes.WATCHED_VARIABLES_SET] = function (payload) {
-    EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The list of variables to watch was successfully updated.");
   };
 
@@ -199,7 +112,6 @@ function MessageHandler (GEPPETTO) {
 
   // received model tree from server
   messageHandler[messageTypes.UPDATE_MODEL_TREE] = function (payload) {
-    EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_UPDATED]();
     GEPPETTO.CommandController.log("The model parameters were successfully updated.");
   };
 
@@ -217,31 +129,6 @@ function MessageHandler (GEPPETTO) {
   messageHandler[messageTypes.SET_PARAMETERS] = function (payload) {
     GEPPETTO.CommandController.log("Set parameters succesfully");
     EventManager.actionsHandler[EventManager.clientActions.PARAMETERS_SET]();
-  };
-
-  messageHandler[messageTypes.EXPERIMENT_PROPS_SAVED] = function (payload) {
-    GEPPETTO.CommandController.log("Experiment saved succesfully");
-    var data = JSON.parse(payload.update);
-    var experiment = window.Project.getExperimentById(data.id);
-
-    /*
-     * Updates status. Used for when experiment failed, and user modified the parameters 
-     * right after, the status changes back to DESIGN from ERROR
-     */
-    if (experiment.getStatus() != data.status) {
-      experiment.setStatus(data.status);
-    }
-
-    EventManager.actionsHandler[EventManager.clientActions.EXPERIMENT_PROPERTIES_SAVED]();
-  };
-
-  messageHandler[messageTypes.DROPBOX_LINKED] = function (payload) {
-    GEPPETTO.CommandController.log("Dropbox linked successfully",true);
-    GEPPETTO.ModalFactory.infoDialog("Success", "Dropbox linked successfully");
-  };
-
-  messageHandler[messageTypes.DROPBOX_UNLINKED] = function (payload) {
-    GEPPETTO.CommandController.log("Dropbox unlinked succesfully",true);
   };
 
   messageHandler[messageTypes.DOWNLOAD_RESULTS] = function (payload) {

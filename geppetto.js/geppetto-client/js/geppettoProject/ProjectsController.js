@@ -114,14 +114,5 @@ define(function (require) {
           return data;
         }
       };
-
-    // FIXME: maybe not a fixme, just to keep track that this has been moved to the middleware
-
-    /*
-     * GEPPETTO.on(GEPPETTO.Events.Experiment_loaded, function () {
-     *   // fetch at least every time and experiment is loaded
-     *   GEPPETTO.ProjectsController.refreshUserProjects();
-     * });
-     */
   }
 });

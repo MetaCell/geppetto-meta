@@ -28,10 +28,6 @@ export interface ClientState {
       visible: Boolean,
     },
     spinner: { [offAction: string]: string },
-    spotlight: {
-      available: Boolean,
-      visible: Boolean,
-    },
     tutorial: {
       running: Boolean,
       visible: Boolean,
@@ -41,15 +37,6 @@ export interface ClientState {
   error: {
     latestUpdate: Date,
     message: string,
-  },
-  experiment: {
-    id: string,
-    status: any,
-    parameters: any,
-    properties: {
-      parameters_set: any,
-      properties_saved: Boolean,
-    },
   },
   info: {
     latestUpdate: Date,
@@ -94,6 +81,7 @@ export const clientInitialState: ClientState = {
     color: undefined,
   },
   components: {
+    // TODO: why do we assume the presence of exactly one canvas here?
     canvas: {
       available: false,
       latestUpdate: undefined,
@@ -116,10 +104,6 @@ export const clientInitialState: ClientState = {
       visible: false,
     },
     spinner: {},
-    spotlight: {
-      available: false,
-      visible: false,
-    },
     tutorial: {
       running: false,
       visible: false,
@@ -129,15 +113,6 @@ export const clientInitialState: ClientState = {
   error: {
     latestUpdate: undefined,
     message: undefined,
-  },
-  experiment: {
-    id: undefined,
-    status: undefined,
-    parameters: undefined,
-    properties: {
-      parameters_set: undefined,
-      properties_saved: false,
-    },
   },
   info: {
     latestUpdate: undefined,
@@ -191,7 +166,6 @@ function clientReducer (state, action) {
     state.components.spinner = { ...state.components.spinner };
   }
 
-
   switch (action.type) {
   case clientActions.SELECT:
     if (action.data !== undefined) {
@@ -221,14 +195,6 @@ function clientReducer (state, action) {
       };
     }
     return { ...state };
-  case clientActions.EXPERIMENT_OVER:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
   case clientActions.PROJECT_LOADING:
     return {
       ...state,
@@ -281,159 +247,10 @@ function clientReducer (state, action) {
         status: action.data.model_status,
       }
     };
-  case clientActions.EXPERIMENT_LOADED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
   case clientActions.MODELTREE_POPULATED:
     return { ...state, };
   case clientActions.SIMULATIONTREE_POPULATED:
     return { ...state, };
-  case clientActions.DO_EXPERIMENT_PLAY:
-    return { ...state, };
-  case clientActions.EXPERIMENT_PLAY:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_STATUS_CHECK:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_PAUSE:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_RESUME:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_RUNNING:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_STOP:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_COMPLETED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        id: action.data.experiment_id,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_FAILED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        id: action.data.experiment_id,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_UPDATE:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        parameters: action.data.parameters,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_UPDATED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_RENAMED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_DELETED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        id: action.data.experiment_id,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_ACTIVE:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.EXPERIMENT_CREATED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        id: action.data.experiment_id,
-        status: action.data.experiment_status,
-      }
-    };
-  case clientActions.SPOTLIGHT_CLOSED:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        spotlight: {
-          ...state.components.spotlight,
-          visible: false,
-        },
-      }
-    };
-  case clientActions.SPOTLIGHT_LOADED:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        spotlight: {
-          ...state.components.spotlight,
-          available: true,
-        },
-      }
-    };
   case clientActions.INSTANCE_DELETED:
     const deletedInstances = state.instances.filter( item => {
       item !== action.data
@@ -612,17 +429,6 @@ function clientReducer (state, action) {
     return { ...state, };
   case clientActions.COMPONENT_DESTROYED:
     return { ...state, };
-  case clientActions.EXPERIMENT_PROPERTIES_SAVED:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        properties: {
-          ...state.experiment.properties,
-          properties_saved: true,
-        }
-      }
-    };
   case clientActions.PROJECT_PROPERTIES_SAVED:
     return {
       ...state,
@@ -631,17 +437,6 @@ function clientReducer (state, action) {
         properties: {
           ...state.project.properties,
           properties_saved: true,
-        }
-      }
-    };
-  case clientActions.PARAMETERS_SET:
-    return {
-      ...state,
-      experiment: {
-        ...state.experiment,
-        properties: {
-          ...state.experiment.properties,
-          parameters_set: action.data.timestamp,
         }
       }
     };
