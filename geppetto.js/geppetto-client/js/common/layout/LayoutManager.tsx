@@ -107,7 +107,7 @@ class LayoutManager {
    */
   onRenderTabSet = (panel, renderValues) => {
     if (panel.getType() === "tabset" && this.enableMinimize) {
-      if (panel.getId() != 'leftPanel' && panel.getChildren().length > 0) {
+      if (panel.getChildren().length > 0) {
         renderValues.buttons.push(<div key={panel.getId()} className="fa fa-window-minimize customIconFlexLayout"
           onClick={() => {
             this.minimizeWidget(panel.getActiveNode().getId())
@@ -364,14 +364,10 @@ class LayoutManager {
         break;
       }
       case Actions.MAXIMIZE_TOGGLE:
-        // TODO: why is this disabled?
-        // this.onActionMaximizeWidget(action);
         break;
       case Actions.ADJUST_SPLIT:
         break;
       case Actions.ADD_NODE: {
-        // TODO: why is this disabled?
-        // action.data.index = this.findWidgetInsertionIndex(action);
         break;
       }
       case Actions.MOVE_NODE: {
@@ -462,7 +458,6 @@ class LayoutManager {
     updatedWidget.defaultPanel = updatedWidget.panelName;
     updatedWidget.panelName = MINIMIZED_PANEL;
     this.updateWidget(updatedWidget);
-    // this.model.doAction(FlexLayout.Actions.moveNode(widgetId, "border_bottom", FlexLayout.DockLocation.CENTER, 0));
   }
 
   /**
@@ -476,18 +471,27 @@ class LayoutManager {
     if (!widget) {
       debugger;
     }
+
     const previousWidget = this.getWidget(widget.id);
-    if (previousWidget.status != widget.status) {
+    if (previousWidget === undefined) {
+      debugger;
+    }
+
+    const mergedWidget = { ...previousWidget, ...widget}
+    // TODO: what if widget doesn't have a status here?
+    
+    if (previousWidget.status != mergedWidget.status) {
       if (previousWidget.status == WidgetStatus.MINIMIZED) {
-        this.restoreWidget(widget);
+        this.restoreWidget(mergedWidget);
       } else {
-        this.moveWidget(widget);
+        this.moveWidget(mergedWidget);
       }
     }
-    this.widgetFactory.updateWidget(widget);
-    model.doAction(Actions.updateNodeAttributes(widget.id, widget2Node(widget)));
-    if (widget.status == WidgetStatus.ACTIVE) {
-      model.doAction(FlexLayout.Actions.selectTab(widget.id));
+
+    this.widgetFactory.updateWidget(mergedWidget);
+    model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
+    if (mergedWidget.status == WidgetStatus.ACTIVE) {
+      model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
     }
   }
 
