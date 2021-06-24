@@ -4,6 +4,7 @@
  * @author matteo@openworm.org (Matteo Cantarelli)
  * @author giovanni@openworm.org (Giovanni Idili)
  * @author  Jesus R. Martinez (jesus@metacell.us)
+ * @deprecated
  */
 define(function (require) {
   return function (GEPPETTO) {
@@ -54,50 +55,6 @@ define(function (require) {
             window.parent.postMessage({ "command": "ready" }, GEPPETTO_CONFIGURATION.embedderURL);
           }
         }
-      },
-
-      /**
-       *
-       * @returns {null}
-       */
-      getStatusWorker: function () {
-        return this.statusWorker;
-      },
-
-      /**
-       *
-       */
-      startStatusWorker: function () {
-        // create web worker for checking status
-        if (this.statusWorker != undefined) {
-          this.statusWorker.terminate();
-        }
-        if (GEPPETTO_CONFIGURATION.contextPath == "/") {
-          this.statusWorker = new Worker("./geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/js/geppettoProject/PullStatusWorker.js");
-        } else {
-          this.statusWorker = new Worker("./geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/js/geppettoProject/PullStatusWorker.js");
-        }
-
-        this.statusWorker.postMessage(2000);
-
-        // receives message from web worker
-        this.statusWorker.onmessage = function (event) {
-          if (window.Project != null || undefined) {
-            var experiments = window.Project.getExperiments();
-            var pull = false;
-            for (var i = 0; i < experiments.length; i++) {
-              var status = experiments[i].getStatus();
-              if (status !== "COMPLETED") {
-                pull = true;
-                break;
-              }
-            }
-
-            if (pull && window.Project.persisted && window.Project.getId() != -1) {
-              GEPPETTO.MessageSocket.send(GEPPETTO.MessageHandler.MESSAGE_TYPE.EXPERIMENT_STATUS, window.Project.id);
-            }
-          }
-        };
       },
 
       /**

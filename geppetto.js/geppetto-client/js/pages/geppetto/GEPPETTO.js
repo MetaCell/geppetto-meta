@@ -2,6 +2,7 @@
  *
  * @author Matteo Cantarelli
  * @authot Jesus R Martinez (jesus@metacell.us)
+ * @deprecated
  */
 define(function (require) {
 

@@ -1,11 +1,9 @@
 /**
- *
  * Events
  *
  * Different types of events that exist
  * 
  * @deprecated
- *
  * @enum
  */
 export default function (GEPPETTO) {

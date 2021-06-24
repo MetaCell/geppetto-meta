@@ -41,27 +41,6 @@ define(function (require) {
       },
 
       /**
-       * Adds widgets to Geppetto
-       *
-       * @param type
-       * @param isStateless
-       * @returns {*}
-       */
-      addWidget: function (type, properties, callback) {
-        return GEPPETTO.ComponentFactory.addWidget(type, properties, callback);
-      },
-
-      /**
-       * Gets list of available widgets
-       *
-       * @command G.availableWidgets()
-       * @returns {List} - List of available widget types
-       */
-      availableWidgets: function () {
-        return GEPPETTO.Widgets;
-      },
-
-      /**
        * Clears the console history
        *
        * @command G.clear()
@@ -138,38 +117,6 @@ define(function (require) {
        */
       enableLocalStorage: function (enabled) {
         GEPPETTO.Main.localStorageEnabled = enabled;
-      },
-
-      /**
-       * Removes widget from Geppetto
-       *
-       * @command G.removeWidget(widgetType)
-       * @param {WIDGET_EVENT_TYPE} type - Type of widget to remove from GEPPETTO. If no type is passed remove all the widgets from Geppetto.
-       */
-      removeWidget: function (type) {
-        if (type) {
-          return GEPPETTO.WidgetFactory.removeWidget(type);
-        } else {
-          for (var widgetKey in GEPPETTO.Widgets) {
-            GEPPETTO.WidgetFactory.removeWidget(GEPPETTO.Widgets[widgetKey]);
-          }
-        }
-      },
-
-      /**
-       * Takes the URL corresponding to a script, executes
-       * commands inside the script.
-       *
-       * @command G.runScript(scriptURL)
-       * @param {URL} scriptURL - URL of script to execute
-       */
-      runScript: function (scriptURL) {
-        var parameters = {};
-        parameters.scriptURL = scriptURL;
-        parameters.projectId = Project.getId();
-        GEPPETTO.MessageSocket.send("get_script", parameters);
-
-        return GEPPETTO.Resources.RUNNING_SCRIPT;
       },
 
       /**

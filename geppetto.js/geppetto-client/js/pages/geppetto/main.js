@@ -4,6 +4,7 @@
  * @author Jesus Martinez (jesus@metacell.us)
  * @author Matt Olson (matt@metacell.us)
  * @author Adrian Quintana (adrian@metacell.us)
+ * @deprecated
  */
 define(function (require) {
   // TODO: needs to load processed css not less!
