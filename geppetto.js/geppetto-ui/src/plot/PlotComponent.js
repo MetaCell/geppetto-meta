@@ -31,7 +31,6 @@ class PlotComponent extends Component {
   reset = true;
   revision = 0;
   analysis = [];
-  getLegendName = this.props.getLegendName ? this.props.getLegendName.bind(this) : this.getLegendName.bind(this);
   extractLegendName = this.props.extractLegendName ? this.props.extractLegendName.bind(this) : this.extractLegendName.bind(this);
 
   headerIconList = [
@@ -208,33 +207,6 @@ class PlotComponent extends Component {
     }
   }
 
-  /**
-   * 
-   * @deprecated relies on controller logic and deprecated experiments.
-   */
-  getLegendName(projectId, experimentId, instance, sameProject) {
-    const instancePath = instance.getInstancePath();
-
-    if (sameProject) {
-      window.Project.getExperiments().forEach(experiment => {
-        if (experiment.id == experimentId) {
-          return `${instancePath} [${experiment.name}]`;
-        }
-      })
-    } else {
-      GEPPETTO.ProjectsController.getUserProjects().forEach(project => {
-        if (project.id == projectId) {
-          project.experiments.forEach(experiment => {
-            if (experiment == experimentId) {
-              return `${instancePath} [${project.name} - ${experiment.name}]`;
-            }
-          })
-        }
-      })
-    }
-  }
-
-
   getSinglePlotConfiguration(lineOptions) {
     const defaultConf = defaultTrace();
     return { ...defaultConf, line: lineOptions ? lineOptions : defaultConf.line };
@@ -242,9 +214,6 @@ class PlotComponent extends Component {
 
   extractLegendName(instanceY) {
     let legendName = instanceY.getInstancePath();
-    if (instanceY instanceof ExternalInstance) {
-      legendName = this.getLegendName(instanceY.projectId, instanceY.experimentId, instanceY, window.Project.getId() == instanceY.projectId);
-    }
     return legendName;
   }
 
@@ -427,10 +396,6 @@ PlotComponent.propTypes = {
    * Checkout [plotly's configuration](https://plotly.com/javascript/configuration-options/) options to add in your layout object.
    */
   layout: PropTypes.object,
-  /**
-   * Function used to overwrite and modify the legend name of the plot.
-   */
-  getLegendName: PropTypes.func,
   /**
    * Function used to retrieve the legend name of a line plot.
    */
