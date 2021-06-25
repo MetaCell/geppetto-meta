@@ -1,4 +1,3 @@
-
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
@@ -6,7 +5,6 @@ require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default
 const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
 const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
 const testModel = require('./resources/test_model.json');
-const AA = require('@metacell/geppetto-meta-core/model/ArrayElementInstance').default;
 const EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default;
 
 EventManager.setStore({ dispatch: m => null })

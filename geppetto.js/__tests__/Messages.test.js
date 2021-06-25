@@ -1,4 +1,3 @@
-
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
@@ -11,7 +10,6 @@ const EventManager = require('@metacell/geppetto-meta-client/common/EventManager
 
 EventManager.setStore({ dispatch: m => null })
 
-const AA = require('@metacell/geppetto-meta-core/model/ArrayElementInstance').default;
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
