@@ -1,15 +1,19 @@
 yarn global add yalc
 
-app=${pwd}
+app=$(pwd)
 
-cd geppetto.js/geppetto-client
+cd $app/geppetto.js/geppetto-core
 yarn && yarn build && yarn publish:yalc
+cd build && yalc push
 
-cd ../geppetto-ui
+cd $app/geppetto.js/geppetto-client
 yarn && yarn build && yarn publish:yalc
+cd build && yalc push
 
-cd ../geppetto-core
+cd $app/geppetto.js/geppetto-ui
 yarn && yarn build && yarn publish:yalc
+cd build && yalc push
 
-cd ../../examples/redux-react-app
+cd $app/examples/redux-react-app
+
 yarn && yarn start

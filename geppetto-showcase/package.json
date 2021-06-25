@@ -1,6 +1,6 @@
 {
   "name": "geppetto-website",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Geppetto website. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "repository": "https://github.com/MetaCell/geppetto-website.git",
   "license": "MIT",
