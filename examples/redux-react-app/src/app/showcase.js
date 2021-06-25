@@ -25,7 +25,7 @@ const MainLayout = () => {
     }, [store])
 
     return (
-        <div style={{ position: 'relative', height: '100%', width: '100%', minHeight: '500px' }}>
+        <div style={{ position: 'relative', width: '100%', height: '80vh'}}>
             {Component === undefined ? <CircularProgress /> : <Component />}
         </div>
     );

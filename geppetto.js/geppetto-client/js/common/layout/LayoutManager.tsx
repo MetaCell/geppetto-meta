@@ -20,14 +20,15 @@ import { MINIMIZED_PANEL } from '.';
 
 const styles = (theme) => createStyles({
   container: {
-    position: 'relative',
+    height: '100%',
+    width: '100%',
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'stretch'
   },
   spacer: { width: theme.spacing(1) },
-  flexlayout: { position: 'relative', flexGrow: 1 }
+  flexlayout: { flexGrow: 1 }
 });
 
 let instance: LayoutManager = null;
@@ -477,9 +478,9 @@ class LayoutManager {
       debugger;
     }
 
-    const mergedWidget = { ...previousWidget, ...widget}
+    const mergedWidget = { ...previousWidget, ...widget }
     // TODO: what if widget doesn't have a status here?
-    
+
     if (previousWidget.status != mergedWidget.status) {
       if (previousWidget.status == WidgetStatus.MINIMIZED) {
         this.restoreWidget(mergedWidget);

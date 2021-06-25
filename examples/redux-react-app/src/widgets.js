@@ -5,12 +5,13 @@ export const MyComponentWidget = {
     name: "My Component",
     component: "myComponent",
     panelName: "rightPanel",
-    enableClose: false,
+    enableClose: true,
     status: WidgetStatus.ACTIVE,
 };
 
 export const ImageViewerWidget = {
     id: 'imageViewer',
+    name: "Image Viewer",
     component: "imageViewer",
     panelName: "leftPanel",
     enableClose: false,
@@ -19,6 +20,7 @@ export const ImageViewerWidget = {
 
 export const DicomViewerWidget = {
     id: 'dicomViewer',
+    name: "DICOM Viewer",
     component: "dicomViewer",
     panelName: "leftPanel",
     enableClose: false,
