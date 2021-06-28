@@ -8,7 +8,8 @@ export const layoutActions = {
   ADD_WIDGET: 'ADD_WIDGET',
   ADD_WIDGETS: 'ADD_WIDGETS',
   RESET_LAYOUT: 'RESET_LAYOUT',
-  DESTROY_WIDGET: 'DESTROY_WIDGET'
+  DESTROY_WIDGET: 'DESTROY_WIDGET',
+  REMOVE_WIDGET: 'REMOVE_WIDGET'
 };
 
 export const newWidget = ({ path, component, panelName, ...others }) => ({
@@ -72,6 +73,11 @@ export const activateWidget = id => ({
 
 export const destroyWidget = id => ({
   type: layoutActions.DESTROY_WIDGET,
+  data: { id }
+});
+
+export const removeWidget = id => ({
+  type: layoutActions.REMOVE_WIDGET,
   data: { id }
 });
 

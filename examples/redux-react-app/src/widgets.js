@@ -14,7 +14,8 @@ export const ImageViewerWidget = {
     name: "Image Viewer",
     component: "imageViewer",
     panelName: "leftPanel",
-    enableClose: false,
+    enableClose: true,
+    hideOnClose: true,
     status: WidgetStatus.ACTIVE,
 };
 

@@ -13,6 +13,7 @@ import * as GeppettoActions from '../actions';
 
 import {
   layoutActions,
+  removeWidget,
   setLayout
 } from "./actions";
 
@@ -82,7 +83,7 @@ class LayoutManager {
    * @param {Widget} widgetConfiguration widget to add
    */
   addWidget(widgetConfiguration: Widget) {
-    if (this.getWidget(widgetConfiguration.id)) {
+    if (this.getWidget(widgetConfiguration.id) && this.model.getNodeById(widgetConfiguration.id)) {
       return this.updateWidget(widgetConfiguration);
     }
     const { model } = this;
@@ -259,6 +260,9 @@ class LayoutManager {
         this.deleteWidget(widget);
         break;
       }
+      case layoutActions.REMOVE_WIDGET: {
+        break;
+      }
       case layoutActions.ACTIVATE_WIDGET: {
         action.data.status = WidgetStatus.ACTIVE;
         const widget = this.getWidget(action.data.id)
@@ -359,8 +363,12 @@ class LayoutManager {
         break;
       case Actions.DELETE_TAB: {
         if (this.getWidget(action.data.node).hideOnClose) {
+          // widget only minimized, won't be removed from layout nor widgets list
           this.minimizeWidget(action.data.node);
           defaultAction = false;
+        } else {
+          // remove widget from widgets list
+          this.store.dispatch(removeWidget(action.data.node))
         }
         break;
       }
@@ -490,9 +498,12 @@ class LayoutManager {
     }
 
     this.widgetFactory.updateWidget(mergedWidget);
-    model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
-    if (mergedWidget.status == WidgetStatus.ACTIVE) {
-      model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
+
+    if (this.model.getNodeById(widget.id)) {
+      model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
+      if (mergedWidget.status == WidgetStatus.ACTIVE) {
+        model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
+      }
     }
   }
 
