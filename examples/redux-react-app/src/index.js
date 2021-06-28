@@ -5,22 +5,11 @@ import App from './App';
 import store from './redux/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { blue, orange } from '@material-ui/core/colors';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { initGeppetto } from 'geppetto';
+import theme from './theme';
 
 initGeppetto();
-
-let theme = createMuiTheme({
-  typography: { fontFamily: 'Roboto, Helvetica, Arial, sans-serif' },
-  palette: {
-    type: 'dark',
-    primary: { main: orange[500] },
-    secondary: { main: blue[500] },
-    button: { main: '#fc6320' },
-    toolbarBackground: { main: 'rgb(0,0,0,0.5)' },
-  },
-});
 
 ReactDOM.render(
   <React.StrictMode>
