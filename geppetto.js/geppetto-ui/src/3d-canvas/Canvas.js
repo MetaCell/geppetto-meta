@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
+import { selectionStrategies } from "./threeDEngine/SelectionManager";
 
 const styles = () => ({
   container: {
@@ -25,14 +26,16 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
       hoverListeners,
       setColorHandler,
-      onMount
+      onMount,
+      selectionManagerConfig,
+      selectionHandler
     } = this.props;
+
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
@@ -42,7 +45,8 @@ class Canvas extends Component {
       pickingEnabled,
       linesThreshold,
       hoverListeners,
-      setColorHandler 
+      setColorHandler,
+      selectionManagerConfig
     );
     this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -121,8 +125,8 @@ class Canvas extends Component {
       }
     }
   }
-  
-  
+
+
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
     return true;
@@ -166,7 +170,7 @@ Canvas.defaultProps = {
     autorotate:false,
     wireframe:false,
     zoomTo: undefined,
-    cameraControls:  { 
+    cameraControls:  {
       instance: null,
       props: {},
     },
@@ -178,7 +182,8 @@ Canvas.defaultProps = {
   hoverListeners: [],
   threeDObjects: [],
   cameraHandler: () => {},
-  selectionHandler: () => {},
+  selectionManagerConfig: { selectionStrategy: selectionStrategies.nearest, selectionColor: { r: 1, g:1, b:0, a:1 } },
+  selectionHandler: (currentlySelected, previouslySelected) => {},
   setColorHandler: () => true,
   onMount: () => {},
   modelVersion: 0
@@ -206,9 +211,13 @@ Canvas.propTypes = {
    */
   cameraHandler: PropTypes.func,
   /**
+   * Options to configure default selection handler
+   */
+  selectionManagerConfig: PropTypes.obj,
+  /**
    * Function to callback on selection changes
    */
-  selectionHandler: PropTypes.func,  
+  selectionHandler: PropTypes.func,
   /**
    * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
    */

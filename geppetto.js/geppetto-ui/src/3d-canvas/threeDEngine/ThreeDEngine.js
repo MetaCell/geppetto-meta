@@ -14,6 +14,7 @@ import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { hasVisualType } from "./util";
+import { SelectionManager } from "./SelectionManager";
 
 require('./TrackballControls');
 
@@ -28,6 +29,7 @@ export default class ThreeDEngine {
     linesThreshold,
     hoverListeners,
     setColorHandler,
+    selectionManagerConfig
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -44,6 +46,9 @@ export default class ThreeDEngine {
     this.containerRef = containerRef
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
+    this.selectionManager = new SelectionManager(selectionManagerConfig)
+    this.proxyInstances = []
+
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -513,7 +518,7 @@ export default class ThreeDEngine {
   }
 
   /**
-   * Set up the listeners use to detect mouse movement and windoe resizing
+   * Set up the listeners use to detect mouse movement and window resizing
    */
   setupListeners (selectionHandler) {
     const that = this;
@@ -623,8 +628,8 @@ export default class ThreeDEngine {
                     }
                   }
                 }
-
-                selectionHandler(selectedMap);
+                that.selectionManager.handle(selectedMap, that.proxyInstances)
+                selectionHandler(that.selectionManager.getCurrentlySelectedMeshes(), that.selectionManager.getPreviouslySelectedMeshes());
               }
             }
           }
@@ -680,6 +685,7 @@ export default class ThreeDEngine {
   }
 
   update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    this.proxyInstances = proxyInstances
     this.resize()
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);

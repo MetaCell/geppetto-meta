@@ -5,6 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
+import { getNextProxyInstances } from "../../threeDEngine/SelectionManager";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -36,6 +37,7 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
+
 class VFBExample extends Component {
   constructor (props) {
     super(props);
@@ -49,7 +51,7 @@ class VFBExample extends Component {
           color: COLORS[0],
         },
         {
-          instancePath: 'VFB_00030622',
+          instancePath: 'VFB_00030622.VFB_00030622_obj',
           color: COLORS[1],
         },
         {
@@ -76,7 +78,7 @@ class VFBExample extends Component {
       ],
       selected: {},
       threeDObjects: [],
-      modelVersion:0,
+      modelVersion: 0,
       cameraOptions: {
         position: { x: 319.7, y: 153.12, z: -494.2 },
         rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
@@ -98,12 +100,14 @@ class VFBExample extends Component {
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
+
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
+
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
+      if (event.offsetX <= event.target.clientWidth) {
         this.setState({ hasModelLoaded: false })
       }
     }
@@ -154,7 +158,7 @@ class VFBExample extends Component {
 
     const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     material.nowireframe = true;
-      
+
     material.opacity = 0.3;
     material.transparent = true;
     material.color.setHex("0xb0b0b0");
@@ -168,8 +172,8 @@ class VFBExample extends Component {
   onMount (scene) {
     const bb = new THREE.Box3().setFromObject(scene);
     const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
-    const axesHelper = new THREE.AxesHelper( 100 );
-    scene.add( axesHelper );
+    const axesHelper = new THREE.AxesHelper(100);
+    scene.add(axesHelper);
     this.setState(() => ({ threeDObjects: [plane] }));
 
   }
@@ -178,89 +182,13 @@ class VFBExample extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  selectionHandler (selectedMap) {
-    const { data, selected } = this.state;
-    let path;
-    for (let sk in selectedMap) {
-      const sv = selectedMap[sk];
-      if (sv.distanceIndex === 0) {
-        path = sk;
-      }
-    }
-    const currentColor = selectedMap[path].object.material.color;
-    const geometryIdentifier = selectedMap[path].geometryIdentifier;
-    const newData = data;
-    const newSelected = selected;
-    let done = false;
-    for (const instance of newData) {
-      if (instance.instancePath === path) {
-        if (geometryIdentifier === '') {
-          if (path in newSelected) {
-            instance.color = newSelected[path].color;
-            delete newSelected[path];
-          } else {
-            newSelected[path] = { color: instance.color };
-            instance.color = SELECTION_COLOR;
-          }
-          done = true;
-        } else {
-          if (path in newSelected) {
-            if (geometryIdentifier in newSelected[path]) {
-              instance.visualGroups.custom[geometryIdentifier].color
-                = newSelected[path][geometryIdentifier].color;
-              delete newSelected[path][geometryIdentifier];
-              if (Object.keys(newSelected[path]).length === 0) {
-                delete newSelected[path];
-              }
-              done = true;
-            } else {
-              if (instance.visualGroups.custom[geometryIdentifier]) {
-                newSelected[path][geometryIdentifier] = { color: instance.visualGroups.custom[geometryIdentifier].color, };
-                instance.visualGroups.custom[
-                  geometryIdentifier
-                ].color = SELECTION_COLOR;
-                done = true;
-              }
-            }
-          } else {
-            if (instance.visualGroups) {
-              if (instance.visualGroups.custom) {
-                if (instance.visualGroups.custom[geometryIdentifier]) {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color:
-                        instance.visualGroups.custom[geometryIdentifier].color,
-                    },
-                  };
-                  instance.visualGroups.custom[
-                    geometryIdentifier
-                  ].color = SELECTION_COLOR;
-                  done = true;
-                } else {
-                  newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                  instance.visualGroups.custom[geometryIdentifier] = { color: SELECTION_COLOR, };
-                  done = true;
-                }
-              } else {
-                newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                instance.visualGroups.custom = { [geometryIdentifier]: { color: SELECTION_COLOR }, };
-                done = true;
-              }
-            }
-          }
-        }
-      }
-    }
-    if (!done) {
-      newData.push({
-        instancePath: path,
-        color: SELECTION_COLOR,
-      });
-      newSelected[path] = { color: { ...currentColor } };
-    }
-
-    this.setState(() => ({ data: newData, selected: newSelected }));
+  
+  selectionHandler (currentlySelected, previouslySelected) {
+    const { data } = this.state
+    const newData = getNextProxyInstances(data, currentlySelected, previouslySelected)
+    this.setState({ data: newData })
   }
+   
 
   handleToggle () {
     this.setState({ showLoader: true })
@@ -307,7 +235,7 @@ class VFBExample extends Component {
       color="primary"
       onClick={this.handleToggle}
     >
-      Show Example
+            Show Example
     </Button>
   }
 }
