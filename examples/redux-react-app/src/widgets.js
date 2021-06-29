@@ -6,6 +6,8 @@ export const MyComponentWidget = {
     component: "myComponent",
     panelName: "rightPanel",
     enableClose: true,
+    enableRename: true,
+    enableDrag: true,
     status: WidgetStatus.ACTIVE,
 };
 

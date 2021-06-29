@@ -8,7 +8,6 @@ import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/showcase
  * This map is used inside the LayoutManager to know which component to display for a given widget.
  */
 const componentMap = {
-    // Does not support functional components or withStyles !
     'myComponent': MyComponent,
     'imageViewer': BigImageViewerExample,
     'dicomViewer': DicomViewerExample,
