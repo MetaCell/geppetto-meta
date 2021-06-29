@@ -33,7 +33,7 @@ const staticReducers = {
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || redux.compose;
 
 
-export function createStore( 
+export function createStore ( 
   reducers: redux.ReducersMapObject, 
   state: any, 
   enhancers: redux.Middleware[], 
