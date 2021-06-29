@@ -148,7 +148,7 @@ export default class CameraManager {
 
     let aabbMin = null;
     let aabbMax = null;
-
+    let maxSize = null;
     this.engine.scene.traverse(function (child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry')
@@ -157,15 +157,17 @@ export default class CameraManager {
         child.geometry.computeBoundingBox();
 
         let bb = child.geometry.boundingBox;
+        let size = bb.getSize(new THREE.Vector3()).length();
         bb.translate(child.localToWorld(new THREE.Vector3()));
 
         /*
          * If min and max vectors are null, first values become
          * default min and max
          */
-        if (aabbMin == null && aabbMax == null) {
+        if (aabbMin == null && aabbMax == null && maxSize == null) {
           aabbMin = bb.min;
           aabbMax = bb.max;
+          maxSize = size
         } else {
           // Compare other meshes, particles BB's to find min and max
           aabbMin.x = Math.min(aabbMin.x, bb.min.x);
@@ -174,6 +176,7 @@ export default class CameraManager {
           aabbMax.x = Math.max(aabbMax.x, bb.max.x);
           aabbMax.y = Math.max(aabbMax.y, bb.max.y);
           aabbMax.z = Math.max(aabbMax.z, bb.max.z);
+          maxSize = Math.max(maxSize, size);
         }
       }
     });
@@ -183,7 +186,8 @@ export default class CameraManager {
       this.sceneCenter.x = (aabbMax.x + aabbMin.x) * 0.5;
       this.sceneCenter.y = (aabbMax.y + aabbMin.y) * 0.5;
       this.sceneCenter.z = (aabbMax.z + aabbMin.z) * 0.5;
-
+      this.camera.near = maxSize / 100;
+      this.camera.far = maxSize * 100;
       this.updateCamera(aabbMax, aabbMin);
     }
   }
@@ -211,6 +215,7 @@ export default class CameraManager {
     dir.multiplyScalar(offset);
 
     // Store camera position
+
     this.camera.position.addVectors(dir, this.engine.controls.target);
     this.camera.updateProjectionMatrix();
   }

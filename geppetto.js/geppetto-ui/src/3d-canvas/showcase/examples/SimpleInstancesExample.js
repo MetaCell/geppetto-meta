@@ -3,42 +3,26 @@ import Canvas from "@geppettoengine/geppetto-ui/3d-canvas/Canvas";
 import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import cube from './cube.obj';
+import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
 import Button from "@material-ui/core/Button";
+import * as THREE from 'three';
 
 
 const instanceTemplate = {
   "eClass": "SimpleInstance",
-  "id": "ACube",
+  "id": "ANeuron",
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": GEPPETTO.Resources.OBJ,
-    'obj': cube
-  }
-}
-const instanceTemplate2 = {
-  "eClass": "SimpleInstance",
-  "id": "ASecondCube",
-  "name": "The second SimpleInstance to be render with Geppetto Canvas",
-  "type": { "eClass": "SimpleType" },
-  "position": {
-    "eClass": "Point",
-    "x": 0,
-    "y": 0,
-    "z": 1
-  },
-  "visualValue": {
-    "eClass": GEPPETTO.Resources.OBJ,
-    'obj': cube
+    'obj': neuron
   }
 }
 
 function getInstances () {
   GEPPETTO.ModelFactory.cleanModel();
   const instance = new SimpleInstance(instanceTemplate)
-  const instance2 = new SimpleInstance(instanceTemplate2)
-  window.Instances = [instance, instance2]
+  window.Instances = [instance]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
   return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: Math.random(), g: Math.random(), b: Math.random(), a: 1 } }))
 }
@@ -75,7 +59,6 @@ class SimpleInstancesExample extends Component {
     this.canvasIndex = 3
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
     this.onMount = this.onMount.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -90,17 +73,35 @@ class SimpleInstancesExample extends Component {
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
-  
+
   onMount (scene){
+    /*
+     * const object = scene.children[3];
+     * const box = new THREE.Box3().setFromObject(object);
+     * const size = box.getSize(new THREE.Vector3()).length();
+     * const center = box.getCenter(new THREE.Vector3());
+     * 
+     * 
+     * object.position.x += (object.position.x - center.x);
+     * object.position.y += (object.position.y - center.y);
+     * object.position.z += (object.position.z - center.z);
+     * 
+     * 
+     * scene.children[0].near = size / 100;
+     * scene.children[0].far = size * 100;
+     * scene.children[0].updateProjectionMatrix();
+     * 
+     * scene.children[0].position.copy(center);
+     * scene.children[0].position.x += size / 2.0;
+     * scene.children[0].position.y += size / 5.0;
+     * scene.children[0].position.z += size / 2.0;
+     * scene.children[0].lookAt(center);
+     */
   }
 
   cameraHandler (obj) {
     console.log("camera handler" + obj)
     this.lastCameraUpdate = obj;
-  }
-
-  selectionHandler (selectedMap) {
-    console.log("selection handler" + selectedMap)
   }
 
   hoverHandler (obj) {
@@ -137,7 +138,6 @@ class SimpleInstancesExample extends Component {
         data={data}
         cameraOptions={camOptions}
         cameraHandler={this.cameraHandler}
-        selectionHandler={this.selectionHandler}
         backgroundColor={0x505050}
         hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
