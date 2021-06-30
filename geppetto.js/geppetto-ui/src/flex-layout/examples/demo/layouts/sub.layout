@@ -1,5 +1,7 @@
 {
-	"global": {},
+	"global": {
+		"tabEnableFloat": true
+	},
 	"layout": {
 		"type": "row",
 		"weight": 100,
@@ -13,7 +15,9 @@
 				"component": "sub",
 				"config": {
 					"model": {
-						"global": {"tabSetEnableTabStrip":false},
+						"global": {
+							"tabSetTabLocation":"bottom"
+						},
 						"layout": {
 							"type": "row",
 							"weight": 100,
