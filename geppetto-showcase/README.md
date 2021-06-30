@@ -41,9 +41,9 @@ yarn && yarn build && yarn publish:yalc
 Add these packages to geppetto-showcase
 
 ```bash
-yalc add @geppettoengine/geppetto-client
-yalc add @geppettoengine/geppetto-core
-yalc add @geppettoengine/geppetto-ui
+yalc add @metacell/geppetto-meta-client
+yalc add @metacell/geppetto-meta-core
+yalc add @metacell/geppetto-meta-ui
 ```   
 
 Install dependencies

@@ -39,6 +39,9 @@
     "eslint": "^6.0.1",
     "jest": "^24.9.0"
   },
+  "peerDependencies": {
+    "@metacell/geppetto-meta-client": "0.0.2"
+  },
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {

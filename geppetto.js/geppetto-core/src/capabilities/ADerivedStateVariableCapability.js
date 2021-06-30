@@ -117,24 +117,5 @@ export default {
     // NOTE: this.watched is a flag added by this API / Capability
     return this.watched;
   },
-
-  /**
-   * Set watched
-   *
-   * @command Variable.setWatched()
-   * @param {Boolean} watched - Object with options attributes to initialize node
-   */
-  setWatched: function (isWatched, updateServer) {
-    if (updateServer == undefined) {
-      updateServer = true;
-    }
-    if (updateServer && isWatched != this.watched) {
-      GEPPETTO.ExperimentsController.watchVariables([this], isWatched);
-    }
-    this.watched = isWatched;
-    return this;
-  }
-
-
 }
 

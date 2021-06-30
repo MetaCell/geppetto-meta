@@ -1,13 +1,13 @@
-
 const GEPPETTO = {};
-
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
-require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
-const Manager = require('@geppettoengine/geppetto-client/common/Manager').default;
-const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
-const testModel = require('./resources/test_model.json');
-const AA = require('@geppettoengine/geppetto-core/model/ArrayElementInstance').default;
+GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
+require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
+const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
+const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
+const EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default;
+
+EventManager.setStore({ dispatch: m => null })
+
 GEPPETTO.Utility = {};
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
@@ -32,8 +32,6 @@ test('load demo model 1: Hodgkin-Huxley NEURON simulation', () => {
 
 test('load demo model 5: Primary auditory cortex network', () => {
   GEPPETTO.Manager.loadModel(require('./resources/model.5.json'));
-  // console.log(ModelFactory.allPaths);
-
 
   expect(ModelFactory.allPaths.length).toBe(13491);
   expect(window.acnet2 != undefined && window.acnet2.baskets_12 != undefined)
@@ -41,7 +39,6 @@ test('load demo model 5: Primary auditory cortex network', () => {
   expect(window.acnet2.pyramidals_48.getChildren().length === 48
     && window.acnet2.baskets_12.getChildren().length === 12)
     .toBeTruthy()
-
 
   expect(GEPPETTO.ModelFactory.resolve('//@libraries.1/@types.5').getId() == window.Model.getLibraries()[1].getTypes()[5].getId()
     && GEPPETTO.ModelFactory.resolve('//@libraries.1/@types.5').getMetaType() == window.Model.getLibraries()[1].getTypes()[5].getMetaType())
@@ -52,7 +49,6 @@ test('load demo model 5: Primary auditory cortex network', () => {
     && acnet2.baskets_12[0].getTypes()[0].getId() == 'bask'
     && acnet2.baskets_12[0].getTypes()[0].getMetaType() == 'CompositeType')
     .toBeTruthy()
-
 
   expect(acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups().length == 3
     && acnet2.baskets_12[0].getTypes()[0].getVisualType().getVisualGroups()[0].getId() == 'Cell_Regions'
@@ -118,7 +114,6 @@ test('load demo model 5: Primary auditory cortex network', () => {
   expect(window.acnet2.pyramidals_48[0].getConnections()[0].hasCapability(GEPPETTO.Resources.CONNECTION_CAPABILITY))
     .toBeTruthy()
   ModelFactory.allPaths = [];
-
 });
 
 
