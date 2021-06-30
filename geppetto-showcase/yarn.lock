@@ -1218,18 +1218,7 @@
     underscore "~1.9.1"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@0.0.2":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-0.0.1.tgz#edeafa636a64ba7383492f4bbe6aa06a90ff958c"
-  integrity sha512-Wlsp0tOww6hyyJ7BSRyZeZw2fHIHxLyrHFHGEsA0mvbuJ6JdPPbHUC5MSszCilTJ1mB3d4QTLJyw9aZNVEaEoQ==
-  dependencies:
-    backbone "^1.3.3"
-    file-saver "^1.3.3"
-    jquery "^3.4.0"
-    jszip "^3.2.1"
-    underscore "~1.9.1"
-
-"@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
+"@metacell/geppetto-meta-core@0.0.2", "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
   version "0.0.2"
   dependencies:
     backbone "^1.3.3"
@@ -1238,80 +1227,7 @@
     jszip "^3.2.1"
     underscore "~1.9.1"
 
-"@metacell/geppetto-meta-ui@0.0.2":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-0.0.1.tgz#abe57c17bc7b01b4b5d2ce3940f8e899dc86ab92"
-  integrity sha512-2ASl4l9N5lwjgfV1Xup0DtONLM+RGnsRrtB2f0gkIQQjwbIeDgdHJ6WtL3d3Rbmtcx4bavrtAYkP2uJnhSe6cA==
-  dependencies:
-    "@fortawesome/fontawesome-svg-core" "^1.2.35"
-    "@fortawesome/free-solid-svg-icons" "^5.13.0"
-    "@fortawesome/react-fontawesome" "^0.1.9"
-    "@material-ui/core" "^4.9.14"
-    "@material-ui/icons" "^4.11.2"
-    "@types/react-dom" "^16.9.5"
-    aframe "<1.1.0"
-    aframe-slice9-component "^1.0.0"
-    ami.js "^0.32.0"
-    axios "^0.21.1"
-    create-react-class "^15.6.3"
-    d3 "4.0.0"
-    d3-plugins-dist "^3.2.0"
-    file-saver "^2.0.2"
-    griddle-react "^1.13.1"
-    handlebars "^4.0.5"
-    html2canvas "^1.0.0-alpha.12"
-    jquery "^3.4.0"
-    jquery-ui-bundle "^1.12.1"
-    js-cookie "^2.1.3"
-    jszip "^3.2.1"
-    less "^3.9.0"
-    lg-fullscreen "^1.0.1"
-    lg-pager "^1.0.2"
-    lg-thumbnail "^1.1.0"
-    lg-video "^1.1.0"
-    lightgallery "^1.6.0"
-    mathjs "^3.5.3"
-    openseadragon "^2.2.1"
-    pako "^1.0.3"
-    pixi.js "^4.2.3"
-    plotly.js "^1.42.5"
-    prop-types latest
-    react "^16.8.6"
-    react-color "^2.17.3"
-    react-dnd "^7.7.0"
-    react-dnd-html5-backend "^7.0.2"
-    react-dom "^16.8.6"
-    react-dom-factories "^1.0.2"
-    react-dropzone "^8.0.3"
-    react-fontawesome "^1.6.1"
-    react-force-graph-2d "^1.12.1"
-    react-force-graph-3d "^1.12.1"
-    react-jsonschema-form "^1.0.6"
-    react-lazy-load "^3.0.13"
-    react-modal "^3.8.1"
-    react-overlays "^0.8.0"
-    react-player "^0.18.0"
-    react-plotly.js "^2.3.0"
-    react-rnd "^7.3.0"
-    react-router "^4.2.0"
-    react-router-dom "^4.2.0"
-    react-slick "^0.23.2"
-    react-sortable-tree "2.6.1"
-    react-tabtab "^2.0.0"
-    remarkable "^1.7.3"
-    slick-carousel "^1.6.0"
-    stats.js "^0.17.0"
-    styled-components "^4.3.2"
-    text "^0.1.0"
-    three "0.111.0"
-    three-render-objects "1.13.3"
-    typeahead.js "^0.11.1"
-    typeface-roboto "^0.0.54"
-    underscore "~1.9.1"
-    url-join "^4.0.0"
-    velocity.java "^1.3.1"
-
-"@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
+"@metacell/geppetto-meta-ui@0.0.2", "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
   version "0.0.2"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.35"
@@ -13872,7 +13788,7 @@ webpack-dev-middleware@^3.7.2:
     range-parser "^1.2.1"
     webpack-log "^2.0.0"
 
-webpack-dev-server@^3.10.3:
+webpack-dev-server@^3.11.2:
   version "3.11.2"
   resolved "https://registry.yarnpkg.com/webpack-dev-server/-/webpack-dev-server-3.11.2.tgz#695ebced76a4929f0d5de7fd73fafe185fe33708"
   integrity sha512-A80BkuHRQfCiNtGBS1EMf2ChTUs0x+B3wGDFmOeT4rmJOHhHTCH2naNxIHhmkr0/UillP4U3yeIyv1pNp+QDLQ==
