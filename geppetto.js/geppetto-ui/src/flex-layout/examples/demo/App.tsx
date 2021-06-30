@@ -138,7 +138,7 @@ class App extends React.Component<any, { layoutFile: string | null, model: FlexL
         // console.log("onExternaldrag ", e.dataTransfer.types);
         // Check for supported content type
         const validTypes = ["text/uri-list", "text/html", "text/plain"];
-        if (e.dataTransfer.types.find(t => validTypes.indexOf(t) !== -1) === undefined) return;
+        if (e.dataTransfer.types.find(t => validTypes.indexOf(t) !== -1) === undefined) return undefined;
         // Set dropEffect (icon)
         e.dataTransfer.dropEffect = "link";
         return {
@@ -255,14 +255,14 @@ class App extends React.Component<any, { layoutFile: string | null, model: FlexL
                 name: "the name for custom tab"
             };
         }
-        return;
+        return undefined;
     }
 
     iconFactory = (node: TabNode) => {
         if (node.getId() === "custom-tab") {
             return <><span style={{ marginRight: 3 }}>:)</span></>
         }
-        return;
+        return undefined;
     }
 
     onSelectLayout = (event: React.FormEvent) => {
