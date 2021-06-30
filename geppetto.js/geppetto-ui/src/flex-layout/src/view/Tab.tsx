@@ -1,75 +1,73 @@
 import * as React from "react";
-import TabSetNode from "../model/TabSetNode";
-import TabNode from "../model/TabNode";
+import { Fragment } from "react";
 import Actions from "../model/Actions";
-import Layout from "./Layout";
-import { JSMap } from "../Types";
+import TabNode from "../model/TabNode";
+import TabSetNode from "../model/TabSetNode";
+import { CLASSES } from "../Types";
+import { ILayoutCallbacks } from "./Layout";
+import { ErrorBoundary } from "./ErrorBoundary";
+import { I18nLabel } from "../I18nLabel";
+import { BorderNode } from "..";
 
 /** @hidden @internal */
 export interface ITabProps {
-    layout: Layout,
-    selected: boolean,
-    node: TabNode,
-    factory: (node:TabNode) => React.ReactNode
+    layout: ILayoutCallbacks;
+    selected: boolean;
+    node: TabNode;
+    factory: (node: TabNode) => React.ReactNode;
 }
 
 /** @hidden @internal */
-export class Tab extends React.Component<ITabProps, any> {
+export const Tab = (props: ITabProps) => {
+    const { layout, selected, node, factory } = props;
+    const [renderComponent, setRenderComponent] = React.useState<boolean>(!props.node.isEnableRenderOnDemand() || props.selected);
 
-    constructor(props:ITabProps) {
-        super(props);
-        this.state = {renderComponent: !props.node.isEnableRenderOnDemand() || props.selected};
-    }
-
-    componentDidMount() {
-        //console.log("mount " + this.props.node.getName());
-    }
-
-    componentWillUnmount() {
-        //console.log("unmount " + this.props.node.getName());
-    }
-
-    UNSAFE_componentWillReceiveProps(newProps: ITabProps) {
-        if (!this.state.renderComponent && newProps.selected) {
+    React.useLayoutEffect(() => {
+        if (!renderComponent && selected) {
             // load on demand
-            //console.log("load on demand: " + this.props.node.getName());
-            this.setState({renderComponent: true});
+            // console.log("load on demand: " + node.getName());
+            setRenderComponent(true);
         }
-    }
+    });
 
-    onMouseDown(event:React.MouseEvent<HTMLDivElement>) {
-        const parent = this.props.node.getParent() as TabSetNode;
+    const onMouseDown = () => {
+        const parent = node.getParent() as TabSetNode;
         if (parent.getType() === TabSetNode.TYPE) {
             if (!parent.isActive()) {
-                this.props.layout.doAction(Actions.setActiveTabset(parent.getId()));
+                layout.doAction(Actions.setActiveTabset(parent.getId()));
             }
         }
+    };
+
+    const cm = layout.getClassName;
+
+    const parentNode = node.getParent() as TabSetNode | BorderNode;
+    const style: Record<string, any> = node._styleWithPosition({
+        display: selected ? "block" : "none",
+    });
+
+    if (parentNode instanceof TabSetNode) {
+        if (node.getModel().getMaximizedTabset() !== undefined && !parentNode.isMaximized()) {
+            style.display = "none";
+        }
     }
 
-    render() {
-        let cm = this.props.layout.getClassName;
-
-        const node = this.props.node;
-        const parentNode = node.getParent() as TabSetNode;
-        const style:JSMap<any> = node._styleWithPosition({
-            display: this.props.selected ? "block" : "none"
-        });
-
-        if (parentNode.isMaximized()) {
-            style.zIndex = 100;
-        }
-
-        let child = undefined;
-        if (this.state.renderComponent) {
-            child = this.props.factory(node);
-        }
-
-        return <div className={cm("flexlayout__tab")}
-                    onMouseDown={this.onMouseDown.bind(this)}
-                    onTouchStart={this.onMouseDown.bind(this)}
-                    style={style}>{child}
-        </div>;
+    let child;
+    if (renderComponent) {
+        child = factory(node);
     }
-}
 
-// export default Tab;
+    let className = cm(CLASSES.FLEXLAYOUT__TAB);
+    if (parentNode instanceof BorderNode) {
+        className += " " + cm(CLASSES.FLEXLAYOUT__TAB_BORDER);
+        className += " " + cm(CLASSES.FLEXLAYOUT__TAB_BORDER_ + parentNode.getLocation().getName());
+    }
+
+    return (
+        <div className={className} onMouseDown={onMouseDown} onTouchStart={onMouseDown} style={style}>
+            <ErrorBoundary message={props.layout.i18nName(I18nLabel.Error_rendering_component)}>
+                <Fragment>{child}</Fragment>
+            </ErrorBoundary>
+        </div>
+    );
+};
