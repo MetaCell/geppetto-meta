@@ -20,7 +20,7 @@
     "build:js": "babel src -d build",
     "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
-    "publish:yalc": "cd build && yalc publish"
+    "publish:yalc": "cd build && yalc publish --push"
   },
   "dependencies": {
     "jszip": "^3.2.1",

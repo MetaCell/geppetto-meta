@@ -20,7 +20,7 @@
     "build:style": "cp -r style build",
     "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
-    "publish:yalc": "cd build && yalc publish"
+    "publish:yalc": "cd build && yalc publish --push"
   },
   "dependencies": {
     "@material-ui/core": "^4.1.3",

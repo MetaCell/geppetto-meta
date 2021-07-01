@@ -15,6 +15,10 @@
     "react-redux": "^7.2.3",
     "react-scripts": "4.0.3"
   },
+  "resolutions": {
+    "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
+    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
