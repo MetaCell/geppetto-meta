@@ -13,9 +13,7 @@ class ExternalInstance extends Instance {
     super(options);
     this.path = options.path;
     this.projectId = options.projectId;
-    this.experimentId = options.experimentId;
   }
-
 
   /**
    * Get the type for this instance

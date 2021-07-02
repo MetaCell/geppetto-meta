@@ -46,7 +46,6 @@ define(function (require) {
 
         disconnectFromPython () {
           Utils.execPythonMessage('jupyter_geppetto.remove_component_sync(componentType="' + this.state.componentType + '",model="' + this.id + '")');
-          GEPPETTO.ComponentFactory.removeExistingComponent(this.state.componentType, this);
         }
 
         componentWillUnmount () {
@@ -58,7 +57,6 @@ define(function (require) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
           
-          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if (this.state.value != nextProps.value) {
             this.setState({ value: (nextProps.value === undefined) ? '' : nextProps.value });
@@ -67,7 +65,6 @@ define(function (require) {
 
         componentDidMount () {
           this._isMounted = true;
-          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this, true);
           if (this.props.model != undefined) {
             this.connectToPython(this.state.componentType, this.props.model);
           }
@@ -131,7 +128,6 @@ define(function (require) {
         UNSAFE_componentWillReceiveProps (nextProps) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
-          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           if ((this.state.searchText != nextProps.searchText) && (nextProps.searchText != undefined)) {
             this.setState({ searchText: nextProps.searchText });
@@ -346,7 +342,6 @@ define(function (require) {
           this.disconnectFromPython();
           this.id = (nextProps.id == undefined) ? nextProps.model : nextProps.id;
           
-          GEPPETTO.ComponentFactory.addExistingComponent(this.state.componentType, this);
           this.connectToPython(this.state.componentType, nextProps.model);
           this.callPythonMethod();
         }

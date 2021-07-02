@@ -14,10 +14,10 @@
     "strict": false,
     "noUnusedLocals": false,
     "jsx": "react",
-    "types": []
+    "types": [ "@types/jest" ]
   },
   "include": [
-    "./geppetto-meta-ui/components/flex-layout/src/**/*",
-    "./geppetto-meta-ui/components/flex-layout/examples/demo/*"
-  ]
+    "./src",
+    "./node_modules/@metacell/geppetto-meta-ui",
+  ],
 }

@@ -28,25 +28,6 @@ export function extractMethodsFromObject (object, original, nonCommands = []) {
   return methods;
 }
 
-export function formatSelection (tree, formattedOutput, indentation) {
-  for (var e in tree) {
-    var entity = tree[e];
-    if (entity.selected == true) {
-      formattedOutput = formattedOutput + indentation + entity.id + '\n';
-      indentation = '      ↪';
-    }
-  }
-
-  if (formattedOutput.lastIndexOf('\n') > 0) {
-    formattedOutput = formattedOutput.substring(
-      0,
-      formattedOutput.lastIndexOf('\n')
-    );
-  }
-
-  return formattedOutput.replace(/"/g, '');
-}
-
 export function componentToHex (c) {
   var hex = c.toString(16);
   return hex.length == 1 ? '0' + hex : hex;
@@ -56,10 +37,6 @@ export function rgbToHex (r, g, b) {
   return '0X' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-export function getContrast50 (hexcolor) {
-  return parseInt(hexcolor, 16) > 0xffffff / 2 ? 'black' : 'white';
-}
-
 export function getQueryStringParameter (name) {
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
@@ -67,22 +44,6 @@ export function getQueryStringParameter (name) {
   return results == null
     ? ''
     : decodeURIComponent(results[1].replace(/\+/g, ' '));
-}
-
-export function getPathStringParameters () {
-  var paths = [];
-  var locationPaths = location.pathname.split('/');
-  for (var pathIndex in locationPaths) {
-    var locationPath = locationPaths[pathIndex];
-    if (
-      locationPath != 'geppetto'
-      && locationPath != 'org.geppetto.frontend'
-      && locationPath != ''
-    ) {
-      paths.push(locationPath);
-    }
-  }
-  return paths;
 }
 
 export function extend (destObj, sourceObj) {

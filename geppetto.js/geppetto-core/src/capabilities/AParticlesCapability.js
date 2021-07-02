@@ -78,13 +78,8 @@ export default {
     if (updateServer == undefined) {
       updateServer = true;
     }
-    if (updateServer && isWatched != this.watched) {
-      GEPPETTO.ExperimentsController.watchVariables([this], isWatched);
-    }
     this.watched = isWatched;
     return this;
   }
-
-
 }
 

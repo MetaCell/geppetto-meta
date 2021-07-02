@@ -118,12 +118,6 @@ const pages = [
     to: '/navigation/treeviewer',
   },
   {
-    component: null,
-    parent: 'Programmatic Interfaces',
-    name: 'Javascript Console',
-    to: '/programmatic/jsconsole',
-  },
-  {
     component: PythonConsole,
     parent: 'Programmatic Interfaces',
     name: 'Python Console',

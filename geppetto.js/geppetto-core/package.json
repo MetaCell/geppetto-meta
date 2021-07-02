@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The core functionality of geppetto-meta to build and simulate neuroscience data and models.",
   "keywords": [
     "geppetto",
@@ -18,9 +18,9 @@
     "test": "jest",
     "build": "yarn build:js && yarn build:package",
     "build:js": "babel src -d build",
-    "build:package": "cp {package.json,README.md,LICENSE} build",
+    "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
-    "publish:yalc": "cd build && yalc publish"
+    "publish:yalc": "cd build && yalc publish --push"
   },
   "dependencies": {
     "jszip": "^3.2.1",
@@ -38,6 +38,9 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^6.0.1",
     "jest": "^24.9.0"
+  },
+  "peerDependencies": {
+    "@metacell/geppetto-meta-client": "0.0.2"
   },
   "buildOptions": {
     "emitEntryPoint": true,

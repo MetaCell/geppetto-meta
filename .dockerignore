@@ -1,3 +1,5 @@
 **/node_modules/
 pygeppetto/
 jupyter-geppetto/
+examples/
+deployment/
