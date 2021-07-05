@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core';
 import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
 import Button from "@material-ui/core/Button";
 import * as THREE from 'three';
+import { getNextProxyInstances } from "../../threeDEngine/SelectionManager";
 
 
 const instanceTemplate = {
@@ -60,7 +61,7 @@ class SimpleInstancesExample extends Component {
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
-    this.onMount = this.onMount.bind(this);
+    this.selectionHandler = this.selectionHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.layoutRef = React.createRef();
@@ -74,43 +75,21 @@ class SimpleInstancesExample extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  onMount (scene){
-    /*
-     * const object = scene.children[3];
-     * const box = new THREE.Box3().setFromObject(object);
-     * const size = box.getSize(new THREE.Vector3()).length();
-     * const center = box.getCenter(new THREE.Vector3());
-     * 
-     * 
-     * object.position.x += (object.position.x - center.x);
-     * object.position.y += (object.position.y - center.y);
-     * object.position.z += (object.position.z - center.z);
-     * 
-     * 
-     * scene.children[0].near = size / 100;
-     * scene.children[0].far = size * 100;
-     * scene.children[0].updateProjectionMatrix();
-     * 
-     * scene.children[0].position.copy(center);
-     * scene.children[0].position.x += size / 2.0;
-     * scene.children[0].position.y += size / 5.0;
-     * scene.children[0].position.z += size / 2.0;
-     * scene.children[0].lookAt(center);
-     */
-  }
-
   cameraHandler (obj) {
-    console.log("camera handler" + obj)
     this.lastCameraUpdate = obj;
   }
 
   hoverHandler (obj) {
-    console.log("hover handler" + obj)
   }
   handleToggle () {
     this.setState({ showModel: true })
   }
 
+  selectionHandler (currentlySelected, previouslySelected) {
+    const { data } = this.state
+    const newData = getNextProxyInstances(data, currentlySelected, previouslySelected)
+    this.setState({ data: newData })
+  }
 
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
@@ -139,6 +118,7 @@ class SimpleInstancesExample extends Component {
         cameraOptions={camOptions}
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
+        selectionHandler={this.selectionHandler}
         hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />

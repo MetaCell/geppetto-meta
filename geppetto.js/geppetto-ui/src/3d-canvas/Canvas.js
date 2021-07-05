@@ -52,6 +52,10 @@ class Canvas extends Component {
     onMount(this.threeDEngine.scene)
   }
 
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
+    return this.props.cameraOptions != nextProps.cameraOptions
+  }
+
   componentWillUnmount () {
     this.threeDEngine.stop();
     this.sceneRef.current.removeChild(
@@ -213,7 +217,7 @@ Canvas.propTypes = {
   /**
    * Options to configure default selection handler
    */
-  selectionManagerConfig: PropTypes.obj,
+  selectionManagerConfig: PropTypes.object,
   /**
    * Function to callback on selection changes
    */

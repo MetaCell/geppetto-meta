@@ -18,6 +18,8 @@ export class SelectionManager {
   }
 
   handle (selectedMap, proxyInstances) {
+    // TODO: Change to use proxyInstances metadata(selected)
+
     this.previouslySelected = {}
     const selectedMeshes = this.getSelectedMesh(selectedMap)
     for (const mesh of selectedMeshes){
@@ -88,6 +90,7 @@ export function getNextProxyInstances (data, currentlySelected, previouslySelect
       newData.push(mesh)
     }
   }
+  // TODO: Don't force color change
   for (const meshToAdd in meshesToAdd){
     newData.push(
       {

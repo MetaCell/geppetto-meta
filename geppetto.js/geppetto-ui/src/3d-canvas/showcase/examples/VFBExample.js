@@ -51,7 +51,7 @@ class VFBExample extends Component {
           color: COLORS[0],
         },
         {
-          instancePath: 'VFB_00030622.VFB_00030622_obj',
+          instancePath: 'VFB_00030622',
           color: COLORS[1],
         },
         {

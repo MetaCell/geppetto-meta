@@ -685,6 +685,7 @@ export default class ThreeDEngine {
   }
 
   update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    // Todo: resolve proxyInstances to populate child meshes
     this.proxyInstances = proxyInstances
     this.resize()
     if (toTraverse) {
@@ -696,6 +697,7 @@ export default class ThreeDEngine {
     }
     this.updateInstancesColor(proxyInstances);
     this.updateInstancesConnectionLines(proxyInstances);
+    // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
     
   }
