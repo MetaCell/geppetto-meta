@@ -14,7 +14,6 @@ import Type from '@geppettoengine/geppetto-core/model/Type';
 import Variable from '@geppettoengine/geppetto-core/model/Variable';
 import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { hasVisualType } from "./util";
-import { SelectionManager } from "./SelectionManager";
 
 require('./TrackballControls');
 
@@ -23,13 +22,13 @@ export default class ThreeDEngine {
     containerRef,
     cameraOptions,
     cameraHandler,
-    selectionHandler,
+    onSelection,
     backgroundColor,
     pickingEnabled,
     linesThreshold,
     hoverListeners,
     setColorHandler,
-    selectionManagerConfig
+    selectionStrategy
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -43,11 +42,10 @@ export default class ThreeDEngine {
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
     this.setColorHandler = setColorHandler;
+    this.selectionStrategy = selectionStrategy
     this.containerRef = containerRef
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
-    this.selectionManager = new SelectionManager(selectionManagerConfig)
-    this.proxyInstances = []
 
 
     // Setup Camera
@@ -63,7 +61,7 @@ export default class ThreeDEngine {
     this.setupControls();
 
     // Setup Listeners
-    this.setupListeners(selectionHandler);
+    this.setupListeners(onSelection);
 
     this.start = this.start.bind(this);
     this.animate = this.animate.bind(this);
@@ -520,7 +518,7 @@ export default class ThreeDEngine {
   /**
    * Set up the listeners use to detect mouse movement and window resizing
    */
-  setupListeners (selectionHandler) {
+  setupListeners (onSelection) {
     const that = this;
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
@@ -628,8 +626,7 @@ export default class ThreeDEngine {
                     }
                   }
                 }
-                that.selectionManager.handle(selectedMap, that.proxyInstances)
-                selectionHandler(that.selectionManager.getCurrentlySelectedMeshes(), that.selectionManager.getPreviouslySelectedMeshes());
+                onSelection(that.selectionStrategy(selectedMap))
               }
             }
           }
@@ -686,7 +683,6 @@ export default class ThreeDEngine {
 
   update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
     // Todo: resolve proxyInstances to populate child meshes
-    this.proxyInstances = proxyInstances
     this.resize()
     if (toTraverse) {
       this.addInstancesToScene(proxyInstances);

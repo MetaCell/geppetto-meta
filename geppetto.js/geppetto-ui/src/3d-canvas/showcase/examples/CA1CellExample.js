@@ -62,7 +62,7 @@ class CA1Example extends Component {
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+    this.onSelection = this.onSelection.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
@@ -85,7 +85,7 @@ class CA1Example extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  selectionHandler (selectedMap) {
+  onSelection (selectedMap) {
     const { data, selected } = this.state;
     let path;
     for (let sk in selectedMap) {
@@ -202,7 +202,7 @@ class CA1Example extends Component {
             data={data}
             cameraOptions={camOptions}
             cameraHandler={this.cameraHandler}
-            selectionHandler={this.selectionHandler}
+            onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
           />

@@ -5,8 +5,6 @@ import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
 import Button from "@material-ui/core/Button";
-import * as THREE from 'three';
-import { getNextProxyInstances } from "../../threeDEngine/SelectionManager";
 
 
 const instanceTemplate = {
@@ -37,6 +35,8 @@ const styles = () => ({
   },
 });
 
+const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
+
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
@@ -61,7 +61,7 @@ class SimpleInstancesExample extends Component {
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+    this.onSelection = this.onSelection.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.layoutRef = React.createRef();
@@ -85,10 +85,44 @@ class SimpleInstancesExample extends Component {
     this.setState({ showModel: true })
   }
 
-  selectionHandler (currentlySelected, previouslySelected) {
+  mapping (data){
+    return data.map(item => (
+      {
+        color: item.selected ? SELECTION_COLOR : item.color,
+        instancePath: item.instancePath
+      }
+    ))
+  }
+
+  onSelection (selectedInstances) {
     const { data } = this.state
-    const newData = getNextProxyInstances(data, currentlySelected, previouslySelected)
+    const newData = []
+    let newInstance = true
+    for (const si of selectedInstances){
+      for (const i of data){
+        if (si === i.instancePath){
+          newData.push({
+            ...i,
+            selected: !i.selected
+          })
+          newInstance = false
+        } else {
+          newData.push({
+            ...i,
+            selected: false
+          })
+        }
+      }
+      if (newInstance){
+        newData.push({
+          instancePath: si,
+          color: null, // todo: what to do here?
+          selected: true
+        })
+      }
+    }
     this.setState({ data: newData })
+
   }
 
   handleClickOutside (event) {
@@ -102,6 +136,7 @@ class SimpleInstancesExample extends Component {
 
   render () {
     const { data, cameraOptions, showModel } = this.state
+    const canvasData = this.mapping(data)
     const { classes } = this.props
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -114,11 +149,11 @@ class SimpleInstancesExample extends Component {
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
       <Canvas
         ref={this.canvasRef}
-        data={data}
+        data={canvasData}
         cameraOptions={camOptions}
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
-        selectionHandler={this.selectionHandler}
+        onSelection={this.onSelection}
         hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />

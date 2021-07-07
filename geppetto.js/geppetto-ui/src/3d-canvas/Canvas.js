@@ -32,21 +32,21 @@ class Canvas extends Component {
       hoverListeners,
       setColorHandler,
       onMount,
-      selectionManagerConfig,
-      selectionHandler
+      selectionStrategy,
+      onSelection
     } = this.props;
 
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
+      onSelection,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
       hoverListeners,
       setColorHandler,
-      selectionManagerConfig
+      selectionStrategy
     );
     this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -186,8 +186,8 @@ Canvas.defaultProps = {
   hoverListeners: [],
   threeDObjects: [],
   cameraHandler: () => {},
-  selectionManagerConfig: { selectionStrategy: selectionStrategies.nearest, selectionColor: { r: 1, g:1, b:0, a:1 } },
-  selectionHandler: (currentlySelected, previouslySelected) => {},
+  selectionStrategy: selectionStrategies.nearest,
+  onSelection: () => {},
   setColorHandler: () => true,
   onMount: () => {},
   modelVersion: 0
@@ -215,13 +215,13 @@ Canvas.propTypes = {
    */
   cameraHandler: PropTypes.func,
   /**
-   * Options to configure default selection handler
+   * function to apply the selection strategy
    */
-  selectionManagerConfig: PropTypes.object,
+  selectionStrategy: PropTypes.func,
   /**
    * Function to callback on selection changes
    */
-  selectionHandler: PropTypes.func,
+  onSelection: PropTypes.func,
   /**
    * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
    */

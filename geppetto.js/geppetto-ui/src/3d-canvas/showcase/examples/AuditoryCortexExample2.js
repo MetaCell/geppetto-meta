@@ -75,7 +75,7 @@ class AuditoryCortexExample2 extends Component {
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+    this.onSelection = this.onSelection.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -102,7 +102,7 @@ class AuditoryCortexExample2 extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  selectionHandler (
+  onSelection (
     selectedMap
   ) {
     const { data, selected } = this.state;
@@ -182,7 +182,7 @@ class AuditoryCortexExample2 extends Component {
           data={data}
           cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
-          selectionHandler={this.selectionHandler}
+          onSelection={this.onSelection}
           backgroundColor={0x505050}
           hoverListeners={[this.hoverHandler]}
         />

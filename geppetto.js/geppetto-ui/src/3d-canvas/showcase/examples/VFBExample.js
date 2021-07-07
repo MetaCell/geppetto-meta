@@ -91,7 +91,7 @@ class VFBExample extends Component {
     };
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+    this.onSelection = this.onSelection.bind(this);
     this.onMount = this.onMount.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -183,7 +183,7 @@ class VFBExample extends Component {
   }
 
   
-  selectionHandler (currentlySelected, previouslySelected) {
+  onSelection (currentlySelected, previouslySelected) {
     const { data } = this.state
     const newData = getNextProxyInstances(data, currentlySelected, previouslySelected)
     this.setState({ data: newData })
@@ -225,7 +225,7 @@ class VFBExample extends Component {
           cameraOptions={camOptions}
           onMount={this.onMount}
           cameraHandler={this.cameraHandler}
-          selectionHandler={this.selectionHandler}
+          onSelection={this.onSelection}
           linesThreshold={10000}
           backgroundColor={0x505050}
         />
