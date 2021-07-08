@@ -1,6 +1,4 @@
-# node-sass 4.14.1 requires node version <= 14 for Alpine Linux
-# See: https://github.com/sass/node-sass/releases/tag/v4.14.1
-FROM node:14.16.1-alpine3.10 AS build-stage
+FROM node:16-alpine AS build-stage
 
 # NGINX PORT
 EXPOSE 80
@@ -15,14 +13,25 @@ COPY geppetto-showcase/package*.json geppetto-showcase/
 COPY geppetto-showcase/yarn.lock geppetto-showcase/
 COPY geppetto.js geppetto.js
 
-# Prepare geppetto-client dependency
+# Prepare geppetto-client/core/ui dependencies
 RUN yarn global add yalc
-WORKDIR /app/geppetto.js
-RUN yalc publish
+WORKDIR /app/geppetto.js/geppetto-ui
+# Only build src since we parse the src files to extract e.g. React props
+RUN yarn && yarn build:src && yarn publish:yalc
+
+WORKDIR /app/geppetto.js/geppetto-core
+RUN yarn && yarn build && yarn publish:yalc
+
+WORKDIR /app/geppetto.js/geppetto-client
+RUN yalc add @metacell/geppetto-meta-ui
+RUN yalc add @metacell/geppetto-meta-core
+RUN yarn && yarn build && yarn publish:yalc
 
 # INSTALL PACKAGES
 WORKDIR /app/geppetto-showcase
-RUN yalc add @geppettoengine/geppetto-client
+RUN yalc add @metacell/geppetto-meta-ui
+RUN yalc add @metacell/geppetto-meta-client
+RUN yalc add @metacell/geppetto-meta-core
 RUN yarn
 
 # COPY SOURCE CODE

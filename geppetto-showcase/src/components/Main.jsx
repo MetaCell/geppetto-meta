@@ -8,7 +8,7 @@ import DrawerContent from './DrawerContent';
 import Button from '@material-ui/core/Button';
 import Search from './Search';
 import pages from '../pages/index'
-import Loader from '@geppettoengine/geppetto-ui/loader/Loader'
+import Loader from '@metacell/geppetto-meta-ui/loader/Loader'
 const Home = lazy(() => import('../pages/home'));
 
 const drawerWidth = 240;

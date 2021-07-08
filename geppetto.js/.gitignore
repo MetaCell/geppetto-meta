@@ -2,6 +2,11 @@
 node_modules/
 node/
 
+# Build Folders
+geppetto-client/build
+geppetto-ui/build
+geppetto-core/build
+
 # Editor byproducts
 .idea/
 .vscode/
@@ -32,3 +37,6 @@ org.geppetto.simulation/
 
 # redis cache files
 *.rdb
+
+# yarn
+**/yarn-*.log

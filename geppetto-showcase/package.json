@@ -1,6 +1,6 @@
 {
   "name": "geppetto-website",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Geppetto website. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "repository": "https://github.com/MetaCell/geppetto-website.git",
   "license": "MIT",
@@ -14,8 +14,7 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
-    "@geppettoengine/geppetto-client": "file:.yalc/@geppettoengine/geppetto-client",
-    "awesome-typescript-loader": "^5.2.1",
+    "@types/jest": "^26.0.23",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-prismjs": "^2.0.1",
@@ -23,22 +22,24 @@
     "eslint": "^7.22.0",
     "file-loader": "^5.1.0",
     "html-loader": "^0.5.5",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.5.2",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "markdown-loader": "^5.1.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^6.0.0",
     "raw-loader": "^4.0.0",
     "react-docgen": "^5.3.0",
     "react-svg-loader": "^3.0.3",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^10.2.0",
+    "speed-measure-webpack-plugin": "^1.5.0",
     "style-loader": "^1.2.1",
     "svg-url-loader": "^4.0.0",
-    "typescript": "2.9.2",
+    "ts-loader": "^8.3.0",
+    "typescript": "^4.3.2",
     "url-loader": "^3.0.0",
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
@@ -46,6 +47,9 @@
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@material-ui/core": "^4.9.14",
     "@material-ui/icons": "^4.9.1",
+    "@metacell/geppetto-meta-client": "file:.yalc/@metacell/geppetto-meta-client",
+    "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
+    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
     "@types/react-dom": "^16.9.5",
     "font-awesome": "^4.7.0",
     "prismjs": "^1.20.0",
@@ -55,5 +59,9 @@
     "react-syntax-highlighter": "^12.2.1",
     "string-similarity": "^4.0.1",
     "three": "0.111.0"
+  },
+  "resolutions": {
+    "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
+    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui"
   }
 }

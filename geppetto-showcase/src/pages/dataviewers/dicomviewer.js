@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import DicomViewerMarkdown from "@geppettoengine/geppetto-ui/dicom-viewer/README.md";
+import DicomViewerMarkdown from "@metacell/geppetto-meta-ui/dicom-viewer/README.md";
 
 
 export default class DicomViewer extends Component {

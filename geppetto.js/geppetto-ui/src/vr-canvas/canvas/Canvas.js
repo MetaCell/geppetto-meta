@@ -1,13 +1,13 @@
 /* eslint-disable no-template-curly-in-string */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Instance from '@geppettoengine/geppetto-core/model/Instance';
-import ArrayInstance from '@geppettoengine/geppetto-core/model/ArrayInstance';
-import Type from '@geppettoengine/geppetto-core/model/Type';
-import Variable from '@geppettoengine/geppetto-core/model/Variable';
+import Instance from '@metacell/geppetto-meta-core/model/Instance';
+import ArrayInstance from '@metacell/geppetto-meta-core/model/ArrayInstance';
+import Type from '@metacell/geppetto-meta-core/model/Type';
+import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import 'aframe';
 import 'aframe-slice9-component';
-import MeshFactory from '@geppettoengine/geppetto-ui/3d-canvas/threeDEngine/MeshFactory';
+import MeshFactory from '@metacell/geppetto-meta-ui/3d-canvas/threeDEngine/MeshFactory';
 import LaserControls from '../LaserControls';
 import Menu from '../menu/Menu';
 import '../aframe/interactable';
@@ -28,7 +28,7 @@ import {
   getVoltageColor,
 } from '../utilities/GeppettoSimulation';
 import ColorController from './ColorController';
-import particle from "@geppettoengine/geppetto-ui/3d-canvas/textures/particle.png";
+import particle from "@metacell/geppetto-meta-ui/3d-canvas/textures/particle.png";
 
 const HOVER_COLOR = { r: 0.67, g: 0.84, b: 0.9 };
 const SELECTED_COLOR = { r: 1, g: 1, b: 0 };

@@ -1,7 +1,9 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
 
-module.exports = {
+module.exports = smp.wrap({
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
@@ -14,33 +16,15 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
-    alias: {
-      '@geppettoengine/geppetto-client': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/js'
-      ),
-      '@geppettoengine/geppetto-core': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-core/src'
-      ),
-      '@geppettoengine/geppetto-ui': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-ui/src'
-      ),
-      '@geppettoengine/geppetto-client-style': path.resolve(
-        __dirname,
-        'node_modules/@geppettoengine/geppetto-client/geppetto-client/style'
-      ),
-    },
     extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules\/(?!(@geppettoengine)\/).*/,
+        exclude: /node_modules\/(?!(@metacell)\/).*/,
         loader: 'babel-loader',
-        query: {
+        options: {
           presets: [
             ['@babel/preset-env', { modules: false }],
             '@babel/preset-react',
@@ -50,7 +34,7 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        loader: 'awesome-typescript-loader',
+        loader: 'ts-loader',
       },
       {
         test: /\.html$/,
@@ -65,7 +49,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader',
+        use: ['style-loader', 'css-loader', 'less-loader']
       },
       {
         test: /\.s[a|c]ss$/,
@@ -95,7 +79,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader',
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.md$/,
@@ -120,7 +104,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-      favicon: 'node_modules/@geppettoengine/geppetto-client/geppetto-client/style/favicon.png',
+      favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
   ],
-};
+});

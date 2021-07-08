@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Canvas from '../../canvas/Canvas';
-import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 export default class VRCanvasExample extends Component {
   constructor (props) {
     super(props);

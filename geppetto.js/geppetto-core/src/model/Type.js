@@ -8,7 +8,7 @@
  * @author Matteo Cantarelli
  */
 const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('@geppettoengine/geppetto-core/common/Utils').extend;
+const extend = require('../common/Utils').extend;
 const Variable = require('./Variable').default;
 
 function Type (options) {
@@ -122,7 +122,7 @@ Type.prototype.addVariableReference = function (v) {
 Type.prototype.getVariableReferences = function () {
   return this.variableReferences;
 };
-    
+
 Type.prototype.getPath = function () {
   if (this.parent != undefined & this.parent instanceof Variable) {
     // if this is an anonymous type it doesn't have an id, hence we skip it
@@ -152,7 +152,7 @@ Type.prototype.typeOf = function (type){
 
   return match;
 };
-    
+
 // Compatibility with new imports and old require syntax
 Type.default = Type;
 module.exports = Type;

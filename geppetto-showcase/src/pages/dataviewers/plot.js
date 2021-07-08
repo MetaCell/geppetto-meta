@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import PlotMarkdown from "@geppettoengine/geppetto-ui/plot/README.md";
+import PlotMarkdown from "@metacell/geppetto-meta-ui/plot/README.md";
 
 
 export default class Plot extends Component {

@@ -10,13 +10,13 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { rgbToHex } from '@geppettoengine/geppetto-core/Utility'
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
-require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(
+GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
+require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(
   GEPPETTO
 );
-const Manager = require('@geppettoengine/geppetto-client/common/Manager')
+const Manager = require('@metacell/geppetto-meta-client/common/Manager')
   .default;
-const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(
+const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(
   GEPPETTO
 );
 
@@ -33,14 +33,6 @@ GEPPETTO.CommandController = {
 GEPPETTO.ComponentFactory = { addExistingComponent: console.log, };
 GEPPETTO.on = console.log;
 GEPPETTO.off = console.log;
-GEPPETTO.UnitsController = {
-  getUnitLabel: function (unit) {
-    return unit;
-  },
-  hasUnit: function (unit) {
-    return true;
-  },
-};
 
 export default class App extends Component {
   render () {

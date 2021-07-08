@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
-import { cameraControlsActions } from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
+import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 
 const styles = () => ({
@@ -50,10 +50,6 @@ class Canvas extends Component {
     );
     this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
-  }
-
-  shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return this.props.cameraOptions != nextProps.cameraOptions
   }
 
   componentWillUnmount () {

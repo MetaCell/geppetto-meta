@@ -3,7 +3,7 @@
 A tree viewer to visualise hierarchical structures. 
 
 Features: 
-* Tree style visulization with click navigation
+* Tree style visualisation with click navigation
 * Custom actions for menu item clicks
 * Customizable icons formenu items
 

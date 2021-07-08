@@ -5,11 +5,15 @@
  * @author Matteo Cantarelli
  */
 
+import EventManager from '../common/EventManager';
 
 export default function Manager (options) {
 
 }
 
+/**
+ * @depreacted
+ */
 Manager.prototype = {
 
   constructor: Manager,
@@ -18,17 +22,12 @@ Manager.prototype = {
    *
    * @param payload
    */
-  persistProject: function (projectID, activeExperimentID) {
+  persistProject: function (projectID) {
     window.Project.id = parseInt(projectID);
-    if (window.Project.getActiveExperiment() != null || undefined) {
-      var oldActiveExperiment = window.Project.getActiveExperiment().id;
-      window.Project.getActiveExperiment().id = parseInt(activeExperimentID);
-    }
     window.Project.persisted = true;
     window.Project.readOnly = false;
 
-    GEPPETTO.trigger(GEPPETTO.Events.Project_persisted);
-    GEPPETTO.CommandController.log("The project has been persisted  [id=" + projectID + "].");
+    EventManager.actionsHandler[EventManager.clientActions.PROJECT_PERSISTED]();
   },
 
   /**
@@ -37,7 +36,7 @@ Manager.prototype = {
    */
   loadProject: function (project, persisted) {
     // we remove anything from any previous loaded project if there was one
-    GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.LOADING_PROJECT);
+    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.LOADING_PROJECT);
     if (Project) {
       Project.initialize();
     }
@@ -46,8 +45,7 @@ Manager.prototype = {
     window.Project = GEPPETTO.ProjectFactory.createProjectNode(project, persisted);
     window.Project.readOnly = !persisted;
 
-    GEPPETTO.trigger(GEPPETTO.Events.Project_loaded);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.PROJECT_LOADED);
+    EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADED]();
   },
 
   /**
@@ -55,19 +53,18 @@ Manager.prototype = {
    * @param payload
    */
   loadModel: function (model) {
-
     GEPPETTO.ModelFactory.cleanModel();
     console.timeEnd(GEPPETTO.Resources.PARSING_MODEL);
 
     console.time(GEPPETTO.Resources.CREATING_MODEL);
-    GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.CREATING_MODEL);
+    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_MODEL);
     // build Geppetto model here (once off operation when project is loaded)
     window.Model = GEPPETTO.ModelFactory.createGeppettoModel(model, true, true);
     console.timeEnd(GEPPETTO.Resources.CREATING_MODEL);
 
     console.time(GEPPETTO.Resources.CREATING_INSTANCES);
-    GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, GEPPETTO.Resources.CREATING_INSTANCES);
-      
+    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.CREATING_INSTANCES);
+
     // Initialize instances with static instances already present in the model
     if (window.Model.getCurrentWorld()) {
       window.Instances = window.Model.getCurrentWorld().getInstances();
@@ -75,21 +72,17 @@ Manager.prototype = {
     } else {
       window.Instances = GEPPETTO.ModelFactory.instantiateVariables(window.Model);
     }
-    
-    // add dynamic instance tree (instance tree will be populated with state info for each experiment)
-    
-      
+
     this.augmentInstancesArray(window.Instances);
     console.timeEnd(GEPPETTO.Resources.CREATING_INSTANCES);
 
-    GEPPETTO.trigger(GEPPETTO.Events.Model_loaded);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.MODEL_LOADED);
+    EventManager.actionsHandler[EventManager.clientActions.MODEL_LOADED]();
 
     // populate control panel with instances
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, window.Instances);
+    EventManager.actionsHandler[EventManager.clientActions.INSTANCES_CREATED](window.Instances);
 
     console.timeEnd(GEPPETTO.Resources.LOADING_PROJECT);
-    GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
+    EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
     return window.Model;
   },
 
@@ -108,7 +101,7 @@ Manager.prototype = {
 
       var requestID = GEPPETTO.MessageSocket.send("fetch_variable", params, callback);
 
-      GEPPETTO.trigger('spin_logo');
+      EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
 
     } else {
       GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ALREADY_EXISTS);
@@ -135,7 +128,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("fetch", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -150,7 +143,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new variables if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, newInstances);
+    EventManager.actionsHandler[EventManager.clientActions.INSTANCES_CREATED](newInstances);
     console.timeEnd(GEPPETTO.Resources.ADDING_VARIABLE);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ADDED);
   },
@@ -175,7 +168,7 @@ Manager.prototype = {
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_type", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -191,7 +184,7 @@ Manager.prototype = {
     // STEP 2: add new instances for new types if any
     var newInstances = GEPPETTO.ModelFactory.createInstancesFromDiffReport(diffReport);
     // STEP: 3 update components
-    GEPPETTO.trigger(GEPPETTO.Events.Instances_created, newInstances);
+    EventManager.actionsHandler[EventManager.clientActions.INSTANCES_CREATED](newInstances);
 
     console.timeEnd(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
     GEPPETTO.CommandController.log(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
@@ -204,14 +197,13 @@ Manager.prototype = {
    */
   resolveImportValue: function (typePath, callback) {
     var params = {};
-    params["experimentId"] = Project.getActiveExperiment().getId();
     params["projectId"] = Project.getId();
     // replace client naming first occurrence - the server doesn't know about it
     params["path"] = typePath.replace(GEPPETTO.Resources.MODEL_PREFIX_CLIENT + ".", '');
 
     var requestID = GEPPETTO.MessageSocket.send("resolve_import_value", params, callback);
 
-    GEPPETTO.trigger('spin_logo');
+    EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
   },
 
   /**
@@ -317,139 +309,4 @@ Manager.prototype = {
       }
     };
   },
-
-  /**
-   *
-   * @param payload
-   */
-  loadExperiment: function (experimentId, recordedVariables, setParameters) {
-    console.time(GEPPETTO.Resources.LOADING_EXPERIMENT);
-
-    var experiment = undefined;
-
-    for (var e in window.Project.getExperiments()) {
-      if (window.Project.getExperiments()[e].getId() == experimentId) {
-        experiment = window.Project.getExperiments()[e];
-        break;
-      }
-    }
-
-    if (experiment == undefined) {
-      throw ("Could not find the experiment with id " + experimentId);
-    }
-
-    GEPPETTO.CommandController.createTags("Project.getActiveExperiment()", GEPPETTO.Utility.extractMethodsFromObject(experiment, true));
-
-    window.Project.setActiveExperiment(experiment);
-    GEPPETTO.ExperimentsController.updateExperiment(experiment, recordedVariables, setParameters);
-    console.timeEnd(GEPPETTO.Resources.LOADING_EXPERIMENT);
-
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_loaded);
-    GEPPETTO.ViewController.resolveViews();
-
-    // after applying views, run script if any
-    if (window.Project.getActiveExperiment() != null && window.Project.getActiveExperiment() != undefined){
-      if (window.Project.getActiveExperiment().getScript() != undefined) {
-        G.runScript(window.Project.getActiveExperiment().getScript());
-      }
-    }
-  },
-
-  /**
-   *
-   * @param experiment
-   * @returns {*}
-   */
-  createExperiment: function (experiment) {
-    var newExperiment = GEPPETTO.ProjectFactory.createExperimentNode(experiment);
-    window.Project.getExperiments().push(newExperiment);
-    newExperiment.setParent(window.Project);
-    newExperiment.setActive();
-
-    GEPPETTO.ExperimentsController.closeCurrentExperiment();
-    window.Project.setActiveExperiment(newExperiment);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.EXPERIMENT_CREATED);
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_created, newExperiment);
-
-    return newExperiment;
-  },
-
-  /**
-   * Creates experiment batch on project model
-   *
-   * @param experiments
-   */
-  createExperimentBatch: function (experiments) {
-    for (var i = 0; i < experiments.length; i++) {
-      var newExperiment = GEPPETTO.ProjectFactory.createExperimentNode(experiments[i]);
-      window.Project.getExperiments().push(newExperiment);
-      newExperiment.setParent(window.Project);
-      GEPPETTO.trigger(GEPPETTO.Events.Experiment_created, newExperiment);
-    }
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.EXPERIMENT_BATCH_CREATED);
-  },
-
-  /**
-   *
-   * @param data
-   */
-  deleteExperiment: function (data) {
-    var experiment = null;
-    var experiments = window.Project.getExperiments();
-    for (var e in experiments) {
-      if (experiments[e].getId() == data.id) {
-        experiment = experiments[e];
-        var index = window.Project.getExperiments().indexOf(experiment);
-        window.Project.getExperiments().splice(index, 1);
-      }
-    }
-    var activeExperiment = window.Project.getActiveExperiment();
-    if (activeExperiment != null || undefined) {
-      if (activeExperiment.getId() == experiment.getId()) {
-        window.Project.activeExperiment = null;
-      }
-    }
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_deleted, experiment);
-  },
-
-  updateExperimentsStatus: function (experimentsStatus){
-    var experiments = window.Project.getExperiments();
-    for (var key in experimentsStatus) {
-      var projectID = experimentsStatus[key].projectID;
-      var status = experimentsStatus[key].status;
-      var experimentID = experimentsStatus[key].experimentID;
-
-      // changing status in matched experiment
-      for (var e in experiments) {
-        if (experiments[e].getId() == experimentID) {
-          if (experiments[e].getStatus() != status) {
-            if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.RUNNING && status == GEPPETTO.Resources.ExperimentStatus.COMPLETED) {
-              experiments[e].setDetails("");
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_completed, experimentID);
-            } else if (status == GEPPETTO.Resources.ExperimentStatus.ERROR) {
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_failed, experimentID);
-            } else if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.DESIGN && status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_running, experimentID);
-            } else if (experiments[e].getStatus() == GEPPETTO.Resources.ExperimentStatus.QUEUED && status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_running, experimentID);
-            } else if (status == GEPPETTO.Resources.ExperimentStatus.QUEUED) {
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_running, experimentID);
-            } else if (status == GEPPETTO.Resources.ExperimentStatus.RUNNING) {
-              experiments[e].setStatus(status);
-              GEPPETTO.trigger(GEPPETTO.Events.Experiment_running, experimentID);
-            } 
-          }
-        }
-      }
-    }
-    GEPPETTO.trigger(GEPPETTO.Events.Experiment_status_check);
-  }
-
-
 }
-

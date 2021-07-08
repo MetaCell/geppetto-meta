@@ -59,37 +59,11 @@ export default {
     VISUAL_GROUP_ELEMENT_NODE: "#ffffff",
   },
 
-  /**
-   *
-   * Different status an experiment can be on and descriptions
-   *
-   * @enum
-   */
-  ExperimentStatus: {
-    DESIGN: "DESIGN",
-    CANCELED: "CANCELED",
-    QUEUED: "QUEUED",
-    RUNNING: "RUNNING",
-    ERROR: "ERROR",
-    COMPLETED: "COMPLETED",
-    DELETED: "DELETED",
-    Descriptions: {
-      DESIGN: "The experiment is in <b>DESIGN</b> status. Parameters can be set and state variables can be recorded before running the experiment.",
-      CANCELED: "The experiment has been <b>CANCELED</b>.",
-      QUEUED: "The experiment is <b>QUEUED</b> for running.",
-      RUNNING: "The experiment is currently <b>RUNNING</b>.",
-      ERROR: "The experiment caused an <b>ERROR</b> while running.",
-      COMPLETED: "The experiment has successfully <b>COMPLETED</b>. The state variables that were recorded, if any, can now be plotted.",
-      DELETED: "The experiment is <b>DELETED</b>... and you shouldn't be seeing this message!"
-    }
-  },
-
   GeometryTypes: {
     LINES: "lines",
     TUBES: "tubes",
     CYLINDERS: "cylinders"
   },
-
 
   OPACITY: {
     DEFAULT: 1,
@@ -114,30 +88,10 @@ export default {
 
   IMPORT_TYPE_RESOLVED: "An import type has been resolved to a full type and swapped into the Geppetto model",
 
-  EXPERIMENT_CREATED: "New experiment created",
-
-  EXPERIMENT_BATCH_CREATED: "New experiment batch created",
-            
-  EXPERIMENT_CLONED: "Experiment cloned",
-
-  EXPERIMENT_DELETED: "Experiment Deleted",
-
-  UNABLE_TO_START_EXPERIMENT: "Experiment can't be started",
-
-  EXPERIMENT_PAUSED: "Experiment Paused",
-
-  UNABLE_TO_PAUSE_EXPERIMENT: "Simulation is not running. You must run a simulation first",
-
-  EXPERIMENT_STOP: "Simulation Stopped",
-
   LOADING_PROJECT: "Loading Project",
 
-  LOADING_EXPERIMENT: "Loading Experiment",
-            
-  FETCHING_RESULTS: "Fetching Experiment Results",
-            
   RESOLVING_TYPES: "Resolving types",
-                        
+
   PARSING_MODEL: "Parsing model",
 
   CREATING_MODEL: "Creating model",
@@ -179,15 +133,15 @@ export default {
   SIMULATION_SET_WATCHED_VARIABLES: "Watch variables requested",
 
   SIMULATION_CLEAR_WATCH: 'Clear watched variables requested',
-            
+
   NO_WATCHED_VARIABLES : "No Recorded Variables",
 
   NO_FEATURE: "The feature is not avaialble for the current service",
-            
+
   TIME_VARIABLE_NOT_DEFINED : "Time Variable not defined, can't show time",
-            
+
   DISABLED_COLOR_PLOTTING : "Color Plotting Disabled",
-            
+
   ENABLED_COLOR_PLOTTING : "Color Plotting Enabled",
 
   /**
@@ -278,7 +232,7 @@ export default {
   RETRIEVING_VISUALIZATION_TREE: 'Visualization tree: ',
 
   DOWNLOADING_MODEL: 'Downloading model as ',
-            
+
   DOWNLOADING_PROJECT: 'Downloading Project',
 
   ERROR_DOWNLOADING_MODEL: "Error downloading model",
@@ -286,10 +240,6 @@ export default {
   ERROR_LOADING_PROJECT: "Error loading project",
 
   RETRIEVING_SUPPORTED_OUTPUTS: 'Supported outputs requested',
-
-  EXPERIMENT_NOT_COMPLETED_UPLOAD: "Can't upload results for an experiment that isn't completed",
-
-  UNACTIVE_EXPERIMENT_UPLOAD: "Unable to upload results for experiment that isn't active",
 
   GEPPETTO_INITIALIZED: 'Geppetto Initialised',
 
@@ -375,10 +325,6 @@ export default {
   BATCH_HIGHLIGHT_CONNECTIONS: "Batch highlight connections performed",
   BATCH_SHOW_CONNECTIONS_LINES: "Batch show/hide connection lines performed",
   OPERATION_NOT_SUPPORTED: "Operation not supported: ",
-  WRITE_PRIVILEGES_NOT_SUPPORTED : "User doesn't have WRITE privileges",
-  DOWNLOAD_PRIVILEGES_NOT_SUPPORTED : "User doesn't have DOWNLOAD privileges",
-  RUN_PRIVILEGES_NOT_SUPPORTED : "User doesn't have RUN_EXPERIMENT privileges",
-  UPLOAD_PRIVILEGES_NOT_SUPPORTED : "User doesn't have UPLOAD privileges",
   PROJECT_NOT_PERSISTED : "Project not persisted, run command Project.persist() or use Save button on top right corner.",
   USER_NOT_LOGIN : "No user logged in.",
   INSTANTIATING_MODEL : "Instantiating model",
@@ -391,10 +337,10 @@ export default {
    * Error Modal Message
    */
   ERROR_MODAL_TITLE : "There was an error",
-  ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @geppettoengine help!",
+  ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @metacell help!",
   ERROR_MODAL_TWITTER_URL : "http://geppetto.org",
-  ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/openworm/org.geppetto/issues/new",
-      
+  ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/MetaCell/geppetto-meta/issues/new",
+
   /**
    * GEPPETTO resources
    */
@@ -438,7 +384,6 @@ export default {
    * Node Resources
    */
   PROJECT_NODE: "ProjectNode",
-  EXPERIMENT_NODE: "ExperimentNode",
   SIMULATOR_CONFIGURATION_NODE: "SimulatorConfigurationNode",
   VISUAL_GROUP_NODE: "VisualGroup",
   VISUAL_GROUP_ELEMENT_NODE: "VisualGroupElement",
@@ -513,13 +458,11 @@ export default {
   MODEL_PREFIX_CLIENT: 'Model', // DO NOT ADD A DOT HERE THANKS
   // CONTROL PANEL
   CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT: 'Control Panel - error running source script:',
-            
+
   // USER PRIVILEGES
   WRITE_PROJECT : "WRITE_PROJECT",
   READ_PROJECT : "READ_PROJECT",
   DOWNLOAD : "DOWNLOAD",
-  DROPBOX_INTEGRATION : "DROPBOX_INTEGRATION",
-  RUN_EXPERIMENT : "RUN_EXPERIMENT"
 }
 
 

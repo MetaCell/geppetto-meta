@@ -17,7 +17,7 @@ import {
   faCompressAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
-import { createZipFromRemoteFiles } from '@geppettoengine/geppetto-core/Utility';
+import { createZipFromRemoteFiles } from '@metacell/geppetto-meta-core/Utility';
 
 const styles = {
   dicomViewer: {

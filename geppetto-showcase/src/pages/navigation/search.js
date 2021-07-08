@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Showcase from "../../components/showcase/Showcase";
-import SearchMarkdown from "@geppettoengine/geppetto-ui/search/README.md";
+import SearchMarkdown from "@metacell/geppetto-meta-ui/search/README.md";
 
 
 export default class Search extends Component {
