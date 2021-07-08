@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Canvas from "@geppettoengine/geppetto-ui/3d-canvas/Canvas";
-import CameraControls from "@geppettoengine/geppetto-ui/camera-controls/CameraControls";
-import SimpleInstance from "@geppettoengine/geppetto-core/model/SimpleInstance";
+import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
+import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
+import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.obj';
 import Button from "@material-ui/core/Button";
