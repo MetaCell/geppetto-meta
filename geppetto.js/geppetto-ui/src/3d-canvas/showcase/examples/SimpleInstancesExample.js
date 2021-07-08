@@ -18,11 +18,14 @@ const instanceTemplate = {
   }
 }
 
-function getInstances () {
+function loadInstances (){
   GEPPETTO.ModelFactory.cleanModel();
   const instance = new SimpleInstance(instanceTemplate)
   window.Instances = [instance]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
+}
+
+function getProxyInstances () {
   return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: Math.random(), g: Math.random(), b: Math.random(), a: 1 } }))
 }
 
@@ -34,14 +37,12 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
-
-const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
-
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
+    loadInstances()
     this.state = {
-      data: getInstances(),
+      data: getProxyInstances(),
       cameraOptions: {
         angle: 50,
         near: 0.01,
@@ -64,6 +65,7 @@ class SimpleInstancesExample extends Component {
     this.onSelection = onSelection.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
   }
 
@@ -82,7 +84,13 @@ class SimpleInstancesExample extends Component {
   hoverHandler (obj) {
   }
   handleToggle () {
-    this.setState({ showModel: true })
+    loadInstances()
+    this.setState({
+      showModel: true, data: getProxyInstances(), cameraOptions: {
+        ...this.state.cameraOptions,
+        reset: true,
+      } 
+    })
   }
 
   handleClickOutside (event) {
@@ -92,7 +100,11 @@ class SimpleInstancesExample extends Component {
       }
     }
   }
-  
+
+  onMount (scene){
+    console.log(scene)
+  }
+
   render () {
     const { data, cameraOptions, showModel } = this.state
     const canvasData = dataMapping(data)
