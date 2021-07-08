@@ -4,6 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@geppettoengine/geppetto-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
+import { onSelection, dataMapping } from "./SelectionUtils";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -65,7 +66,7 @@ class AuditoryCortexExample extends Component {
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.onSelection = this.onSelection.bind(this);
+    this.onSelection = onSelection.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -102,90 +103,12 @@ class AuditoryCortexExample extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  onSelection (selectedMap) {
-    const { data, selected } = this.state;
-    let path;
-    for (let sk in selectedMap) {
-      const sv = selectedMap[sk];
-      if (sv.distanceIndex === 0) {
-        path = sk;
-      }
-    }
-    const currentColor = selectedMap[path].object.material.color;
-    const geometryIdentifier = selectedMap[path].geometryIdentifier;
-    const newData = data;
-    const newSelected = selected;
-    let done = false;
-    for (const instance of newData) {
-      if (instance.instancePath === path) {
-        if (geometryIdentifier === '') {
-          if (path in newSelected) {
-            instance.color = newSelected[path].color;
-            delete newSelected[path];
-          } else {
-            newSelected[path] = { color: instance.color };
-            instance.color = SELECTION_COLOR;
-          }
-          done = true;
-        } else {
-          if (path in newSelected) {
-            if (geometryIdentifier in newSelected[path]) {
-              instance.visualGroups.custom[geometryIdentifier].color
-                                = newSelected[path][geometryIdentifier].color;
-              delete newSelected[path][geometryIdentifier];
-              if (Object.keys(newSelected[path]).length === 0) {
-                delete newSelected[path];
-              }
-              done = true;
-            } else {
-              if (instance.visualGroups.custom[geometryIdentifier]) {
-                newSelected[path][geometryIdentifier] = { color: instance.visualGroups.custom[geometryIdentifier].color, };
-                instance.visualGroups.custom[
-                  geometryIdentifier
-                ].color = SELECTION_COLOR;
-                done = true;
-              }
-            }
-          } else {
-            if (instance.visualGroups) {
-              if (instance.visualGroups.custom) {
-                if (instance.visualGroups.custom[geometryIdentifier]) {
-                  newSelected[path] = { [geometryIdentifier]: { color: instance.visualGroups.custom[geometryIdentifier].color, }, };
-                  instance.visualGroups.custom[
-                    geometryIdentifier
-                  ].color = SELECTION_COLOR;
-                  done = true;
-                } else {
-                  newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                  instance.visualGroups.custom[geometryIdentifier] = { color: SELECTION_COLOR, };
-                  done = true;
-                }
-              } else {
-                newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                instance.visualGroups.custom = { [geometryIdentifier]: { color: SELECTION_COLOR }, };
-                done = true;
-              }
-            }
-          }
-        }
-      }
-    }
-    if (!done) {
-      newData.push({
-        instancePath: path,
-        color: SELECTION_COLOR,
-      });
-      newSelected[path] = { color: { ...currentColor } };
-    }
-
-    this.setState(() => ({ data: newData, selected: newSelected }));
-  }
-
   hoverHandler (obj) {}
 
   render () {
     const { classes } = this.props;
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
+    const canvasData = dataMapping(data)
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
@@ -200,7 +123,7 @@ class AuditoryCortexExample extends Component {
       <div ref={node => this.node = node} className={classes.container}>
         <Canvas
           ref={this.canvasRef}
-          data={data}
+          data={canvasData}
           cameraOptions={camOptions}
           cameraHandler={this.cameraHandler}
           onSelection={this.onSelection}
