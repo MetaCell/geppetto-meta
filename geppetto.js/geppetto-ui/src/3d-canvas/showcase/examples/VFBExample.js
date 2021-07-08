@@ -26,9 +26,6 @@ const COLORS = [
   { r: 0, g: 0.52, b: 0.96, a: 1 },
   { r: 1, g: 0, b: 0, a: 1 },
 ];
-
-const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
-
 const styles = () => ({
   container: {
     height: '800px',
@@ -51,10 +48,6 @@ class VFBExample extends Component {
           color: COLORS[0],
         },
         {
-          instancePath: 'VFB_00030622',
-          color: COLORS[1],
-        },
-        {
           instancePath: 'VFB_00030616',
           color: COLORS[2],
         },
@@ -70,7 +63,7 @@ class VFBExample extends Component {
           instancePath: 'VFB_00030632',
           color: COLORS[5],
         },
-        { instancePath: 'VFB_00030624', },
+        { instancePath: 'VFB_00030624' },
         {
           instancePath: 'VFB_00030783',
           color: COLORS[6],

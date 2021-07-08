@@ -1,3 +1,4 @@
+import { hexToRGBNormalized } from "../../threeDEngine/util";
 
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
@@ -5,7 +6,7 @@ const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 export function dataMapping (data){
   return data.map(item => (
     {
-      color: item.selected ? SELECTION_COLOR : item.color,
+      color: item.selected ? SELECTION_COLOR : item.color ? item.color : hexToRGBNormalized(GEPPETTO.Resources.COLORS.DEFAULT),
       instancePath: item.instancePath
     }
   ))
