@@ -47,6 +47,7 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
+
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
@@ -91,8 +92,8 @@ class SimpleInstancesExample extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  hoverHandler (obj) {
-  }
+  hoverHandler (obj) {}
+
   handleToggle () {
     loadInstances()
     this.setState({
