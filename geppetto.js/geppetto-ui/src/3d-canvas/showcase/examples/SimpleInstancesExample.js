@@ -26,7 +26,17 @@ function loadInstances (){
 }
 
 function getProxyInstances () {
-  return window.Instances.map(i => ({ instancePath: i.getId(), color: { r: Math.random(), g: Math.random(), b: Math.random(), a: 1 } }))
+  return window.Instances.map(i => (
+    { 
+      instancePath: i.getId(), 
+      color: 
+            { 
+              r: Math.random(), 
+              g: Math.random(), 
+              b: Math.random(), 
+              a: 1 
+            }
+    }))
 }
 
 const styles = () => ({
