@@ -92,7 +92,9 @@ class SimpleInstancesExample extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  hoverHandler (obj) {}
+  hoverHandler (obj) {
+    // deactivated due to performance issues
+  }
 
   handleToggle () {
     loadInstances()
@@ -140,7 +142,7 @@ class SimpleInstancesExample extends Component {
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
         onSelection={this.onSelection}
-        hoverListeners={[this.hoverHandler]}
+        // hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />
     </div> : <Button

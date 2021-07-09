@@ -653,7 +653,7 @@ export default class ThreeDEngine {
             / that.renderer.domElement.width)
             * 2
           - 1;
-        if (that.hoverListeners) {
+        if (that.hoverListeners && that.hoverListeners.length > 0) {
           const intersects = that.getIntersectedObjects();
           for (const listener in that.hoverListeners) {
             if (intersects.length !== 0) {
