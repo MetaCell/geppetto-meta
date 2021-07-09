@@ -4,7 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { onSelection, dataMapping } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -13,8 +13,6 @@ const COLORS = [
   { r: 0, g: 0.8, b: 0, a: 1 },
   { r: 0, g: 0.8, b: 0, a: 0.5 },
 ];
-const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
-
 const styles = () => ({
   container: {
     height: '800px',
@@ -66,7 +64,7 @@ class AuditoryCortexExample extends Component {
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.onSelection = onSelection.bind(this);
+    this.onSelection = this.onSelection.bind(this)
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -105,10 +103,14 @@ class AuditoryCortexExample extends Component {
 
   hoverHandler (obj) {}
 
+  onSelection (selectedInstances){
+    this.setState({ data: applySelection(this.state.data, selectedInstances) })
+  }
+
   render () {
     const { classes } = this.props;
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
-    const canvasData = dataMapping(data)
+    const canvasData = mapToCanvasData(data)
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {

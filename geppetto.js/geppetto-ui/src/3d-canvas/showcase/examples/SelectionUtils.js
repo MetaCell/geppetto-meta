@@ -3,7 +3,7 @@ import { hexToRGBNormalized } from "../../threeDEngine/util";
 const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 
 
-export function dataMapping (data){
+export function mapToCanvasData (data){
   return data.map(item => (
     {
       color: item.selected ? SELECTION_COLOR : item.color ? item.color : hexToRGBNormalized(GEPPETTO.Resources.COLORS.DEFAULT),
@@ -12,23 +12,20 @@ export function dataMapping (data){
   ))
 }
 
-export function onSelection (selectedInstances) {
-  const { data } = this.state
-  const newData = []
-  let newInstance = true
-  for (const si of selectedInstances){
-    for (const i of data){
-      if (si === i.instancePath){
-        newData.push({
-          ...i,
-          selected: !i.selected
-        })
-        newInstance = false
-      } else {
-        newData.push({ ...i, })
+export function applySelection (data, selectedInstances) {
+  const smap = new Map(selectedInstances.map(i => [i, true]))
+  const newData = data.map(item => {
+    if (smap.get(item.instancePath)){
+      return {
+        ...item,
+        selected: !item.selected
       }
     }
-    if (newInstance){
+    return { ...item }
+  })
+  const newDataInstancePaths = newData.map(entry => entry.instancePath)
+  for (const si of selectedInstances) {
+    if (!newDataInstancePaths.includes(si)){
       newData.push({
         instancePath: si,
         color: undefined, // todo: inherit from parent?
@@ -36,5 +33,5 @@ export function onSelection (selectedInstances) {
       })
     }
   }
-  this.setState({ data: newData })
+  return newData
 }

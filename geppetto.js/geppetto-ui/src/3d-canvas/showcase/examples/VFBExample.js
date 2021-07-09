@@ -5,7 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { onSelection, dataMapping } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -84,7 +84,7 @@ class VFBExample extends Component {
     };
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.onSelection = onSelection.bind(this);
+    this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -187,10 +187,14 @@ class VFBExample extends Component {
     })
   }
 
+  onSelection (selectedInstances){
+    this.setState({ data: applySelection(this.state.data, selectedInstances) })
+  }
+
   render () {
     const { classes } = this.props;
     const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
-    const canvasData = dataMapping(data)
+    const canvasData = mapToCanvasData(data)
     
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {

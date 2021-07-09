@@ -4,7 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
-import { onSelection, dataMapping } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -61,7 +61,7 @@ class CA1Example extends Component {
 
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.onSelection = onSelection.bind(this);
+    this.onSelection = this.onSelection.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
   }
@@ -93,10 +93,14 @@ class CA1Example extends Component {
     })
   }
 
+  onSelection (selectedInstances){
+    this.setState({ data: applySelection(this.state.data, selectedInstances) })
+  }
+
   render () {
     const { classes } = this.props;
     const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
-    const canvasData = dataMapping(data)
+    const canvasData = mapToCanvasData(data)
 
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {

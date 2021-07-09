@@ -15,9 +15,7 @@ module.exports = smp.wrap({
     chunkFilename: '[name].chunk.js',
     publicPath: '/'
   },
-  resolve: {
-    extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
-  },
+  resolve: { extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'], },
   module: {
     rules: [
       {
