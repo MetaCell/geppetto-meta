@@ -8,10 +8,9 @@
  * @author Matteo Cantarelli
  */
 
+import { rgbToHex } from '../Utility';
 
 var ObjectWrapper = require('./ObjectWrapper').default;
-var VisualGroupElement = require('./VisualGroupElement').default;
-
 
 function VisualGroup (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -118,7 +117,7 @@ VisualGroup.prototype.showAllVisualGroupElements = function (elements, mode, ins
         intensity = (elements[j].getValue() - this.minDensity) / (this.maxDensity - this.minDensity);
       }
 
-      color = GEPPETTO.Utility.rgbToHex(255, Math.floor(255 - (255 * intensity)), 0);
+      color = rgbToHex(255, Math.floor(255 - (255 * intensity)), 0);
     }
     groups[elements[j].getId()].color = color;
   }

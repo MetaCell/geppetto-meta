@@ -14,6 +14,8 @@ import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { hasVisualType } from "./util";
+import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
+
 require('./TrackballControls');
 
 export default class ThreeDEngine {
@@ -334,7 +336,7 @@ export default class ThreeDEngine {
               / (maxDensity - minDensity);
           }
 
-          color = GEPPETTO.Utility.rgbToHex(
+          color = rgbToHex(
             255,
             Math.floor(255 - 255 * intensity),
             0
