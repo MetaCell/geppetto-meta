@@ -6,7 +6,7 @@ const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
 export function mapToCanvasData (data){
   return data.map(item => (
     {
-      color: item.selected ? SELECTION_COLOR : item.color ? item.color : hexToRGBNormalized(GEPPETTO.Resources.COLORS.DEFAULT),
+      color: item.selected ? SELECTION_COLOR : item.color,
       instancePath: item.instancePath
     }
   ))
@@ -23,15 +23,16 @@ export function applySelection (data, selectedInstances) {
     }
     return { ...item }
   })
-  const newDataInstancePaths = newData.map(entry => entry.instancePath)
-  for (const si of selectedInstances) {
-    if (!newDataInstancePaths.includes(si)){
+  const dmap = new Map(newData.map(i => [i.instancePath, true]))
+
+  smap.forEach((value, key) => {
+    if (!dmap.get(key)){
       newData.push({
-        instancePath: si,
-        color: undefined, // todo: inherit from parent?
+        instancePath: key,
+        color: undefined,
         selected: true
       })
     }
-  }
+  })
   return newData
 }
