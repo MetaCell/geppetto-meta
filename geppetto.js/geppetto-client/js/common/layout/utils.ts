@@ -13,9 +13,10 @@ export function widget2Node (configuration: Widget) {
     type: "tab",
     enableRename: false,
     enableClose,
+    panelName,
+    ...others,
     // attr defined inside config, will also be available from within flexlayout nodes.  For example:  node.getNodeById(id).getConfig()
-    config: {...configuration} ,
-    ...others
+    config: { ...configuration } ,
   };
 }
 
