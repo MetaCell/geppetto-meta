@@ -66,8 +66,8 @@ class SimpleInstancesExample extends Component {
         reset: false,
         autorotate: false,
         wireframe: false,
-        showModel: false
       },
+      showModel: false
     };
     this.canvasIndex = 3
     this.lastCameraUpdate = null;

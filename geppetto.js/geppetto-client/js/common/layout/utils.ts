@@ -4,7 +4,7 @@ import { Widget } from './model';
  * Transforms a widget configuration into a flexlayout node descriptor
  */
 export function widget2Node (configuration: Widget) {
-  const { id, name, component, status, panelName, enableClose = true, ...others } = configuration;
+  const { id, name, component, status, panelName, enableClose = true } = configuration;
   return {
     id,
     name,
@@ -13,9 +13,9 @@ export function widget2Node (configuration: Widget) {
     type: "tab",
     enableRename: false,
     enableClose,
+    panelName,
     // attr defined inside config, will also be available from within flexlayout nodes.  For example:  node.getNodeById(id).getConfig()
-    config: { ...others } ,
-    ...configuration
+    config: { ...configuration } ,
   };
 }
 
