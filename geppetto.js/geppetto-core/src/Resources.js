@@ -414,6 +414,7 @@ export default {
   SPHERE: "Sphere",
   COLLADA: "Collada",
   OBJ: "OBJ",
+  GLTF: "GLTF",
   PARTICLES: "Particles",
   // GEPPETTO MODEL
   GEPPETTO_MODEL_NODE: "GeppettoModel",

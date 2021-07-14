@@ -1,5 +1,7 @@
 import particle from '../textures/particle.png';
 import { hasVisualType } from "./util";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 require('./OBJLoader');
 
@@ -26,9 +28,9 @@ export default class MeshFactory {
     this.THREE = THREE ? THREE : require('three');
   }
 
-  start (instances) {
+  async start (instances) {
     this.clean();
-    this.traverseInstances(instances);
+    await this.traverseInstances(instances);
   }
 
   getMeshes () {
@@ -41,35 +43,35 @@ export default class MeshFactory {
     return meshes;
   }
 
-  traverseInstances (instances) {
+  async traverseInstances (instances) {
     for (let j = 0; j < instances.length; j++) {
-      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())){
+      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())) {
         continue
       }
-      this.checkVisualInstance(instances[j]);
+      await this.checkVisualInstance(instances[j]);
     }
   }
 
-  checkVisualInstance (instance) {
+  async checkVisualInstance (instance) {
     try {
       if (this.hasVisualValue(instance)) {
-        this.buildVisualInstance(instance)
+        await this.buildVisualInstance(instance)
       } else if (hasVisualType(instance)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if (
           instance.getType().getMetaType()
-                    !== GEPPETTO.Resources.ARRAY_TYPE_NODE
-                    && instance.getVisualType()
+            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            && instance.getVisualType()
         ) {
-          this.buildVisualInstance(instance);
+          await this.buildVisualInstance(instance);
         }
         // this block keeps traversing the instances
         if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
-          this.traverseInstances(instance.getChildren());
+          await this.traverseInstances(instance.getChildren());
         } else if (
           instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
         ) {
-          this.traverseInstances(instance);
+          await this.traverseInstances(instance);
         }
       }
     } catch (e) {
@@ -85,12 +87,12 @@ export default class MeshFactory {
     }
   }
 
-  buildVisualInstance (instance) {
-    const meshes = this.generate3DObjects(instance);
+  async buildVisualInstance (instance) {
+    const meshes = await this.generate3DObjects(instance);
     this.init3DObject(meshes, instance);
   }
 
-  generate3DObjects (instance) {
+  async generate3DObjects (instance) {
 
     const materials = {
       mesh: this.getMeshPhongMaterial(),
@@ -98,7 +100,7 @@ export default class MeshFactory {
     };
 
     const instanceObjects = [];
-    const threeDeeObjList = this.walkVisTreeGen3DObjs(instance, materials);
+    const threeDeeObjList = await this.walkVisTreeGen3DObjs(instance, materials);
     if (threeDeeObjList.length > 1) {
       const mergedObjs = this.merge3DObjects(threeDeeObjList, materials);
       // investigate need to obj.dispose for obj in threeDeeObjList
@@ -154,8 +156,8 @@ export default class MeshFactory {
       threeColor.setHex(color);
     } else if (
       Object.prototype.hasOwnProperty.call(color, 'r')
-            && Object.prototype.hasOwnProperty.call(color, 'g')
-            && Object.prototype.hasOwnProperty.call(color, 'b')
+        && Object.prototype.hasOwnProperty.call(color, 'g')
+        && Object.prototype.hasOwnProperty.call(color, 'b')
     ) {
       threeColor.r = color.r;
       threeColor.g = color.g;
@@ -165,10 +167,10 @@ export default class MeshFactory {
     }
   }
 
-  walkVisTreeGen3DObjs (instance, materials) {
-    if (this.hasVisualValue(instance)){
+  async walkVisTreeGen3DObjs (instance, materials) {
+    if (this.hasVisualValue(instance)) {
       const visualValue = instance.getVisualValue();
-      const threeDObj = this.create3DObjectFromInstance(
+      const threeDObj = await this.create3DObjectFromInstance(
         instance,
         visualValue,
         instance.getId(),
@@ -181,21 +183,23 @@ export default class MeshFactory {
     let visualType
     try {
       visualType = instance.getVisualType();
-    } catch (e){
+    } catch (e) {
       visualType = undefined
     }
     if (visualType === undefined) {
       return [];
     } else if (visualType.isArray) {
       const threeDObjList = []
-      visualType.forEach(vt => threeDObjList.push(this.walkVisTreeGen3DObjsVisualType(vt, instance, materials)))
+      await Promise.all(visualType.forEach(
+        async vt => threeDObjList.push((await this.walkVisTreeGen3DObjsVisualType(vt, instance, materials)))
+      ))
       return threeDObjList
     } else {
-      return this.walkVisTreeGen3DObjsVisualType(visualType, instance, materials)
+      return await this.walkVisTreeGen3DObjsVisualType(visualType, instance, materials)
     }
   }
 
-  walkVisTreeGen3DObjsVisualType (visualType, instance, materials){
+  async walkVisTreeGen3DObjsVisualType (visualType, instance, materials) {
     const threeDeeObjList = [];
     let threeDeeObj = null;
     if (
@@ -203,7 +207,7 @@ export default class MeshFactory {
     ) {
       for (const v in visualType.getVariables()) {
         const visualValue = visualType.getVariables()[v].getWrappedObj().initialValues[0].value;
-        threeDeeObj = this.create3DObjectFromInstance(
+        threeDeeObj = await this.create3DObjectFromInstance(
           instance,
           visualValue,
           visualType.getVariables()[v].getId(),
@@ -218,7 +222,7 @@ export default class MeshFactory {
         && visualType.getId() === 'particles'
     ) {
       const visualValue = instance.getVariable().getWrappedObj().initialValues[0].value;
-      threeDeeObj = this.create3DObjectFromInstance(
+      threeDeeObj = await this.create3DObjectFromInstance(
         instance,
         visualValue,
         instance.getVariable().getId(),
@@ -229,7 +233,7 @@ export default class MeshFactory {
       }
     } else {
       const visualValue = visualType.getWrappedObj().defaultValue;
-      threeDeeObj = this.create3DObjectFromInstance(
+      threeDeeObj = await this.create3DObjectFromInstance(
         instance,
         visualValue,
         visualType.getId(),
@@ -242,7 +246,7 @@ export default class MeshFactory {
     return threeDeeObjList
   }
 
-  create3DObjectFromInstance (instance, node, id, materials) {
+  async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
 
     const lines = this.getDefaultGeometryType() === 'lines';
@@ -278,6 +282,10 @@ export default class MeshFactory {
       break;
     case GEPPETTO.Resources.OBJ:
       threeObject = this.loadThreeOBJModelFromNode(node);
+      this.complexity++;
+      break;
+    case GEPPETTO.Resources.GLTF:
+      threeObject = await this.loadThreeGLTFModelFromNode(node);
       this.complexity++;
       break;
     }
@@ -504,12 +512,29 @@ export default class MeshFactory {
     return scene;
   }
 
-  parseBase64 (str){
+  async loadThreeGLTFModelFromNode (node) {
+    const gltf = this.parseBase64(node.gltf)
+    const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf');
+    loader.setDRACOLoader( dracoLoader );
+    const gltfData = await this.modelLoader(loader, gltf);
+    // todo: set default color if not set in gltf
+    return gltfData.scene
+  }
+
+  parseBase64 (str) {
     try {
       return atob(str.split('base64,')[1]);
     } catch (e) {
       return str
     }
+  }
+
+  modelLoader (loader, url) {
+    return new Promise((resolve, reject) => {
+      loader.load(url, data => resolve(data), null, reject);
+    });
   }
 
   init3DObject (meshes, instance) {
@@ -538,7 +563,7 @@ export default class MeshFactory {
         for (const splitMesh in splitMeshes) {
           if (
             splitMeshes[splitMesh].instancePath === instancePath
-                        && splitMesh !== instancePath
+              && splitMesh !== instancePath
           ) {
             const visualObject = splitMesh.substring(instancePath.length + 1);
             elements[visualObject] = '';
@@ -882,7 +907,7 @@ export default class MeshFactory {
   getLinePrecision () {
     this.rayCasterLinePrecision = this.sceneMaxRadius / this.linePrecisionMinRadius;
     if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
-      this.rayCasterLinePrecision = this .minAllowedLinePrecision;
+      this.rayCasterLinePrecision = this.minAllowedLinePrecision;
     }
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
