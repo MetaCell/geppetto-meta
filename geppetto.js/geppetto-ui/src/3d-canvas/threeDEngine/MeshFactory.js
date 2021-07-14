@@ -288,6 +288,12 @@ export default class MeshFactory {
       threeObject = await this.loadThreeGLTFModelFromNode(node);
       this.complexity++;
       break;
+    case GEPPETTO.Resources.DRC:
+      threeObject = await this.loadThreeDRCModelFromNode(node);
+      this.complexity++;
+      break;
+    default:
+      console.error("Invalid node.eClass")
     }
 
     if (threeObject) {
@@ -306,7 +312,6 @@ export default class MeshFactory {
   }
 
   getDefaultGeometryType () {
-    // TODO: Add user interaction
     const aboveLinesThreshold = this.complexity > this.linesThreshold;
     return aboveLinesThreshold ? 'lines' : 'cylinders';
   }
@@ -518,8 +523,15 @@ export default class MeshFactory {
     dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/');
     loader.setDRACOLoader( dracoLoader );
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
-    // todo: set default color if not set in gltf
     return gltfData.scene
+  }
+
+  async loadThreeDRCModelFromNode (node) {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/')
+    const geometry = await this.modelLoader(dracoLoader, node.drc);
+    geometry.computeVertexNormals();
+    return new THREE.Mesh(geometry, this.getMeshPhongMaterial())
   }
 
   parseBase64 (str) {

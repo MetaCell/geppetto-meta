@@ -3,7 +3,7 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
+import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.drc';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
@@ -13,8 +13,8 @@ const instanceTemplate = {
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
-    'gltf': neuron
+    "eClass": GEPPETTO.Resources.DRC,
+    'drc': neuron
   }
 }
 
