@@ -513,12 +513,11 @@ export default class MeshFactory {
   }
 
   async loadThreeGLTFModelFromNode (node) {
-    const gltf = this.parseBase64(node.gltf)
     const loader = new GLTFLoader();
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/');
     loader.setDRACOLoader( dracoLoader );
-    const gltfData = await this.modelLoader(loader, gltf);
+    const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
     // todo: set default color if not set in gltf
     return gltfData.scene
   }
@@ -534,6 +533,12 @@ export default class MeshFactory {
   modelLoader (loader, url) {
     return new Promise((resolve, reject) => {
       loader.load(url, data => resolve(data), null, reject);
+    });
+  }
+
+  modelParser (loader, data) {
+    return new Promise((resolve, reject) => {
+      loader.parse(data, null, data => resolve(data), reject);
     });
   }
 

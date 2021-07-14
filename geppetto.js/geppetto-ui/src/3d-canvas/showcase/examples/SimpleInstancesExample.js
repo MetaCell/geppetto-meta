@@ -14,7 +14,7 @@ const instanceTemplate = {
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": GEPPETTO.Resources.GLTF,
-    'gltf': 'https://raw.githubusercontent.com/MetaCell/geppetto-meta/feature/120/geppetto.js/geppetto-ui/src/3d-canvas/showcase/examples/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf'
+    'gltf': neuron
   }
 }
 
@@ -27,16 +27,7 @@ function loadInstances (){
 
 function getProxyInstances () {
   return window.Instances.map(i => (
-    { 
-      instancePath: i.getId(), 
-      color: 
-            { 
-              r: Math.random(), 
-              g: Math.random(), 
-              b: Math.random(), 
-              a: 1 
-            }
-    }))
+    { instancePath: i.getId(), }))
 }
 
 const styles = () => ({
