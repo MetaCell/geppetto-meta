@@ -531,7 +531,7 @@ export default class MeshFactory {
     dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/')
     const geometry = await this.modelLoader(dracoLoader, node.drc);
     geometry.computeVertexNormals();
-    return new THREE.Mesh(geometry, this.getMeshPhongMaterial())
+    return new this.THREE.Mesh(geometry, this.getMeshPhongMaterial())
   }
 
   parseBase64 (str) {

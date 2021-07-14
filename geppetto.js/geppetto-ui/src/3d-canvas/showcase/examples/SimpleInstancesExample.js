@@ -14,7 +14,7 @@ const instanceTemplate = {
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": GEPPETTO.Resources.DRC,
-    'drc': neuron
+    'drc': 'SketchVolumeViewer_SAAVR_SAAVR_1_1_0000.drc'
   }
 }
 
