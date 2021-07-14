@@ -14,7 +14,7 @@ const instanceTemplate = {
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": GEPPETTO.Resources.GLTF,
-    'gltf': './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf'
+    'gltf': 'https://raw.githubusercontent.com/MetaCell/geppetto-meta/feature/120/geppetto.js/geppetto-ui/src/3d-canvas/showcase/examples/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf'
   }
 }
 
