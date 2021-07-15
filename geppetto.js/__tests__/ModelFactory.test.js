@@ -1,12 +1,13 @@
-
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@geppettoengine/geppetto-core/Resources').default;
-require('@geppettoengine/geppetto-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
-const Manager = require('@geppettoengine/geppetto-client/common/Manager').default;
-const ModelFactory = require('@geppettoengine/geppetto-core/ModelFactory').default(GEPPETTO);
+GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
+require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
+const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
+const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
 const testModel = require('./resources/test_model.json');
-const AA = require('@geppettoengine/geppetto-core/model/ArrayElementInstance').default;
+const EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default;
+
+EventManager.setStore({ dispatch: m => null })
 
 GEPPETTO.ModelFactory = ModelFactory;
 GEPPETTO.Utility = {};
@@ -51,6 +52,16 @@ test('Merge models', () => {
   
   let diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
+
+  testModel.worlds[0].instances[0].name = 'aa';
+  testModel.worlds[0].instances[0].value.json = "{\"l\": [\"xx\", \"y\"]}";
+  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  expect(diffReport.variables.length).toBe(0); // The diffReport is only about new items
+  
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getName()).toBe('aa');
+  expect(geppettoModel.getCurrentWorld().getInstances()[0].getValue().l[0]).toBe('xx');
+  expect(Instances.a.getName()).toBe('aa');
+  expect(Instances.a.getValue().l[0]).toBe('xx');
 
   expect(ModelFactory.allPaths.length).toBe(11);
   GEPPETTO.Manager.addVariableToModel(testModel);

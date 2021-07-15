@@ -59,37 +59,11 @@ export default {
     VISUAL_GROUP_ELEMENT_NODE: "#ffffff",
   },
 
-  /**
-   *
-   * Different status an experiment can be on and descriptions
-   *
-   * @enum
-   */
-  ExperimentStatus: {
-    DESIGN: "DESIGN",
-    CANCELED: "CANCELED",
-    QUEUED: "QUEUED",
-    RUNNING: "RUNNING",
-    ERROR: "ERROR",
-    COMPLETED: "COMPLETED",
-    DELETED: "DELETED",
-    Descriptions: {
-      DESIGN: "The experiment is in <b>DESIGN</b> status. Parameters can be set and state variables can be recorded before running the experiment.",
-      CANCELED: "The experiment has been <b>CANCELED</b>.",
-      QUEUED: "The experiment is <b>QUEUED</b> for running.",
-      RUNNING: "The experiment is currently <b>RUNNING</b>.",
-      ERROR: "The experiment caused an <b>ERROR</b> while running.",
-      COMPLETED: "The experiment has successfully <b>COMPLETED</b>. The state variables that were recorded, if any, can now be plotted.",
-      DELETED: "The experiment is <b>DELETED</b>... and you shouldn't be seeing this message!"
-    }
-  },
-
   GeometryTypes: {
     LINES: "lines",
     TUBES: "tubes",
     CYLINDERS: "cylinders"
   },
-
 
   OPACITY: {
     DEFAULT: 1,
@@ -114,27 +88,7 @@ export default {
 
   IMPORT_TYPE_RESOLVED: "An import type has been resolved to a full type and swapped into the Geppetto model",
 
-  EXPERIMENT_CREATED: "New experiment created",
-
-  EXPERIMENT_BATCH_CREATED: "New experiment batch created",
-
-  EXPERIMENT_CLONED: "Experiment cloned",
-
-  EXPERIMENT_DELETED: "Experiment Deleted",
-
-  UNABLE_TO_START_EXPERIMENT: "Experiment can't be started",
-
-  EXPERIMENT_PAUSED: "Experiment Paused",
-
-  UNABLE_TO_PAUSE_EXPERIMENT: "Simulation is not running. You must run a simulation first",
-
-  EXPERIMENT_STOP: "Simulation Stopped",
-
   LOADING_PROJECT: "Loading Project",
-
-  LOADING_EXPERIMENT: "Loading Experiment",
-
-  FETCHING_RESULTS: "Fetching Experiment Results",
 
   RESOLVING_TYPES: "Resolving types",
 
@@ -287,10 +241,6 @@ export default {
 
   RETRIEVING_SUPPORTED_OUTPUTS: 'Supported outputs requested',
 
-  EXPERIMENT_NOT_COMPLETED_UPLOAD: "Can't upload results for an experiment that isn't completed",
-
-  UNACTIVE_EXPERIMENT_UPLOAD: "Unable to upload results for experiment that isn't active",
-
   GEPPETTO_INITIALIZED: 'Geppetto Initialised',
 
   SIMULATION_OBSERVED: 'Sent: Simulation being observed',
@@ -375,10 +325,6 @@ export default {
   BATCH_HIGHLIGHT_CONNECTIONS: "Batch highlight connections performed",
   BATCH_SHOW_CONNECTIONS_LINES: "Batch show/hide connection lines performed",
   OPERATION_NOT_SUPPORTED: "Operation not supported: ",
-  WRITE_PRIVILEGES_NOT_SUPPORTED : "User doesn't have WRITE privileges",
-  DOWNLOAD_PRIVILEGES_NOT_SUPPORTED : "User doesn't have DOWNLOAD privileges",
-  RUN_PRIVILEGES_NOT_SUPPORTED : "User doesn't have RUN_EXPERIMENT privileges",
-  UPLOAD_PRIVILEGES_NOT_SUPPORTED : "User doesn't have UPLOAD privileges",
   PROJECT_NOT_PERSISTED : "Project not persisted, run command Project.persist() or use Save button on top right corner.",
   USER_NOT_LOGIN : "No user logged in.",
   INSTANTIATING_MODEL : "Instantiating model",
@@ -438,7 +384,6 @@ export default {
    * Node Resources
    */
   PROJECT_NODE: "ProjectNode",
-  EXPERIMENT_NODE: "ExperimentNode",
   SIMULATOR_CONFIGURATION_NODE: "SimulatorConfigurationNode",
   VISUAL_GROUP_NODE: "VisualGroup",
   VISUAL_GROUP_ELEMENT_NODE: "VisualGroupElement",
@@ -517,8 +462,6 @@ export default {
   WRITE_PROJECT : "WRITE_PROJECT",
   READ_PROJECT : "READ_PROJECT",
   DOWNLOAD : "DOWNLOAD",
-  DROPBOX_INTEGRATION : "DROPBOX_INTEGRATION",
-  RUN_EXPERIMENT : "RUN_EXPERIMENT"
 }
 
 

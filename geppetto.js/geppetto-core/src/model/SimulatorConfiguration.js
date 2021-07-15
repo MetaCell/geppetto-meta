@@ -66,13 +66,13 @@ define(function (require) {
       var properties = {};
       properties["aspectInstancePath"] = this.aspectInstancePath;
       properties["SP$" + parameter] = value;
-      this.getParent().saveExperimentProperties(properties);
       return this.parameters[parameter] = value;
     },
 
     /**
      * Gets an experiment from this project.
      *
+     * @deprecated related to experiment?
      * @command SimulatorConfig.setParameters(parameters)
      */
     setParameters: function (parameters) {
@@ -108,7 +108,6 @@ define(function (require) {
       var properties = {};
       properties["conversionServiceId"] = conversionServiceId;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      this.getParent().saveExperimentProperties(properties);
       return this.conversionId = conversionServiceId;
     },
 
@@ -121,7 +120,6 @@ define(function (require) {
       var properties = {};
       properties["simulatorId"] = simulatorId;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      this.getParent().saveExperimentProperties(properties);
       return this.simulatorId = simulatorId;
     },
 
@@ -147,7 +145,6 @@ define(function (require) {
       }
       properties["timeStep"] = timeStep;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      this.getParent().saveExperimentProperties(properties);
       return this.timeStep = timeStep;
     },
 
@@ -173,7 +170,6 @@ define(function (require) {
       }
       properties["length"] = length;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      this.getParent().saveExperimentProperties(properties);
       return this.length = length;
     },
 

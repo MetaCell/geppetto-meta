@@ -37,3 +37,6 @@ org.geppetto.simulation/
 
 # redis cache files
 *.rdb
+
+# yarn
+**/yarn-*.log

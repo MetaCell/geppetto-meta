@@ -8,10 +8,8 @@
 define(function (require) {
   return function (GEPPETTO) {
 
-    var debugMode = false;
     var $ = require('jquery');
-    var React = require('react');
-    var ClipboardModal = require('../../components/interface/jsEditor/ClipboardModal');
+    var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
 
     /**
      * @exports geppetto-objects/G
@@ -40,27 +38,6 @@ define(function (require) {
 
       autoFocusConsole: function (mode) {
         this.consoleFocused = mode;
-      },
-
-      /**
-       * Adds widgets to Geppetto
-       *
-       * @param type
-       * @param isStateless
-       * @returns {*}
-       */
-      addWidget: function (type, properties, callback) {
-        return GEPPETTO.ComponentFactory.addWidget(type, properties, callback);
-      },
-
-      /**
-       * Gets list of available widgets
-       *
-       * @command G.availableWidgets()
-       * @returns {List} - List of available widget types
-       */
-      availableWidgets: function () {
-        return GEPPETTO.Widgets;
       },
 
       /**
@@ -121,7 +98,6 @@ define(function (require) {
        * @returns {String} All commands and descriptions for G.
        */
       help: function () {
-        GEPPETTO.Utility.extractCommandsFromFile("geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/js/pages/geppetto/G.js", GEPPETTO.G, "G");
         return this;
       },
 
@@ -144,38 +120,6 @@ define(function (require) {
       },
 
       /**
-       * Removes widget from Geppetto
-       *
-       * @command G.removeWidget(widgetType)
-       * @param {WIDGET_EVENT_TYPE} type - Type of widget to remove from GEPPETTO. If no type is passed remove all the widgets from Geppetto.
-       */
-      removeWidget: function (type) {
-        if (type) {
-          return GEPPETTO.WidgetFactory.removeWidget(type);
-        } else {
-          for (var widgetKey in GEPPETTO.Widgets) {
-            GEPPETTO.WidgetFactory.removeWidget(GEPPETTO.Widgets[widgetKey]);
-          }
-        }
-      },
-
-      /**
-       * Takes the URL corresponding to a script, executes
-       * commands inside the script.
-       *
-       * @command G.runScript(scriptURL)
-       * @param {URL} scriptURL - URL of script to execute
-       */
-      runScript: function (scriptURL) {
-        var parameters = {};
-        parameters.scriptURL = scriptURL;
-        parameters.projectId = Project.getId();
-        GEPPETTO.MessageSocket.send("get_script", parameters);
-
-        return GEPPETTO.Resources.RUNNING_SCRIPT;
-      },
-
-      /**
        * Show or hide help window using command
        *
        * @command G.showHelpWindow(mode)
@@ -185,7 +129,7 @@ define(function (require) {
         var returnMessage;
 
         if (mode) {
-          GEPPETTO.trigger('simulation:show_helpwindow');
+          EventManager.actionsHandler[EventManager.clientActions.SHOW_HELP]();
           returnMessage = GEPPETTO.Resources.SHOW_HELP_WINDOW;
         } else {
           var modalVisible = $('#help-modal').hasClass('in');
@@ -194,7 +138,7 @@ define(function (require) {
             returnMessage = GEPPETTO.Resources.HELP_ALREADY_HIDDEN;
           } else {
             // hide help window
-            GEPPETTO.trigger('simulation:hide_helpwindow');
+            EventManager.actionsHandler[EventManager.clientActions.HIDE_HELP]();
             returnMessage = GEPPETTO.Resources.HIDE_HELP_WINDOW;
             $('#help-modal').modal('hide');
           }
@@ -207,51 +151,14 @@ define(function (require) {
         var modalVisible = $('#tutorial_dialog').is(':visible');
 
         if (modalVisible) {
-          GEPPETTO.trigger(GEPPETTO.Events.Hide_Tutorial);
+          EventManager.actionsHandler[EventManager.clientActions.SHOW_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.HIDE_TUTORIAL;
         } else {
-          GEPPETTO.trigger(GEPPETTO.Events.Show_Tutorial);
+          EventManager.actionsHandler[EventManager.clientActions.HIDE_TUTORIAL]();
           returnMessage = GEPPETTO.Resources.SHOW_TUTORIAL;
         }
         return returnMessage;
       },
-
-      /**
-       * Waits some amount of time before executing a set of commands
-       *
-       * @command G.wait(commands,ms)
-       * @param {Array} commands - Array of commands to execute
-       * @param {Integer} ms - Milliseconds to wait before executing commands
-       */
-      wait: function (commands, ms) {
-        setTimeout(function () {
-          // execute commands after ms milliseconds
-          GEPPETTO.ScriptRunner.executeScriptCommands(commands);
-        }, ms);
-
-        return GEPPETTO.Resources.WAITING;
-      },
-
-      /**
-       *
-       * @param key
-       * @returns {string}
-       */
-      linkDropBox: function (key, callback) {
-        if (key != null || key != undefined) {
-          var parameters = {};
-          parameters["key"] = key;
-          GEPPETTO.MessageSocket.send("link_dropbox", parameters, callback);
-
-          return "Sending request to link dropbox to Geppetto";
-        } else {
-          var dropboxURL
-                        = "https://www.dropbox.com/oauth2/authorize?locale=en_US&client_id=kbved8e6wnglk4h&response_type=code";
-          var win = window.open(dropboxURL, '_blank');
-          win.focus();
-        }
-      },
-
 
       /**
        * Sets options that happened during selection of an entity. For instance,
@@ -282,24 +189,6 @@ define(function (require) {
        */
       getSelectionOptions: function () {
         return this.selectionOptions;
-      },
-
-      /**
-       * Sets the timer for updates during play/replay.
-       *
-       * @command G.setPlayTimerStep(interval)
-       */
-      setPlayTimerStep: function (interval) {
-        GEPPETTO.ExperimentsController.playTimerStep = interval;
-      },
-
-      /**
-       * Set play in loop true/false.
-       *
-       * @command G.setPlayLoop(loop)
-       */
-      setPlayLoop: function (loop) {
-        GEPPETTO.ExperimentsController.playLoop = loop;
       },
 
       /**

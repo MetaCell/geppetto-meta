@@ -23,6 +23,8 @@ WORKDIR /app/geppetto.js/geppetto-core
 RUN yarn && yarn build && yarn publish:yalc
 
 WORKDIR /app/geppetto.js/geppetto-client
+RUN yalc add @metacell/geppetto-meta-ui
+RUN yalc add @metacell/geppetto-meta-core
 RUN yarn && yarn build && yarn publish:yalc
 
 # INSTALL PACKAGES

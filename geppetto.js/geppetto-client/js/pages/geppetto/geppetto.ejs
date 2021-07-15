@@ -40,23 +40,23 @@
     <!-- CSS -->
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/style/css/custom-theme/jquery-ui-1.10.0.custom.css"
+      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/custom-theme/jquery-ui-1.10.0.custom.css"
     />
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/style/css/font-awesome.min.css"
+      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/font-awesome.min.css"
     />
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/style/css/codemirror.css"
+      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/codemirror.css"
     />
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/style/css/lesser-dark.css"
+      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/lesser-dark.css"
     />
     <link
       rel="stylesheet"
-      href="<%= cssPaths%>geppetto/node_modules/@geppettoengine/geppetto-client/geppetto-client/style/css/gpt-icons.css"
+      href="<%= cssPaths%>geppetto/node_modules/@metacell/geppetto-meta-client/geppetto-client/style/css/gpt-icons.css"
     />
     <link rel="stylesheet" href="geppetto/build/static/custom.css" />
     <% if(htmlWebpackPlugin.options.GEPPETTO_CONFIGURATION.customCss) { %>
@@ -181,18 +181,8 @@
         '//www.google-analytics.com/analytics.js',
         'ga'
       );
-      ga('create', 'UA-45841517-1', 'geppetto.org');
+      ga('create', 'UA-4584 1517-1', 'geppetto.org');
       ga('send', 'pageview');
     </script>
-    <script
-      charset="utf-8"
-      type="text/javascript"
-      src="<%= cssPaths%>geppetto/build/common.bundle.js"
-    ></script>
-    <script
-      charset="utf-8"
-      type="text/javascript"
-      src="<%= cssPaths%>geppetto/build/main.bundle.js"
-    ></script>
   </body>
 </html>

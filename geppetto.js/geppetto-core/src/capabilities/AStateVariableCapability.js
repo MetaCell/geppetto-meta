@@ -65,7 +65,7 @@ export default {
    *
    * @param unit
    */
-  setUnit: function (unit){
+  setUnit: function (unit) {
     this.unit = unit;
   },
 
@@ -78,8 +78,8 @@ export default {
   getUnit: function () {
     return (this.unit == null) ? this.extractUnit() : this.unit;
   },
-        
-  extractUnit : function (){
+
+  extractUnit: function () {
     var unit = undefined;
     var initialValues = this.getVariable().getWrappedObj().initialValues;
 
@@ -112,13 +112,8 @@ export default {
     if (updateServer == undefined) {
       updateServer = true;
     }
-    if (updateServer && isWatched != this.watched) {
-      GEPPETTO.ExperimentsController.watchVariables([this], isWatched);
-    }
     this.watched = isWatched;
     return this;
   }
-
-
 }
 
