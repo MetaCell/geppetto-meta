@@ -10,5 +10,12 @@ module.exports = {
   transformIgnorePatterns: [
     "node_modules/(?!(@metacell|bezier-js|three)/)",
   ],
-  modulePathIgnorePatterns: ["utilities"]
+  modulePathIgnorePatterns: [
+    "utilities", 
+    "<rootDir>/*/build", 
+    "<rootDir>/geppetto-client/build", 
+    "<rootDir>/geppetto-client/.yalc", 
+    "<rootDir>/geppetto-core/build",
+    "<rootDir>/geppetto-ui/build",
+  ]
 };

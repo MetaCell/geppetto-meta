@@ -5,7 +5,7 @@
  *
  * @param body
  */
-export function strToFunc(body) {
+export function strToFunc (body) {
   return new Function('x', 'return ' + body + ';');
 }
 
@@ -16,7 +16,7 @@ export function strToFunc(body) {
  * @param obj1
  * @param obj2
  */
-export function extend(obj1, obj2) {
+export function extend (obj1, obj2) {
   Object.assign(obj1, obj2);
   return obj1
 }
@@ -28,7 +28,7 @@ export function extend(obj1, obj2) {
  *
  * @param el
  */
-export function offset(el) {
+export function offset (el) {
   const rect = el.getBoundingClientRect();
   return {
     top: rect.top + document.body.scrollTop,
@@ -43,7 +43,7 @@ export function offset(el) {
  * @param target
  * @param sources
  */
-export function _extend(target, ...sources) {
+export function _extend (target, ...sources) {
   let source = [];
   sources.forEach(src => {
     source = source.concat([src, Object.getPrototypeOf(src)])
@@ -57,7 +57,7 @@ export function _extend(target, ...sources) {
  *
  * @param array
  */
-export function _object(array) {
+export function _object (array) {
   return array.reduce((result, [key, val]) => Object.assign(result, { [key]: val }), {})
 }
 
@@ -68,7 +68,7 @@ export function _object(array) {
  *
  * @param array
  */
-export function uniq(array) {
+export function uniq (array) {
   return [...new Set(array)];
 }
 
@@ -79,7 +79,7 @@ export function uniq(array) {
  * @param array
  * @param property
  */
-export function pluck(array, property) {
+export function pluck (array, property) {
   return array.map(x => x[property])
 }
 
@@ -90,7 +90,7 @@ export function pluck(array, property) {
  * @param array
  * @param func
  */
-export function map(array, func) {
+export function map (array, func) {
   return array.map(x => func(x))
 }
 
@@ -101,7 +101,7 @@ export function map(array, func) {
  * @param array
  * @param func
  */
-export function filter(array, func) {
+export function filter (array, func) {
   return array.filter(x => func(x))
 }
 
@@ -112,7 +112,7 @@ export function filter(array, func) {
  * @param list
  * @param func
  */
-export function countBy(list, func) {
+export function countBy (list, func) {
   let dict = {};
   for (let index in list) {
     let key = func(list[index]);
@@ -132,7 +132,7 @@ export function countBy(list, func) {
  * @param tagName
  * @param options
  */
-export function createElement(tagName, options) {
+export function createElement (tagName, options) {
   let el = document.createElement(tagName, options);
   for (let attr in options) {
     if (attr === "text") {
@@ -151,6 +151,6 @@ export function createElement(tagName, options) {
  * @param target
  * @param child
  */
-export function appendTo(target, child) {
+export function appendTo (target, child) {
   target.appendChild(child)
 }

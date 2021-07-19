@@ -68,7 +68,7 @@ class PlotComponent extends Component {
     }
   ];
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate (nextProps, nextState) {
     const { plots } = this.props;
 
     if (nextProps.forceChange || plots.length != nextProps.plots.length) {
@@ -95,7 +95,7 @@ class PlotComponent extends Component {
 
   }
 
-  initPlot() {
+  initPlot () {
     if (this.reset) {
       this.data = [];
       this.frames = [];
@@ -133,7 +133,7 @@ class PlotComponent extends Component {
   }
 
 
-  getInstanceData(instanceY, instanceX, lineOptions) {
+  getInstanceData (instanceY, instanceX, lineOptions) {
     let legendName = this.extractLegendName(instanceY);
 
     const trace = {
@@ -148,7 +148,7 @@ class PlotComponent extends Component {
   }
 
 
-  getUnitLabel(unitSymbol) {
+  getUnitLabel (unitSymbol) {
     if (unitSymbol != null || unitSymbol != undefined) {
       unitSymbol = unitSymbol.replace(/_per_/gi, " / ");
     } else {
@@ -183,12 +183,12 @@ class PlotComponent extends Component {
     }
   }
 
-  resize() {
+  resize () {
     this.refs.plotly.resizeHandler();
   }
 
 
-  updateLayoutConf(labelX, labelY) {
+  updateLayoutConf (labelX, labelY) {
     this.layout = { ...defaultLayout(), ...this.props.layout ? this.props.layout : {}, title: this.props.title };
     const layoutConf = this.getAxisLayoutConfiguration(labelX, labelY);
     this.layout.xaxis = { ...this.layout.xaxis, ...layoutConf.xaxis };
@@ -198,7 +198,7 @@ class PlotComponent extends Component {
     this.revision = this.revision + 1
   }
 
-  getAxisLayoutConfiguration(labelX, labelY) {
+  getAxisLayoutConfiguration (labelX, labelY) {
     return {
 
       xaxis: { title: { text: labelX }, autorange: true },
@@ -207,27 +207,27 @@ class PlotComponent extends Component {
     }
   }
 
-  getSinglePlotConfiguration(lineOptions) {
+  getSinglePlotConfiguration (lineOptions) {
     const defaultConf = defaultTrace();
     return { ...defaultConf, line: lineOptions ? lineOptions : defaultConf.line };
   }
 
-  extractLegendName(instanceY) {
+  extractLegendName (instanceY) {
     let legendName = instanceY.getInstancePath();
     return legendName;
   }
 
-  toggleLegend() {
+  toggleLegend () {
     this.layout.showlegend = !this.layout.showlegend;
     this.reset = false
     this.forceUpdate()
   }
 
-  resetAxes() {
+  resetAxes () {
     this.forceUpdate()
   }
 
-  downloadImage(imageType) {
+  downloadImage (imageType) {
     const { id } = this.props;
     const { layout } = this;
     imageType = imageType.replace('Save as ', '').toLowerCase()
@@ -253,7 +253,7 @@ class PlotComponent extends Component {
     this.forceUpdate()
   }
 
-  downloadPlotData() {
+  downloadPlotData () {
     const { data } = this;
     const { plots, id } = this.props
 
@@ -305,14 +305,14 @@ class PlotComponent extends Component {
 
   }
 
-  removeLastPath(path) {
+  removeLastPath (path) {
     // hello.there.here.I.go => hello.there.here.I
     if (typeof path === "string" && path.length > 3 && path.indexOf('.') > -1) {
       return path.split('.').filter((el, index, arr) => index != arr.length - 1).join('.')
     }
   }
 
-  plotAverage(actionName) {
+  plotAverage (actionName) {
     if (actionName.startsWith("Plot") && this.analysis.length == 0) {
       var result = [];
       const { data } = this;
@@ -345,7 +345,7 @@ class PlotComponent extends Component {
   }
 
 
-  render() {
+  render () {
 
     this.initPlot();
     const { plotConfig, id, classes } = this.props;

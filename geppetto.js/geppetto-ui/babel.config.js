@@ -6,8 +6,6 @@ module.exports = {
   ],
   "plugins": [
     "@babel/plugin-transform-regenerator",
-    ["@babel/plugin-proposal-class-properties", {
-      loose: false
-    }],
+    ["@babel/plugin-proposal-class-properties", { loose: false }],
   ]
 }

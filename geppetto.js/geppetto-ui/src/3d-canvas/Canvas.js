@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
+import { selectionStrategies } from "./threeDEngine/SelectionManager";
 
 const styles = () => ({
   container: {
@@ -25,22 +26,27 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
       hoverListeners,
-      onMount
+      setColorHandler,
+      onMount,
+      selectionStrategy,
+      onSelection
     } = this.props;
+
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
+      onSelection,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      hoverListeners
+      hoverListeners,
+      setColorHandler,
+      selectionStrategy
     );
     this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -144,8 +150,8 @@ class Canvas extends Component {
         {
           <cameraOptions.cameraControls.instance
             ref={this.cameraControls}
-            wireframeButtonEnabled={cameraControls.props.wireframeButtonEnabled}
             cameraControlsHandler={cameraControlsHandler}
+            {...cameraControls.props}
           />
         }
       </div>
@@ -156,15 +162,14 @@ class Canvas extends Component {
 
 Canvas.defaultProps = {
   cameraOptions: {
-    angle: 60,
-    near: 10,
-    far: 2000000,
-    position: { x: 0, y: 0, z: 0 },
+    angle: 50,
+    near: 0.01,
+    far: 1000,
     baseZoom: 1,
     reset: false,
     autorotate:false,
     wireframe:false,
-    zoomTo: [],
+    zoomTo: undefined,
     cameraControls:  {
       instance: null,
       props: {},
@@ -177,7 +182,9 @@ Canvas.defaultProps = {
   hoverListeners: [],
   threeDObjects: [],
   cameraHandler: () => {},
-  selectionHandler: () => {},
+  selectionStrategy: selectionStrategies.nearest,
+  onSelection: () => {},
+  setColorHandler: () => true,
   onMount: () => {},
   modelVersion: 0
 };
@@ -204,9 +211,17 @@ Canvas.propTypes = {
    */
   cameraHandler: PropTypes.func,
   /**
+   * function to apply the selection strategy
+   */
+  selectionStrategy: PropTypes.func,
+  /**
    * Function to callback on selection changes
    */
-  selectionHandler: PropTypes.func,
+  onSelection: PropTypes.func,
+  /**
+   * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
+   */
+  setColorHandler: PropTypes.func,
   /**
    * Function to callback on component did mount with scene
    */
