@@ -40,8 +40,11 @@ export default class MeshFactory {
     };
     const objLoader = new this.THREE.OBJLoader(manager);
 
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader( dracoLoader );
+
     this.loaders = {
-      [GEPPETTO.Resources.GLTF]: new GLTFLoader(),
+      [GEPPETTO.Resources.GLTF]: gltfLoader,
       [GEPPETTO.Resources.DRC]: dracoLoader,
       [GEPPETTO.Resources.OBJ]: objLoader,
       [GEPPETTO.Resources.COLLADA]: new ColladaLoader(),
@@ -536,8 +539,6 @@ export default class MeshFactory {
 
   async loadThreeGLTFModelFromNode (node) {
     const loader = this.loaders[GEPPETTO.Resources.GLTF]
-    const dracoLoader = this.loaders[GEPPETTO.Resources.DRC];
-    loader.setDRACOLoader( dracoLoader );
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
     return gltfData.scene
   }
