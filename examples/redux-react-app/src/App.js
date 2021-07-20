@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import './flexlayout.css';
 import MainLayout from './app/showcase';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { _ } from 'core-js';
@@ -8,6 +7,14 @@ import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import LeftSidebar from './components/LeftSidebar';
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components/index';
+
+// Three different FlexLayout styles
+// import '@metacell/geppetto-meta-ui/flex-layout/style/gray.scss'
+// import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
+import '@metacell/geppetto-meta-ui/flex-layout/style/light.scss'
+
+// TODO: fix css, flexlayout.css causes icons to not show up
+// import './flexlayout.css';
 
 
 const App = () => {
