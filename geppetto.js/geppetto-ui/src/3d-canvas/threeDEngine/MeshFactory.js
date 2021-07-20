@@ -2,7 +2,7 @@ import particle from '../textures/particle.png';
 import { hasVisualType } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 require('./OBJLoader');
 
 export default class MeshFactory {
@@ -26,6 +26,27 @@ export default class MeshFactory {
     this.linesThreshold = linesThreshold;
     this.particleTexture = particleTexture;
     this.THREE = THREE ? THREE : require('three');
+
+    this.setupLoaders()
+  }
+
+  setupLoaders (){
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/');
+
+    const manager = new this.THREE.LoadingManager();
+    manager.onProgress = function (item, loaded, total) {
+      console.log(item, loaded, total);
+    };
+    const objLoader = new this.THREE.OBJLoader(manager);
+
+    this.loaders = {
+      [GEPPETTO.Resources.GLTF]: new GLTFLoader(),
+      [GEPPETTO.Resources.DRC]: dracoLoader,
+      [GEPPETTO.Resources.OBJ]: objLoader,
+      [GEPPETTO.Resources.COLLADA]: new ColladaLoader(),
+      'TextureLoader': new this.THREE.TextureLoader()
+    }
   }
 
   async start (instances) {
@@ -322,7 +343,7 @@ export default class MeshFactory {
     const color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`;
     threeColor.setHex(color);
 
-    const textureLoader = new this.THREE.TextureLoader();
+    const textureLoader = this.loaders['TextureLoader'];
     const particleTexture = this.particleTexture
       ? this.particleTexture
       : textureLoader.load(particle);
@@ -459,7 +480,7 @@ export default class MeshFactory {
 
   // TODO: Collada example
   loadColladaModelFromNode (node) {
-    const loader = new this.THREE.ColladaLoader();
+    const loader = this.loaders[GEPPETTO.Resources.COLLADA]
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
@@ -488,12 +509,8 @@ export default class MeshFactory {
   }
 
   loadThreeOBJModelFromNode (node) {
-    const manager = new this.THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
-      console.log(item, loaded, total);
-    };
-    const loader = new this.THREE.OBJLoader(manager);
-    const textureLoader = new this.THREE.TextureLoader();
+    const loader = this.loaders[GEPPETTO.Resources.OBJ];
+    const textureLoader = this.loaders['TextureLoader']
     const particleTexture = this.particleTexture
       ? this.particleTexture
       : textureLoader.load(particle);
@@ -518,17 +535,15 @@ export default class MeshFactory {
   }
 
   async loadThreeGLTFModelFromNode (node) {
-    const loader = new GLTFLoader();
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/');
+    const loader = this.loaders[GEPPETTO.Resources.GLTF]
+    const dracoLoader = this.loaders[GEPPETTO.Resources.DRC];
     loader.setDRACOLoader( dracoLoader );
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
     return gltfData.scene
   }
 
   async loadThreeDRCModelFromNode (node) {
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/')
+    const dracoLoader = this.loaders[GEPPETTO.Resources.DRC];
     const geometry = await this.modelLoader(dracoLoader, node.drc);
     geometry.computeVertexNormals();
     return new this.THREE.Mesh(geometry, this.getMeshPhongMaterial())
