@@ -18,10 +18,11 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
+    this.state = { modelReady: false }
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     const {
       data,
       cameraOptions,
@@ -48,8 +49,23 @@ class Canvas extends Component {
       setColorHandler,
       selectionStrategy
     );
-    this.threeDEngine.start(data, cameraOptions, true);
+    await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
+    this.setState({ modelReady: true })
+  }
+  
+  async componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps !== this.props){
+      const { data, cameraOptions, threeDObjects } = this.props;
+      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
+      this.setState({ modelReady: true })
+    } else {
+      this.setState({ modelReady:false })
+    }
+  }
+  
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
+    return nextState.modelReady || nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -133,18 +149,10 @@ class Canvas extends Component {
   }
 
   render () {
-    const { classes, data, cameraOptions, threeDObjects } = this.props;
+    const { classes, cameraOptions } = this.props;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-
-    if (this.threeDEngine) {
-      this.threeDEngine.update(
-        data,
-        cameraOptions,
-        threeDObjects,
-        this.shouldEngineTraverse()
-      );
-    }
+    
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {

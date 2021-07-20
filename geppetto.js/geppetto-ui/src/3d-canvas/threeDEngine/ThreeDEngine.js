@@ -189,9 +189,9 @@ export default class ThreeDEngine {
    * Adds instances to the ThreeJS Scene
    * @param proxyInstances
    */
-  addInstancesToScene (proxyInstances) {
+  async addInstancesToScene (proxyInstances) {
     const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
-    this.meshFactory.start(instances);
+    await this.meshFactory.start(instances);
     this.updateGroupMeshes(proxyInstances);
   }
 
@@ -682,11 +682,11 @@ export default class ThreeDEngine {
     });
   }
 
-  update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
     // Todo: resolve proxyInstances to populate child meshes
     this.resize()
     if (toTraverse) {
-      this.addInstancesToScene(proxyInstances);
+      await this.addInstancesToScene(proxyInstances);
       threeDObjects.forEach(element => {
         this.scene.add(element)
       });
