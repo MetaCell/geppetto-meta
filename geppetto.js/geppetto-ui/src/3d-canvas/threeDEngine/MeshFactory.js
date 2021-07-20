@@ -314,7 +314,7 @@ export default class MeshFactory {
       this.complexity++;
       break;
     default:
-      console.error("Invalid node.eClass")
+      console.error(`Invalid node.eClass on node ${node}`)
     }
 
     if (threeObject) {
