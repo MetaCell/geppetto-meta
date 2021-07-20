@@ -1,11 +1,9 @@
 import Attribute from "./Attribute";
-import { JSMap } from "./Types";
 
 /** @hidden @internal */
 class AttributeDefinitions {
-
-    attributes: Array<Attribute>;
-    nameToAttribute: JSMap<Attribute>;
+    attributes: Attribute[];
+    nameToAttribute: Record<string, Attribute>;
 
     constructor() {
         this.attributes = [];
@@ -13,7 +11,7 @@ class AttributeDefinitions {
     }
 
     addWithAll(name: string, modelName: string | undefined, defaultValue: any, alwaysWriteJson?: boolean) {
-        let attr = new Attribute(name, modelName, defaultValue, alwaysWriteJson);
+        const attr = new Attribute(name, modelName, defaultValue, alwaysWriteJson);
         this.attributes.push(attr);
         this.nameToAttribute[name] = attr;
         return attr;
@@ -32,7 +30,7 @@ class AttributeDefinitions {
     }
 
     getModelName(name: string) {
-        let conversion = this.nameToAttribute[name];
+        const conversion = this.nameToAttribute[name];
         if (conversion !== undefined) {
             return conversion.modelName;
         }
@@ -53,8 +51,7 @@ class AttributeDefinitions {
             const fromValue = jsonObj[attr.name];
             if (fromValue === undefined) {
                 obj[attr.name] = attr.defaultValue;
-            }
-            else {
+            } else {
                 obj[attr.name] = fromValue;
             }
         });
@@ -62,7 +59,6 @@ class AttributeDefinitions {
 
     update(jsonObj: any, obj: any) {
         this.attributes.forEach((attr) => {
-
             const fromValue = jsonObj[attr.name];
             if (fromValue !== undefined) {
                 obj[attr.name] = fromValue;
@@ -76,6 +72,48 @@ class AttributeDefinitions {
         });
     }
 
+    toTypescriptInterface(name: string, parentAttributes: AttributeDefinitions | undefined) {
+        const lines = [];
+        const sorted = this.attributes.sort((a,b)=> a.name.localeCompare(b.name));
+        // const sorted = this.attributes;
+        lines.push("export interface I" + name + "Attributes {");
+        for (let i = 0; i < sorted.length; i++) {
+            const c = sorted[i];
+            let type = c.type;
+            let defaultValue = undefined;
+
+            let attr = c;
+            let inherited = undefined;
+            if (attr.defaultValue !== undefined){
+                defaultValue = attr.defaultValue;
+            } else if (attr.modelName !== undefined 
+                && parentAttributes !== undefined 
+                && parentAttributes.nameToAttribute[attr.modelName] !== undefined) {
+                    inherited = attr.modelName;
+                    attr = parentAttributes.nameToAttribute[attr.modelName];
+                    defaultValue = attr.defaultValue ;
+                    type = attr.type;
+            }
+
+            let defValue = JSON.stringify(defaultValue);
+
+            const required = attr.required || attr.fixed ? "": "?";
+
+            if (c.fixed) {
+                lines.push("\t" + c.name + ": " + defValue +";");
+            } else {
+                const comment =  (defaultValue !== undefined ? "default: " + defValue : "") +
+                    (inherited !== undefined ? " - inherited from global " + inherited : "");
+
+                lines.push("\t" + c.name + required + ": " + type + ";" + 
+                 (comment.length > 0 ? " // " + comment: "")
+                );
+            }
+        }
+        lines.push("}");
+
+        return lines.join("\n");
+    }
 }
 
 /** @hidden @internal */

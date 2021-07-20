@@ -1,6 +1,6 @@
 # Flexible Layout
 
-Flexible Layout is a layout manager that lets the developer arrange React components in multiple tab sets that can be resized and rearranged by the end user.
+Flexible Layout (v0.5.2) is a layout manager that lets the developer arrange React components in multiple tab sets that can be resized and rearranged by the end user.
 
 Notable Features:
 * Splitters

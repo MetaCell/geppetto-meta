@@ -39,3 +39,8 @@ See [Available Scripts](https://create-react-app.dev/docs/available-scripts) for
 3. Define a default layout (see `src/app/layout.js`)
 4. Create the Redux store by using the `createStore` function in `@metacell/geppetto-meta-client/common`  (see `src/redux/store.js`) and pass the componentMap and layout
 5. Add the Layout component to your App (see `src/app/showcase.js`)
+6. Add the `sass` package to your project
+7. Import the desired flex-layout theme (see App.js)
+   1. light: `@metacell/geppetto-meta-ui/flex-layout/style/light.scss`
+   2. dark: `@metacell/geppetto-meta-ui/flex-layout/style/dark.scss`
+   3. gray: `@metacell/geppetto-meta-ui/flex-layout/style/gray.scss`

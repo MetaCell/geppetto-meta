@@ -1,244 +1,287 @@
 import * as React from "react";
-import PopupMenu from "../PopupMenu";
+import { I18nLabel } from "../I18nLabel";
 import Actions from "../model/Actions";
-import TabSetNode from "../model/TabSetNode";
 import TabNode from "../model/TabNode";
-import Layout from "./Layout";
-import { TabButton} from "./TabButton";
+import TabSetNode from "../model/TabSetNode";
+import { showPopup } from "../PopupMenu";
+import { IIcons, ILayoutCallbacks } from "./Layout";
+import { TabButton } from "./TabButton";
+import { useTabOverflow } from "./TabOverflowHook";
+import Orientation from "../Orientation";
+import { CLASSES } from "../Types";
 
 /** @hidden @internal */
 export interface ITabSetProps {
-    layout: Layout,
-    node: TabSetNode
+    layout: ILayoutCallbacks;
+    node: TabSetNode;
+    iconFactory?: (node: TabNode) => React.ReactNode | undefined;
+    titleFactory?: (node: TabNode) => React.ReactNode | undefined;
+    icons?: IIcons;
+    editingTab?: TabNode; 
 }
 
 /** @hidden @internal */
-export class TabSet extends React.Component<ITabSetProps, any> {
-    headerRef?: HTMLDivElement;
-    overflowbuttonRef: any;
-    toolbarRef?: HTMLDivElement;
+export const TabSet = (props: ITabSetProps) => {
+    const { node, layout, iconFactory, titleFactory, icons } = props;
 
-    recalcVisibleTabs: boolean;
-    showOverflow: boolean;
-    showToolbar: boolean;
+    const toolbarRef = React.useRef<HTMLDivElement | null>(null);
+    const overflowbuttonRef = React.useRef<HTMLButtonElement | null>(null);
+    const tabbarInnerRef = React.useRef<HTMLDivElement | null>(null);
+    const stickyButtonsRef = React.useRef<HTMLDivElement | null>(null);
 
-    constructor(props: ITabSetProps) {
-        super(props);
-        this.recalcVisibleTabs = true;
-        this.showOverflow = false;
-        this.showToolbar = true;
-        this.state = { hideTabsAfter: 999 };
-    }
+    const { selfRef, position, userControlledLeft, hiddenTabs, onMouseWheel, tabsTruncated } = useTabOverflow(node, Orientation.HORZ, toolbarRef, stickyButtonsRef);
 
-    componentDidMount() {
-        this.updateVisibleTabs();
-    }
+    const onOverflowClick = () => {
+        const element = overflowbuttonRef.current!;
+        showPopup(layout.getRootDiv(), element, hiddenTabs, onOverflowItemSelect, layout.getClassName);
+    };
 
-    componentDidUpdate() {
-        this.updateVisibleTabs();
-    }
+    const onOverflowItemSelect = (item: { node: TabNode; index: number }) => {
+        layout.doAction(Actions.selectTab(item.node.getId()));
+        userControlledLeft.current = false;
+    };
 
-    UNSAFE_componentWillReceiveProps(nextProps: ITabSetProps) {
-        this.showToolbar = true;
-        this.showOverflow = false;
-        this.recalcVisibleTabs = true;
-        this.setState({ hideTabsAfter: 999 });
-    }
-
-    updateVisibleTabs() {
-        const node = this.props.node;
-
-        if (node.isEnableTabStrip() && this.recalcVisibleTabs) {
-            const toolbarWidth = (this.toolbarRef as Element).getBoundingClientRect().width;
-            let hideTabsAfter = 999;
-            for (let i = 0; i < node.getChildren().length; i++) {
-                const child = node.getChildren()[i] as TabNode;
-                if (child.getTabRect()!.getRight() > node.getRect().getRight() - (20 + toolbarWidth)) {
-                    hideTabsAfter = Math.max(0, i - 1);
-                    //console.log("tabs truncated to:" + hideTabsAfter);
-                    this.showOverflow = node.getChildren().length > 1;
-
-                    if (i === 0) {
-                        this.showToolbar = false;
-                        if (child.getTabRect()!.getRight() > node.getRect().getRight() - 20) {
-                            this.showOverflow = false;
-                        }
-                    }
-
-                    break;
-                }
-            }
-            if (this.state.hideTabsAfter !== hideTabsAfter) {
-                this.setState({ hideTabsAfter: hideTabsAfter });
-            }
-            this.recalcVisibleTabs = false;
-        }
-    }
-
-    render() {
-        let cm = this.props.layout.getClassName;
-
-        const node = this.props.node;
-        const style = node._styleWithPosition();
-
-        if (this.props.node.isMaximized()) {
-            style.zIndex = 100;
-        }
-
-        const tabs = [];
-        const hiddenTabs: Array<{ name: string, node: TabNode, index: number }> = [];
-        if (node.isEnableTabStrip()) {
-            for (let i = 0; i < node.getChildren().length; i++) {
-                let isSelected = this.props.node.getSelected() === i;
-                let showTab = this.state.hideTabsAfter >= i;
-
-                let child = node.getChildren()[i] as TabNode;
-
-                if (this.state.hideTabsAfter === i && this.props.node.getSelected() > this.state.hideTabsAfter) {
-                    hiddenTabs.push({ name: child.getName(), node: child, index: i });
-                    child = node.getChildren()[this.props.node.getSelected()] as TabNode;
-                    isSelected = true;
-                }
-                else if (!showTab && !isSelected) {
-                    hiddenTabs.push({ name: child.getName(), node: child, index: i });
-                }
-                if (showTab) {
-                    tabs.push(<TabButton layout={this.props.layout}
-                        node={child}
-                        key={child.getId()}
-                        selected={isSelected}
-                        show={showTab}
-                        height={node.getTabStripHeight()}/>);
-                }
-            }
-        }
-        //tabs.forEach(c => console.log(c.key));
-
-        let buttons: Array<any> = [];
-
-        // allow customization of header contents and buttons
-        const renderState = { headerContent: node.getName(), buttons: buttons };
-        this.props.layout.customizeTabSet(this.props.node, renderState);
-        const headerContent = renderState.headerContent;
-        buttons = renderState.buttons;
-
-        let toolbar = undefined;
-        if (this.showToolbar === true) {
-            if (this.props.node.isEnableMaximize()) {
-                buttons.push(<button key="max"
-                    className={cm("flexlayout__tab_toolbar_button-" + (node.isMaximized() ? "max" : "min"))}
-                    onClick={this.onMaximizeToggle.bind(this)}></button>);
-            }
-            toolbar = <div key="toolbar" ref={ref => this.toolbarRef = (ref===null)?undefined:ref} className={cm("flexlayout__tab_toolbar")}
-                onMouseDown={this.onInterceptMouseDown.bind(this)}>
-                {buttons}
-            </div>;
-        }
-
-        if (this.showOverflow === true) {
-            tabs.push(<button key="overflowbutton" ref={ref => this.overflowbuttonRef = (ref===null)?undefined:ref} className={cm("flexlayout__tab_button_overflow")}
-                onClick={this.onOverflowClick.bind(this, hiddenTabs)}
-                onMouseDown={this.onInterceptMouseDown.bind(this)}
-            >{hiddenTabs.length}</button>);
-        }
-
-        let showHeader = node.getName() !== undefined;
-        let header = undefined;
-        let tabStrip = undefined;
-
-        let tabStripClasses = cm("flexlayout__tab_header_outer");
-        if (this.props.node.getClassNameTabStrip() !== undefined) {
-            tabStripClasses += " " + this.props.node.getClassNameTabStrip();
-        }
-        if (node.isActive() && !showHeader) {
-            tabStripClasses += " " + cm("flexlayout__tabset-selected");
-        }
-
-        if (node.isMaximized() && !showHeader) {
-            tabStripClasses += " " + cm("flexlayout__tabset-maximized");
-        }
-
-        if (showHeader) {
-            let tabHeaderClasses = cm("flexlayout__tabset_header");
-            if (node.isActive()) {
-                tabHeaderClasses += " " + cm("flexlayout__tabset-selected");
-            }
-            if (node.isMaximized()) {
-                tabHeaderClasses += " " + cm("flexlayout__tabset-maximized");
-            }
-            if (this.props.node.getClassNameHeader() !== undefined) {
-                tabHeaderClasses += " " + this.props.node.getClassNameHeader();
-            }
-
-            header = <div className={tabHeaderClasses}
-                style={{ height: node.getHeaderHeight() + "px" }}
-                onMouseDown={this.onMouseDown.bind(this)}
-                onTouchStart={this.onMouseDown.bind(this)}>
-                {headerContent}
-                {toolbar}
-            </div>;
-            tabStrip = <div className={tabStripClasses}
-                style={{ height: node.getTabStripHeight() + "px", top: node.getHeaderHeight() + "px" }}>
-                <div ref={ref => this.headerRef = (ref===null)?undefined:ref} className={cm("flexlayout__tab_header_inner")}>
-                    {tabs}
-                </div>
-            </div>;
-        }
-        else {
-            tabStrip = <div className={tabStripClasses} style={{ top: "0px", height: node.getTabStripHeight() + "px" }}
-                onMouseDown={this.onMouseDown.bind(this)}
-                onTouchStart={this.onMouseDown.bind(this)}>
-                <div ref={ref => this.headerRef = (ref===null)?undefined:ref} className={cm("flexlayout__tab_header_inner")}>
-                    {tabs}
-                </div>
-                {toolbar}
-            </div>;
-        }
-
-        return <div style={style} className={cm("flexlayout__tabset")}>
-            {header}
-            {tabStrip}
-        </div>;
-    }
-
-    onOverflowClick(hiddenTabs: Array<{ name: string, node: TabNode, index: number }>, event: React.MouseEvent<HTMLDivElement>) {
-        //console.log("hidden tabs: " + hiddenTabs);
-        const element = this.overflowbuttonRef as Element;
-        PopupMenu.show(element, hiddenTabs, this.onOverflowItemSelect.bind(this), this.props.layout.getClassName);
-    }
-
-    onOverflowItemSelect(item: { name: string, node: TabNode, index: number }) {
-        this.props.layout.doAction(Actions.selectTab(item.node.getId()));
-    }
-
-    onMouseDown(event: Event) {
-        let name = this.props.node.getName();
+    const onMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
+        let name = node.getName();
         if (name === undefined) {
             name = "";
-        }
-        else {
+        } else {
             name = ": " + name;
         }
-        this.props.layout.doAction(Actions.setActiveTabset(this.props.node.getId()));
-        this.props.layout.dragStart(event, "Move tabset" + name, this.props.node, this.props.node.isEnableDrag(), (event: Event) => undefined, this.onDoubleClick.bind(this));
-    }
+        layout.doAction(Actions.setActiveTabset(node.getId()));
+        if (!layout.getEditingTab()) {
+            const message = layout.i18nName(I18nLabel.Move_Tabset, name);
+            layout.dragStart(event, message, node, node.isEnableDrag(), (event2: Event) => undefined, onDoubleClick);
+        }
+    };
 
-    onInterceptMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    const onInterceptMouseDown = (event: React.MouseEvent | React.TouchEvent) => {
         event.stopPropagation();
+    };
+
+    const onMaximizeToggle = () => {
+        if (node.canMaximize()) {
+            layout.maximize(node);
+        }
+    };
+
+    const onFloatTab = () => {
+        if (selectedTabNode !== undefined) {
+            layout.doAction(Actions.floatTab(selectedTabNode.getId()));
+        }
+    };
+
+    const onDoubleClick = (event: Event) => {
+        if (node.canMaximize()) {
+            layout.maximize(node);
+        }
+    };
+
+    // Start Render
+    const cm = layout.getClassName;
+
+    // tabbar inner can get shifted left via tab rename, this resets scrollleft to 0
+    if (tabbarInnerRef.current !== null && tabbarInnerRef.current!.scrollLeft !== 0) {
+        tabbarInnerRef.current.scrollLeft = 0;
     }
 
-    onMaximizeToggle() {
-        if (this.props.node.isEnableMaximize()) {
-            this.props.layout.maximize(this.props.node);
+    const selectedTabNode: TabNode = node.getSelectedNode() as TabNode;
+    let style = node._styleWithPosition();
+
+    if (node.getModel().getMaximizedTabset() !== undefined && !node.isMaximized()) {
+        style.display = "none";
+    }
+
+    const tabs = [];
+    if (node.isEnableTabStrip()) {
+        for (let i = 0; i < node.getChildren().length; i++) {
+            const child = node.getChildren()[i] as TabNode;
+            let isSelected = node.getSelected() === i;
+            tabs.push(
+                <TabButton
+                    layout={layout}
+                    node={child}
+                    key={child.getId()}
+                    selected={isSelected}
+                    show={true}
+                    height={node.getTabStripHeight()}
+                    iconFactory={iconFactory}
+                    titleFactory={titleFactory}
+                    icons={icons}
+                />
+            );
         }
     }
 
-    onDoubleClick(event: Event) {
-        if (this.props.node.isEnableMaximize()) {
-            this.props.layout.maximize(this.props.node);
+    const showHeader = node.getName() !== undefined;
+    let stickyButtons: React.ReactNode[] = [];
+    let buttons: React.ReactNode[] = [];
+    let headerButtons: React.ReactNode[] = [];
+
+    // allow customization of header contents and buttons
+    const renderState = { headerContent: node.getName(), stickyButtons, buttons, headerButtons };
+    layout.customizeTabSet(node, renderState);
+    const headerContent = renderState.headerContent;
+    stickyButtons = renderState.stickyButtons;
+    buttons = renderState.buttons;
+    headerButtons = renderState.headerButtons;
+
+    if (stickyButtons.length > 0) {
+        if (tabsTruncated) {
+            buttons = [...stickyButtons, ...buttons];
+        } else {
+            tabs.push(<div
+                ref={stickyButtonsRef}
+                key="sticky_buttons_container"
+                onMouseDown={onInterceptMouseDown}
+                onTouchStart={onInterceptMouseDown}
+                onDragStart={(e) => { e.preventDefault() }}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR_STICKY_BUTTONS_CONTAINER)}
+            >
+                {stickyButtons}
+            </div>);
         }
     }
-}
 
+    let toolbar;
+    if (hiddenTabs.length > 0) {
+        const overflowTitle = layout.i18nName(I18nLabel.Overflow_Menu_Tooltip);
+        buttons.push(
+            <button
+                key="overflowbutton"
+                ref={overflowbuttonRef}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_BUTTON_OVERFLOW)}
+                title={overflowTitle}
+                onClick={onOverflowClick}
+                onMouseDown={onInterceptMouseDown}
+                onTouchStart={onInterceptMouseDown}
+            >
+                {icons?.more}
+                {hiddenTabs.length}
+            </button>
+        );
+    }
 
-// export default TabSet;
+    if (selectedTabNode !== undefined && layout.isSupportsPopout() && selectedTabNode.isEnableFloat() && !selectedTabNode.isFloating()) {
+        const floatTitle = layout.i18nName(I18nLabel.Float_Tab);
+        buttons.push(
+            <button
+                key="float"
+                title={floatTitle}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR_BUTTON) + " " + cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR_BUTTON_FLOAT)}
+                onClick={onFloatTab}
+                onMouseDown={onInterceptMouseDown}
+                onTouchStart={onInterceptMouseDown}
+            >
+                {icons?.popout}
+            </button>
+        );
+    }
+    if (node.canMaximize()) {
+        const minTitle = layout.i18nName(I18nLabel.Restore);
+        const maxTitle = layout.i18nName(I18nLabel.Maximize);
+        const btns = showHeader ? headerButtons : buttons;
+        btns.push(
+            <button
+                key="max"
+                title={node.isMaximized() ? minTitle : maxTitle}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR_BUTTON) + " " + cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR_BUTTON_ + (node.isMaximized() ? "max" : "min"))}
+                onClick={onMaximizeToggle}
+                onMouseDown={onInterceptMouseDown}
+                onTouchStart={onInterceptMouseDown}
+            >
+                {node.isMaximized() ? icons?.restore : icons?.maximize}
+            </button>
+        );
+    }
+
+    toolbar = (
+        <div key="toolbar" ref={toolbarRef}
+            className={cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR)}
+            onMouseDown={onInterceptMouseDown}
+            onTouchStart={onInterceptMouseDown}
+            onDragStart={(e) => { e.preventDefault() }}
+        >
+            {buttons}
+        </div>
+    );
+
+    let header;
+    let tabStrip;
+
+    let tabStripClasses = cm(CLASSES.FLEXLAYOUT__TABSET_TABBAR_OUTER);
+    if (node.getClassNameTabStrip() !== undefined) {
+        tabStripClasses += " " + node.getClassNameTabStrip();
+    }
+    tabStripClasses += " " + CLASSES.FLEXLAYOUT__TABSET_TABBAR_OUTER_ + node.getTabLocation();
+
+    if (node.isActive() && !showHeader) {
+        tabStripClasses += " " + cm(CLASSES.FLEXLAYOUT__TABSET_SELECTED);
+    }
+
+    if (node.isMaximized() && !showHeader) {
+        tabStripClasses += " " + cm(CLASSES.FLEXLAYOUT__TABSET_MAXIMIZED);
+    }
+
+    if (showHeader) {
+
+        const headerToolbar = (
+            <div key="toolbar" ref={toolbarRef}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_TOOLBAR)}
+                onMouseDown={onInterceptMouseDown}
+                onTouchStart={onInterceptMouseDown}
+                onDragStart={(e) => { e.preventDefault() }}
+            >
+                {headerButtons}
+            </div>
+        );
+
+        let tabHeaderClasses = cm(CLASSES.FLEXLAYOUT__TABSET_HEADER);
+        if (node.isActive()) {
+            tabHeaderClasses += " " + cm(CLASSES.FLEXLAYOUT__TABSET_SELECTED);
+        }
+        if (node.isMaximized()) {
+            tabHeaderClasses += " " + cm(CLASSES.FLEXLAYOUT__TABSET_MAXIMIZED);
+        }
+        if (node.getClassNameHeader() !== undefined) {
+            tabHeaderClasses += " " + node.getClassNameHeader();
+        }
+
+        header = (
+            <div className={tabHeaderClasses} style={{ height: node.getHeaderHeight() + "px" }} onMouseDown={onMouseDown} onTouchStart={onMouseDown}>
+                <div className={cm(CLASSES.FLEXLAYOUT__TABSET_HEADER_CONTENT)}>{headerContent}</div>
+                {headerToolbar}
+            </div>
+        );
+    }
+
+    const tabStripStyle: { [key: string]: string } = { height: node.getTabStripHeight() + "px" };
+    if (node.getTabLocation() === "top") {
+        const top = showHeader ? node.getHeaderHeight() + "px" : "0px";
+        tabStripStyle["top"] = top;
+    } else {
+        tabStripStyle["bottom"] = "0px";
+    }
+    tabStrip = (
+        <div className={tabStripClasses} style={tabStripStyle} onMouseDown={onMouseDown} onTouchStart={onMouseDown}>
+            <div ref={tabbarInnerRef} className={cm(CLASSES.FLEXLAYOUT__TABSET_TABBAR_INNER) + " " + cm(CLASSES.FLEXLAYOUT__TABSET_TABBAR_INNER_ + node.getTabLocation())}>
+                <div
+                    style={{ left: position }}
+                    className={cm(CLASSES.FLEXLAYOUT__TABSET_TABBAR_INNER_TAB_CONTAINER) + " " + cm(CLASSES.FLEXLAYOUT__TABSET_TABBAR_INNER_TAB_CONTAINER_ + node.getTabLocation())}
+                >
+                    {tabs}
+                </div>
+            </div>
+            {toolbar}
+        </div>
+    );
+
+    style = layout.styleFont(style);
+
+    return (
+        <div ref={selfRef} style={style} className={cm(CLASSES.FLEXLAYOUT__TABSET)} onWheel={onMouseWheel}>
+            {header}
+            {tabStrip}
+        </div>
+    );
+};

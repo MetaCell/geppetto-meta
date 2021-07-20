@@ -1,87 +1,79 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import TabNode from "./model/TabNode";
 
 /** @hidden @internal */
-export interface IPopupMenuProps {
-    element: Element,
-    items:Array<{index:number, name:string}>,
-    onHide: ()=>void,
-    onSelect: (item:{index:number, name:string})=>void,
+export function showPopup(
+    layoutDiv: HTMLDivElement,
+    triggerElement: Element,
+    items: { index: number; node: TabNode }[],
+    onSelect: (item: { index: number; node: TabNode }) => void,
     classNameMapper: (defaultClassName: string) => string
-}
+) {
+    const currentDocument = triggerElement.ownerDocument;
+    const triggerRect = triggerElement.getBoundingClientRect();
+    const layoutRect = layoutDiv.getBoundingClientRect();
 
-/** @hidden @internal */
-class PopupMenu extends React.Component<IPopupMenuProps, any> {
-
-    items:Array<{index:number, name:string}> = [];
-    hidden: boolean = true;
-    elm? : Element;
-
-
-    constructor(props:IPopupMenuProps) {
-        super(props);
-        this.onDocMouseUp = this.onDocMouseUp.bind(this);
-        this.hidden = false;
+    const elm = currentDocument.createElement("div");
+    elm.className = classNameMapper("flexlayout__popup_menu_container");
+    if (triggerRect.left < layoutRect.left + layoutRect.width / 2) {
+        elm.style.left = triggerRect.left - layoutRect.left + "px";
+    } else {
+        elm.style.right = layoutRect.right - triggerRect.right + "px";
     }
 
-    static show(triggerElement: Element,
-        items: Array<{index:number, name:string}>,
-        onSelect: (item:{index:number, name:string})=>void,
-        classNameMapper: (defaultClassName: string) => string) {
-
-        const triggerRect = triggerElement.getBoundingClientRect();
-        const docRect = document.body.getBoundingClientRect();
-
-        const elm = document.createElement("div");
-        elm.className = classNameMapper("flexlayout__popup_menu_container");
-        elm.style.right = (docRect.right - triggerRect.right) + "px";
-        elm.style.top = triggerRect.bottom + "px";
-        document.body.appendChild(elm);
-
-        const onHide = function () {
-            ReactDOM.unmountComponentAtNode(elm);
-            document.body.removeChild(elm);
-        };
-
-        ReactDOM.render(<PopupMenu element={elm} onSelect={onSelect} onHide={onHide} items={items} classNameMapper={classNameMapper}/>, elm);
+    if (triggerRect.top < layoutRect.top + layoutRect.height / 2) {
+        elm.style.top = triggerRect.top - layoutRect.top + "px";
+    } else {
+        elm.style.bottom = layoutRect.bottom - triggerRect.bottom + "px";
     }
+    layoutDiv.appendChild(elm);
 
-    componentDidMount() {
-        document.addEventListener("mouseup", this.onDocMouseUp);
-    }
+    const onHide = () => {
+        layoutDiv.removeChild(elm);
+        ReactDOM.unmountComponentAtNode(elm);
+        elm.removeEventListener("mouseup", onElementMouseUp);
+        currentDocument.removeEventListener("mouseup", onDocMouseUp);
+    };
 
-    componentWillUnmount() {
-        document.removeEventListener("mouseup", this.onDocMouseUp);
-    }
-
-    onDocMouseUp(event:Event) {
-        setTimeout(() =>{
-            this.hide();
-        }, 0);
-    }
-
-    hide() {
-        if (!this.hidden) {
-            this.props.onHide();
-            this.hidden = true;
-        }
-    }
-
-    onItemClick(item:{index:number, name:string}, event:Event) {
-        this.props.onSelect(item);
-        this.hide();
+    const onElementMouseUp = (event: Event) => {
         event.stopPropagation();
-    }
+    };
 
-    render() {
-        const items = this.props.items.map(item => <div key={item.index} className={this.props.classNameMapper("flexlayout__popup_menu_item")}
-                                                        onClick={this.onItemClick.bind(this, item)}>{item.name}</div>);
+    const onDocMouseUp = (event: Event) => {
+        onHide();
+    };
 
-        return <div className={this.props.classNameMapper("flexlayout__popup_menu")}>
-            {items}
-        </div>;
-    }
+    elm.addEventListener("mouseup", onElementMouseUp);
+    currentDocument.addEventListener("mouseup", onDocMouseUp);
+
+    ReactDOM.render(<PopupMenu currentDocument={currentDocument} onSelect={onSelect} onHide={onHide} items={items} classNameMapper={classNameMapper} />, elm);
 }
 
 /** @hidden @internal */
-export default PopupMenu;
+interface IPopupMenuProps {
+    items: { index: number; node: TabNode }[];
+    currentDocument: Document;
+    onHide: () => void;
+    onSelect: (item: { index: number; node: TabNode }) => void;
+    classNameMapper: (defaultClassName: string) => string;
+}
+
+/** @hidden @internal */
+const PopupMenu = (props: IPopupMenuProps) => {
+    const { items, onHide, onSelect, classNameMapper } = props;
+
+    const onItemClick = (item: { index: number; node: TabNode }, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        onSelect(item);
+        onHide();
+        event.stopPropagation();
+    };
+
+    const itemElements = items.map((item) => (
+        <div key={item.index} className={classNameMapper("flexlayout__popup_menu_item")} onClick={(event) => onItemClick(item, event)}>
+            {item.node._getRenderedName()}
+        </div>
+    ));
+
+    return <div className={classNameMapper("flexlayout__popup_menu")}>{itemElements}</div>;
+};
