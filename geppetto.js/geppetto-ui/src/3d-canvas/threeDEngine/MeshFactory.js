@@ -26,7 +26,7 @@ export default class MeshFactory {
     this.linesThreshold = linesThreshold;
     this.particleTexture = particleTexture;
     this.THREE = THREE ? THREE : require('three');
-
+    this.THREE.Cache.enabled = true
     this.setupLoaders()
   }
 
