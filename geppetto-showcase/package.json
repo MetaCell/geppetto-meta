@@ -1,6 +1,6 @@
 {
   "name": "geppetto-website",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Geppetto website. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "repository": "https://github.com/MetaCell/geppetto-website.git",
   "license": "MIT",
@@ -53,8 +53,8 @@
     "@types/react-dom": "^16.9.5",
     "font-awesome": "^4.7.0",
     "prismjs": "^1.20.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-router-dom": "^5.1.2",
     "react-syntax-highlighter": "^12.2.1",
     "string-similarity": "^4.0.1",

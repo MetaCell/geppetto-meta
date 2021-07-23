@@ -5,6 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
+import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -25,9 +26,6 @@ const COLORS = [
   { r: 0, g: 0.52, b: 0.96, a: 1 },
   { r: 1, g: 0, b: 0, a: 1 },
 ];
-
-const SELECTION_COLOR = { r: 0.8, g: 0.8, b: 0, a: 1 };
-
 const styles = () => ({
   container: {
     height: '800px',
@@ -36,6 +34,7 @@ const styles = () => ({
     alignItems: 'stretch',
   },
 });
+
 class VFBExample extends Component {
   constructor (props) {
     super(props);
@@ -47,10 +46,6 @@ class VFBExample extends Component {
         {
           instancePath: 'VFB_00017894',
           color: COLORS[0],
-        },
-        {
-          instancePath: 'VFB_00030622',
-          color: COLORS[1],
         },
         {
           instancePath: 'VFB_00030616',
@@ -68,7 +63,7 @@ class VFBExample extends Component {
           instancePath: 'VFB_00030632',
           color: COLORS[5],
         },
-        { instancePath: 'VFB_00030624', },
+        { instancePath: 'VFB_00030624' },
         {
           instancePath: 'VFB_00030783',
           color: COLORS[6],
@@ -76,7 +71,7 @@ class VFBExample extends Component {
       ],
       selected: {},
       threeDObjects: [],
-      modelVersion:0,
+      modelVersion: 0,
       cameraOptions: {
         position: { x: 319.7, y: 153.12, z: -494.2 },
         rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
@@ -89,7 +84,7 @@ class VFBExample extends Component {
     };
     this.lastCameraUpdate = null;
     this.cameraHandler = this.cameraHandler.bind(this);
-    this.selectionHandler = this.selectionHandler.bind(this);
+    this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -98,12 +93,14 @@ class VFBExample extends Component {
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
+
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
+
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
+      if (event.offsetX <= event.target.clientWidth) {
         this.setState({ hasModelLoaded: false })
       }
     }
@@ -154,7 +151,7 @@ class VFBExample extends Component {
 
     const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     material.nowireframe = true;
-      
+
     material.opacity = 0.3;
     material.transparent = true;
     material.color.setHex("0xb0b0b0");
@@ -168,98 +165,14 @@ class VFBExample extends Component {
   onMount (scene) {
     const bb = new THREE.Box3().setFromObject(scene);
     const plane = this.get3DPlane(bb.min.x, bb.min.y, bb.min.z, bb.max.x, bb.max.y, bb.max.z)
-    const axesHelper = new THREE.AxesHelper( 100 );
-    scene.add( axesHelper );
+    const axesHelper = new THREE.AxesHelper(100);
+    scene.add(axesHelper);
     this.setState(() => ({ threeDObjects: [plane] }));
 
   }
 
   cameraHandler (obj) {
     this.lastCameraUpdate = obj;
-  }
-
-  selectionHandler (selectedMap) {
-    const { data, selected } = this.state;
-    let path;
-    for (let sk in selectedMap) {
-      const sv = selectedMap[sk];
-      if (sv.distanceIndex === 0) {
-        path = sk;
-      }
-    }
-    const currentColor = selectedMap[path].object.material.color;
-    const geometryIdentifier = selectedMap[path].geometryIdentifier;
-    const newData = data;
-    const newSelected = selected;
-    let done = false;
-    for (const instance of newData) {
-      if (instance.instancePath === path) {
-        if (geometryIdentifier === '') {
-          if (path in newSelected) {
-            instance.color = newSelected[path].color;
-            delete newSelected[path];
-          } else {
-            newSelected[path] = { color: instance.color };
-            instance.color = SELECTION_COLOR;
-          }
-          done = true;
-        } else {
-          if (path in newSelected) {
-            if (geometryIdentifier in newSelected[path]) {
-              instance.visualGroups.custom[geometryIdentifier].color
-                = newSelected[path][geometryIdentifier].color;
-              delete newSelected[path][geometryIdentifier];
-              if (Object.keys(newSelected[path]).length === 0) {
-                delete newSelected[path];
-              }
-              done = true;
-            } else {
-              if (instance.visualGroups.custom[geometryIdentifier]) {
-                newSelected[path][geometryIdentifier] = { color: instance.visualGroups.custom[geometryIdentifier].color, };
-                instance.visualGroups.custom[
-                  geometryIdentifier
-                ].color = SELECTION_COLOR;
-                done = true;
-              }
-            }
-          } else {
-            if (instance.visualGroups) {
-              if (instance.visualGroups.custom) {
-                if (instance.visualGroups.custom[geometryIdentifier]) {
-                  newSelected[path] = {
-                    [geometryIdentifier]: {
-                      color:
-                        instance.visualGroups.custom[geometryIdentifier].color,
-                    },
-                  };
-                  instance.visualGroups.custom[
-                    geometryIdentifier
-                  ].color = SELECTION_COLOR;
-                  done = true;
-                } else {
-                  newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                  instance.visualGroups.custom[geometryIdentifier] = { color: SELECTION_COLOR, };
-                  done = true;
-                }
-              } else {
-                newSelected[path] = { [geometryIdentifier]: { color: { ...currentColor, }, }, };
-                instance.visualGroups.custom = { [geometryIdentifier]: { color: SELECTION_COLOR }, };
-                done = true;
-              }
-            }
-          }
-        }
-      }
-    }
-    if (!done) {
-      newData.push({
-        instancePath: path,
-        color: SELECTION_COLOR,
-      });
-      newSelected[path] = { color: { ...currentColor } };
-    }
-
-    this.setState(() => ({ data: newData, selected: newSelected }));
   }
 
   handleToggle () {
@@ -274,10 +187,15 @@ class VFBExample extends Component {
     })
   }
 
+  onSelection (selectedInstances){
+    this.setState({ data: applySelection(this.state.data, selectedInstances) })
+  }
+
   render () {
     const { classes } = this.props;
     const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
-
+    const canvasData = mapToCanvasData(data)
+    
     let camOptions = cameraOptions;
     if (this.lastCameraUpdate) {
       camOptions = {
@@ -292,12 +210,12 @@ class VFBExample extends Component {
         <Canvas
           ref={this.canvasRef}
           modelVersion={modelVersion}
-          data={data}
+          data={canvasData}
           threeDObjects={threeDObjects}
           cameraOptions={camOptions}
           onMount={this.onMount}
           cameraHandler={this.cameraHandler}
-          selectionHandler={this.selectionHandler}
+          onSelection={this.onSelection}
           linesThreshold={10000}
           backgroundColor={0x505050}
         />
@@ -307,7 +225,7 @@ class VFBExample extends Component {
       color="primary"
       onClick={this.handleToggle}
     >
-      Show Example
+            Show Example
     </Button>
   }
 }

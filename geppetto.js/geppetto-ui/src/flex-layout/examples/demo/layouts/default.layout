@@ -1,39 +1,68 @@
 {
-	"global": {},
+	"global": {
+		"tabEnableFloat": true
+	},
 	"layout": {
 		"type": "row",
-		"id": "#4",
 		"children": [
 			{
 				"type": "tabset",
 				"weight": 12.5,
 				"active": true,
-				"id": "#5",
 				"children": [
 					{
 						"type": "tab",
-						"name": "FX",
-						"component": "grid",
-						"id": "#6"
+						"name": "One",
+						"component": "grid"
+					},
+					{
+						"type": "tab",
+						"name": "Two",
+						"component": "grid"
 					}
 				]
 			},
 			{
 				"type": "tabset",
 				"weight": 25,
-				"id": "#7",
 				"children": [
 					{
 						"type": "tab",
-						"name": "FI",
-						"component": "grid",
-						"id": "#8"
+						"name": "Three",
+						"component": "grid"
+					},
+					{
+						"type": "tab",
+						"name": "Wikipedia",
+						"component": "multitype",
+						"config": {
+                            "type":"url",
+							"data": "https://en.wikipedia.org/wiki/Main_Page"
+						}
 					}
 				]
 			}
 		]
 	},
 	"borders": [
+		{
+		    "type": "border",
+			"location": "bottom",
+			"children": [
+				{
+					"type": "tab",
+					"enableClose":false,
+					"name": "Output",
+					"component": "grid"
+				},
+				{
+					"type": "tab",
+					"enableClose":false,
+					"name": "Terminal",
+					"component": "grid"
+				}
+			]
+		},
 		 {
 		    "type": "border",
 		 	"location": "left",
@@ -42,8 +71,7 @@
 					"type": "tab",
 					"enableClose":false,
 					"name": "Navigation",
-					"component": "grid",
-					"id": "#24"
+					"component": "grid"
 				}
 			]
 		},
@@ -55,28 +83,7 @@
 					"type": "tab",
 					"enableClose":false,
 					"name": "Options",
-					"component": "grid",
-					"id": "#3"
-				}
-			]
-		},
-		{
-		    "type": "border",
-			"location": "bottom",
-			"children": [
-				{
-					"type": "tab",
-					"enableClose":false,
-					"name": "Activity Blotter",
-					"component": "grid",
-					"id": "#2"
-				},
-				{
-					"type": "tab",
-					"enableClose":false,
-					"name": "Execution Blotter",
-					"component": "grid",
-					"id": "#1"
+					"component": "grid"
 				}
 			]
 		}

@@ -4,8 +4,8 @@ html,body
     margin: 0;
     padding: 0;
     overflow:hidden;
-    font-size: 12px;
-    font-family: Arial, sans-serif;
+    font-size: medium;
+    font-family: Roboto, Arial, sans-serif;
     background-color:black;
 }
 #container  {
@@ -15,7 +15,6 @@ html,body
     bottom:10px;
     position:absolute;
     display:flex;
-    display:-webkit-flex;
     overflow:hidden;
     background-color:black;
 }
@@ -32,20 +31,18 @@ html,body
     display:flex;
     flex-direction: column;
     flex-grow:1;
-    display:-webkit-flex;
-    -webkit-flex-direction: column;
-    -webkit-flex-grow:1;
 }
 
 .toolbar
 {
     margin:2px;
+    display: flex;
+    align-items:center;
 }
 
 .contents
 {
     flex-grow:1;
-    -webkit-flex-grow:1;
     left:0;
     top:0;
     right:0;

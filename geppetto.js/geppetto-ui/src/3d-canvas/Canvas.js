@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
+import { selectionStrategies } from "./threeDEngine/SelectionManager";
 
 const styles = () => ({
   container: {
@@ -17,33 +18,54 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
+    this.state = { modelReady: false }
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     const {
       data,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
       hoverListeners,
-      onMount
+      setColorHandler,
+      onMount,
+      selectionStrategy,
+      onSelection
     } = this.props;
+
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
-      selectionHandler,
+      onSelection,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      hoverListeners
+      hoverListeners,
+      setColorHandler,
+      selectionStrategy
     );
-    this.threeDEngine.start(data, cameraOptions, true);
+    await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
+    this.setState({ modelReady: true })
+  }
+  
+  async componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps !== this.props){
+      const { data, cameraOptions, threeDObjects } = this.props;
+      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
+      this.setState({ modelReady: true })
+    } else {
+      this.setState({ modelReady:false })
+    }
+  }
+  
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
+    return nextState.modelReady || nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -127,25 +149,17 @@ class Canvas extends Component {
   }
 
   render () {
-    const { classes, data, cameraOptions, threeDObjects } = this.props;
+    const { classes, cameraOptions } = this.props;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-
-    if (this.threeDEngine) {
-      this.threeDEngine.update(
-        data,
-        cameraOptions,
-        threeDObjects,
-        this.shouldEngineTraverse()
-      );
-    }
+    
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {
           <cameraOptions.cameraControls.instance
             ref={this.cameraControls}
-            wireframeButtonEnabled={cameraControls.props.wireframeButtonEnabled}
             cameraControlsHandler={cameraControlsHandler}
+            {...cameraControls.props}
           />
         }
       </div>
@@ -156,15 +170,14 @@ class Canvas extends Component {
 
 Canvas.defaultProps = {
   cameraOptions: {
-    angle: 60,
-    near: 10,
-    far: 2000000,
-    position: { x: 0, y: 0, z: 0 },
+    angle: 50,
+    near: 0.01,
+    far: 1000,
     baseZoom: 1,
     reset: false,
     autorotate:false,
     wireframe:false,
-    zoomTo: [],
+    zoomTo: undefined,
     cameraControls:  {
       instance: null,
       props: {},
@@ -177,7 +190,9 @@ Canvas.defaultProps = {
   hoverListeners: [],
   threeDObjects: [],
   cameraHandler: () => {},
-  selectionHandler: () => {},
+  selectionStrategy: selectionStrategies.nearest,
+  onSelection: () => {},
+  setColorHandler: () => true,
   onMount: () => {},
   modelVersion: 0
 };
@@ -204,9 +219,17 @@ Canvas.propTypes = {
    */
   cameraHandler: PropTypes.func,
   /**
+   * function to apply the selection strategy
+   */
+  selectionStrategy: PropTypes.func,
+  /**
    * Function to callback on selection changes
    */
-  selectionHandler: PropTypes.func,
+  onSelection: PropTypes.func,
+  /**
+   * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
+   */
+  setColorHandler: PropTypes.func,
   /**
    * Function to callback on component did mount with scene
    */

@@ -7,7 +7,6 @@ import {
 import { blue, orange } from '@material-ui/core/colors';
 import Main from './components/Main';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
@@ -20,7 +19,7 @@ const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').defaul
   GEPPETTO
 );
 
-GEPPETTO.Utility = {};
+GEPPETTO.Utility = {}
 GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();

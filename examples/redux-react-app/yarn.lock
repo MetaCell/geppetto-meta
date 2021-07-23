@@ -1729,11 +1729,11 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "0.0.1"
+  version "0.0.2"
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" "0.0.1"
-    "@metacell/geppetto-meta-ui" "0.0.1"
+    "@metacell/geppetto-meta-core" "0.0.2"
+    "@metacell/geppetto-meta-ui" "0.0.2"
     anchorme "^0.7.1"
     backbone "^1.3.3"
     backbone-associations "^0.6.2"
@@ -1757,9 +1757,9 @@
     pixi.js "^4.2.3"
     plotly.js "^1.42.5"
     prop-types latest
-    react "^16.8.6"
+    react "^17.0.2"
     react-color "^2.17.3"
-    react-dom "^16.8.6"
+    react-dom "^17.0.2"
     react-dom-factories "^1.0.2"
     react-jsonschema-form "^1.0.6"
     react-overlays "^0.8.0"
@@ -1774,10 +1774,8 @@
     underscore "~1.9.1"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-0.0.1.tgz#edeafa636a64ba7383492f4bbe6aa06a90ff958c"
-  integrity sha512-Wlsp0tOww6hyyJ7BSRyZeZw2fHIHxLyrHFHGEsA0mvbuJ6JdPPbHUC5MSszCilTJ1mB3d4QTLJyw9aZNVEaEoQ==
+"@metacell/geppetto-meta-core@0.0.2", "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
+  version "0.0.2"
   dependencies:
     backbone "^1.3.3"
     file-saver "^1.3.3"
@@ -1785,26 +1783,17 @@
     jszip "^3.2.1"
     underscore "~1.9.1"
 
-"@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "0.0.1"
-  dependencies:
-    backbone "^1.3.3"
-    file-saver "^1.3.3"
-    jquery "^3.4.0"
-    jszip "^3.2.1"
-    underscore "~1.9.1"
-
-"@metacell/geppetto-meta-ui@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-0.0.1.tgz#abe57c17bc7b01b4b5d2ce3940f8e899dc86ab92"
-  integrity sha512-2ASl4l9N5lwjgfV1Xup0DtONLM+RGnsRrtB2f0gkIQQjwbIeDgdHJ6WtL3d3Rbmtcx4bavrtAYkP2uJnhSe6cA==
+"@metacell/geppetto-meta-ui@0.0.2", "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
+  version "0.0.2"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.35"
     "@fortawesome/free-solid-svg-icons" "^5.13.0"
     "@fortawesome/react-fontawesome" "^0.1.9"
     "@material-ui/core" "^4.9.14"
     "@material-ui/icons" "^4.11.2"
-    "@types/react-dom" "^16.9.5"
+    "@types/node" "^15.0.2"
+    "@types/react" "^17.0.5"
+    "@types/react-dom" "^17.0.4"
     aframe "<1.1.0"
     aframe-slice9-component "^1.0.0"
     ami.js "^0.32.0"
@@ -1832,82 +1821,11 @@
     pixi.js "^4.2.3"
     plotly.js "^1.42.5"
     prop-types latest
-    react "^16.8.6"
+    react "^17.0.2"
     react-color "^2.17.3"
     react-dnd "^7.7.0"
     react-dnd-html5-backend "^7.0.2"
-    react-dom "^16.8.6"
-    react-dom-factories "^1.0.2"
-    react-dropzone "^8.0.3"
-    react-fontawesome "^1.6.1"
-    react-force-graph-2d "^1.12.1"
-    react-force-graph-3d "^1.12.1"
-    react-jsonschema-form "^1.0.6"
-    react-lazy-load "^3.0.13"
-    react-modal "^3.8.1"
-    react-overlays "^0.8.0"
-    react-player "^0.18.0"
-    react-plotly.js "^2.3.0"
-    react-rnd "^7.3.0"
-    react-router "^4.2.0"
-    react-router-dom "^4.2.0"
-    react-slick "^0.23.2"
-    react-sortable-tree "2.6.1"
-    react-tabtab "^2.0.0"
-    remarkable "^1.7.3"
-    slick-carousel "^1.6.0"
-    stats.js "^0.17.0"
-    styled-components "^4.3.2"
-    text "^0.1.0"
-    three "0.111.0"
-    three-render-objects "1.13.3"
-    typeahead.js "^0.11.1"
-    typeface-roboto "^0.0.54"
-    underscore "~1.9.1"
-    url-join "^4.0.0"
-    velocity.java "^1.3.1"
-
-"@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "0.0.1"
-  dependencies:
-    "@fortawesome/fontawesome-svg-core" "^1.2.35"
-    "@fortawesome/free-solid-svg-icons" "^5.13.0"
-    "@fortawesome/react-fontawesome" "^0.1.9"
-    "@material-ui/core" "^4.9.14"
-    "@material-ui/icons" "^4.11.2"
-    "@types/react-dom" "^16.9.5"
-    aframe "<1.1.0"
-    aframe-slice9-component "^1.0.0"
-    ami.js "^0.32.0"
-    axios "^0.21.1"
-    create-react-class "^15.6.3"
-    d3 "4.0.0"
-    d3-plugins-dist "^3.2.0"
-    file-saver "^2.0.2"
-    griddle-react "^1.13.1"
-    handlebars "^4.0.5"
-    html2canvas "^1.0.0-alpha.12"
-    jquery "^3.4.0"
-    jquery-ui-bundle "^1.12.1"
-    js-cookie "^2.1.3"
-    jszip "^3.2.1"
-    less "^3.9.0"
-    lg-fullscreen "^1.0.1"
-    lg-pager "^1.0.2"
-    lg-thumbnail "^1.1.0"
-    lg-video "^1.1.0"
-    lightgallery "^1.6.0"
-    mathjs "^3.5.3"
-    openseadragon "^2.2.1"
-    pako "^1.0.3"
-    pixi.js "^4.2.3"
-    plotly.js "^1.42.5"
-    prop-types latest
-    react "^16.8.6"
-    react-color "^2.17.3"
-    react-dnd "^7.7.0"
-    react-dnd-html5-backend "^7.0.2"
-    react-dom "^16.8.6"
+    react-dom "^17.0.2"
     react-dom-factories "^1.0.2"
     react-dropzone "^8.0.3"
     react-fontawesome "^1.6.1"
@@ -2430,6 +2348,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.31.tgz#72286bd33d137aa0d152d47ec7c1762563d34055"
   integrity sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
 
+"@types/node@^15.0.2":
+  version "15.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.14.2.tgz#7af8ab20156586f076f4760bc1b3c5ddfffd1ff2"
+  integrity sha512-dvMUE/m2LbXPwlvVuzCyslTEtQ2ZwuuFClDrOQ6mp2CenCg971719PTILZ4I6bTP27xfFFc+o7x2TkLuun/MPw==
+
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
@@ -2462,12 +2385,12 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@^16.9.5":
-  version "16.9.13"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.13.tgz#5898f0ee68fe200685e6b61d3d7d8828692814d0"
-  integrity sha512-34Hr3XnmUSJbUVDxIw/e7dhQn2BJZhJmlAaPyPwfTQyuVS9mV/CeyghFcXyvkJXxI7notQJz8mF8FeCVvloJrA==
+"@types/react-dom@^17.0.4":
+  version "17.0.9"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.9.tgz#441a981da9d7be117042e1a6fd3dac4b30f55add"
+  integrity sha512-wIvGxLfgpVDSAMH5utdL9Ngm5Owu0VsGmldro3ORLXV8CShrL8awVj06NuEXFQ5xyaYfdca7Sgbk/50Ri1GdPg==
   dependencies:
-    "@types/react" "^16"
+    "@types/react" "*"
 
 "@types/react-redux@^7.1.16":
   version "7.1.16"
@@ -2495,10 +2418,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^16":
-  version "16.14.8"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.8.tgz#4aee3ab004cb98451917c9b7ada3c7d7e52db3fe"
-  integrity sha512-QN0/Qhmx+l4moe7WJuTxNiTsjBwlBGHqKGvInSQCBdo7Qio0VtOqwsC0Wq7q3PbJlB0cR4Y4CVo1OOe6BOsOmA==
+"@types/react@^17.0.5":
+  version "17.0.14"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.14.tgz#f0629761ca02945c4e8fea99b8177f4c5c61fb0f"
+  integrity sha512-0WwKHUbWuQWOce61UexYuWTGuGY/8JvtUe/dtQ6lR4sZ3UiylHotJeWpf3ArP9+DSGUoLY3wbU59VyMrJps5VQ==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -3161,6 +3084,14 @@ anymatch@^3.0.3, anymatch@~3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.1.tgz#c55ecf02185e2469259399310c173ce31233b142"
   integrity sha512-mM8522psRCqzV+6LhomX5wgp25YVibjh8Wj23I5RPkPppSVSjyKD2A2mBJmWGa+KN7f2D6LNh9jkBCeyLktzjg==
+  dependencies:
+    normalize-path "^3.0.0"
+    picomatch "^2.0.4"
+
+anymatch@~3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-3.1.2.tgz#c0557c096af32f106198f4f4e2a383537e378716"
+  integrity sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
@@ -4411,6 +4342,21 @@ chokidar@3.5.1, chokidar@^3.4.1:
     readdirp "~3.5.0"
   optionalDependencies:
     fsevents "~2.3.1"
+
+"chokidar@>=3.0.0 <4.0.0":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.2.tgz#dba3976fcadb016f66fd365021d91600d01c1e75"
+  integrity sha512-ekGhOnNVPgT77r4K/U3GDhu+FQ2S8TnK/s2KbIGXi0SZWuwkZ2QNyfWdZW+TVfn84DpEP7rLeCt2UI6bJ8GwbQ==
+  dependencies:
+    anymatch "~3.1.2"
+    braces "~3.0.2"
+    glob-parent "~5.1.2"
+    is-binary-path "~2.1.0"
+    is-glob "~4.0.1"
+    normalize-path "~3.0.0"
+    readdirp "~3.6.0"
+  optionalDependencies:
+    fsevents "~2.3.2"
 
 chokidar@^2.1.8:
   version "2.1.8"
@@ -7901,7 +7847,7 @@ fsevents@^1.2.7:
     bindings "^1.5.0"
     nan "^2.12.1"
 
-fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.1:
+fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.1, fsevents@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
@@ -8385,6 +8331,13 @@ glob-parent@^5.0.0, glob-parent@^5.1.0, glob-parent@~5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.1.tgz#b6c1ef417c4e5663ea498f1c45afac6916bbc229"
   integrity sha512-FnI+VGOpnlGHWZxthPGR+QhR78fuiK0sNLkHQv+bL9fQi57lNNdquIbna/WrfROrolq8GK5Ek6BiMwqL/voRYQ==
+  dependencies:
+    is-glob "^4.0.1"
+
+glob-parent@~5.1.2:
+  version "5.1.2"
+  resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.2.tgz#869832c58034fe68a4093c17dc15e8340d8401c4"
+  integrity sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
   dependencies:
     is-glob "^4.0.1"
 
@@ -14043,7 +13996,7 @@ react-dom-factories@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-dom-factories/-/react-dom-factories-1.0.2.tgz#eb7705c4db36fb501b3aa38ff759616aa0ff96e0"
   integrity sha1-63cFxNs2+1AbOqOP91lhaqD/luA=
 
-react-dom@^16.14.0, react-dom@^16.3.0, react-dom@^16.8.6:
+react-dom@^16.3.0:
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.14.0.tgz#7ad838ec29a777fb3c75c3a190f661cf92ab8b89"
   integrity sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==
@@ -14052,6 +14005,15 @@ react-dom@^16.14.0, react-dom@^16.3.0, react-dom@^16.8.6:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
+
+react-dom@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
+  integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
 
 react-draggable@^3.0.5:
   version "3.3.2"
@@ -14433,7 +14395,7 @@ react-virtualized@^9.19.1, react-virtualized@^9.21.2:
     prop-types "^15.7.2"
     react-lifecycles-compat "^3.0.4"
 
-react@^16.14.0, react@^16.3.0, react@^16.8.6:
+react@^16.3.0:
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.14.0.tgz#94d776ddd0aaa37da3eda8fc5b6b18a4c9a3114d"
   integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
@@ -14441,6 +14403,14 @@ react@^16.14.0, react@^16.3.0, react@^16.8.6:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+react@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 reactcss@^1.2.0:
   version "1.2.3"
@@ -14545,6 +14515,13 @@ readdirp@~3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.5.0.tgz#9ba74c019b15d365278d2e91bb8c48d7b4d42c9e"
   integrity sha512-cMhu7c/8rdhkHXWsY+osBhfSy0JikwpHK/5+imo+LpeasTF8ouErHrlYkwT0++njiyuDvc7OFY5T3ukvZ8qmFQ==
+  dependencies:
+    picomatch "^2.2.1"
+
+readdirp@~3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/readdirp/-/readdirp-3.6.0.tgz#74a370bd857116e245b29cc97340cd431a02a6c7"
+  integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
 
@@ -15271,6 +15248,13 @@ sass-loader@^10.0.5:
     schema-utils "^3.0.0"
     semver "^7.3.2"
 
+sass@^1.35.2:
+  version "1.35.2"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.35.2.tgz#b732314fcdaf7ef8d0f1698698adc378043cb821"
+  integrity sha512-jhO5KAR+AMxCEwIH3v+4zbB2WB0z67V1X0jbapfVwQQdjHZUGUyukpnoM6+iCMfsIUC016w9OPKQ5jrNOS9uXw==
+  dependencies:
+    chokidar ">=3.0.0 <4.0.0"
+
 sax@>=0.6.0, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
@@ -15287,6 +15271,14 @@ scheduler@^0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
   integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"

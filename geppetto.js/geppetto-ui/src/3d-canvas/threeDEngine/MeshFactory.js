@@ -1,8 +1,11 @@
 import particle from '../textures/particle.png';
+import { hasVisualType } from "./util";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 require('./OBJLoader');
 
 export default class MeshFactory {
-  // TODO: Make all arguments props
   constructor (
     scene,
     linesThreshold = 2000,
@@ -23,15 +26,39 @@ export default class MeshFactory {
     this.linesThreshold = linesThreshold;
     this.particleTexture = particleTexture;
     this.THREE = THREE ? THREE : require('three');
+    this.THREE.Cache.enabled = true
+    this.setupLoaders()
   }
 
-  start (instances) {
+  setupLoaders (){
+    const dracoLoader = new DRACOLoader()
+    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/');
+
+    const manager = new this.THREE.LoadingManager();
+    manager.onProgress = function (item, loaded, total) {
+      console.log(item, loaded, total);
+    };
+    const objLoader = new this.THREE.OBJLoader(manager);
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader( dracoLoader );
+
+    this.loaders = {
+      [GEPPETTO.Resources.GLTF]: gltfLoader,
+      [GEPPETTO.Resources.DRC]: dracoLoader,
+      [GEPPETTO.Resources.OBJ]: objLoader,
+      [GEPPETTO.Resources.COLLADA]: new ColladaLoader(),
+      'TextureLoader': new this.THREE.TextureLoader()
+    }
+  }
+
+  async start (instances) {
     this.clean();
-    this.traverseInstances(instances);
+    await this.traverseInstances(instances);
   }
 
   getMeshes () {
-    const meshes = this.splitMeshes;
+    const meshes = { ...this.splitMeshes };
     for (const m in this.meshes) {
       if (!(m in meshes)) {
         meshes[m] = this.meshes[m];
@@ -40,61 +67,64 @@ export default class MeshFactory {
     return meshes;
   }
 
-  traverseInstances (instances) {
+  async traverseInstances (instances) {
     for (let j = 0; j < instances.length; j++) {
-      this.checkVisualInstance(instances[j]);
+      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())) {
+        continue
+      }
+      await this.checkVisualInstance(instances[j]);
     }
   }
 
-  checkVisualInstance (instance) {
-    if (instance.hasCapability(GEPPETTO.Resources.VISUAL_CAPABILITY)) {
-      // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
-      if (
-        instance.getType().getMetaType()
-          !== GEPPETTO.Resources.ARRAY_TYPE_NODE
-        && instance.getVisualType()
-      ) {
-        this.buildVisualInstance(instance);
+  async checkVisualInstance (instance) {
+    try {
+      if (this.hasVisualValue(instance)) {
+        await this.buildVisualInstance(instance)
+      } else if (hasVisualType(instance)) {
+        // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
+        if (
+          instance.getType().getMetaType()
+            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            && instance.getVisualType()
+        ) {
+          await this.buildVisualInstance(instance);
+        }
+        // this block keeps traversing the instances
+        if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+          await this.traverseInstances(instance.getChildren());
+        } else if (
+          instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+        ) {
+          await this.traverseInstances(instance);
+        }
       }
-      // this block keeps traversing the instances
-      if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
-        this.traverseInstances(instance.getChildren());
-      } else if (
-        instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
-      ) {
-        this.traverseInstances(instance);
-      }
+    } catch (e) {
+      console.error(e)
     }
   }
 
-  buildVisualInstance (instance) {
-    const meshes = this.generate3DObjects(instance);
+  hasVisualValue (instance) {
+    try {
+      return instance.hasVisualValue()
+    } catch (e) {
+      return false
+    }
+  }
+
+  async buildVisualInstance (instance) {
+    const meshes = await this.generate3DObjects(instance);
     this.init3DObject(meshes, instance);
   }
 
-  generate3DObjects (instance) {
-    const previous3DObject = this.meshes[instance.getInstancePath()];
-    let color;
-    if (previous3DObject) {
-      if (previous3DObject.material) {
-        color = previous3DObject.material.defaultColor;
-      }
-      this.scene.remove(previous3DObject);
-      const { splitMeshes } = this;
-      for (const m in splitMeshes) {
-        if (m.indexOf(instance.getInstancePath()) != -1) {
-          this.scene.remove(splitMeshes[m]);
-        }
-      }
-    }
+  async generate3DObjects (instance) {
 
     const materials = {
-      mesh: this.getMeshPhongMaterial(color),
-      line: this.getLineMaterial(color),
+      mesh: this.getMeshPhongMaterial(),
+      line: this.getLineMaterial(),
     };
 
     const instanceObjects = [];
-    const threeDeeObjList = this.walkVisTreeGen3DObjs(instance, materials);
+    const threeDeeObjList = await this.walkVisTreeGen3DObjs(instance, materials);
     if (threeDeeObjList.length > 1) {
       const mergedObjs = this.merge3DObjects(threeDeeObjList, materials);
       // investigate need to obj.dispose for obj in threeDeeObjList
@@ -107,7 +137,7 @@ export default class MeshFactory {
           instanceObjects.push(threeDeeObjList[obj]);
         }
       }
-    } else if (threeDeeObjList.length == 1) {
+    } else if (threeDeeObjList.length === 1) {
       // only one object in list, add it to local array and set
       instanceObjects.push(threeDeeObjList[0]);
       instanceObjects[0].instancePath = instance.getInstancePath();
@@ -116,7 +146,7 @@ export default class MeshFactory {
   }
 
   getMeshPhongMaterial (color) {
-    if (color == undefined) {
+    if (color === undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.MeshPhongMaterial({
@@ -133,7 +163,7 @@ export default class MeshFactory {
   }
 
   getLineMaterial (color) {
-    if (color == undefined) {
+    if (color === undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.LineBasicMaterial();
@@ -150,8 +180,8 @@ export default class MeshFactory {
       threeColor.setHex(color);
     } else if (
       Object.prototype.hasOwnProperty.call(color, 'r')
-      && Object.prototype.hasOwnProperty.call(color, 'g')
-      && Object.prototype.hasOwnProperty.call(color, 'b')
+        && Object.prototype.hasOwnProperty.call(color, 'g')
+        && Object.prototype.hasOwnProperty.call(color, 'b')
     ) {
       threeColor.r = color.r;
       threeColor.g = color.g;
@@ -161,25 +191,47 @@ export default class MeshFactory {
     }
   }
 
-  walkVisTreeGen3DObjs (instance, materials) {
-    let threeDeeObj = null;
+  async walkVisTreeGen3DObjs (instance, materials) {
+    if (this.hasVisualValue(instance)) {
+      const visualValue = instance.getVisualValue();
+      const threeDObj = await this.create3DObjectFromInstance(
+        instance,
+        visualValue,
+        instance.getId(),
+        materials
+      );
+      if (threeDObj) {
+        return [threeDObj]
+      }
+    }
+    let visualType
+    try {
+      visualType = instance.getVisualType();
+    } catch (e) {
+      visualType = undefined
+    }
+    if (visualType === undefined) {
+      return [];
+    } else if (visualType.isArray) {
+      const threeDObjList = []
+      await Promise.all(visualType.forEach(
+        async vt => threeDObjList.push((await this.walkVisTreeGen3DObjsVisualType(vt, instance, materials)))
+      ))
+      return threeDObjList
+    } else {
+      return await this.walkVisTreeGen3DObjsVisualType(visualType, instance, materials)
+    }
+  }
+
+  async walkVisTreeGen3DObjsVisualType (visualType, instance, materials) {
     const threeDeeObjList = [];
-    let visualType = instance.getVisualType();
-    if (visualType == undefined) {
-      return threeDeeObjList;
-    }
-    if (visualType.isArray) {
-      // FIXME: if there is more than one visual type we need to display all of them
-      visualType = visualType[0];
-    }
+    let threeDeeObj = null;
     if (
-      visualType.getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
+      visualType.getMetaType() === GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
     ) {
-      // eslint-disable-next-line guard-for-in
       for (const v in visualType.getVariables()) {
-        const visualValue = visualType.getVariables()[v].getWrappedObj()
-          .initialValues[0].value;
-        threeDeeObj = this.create3DObjectFromInstance(
+        const visualValue = visualType.getVariables()[v].getWrappedObj().initialValues[0].value;
+        threeDeeObj = await this.create3DObjectFromInstance(
           instance,
           visualValue,
           visualType.getVariables()[v].getId(),
@@ -190,12 +242,11 @@ export default class MeshFactory {
         }
       }
     } else if (
-      visualType.getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE
-      && visualType.getId() == 'particles'
+      visualType.getMetaType() === GEPPETTO.Resources.VISUAL_TYPE_NODE
+        && visualType.getId() === 'particles'
     ) {
-      const visualValue = instance.getVariable().getWrappedObj()
-        .initialValues[0].value;
-      threeDeeObj = this.create3DObjectFromInstance(
+      const visualValue = instance.getVariable().getWrappedObj().initialValues[0].value;
+      threeDeeObj = await this.create3DObjectFromInstance(
         instance,
         visualValue,
         instance.getVariable().getId(),
@@ -206,7 +257,7 @@ export default class MeshFactory {
       }
     } else {
       const visualValue = visualType.getWrappedObj().defaultValue;
-      threeDeeObj = this.create3DObjectFromInstance(
+      threeDeeObj = await this.create3DObjectFromInstance(
         instance,
         visualValue,
         visualType.getId(),
@@ -216,14 +267,13 @@ export default class MeshFactory {
         threeDeeObjList.push(threeDeeObj);
       }
     }
-
-    return threeDeeObjList;
+    return threeDeeObjList
   }
 
-  create3DObjectFromInstance (instance, node, id, materials) {
+  async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
 
-    const lines = this.getDefaultGeometryType() == 'lines';
+    const lines = this.getDefaultGeometryType() === 'lines';
 
     const material = lines ? materials.line : materials.mesh;
 
@@ -258,13 +308,24 @@ export default class MeshFactory {
       threeObject = this.loadThreeOBJModelFromNode(node);
       this.complexity++;
       break;
+    case GEPPETTO.Resources.GLTF:
+      threeObject = await this.loadThreeGLTFModelFromNode(node);
+      this.complexity++;
+      break;
+    case GEPPETTO.Resources.DRC:
+      threeObject = await this.loadThreeDRCModelFromNode(node);
+      this.complexity++;
+      break;
+    default:
+      console.error(`Invalid node.eClass on node ${node}`)
     }
 
     if (threeObject) {
       threeObject.visible = true;
-      // FIXME: this is empty for collada and obj nodes
-
-      const instancePath = `${instance.getInstancePath()}.${id}`;
+      /*
+       * FIXME: this is empty for collada and obj nodes
+       */
+      const instancePath = `${instance.getInstancePath()}.${id}`
       threeObject.instancePath = instancePath;
       threeObject.highlighted = false;
 
@@ -275,7 +336,6 @@ export default class MeshFactory {
   }
 
   getDefaultGeometryType () {
-    // TODO: Add user interaction
     const aboveLinesThreshold = this.complexity > this.linesThreshold;
     return aboveLinesThreshold ? 'lines' : 'cylinders';
   }
@@ -286,7 +346,7 @@ export default class MeshFactory {
     const color = `0x${Math.floor(Math.random() * 16777215).toString(16)}`;
     threeColor.setHex(color);
 
-    const textureLoader = new this.THREE.TextureLoader();
+    const textureLoader = this.loaders['TextureLoader'];
     const particleTexture = this.particleTexture
       ? this.particleTexture
       : textureLoader.load(particle);
@@ -320,7 +380,7 @@ export default class MeshFactory {
 
   create3DLineFromNode (node, material) {
     let threeObject = null;
-    if (node.eClass == GEPPETTO.Resources.CYLINDER) {
+    if (node.eClass === GEPPETTO.Resources.CYLINDER) {
       const bottomBasePos = new this.THREE.Vector3(
         node.position.x,
         node.position.y,
@@ -354,7 +414,7 @@ export default class MeshFactory {
       );
 
       threeObject.geometry.verticesNeedUpdate = true;
-    } else if (node.eClass == GEPPETTO.Resources.SPHERE) {
+    } else if (node.eClass === GEPPETTO.Resources.SPHERE) {
       const sphere = new this.THREE.SphereGeometry(node.radius, 20, 20);
       threeObject = new this.THREE.Mesh(sphere, material);
       threeObject.position.set(
@@ -423,7 +483,7 @@ export default class MeshFactory {
 
   // TODO: Collada example
   loadColladaModelFromNode (node) {
-    const loader = new this.THREE.ColladaLoader();
+    const loader = this.loaders[GEPPETTO.Resources.COLLADA]
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
@@ -452,17 +512,13 @@ export default class MeshFactory {
   }
 
   loadThreeOBJModelFromNode (node) {
-    const manager = new this.THREE.LoadingManager();
-    manager.onProgress = function (item, loaded, total) {
-      console.log(item, loaded, total);
-    };
-    const loader = new this.THREE.OBJLoader(manager);
-    const textureLoader = new this.THREE.TextureLoader();
+    const loader = this.loaders[GEPPETTO.Resources.OBJ];
+    const textureLoader = this.loaders['TextureLoader']
     const particleTexture = this.particleTexture
       ? this.particleTexture
       : textureLoader.load(particle);
 
-    const scene = loader.parse(node.obj, particleTexture);
+    const scene = loader.parse(this.parseBase64(node.obj), particleTexture);
     const that = this;
     scene.traverse(function (child) {
       if (child instanceof that.THREE.Mesh) {
@@ -481,6 +537,39 @@ export default class MeshFactory {
     return scene;
   }
 
+  async loadThreeGLTFModelFromNode (node) {
+    const loader = this.loaders[GEPPETTO.Resources.GLTF]
+    const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
+    return gltfData.scene
+  }
+
+  async loadThreeDRCModelFromNode (node) {
+    const dracoLoader = this.loaders[GEPPETTO.Resources.DRC];
+    const geometry = await this.modelLoader(dracoLoader, node.drc);
+    geometry.computeVertexNormals();
+    return new this.THREE.Mesh(geometry, this.getMeshPhongMaterial())
+  }
+
+  parseBase64 (str) {
+    try {
+      return atob(str.split('base64,')[1]);
+    } catch (e) {
+      return str
+    }
+  }
+
+  modelLoader (loader, url) {
+    return new Promise((resolve, reject) => {
+      loader.load(url, data => resolve(data), null, reject);
+    });
+  }
+
+  modelParser (loader, data) {
+    return new Promise((resolve, reject) => {
+      loader.parse(data, null, data => resolve(data), reject);
+    });
+  }
+
   init3DObject (meshes, instance) {
     const instancePath = instance.getInstancePath();
     const position = instance.getPosition();
@@ -488,11 +577,11 @@ export default class MeshFactory {
       const mesh = meshes[m];
 
       mesh.instancePath = instancePath;
-      // if the model file is specifying a position for the loaded meshes then we translate them here
+      /*
+       * if the model file is specifying a position for the loaded meshes then we translate them here
+       */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
-        mesh.geometry.verticesNeedUpdate = true;
-        mesh.updateMatrix();
       }
       this.meshes[instancePath] = mesh;
       this.meshes[instancePath].visible = true;
@@ -506,8 +595,8 @@ export default class MeshFactory {
         const elements = {};
         for (const splitMesh in splitMeshes) {
           if (
-            splitMeshes[splitMesh].instancePath == instancePath
-            && splitMesh != instancePath
+            splitMeshes[splitMesh].instancePath === instancePath
+              && splitMesh !== instancePath
           ) {
             const visualObject = splitMesh.substring(instancePath.length + 1);
             elements[visualObject] = '';
@@ -534,7 +623,7 @@ export default class MeshFactory {
         }
         mergedLines.vertices.push(obj.geometry.vertices[0]);
         mergedLines.vertices.push(obj.geometry.vertices[1]);
-      } else if (obj.geometry.type == 'Geometry') {
+      } else if (obj.geometry.type === 'Geometry') {
         // This catches both Collada an OBJ
         if (objArray.length > 1) {
           throw Error('Merging of multiple OBJs or Colladas not supported');
@@ -561,7 +650,7 @@ export default class MeshFactory {
       ret = new that.THREE.Mesh(mergedMeshes, materials.mesh);
     } else {
       ret = new that.THREE.LineSegments(mergedLines, materials.line);
-      if (mergedMeshes != undefined) {
+      if (mergedMeshes !== undefined) {
         // we merge into a single mesh both types of geometries (from lines and 3D objects)
         const tempmesh = new that.THREE.Mesh(mergedMeshes, materials.mesh);
         ret.geometry.merge(tempmesh.geometry, tempmesh.matrix);
@@ -574,13 +663,14 @@ export default class MeshFactory {
 
     return ret;
   }
+
   /**
    * Split merged mesh into individual meshes
    *
-   * @param {String}
    *            instance - original instance
-   * @param {object}
    *            groups - The groups that we need to split mesh into
+   * @param instance
+   * @param groupElements
    */
   splitGroups (instance, groupElements) {
     if (!this.hasMesh(instance)) {
@@ -623,7 +713,7 @@ export default class MeshFactory {
      */
 
     for (const v in map) {
-      if (v != undefined) {
+      if (v !== undefined) {
         const m = this.visualModelMap[map[v]];
 
         // eslint-disable-next-line no-eval
@@ -643,8 +733,7 @@ export default class MeshFactory {
           );
         } else {
           // get group elements list for object
-          const groupElementsReference = object.getInitialValue().value
-            .groupElements;
+          const groupElementsReference = object.getInitialValue().value.groupElements;
           for (let i = 0; i < groupElementsReference.length; i++) {
             const objectGroup = GEPPETTO.ModelFactory.resolve(
               groupElementsReference[i].$ref
@@ -688,14 +777,14 @@ export default class MeshFactory {
   /**
    * Add mesh to geometry groups
    *
-   * @param {String}
    *            instancePath - Path of aspect, corresponds to original merged mesh
-   * @param {String}
    *            id - local path to the group
-   * @param {object}
    *            groups - The groups that we need to split mesh into
-   * @param {object}
    *            m - current mesh
+   * @param instance
+   * @param id
+   * @param geometryGroups
+   * @param m
    */
   addMeshToGeometryGroup (instance, id, geometryGroups, m) {
     if (!this.hasMesh(instance)) {
@@ -769,12 +858,12 @@ export default class MeshFactory {
     if (!this.hasMesh(instancePath)) {
       return;
     }
-    var meshes = this.getRealMeshesForInstancePath(instancePath);
+    const meshes = this.getRealMeshesForInstancePath(instancePath);
     if (meshes.length > 0) {
-      for (var i = 0; i < meshes.length; i++) {
-        var mesh = meshes[i];
+      for (let i = 0; i < meshes.length; i++) {
+        const mesh = meshes[i];
         if (mesh) {
-          var that = this;
+          const that = this;
           mesh.traverse(function (object) {
             if (Object.prototype.hasOwnProperty.call(object, 'material')) {
               that.setThreeColor(object.material.color, color);
@@ -793,8 +882,8 @@ export default class MeshFactory {
   /**
    * Get Meshes associated to an instance
    *
-   * @param {String}
    *            instancePath - Path of the instance
+   * @param instancePath
    */
   getRealMeshesForInstancePath (instancePath) {
     const meshes = [];
@@ -816,9 +905,8 @@ export default class MeshFactory {
    * @param instance
    */
   hasMesh (instance) {
-    const instancePath
-      = typeof instance == 'string' ? instance : instance.getInstancePath();
-    return this.meshes[instancePath] != undefined;
+    const instancePath = typeof instance == 'string' ? instance : instance.getInstancePath();
+    return this.meshes[instancePath] !== undefined;
   }
 
   /**
@@ -830,7 +918,7 @@ export default class MeshFactory {
     let currentRadius = 0;
     if (object.children.length > 0) {
       for (let i = 0; i < object.children.length; i++) {
-        if (object.children[i] != undefined) {
+        if (object.children[i] !== undefined) {
           this.calculateSceneMaxRadius(object.children[i]);
         }
       }
@@ -850,8 +938,7 @@ export default class MeshFactory {
    * Calculates linePrecision used by raycaster when picking objects.
    */
   getLinePrecision () {
-    this.rayCasterLinePrecision
-      = this.sceneMaxRadius / this.linePrecisionMinRadius;
+    this.rayCasterLinePrecision = this.sceneMaxRadius / this.linePrecisionMinRadius;
     if (this.rayCasterLinePrecision < this.minAllowedLinePrecision) {
       this.rayCasterLinePrecision = this.minAllowedLinePrecision;
     }

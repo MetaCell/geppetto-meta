@@ -15,7 +15,7 @@ const data = 'https://s3.amazonaws.com/patient-hm-august-2017/Histology/HM_1243_
 
 class BigImageViewerExample extends Component {
 
-  render() {
+  render () {
     const { classes } = this.props;
     return (
       <div style={{ position: 'relative' }} className={classes.bigImageViewer}>

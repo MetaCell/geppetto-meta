@@ -5,7 +5,6 @@ import Action from "./Action";
  * The Action creator class for FlexLayout model actions
  */
 class Actions {
-
     static ADD_NODE = "FlexLayout_AddNode";
     static MOVE_NODE = "FlexLayout_MoveNode";
     static DELETE_TAB = "FlexLayout_DeleteTab";
@@ -17,6 +16,8 @@ class Actions {
     static MAXIMIZE_TOGGLE = "FlexLayout_MaximizeToggle";
     static UPDATE_MODEL_ATTRIBUTES = "FlexLayout_UpdateModelAttributes";
     static UPDATE_NODE_ATTRIBUTES = "FlexLayout_UpdateNodeAttributes";
+    static FLOAT_TAB = "FlexLayout_FloatTab";
+    static UNFLOAT_TAB = "FlexLayout_UnFloatTab";
 
     /**
      * Adds a tab node to the given tabset node
@@ -24,10 +25,17 @@ class Actions {
      * @param toNodeId the new tab node will be added to the tabset with this node id
      * @param location the location where the new tab will be added, one of the DockLocation enum values.
      * @param index for docking to the center this value is the index of the tab, use -1 to add to the end.
-     * @returns {{type: (string|string), json: *, toNode: *, location: (*|string), index: *}}
+     * @param select (optional) whether to select the new tab, overriding autoSelectTab
+     * @returns {{type: (string|string), json: *, toNode: *, location: (*|string), index: *, select?: boolean}}
      */
-    static addNode(json: any, toNodeId: string, location: DockLocation, index: number): Action {
-        return new Action(Actions.ADD_NODE, { json: json, toNode: toNodeId, location: location.getName(), index: index });
+    static addNode(json: any, toNodeId: string, location: DockLocation, index: number, select?: boolean): Action {
+        return new Action(Actions.ADD_NODE, {
+            json,
+            toNode: toNodeId,
+            location: location.getName(),
+            index,
+            select,
+        });
     }
 
     /**
@@ -36,14 +44,16 @@ class Actions {
      * @param toNodeId the id of the node to receive the moved node
      * @param location the location where the moved node will be added, one of the DockLocation enum values.
      * @param index for docking to the center this value is the index of the tab, use -1 to add to the end.
+     * @param select (optional) whether to select the moved tab(s) in new tabset, overriding autoSelectTab
      * @returns {{type: (string|string), fromNode: *, toNode: *, location: (*|string), index: *}}
      */
-    static moveNode(fromNodeId: string, toNodeId: string, location: DockLocation, index: number): Action {
+    static moveNode(fromNodeId: string, toNodeId: string, location: DockLocation, index: number, select?: boolean): Action {
         return new Action(Actions.MOVE_NODE, {
             fromNode: fromNodeId,
             toNode: toNodeId,
             location: location.getName(),
-            index: index
+            index,
+            select,
         });
     }
 
@@ -63,7 +73,7 @@ class Actions {
      * @returns {{type: (string|string), node: *, text: *}}
      */
     static renameTab(tabNodeId: string, text: string): Action {
-        return new Action(Actions.RENAME_TAB, { node: tabNodeId, text: text });
+        return new Action(Actions.RENAME_TAB, { node: tabNodeId, text });
     }
 
     /**
@@ -92,18 +102,22 @@ class Actions {
      * @param splitSpec an object the defines the new split between two tabsets, see example below.
      * @returns {{type: (string|string), node1: *, weight1: *, pixelWidth1: *, node2: *, weight2: *, pixelWidth2: *}}
      */
-    static adjustSplit(splitSpec: { node1Id: string, weight1: number, pixelWidth1: number, node2Id: string, weight2: number, pixelWidth2: number }): Action {
+    static adjustSplit(splitSpec: { node1Id: string; weight1: number; pixelWidth1: number; node2Id: string; weight2: number; pixelWidth2: number }): Action {
         const node1 = splitSpec.node1Id;
         const node2 = splitSpec.node2Id;
 
         return new Action(Actions.ADJUST_SPLIT, {
-            node1: node1, weight1: splitSpec.weight1, pixelWidth1: splitSpec.pixelWidth1,
-            node2: node2, weight2: splitSpec.weight2, pixelWidth2: splitSpec.pixelWidth2
+            node1,
+            weight1: splitSpec.weight1,
+            pixelWidth1: splitSpec.pixelWidth1,
+            node2,
+            weight2: splitSpec.weight2,
+            pixelWidth2: splitSpec.pixelWidth2,
         });
     }
 
     static adjustBorderSplit(nodeId: string, pos: number): Action {
-        return new Action(Actions.ADJUST_BORDER_SPLIT, { node: nodeId, pos: pos });
+        return new Action(Actions.ADJUST_BORDER_SPLIT, { node: nodeId, pos });
     }
 
     /**
@@ -133,7 +147,14 @@ class Actions {
     static updateNodeAttributes(nodeId: string, attributes: any): Action {
         return new Action(Actions.UPDATE_NODE_ATTRIBUTES, { node: nodeId, json: attributes });
     }
+
+    static floatTab(nodeId: string): Action {
+        return new Action(Actions.FLOAT_TAB, { node: nodeId });
+    }
+
+    static unFloatTab(nodeId: string): Action {
+        return new Action(Actions.UNFLOAT_TAB, { node: nodeId });
+    }
 }
 
 export default Actions;
-
