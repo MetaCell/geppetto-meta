@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import SortableTree from 'react-sortable-tree';
+import SortableTree from '@nosferatu500/react-sortable-tree';
 import {
   toggleExpandedForAll,
   changeNodeAtPath,
   walk,
-} from 'react-sortable-tree';
+} from '@nosferatu500/react-sortable-tree';
 import { withStyles } from '@material-ui/core';
-import 'react-sortable-tree/style.css';
+import '@nosferatu500/react-sortable-tree/style.css';
 import PropTypes from 'prop-types';
 
 const styles = () => ({ treeViewer: { height: '100%' } });
