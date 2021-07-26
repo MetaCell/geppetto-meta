@@ -10,7 +10,6 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "sass": "^1.35.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.3",
@@ -18,7 +17,9 @@
   },
   "resolutions": {
     "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
-    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui"
+    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
+    "bezier-js": "4.0.3",
+    "three": "0.111.0"
   },
   "scripts": {
     "start": "react-scripts start",
