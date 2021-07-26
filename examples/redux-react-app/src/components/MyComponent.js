@@ -1,4 +1,5 @@
 import React from 'react';
+import GraphVisualizationShowcase from '@metacell/geppetto-meta-ui/graph-visualization/showcase/examples/GraphVisualizationShowcase';
 
 /**
  * Any custom component you can imagine.
@@ -13,6 +14,9 @@ export const MyComponent = (props) => {
         <div>
             <h1>Robert Frost</h1>
             <p>{text}</p>
+            <div style={{ display: 'flex', justifyContent: 'center'}}>
+                <GraphVisualizationShowcase />
+            </div>
         </div>
     )
 }
