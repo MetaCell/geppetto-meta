@@ -4,9 +4,50 @@
 
 # Geppetto Meta
 
-Geppetto MetaCell distribution
+The Geppetto MetaCell distribution.
 
-# Subtree management
+# Artifacts
+
+**npm**
+
+* [@metacell/geppetto-meta-ui](https://www.npmjs.com/package/@metacell/geppetto-meta-ui)
+* [@metacell/geppetto-meta-core](https://www.npmjs.com/package/@metacell/geppetto-meta-core)
+* [@metacell/geppetto-meta-client](https://www.npmjs.com/package/@metacell/geppetto-meta-client)
+
+**pypi**
+
+* [pygeppetto](https://pypi.org/project/pygeppetto/)
+* [jupyter-geppetto](https://pypi.org/project/jupyter-geppetto/)
+
+# Getting Started
+## Requirements
+
+**Frontend**
+
+* React 17
+* Node >= 14
+
+**Backend**
+
+* Python 3
+
+## Examples
+
+* [examples/redux-react-app](examples/redux-react-app) - with geppetto.js packages
+
+# Project Structure
+
+| Folder 	| Description 	|
+|---	|---	|
+| geppetto.js 	| frontend packages including ui/core/client 	|
+| geppetto-showcase 	| showcase of geppetto components	|
+| jupyter-geppetto 	| Python <-> js websocket interface based on Jupyter widgets 	|
+| pygeppetto 	| Geppetto Python backend 	|
+| examples 	| Example apps that can be used as blueprints 	|
+| deployment 	| K8s & Codefresh files 	|
+
+# Development
+## Subtree management
 
 **Subtree repositories:**
 
