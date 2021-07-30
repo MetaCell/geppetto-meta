@@ -48,7 +48,6 @@ export default class ThreeDEngine {
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
 
-
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
 
@@ -68,6 +67,7 @@ export default class ThreeDEngine {
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.stop = this.stop.bind(this);
+    this.resize = this.resize.bind(this);
   }
 
   /**
@@ -705,6 +705,7 @@ export default class ThreeDEngine {
     this.cameraManager.camera.aspect = this.width / this.height;
     this.cameraManager.camera.updateProjectionMatrix();
     this.renderer.setSize(this.width, this.height);
+    this.composer.setSize(this.width, this.height);
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
