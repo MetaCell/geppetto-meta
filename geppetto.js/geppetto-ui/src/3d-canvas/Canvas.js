@@ -52,8 +52,10 @@ class Canvas extends Component {
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
+
+    window.addEventListener('resize', this.threeDEngine.resize);
   }
-  
+
   async componentDidUpdate (prevProps, prevState, snapshot) {
     if (prevProps !== this.props){
       const { data, cameraOptions, threeDObjects } = this.props;
@@ -73,6 +75,8 @@ class Canvas extends Component {
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
     );
+
+    window.removeEventListener('resize', this.threeDEngine.resize);
   }
 
   defaultCameraControlsHandler (action) {
@@ -141,7 +145,6 @@ class Canvas extends Component {
       }
     }
   }
-
 
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?

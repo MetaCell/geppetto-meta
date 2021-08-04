@@ -12,39 +12,11 @@ The geppetto-showcase depends on three local packages: geppetto-client, geppetto
 
 We use [yalc](https://github.com/wclr/yalc) as a local repository to manage these dependencies.
 
-Install yalc
+The `./setup.sh` script will build and add the local geppetto packages to the showcase:
+
 ```bash
-yarn global add yalc
+sh ./setup.sh
 ```
-
-Install geppetto-client
-
-```bash
-cd geppetto.js/geppetto-client
-yarn && yarn build && yarn publish:yalc
-```
-
-Install geppetto-ui
-
-```bash
-cd geppetto.js/geppetto-ui
-yarn && yarn build:src && yarn publish:yalc
-```
-
-Install geppetto-core
-
-```bash
-cd geppetto.js/geppetto-core
-yarn && yarn build && yarn publish:yalc
-```
-
-Add these packages to geppetto-showcase
-
-```bash
-yalc add @metacell/geppetto-meta-client
-yalc add @metacell/geppetto-meta-core
-yalc add @metacell/geppetto-meta-ui
-```   
 
 Install dependencies
 

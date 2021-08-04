@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Drawer } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { activateWidget, addWidget, destroyWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { makeStyles } from '@material-ui/core/styles';
-import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget } from 'widgets';
+import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from 'widgets';
 import { layout } from 'app/layout';
 import * as Actions from 'redux/actions';
 
@@ -93,6 +93,11 @@ const LeftSidebar = (props) => {
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="secondary" aria-label="outlined primary button group" orientation="vertical">
                         <Button color="secondary" onClick={() => onAddWidgetClick(DicomViewerWidget)}>Add DICOM Viewer</Button>
                         <Button color="secondary" onClick={() => onRemove('dicomViewer')}>Remove DICOM Viewer</Button>
+                    </ButtonGroup>
+
+                    <ButtonGroup className={classes.buttonGroup} variant="contained" color="secondary" aria-label="outlined primary button group" orientation="vertical">
+                        <Button color="secondary" onClick={() => onAddWidgetClick(CanvasWidget)}>Add Canvas</Button>
+                        <Button color="secondary" onClick={() => onRemove('canvasWidget')}>Remove Canvas</Button>
                     </ButtonGroup>
 
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="secondary" aria-label="outlined primary button group" orientation="vertical">
