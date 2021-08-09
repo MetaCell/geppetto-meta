@@ -81,6 +81,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",
     "react-slick": "^0.23.2",
+    "react-resize-detector": "^6.7.4",
     "@nosferatu500/react-sortable-tree": "3.0.5",
     "react-tabtab": "^2.0.0",
     "remarkable": "^1.7.3",

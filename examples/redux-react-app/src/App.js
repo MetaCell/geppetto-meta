@@ -14,7 +14,8 @@ import { LoadingSpinner } from '@metacell/geppetto-meta-client/components/index'
 import '@metacell/geppetto-meta-ui/flex-layout/style/light.scss'
 
 // TODO: fix css, flexlayout.css causes icons to not show up
-// import './flexlayout.css';
+// import './styles/flexlayout.css';
+import './styles/cameraControls.css';
 
 
 const App = () => {

@@ -6,8 +6,8 @@ import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-c
 
 const styles = () => ({
     canvasContainer: {
-        display: 'flex',
-        alignItems: 'stretch',
+        height: '100%',
+        width: '100%',
     },
 });
 
@@ -62,7 +62,7 @@ class CanvasExample extends Component {
                 rotation: this.lastCameraUpdate.rotation,
             };
         }
-        return <div className={classes.container}>
+        return <div className={classes.canvasContainer}>
             <Canvas
                 data={canvasData}
                 cameraOptions={camOptions}
