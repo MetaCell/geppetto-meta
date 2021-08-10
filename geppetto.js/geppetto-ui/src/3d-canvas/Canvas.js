@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
+import { withResizeDetector } from 'react-resize-detector';
 
 const styles = () => ({
   container: {
-    display: 'flex',
-    alignItems: 'stretch',
-    flex: 1,
+    height: '100%',
+    width: '100%',
   },
 });
 
@@ -53,8 +53,12 @@ class Canvas extends Component {
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
   }
-  
+
   async componentDidUpdate (prevProps, prevState, snapshot) {
+    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
+      this.threeDEngine.resize();
+    }
+
     if (prevProps !== this.props){
       const { data, cameraOptions, threeDObjects } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
@@ -141,7 +145,6 @@ class Canvas extends Component {
       }
     }
   }
-
 
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
@@ -252,4 +255,4 @@ Canvas.propTypes = {
   hoverListeners: PropTypes.array,
 };
 
-export default withStyles(styles)(Canvas);
+export default withResizeDetector(withStyles(styles)(Canvas));

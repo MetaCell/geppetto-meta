@@ -48,7 +48,6 @@ export default class ThreeDEngine {
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
 
-
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
 
@@ -68,6 +67,7 @@ export default class ThreeDEngine {
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.stop = this.stop.bind(this);
+    this.resize = this.resize.bind(this);
   }
 
   /**
@@ -684,7 +684,6 @@ export default class ThreeDEngine {
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
     // Todo: resolve proxyInstances to populate child meshes
-    this.resize()
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);
       threeDObjects.forEach(element => {
@@ -696,7 +695,6 @@ export default class ThreeDEngine {
     this.updateInstancesConnectionLines(proxyInstances);
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
-    
   }
 
   resize () {
@@ -705,9 +703,11 @@ export default class ThreeDEngine {
     this.cameraManager.camera.aspect = this.width / this.height;
     this.cameraManager.camera.updateProjectionMatrix();
     this.renderer.setSize(this.width, this.height);
+    this.composer.setSize(this.width, this.height);
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
+    this.resize();
     this.update(proxyInstances, cameraOptions, [], toTraverse);
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);

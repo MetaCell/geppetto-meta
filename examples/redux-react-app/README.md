@@ -9,14 +9,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 **Build local geppetto dependencies**
 
-Run the build gepeptto script
+Run the `./setup.sh` script
 
 ```
-sh ./build_geppetto.sh
+sh ./setup.sh
 ```
 
 Run this script every time you change code in the local geppetto packages and want to test it in this application.
-
 
 **Install dependencies**
 

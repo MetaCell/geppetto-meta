@@ -173,7 +173,6 @@ class LayoutManager {
 
     rootNode._removeAll();
     rootNode._addChild(hrow, 0);
-    setTimeout(() => window.dispatchEvent(new Event("resize")), 1000);
   }
 
   /**
@@ -394,8 +393,6 @@ class LayoutManager {
     if (!isEqual(oldModel, newModel)) {
       this.store.dispatch(setLayout(newModel));
     }
-
-    window.dispatchEvent(new Event("resize"));
   }
 
   /**
@@ -553,8 +550,6 @@ class LayoutManager {
         widget.pos
       )
     );
-    // Resize of canvas and SVG images
-    window.dispatchEvent(new Event("resize"));
   }
 }
 

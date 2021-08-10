@@ -1,0 +1,88 @@
+#mainContainer .position-toolbar {
+    top: 20px;
+}
+.position-toolbar {
+    position: relative;
+}
+.position-toolbar .rotate90 {
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+}
+.position-toolbar .rotate180 {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+}
+.position-toolbar .dg {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 200;
+}
+.position-toolbar .squareB {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    padding: 1px;
+}
+.position-toolbar .pan-left {
+    left: 10px;
+    top: 37px;
+}
+.position-toolbar .pan-top {
+    left: 37px;
+    top: 10px;
+}
+.position-toolbar .pan-home {
+    left: 37px;
+    top: 37px;
+}
+.position-toolbar .pan-right {
+    left: 64px;
+    top: 37px;
+}
+.position-toolbar .pan-bottom {
+    left: 37px;
+    top: 64px;
+}
+.position-toolbar .rotate-left {
+    left: 10px;
+    top: 132px;
+}
+.position-toolbar .rotate-top {
+    left: 37px;
+    top: 105px;
+}
+.position-toolbar .auto-rotate {
+    left: 37px;
+    top: 132px;
+}
+.position-toolbar .rotate-right {
+    left: 64px;
+    top: 132px;
+}
+.position-toolbar .rotate-bottom {
+    left: 37px;
+    top: 159px;
+}
+.position-toolbar .rotate-z {
+    left: 10px;
+    top: 159px;
+}
+.position-toolbar .rotate-mz {
+    left: 64px;
+    top: 159px;
+}
+.position-toolbar .zoom-in {
+    left: 37px;
+    top: 200px;
+}
+.position-toolbar .zoom-out {
+    left: 37px;
+    top: 228px;
+}
+.position-toolbar .wireframe {
+    left: 37px;
+    top: 256px;
+}

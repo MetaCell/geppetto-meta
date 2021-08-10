@@ -1,7 +1,7 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import orange from '@material-ui/core/colors/orange';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: { fontFamily: 'Roboto, Helvetica, Arial, sans-serif' },
   palette: {
     type: 'dark',

@@ -4,10 +4,11 @@ import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraCon
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
+import contact from './Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
-const instanceTemplate = {
+const instance1spec = {
   "eClass": "SimpleInstance",
   "id": "ANeuron",
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
@@ -17,11 +18,22 @@ const instanceTemplate = {
     'gltf': neuron
   }
 }
+const instance2spec = {
+  "eClass": "SimpleInstance",
+  "id": "AContact",
+  "name": "The second SimpleInstance to be render with Geppetto Canvas",
+  "type": { "eClass": "SimpleType" },
+  "visualValue": {
+    "eClass": GEPPETTO.Resources.GLTF,
+    'gltf': contact
+  }
+}
 
 function loadInstances (){
   GEPPETTO.ModelFactory.cleanModel();
-  const instance = new SimpleInstance(instanceTemplate)
-  window.Instances = [instance]
+  const instance1 = new SimpleInstance(instance1spec)
+  const instance2 = new SimpleInstance(instance2spec)
+  window.Instances = [instance1, instance2]
   GEPPETTO.Manager.augmentInstancesArray(window.Instances);
 }
 
