@@ -684,7 +684,6 @@ export default class ThreeDEngine {
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
     // Todo: resolve proxyInstances to populate child meshes
-    this.resize()
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);
       threeDObjects.forEach(element => {
@@ -696,7 +695,6 @@ export default class ThreeDEngine {
     this.updateInstancesConnectionLines(proxyInstances);
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
-    
   }
 
   resize () {
@@ -709,6 +707,7 @@ export default class ThreeDEngine {
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
+    this.resize();
     this.update(proxyInstances, cameraOptions, [], toTraverse);
     if (!this.frameId) {
       this.frameId = window.requestAnimationFrame(this.animate);
