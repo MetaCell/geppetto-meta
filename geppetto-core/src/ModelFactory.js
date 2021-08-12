@@ -628,21 +628,32 @@ export default function (GEPPETTO) {
         // check if it's a connection
         if (instance.getMetaType() === GEPPETTO.Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
           
-          
-          if (instance.a.$ref !== undefined) {
-            instance.a = this.resolve(instance.a.$ref);
+          if (!instance.a) {
+            console.error(`Error while adding connection ${instance.getId()}: cannot find first connection`, instance)
+          }
+          if (instance.a?.$ref !== undefined) {
+            const ref = instance.a.$ref;
+            instance.a = this.resolve(ref);
             if (instance.a) {
               instance.a.addConnection(instance);
+            } else {
+              console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
             }
+          } 
+          
+          if (!instance.b) {
+            console.error(`Error while adding connection ${instance.getId()}: cannot find second connection`, instance)
           }
           
-          
-          if (instance.b.$ref !== undefined) {
-            instance.b = this.resolve(instance.b.$ref);
+          if (instance.b?.$ref !== undefined) {
+            const ref = instance.b.$ref;
+            instance.b = this.resolve(ref);
             if (instance.b) {
               instance.b.addConnection(instance);
+            } else {
+              console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
             }
-          }
+          } 
           
           return;
         }
@@ -2983,9 +2994,11 @@ export default function (GEPPETTO) {
             reference = this.geppettoModel.getWorlds()[index];
           } else if (raw[i].indexOf('instances') > -1) {           
             reference = reference.getInstances()[index];
-          }
+          } 
         }
-
+        if (!reference) {
+          console.error(`Error resolving reference ${refStr}`);
+        }
         return reference;
       },
 
