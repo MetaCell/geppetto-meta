@@ -143,6 +143,7 @@ class Canvas extends Component {
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
         break;
       }
+      this.threeDEngine.requestFrame();
     }
   }
 

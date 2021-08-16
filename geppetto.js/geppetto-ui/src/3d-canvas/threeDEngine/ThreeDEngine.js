@@ -5,6 +5,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 import MeshFactory from './MeshFactory';
 import CameraManager from './CameraManager';
@@ -144,13 +145,7 @@ export default class ThreeDEngine {
   }
 
   setupControls () {
-    this.controls = new THREE.TrackballControls(
-      this.cameraManager.getCamera(),
-      this.renderer.domElement,
-      this.cameraHandler,
-    );
-    this.controls.noZoom = false;
-    this.controls.noPan = false;
+    this.controls = new OrbitControls(this.cameraManager.getCamera(), this.renderer.domElement);
   }
 
   /**
@@ -524,17 +519,22 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      function (event) {
+      (event) => {
         that.clientX = event.clientX;
-        that.clientY = event.clientY;
+        that.clientY = event.clientY;        
       },
       false
     );
 
+    //render on demand by attaching to orbit control
+    this.controls.addEventListener('change', () => {
+      this.requestFrame();
+    });     
+
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mouseup',
-      function (event) {
+      (event) => {
         if (event.target === that.renderer.domElement) {
           const x = event.clientX;
           const y = event.clientY;
@@ -563,7 +563,7 @@ export default class ThreeDEngine {
               / that.renderer.domElement.getBoundingClientRect().width)
               * 2
             - 1;
-
+         
           if (event.button === 0) {
             // only for left click
             if (that.pickingEnabled) {
@@ -638,7 +638,7 @@ export default class ThreeDEngine {
 
     this.renderer.domElement.addEventListener(
       'mousemove',
-      function (event) {
+      (event) => {
         that.mouse.y
           = -(
             (event.clientY
@@ -660,7 +660,7 @@ export default class ThreeDEngine {
               that.hoverListeners[listener](intersects);
             }
           }
-        }
+        }        
       },
       false
     );
@@ -695,6 +695,7 @@ export default class ThreeDEngine {
     this.updateInstancesConnectionLines(proxyInstances);
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.requestFrame();
   }
 
   resize () {
@@ -704,20 +705,26 @@ export default class ThreeDEngine {
     this.cameraManager.camera.updateProjectionMatrix();
     this.renderer.setSize(this.width, this.height);
     this.composer.setSize(this.width, this.height);
+    this.requestFrame();
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
     this.resize();
     this.update(proxyInstances, cameraOptions, [], toTraverse);
     if (!this.frameId) {
-      this.frameId = window.requestAnimationFrame(this.animate);
+      this.requestFrame();
     }
+  }
+
+  requestFrame() {
+    this.frameId = window.requestAnimationFrame( () => { this.animate(); })
   }
 
   animate () {
     this.controls.update();
     this.renderScene();
-    this.frameId = window.requestAnimationFrame(this.animate);
+    //this.requestFrame();
+    //this.frameId = window.requestAnimationFrame(this.animate);
   }
 
   renderScene () {
