@@ -37,6 +37,7 @@ export default class ThreeDEngine {
     this.cameraManager = null;
     this.renderer = null;
     this.controls = null;
+    this.orbitControls = null;
     this.mouse = { x: 0, y: 0 };
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold);
@@ -57,6 +58,9 @@ export default class ThreeDEngine {
 
     // Setup Lights
     this.setupLights();
+
+    // Setup Controls
+    this.setupOrbitControls();
 
     // Setup Controls
     this.setupControls();
@@ -144,8 +148,18 @@ export default class ThreeDEngine {
     this.cameraManager.getCamera().add(new THREE.PointLight(0xffffff, 1));
   }
 
-  setupControls () {
-    this.controls = new OrbitControls(this.cameraManager.getCamera(), this.renderer.domElement);
+  setupControls() {
+    this.controls = new THREE.TrackballControls(
+      this.cameraManager.getCamera(),
+      this.renderer.domElement,
+      this.cameraHandler,
+    );
+    this.controls.noZoom = false;
+    this.controls.noPan = false;
+  }
+
+  setupOrbitControls () {
+    this.orbitControls = new OrbitControls(this.cameraManager.getCamera(), this.renderer.domElement);
   }
 
   /**
@@ -527,7 +541,7 @@ export default class ThreeDEngine {
     );
 
     //render on demand by attaching to orbit control
-    this.controls.addEventListener('change', () => {
+    this.orbitControls.addEventListener('change', () => {
       this.requestFrame();
     });     
 
