@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import Graph from "./../../Graph";
 
+const styles = () => ({
+  container: {
+    height: '100%',
+    width: '100%',
+  },
+});
+
 export default class GraphVisualizationShowcase extends Component {
 
   getData () {
@@ -20,7 +27,7 @@ export default class GraphVisualizationShowcase extends Component {
 
   render () {
     return (
-      <div style={{ width: 600, height: 500 }}>
+      <div className={classes.container}>
         <Graph
           data={this.getData()}
           nodeLabel={node => node.name}
