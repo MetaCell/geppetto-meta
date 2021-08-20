@@ -6,16 +6,17 @@ import GraphVisualizationShowcase from '@metacell/geppetto-meta-ui/graph-visuali
  * 
  * This component is referenced in the `app/componentMap.js`.
  */
+
 export const MyComponent = (props) => {
 
-    const { text } = props;
+    const { title, text, data } = props;
 
     return (
         <div>
-            <h1>Robert Frost</h1>
+            <h1>{title}</h1>
             <p>{text}</p>
             <div style={{ display: 'flex', justifyContent: 'center'}}>
-                <GraphVisualizationShowcase />
+                <GraphVisualizationShowcase data={data}/>
             </div>
         </div>
     )

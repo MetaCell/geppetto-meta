@@ -8,7 +8,7 @@ export const layout = {
     tabEnableClose: true,
     tabSetHeaderHeight: 26,
     tabSetTabStripHeight: 26,
-    enableEdgeDock: false,
+    enableEdgeDock: false
   },
   borders: [
     {

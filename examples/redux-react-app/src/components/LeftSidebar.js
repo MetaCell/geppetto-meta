@@ -5,6 +5,7 @@ import { activateWidget, addWidget, destroyWidget, maximizeWidget, minimizeWidge
 import { makeStyles } from '@material-ui/core/styles';
 import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from 'widgets';
 import { layout } from 'app/layout';
+import { FileSelector } from 'components/FileSelector'
 import * as Actions from 'redux/actions';
 
 const newTabset = {
@@ -51,8 +52,12 @@ const LeftSidebar = (props) => {
     const classes = useStyles();
 
     // Click callbacks
-    const onCustomWidgetClick = () => dispatch(addWidget(MyComponentWidget));
-    const onAddWidgetClick = (widget) => dispatch(addWidget(widget));
+    const onCustomWidgetClick = () => dispatch({
+      type: Actions.FILE_SELECTOR_TOGGLE    
+    });
+    const onAddWidgetClick = (widget) => dispatch({
+      type: Actions.FILE_SELECTOR_TOGGLE    
+    });
     const onRemove = (id) => dispatch(destroyWidget(id));
     const onMaximize = (id) => dispatch(maximizeWidget(id));
     const onMinimize = (id) => dispatch(minimizeWidget(id));
@@ -76,6 +81,7 @@ const LeftSidebar = (props) => {
                 anchor="left"
             >
                 <div className={classes.drawerContent}>
+                    <FileSelector></FileSelector>
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="primary" aria-label="outlined primary button group" orientation="vertical">
                         <Button color="primary" onClick={onCustomWidgetClick}>Add Widget</Button>
                         <Button color="primary" onClick={() => onRemove('myComponent')}>Remove Widget</Button>

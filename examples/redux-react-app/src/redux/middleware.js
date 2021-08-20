@@ -4,7 +4,7 @@ import * as Actions from '../redux/actions';
 /**
  * Your own custom middleware that you can use to react to geppetto actions.
  */
-export const exampleMiddleware = store => next => action => {
+export const exampleMiddleware = state => next => action => {
 
     switch (action.type) {
         case GeppettoActions.clientActions.MODEL_LOADED:
