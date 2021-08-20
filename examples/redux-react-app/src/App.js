@@ -34,7 +34,7 @@ const App = () => {
         <LeftSidebar />
         <Box className="MuiBox-content">
           <MainLayout />
-          <LoadingSpinner />
+          {/* <LoadingSpinner /> */}
         </Box>
       </Box>
     </div >

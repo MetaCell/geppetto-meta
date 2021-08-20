@@ -6,16 +6,18 @@ import { connect } from 'react-redux';
  * This component is referenced in the `app/componentMap.js`.
  */
 
-export const FileSelector = (props) => {    
-    return (
-      <div>
-        <div>{props.visible ? 'visible': 'not-visible'}</div>
-      </div>
-    )
+const FileSelector = (props) => {    
+    return (<div>
+            <div>{props.visible ? 'visible': 'not-visible'}</div>
+          </div>);
 }
 
-function mapStateToProps(state) {
-  return { visible: state.FileSelectorState.visible }
+const mapStateToProps = (state) => {
+  const fileSelectorState = state.FileSelector;
+
+  return {
+    visible: fileSelectorState.visible    
+  }
 }
 
 export default connect(mapStateToProps, null)(FileSelector)

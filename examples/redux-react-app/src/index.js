@@ -12,13 +12,13 @@ import theme from './theme';
 initGeppetto();
 
 ReactDOM.render(
-  <React.StrictMode>
+  
     <Provider store={store}>
       <MuiThemeProvider theme={theme}>
         <App />
       </MuiThemeProvider>
     </Provider>
-  </React.StrictMode>,
+  ,
   document.getElementById('root')
 );
 

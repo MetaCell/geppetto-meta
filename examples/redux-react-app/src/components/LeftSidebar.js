@@ -5,7 +5,7 @@ import { activateWidget, addWidget, destroyWidget, maximizeWidget, minimizeWidge
 import { makeStyles } from '@material-ui/core/styles';
 import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from 'widgets';
 import { layout } from 'app/layout';
-import { FileSelector } from 'components/FileSelector'
+import FileSelector from 'components/FileSelector'
 import * as Actions from 'redux/actions';
 
 const newTabset = {
