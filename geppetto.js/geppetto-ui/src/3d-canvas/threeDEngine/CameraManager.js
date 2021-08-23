@@ -293,12 +293,7 @@ export default class CameraManager {
    * @param z
    */
   incrementCameraRotate (x, y, z) {
-    //this.engine.controls.incrementRotationEnd(x, y, z);
-    const cam = this.engine.cameraManager.getCamera();
-    x,y,z = 1;
-    cam.rotation.x += x;
-    cam.rotation.y += y;
-    cam.rotation.z += z;
+    this.engine.controls.incrementRotationEnd(x, y, z);
   }
 
   /**
@@ -314,11 +309,7 @@ export default class CameraManager {
    * @param z
    */
   setCameraPosition (x, y, z) {
-    //this.engine.controls.setPosition(x, y, z);
-    const cam = this.engine.cameraManager.getCamera();
-    cam.position.x = x ;
-    cam.position.y = y ;
-    cam.position.z = z ;
+    this.engine.controls.setPosition(x, y, z);
   }
   /**
    * @param rx
@@ -342,6 +333,7 @@ export default class CameraManager {
       }
       this.rotate = setInterval(function () {
         that.incrementCameraRotate(0.01, 0);
+        that.engine.requestFrame();
       }, 100);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
