@@ -5,6 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import CanvasTooltip from './CanvasTooltip'
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -18,7 +19,7 @@ const styles = () => ({
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
-  },
+  }
 });
 class CA1Example extends Component {
   constructor (props) {
@@ -28,6 +29,7 @@ class CA1Example extends Component {
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
+      intersected: [],
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
@@ -64,6 +66,7 @@ class CA1Example extends Component {
     this.onSelection = this.onSelection.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.hoverListener = this.hoverListener.bind(this);
   }
 
   componentDidMount () {
@@ -97,6 +100,19 @@ class CA1Example extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
+  hoverListener(objs, target) {
+    // objs.forEach((o)=> {
+    //   let tooltip = new CanvasTooltip({ visible: true, x: o.point.x, y: o.point.y, text: 'test', id: 'canvas-tooltip-' + o.object.uuid });
+    //   this.state.tooltips.push(tooltip);
+    //   this.setState({ tooltips: this.state.tooltips });
+    // })
+    this.state.intersected = [];
+    objs.forEach((o)=>{
+      this.state.intersected.push(o);
+    })
+    this.setState({ intersected: this.state.intersected });
+  }
+
   render () {
     const { classes } = this.props;
     const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
@@ -117,6 +133,20 @@ class CA1Example extends Component {
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
+          <div id={'canvas-tooltips-container'}>
+            <React.Fragment>
+              { 
+              this.state.intersected.map((o)=> {
+                <CanvasTooltip 
+                  visible={true} 
+                  x={o.point.x} 
+                  y={o.point.y} 
+                  text={'test 12341'} 
+                  id={'canvas-tooltip-' + o.object.uuid}>
+                </CanvasTooltip>
+              }) 
+              }
+            </React.Fragment></div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
@@ -125,6 +155,7 @@ class CA1Example extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
+            hoverListeners={[this.hoverListener]}
           />
         </div>
       ) : <Button
