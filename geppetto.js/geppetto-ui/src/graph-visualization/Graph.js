@@ -5,15 +5,20 @@ import * as d3 from 'd3-force-3d'
 import * as THREE from 'three'
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
+import { withResizeDetector } from 'react-resize-detector';
 
 import { splitter, getDarkerColor } from './utils'
 
-export default class GeppettoGraphVisualization extends Component {
+class GeppettoGraphVisualization extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { ...this.state, height: 200, width: 200 };
+  }
 
   // Ref to GGV container
   ggv = React.createRef()
 
-  dimensions = { width: 200, height: 200 }
 
   font = this.props.font || "6px Source Sans Pro"
   size = this.props.nodeRelSize || 20
@@ -55,10 +60,25 @@ export default class GeppettoGraphVisualization extends Component {
     }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if(ReactDOM.findDOMNode(this) === null) {
+      console.log('findDomNode is null');
+      return null;
+    }
+    const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
+    console.log('getDerivedStateFromParents | this.state:',this.state);
+    console.log('getDerivedStateFromParents | dimensions:',dimensions);
+
+    return null;
+  }
+
   componentDidUpdate (prevProps, prevState) {
     const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
-    if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
-      this.dimensions = dimensions
+    console.log('componenetDidUpdate | dimensions:', dimensions);
+    console.log('componenetDidUpdate | this.state:', this.state);
+
+    if (dimensions.width !== this.state.width || dimensions.height !== this.state.height) {
+      this.setState({ ...this.state, width: dimensions.width, height: dimensions.height });
       if (this.props.d2) {
         this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
       }
@@ -373,8 +393,8 @@ export default class GeppettoGraphVisualization extends Component {
     const commonProps = {
       ref: this.ggv,
       graphData: data,
-      width: this.dimensions.width - xGap,
-      height: this.dimensions.height - yGap,
+      width: this.state.width - xGap,
+      height: this.state.height - yGap,
       onNodeDrag: node => this.onNodeDrag(node),
       ...others
     }
@@ -479,3 +499,5 @@ GeppettoGraphVisualization.propTypes = {
    */
   forceRadial : PropTypes.number
 };
+
+export default withResizeDetector(GeppettoGraphVisualization);
