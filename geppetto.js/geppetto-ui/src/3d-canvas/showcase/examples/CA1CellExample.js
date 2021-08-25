@@ -30,6 +30,7 @@ class CA1Example extends Component {
       showLoader: false,
       hasModelLoaded: false,
       intersected: [],
+      tooltipVisible: false,
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
@@ -76,7 +77,6 @@ class CA1Example extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
   handleClickOutside (event) {
-
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){
         this.setState({ hasModelLoaded: false })
@@ -101,16 +101,15 @@ class CA1Example extends Component {
   }
 
   hoverListener(objs, canvasX, canvasY) {
-    // objs.forEach((o)=> {
-    //   let tooltip = new CanvasTooltip({ visible: true, x: o.point.x, y: o.point.y, text: 'test', id: 'canvas-tooltip-' + o.object.uuid });
-    //   this.state.tooltips.push(tooltip);
-    //   this.setState({ tooltips: this.state.tooltips });
-    // })
     this.state.intersected = [];
     objs.forEach((o)=>{
       this.state.intersected.push({ o: o, x: canvasX, y: canvasY });
     })
-    this.setState({ intersected: this.state.intersected });
+    this.setState({ intersected: this.state.intersected, tooltipVisible: true });
+
+    setTimeout(()=>{
+      this.setState({ tooltipVisible: false})
+    },1500);
   }
 
   render () {
@@ -137,7 +136,7 @@ class CA1Example extends Component {
             <div>
               { this.state.intersected.length > 0 && 
                 <CanvasTooltip 
-                  visible={true} 
+                  visible={ this.state.tooltipVisible } 
                   x={this.state.intersected[this.state.intersected.length -1].x} 
                   y={this.state.intersected[this.state.intersected.length -1].y} 
                   text={this.state.intersected[this.state.intersected.length -1].o.object.uuid} 

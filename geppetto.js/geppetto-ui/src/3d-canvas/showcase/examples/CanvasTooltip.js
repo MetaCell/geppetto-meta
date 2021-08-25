@@ -9,7 +9,7 @@ const CanvasToolTip = (props) => {
                                     padding: '5px 12px',
                                     fontFamily: 'monospace',
                                     background: '#a0c020',
-                                    display: 'block',
+                                    display: props.visible ? 'block' : 'none',
                                     opacity: '1',
                                     border: '1px solid black',
                                     boxShadow: '2px 2px 3px rgba(0, 0, 0, 0.5)',
