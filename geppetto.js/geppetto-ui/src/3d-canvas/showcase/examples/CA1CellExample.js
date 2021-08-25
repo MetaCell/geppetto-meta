@@ -100,7 +100,7 @@ class CA1Example extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
-  hoverListener(objs, target) {
+  hoverListener(objs, canvasX, canvasY) {
     // objs.forEach((o)=> {
     //   let tooltip = new CanvasTooltip({ visible: true, x: o.point.x, y: o.point.y, text: 'test', id: 'canvas-tooltip-' + o.object.uuid });
     //   this.state.tooltips.push(tooltip);
@@ -108,7 +108,7 @@ class CA1Example extends Component {
     // })
     this.state.intersected = [];
     objs.forEach((o)=>{
-      this.state.intersected.push(o);
+      this.state.intersected.push({ o: o, x: canvasX, y: canvasY });
     })
     this.setState({ intersected: this.state.intersected });
   }
@@ -134,19 +134,18 @@ class CA1Example extends Component {
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
           <div id={'canvas-tooltips-container'}>
-            <React.Fragment>
-              { 
-              this.state.intersected.map((o)=> {
+            <div>
+              { this.state.intersected.length > 0 && 
                 <CanvasTooltip 
                   visible={true} 
-                  x={o.point.x} 
-                  y={o.point.y} 
-                  text={'test 12341'} 
-                  id={'canvas-tooltip-' + o.object.uuid}>
+                  x={this.state.intersected[this.state.intersected.length -1].x} 
+                  y={this.state.intersected[this.state.intersected.length -1].y} 
+                  text={this.state.intersected[this.state.intersected.length -1].o.object.uuid} 
+                  id={'canvas-tooltip-' + this.state.intersected[this.state.intersected.length -1].o.object.uuid}>
                 </CanvasTooltip>
-              }) 
               }
-            </React.Fragment></div>
+            </div>
+          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

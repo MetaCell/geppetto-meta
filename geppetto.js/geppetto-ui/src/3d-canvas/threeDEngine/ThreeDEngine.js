@@ -37,6 +37,7 @@ export default class ThreeDEngine {
     this.renderer = null;
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
+    this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold);
     this.pickingEnabled = pickingEnabled;
@@ -653,11 +654,15 @@ export default class ThreeDEngine {
             / that.renderer.domElement.width)
             * 2
           - 1;
+
+        that.mouseContainer.x = event.clientX ;
+        that.mouseContainer.y = event.clientY ;
+
         if (that.hoverListeners && that.hoverListeners.length > 0) {
           const intersects = that.getIntersectedObjects();
           for (const listener in that.hoverListeners) {
             if (intersects.length !== 0) {
-              that.hoverListeners[listener](intersects);
+              that.hoverListeners[listener](intersects, that.mouseContainer.x, that.mouseContainer.y);
             }
           }
         }
