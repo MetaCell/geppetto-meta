@@ -737,8 +737,6 @@ export default class ThreeDEngine {
   animate () {
     this.controls.update();
     this.renderScene();
-    //this.requestFrame();
-    //this.frameId = window.requestAnimationFrame(this.animate);
   }
 
   renderScene () {
