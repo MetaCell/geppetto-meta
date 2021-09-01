@@ -363,7 +363,7 @@ THREE.TrackballControls = function (object, domElement, handler, engine) {
 
     _this.object.lookAt(_this.target);
 
-    if ((lastPosition.distanceToSquared(_this.object.position) > EPS) || ( lastPosition === _this.start3DVector )){
+    if (lastPosition.distanceToSquared(_this.object.position) > EPS) {
       _this.dispatchEvent(changeEvent);
 
       lastPosition.copy(_this.object.position);
