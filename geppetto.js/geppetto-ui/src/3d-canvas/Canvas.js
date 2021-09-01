@@ -52,6 +52,7 @@ class Canvas extends Component {
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
+    this.threeDEngine.requestFrame();
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
@@ -62,6 +63,7 @@ class Canvas extends Component {
     if (prevProps !== this.props){
       const { data, cameraOptions, threeDObjects } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
+      this.threeDEngine.requestFrame();
       this.setState({ modelReady: true })
     } else {
       this.setState({ modelReady:false })
@@ -143,6 +145,7 @@ class Canvas extends Component {
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
         break;
       }
+      this.threeDEngine.updateControls();
     }
   }
 

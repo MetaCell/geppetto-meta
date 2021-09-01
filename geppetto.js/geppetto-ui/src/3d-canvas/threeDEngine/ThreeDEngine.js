@@ -148,6 +148,7 @@ export default class ThreeDEngine {
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
+      this
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
@@ -714,10 +715,17 @@ export default class ThreeDEngine {
     }
   }
 
+  requestFrame() {
+    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
   animate () {
     this.controls.update();
     this.renderScene();
-    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
+  updateControls() {
+    this.controls.update();
   }
 
   renderScene () {
