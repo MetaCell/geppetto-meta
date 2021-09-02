@@ -333,7 +333,7 @@ export default class CameraManager {
       }
       this.rotate = setInterval(function () {
         that.incrementCameraRotate(0.01, 0);
-      }, 100);
+      }, 50);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(false);

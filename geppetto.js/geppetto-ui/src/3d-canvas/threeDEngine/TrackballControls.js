@@ -5,7 +5,7 @@
  * @author Luca Antiga / http://lantiga.github.io
  */
 var THREE = window.THREE || require('three');
-THREE.TrackballControls = function (object, domElement, handler, engine) {
+THREE.TrackballControls = function (object, domElement, handler) {
   var _this = this;
   var STATE = {
     NONE: -1,
@@ -16,7 +16,6 @@ THREE.TrackballControls = function (object, domElement, handler, engine) {
     TOUCH_ZOOM_PAN: 4,
   };
 
-  this.engine = engine ;
   this.object = object;
   this.domElement = domElement !== undefined ? domElement : document;
 
@@ -84,6 +83,7 @@ THREE.TrackballControls = function (object, domElement, handler, engine) {
   var changeEvent = { type: 'change' };
   var startEvent = { type: 'start' };
   var endEvent = { type: 'end' };
+  var stopEvent = { type: 'stop' }
 
   // methods
 
@@ -367,10 +367,9 @@ THREE.TrackballControls = function (object, domElement, handler, engine) {
       _this.dispatchEvent(changeEvent);
 
       lastPosition.copy(_this.object.position);
-      this.engine.requestFrame();
     }
     else {
-      this.engine.stop();
+      _this.dispatchEvent(stopEvent);
     }
 
     // Has the camera stopped moving? (&& has the camera started moving)

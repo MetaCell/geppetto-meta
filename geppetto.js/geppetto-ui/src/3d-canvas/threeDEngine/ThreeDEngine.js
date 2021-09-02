@@ -522,6 +522,18 @@ export default class ThreeDEngine {
    */
   setupListeners (onSelection) {
     const that = this;
+
+    this.controls.addEventListener('start', function(e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('change', function(e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('stop', function(e) {
+      that.stop()
+    });
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
@@ -628,6 +640,7 @@ export default class ThreeDEngine {
                     }
                   }
                 }
+                that.requestFrame();
                 onSelection(that.selectionStrategy(selectedMap))
               }
             }
