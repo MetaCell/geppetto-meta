@@ -264,7 +264,7 @@ export default class CameraManager {
 
     if (obj instanceof THREE.Object3D) {
       const bb = new THREE.Box3();
-      for (var i = 0; i < obj.children.length; i++) {
+      for (let i = 0; i < obj.children.length; i++) {
         bb.union(this.boundingBox(obj.children[i]));
       }
       return bb;
@@ -333,7 +333,7 @@ export default class CameraManager {
       }
       this.rotate = setInterval(function () {
         that.incrementCameraRotate(0.01, 0);
-      }, 100);
+      }, 50);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(false);

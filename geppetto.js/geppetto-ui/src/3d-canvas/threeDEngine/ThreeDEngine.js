@@ -113,6 +113,7 @@ export default class ThreeDEngine {
 
     if (shaders) {
       const effectBloom = new BloomPass(0.75);
+      // todo: grayscale shouldn't be false
       const effectFilm = new FilmPass(0.5, 0.5, 1448, false);
       const effectFocus = new ShaderPass(FocusShader);
 
@@ -522,6 +523,18 @@ export default class ThreeDEngine {
    */
   setupListeners (onSelection) {
     const that = this;
+
+    this.controls.addEventListener('start', function (e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('change', function (e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('stop', function (e) {
+      that.stop()
+    });
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
@@ -628,6 +641,7 @@ export default class ThreeDEngine {
                     }
                   }
                 }
+                that.requestFrame();
                 onSelection(that.selectionStrategy(selectedMap))
               }
             }
@@ -719,10 +733,17 @@ export default class ThreeDEngine {
     }
   }
 
+  requestFrame () {
+    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
   animate () {
     this.controls.update();
     this.renderScene();
-    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
+  updateControls () {
+    this.controls.update();
   }
 
   renderScene () {

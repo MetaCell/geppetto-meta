@@ -83,6 +83,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
   var changeEvent = { type: 'change' };
   var startEvent = { type: 'start' };
   var endEvent = { type: 'end' };
+  var stopEvent = { type: 'stop' }
 
   // methods
 
@@ -367,6 +368,9 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
       lastPosition.copy(_this.object.position);
     }
+    else {
+      _this.dispatchEvent(stopEvent);
+    }
 
     // Has the camera stopped moving? (&& has the camera started moving)
     if (_this.allSteady() && _this.cameraChanged) {
@@ -402,6 +406,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.object.lookAt(_this.target);
 
     _this.dispatchEvent(changeEvent);
+    _this.update();
   };
 
   this.reset = function () {
@@ -419,6 +424,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.object.lookAt(_this.target);
 
     _this.dispatchEvent(changeEvent);
+    _this.update();
 
     lastPosition.copy(_this.object.position);
 
@@ -491,6 +497,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     document.addEventListener('mouseup', mouseup, false);
 
     _this.dispatchEvent(startEvent);
+    _this.update();
   }
 
   function mousemove (event) {
@@ -510,6 +517,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     } else if (_state === STATE.PAN && !_this.noPan) {
       _panEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
     }
+    _this.update();
   }
 
   function mouseup (event) {
@@ -525,6 +533,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     document.removeEventListener('mousemove', mousemove);
     document.removeEventListener('mouseup', mouseup);
     _this.dispatchEvent(endEvent);
+    _this.update();
 
     _this.unsetCameraByConsoleLock();
   }
@@ -542,6 +551,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
     _this.dispatchEvent(startEvent);
     _this.dispatchEvent(endEvent);
+    _this.update();
 
     _this.unsetCameraByConsoleLock();
   }
@@ -578,6 +588,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     }
 
     _this.dispatchEvent(startEvent);
+    _this.update();
   }
 
   function touchmove (event) {
@@ -608,6 +619,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
       _panEnd.copy(getMouseOnScreen(x, y));
       break;
     }
+    _this.update();
   }
 
   function touchend (event) {
@@ -630,12 +642,15 @@ THREE.TrackballControls = function (object, domElement, handler) {
     }
 
     _this.dispatchEvent(endEvent);
+    _this.update(); 
 
     _this.unsetCameraByConsoleLock();
+    _this.update();
   }
 
   function contextmenu (event) {
     event.preventDefault();
+    _this.update();
   }
 
   this.incrementRotationEnd = function (valX, valY, valZ) {
@@ -656,6 +671,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.noRotate = false;
 
     _this.unsetCameraByConsoleLock();
+    _this.update();
   };
 
   function nanToZero (vector) {
@@ -677,6 +693,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.noPan = false;
 
     _this.unsetCameraByConsoleLock();
+    _this.update();
   };
 
   this.incrementZoomEnd = function (val) {
@@ -686,6 +703,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.noZoom = false;
 
     _this.unsetCameraByConsoleLock();
+    _this.update();
   };
 
   this.dispose = function () {
