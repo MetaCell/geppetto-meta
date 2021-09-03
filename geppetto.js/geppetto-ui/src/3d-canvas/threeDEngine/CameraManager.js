@@ -264,7 +264,7 @@ export default class CameraManager {
 
     if (obj instanceof THREE.Object3D) {
       const bb = new THREE.Box3();
-      for (var i = 0; i < obj.children.length; i++) {
+      for (let i = 0; i < obj.children.length; i++) {
         bb.union(this.boundingBox(obj.children[i]));
       }
       return bb;

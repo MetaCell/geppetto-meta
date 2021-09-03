@@ -112,6 +112,7 @@ export default class ThreeDEngine {
 
     if (shaders) {
       const effectBloom = new BloomPass(0.75);
+      // todo: grayscale shouldn't be false
       const effectFilm = new FilmPass(0.5, 0.5, 1448, false);
       const effectFocus = new ShaderPass(FocusShader);
 
@@ -148,7 +149,6 @@ export default class ThreeDEngine {
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
-      this
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
@@ -523,15 +523,15 @@ export default class ThreeDEngine {
   setupListeners (onSelection) {
     const that = this;
 
-    this.controls.addEventListener('start', function(e) {
+    this.controls.addEventListener('start', function (e) {
       that.requestFrame();
     });
 
-    this.controls.addEventListener('change', function(e) {
+    this.controls.addEventListener('change', function (e) {
       that.requestFrame();
     });
 
-    this.controls.addEventListener('stop', function(e) {
+    this.controls.addEventListener('stop', function (e) {
       that.stop()
     });
     // when the mouse moves, call the given function
@@ -728,7 +728,7 @@ export default class ThreeDEngine {
     }
   }
 
-  requestFrame() {
+  requestFrame () {
     this.frameId = window.requestAnimationFrame(this.animate);
   }
 
@@ -737,7 +737,7 @@ export default class ThreeDEngine {
     this.renderScene();
   }
 
-  updateControls() {
+  updateControls () {
     this.controls.update();
   }
 
