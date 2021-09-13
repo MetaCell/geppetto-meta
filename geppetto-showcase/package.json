@@ -51,6 +51,7 @@
     "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
     "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
     "@types/react-dom": "^16.9.5",
+    "copy-webpack-plugin": "^6.3.2",
     "font-awesome": "^4.7.0",
     "prismjs": "^1.20.0",
     "react": "^17.0.2",
