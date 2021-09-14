@@ -57,7 +57,7 @@ class MultipleInstancesExample extends Component {
     loadInstances()
     this.state = {
       data: getProxyInstances(),
-      numberOfInstances: 50,
+      numberOfInstances: 5,
       cameraOptions: {
         angle: 50,
         near: 0.01,
