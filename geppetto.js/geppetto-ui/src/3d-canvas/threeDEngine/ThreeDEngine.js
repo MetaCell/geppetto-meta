@@ -37,6 +37,7 @@ export default class ThreeDEngine {
     this.renderer = null;
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
+    this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold);
     this.pickingEnabled = pickingEnabled;
@@ -112,6 +113,7 @@ export default class ThreeDEngine {
 
     if (shaders) {
       const effectBloom = new BloomPass(0.75);
+      // todo: grayscale shouldn't be false
       const effectFilm = new FilmPass(0.5, 0.5, 1448, false);
       const effectFocus = new ShaderPass(FocusShader);
 
@@ -521,6 +523,18 @@ export default class ThreeDEngine {
    */
   setupListeners (onSelection) {
     const that = this;
+
+    this.controls.addEventListener('start', function (e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('change', function (e) {
+      that.requestFrame();
+    });
+
+    this.controls.addEventListener('stop', function (e) {
+      that.stop()
+    });
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
@@ -627,6 +641,7 @@ export default class ThreeDEngine {
                     }
                   }
                 }
+                that.requestFrame();
                 onSelection(that.selectionStrategy(selectedMap))
               }
             }
@@ -653,11 +668,15 @@ export default class ThreeDEngine {
             / that.renderer.domElement.width)
             * 2
           - 1;
+
+        that.mouseContainer.x = event.clientX ;
+        that.mouseContainer.y = event.clientY ;
+
         if (that.hoverListeners && that.hoverListeners.length > 0) {
           const intersects = that.getIntersectedObjects();
           for (const listener in that.hoverListeners) {
             if (intersects.length !== 0) {
-              that.hoverListeners[listener](intersects);
+              that.hoverListeners[listener](intersects, that.mouseContainer.x, that.mouseContainer.y);
             }
           }
         }
@@ -714,10 +733,17 @@ export default class ThreeDEngine {
     }
   }
 
+  requestFrame () {
+    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
   animate () {
     this.controls.update();
     this.renderScene();
-    this.frameId = window.requestAnimationFrame(this.animate);
+  }
+
+  updateControls () {
+    this.controls.update();
   }
 
   renderScene () {

@@ -5,6 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import CanvasTooltip from './CanvasTooltip'
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -18,7 +19,7 @@ const styles = () => ({
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
-  },
+  }
 });
 class CA1Example extends Component {
   constructor (props) {
@@ -28,6 +29,8 @@ class CA1Example extends Component {
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
+      intersected: [],
+      tooltipVisible: false,
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
@@ -64,6 +67,7 @@ class CA1Example extends Component {
     this.onSelection = this.onSelection.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.hoverListener = this.hoverListener.bind(this);
   }
 
   componentDidMount () {
@@ -73,7 +77,6 @@ class CA1Example extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
   handleClickOutside (event) {
-
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){
         this.setState({ hasModelLoaded: false })
@@ -97,6 +100,18 @@ class CA1Example extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
+  hoverListener(objs, canvasX, canvasY) {
+    this.state.intersected = [];
+    objs.forEach((o)=>{
+      this.state.intersected.push({ o: o, x: canvasX, y: canvasY });
+    })
+    this.setState({ intersected: this.state.intersected, tooltipVisible: true });
+
+    setTimeout(()=>{
+      this.setState({ tooltipVisible: false})
+    },1500);
+  }
+
   render () {
     const { classes } = this.props;
     const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
@@ -117,6 +132,19 @@ class CA1Example extends Component {
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
+          <div id={'canvas-tooltips-container'}>
+            <div>
+              { this.state.intersected.length > 0 && 
+                <CanvasTooltip 
+                  visible={ this.state.tooltipVisible } 
+                  x={this.state.intersected[this.state.intersected.length -1].x} 
+                  y={this.state.intersected[this.state.intersected.length -1].y} 
+                  text={this.state.intersected[this.state.intersected.length -1].o.object.uuid} 
+                  id={'canvas-tooltip-' + this.state.intersected[this.state.intersected.length -1].o.object.uuid}>
+                </CanvasTooltip>
+              }
+            </div>
+          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
@@ -125,6 +153,7 @@ class CA1Example extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
+            hoverListeners={[this.hoverListener]}
           />
         </div>
       ) : <Button
