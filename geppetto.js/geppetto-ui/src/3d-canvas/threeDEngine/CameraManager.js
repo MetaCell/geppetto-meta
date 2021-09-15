@@ -332,8 +332,8 @@ export default class CameraManager {
         this.movieMode(true);
       }
       this.rotate = setInterval(function () {
-        that.incrementCameraRotate(0.01, 0);
-      }, 5);
+        that.incrementCameraRotate(0.05, 0);
+      }, 75);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(false);

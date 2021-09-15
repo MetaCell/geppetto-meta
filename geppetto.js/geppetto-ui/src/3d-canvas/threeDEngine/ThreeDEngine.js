@@ -48,6 +48,7 @@ export default class ThreeDEngine {
     this.containerRef = containerRef
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
+    this.lastRequestFrame = 0 ;
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);

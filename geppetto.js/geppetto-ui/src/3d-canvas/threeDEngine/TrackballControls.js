@@ -54,7 +54,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
   this.target = new THREE.Vector3();
 
-  var EPS = 0.000001;
+  var EPS = 200;
 
   var lastPosition = new THREE.Vector3();
 
@@ -363,10 +363,9 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
     _this.object.lookAt(_this.target);
 
-    if (lastPosition.distanceToSquared(_this.object.position) > EPS) {
-      _this.dispatchEvent(changeEvent);
-
+    if (lastPosition.distanceToSquared(_this.object.position) > ( EPS * Math.abs(_zoomStart.y ) ) ) {
       lastPosition.copy(_this.object.position);
+      _this.dispatchEvent(changeEvent);      
     }
     else {
       _this.dispatchEvent(stopEvent);
