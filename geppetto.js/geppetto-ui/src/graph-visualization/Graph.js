@@ -59,10 +59,7 @@ class GeppettoGraphVisualization extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    // if (this.props.d2) {
-    //   this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
-    // }
-    // this.forceUpdate()
+
   }
 
   /**
@@ -485,5 +482,4 @@ GeppettoGraphVisualization.propTypes = {
   forceRadial : PropTypes.number
 };
 
-//export default withResizeDetector(GeppettoGraphVisualization);
 export default GeppettoGraphVisualization;
