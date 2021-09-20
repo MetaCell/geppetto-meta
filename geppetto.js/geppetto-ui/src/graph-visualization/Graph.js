@@ -13,7 +13,7 @@ export default class GeppettoGraphVisualization extends Component {
   // Ref to GGV container
   ggv = React.createRef()
 
-  dimensions = { width: 200, height: 200 }
+  dimensions = { width: this.props.width, height: this.props.height }
 
   font = this.props.font || "6px Source Sans Pro"
   size = this.props.nodeRelSize || 20
