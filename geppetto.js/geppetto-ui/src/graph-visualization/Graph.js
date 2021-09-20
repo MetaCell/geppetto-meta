@@ -5,15 +5,14 @@ import * as d3 from 'd3-force-3d'
 import * as THREE from 'three'
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
-
 import { splitter, getDarkerColor } from './utils'
+import GraphVisualizationShowcase from './showcase/examples/GraphVisualizationShowcase';
+import { withResizeDetector } from 'react-resize-detector';
 
-export default class GeppettoGraphVisualization extends Component {
+class GeppettoGraphVisualization extends Component {
 
   // Ref to GGV container
   ggv = React.createRef()
-
-  dimensions = { width: this.props.width, height: this.props.height }
 
   font = this.props.font || "6px Source Sans Pro"
   size = this.props.nodeRelSize || 20
@@ -22,7 +21,7 @@ export default class GeppettoGraphVisualization extends Component {
   // Gap to leave between lines in text inside nodes in 2D graphs
   doubleGap = Math.floor((this.props.nodeRelSize || 20) * 0.25)
   tripleGap = Math.floor((this.props.nodeRelSize || 20) * 0.35)
-  
+
   timeToCenter2DCamera = this.props.timeToCenter2DCamera || 0
 
   getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
@@ -32,6 +31,10 @@ export default class GeppettoGraphVisualization extends Component {
   getNodeColor = this.props.nodeColor ? this.props.nodeColor instanceof Function ? this.props.nodeColor : () => this.props.nodeColor : () => '#6520ff'
   getNodeLabelColor = this.props.nodeLabelColor ? this.props.nodeLabelColor instanceof Function ? this.props.nodeLabelColor : () => this.props.nodeLabelColor : () => '#ffffff'
 
+  constructor(props) {    
+    super(props);
+    this.state = { nodeSize: 1 };
+  }
   componentDidMount (){
     const { data, url } = this.props
 
@@ -56,14 +59,10 @@ export default class GeppettoGraphVisualization extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    const dimensions = ReactDOM.findDOMNode(this).parentNode.getBoundingClientRect()
-    if (dimensions.width !== this.dimensions.width || dimensions.height !== this.dimensions.height) {
-      this.dimensions = dimensions
-      if (this.props.d2) {
-        this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
-      }
-      this.forceUpdate()
-    }
+    // if (this.props.d2) {
+    //   this.ggv.current.centerAt(0, 0, this.timeToCenter2DCamera)
+    // }
+    // this.forceUpdate()
   }
 
   /**
@@ -366,15 +365,21 @@ export default class GeppettoGraphVisualization extends Component {
   }
 
   render () {
-    const { data, d2 = false, xGap = 20, yGap = 40, ...others } = this.props;
+    const { data, d2 = false, xGap = 20, yGap = 40, width, height, ...others } = this.props;
+
+    let calculatedWidth = width - xGap ;
+    let calculatedHeight = height - yGap ;
+
+    calculatedWidth = calculatedWidth > 0 ? calculatedWidth : 500 ;
+    calculatedHeight = calculatedHeight > 0 ? calculatedHeight : 500 ;
     
     this.addFixedPositionToNodes(data)
      
     const commonProps = {
       ref: this.ggv,
       graphData: data,
-      width: this.dimensions.width - xGap,
-      height: this.dimensions.height - yGap,
+      width: calculatedWidth,
+      height: calculatedHeight,
       onNodeDrag: node => this.onNodeDrag(node),
       ...others
     }
@@ -479,3 +484,6 @@ GeppettoGraphVisualization.propTypes = {
    */
   forceRadial : PropTypes.number
 };
+
+//export default withResizeDetector(GeppettoGraphVisualization);
+export default GeppettoGraphVisualization;
