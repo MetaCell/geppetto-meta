@@ -1,4 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path');
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
@@ -104,5 +105,12 @@ module.exports = smp.wrap({
       filename: './index.html',
       favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
+    new CopyPlugin(
+      {
+        patterns: [
+          { from: path.resolve(__dirname, "../geppetto.js/geppetto-ui/src/3d-canvas/showcase/models"), to: "assets" }
+        ]
+      },
+  ),
   ],
 });

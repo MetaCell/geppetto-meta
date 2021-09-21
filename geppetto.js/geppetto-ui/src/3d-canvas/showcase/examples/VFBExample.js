@@ -5,7 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "../examples/SelectionUtils";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -175,16 +175,16 @@ class VFBExample extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  handleToggle () {
+  async handleToggle () {
     this.setState({ showLoader: true })
 
-    import(/* webpackChunkName: "vfb_model.json" */'./vfb_model.json').then(model => {
-      GEPPETTO.Manager.loadModel(model);
-      for (const iname of INSTANCES) {
-        Instances.getInstance(iname);
-      }
-      this.setState({ hasModelLoaded: true, showLoader: false })
-    })
+    const response = await fetch('../assets/vfb_model.json');
+    const model = await response.json();
+    GEPPETTO.Manager.loadModel(model);
+    for (const iname of INSTANCES) {
+      Instances.getInstance(iname);
+    }
+    this.setState({ hasModelLoaded: true, showLoader: false })
   }
 
   onSelection (selectedInstances){

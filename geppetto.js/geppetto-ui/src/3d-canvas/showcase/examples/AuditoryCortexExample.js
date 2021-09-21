@@ -87,14 +87,14 @@ class AuditoryCortexExample extends Component {
     }
   }
 
-  handleToggle () {
+  async handleToggle () {
     this.setState({ showLoader: true })
 
-    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
-      GEPPETTO.Manager.loadModel(model);
-      Instances.getInstance(INSTANCE_NAME);
-      this.setState({ hasModelLoaded: true, showLoader: false })
-    })
+    const response = await fetch('../assets/acnet_model.json');
+    const model = await response.json();
+    GEPPETTO.Manager.loadModel(model);
+    Instances.getInstance(INSTANCE_NAME);
+    this.setState({ hasModelLoaded: true, showLoader: false });
   }
 
   cameraHandler (obj) {

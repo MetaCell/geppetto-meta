@@ -87,13 +87,13 @@ class CA1Example extends Component {
     this.lastCameraUpdate = obj;
   }
 
-  handleToggle () {
+  async handleToggle () {
     this.setState({ showLoader: true })
-    import(/* webpackChunkName: "ca1_model.json" */'./ca1_model.json').then(model => {
-      GEPPETTO.Manager.loadModel(model);
-      Instances.getInstance(INSTANCE_NAME);
-      this.setState({ hasModelLoaded: true, showLoader:false })
-    })
+    const response = await fetch('../assets/ca1_model.json');
+    const model = await response.json();
+    GEPPETTO.Manager.loadModel(model);
+    Instances.getInstance(INSTANCE_NAME);
+    this.setState({ hasModelLoaded: true, showLoader:false })
   }
 
   onSelection (selectedInstances){

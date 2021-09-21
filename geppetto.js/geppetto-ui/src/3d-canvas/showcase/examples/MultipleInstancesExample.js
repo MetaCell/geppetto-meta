@@ -188,4 +188,4 @@ class MultipleInstancesExample extends Component {
   }
 }
 
-export default withStyles(styles)(MultipleInstancesExample);
+export default withStyles(styles)(MultipleInstancesExample);  
