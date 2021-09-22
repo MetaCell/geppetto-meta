@@ -13,7 +13,8 @@ import * as GeppettoActions from '../actions';
 
 import {
   layoutActions,
-  removeWidget,
+  removeWidgetFromStore,
+  updateWidget,
   setLayout
 } from "./actions";
 
@@ -366,13 +367,16 @@ class LayoutManager {
           this.minimizeWidget(action.data.node);
           defaultAction = false;
         } else {
-          // remove widget from widgets list
-          this.store.dispatch(removeWidget(action.data.node))
+          // remove widget from widgets list 
+          this.store.dispatch(removeWidgetFromStore(action.data.node))
         }
         break;
       }
       case Actions.MAXIMIZE_TOGGLE:
         break;
+      case Actions.RENAME_TAB:
+        this.store.dispatch(updateWidget({...this.getWidget(action.data.node), name: action.data.text}))
+          break;
       case Actions.ADJUST_SPLIT:
         break;
       case Actions.ADD_NODE: {

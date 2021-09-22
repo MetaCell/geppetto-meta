@@ -22,6 +22,8 @@ flex-layout/showcase/FlexLayout.Layout
 
  Sample layout created using the Flexible Layout Component.
 
+> Notice: this example shows a low level use of the base FlexLayout component. See the react-redux-app for a better integration.
+
 ```
 flex-layout/showcase/examples/FlexLayoutShowcase
 ```

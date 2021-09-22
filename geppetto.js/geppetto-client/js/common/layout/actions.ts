@@ -1,4 +1,4 @@
-import { WidgetStatus, Widget } from './model';
+import { WidgetStatus, Widget, WidgetMap } from './model';
 
 export const layoutActions = {
   SET_LAYOUT: 'SET_LAYOUT',
@@ -25,26 +25,31 @@ export const newWidget = ({ path, component, panelName, ...others }) => ({
   }
 });
 
+
 export const addWidget = (widget: Widget) => ({
   type: layoutActions.ADD_WIDGET,
   data: widget
 });
 
-export const addWidgets = (widgets) => ({
+export const addWidgets = (widgets: WidgetMap) => ({
   type: layoutActions.ADD_WIDGETS,
   data: widgets
 });
 
-export const setWidgets = (widgets) => ({
+export const setWidgets = (widgets: WidgetMap) => ({
   type: layoutActions.SET_WIDGETS,
   data: widgets
 });
 
-export const updateWidget = (newConf => ({
+export const updateWidget = (newConf: Widget) => ({
   type: layoutActions.UPDATE_WIDGET,
   data: newConf
-}))
+})
 
+/**
+ * Support action: do not consider as part of the api
+ * @param id 
+ */
 export const setLayout = (newLayout => ({
   type: layoutActions.SET_LAYOUT,
   data: newLayout
@@ -71,12 +76,19 @@ export const activateWidget = id => ({
   data: { id }
 });
 
-export const destroyWidget = id => ({
+export const deleteWidget = id => ({
   type: layoutActions.DESTROY_WIDGET,
   data: { id }
 });
 
-export const removeWidget = id => ({
+
+export const destroyWidget = deleteWidget;
+
+/**
+ * Support action: do not consider as part of the api
+ * @param id 
+ */
+export const removeWidgetFromStore = id => ({
   type: layoutActions.REMOVE_WIDGET,
   data: { id }
 });

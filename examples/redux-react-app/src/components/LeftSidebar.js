@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ButtonGroup, Drawer } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { activateWidget, addWidget, destroyWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
+import { activateWidget, addWidget, deleteWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from 'widgets';
 import { layout } from 'app/layout';
@@ -53,7 +53,7 @@ const LeftSidebar = (props) => {
     // Click callbacks
     const onCustomWidgetClick = () => dispatch(addWidget(MyComponentWidget));
     const onAddWidgetClick = (widget) => dispatch(addWidget(widget));
-    const onRemove = (id) => dispatch(destroyWidget(id));
+    const onRemove = (id) => dispatch(deleteWidget(id));
     const onMaximize = (id) => dispatch(maximizeWidget(id));
     const onMinimize = (id) => dispatch(minimizeWidget(id));
     const onActivate = (id) => dispatch(activateWidget(id));
