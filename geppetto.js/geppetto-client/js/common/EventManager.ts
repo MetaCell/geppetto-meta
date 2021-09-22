@@ -17,23 +17,8 @@ import {
   projectConfigLoaded,
   instanceDeleted,
   instancesCreated,
-  // TODO: why are these imports unused?
-  showTutorial,
-  hideTutorial,
-  startTutorial,
-  stopTutorial,
-  showQueryBuilder,
-  hideQueryBuilder,
   showSpinner,
   hideSpinner,
-  showHelp,
-  hideHelp,
-  canvasInitialised,
-  projectMadePublic,
-  controlPanelOpen,
-  controlPanelClose,
-  litEntitiesChanged,
-  componentDestroyed,
   parametersSet,
   commandLog,
   commandLogDebug,
@@ -53,7 +38,16 @@ import {
   jupyterGeppettoExtensionReady,
   disableControls,
   GeppettoAction,
+  addWidget,
+  addWidgets,
+  deleteWidget as deleteWidget,
+  updateWidget,
+  setWidgets,
+  minimizeWidget,
+  maximizeWidget,
+  activateWidget
 } from './actions';
+import { Widget, WidgetMap } from './layout/model';
 
 export const callbacksList: { [id: string]: Set<Function> } = {}
 
@@ -374,6 +368,73 @@ class EventManager {
   disableControls() {
     this.actionsHandler[clientActions.DISABLE_CONTROLS]()
   }
+
+  /**
+   * Add a widget to the layout
+   * @param widget 
+   */
+  addWidget(widget: Widget) {
+    this.store.dispatch(addWidget(widget))
+  }
+
+  /**
+   * Update a widget
+   * @param widget 
+   */
+  updateWidget(widget: Widget) {
+    this.store.dispatch(updateWidget(widget))
+  }
+
+  /**
+   * Adds all the widgets to the layout
+   * @param widget 
+   */
+  addWidgets(widget: WidgetMap) {
+    this.store.dispatch(addWidgets(widget))
+  }
+  
+  /**
+   * Set/replaces widgets to the layout
+   * @param widget 
+   */
+  setWidgets(widget: WidgetMap) {
+    this.store.dispatch(setWidgets(widget))
+  }
+
+  /**
+   * Removes a widget from the layout
+   * @param widget 
+   */
+  deleteWidget(widgetId: string) {
+    this.store.dispatch(deleteWidget(widgetId))
+  }
+  
+   /**
+   * Set widget to minimized status (sugar for update widget)
+   * @param widget 
+   */
+  minimizeWidget(widgetId: string) {
+    this.store.dispatch(minimizeWidget(widgetId))
+  }
+
+   /**
+   * Set widget to maximize status (sugar for update widget)
+   * @param widget 
+   */
+  maximizeWidget(widgetId: string) {
+    this.store.dispatch(maximizeWidget(widgetId))
+  }
+  
+
+  /**
+   * Set widget to active status (sugar for update widget)
+   * @param widget 
+   */
+  activateWidget(widgetId: string) {
+    this.store.dispatch(activateWidget(widgetId))
+  }
+  
+  
 }
 
 export default new EventManager();

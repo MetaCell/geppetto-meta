@@ -13,7 +13,7 @@ import * as GeppettoActions from '../actions';
 
 import {
   layoutActions,
-  removeWidget,
+  removeWidgetFromStore,
   updateWidget,
   setLayout
 } from "./actions";
@@ -368,7 +368,7 @@ class LayoutManager {
           defaultAction = false;
         } else {
           // remove widget from widgets list 
-          this.store.dispatch(removeWidget(action.data.node))
+          this.store.dispatch(removeWidgetFromStore(action.data.node))
         }
         break;
       }
