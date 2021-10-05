@@ -11,6 +11,8 @@ import theme from './theme';
 
 initGeppetto();
 
+console.log('this', this);
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
