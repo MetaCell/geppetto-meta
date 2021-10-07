@@ -7,8 +7,8 @@ import Loader from "../../../loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 import CanvasTooltip from './CanvasTooltip'
 
-const INSTANCE_NAME = 'network_CA1PyramidalCell';
-const INIT_COLORS = [
+const INSTANCE_NAME = 'acnet2_color';
+const COLORS = [
   { r: 0, g: 0.29, b: 0.71, a: 1 },
   { r: 0.43, g: 0.57, b: 0, a: 1 },
   { r: 1, g: 0.41, b: 0.71, a: 1 },
@@ -34,15 +34,17 @@ class ColorChange extends Component {
       backgroundColor: 0x505050,
       data: [
         {
-          instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
-          visualGroups: {
-            index: 4,
-            custom: {
-              soma_group: { color: INIT_COLORS[0], },
-              dendrite_group: { color: INIT_COLORS[1], },
-              axon_group: { color: INIT_COLORS[2], },
-            },
-          },
+          instancePath: 'acnet2.baskets_12',
+          color: COLORS[1],
+        },
+        { instancePath: 'acnet2' },
+        {
+          instancePath: 'acnet2.baskets_12[0]',
+          color: COLORS[2],
+        },
+        {
+          instancePath: 'acnet2.baskets_12[7]',
+          color: COLORS[3],
         },
       ],
       selected: {},
@@ -51,8 +53,8 @@ class ColorChange extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        position: { x: -97.349, y: 53.797, z: 387.82 },
-        rotation: { rx: 0.051, ry: -0.192, rz: -0.569, radius: 361.668 },
+        position: { x: 230.357, y: 256.435, z: 934.238 },
+        rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
         autoRotate: false,
         movieFilter: true,
         reset: false,
@@ -72,7 +74,9 @@ class ColorChange extends Component {
   }
 
   randomizeColor() {
-    this.setState({ backgroundColor: Math.floor(Math.random() * 10000) })
+    const newColor = '0x'+(Math.floor(Math.random() * 10000000)).toString(16);
+
+    this.setState({ backgroundColor: eval(newColor) })
     setTimeout(()=>{
       this.randomizeColor();
     },1500);
@@ -97,7 +101,7 @@ class ColorChange extends Component {
 
   async handleToggle () {
     this.setState({ showLoader: true })
-    const response = await fetch('../assets/ca1_model.json');
+    const response = await fetch('../assets/acnet_model.json');
     const model = await response.json();
     GEPPETTO.Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
@@ -109,15 +113,7 @@ class ColorChange extends Component {
   }
 
   hoverListener(objs, canvasX, canvasY) {
-    this.state.intersected = [];
-    objs.forEach((o)=>{
-      this.state.intersected.push({ o: o, x: canvasX, y: canvasY });
-    })
-    this.setState({ intersected: this.state.intersected, tooltipVisible: true });
 
-    setTimeout(()=>{
-      this.setState({ tooltipVisible: false})
-    },1500);
   }
 
   render () {
