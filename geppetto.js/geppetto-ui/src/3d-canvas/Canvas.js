@@ -5,6 +5,8 @@ import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
+import { Recorder } from "./Recorder";
+import { recordControlsActions } from "../record-controls/RecordControls";
 
 const styles = () => ({
   container: {
@@ -18,8 +20,10 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.state = { modelReady: false }
+    this.recordControls = React.createRef();
+    this.state = { modelReady: false, showDownload: false }
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
+    this.defaultRecordControlsHandler = this.defaultRecordControlsHandler.bind(this)
   }
 
   async componentDidMount () {
@@ -49,6 +53,8 @@ class Canvas extends Component {
       setColorHandler,
       selectionStrategy
     );
+    
+    this.recorder = new Recorder(this.getCanvasElement())
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
@@ -71,7 +77,7 @@ class Canvas extends Component {
   }
   
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props
+    return nextState.modelReady || nextProps !== this.props || this.state.showDownload !== nextState.showDownload
   }
 
   componentWillUnmount () {
@@ -79,6 +85,25 @@ class Canvas extends Component {
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
     );
+  }
+
+  defaultRecordControlsHandler (action){
+    if (this.recorder){
+      switch (action){
+      case recordControlsActions.START:
+        this.recorder.startRecording()
+        this.setState({ showDownload: false })
+        break;
+      case recordControlsActions.STOP:
+        this.recorder.stopRecording()
+        this.setState({ showDownload: true })
+        break;
+      case recordControlsActions.DOWNLOAD:
+        this.recorder.download()
+        break;
+      }
+    }
+    
   }
 
   defaultCameraControlsHandler (action) {
@@ -149,23 +174,38 @@ class Canvas extends Component {
     }
   }
 
+  getCanvasElement (){
+    return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
+  }
+
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
     return true;
   }
 
   render () {
-    const { classes, cameraOptions } = this.props;
+    const { classes, cameraOptions, recorderOptions } = this.props;
+    const { showDownload } = this.state;
     const { cameraControls } = cameraOptions
+    const { recorderControls } = recorderOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    
+    const recordControlsHandler = recorderControls.cameraControlsHandler ? recorderControls.cameraControlsHandler : this.defaultRecordControlsHandler
+
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {
-          <cameraOptions.cameraControls.instance
+          <cameraControls.instance
             ref={this.cameraControls}
             cameraControlsHandler={cameraControlsHandler}
             {...cameraControls.props}
+          />
+        }
+        {
+          <recorderControls.instance
+            ref={this.recordControls}
+            recordControlsHandler={recordControlsHandler}
+            showDownload = {showDownload}
+            {...recorderControls.props}
           />
         }
       </div>
@@ -189,6 +229,12 @@ Canvas.defaultProps = {
       props: {},
     },
     rotateSpeed: 0.5,
+  },
+  recorderOptions: {
+    recorderControls: {
+      instance: null,
+      props: {}
+    }
   },
   backgroundColor: 0x000000,
   pickingEnabled: true,
@@ -216,6 +262,10 @@ Canvas.propTypes = {
    * Options to customize camera
    */
   cameraOptions: PropTypes.object,
+  /**
+   * Options to customize recorder
+   */
+  recorderOptions: PropTypes.object,
   /**
    * Three JS objects to add to the scene
    */
