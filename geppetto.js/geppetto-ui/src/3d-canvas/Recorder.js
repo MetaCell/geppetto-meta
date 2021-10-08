@@ -3,7 +3,6 @@ export class Recorder {
     this.stream = canvas.captureStream();
     this.setupMediaRecorder()
     this.recordedBlobs = []
-    this.handleDataAvailable = this.handleDataAvailable.bind(this)
   }
 
   handleDataAvailable (event) {
