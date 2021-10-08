@@ -53,7 +53,6 @@ export default class MeshFactory {
   }
 
   async start (instances) {
-    this.clean();
     await this.traverseInstances(instances);
   }
 
@@ -69,9 +68,6 @@ export default class MeshFactory {
 
   async traverseInstances (instances) {
     for (let j = 0; j < instances.length; j++) {
-      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())) {
-        continue
-      }
       await this.checkVisualInstance(instances[j]);
     }
   }
@@ -270,12 +266,22 @@ export default class MeshFactory {
     return threeDeeObjList
   }
 
+  alreadyProcessed (instance, id, material) {
+    const instancePath = instance.getInstancePath() ;
+    const currentInstance = this.meshes[instancePath] ;
+    const path = `${instancePath}.${id}`
+    return currentInstance?.material.defaultColor === material.defaultColor && currentInstance.mergedMeshesPaths.indexOf(path) > -1 ; //same material for mershed group and id already there
+  }
+
   async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
 
     const lines = this.getDefaultGeometryType() === 'lines';
 
     const material = lines ? materials.line : materials.mesh;
+
+    if (this.alreadyProcessed(instance, id, material))
+      return ;
 
     // eslint-disable-next-line default-case
     switch (node.eClass) {
@@ -578,8 +584,8 @@ export default class MeshFactory {
 
       mesh.instancePath = instancePath;
       /*
-       * if the model file is specifying a position for the loaded meshes then we translate them here
-       */
+      * if the model file is specifying a position for the loaded meshes then we translate them here
+      */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
       }

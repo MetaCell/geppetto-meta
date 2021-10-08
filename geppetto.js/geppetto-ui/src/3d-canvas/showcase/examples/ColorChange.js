@@ -34,15 +34,6 @@ class ColorChange extends Component {
       backgroundColor: 0x505050,
       data: [
         {
-          instancePath: 'acnet2.baskets_12',
-          color: COLORS[1],
-        },
-        { instancePath: 'acnet2' },
-        {
-          instancePath: 'acnet2.baskets_12[0]',
-          color: COLORS[2],
-        },
-        {
           instancePath: 'acnet2.baskets_12[7]',
           color: COLORS[3],
         },
