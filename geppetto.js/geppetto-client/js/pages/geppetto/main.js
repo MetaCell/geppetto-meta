@@ -8,7 +8,7 @@
  */
 define(function (require) {
   // TODO: needs to load processed css not less!
-  require('../../../style/less/main.less');
+  require('../../style/less/main.less');
 
   var GEPPETTO = require('./GEPPETTO');
   window.GEPPETTO = GEPPETTO

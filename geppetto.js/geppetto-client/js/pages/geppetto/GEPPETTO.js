@@ -6,7 +6,6 @@
  */
 define(function (require) {
 
-  var $ = require('jquery'), _ = require('underscore');
   var THREEx = require('./THREEx.KeyboardState'); // Nothing to do with THREE
   var EventManager = require('../../common/EventManager').default;
 
@@ -100,7 +99,6 @@ define(function (require) {
   };
 
   GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
-  require('../../common/GEPPETTO.CommandController')(GEPPETTO);
   require('./GEPPETTO.Events').default(GEPPETTO);
 
   require('../../common/GEPPETTO.Utility')(GEPPETTO);
@@ -114,7 +112,6 @@ define(function (require) {
   require('./GEPPETTO.Main')(GEPPETTO);
   require('@metacell/geppetto-meta-core/ProjectFactory')(GEPPETTO);
   require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
-  require('../../geppettoProject/ProjectsController')(GEPPETTO);
 
   GEPPETTO.eventsMapping = {
     [GEPPETTO.Events.Select]: EventManager.clientActions.SELECT,
