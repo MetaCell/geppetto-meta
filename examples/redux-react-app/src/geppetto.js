@@ -12,6 +12,10 @@ export const initGeppetto = () => {
     GEPPETTO
   );
 
+  const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(
+    GEPPETTO
+  );
+
   const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
   GEPPETTO.Manager = new Manager();
 

@@ -7,7 +7,7 @@ cd $app/geppetto.js/geppetto-core
 yarn && yarn build && yarn publish:yalc
 
 cd $app/geppetto.js/geppetto-ui
-yarn && yarn build && yarn publish:yalc
+yarn && yarn build:dev && yarn publish:yalc
 
 cd $app/geppetto.js/geppetto-client
 yarn && yarn build && yarn publish:yalc
