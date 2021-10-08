@@ -1,0 +1,50 @@
+.rotate (@deg) {
+  -webkit-transform: rotate(@deg);
+  -moz-transform: rotate(@deg);
+  -ms-transform: rotate(@deg);
+  -o-transform: rotate(@deg);
+}
+
+#mainContainer {
+  .position-toolbar {
+    top: 20px;
+  }
+}
+
+.position-toolbar {
+  position: relative;
+
+  .rotate90 {
+    .rotate(90deg);
+  }
+
+  .rotate180 {
+    .rotate(180deg);
+  }
+
+  .dg {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 200;
+  }
+
+  .squareB {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    padding: 1px;
+  }
+
+
+  .start {
+    left: 37px;
+    top: 280px;
+  }
+  .stop {
+    left: 37px;
+    top: 280px;
+  }
+  .download {
+    left: 37px;
+    top: 308px;
+  }
+}

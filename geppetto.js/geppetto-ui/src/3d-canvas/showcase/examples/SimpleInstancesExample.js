@@ -7,6 +7,7 @@ import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from './Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import RecordControls from "../../../record-controls/RecordControls";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -64,7 +65,7 @@ class SimpleInstancesExample extends Component {
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false, },
+          props: { wireframeButtonEnabled: false },
         },
         reset: false,
         autorotate: false,
@@ -137,15 +138,23 @@ class SimpleInstancesExample extends Component {
         rotation: this.lastCameraUpdate.rotation,
       };
     }
+    const recorderOptions = {
+      allowRecorder: false,
+      recorderControls: { 
+        instance: RecordControls,
+        props: {}
+      }
+    }
+
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
       <Canvas
         ref={this.canvasRef}
         data={canvasData}
         cameraOptions={camOptions}
+        recorderOptions={recorderOptions}
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
         onSelection={this.onSelection}
-        // hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />
     </div> : <Button
