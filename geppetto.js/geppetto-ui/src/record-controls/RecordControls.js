@@ -8,8 +8,8 @@ import PropTypes from "prop-types";
 
 
 export const recordControlsActions = {
-  START: 'start',
-  STOP: 'stop',
+  START: 'START',
+  STOP: 'STOP',
   DOWNLOAD: 'DOWNLOAD',
 };
 
