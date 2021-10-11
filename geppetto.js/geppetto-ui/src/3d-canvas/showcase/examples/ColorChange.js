@@ -9,9 +9,9 @@ import CanvasTooltip from './CanvasTooltip'
 
 const INSTANCE_NAME = 'acnet2_color';
 const COLORS = [
-  { r: 0, g: 0.29, b: 0.71, a: 1 },
-  { r: 0.43, g: 0.57, b: 0, a: 1 },
-  { r: 1, g: 0.41, b: 0.71, a: 1 },
+  { r: 0, g: 0.29, b: 0.71, a: 0.25 },
+  { r: 0.43, g: 0.57, b: 0, a: 0.25 },
+  { r: 1, g: 0.41, b: 0.71, a: 0.25 },
 ];
 const styles = () => ({
   container: {
@@ -35,7 +35,7 @@ class ColorChange extends Component {
       data: [
         {
           instancePath: 'acnet2.baskets_12[7]',
-          color: COLORS[3],
+          color: COLORS[1],
         },
       ],
       selected: {},
@@ -64,17 +64,12 @@ class ColorChange extends Component {
     this.hoverListener = this.hoverListener.bind(this);
   }
 
-  randomizeColor() {
+  changeBgCOlor() {
     const newColor = '0x'+(Math.floor(Math.random() * 10000000)).toString(16);
-
     this.setState({ backgroundColor: eval(newColor) })
-    setTimeout(()=>{
-      this.randomizeColor();
-    },1500);
   }
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
-    this.randomizeColor();
   }
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
@@ -105,6 +100,44 @@ class ColorChange extends Component {
 
   hoverListener(objs, canvasX, canvasY) {
 
+  }
+
+  newInstanceExists() {
+    const instancePath = 'acnet2.baskets_12[0]';
+    const instance = this.state.data.filter((i) => { return i.instancePath === instancePath });
+    return instance.length > 0 ;
+  }
+
+  addInstance() {
+    if (!this.newInstanceExists())
+    {
+      const newData = this.state.data;
+      newData.push({
+        instancePath: 'acnet2.baskets_12[0]',
+        color: COLORS[2],
+      },);
+      this.setState({ data: newData })
+    }
+  }
+
+  removeInstance() {
+    if (this.newInstanceExists())
+    {
+      const newData = this.state.data.filter((i)=> { return (i.instancePath !== 'acnet2.baskets_12[0]') });
+      this.setState({ data: newData })
+    }
+  }
+
+  changeSameColor() {
+    const newData = this.state.data;
+    this.setState({ data: newData })
+  }
+
+
+  changeColor() {
+    const newData = this.state.data;
+    newData[0].color = COLORS[Math.floor(Math.random()*COLORS.length)]; //random color for first element
+    this.setState({ data: newData })
   }
 
   render () {
@@ -150,6 +183,28 @@ class ColorChange extends Component {
             backgroundColor={this.state.backgroundColor}
             hoverListeners={[this.hoverListener]}
           />
+          <div>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => { this.addInstance() } }>Add Instance</Button><br/>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => { this.removeInstance() } } >Remove Instance</Button><br/>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => { this.changeColor() } }>Change Color</Button><br/>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => { this.changeSameColor() } }>Change Same Color</Button><br/>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => { this.changeBgCOlor() } }>Change Bg Color</Button><br/>
+          </div>
         </div>
       ) : <Button
         variant="outlined"

@@ -715,6 +715,7 @@ export default class ThreeDEngine {
     this.updateInstancesConnectionLines(proxyInstances);
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.cameraHandler(cameraOptions);
   }
 
   resize () {
