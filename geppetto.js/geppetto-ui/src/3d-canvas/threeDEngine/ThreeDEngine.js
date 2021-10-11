@@ -202,10 +202,14 @@ export default class ThreeDEngine {
    * Clears the scene
    *
    */
-  clearScene () {
-    const toRemove = this.scene.children.filter(
+  clearScene (instances) {
+    let toRemove = this.scene.children.filter(
       child => child.type === 'Mesh'
     );
+    if (instances) {
+      const instancesList = instances.map((i)=>{ return i.instancePath }) ;
+      toRemove = toRemove.filter((i) => { return instancesList.indexOf(i.instancePath) == -1 ; })
+    }
     for (let child of toRemove) {
       this.scene.remove(child);
     }
@@ -703,6 +707,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);

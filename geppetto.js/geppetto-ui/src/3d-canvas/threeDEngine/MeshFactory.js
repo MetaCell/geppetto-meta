@@ -53,6 +53,7 @@ export default class MeshFactory {
   }
 
   async start (instances) {
+    this.cleanWithInstances(instances);
     await this.traverseInstances(instances);
   }
 
@@ -951,6 +952,14 @@ export default class MeshFactory {
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
     return this.rayCasterLinePrecision;
+  }
+
+  cleanWithInstances(instances) {
+    const paths = instances.map((i)=>{ return i.getInstancePath() });
+    Object.keys(this.meshes).forEach((m)=>{
+      if (paths.indexOf(m) == -1 )
+        delete this.meshes[m];
+    });
   }
 
   clean () {
