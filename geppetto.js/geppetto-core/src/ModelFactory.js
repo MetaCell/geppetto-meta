@@ -505,7 +505,6 @@ export default function (GEPPETTO) {
               type.parent = parent;
 
               types.push(type);
-              GEPPETTO.CommandController.createTags(type.getPath(), GEPPETTO.Utility.extractMethodsFromObject(type, true));
             }
           }
         }
@@ -1126,7 +1125,6 @@ export default function (GEPPETTO) {
 
             // getChildren of instance and recurse by the power of greyskull!
             updateInstancesCapabilities(instances[j].getChildren());
-            GEPPETTO.CommandController.createTags(instances[j].getPath(), GEPPETTO.Utility.extractMethodsFromObject(instances[j], true));
           }
         };
 
@@ -1151,9 +1149,6 @@ export default function (GEPPETTO) {
 
           // update instances capabilities
           updateInstancesCapabilities(varInstances);
-          if (variables[i] != null || undefined){
-            GEPPETTO.CommandController.createTags(variables[i].getPath(), GEPPETTO.Utility.extractMethodsFromObject(variables[i], true));
-          }
         }
       },
 
@@ -1506,10 +1501,6 @@ export default function (GEPPETTO) {
 
               // ad to newly created instances list
               newlyCreatedInstances.push(explodedInstance);
-                            
-              if (explodedInstance != null || undefined){
-                GEPPETTO.CommandController.createTags(explodedInstance.getInstancePath(), GEPPETTO.Utility.extractMethodsFromObject(explodedInstance, true));
-              }
             }
 
             //  if there is a parent add to children else add to top level instances
@@ -1583,10 +1574,6 @@ export default function (GEPPETTO) {
               parentInstance.addChild(newlyCreatedInstance);
             } else {
               topLevelInstances.push(newlyCreatedInstance);
-            }
-                        
-            if (newlyCreatedInstance != null || undefined){
-              GEPPETTO.CommandController.createTags(newlyCreatedInstance.getInstancePath(), GEPPETTO.Utility.extractMethodsFromObject(newlyCreatedInstance, true));
             }
           }
         }
@@ -1741,8 +1728,6 @@ export default function (GEPPETTO) {
         if (!(parent == undefined || parent == null) && !parent.hasCapability(capability.capabilityId)) {
           // apply capability
           parent.extendApi(capability);
-                    
-          GEPPETTO.CommandController.createTags(parent.getPath(), GEPPETTO.Utility.extractMethodsFromObject(parent, true));
 
           this.propagateCapabilityToParents(capability, parent);
         }

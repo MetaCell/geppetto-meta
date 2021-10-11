@@ -30,7 +30,6 @@ define(function (require) {
           p.persisted = persisted;
           p.isPublicProject = project.isPublic;
                 
-          GEPPETTO.CommandController.updateTags("Project", p, true);
           return p;
         },
 

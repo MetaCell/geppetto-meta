@@ -14,10 +14,6 @@ GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();
 GEPPETTO.ModelFactory = ModelFactory;
 console.warn = () => null;
-GEPPETTO.CommandController = {
-  log: console.log,
-  createTags: (a, b) => null
-};
 
 test('load demo model 1: Hodgkin-Huxley NEURON simulation', () => {
   GEPPETTO.Manager.loadModel(require('./resources/model.1.json'));

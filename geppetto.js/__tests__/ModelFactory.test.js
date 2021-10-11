@@ -15,10 +15,6 @@ GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 GEPPETTO.Manager = new Manager();
 console.warn = () => null;
-GEPPETTO.CommandController = {
-  log: console.log,
-  createTags: (a, b) => null
-};
 
 
 test('load test model with new instances', () => {

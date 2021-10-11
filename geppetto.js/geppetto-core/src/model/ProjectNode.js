@@ -30,9 +30,6 @@ define(['backbone'], function (require) {
      *                           node
      */
     initialize: function (options) {
-      for (var entity in this.runTimeTree) {
-        GEPPETTO.CommandController.removeCommands(entity);
-      }
       this.runTimeTree = {};
       if (options) {
         this.name = options.name;
