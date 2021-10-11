@@ -36,9 +36,9 @@ define(function (require) {
     $(document).ready(
       function () {
         if (expParam) {
-          GEPPETTO.CommandController.execute(command + '("' + simParam + '", "' + expParam + '")');
+          eval(command + '("' + simParam + '", "' + expParam + '")');
         } else {
-          GEPPETTO.CommandController.execute(command + '("' + simParam + '")');
+          eval(command + '("' + simParam + '")');
         }
       });
   }

@@ -104,7 +104,7 @@ Manager.prototype = {
       EventManager.actionsHandler[EventManager.clientActions.SPIN_LOGO]();
 
     } else {
-      GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ALREADY_EXISTS);
+      console.log(GEPPETTO.Resources.VARIABLE_ALREADY_EXISTS);
       // the variable already exists, run the callback
       callback();
     }
@@ -145,7 +145,7 @@ Manager.prototype = {
     // STEP: 3 update components
     EventManager.actionsHandler[EventManager.clientActions.INSTANCES_CREATED](newInstances);
     console.timeEnd(GEPPETTO.Resources.ADDING_VARIABLE);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.VARIABLE_ADDED);
+    console.log(GEPPETTO.Resources.VARIABLE_ADDED);
   },
 
   /**
@@ -187,7 +187,7 @@ Manager.prototype = {
     EventManager.actionsHandler[EventManager.clientActions.INSTANCES_CREATED](newInstances);
 
     console.timeEnd(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
+    console.log(GEPPETTO.Resources.IMPORT_TYPE_RESOLVED);
   },
 
   /**
@@ -215,7 +215,7 @@ Manager.prototype = {
             
     // STEP 1: merge model - expect a fully formed Geppetto model to be merged into current one
     var diffReport = GEPPETTO.ModelFactory.mergeValue(rawModel, true);
-    GEPPETTO.CommandController.log(GEPPETTO.Resources.IMPORT_VALUE_RESOLVED);
+    console.log(GEPPETTO.Resources.IMPORT_VALUE_RESOLVED);
   },
 
   /**

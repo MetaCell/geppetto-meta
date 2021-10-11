@@ -95,8 +95,8 @@ define(['backbone'], function (require) {
         parameters["projectId"] = projectID;
         GEPPETTO.MessageSocket.send("load_project_from_id", parameters);
         this.initializationTime = new Date();
-        GEPPETTO.CommandController.log("Message sent : " + this.initializationTime.getTime(), true);
-        GEPPETTO.CommandController.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
+        console.log("Message sent : " + this.initializationTime.getTime(), true);
+        console.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
       } else {
         loadStatus = GEPPETTO.Resources.PROJECT_UNSPECIFIED;
       }
@@ -122,8 +122,8 @@ define(['backbone'], function (require) {
         GEPPETTO.MessageSocket.send("load_project_from_url", projectURL);
         this.persisted = false;
         this.initializationTime = new Date();
-        GEPPETTO.CommandController.log("Message sent : " + this.initializationTime.getTime(), true);
-        GEPPETTO.CommandController.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
+        console.log("Message sent : " + this.initializationTime.getTime(), true);
+        console.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
       } else {
         loadStatus = GEPPETTO.Resources.PROJECT_UNSPECIFIED;
       }
@@ -150,8 +150,8 @@ define(['backbone'], function (require) {
 
         GEPPETTO.MessageSocket.send("load_project_from_content", content);
         this.initializationTime = new Date();
-        GEPPETTO.CommandController.log("Message sent : " + this.initializationTime.getTime(), true);
-        GEPPETTO.CommandController.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
+        console.log("Message sent : " + this.initializationTime.getTime(), true);
+        console.log(GEPPETTO.Resources.MESSAGE_OUTBOUND_LOAD, true);
         // trigger simulation restart event
 
       } else {

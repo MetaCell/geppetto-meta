@@ -92,7 +92,7 @@ function MessageHandler (GEPPETTO) {
     var message = JSON.parse(payload.update);
     var projectID = message.projectID;
     GEPPETTO.Manager.persistProject(projectID);
-    GEPPETTO.CommandController.log("Project persisted");
+    console.log("Project persisted");
     EventManager.actionsHandler[EventManager.clientActions.STOP_PERSIST]();
   };
 
@@ -101,7 +101,7 @@ function MessageHandler (GEPPETTO) {
   };
 
   messageHandler[messageTypes.WATCHED_VARIABLES_SET] = function (payload) {
-    GEPPETTO.CommandController.log("The list of variables to watch was successfully updated.");
+    console.log("The list of variables to watch was successfully updated.");
   };
 
   // handles the case where service doesn't support feature and shows message
@@ -112,44 +112,44 @@ function MessageHandler (GEPPETTO) {
 
   // received model tree from server
   messageHandler[messageTypes.UPDATE_MODEL_TREE] = function (payload) {
-    GEPPETTO.CommandController.log("The model parameters were successfully updated.");
+    console.log("The model parameters were successfully updated.");
   };
 
   // received supported outputs from server
   messageHandler[messageTypes.GET_SUPPORTED_OUTPUTS] = function (payload) {
     var supportedOutputs = JSON.parse(payload.get_supported_outputs);
-    GEPPETTO.CommandController.log(supportedOutputs);
+    console.log(supportedOutputs);
   };
 
   messageHandler[messageTypes.PROJECT_PROPS_SAVED] = function (payload) {
-    GEPPETTO.CommandController.log("Project saved succesfully");
+    console.log("Project saved succesfully");
     EventManager.actionsHandler[EventManager.clientActions.PROJECT_PROPERTIES_SAVED]();
   };
 
   messageHandler[messageTypes.SET_PARAMETERS] = function (payload) {
-    GEPPETTO.CommandController.log("Set parameters succesfully");
+    console.log("Set parameters succesfully");
     EventManager.actionsHandler[EventManager.clientActions.PARAMETERS_SET]();
   };
 
   messageHandler[messageTypes.DOWNLOAD_RESULTS] = function (payload) {
-    GEPPETTO.CommandController.log("Results downloaded succesfully",true);
+    console.log("Results downloaded succesfully",true);
   };
 
   messageHandler[messageTypes.DOWNLOAD_MODEL] = function (payload) {
-    GEPPETTO.CommandController.log("Model downloaded succesfully",true);
+    console.log("Model downloaded succesfully",true);
   };
 
   messageHandler[messageTypes.DOWNLOAD_PROJECT] = function (payload) {
     EventManager.actionsHandler[EventManager.clientActions.PROJECT_DOWNLOADED]();
-    GEPPETTO.CommandController.log("Project downloaded succesfully",true);
+    console.log("Project downloaded succesfully",true);
   };
 
   messageHandler[messageTypes.RESULTS_UPLOADED] = function (payload) {
-    GEPPETTO.CommandController.log("Results uploaded succesfully",true);
+    console.log("Results uploaded succesfully",true);
   };
 
   messageHandler[messageTypes.MODEL_UPLOADED] = function (payload) {
-    GEPPETTO.CommandController.log("Model uploaded succesfully",true);
+    console.log("Model uploaded succesfully",true);
   };
 
   GEPPETTO.MessageHandler

@@ -46,7 +46,7 @@ define(function (require) {
        * @command G.clear()
        */
       clear: function () {
-        GEPPETTO.CommandController.clear();
+        GEPPETTO.trigger(GEPPETTO.Events.Command_clear);
         return GEPPETTO.Resources.CLEAR_HISTORY;
       },
 
@@ -59,7 +59,7 @@ define(function (require) {
       debug: function (mode) {
         this.debugMode = mode;
 
-        GEPPETTO.CommandController.toggleImplicit();
+        GEPPETTO.trigger(GEPPETTO.Events.Command_toggle_implicit);
 
         return mode ? GEPPETTO.Resources.DEBUG_ON : GEPPETTO.Resources.DEBUG_OFF;
       },

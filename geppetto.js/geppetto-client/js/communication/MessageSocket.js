@@ -51,12 +51,12 @@ define(function (require) {
         } else if ('MozWebSocket' in window) {
           GEPPETTO.MessageSocket.socket = new MozWebSocket(host);
         } else {
-          GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_NOT_SUPPORTED, true);
+          console.log(GEPPETTO.Resources.WEBSOCKET_NOT_SUPPORTED, true);
           return;
         }
 
         GEPPETTO.MessageSocket.socket.onopen = function (e) {
-          GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_OPENED, true);
+          console.log(GEPPETTO.Resources.WEBSOCKET_OPENED, true);
 
           /*
            * attach the handlers once socket is opened on the first connection
@@ -85,7 +85,7 @@ define(function (require) {
           switch (e.code) {
           case 1000:
             GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
-            GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+            console.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
             break;
           default:
             if (GEPPETTO.MessageSocket.lostConnectionId === undefined) {
@@ -129,11 +129,11 @@ define(function (require) {
             switch (e.code) {
             case 'ECONNREFUSED':
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
-              GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, true);
+              console.log(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, true);
               break;
             case undefined:
               console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
-              GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_RECONNECTION, true);
+              console.log(GEPPETTO.Resources.WEBSOCKET_RECONNECTION, true);
               break;
             default:
               console.log("%c WebSocket Status - Closed ", 'background: #000; color: red');
@@ -160,7 +160,7 @@ define(function (require) {
           }, this.autoReconnectInterval);
         } else {
           GEPPETTO.MessageSocket.socketStatus = GEPPETTO.Resources.SocketStatus.CLOSE;
-          GEPPETTO.CommandController.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
+          console.log(GEPPETTO.Resources.WEBSOCKET_CLOSED, true);
           GEPPETTO.ModalFactory.infoDialog(GEPPETTO.Resources.WEBSOCKET_CONNECTION_ERROR, GEPPETTO.Resources.SERVER_CONNECTION_ERROR);
           EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
         }
