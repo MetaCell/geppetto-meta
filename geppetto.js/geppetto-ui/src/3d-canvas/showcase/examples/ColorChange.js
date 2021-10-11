@@ -136,7 +136,7 @@ class ColorChange extends Component {
 
   changeColor() {
     const newData = this.state.data;
-    newData[0].color = COLORS[Math.floor(Math.random()*COLORS.length)]; //random color for first element
+    newData[0].color = { r: Math.random(), g: Math.random(), b: Math.random(), a: 0.25}
     this.setState({ data: newData })
   }
 
@@ -152,7 +152,7 @@ class ColorChange extends Component {
         position: this.lastCameraUpdate.position,
         rotation: {
           ...this.lastCameraUpdate.rotation,
-          radius: cameraOptions.rotation.radius,
+          radius: this.lastCameraUpdate.rotation.radius,
         },
       };
     }

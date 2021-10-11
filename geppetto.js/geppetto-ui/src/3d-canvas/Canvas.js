@@ -60,7 +60,7 @@ class Canvas extends Component {
       this.threeDEngine.resize();
     }
 
-    if (JSON.stringify(prevProps) !== JSON.stringify(this.props)){
+    if (prevProps !== this.props){
       const { data, cameraOptions, threeDObjects } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
       this.threeDEngine.requestFrame();
