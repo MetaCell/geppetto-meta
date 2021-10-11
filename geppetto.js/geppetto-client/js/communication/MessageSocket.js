@@ -178,10 +178,6 @@ define(function (require) {
         }
         var requestID = this.createRequestID();
 
-        // if there's a script running let it know the requestID it's using to send one of it's commands
-        if (GEPPETTO.ScriptRunner.isScriptRunning()) {
-          GEPPETTO.ScriptRunner.waitingForServerResponse(requestID);
-        }
 
         this.waitForConnection(messageTemplate(requestID, command, parameter), connectionInterval);
 
