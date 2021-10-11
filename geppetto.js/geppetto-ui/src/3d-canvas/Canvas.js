@@ -53,7 +53,7 @@ class Canvas extends Component {
       setColorHandler,
       selectionStrategy
     );
-    
+
     this.recorder = new Recorder(this.getCanvasElement())
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -66,16 +66,16 @@ class Canvas extends Component {
       this.threeDEngine.resize();
     }
 
-    if (prevProps !== this.props){
+    if (prevProps !== this.props) {
       const { data, cameraOptions, threeDObjects } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
       this.threeDEngine.requestFrame();
       this.setState({ modelReady: true })
     } else {
-      this.setState({ modelReady:false })
+      this.setState({ modelReady: false })
     }
   }
-  
+
   shouldComponentUpdate (nextProps, nextState, nextContext) {
     return nextState.modelReady || nextProps !== this.props || this.state.showDownload !== nextState.showDownload
   }
@@ -87,9 +87,9 @@ class Canvas extends Component {
     );
   }
 
-  defaultRecordControlsHandler (action){
-    if (this.recorder){
-      switch (action){
+  defaultRecordControlsHandler (action) {
+    if (this.recorder) {
+      switch (action) {
       case recordControlsActions.START:
         this.recorder.startRecording()
         this.setState({ showDownload: false })
@@ -103,7 +103,7 @@ class Canvas extends Component {
         break;
       }
     }
-    
+
   }
 
   defaultCameraControlsHandler (action) {
@@ -174,7 +174,7 @@ class Canvas extends Component {
     }
   }
 
-  getCanvasElement (){
+  getCanvasElement () {
     return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
   }
 
@@ -190,7 +190,15 @@ class Canvas extends Component {
     const { recorderControls } = recorderOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     const recordControlsHandler = recorderControls.cameraControlsHandler ? recorderControls.cameraControlsHandler : this.defaultRecordControlsHandler
-
+    const recorderInstance = recorderControls.instance ? (
+      <recorderControls.instance
+        ref={this.recordControls}
+        recordControlsHandler={recordControlsHandler}
+        showDownload={showDownload}
+        {...recorderControls.props}
+      />
+    )
+      : null;
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {
@@ -200,14 +208,8 @@ class Canvas extends Component {
             {...cameraControls.props}
           />
         }
-        {
-          <recorderControls.instance
-            ref={this.recordControls}
-            recordControlsHandler={recordControlsHandler}
-            showDownload = {showDownload}
-            {...recorderControls.props}
-          />
-        }
+        {recorderInstance}
+
       </div>
     );
   }
@@ -221,10 +223,10 @@ Canvas.defaultProps = {
     far: 1000,
     baseZoom: 1,
     reset: false,
-    autorotate:false,
-    wireframe:false,
+    autorotate: false,
+    wireframe: false,
     zoomTo: undefined,
-    cameraControls:  {
+    cameraControls: {
       instance: null,
       props: {},
     },
@@ -241,11 +243,14 @@ Canvas.defaultProps = {
   linesThreshold: 2000,
   hoverListeners: [],
   threeDObjects: [],
-  cameraHandler: () => {},
+  cameraHandler: () => {
+  },
   selectionStrategy: selectionStrategies.nearest,
-  onSelection: () => {},
+  onSelection: () => {
+  },
   setColorHandler: () => true,
-  onMount: () => {},
+  onMount: () => {
+  },
   modelVersion: 0
 };
 
