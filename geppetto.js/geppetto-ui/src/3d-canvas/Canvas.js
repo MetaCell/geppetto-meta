@@ -189,7 +189,7 @@ class Canvas extends Component {
     const { cameraControls } = cameraOptions
     const { recorderControls } = recorderOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    const recordControlsHandler = recorderControls.cameraControlsHandler ? recorderControls.cameraControlsHandler : this.defaultRecordControlsHandler
+    const recordControlsHandler = recorderControls.recordControlsHandler ? recorderControls.recordControlsHandler : this.defaultRecordControlsHandler
     const recorderInstance = recorderControls.instance ? (
       <recorderControls.instance
         ref={this.recordControls}
