@@ -139,8 +139,7 @@ class SimpleInstancesExample extends Component {
       };
     }
     const recorderOptions = {
-      allowRecorder: false,
-      recorderControls: { 
+      recorderControls: {
         instance: RecordControls,
         props: {}
       }
