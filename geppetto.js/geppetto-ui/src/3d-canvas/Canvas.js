@@ -6,7 +6,7 @@ import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
 import { Recorder } from "./Recorder";
-import { recordControlsActions } from "../record-controls/RecordControls";
+import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
   container: {
@@ -20,10 +20,10 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.recordControls = React.createRef();
+    this.captureControls = React.createRef();
     this.state = { modelReady: false, showDownload: false }
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
-    this.defaultRecordControlsHandler = this.defaultRecordControlsHandler.bind(this)
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
   }
 
   async componentDidMount () {
@@ -87,18 +87,18 @@ class Canvas extends Component {
     );
   }
 
-  defaultRecordControlsHandler (action) {
+  defaultCaptureControlsHandler (action) {
     if (this.recorder) {
       switch (action) {
-      case recordControlsActions.START:
+      case captureControlsActions.START:
         this.recorder.startRecording()
         this.setState({ showDownload: false })
         break;
-      case recordControlsActions.STOP:
+      case captureControlsActions.STOP:
         this.recorder.stopRecording()
         this.setState({ showDownload: true })
         break;
-      case recordControlsActions.DOWNLOAD:
+      case captureControlsActions.DOWNLOAD:
         this.recorder.download()
         break;
       }
@@ -184,18 +184,18 @@ class Canvas extends Component {
   }
 
   render () {
-    const { classes, cameraOptions, recorderOptions } = this.props;
+    const { classes, cameraOptions, captureOptions } = this.props;
     const { showDownload } = this.state;
     const { cameraControls } = cameraOptions
-    const { recorderControls } = recorderOptions
+    const { captureControls } = captureOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    const recordControlsHandler = recorderControls.cameraControlsHandler ? recorderControls.cameraControlsHandler : this.defaultRecordControlsHandler
-    const recorderInstance = recorderControls.instance ? (
-      <recorderControls.instance
-        ref={this.recordControls}
-        recordControlsHandler={recordControlsHandler}
+    const captureControlsHandler = captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
+    const captureInstance = captureControls.instance ? (
+      <captureControls.instance
+        ref={this.captureControls}
+        captureControlsHandler={captureControlsHandler}
         showDownload={showDownload}
-        {...recorderControls.props}
+        {...captureControls.props}
       />
     )
       : null;
@@ -208,7 +208,7 @@ class Canvas extends Component {
             {...cameraControls.props}
           />
         }
-        {recorderInstance}
+        {captureInstance}
 
       </div>
     );
@@ -232,8 +232,8 @@ Canvas.defaultProps = {
     },
     rotateSpeed: 0.5,
   },
-  recorderOptions: {
-    recorderControls: {
+  captureOptions: {
+    captureControls: {
       instance: null,
       props: {}
     }
@@ -268,9 +268,9 @@ Canvas.propTypes = {
    */
   cameraOptions: PropTypes.object,
   /**
-   * Options to customize recorder
+   * Options to customize capture features
    */
-  recorderOptions: PropTypes.object,
+  captureOptions: PropTypes.object,
   /**
    * Three JS objects to add to the scene
    */
