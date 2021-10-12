@@ -142,7 +142,16 @@ class SimpleInstancesExample extends Component {
       captureControls: {
         instance: CaptureControls,
         props: {}
-      }
+      },
+      screenshotOptions:{
+        resolution:{
+          width: 3840,
+          height: 2160,
+        },
+        quality: 0.95,
+        pixelRatio: 1,
+        filter: () => true
+      },
     }
 
     return showModel ? <div ref={node => this.node = node} className={classes.container}>

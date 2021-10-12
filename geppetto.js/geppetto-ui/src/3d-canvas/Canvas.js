@@ -5,7 +5,8 @@ import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
-import { Recorder } from "./Recorder";
+import { Recorder } from "./captureManager/Recorder";
+import { screenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
@@ -102,6 +103,10 @@ class Canvas extends Component {
         this.recorder.download()
         break;
       }
+    }
+    if (action === captureControlsActions.SCREENSHOT && this.props.captureOptions && this.props.captureOptions.screenshotOptions) {
+      const { quality, pixelRatio, resolution, filter } = this.props.captureOptions.screenshotOptions
+      screenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
     }
 
   }
@@ -233,6 +238,15 @@ Canvas.defaultProps = {
     rotateSpeed: 0.5,
   },
   captureOptions: {
+    screenshotOptions: {
+      resolution: {
+        width: 3840,
+        height: 2160,
+      },
+      quality: 0.95,
+      pixelRatio: 1,
+      filter: () => true
+    },
     captureControls: {
       instance: null,
       props: {}

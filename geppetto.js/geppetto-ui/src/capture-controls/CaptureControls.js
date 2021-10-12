@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import IconButtonWithTooltip from '../common/IconButtonWithTooltip';
 import { withStyles } from '@material-ui/core';
-import { faDotCircle, faDownload, faStop } from '@fortawesome/free-solid-svg-icons';
+import { faCamera, faDotCircle, faDownload, faStop } from '@fortawesome/free-solid-svg-icons';
 
 import './CaptureControls.less';
 import PropTypes from "prop-types";
@@ -11,6 +11,7 @@ export const captureControlsActions = {
   START: 'START',
   STOP: 'STOP',
   DOWNLOAD: 'DOWNLOAD',
+  SCREENSHOT: 'SCREENSHOT',
 };
 
 const styles = theme => ({ button: { color: theme.palette.button.main, }, });
@@ -66,6 +67,12 @@ class CaptureControls extends Component {
           tooltip={"Download"}
           icon={faDownload}/>
         }
+        <IconButtonWithTooltip
+          disabled={false}
+          onClick={() => captureControlsHandler(captureControlsActions.SCREENSHOT)}
+          className={`${classes.button} screenshot squareB`}
+          tooltip={"Screenshot"}
+          icon={faCamera}/>
       </div>
     );
   }
