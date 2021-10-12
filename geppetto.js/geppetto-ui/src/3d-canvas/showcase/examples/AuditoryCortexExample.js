@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
+import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 
@@ -92,7 +93,7 @@ class AuditoryCortexExample extends Component {
 
     const response = await fetch('../assets/acnet_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    ModelManager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.setState({ hasModelLoaded: true, showLoader: false });
   }

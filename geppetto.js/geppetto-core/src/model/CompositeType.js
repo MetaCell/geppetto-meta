@@ -6,6 +6,7 @@
  * @module model/CompositeType
  * @author Giovanni Idili
  */
+import Resources from '../Resources';
 
 var Type = require('./Type').default;
 
@@ -74,7 +75,7 @@ CompositeType.prototype.getConnections = function () {
 
   for (var v in this.getVariables()) {
     var variable = this.getVariables()[v];
-    if (variable.getType().getMetaType() == GEPPETTO.Resources.CONNECTION_TYPE) {
+    if (variable.getType().getMetaType() == Resources.CONNECTION_TYPE) {
       connectionVariables.push(variable);
     }
   }

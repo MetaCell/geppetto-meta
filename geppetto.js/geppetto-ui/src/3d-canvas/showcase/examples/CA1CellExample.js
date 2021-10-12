@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import Canvas from '../../Canvas';
-import CameraControls from '../../../camera-controls/CameraControls';
+
 import Button from "@material-ui/core/Button";
+import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
 import Loader from "../../../loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 import CanvasTooltip from './CanvasTooltip'
+import Canvas from '../../Canvas';
+import CameraControls from '../../../camera-controls/CameraControls';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -91,7 +93,7 @@ class CA1Example extends Component {
     this.setState({ showLoader: true })
     const response = await fetch('../assets/ca1_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    ModelManager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.setState({ hasModelLoaded: true, showLoader:false })
   }

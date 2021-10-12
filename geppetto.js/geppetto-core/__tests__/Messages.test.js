@@ -1,23 +1,17 @@
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
-require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
-require('@metacell/geppetto-meta-client/communication/MessageHandler').default(GEPPETTO);
-const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
-const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
+
+const Manager = require('../src/ModelManager').default;
+const ModelFactory = require('../src/ModelFactory').default;
 const testModel = require('./resources/test_model.json');
-const EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default;
 
-EventManager.setStore({ dispatch: m => null })
 
-GEPPETTO.Utility = {};
-GEPPETTO.Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
-GEPPETTO.Manager = new Manager();
+
 console.warn = () => null;
 
 test('fetch instances', () => {
-  GEPPETTO.Manager.loadModel(testModel);
+  Manager.loadModel(testModel);
   const instanceLength = Instances.length;
   const allPathsLength = ModelFactory.allPaths.length;
 
@@ -40,10 +34,7 @@ test('fetch instances', () => {
     "id": "n",
     "name": "N"
   });
-
-  const message = { type: 'fetched', data: JSON.stringify({ fetched: JSON.stringify(testModel) }) };
-
-  GEPPETTO.MessageHandler.onMessage(message);
+  ModelFactory.mergeModel(testModel);
 
   expect(ModelFactory.allPaths.length).toBe(allPathsLength + 1);
   expect(Instances.length).toBe(instanceLength + 1);

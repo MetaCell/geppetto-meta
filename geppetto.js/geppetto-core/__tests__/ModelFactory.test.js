@@ -1,24 +1,20 @@
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
-require('@metacell/geppetto-meta-client/pages/geppetto/GEPPETTO.Events').default(GEPPETTO);
-const Manager = require('@metacell/geppetto-meta-client/common/Manager').default;
-const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
+
+const Manager = require('../src/ModelManager').default;
+const ModelFactory = require('../src/ModelFactory').default;
 const testModel = require('./resources/test_model.json');
-const EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default;
 
-EventManager.setStore({ dispatch: m => null })
 
-GEPPETTO.ModelFactory = ModelFactory;
-GEPPETTO.Utility = {};
-GEPPETTO.Utility.extractMethodsFromObject = () => [];
+const Utility = {};
+Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
-GEPPETTO.Manager = new Manager();
+
 console.warn = () => null;
 
 
 test('load test model with new instances', () => {
-  const geppettoModel = GEPPETTO.Manager.loadModel(testModel);
+  const geppettoModel = Manager.loadModel(testModel);
   expect(geppettoModel.getCurrentWorld().getInstances().length).toBe(7);
   expect(Instances.getInstance('idonotexist')).toBe(undefined);
   expect(ModelFactory.allPaths.length).toBe(11);
@@ -40,18 +36,18 @@ test('load test model with new instances', () => {
 });
 
 test('Merge models', () => {
-  const geppettoModel = GEPPETTO.Manager.loadModel(testModel);
+  const geppettoModel = Manager.loadModel(testModel);
 
   expect(ModelFactory.allPaths.length).toBe(11);
   expect(geppettoModel.getCurrentWorld().getInstances().length).toBe(7);
   expect(Instances.length).toBe(7);
   
-  let diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  let diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
 
   testModel.worlds[0].instances[0].name = 'aa';
   testModel.worlds[0].instances[0].value.json = "{\"l\": [\"xx\", \"y\"]}";
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0); // The diffReport is only about new items
   
   expect(geppettoModel.getCurrentWorld().getInstances()[0].getName()).toBe('aa');
@@ -60,7 +56,7 @@ test('Merge models', () => {
   expect(Instances.a.getValue().l[0]).toBe('xx');
 
   expect(ModelFactory.allPaths.length).toBe(11);
-  GEPPETTO.Manager.addVariableToModel(testModel);
+  Manager.addVariableToModel(testModel);
   expect(ModelFactory.allPaths.length).toBe(11);
   expect(Instances.length).toBe(7);
 
@@ -76,10 +72,10 @@ test('Merge models', () => {
     "id": "v2"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(1);
   expect(ModelFactory.allPaths.length).toBe(13);
-  GEPPETTO.Manager.addVariableToModel(testModel);
+  Manager.addVariableToModel(testModel);
   
   expect(Instances.length).toBe(7);
   Instances.getInstance('v2');
@@ -98,7 +94,7 @@ test('Merge models', () => {
     "id": "wv2"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
   expect(diffReport.worlds[0].variables.length).toBe(1);
   expect(diffReport.worlds[0].instances.length).toBe(0);
@@ -128,7 +124,7 @@ test('Merge models', () => {
     "name": "N"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
   expect(diffReport.worlds[0].variables.length).toBe(0);
   expect(diffReport.worlds[0].instances.length).toBe(1);
@@ -156,7 +152,7 @@ test('Merge models', () => {
     "name": "connection"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
   expect(diffReport.worlds[0].variables.length).toBe(0);
   expect(diffReport.worlds[0].instances.length).toBe(1);
@@ -204,7 +200,7 @@ test('Merge models', () => {
     "name": "connection1"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
   expect(diffReport.worlds[0].variables.length).toBe(0);
   expect(diffReport.worlds[0].instances.length).toBe(2);
@@ -245,7 +241,7 @@ test('Merge models', () => {
     "name": "connection2"
   });
 
-  diffReport = GEPPETTO.ModelFactory.mergeModel(testModel);
+  diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
   expect(diffReport.worlds[0].variables.length).toBe(0);
   expect(diffReport.worlds[0].instances.length).toBe(2);

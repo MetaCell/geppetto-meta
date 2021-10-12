@@ -1,4 +1,6 @@
-const extend = require('../common/Utils').extend;
+import { extend } from '../common/Utils';
+import ModelFactory from '../ModelFactory';
+import Resources from '../Resources';
 
 /**
  * Client class use to represent an instance object (instantiation of a variable).
@@ -116,16 +118,16 @@ class Instance {
     // check if any of types is VISUAL_TYPE_NODE or if types HAVE .visualType
     for (var i = 0; i < types.length; i++) {
       // could be pointing to an array variable if it's an exploded instance
-      if (types[i].getMetaType() == GEPPETTO.Resources.ARRAY_TYPE_NODE) {
+      if (types[i].getMetaType() == Resources.ARRAY_TYPE_NODE) {
         // check it if is a visual type or has a visual type
-        if (types[i].getType().getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE
-                        || types[i].getType().getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
+        if (types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE
+                        || types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
                         || (types[i].getType().getVisualType() != null)) {
           hasVisual = true;
           break;
         }
-      } else if (types[i].getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE
-                    || types[i].getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
+      } else if (types[i].getMetaType() == Resources.VISUAL_TYPE_NODE
+                    || types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
                     || types[i].getVisualType() != null) {
         hasVisual = true;
         break;
@@ -149,16 +151,16 @@ class Instance {
     // check if any of types is VISUAL_TYPE_NODE or if types HAVE .visualType
     for (var i = 0; i < types.length; i++) {
       // could be pointing to an array variable if it's an exploded instance
-      if (types[i].getMetaType() == GEPPETTO.Resources.ARRAY_TYPE_NODE) {
+      if (types[i].getMetaType() == Resources.ARRAY_TYPE_NODE) {
         // check it if is a visual type or has a visual type
-        if (types[i].getType().getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE || types[i].getType().getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE) {
+        if (types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE || types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE) {
           visualTypes.push(types[i].getType());
         } else if (types[i].getType().getVisualType() != null) {
           visualTypes.push(types[i].getType().getVisualType());
         }
       } else {
         // check it if is a visual type or has a visual type
-        if (types[i].getMetaType() == GEPPETTO.Resources.VISUAL_TYPE_NODE || types[i].getMetaType() == GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE) {
+        if (types[i].getMetaType() == Resources.VISUAL_TYPE_NODE || types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE) {
           visualTypes.push(types[i]);
         } else if (types[i].getVisualType() != null) {
           visualTypes.push(types[i].getVisualType());
@@ -321,7 +323,7 @@ class Instance {
   }
 
   /**
-   * Return connections, user GEPPETTO.Resources.INPUT / OUTPUT / INPUT_OUTPUT to filter
+   * Return connections, user Resources.INPUT / OUTPUT / INPUT_OUTPUT to filter
    *
    * @command Instance.getConnections(direction)
    *
@@ -330,27 +332,27 @@ class Instance {
    */
   getConnections (direction) {
 
-    GEPPETTO.ModelFactory.updateConnectionInstances(this);
+    ModelFactory.updateConnectionInstances(this);
 
     var connections = this.connections;
 
-    if (direction === GEPPETTO.Resources.INPUT || direction === GEPPETTO.Resources.OUTPUT || direction === GEPPETTO.Resources.INPUT_OUTPUT) {
+    if (direction === Resources.INPUT || direction === Resources.OUTPUT || direction === Resources.INPUT_OUTPUT) {
       var filteredConnections = [];
       for (var i = 0; i < connections.length; i++) {
         // get directionality
         var connectivity = connections[i].getVariable().getInitialValue().value.connectivity;
-        if (connectivity == GEPPETTO.Resources.DIRECTIONAL) {
+        if (connectivity == Resources.DIRECTIONAL) {
           var a = connections[i].getA();
           var b = connections[i].getB();
           // if A is this then it's an output connection
-          if (this.getInstancePath() == a.getPath() && direction === GEPPETTO.Resources.OUTPUT) {
+          if (this.getInstancePath() == a.getPath() && direction === Resources.OUTPUT) {
             filteredConnections.push(connections[i]);
           }
           // if B is this then it's an input connection
-          if (this.getInstancePath() == b.getPath() && direction === GEPPETTO.Resources.INPUT) {
+          if (this.getInstancePath() == b.getPath() && direction === Resources.INPUT) {
             filteredConnections.push(connections[i]);
           }
-        } else if (connectivity == GEPPETTO.Resources.BIDIRECTIONAL) {
+        } else if (connectivity == Resources.BIDIRECTIONAL) {
           filteredConnections.push(connections[i]);
         }
       }
@@ -380,7 +382,7 @@ class Instance {
       children[c].delete();
     }
 
-    GEPPETTO.ModelFactory.deleteInstance(this);
+    ModelFactory.deleteInstance(this);
   }
 
 }

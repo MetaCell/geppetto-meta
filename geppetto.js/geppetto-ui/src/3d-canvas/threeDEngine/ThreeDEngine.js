@@ -15,6 +15,8 @@ import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { hasVisualType } from "./util";
 import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 
 require('./TrackballControls');
 
@@ -263,7 +265,7 @@ export default class ThreeDEngine {
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
         // fetch all instances for the given type or variable and call hide on each
-        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+        const instances = ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setInstanceColor(instances[j].getInstancePath(), color);
         }
@@ -377,7 +379,7 @@ export default class ThreeDEngine {
       }
     } else if (entity instanceof Type || entity instanceof Variable) {
       // fetch all instances for the given type or variable and call hide on each
-      const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+      const instances = ModelFactory.getAllInstancesOf(entity);
       for (let j = 0; j < instances.length; j++) {
         if (hasVisualType(instances[j])) {
           this.showConnectionLines(instances[j], mode);
@@ -403,8 +405,8 @@ export default class ThreeDEngine {
 
       const connection = connections[c];
       const type = connection.getA().getPath() === instance.getInstancePath()
-        ? GEPPETTO.Resources.OUTPUT
-        : GEPPETTO.Resources.INPUT;
+        ? Resources.OUTPUT
+        : Resources.INPUT;
 
       const thisEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getA() : connection.getB();
       const otherEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getB() : connection.getA();
@@ -442,13 +444,13 @@ export default class ThreeDEngine {
       let colour = null;
 
 
-      if (type === GEPPETTO.Resources.INPUT) {
+      if (type === Resources.INPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED;
+        colour = Resources.COLORS.INPUT_TO_SELECTED;
 
         // figure out if connection is both, input and output
         if (outputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (inputs[otherEndPath]) {
@@ -457,12 +459,12 @@ export default class ThreeDEngine {
           inputs[otherEndPath] = [];
           inputs[otherEndPath].push(connection.getInstancePath());
         }
-      } else if (type === GEPPETTO.Resources.OUTPUT) {
+      } else if (type === Resources.OUTPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
+        colour = Resources.COLORS.OUTPUT_TO_SELECTED;
         // figure out if connection is both, input and output
         if (inputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (outputs[otherEndPath]) {

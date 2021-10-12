@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
+import Button from "@material-ui/core/Button";
+
+import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
+
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
+
 import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
-import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
-import Button from "@material-ui/core/Button";
+
 import { applySelection, mapToCanvasData } from "../examples/SelectionUtils";
 
 const INSTANCES = [
@@ -180,7 +185,7 @@ class VFBExample extends Component {
 
     const response = await fetch('../assets/vfb_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    ModelManager.loadModel(model);
     for (const iname of INSTANCES) {
       Instances.getInstance(iname);
     }

@@ -33,7 +33,7 @@ return <ListViewer instances={entities} />
 or use the available instances from Geppetto with
 
 ```javascript
-() => <ListViewer instances={GEPPETTO.ModelFactory.allPaths} />
+() => <ListViewer instances={ModelFactory.allPaths} />
 ```
 
 ### Custom columns
