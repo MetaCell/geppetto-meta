@@ -4,22 +4,8 @@ import { useDispatch } from 'react-redux';
 import { activateWidget, addWidget, deleteWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from '../widgets';
-import { layout } from '../app/layout';
 import * as Actions from '../redux/actions';
 
-const newTabset = {
-    "type": "row",
-    "weight": 31,
-    "children": [
-        {
-            "type": "tabset",
-            "weight": 100,
-            "id": "newPanel",
-            "enableDeleteWhenEmpty": false,
-            "children": []
-        }
-    ]
-}
 
 const useStyles = makeStyles((theme) => ({
     drawer: {
@@ -58,15 +44,6 @@ const LeftSidebar = (props) => {
     const onMinimize = (id) => dispatch(minimizeWidget(id));
     const onActivate = (id) => dispatch(activateWidget(id));
     const onUpdate = (widget) => dispatch(updateWidget({ ...widget, name: "Your Component!" }));
-    const onChangeLayout = () => dispatch(setLayout({
-        ...layout, "layout": {
-            ...layout["layout"],
-            "children": [
-                ...layout['layout']['children'],
-                newTabset
-            ]
-        }
-    }));
 
     return (
         <>
@@ -102,7 +79,6 @@ const LeftSidebar = (props) => {
 
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="secondary" aria-label="outlined primary button group" orientation="vertical">
                         <Button onClick={onLoad}>Load</Button>
-                        <Button onClick={onChangeLayout}>Change Layout</Button>
                     </ButtonGroup>
                 </div>
             </Drawer>
