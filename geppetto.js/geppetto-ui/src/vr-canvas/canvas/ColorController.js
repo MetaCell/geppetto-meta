@@ -1,4 +1,4 @@
-import Resources from '@metacell/geppetto-meta-client/common/Resources';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 
 export default class ColorController {
   constructor (meshFactory) {

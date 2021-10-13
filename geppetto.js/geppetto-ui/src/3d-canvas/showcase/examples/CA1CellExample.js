@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 import CanvasTooltip from './CanvasTooltip'
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -91,7 +92,7 @@ class CA1Example extends Component {
     this.setState({ showLoader: true })
     const response = await fetch('../assets/ca1_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.setState({ hasModelLoaded: true, showLoader:false })
   }

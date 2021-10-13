@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "../examples/SelectionUtils";
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
 
 const INSTANCES = [
   'VFB_00017894',
@@ -180,7 +181,7 @@ class VFBExample extends Component {
 
     const response = await fetch('../assets/vfb_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    Manager.loadModel(model);
     for (const iname of INSTANCES) {
       Instances.getInstance(iname);
     }

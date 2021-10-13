@@ -4,7 +4,7 @@ import { Force } from '../../layouts/Force';
 import ConnectivityComponent from '../../ConnectivityComponent';
 import { withStyles } from '@material-ui/core';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
-import Manager from '@metacell/geppetto-meta-core/Manager';
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
 const styles = {
