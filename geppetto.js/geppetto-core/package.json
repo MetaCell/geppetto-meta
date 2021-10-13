@@ -34,7 +34,8 @@
     "jest": "^24.9.0"
   },
   "peerDependencies": {
-
+    "jszip": "^3.2.1",
+    "file-saver": "^1.3.3"
   },
   "buildOptions": {
     "emitEntryPoint": true,
