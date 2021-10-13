@@ -42,6 +42,7 @@ Manager.prototype = {
   loadProject: function (project, persisted) {
     // we remove anything from any previous loaded project if there was one
     EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](Resources.LOADING_PROJECT);
+    
     if (Project) {
       Project.initialize();
     }

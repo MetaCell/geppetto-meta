@@ -11,28 +11,17 @@ module.exports = smp.wrap({
   devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
-    path: path.resolve(__dirname, 'build'),
-    filename: 'static/js/[name].[contenthash:8].js',
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: '/'
   },
-  resolve: { 
-    extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
-    alias: {
-      '@metacell/geppetto-meta-client': path.resolve(__dirname, '../geppetto.js/geppetto-client/src'),
-      '@metacell/geppetto-meta-ui': path.resolve(__dirname, '../geppetto.js/geppetto-ui/src'),
-      '@metacell/geppetto-meta-core': path.resolve(__dirname, '../geppetto.js/geppetto-core/src'),
-    },
-  },
+  resolve: { extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'], },
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/,
-        include: [
-          path.resolve(__dirname, 'src'), 
-          path.resolve(__dirname, '../geppetto.js/geppetto-client/src'),
-          path.resolve(__dirname, '../geppetto.js/geppetto-ui/src'),
-          path.resolve(__dirname, '../geppetto.js/geppetto-core/src'),
-        ],
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules\/(?!(@metacell)\/).*/,
         loader: 'babel-loader',
         options: {
           presets: [
@@ -41,6 +30,10 @@ module.exports = smp.wrap({
             { plugins: ['@babel/plugin-proposal-class-properties'] },
           ],
         },
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
       },
       {
         test: /\.html$/,
@@ -110,14 +103,14 @@ module.exports = smp.wrap({
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
-      favicon: '../geppetto.js/geppetto-client/style/favicon.png',
+      favicon: 'node_modules/@metacell/geppetto-meta-client/style/favicon.png',
     }),
     new CopyPlugin(
       {
         patterns: [
-          { from: path.resolve(__dirname, "../geppetto.js/geppetto-ui/src/3d-canvas/showcase/models"), to: "assets" },
+          { from: path.resolve(__dirname, "../geppetto.js/geppetto-ui/src/3d-canvas/showcase/models"), to: "assets" }
         ]
       },
-    ),
+  ),
   ],
 });

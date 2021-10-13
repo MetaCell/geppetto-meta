@@ -27,7 +27,7 @@ require('@metacell/geppetto-meta-core/ModelFactory').default;
  */
 const GEPPETTO = {
 
-  debug: false,
+  debug: true,
   Resources,
   Manager,
   /**
