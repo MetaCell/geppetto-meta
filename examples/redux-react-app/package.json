@@ -152,7 +152,8 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "resolutions": {
-    "bezier-js": "4.0.3"
+    "bezier-js": "4.0.3",
+    "three":"0.111.0"
   },
   "eslintConfig": {
     "extends": "react-app"
