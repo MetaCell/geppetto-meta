@@ -6,15 +6,19 @@
  */
 
 
-const THREEx = require('./external/THREEx.KeyboardStateoardState'); // Nothing to do with THREE
 const EventManager = require('./common/EventManager').default;
 const Events = require('./Events').default;
-/*
- * These two libraries are required here so that Geppetto can work properly in an iframe (as embedded website).
- * Otherwise, sometimes (randomly)  these libraries are not loaded on time and some js commands failed and the web is not loaded properly.
- */
-require('jquery-ui-bundle');
-require('bootstrap');
+const Resources = require('@metacell/geppetto-meta-core/Resources').default;
+
+
+require('./common/Utility');
+
+
+const Manager = new (require('./common/GeppettoManager').default);
+
+
+require('@metacell/geppetto-meta-core/ModelFactory').default;
+
 
 /**
  * Initialise Geppetto
@@ -24,7 +28,8 @@ require('bootstrap');
 const GEPPETTO = {
 
   debug: false,
-  keyboard: new THREEx.KeyboardState(),
+  Resources,
+  Manager,
   /**
    * @param{String} key - The pressed key
    * @returns {boolean} True if the key is pressed
@@ -98,20 +103,6 @@ const GEPPETTO = {
   },
 };
 
-GEPPETTO.Resources = require('@metacell/geppetto-meta-core/Resources').default;
-
-
-require('./common/Utility');
-
-
-GEPPETTO.Manager = new (require('./common/GeppettoManager').default)();
-
-require('./communication/MessageHandler')(GEPPETTO);
-require('./G')(GEPPETTO);
-require('./Main')(GEPPETTO);
-require('@metacell/geppetto-meta-core/ProjectFactory')(GEPPETTO);
-require('@metacell/geppetto-meta-core/ModelFactory').default(GEPPETTO);
-
 const EventsMapping = {
   [Events.Select]: EventManager.clientActions.SELECT,
   [Events.Visibility_changed]: EventManager.clientActions.VISIBILITY_CHANGED,
@@ -149,7 +140,11 @@ const EventsMapping = {
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
   [Events.Update_camera]: EventManager.clientActions.UPDATE_CAMERA,
 };
-window.GEPPETTO = GEPPETTO;
-export default GEPPETTO;
+
+export function initGeppetto () {
+  window.GEPPETTO = GEPPETTO;
+}
+
+export default window.GEPPETTO;
 
 

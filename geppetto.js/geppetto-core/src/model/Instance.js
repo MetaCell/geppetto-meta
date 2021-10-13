@@ -387,6 +387,4 @@ class Instance {
 
 }
 
-// Compatibility with new imports and old require syntax
-Instance.default = Instance;
-module.exports = Instance;
+export default Instance;

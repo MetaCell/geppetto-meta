@@ -6,10 +6,9 @@
  */
 
 import EventManager from './EventManager';
-import MessageSocket from '../common/MessageSocket';
+import MessageSocket from '../communication/MessageSocket';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
-import ProjectFactory from '@metacell/geppetto-meta-core/ProjectFactory';
 import Instances from '@metacell/geppetto-meta-core/Instances';
 import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
 
@@ -48,7 +47,7 @@ Manager.prototype = {
     }
  
 
-    window.Project = ProjectFactory.createProjectNode(project, persisted);
+    window.Project = project;
     window.Project.readOnly = !persisted;
 
     EventManager.actionsHandler[EventManager.clientActions.PROJECT_LOADED]();

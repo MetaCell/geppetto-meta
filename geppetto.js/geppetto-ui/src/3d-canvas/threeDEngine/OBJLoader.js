@@ -5,7 +5,8 @@
  */
 
 import * as THREE from 'three';
-THREE.OBJLoader = (function() {
+
+export const OBJLoader = (function() {
   // o object_name | g group_name
   var object_pattern = /^[og]\s*(.+)?/;
   // mtllib file_reference

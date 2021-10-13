@@ -326,3 +326,4 @@ function processBinaryMessage (message) {
   }
 }
 
+export default MessageSocket;

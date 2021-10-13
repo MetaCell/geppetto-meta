@@ -49,7 +49,8 @@ import {
 } from './actions';
 import { Widget, WidgetMap } from './layout/model';
 
-export const callbacksList: { [id: string]: Set<Function> } = {}
+interface Callbacks { [id: string]: Set<Function> }
+export const callbacksList: Callbacks = {};
 
 for (const action in clientActions) {
   callbacksList[action] = new Set<Function>()

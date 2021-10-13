@@ -519,8 +519,6 @@ export const ModelFactory = {
 
     var instances = [];
 
-
-
     // we need to explode instances for variables with visual types
     var varsWithVizTypes = [];
 

@@ -6,7 +6,6 @@
     "geppetto",
     "neuroscience"
   ],
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaCell/geppetto-meta"
@@ -44,5 +43,8 @@
         "node_modules"
       ]
     }
+  },
+  "exports": {
+    "./": "./src/"
   }
 }

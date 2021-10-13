@@ -18,7 +18,7 @@ import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
-require('./TrackballControls');
+import { TrackballControls } from './TrackballControls';
 
 export default class ThreeDEngine {
   constructor (
@@ -149,7 +149,7 @@ export default class ThreeDEngine {
   }
 
   setupControls () {
-    this.controls = new THREE.TrackballControls(
+    this.controls = new TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,

@@ -101,3 +101,5 @@ export function augmentInstancesArray (instances) {
   }
       
 }
+
+export default { augmentInstancesArray }

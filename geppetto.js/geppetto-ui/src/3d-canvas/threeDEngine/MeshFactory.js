@@ -6,7 +6,7 @@ import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
-require('./OBJLoader');
+import { OBJLoader } from './OBJLoader';
 
 export default class MeshFactory {
   constructor (
@@ -41,7 +41,7 @@ export default class MeshFactory {
     manager.onProgress = function (item, loaded, total) {
       console.log(item, loaded, total);
     };
-    const objLoader = new this.THREE.OBJLoader(manager);
+    const objLoader = new OBJLoader(manager);
 
     const gltfLoader = new GLTFLoader();
     gltfLoader.setDRACOLoader( dracoLoader );

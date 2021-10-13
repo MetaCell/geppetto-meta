@@ -4,8 +4,8 @@
  * @author Simone Manini / http://daron1337.github.io
  * @author Luca Antiga / http://lantiga.github.io
  */
-var THREE = window.THREE || require('three');
-THREE.TrackballControls = function (object, domElement, handler) {
+import * as THREE from 'three';
+export const TrackballControls = function (object, domElement, handler) {
   var _this = this;
   var STATE = {
     NONE: -1,
@@ -738,7 +738,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
   this.update();
 };
 
-THREE.TrackballControls.prototype = Object.create(
+TrackballControls.prototype = Object.create(
   THREE.EventDispatcher.prototype
 );
-THREE.TrackballControls.prototype.constructor = THREE.TrackballControls;
+TrackballControls.prototype.constructor = TrackballControls;
