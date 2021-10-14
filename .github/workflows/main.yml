@@ -20,6 +20,4 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cd geppetto-core && yarn
-      - run: yarn
-      - run: yarn test
+      - run: cd geppetto-core && yarn && yarn test
