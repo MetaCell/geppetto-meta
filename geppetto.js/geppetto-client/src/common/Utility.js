@@ -9,7 +9,10 @@ const FileSaver = require('file-saver');
 
 const Utility = {
 
-  extractMethodsFromObject: function (object, original) {},
+  extractMethodsFromObject: function (object, original) {
+    console.warn("Deprecated api call");
+    console.trace();
+  },
 
   componentToHex: function (c) {
     var hex = c.toString(16);
