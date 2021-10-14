@@ -5,6 +5,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
+import { TrackballControls } from './TrackballControls';
 
 import MeshFactory from './MeshFactory';
 import CameraManager from './CameraManager';
@@ -18,7 +19,6 @@ import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
-import { TrackballControls } from './TrackballControls';
 
 export default class ThreeDEngine {
   constructor (
