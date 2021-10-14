@@ -1,12 +1,12 @@
 import particle from '../textures/particle.png';
 import { hasVisualType } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OBJLoader } from "./OBJLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
-import { OBJLoader } from './OBJLoader';
 
 export default class MeshFactory {
   constructor (
