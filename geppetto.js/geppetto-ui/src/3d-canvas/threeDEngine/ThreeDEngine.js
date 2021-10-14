@@ -198,21 +198,74 @@ export default class ThreeDEngine {
     this.updateGroupMeshes(proxyInstances);
   }
 
+  processInstancePath (instance) {
+    if (this.meshFactory.hasVisualValue(instance)) {
+      return [instance.getInstancePath()];
+    } else if (instance.hasVisualType() || instance.getChildren().some(i => hasVisualType(i))) {
+      if (
+        instance.getType().getMetaType()
+          !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+          && instance.getVisualType()
+      ) {
+        return [instance.getInstancePath()];
+      }
+      // this block keeps traversing the instances
+      if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+        for (let child of instance.getChildren()) {
+          return this.processInstancePath(child);
+        }
+      } else if (
+        instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+      ) {
+        for (let child of instance.getChildren()) {
+          return this.processInstancePath(child);
+        }
+      }
+    }
+    return [];
+  }
+
   /**
    * Clears the scene
    *
    */
   clearScene (instances) {
+    let topInstances = [];
     let toRemove = this.scene.children.filter(
-      child => child.type === 'Mesh'
+      child => (child.type === 'Mesh' || child.type ===  'Group')
     );
     if (instances) {
-      const instancesList = instances.map((i)=>{ return i.instancePath }) ;
-      toRemove = toRemove.filter((i) => { return instancesList.indexOf(i.instancePath) == -1 ; })
+      topInstances = instances.map((i) => { return i.instancePath });
+      const geppettoInstances = instances.map((i)=>{ return Instances.getInstance(i.instancePath) });
+      let instancesList = [];
+      for (let geppettoInstance of geppettoInstances) {
+        let paths = this.processInstancePath(geppettoInstance);
+        instancesList = [...new Set([...instancesList, ...paths])]
+      }
     }
     for (let child of toRemove) {
-      this.scene.remove(child);
+      let _index = topInstances.indexOf(child.instancePath);
+      let instanceFound = false;
+      if (_index !== -1) {
+        instances.splice(_index, 1);
+        instanceFound = true;
+      } else {
+        let parent = Instances.getInstance(child.instancePath);
+        while (parent && parent.getParent() !== null) {
+          parent = parent.getParent();
+          let _index = topInstances.indexOf(parent.getInstancePath());
+          if (_index !== -1) {
+            instances.splice(_index, 1);
+            instanceFound = true;
+            break;
+          }
+        }
+      }
+      if (!instanceFound) {
+        this.scene.remove(child);
+      }
     }
+    return instances;
   }
 
   updateInstancesColor (proxyInstances) {
@@ -310,6 +363,7 @@ export default class ThreeDEngine {
       }
     }
     const meshes = this.meshFactory.getMeshes();
+    // TO FIX: this purge everything from the scene
     this.clearScene();
     for (const meshKey in meshes) {
       this.scene.add(meshes[meshKey]);
@@ -707,7 +761,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
-    this.clearScene(proxyInstances);
+    proxyInstances = this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);

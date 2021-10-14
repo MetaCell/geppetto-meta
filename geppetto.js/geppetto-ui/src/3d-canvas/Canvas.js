@@ -62,7 +62,7 @@ class Canvas extends Component {
 
     if (prevProps !== this.props){
       const { data, cameraOptions, threeDObjects } = this.props;
-      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
+      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse(data, threeDObjects));
       this.threeDEngine.requestFrame();
       this.setState({ modelReady: true })
     } else {

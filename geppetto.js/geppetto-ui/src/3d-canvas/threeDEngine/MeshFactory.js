@@ -956,10 +956,18 @@ export default class MeshFactory {
 
   cleanWithInstances(instances) {
     const paths = instances.map((i)=>{ return i.getInstancePath() });
-    Object.keys(this.meshes).forEach((m)=>{
-      if (paths.indexOf(m) == -1 )
-        delete this.meshes[m];
-    });
+    let toRemove = Object.keys(this.meshes).filter((m) => {
+      for (let singlePath of paths) {
+        if (m.indexOf(singlePath) !== -1) {
+          return false;
+        }
+      }
+      return true;
+    })
+
+    for (let meshToRemove of toRemove) {
+      delete this.meshes[meshToRemove];
+    }
   }
 
   clean () {
