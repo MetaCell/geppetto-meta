@@ -225,6 +225,69 @@ export default class ThreeDEngine {
     return [];
   }
 
+  /*
+   * Check that the material for the already present instance did not change.
+   * return true if the color changed, otherwise false.
+   */
+
+  checkMaterial(mesh, instance) {
+    if (mesh.type === 'Mesh') {
+      if (mesh.material.color.r === instance?.color?.r
+        && mesh.material.color.g === instance?.color?.g
+        && mesh.material.color.b === instance?.color?.b
+        && mesh.material.color.opacity === instance?.color?.a) {
+          return false;
+        } else {
+          return true;
+        }
+    } else if (mesh.type === 'Group') {
+      var changed = false;
+      for (let child of mesh.children) {
+        if (this.checkMaterial(child, instance)) {
+          changed = true;
+        }
+      }
+      return changed;
+    }
+  }
+
+  updateInstanceMaterial(mesh, instance) {
+    if (mesh.type === 'Mesh') {
+      if (instance?.color?.r && instance?.color?.g && instance?.color?.b && instance?.color?.a) {
+        for (let child of this.scene.children) {
+          if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
+            child.material.color.setRGB(instance.color.r, instance.color.b, instance.color.b);
+            if (instance.color.a) {
+              child.material.transparent = true;
+              child.material.opacity = instance.color.a;
+            }
+          }
+        }
+      } else {
+        console.error("color for instance provided is malformed, please provide the color in the form");
+        console.error("{r: [0-1], g: [0-1], b: [0-1], a: [0-1]}");
+      }
+    } else if (mesh.type === 'Group') {
+      if (instance?.color?.r && instance?.color?.g && instance?.color?.b && instance?.color?.a) {
+        for (let child of this.scene.children) {
+          if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
+            // TODO: can I have nested Group instances? to check and fix in case
+            for (let granChild of child.children) {
+              granChild.material.color.setRGB(instance.color.r, instance.color.b, instance.color.b);
+              if (instance.color.a) {
+                granChild.material.transparent = true;
+                granChild.material.opacity = instance.color.a;
+              }
+            }
+          }
+        }
+      } else {
+        console.error("color for instance provided is malformed, please provide the color in the form");
+        console.error("{r: [0-1], g: [0-1], b: [0-1], a: [0-1]}");
+      }
+    }
+  }
+
   /**
    * Clears the scene
    *
@@ -234,36 +297,32 @@ export default class ThreeDEngine {
     let toRemove = this.scene.children.filter(
       child => (child.type === 'Mesh' || child.type ===  'Group')
     );
+
     if (instances) {
       topInstances = instances.map((i) => { return i.instancePath });
-      const geppettoInstances = instances.map((i)=>{ return Instances.getInstance(i.instancePath) });
-      let instancesList = [];
-      for (let geppettoInstance of geppettoInstances) {
-        let paths = this.processInstancePath(geppettoInstance);
-        instancesList = [...new Set([...instancesList, ...paths])]
-      }
-    }
-    for (let child of toRemove) {
-      let _index = topInstances.indexOf(child.instancePath);
-      let instanceFound = false;
-      if (_index !== -1) {
-        instances.splice(_index, 1);
-        instanceFound = true;
-      } else {
-        let parent = Instances.getInstance(child.instancePath);
-        while (parent && parent.getParent() !== null) {
-          parent = parent.getParent();
-          let _index = topInstances.indexOf(parent.getInstancePath());
-          if (_index !== -1) {
-            instances.splice(_index, 1);
-            instanceFound = true;
-            break;
+      for (var i = toRemove.length - 1; i >= 0; i--) {
+        for (var j = 0; j <= topInstances.length - 1; j++) {
+          // if the Mesh is present in the list of instances provided by the canvas then
+          // we can remove this from that list itself and from the toRemove so that we don't recompute
+          // the same mesh/instance twice
+          if (toRemove[i].instancePath.startsWith(id)) {
+            // if the color is the same then remove this
+            if (this.checkMaterial(toRemove[i], instances[j])) {
+              this.updateInstanceColor(toRemove[i], instances[j]);
+            }
+            toRemove.splice(i, 1);
+            instances.splice(j, 1);
+            topInstances.splice(j, 1);
           }
         }
       }
-      if (!instanceFound) {
+    } else {
+      console.error("Give me an empty list if you want to wipe all the instances from the 3d viewer.");
+      return [];
+    }
+
+    for (let child of toRemove) {
         this.scene.remove(child);
-      }
     }
     return instances;
   }
@@ -761,6 +820,8 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+    this.updateInstancesColor(proxyInstances);
+    this.updateInstancesConnectionLines(proxyInstances);
     proxyInstances = this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
@@ -770,8 +831,6 @@ export default class ThreeDEngine {
       });
       this.scene.updateMatrixWorld(true);
     }
-    this.updateInstancesColor(proxyInstances);
-    this.updateInstancesConnectionLines(proxyInstances);
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
     this.cameraHandler(cameraOptions);
