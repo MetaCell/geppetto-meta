@@ -26,23 +26,6 @@ const Main = {
   createChannel: function () {
     // Change link from blank to self for GEPPETTO_CONFIGURATION.embedded environments
     if (GEPPETTO_CONFIGURATION.embedded && GEPPETTO_CONFIGURATION.embedderURL !== "/" && typeof handleRequest == 'undefined') {
-      handleRequest = function (e) {
-        if (GEPPETTO_CONFIGURATION.embedderURL.indexOf(e.origin) != -1) {
-          if (e.data.command == 'loadSimulation') {
-            if (e.data.projectId) {
-              Project.loadFromID(e.data.projectId);
-            } else if (e.data.url) {
-              Project.loadFromURL(e.data.url);
-            }
-          } else if (e.data.command == 'removeWidgets') {
-            G.removeWidget();
-          } else {
-            eval(e.data.command);
-          }
-        }
-      };
-      // we have to listen for 'message'
-      window.addEventListener('message', handleRequest, false);
       if ($.isArray(GEPPETTO_CONFIGURATION.embedderURL)) {
         window.parent.postMessage({ "command": "ready" }, GEPPETTO_CONFIGURATION.embedderURL[0]);
       } else {

@@ -6,14 +6,6 @@ export interface ClientState {
     color: string,
   },
   components: {
-    canvas: {
-      available: Boolean,
-      latestUpdate: Date,
-    },
-    control_panel: {
-      available: Boolean,
-      visible: Boolean,
-    },
     help: {
       available: Boolean,
       visible: Boolean,
@@ -28,10 +20,6 @@ export interface ClientState {
       visible: Boolean,
     },
     spinner: { [offAction: string]: string },
-    tutorial: {
-      running: Boolean,
-      visible: Boolean,
-    },
   },
   controls_disabled: Boolean,
   error: {
@@ -46,11 +34,6 @@ export interface ClientState {
   instance_focused: any,
   instance_selected: any,
   jupyter_geppetto_extension: { loaded: Boolean, },
-  logs: {
-    mode: any,
-    message: string,
-    timestamp: Date,
-  },
   model: {
     id: string,
     status: any
@@ -81,15 +64,6 @@ export const clientInitialState: ClientState = {
     color: undefined,
   },
   components: {
-    // TODO: why do we assume the presence of exactly one canvas here?
-    canvas: {
-      available: false,
-      latestUpdate: undefined,
-    },
-    control_panel: {
-      available: false,
-      visible: false,
-    },
     help: {
       available: false,
       visible: false,
@@ -104,10 +78,6 @@ export const clientInitialState: ClientState = {
       visible: false,
     },
     spinner: {},
-    tutorial: {
-      running: false,
-      visible: false,
-    },
   },
   controls_disabled: false,
   error: {
@@ -122,11 +92,6 @@ export const clientInitialState: ClientState = {
   instance_focused: undefined,
   instance_selected: undefined,
   jupyter_geppetto_extension: { loaded: false, },
-  logs: {
-    mode: undefined,
-    message: undefined,
-    timestamp: undefined,
-  },
   model: {
     id: undefined,
     status: undefined
@@ -231,14 +196,6 @@ function clientReducer (state, action) {
         }
       }
     };
-  case clientActions.PROJECT_PERSISTED:
-    return {
-      ...state,
-      project: {
-        ...state.project,
-        status: action.data.project_status,
-      }
-    };
   case clientActions.MODEL_LOADED:
     return {
       ...state,
@@ -271,28 +228,7 @@ function clientReducer (state, action) {
       ...state,
       instances: createdInstances,
     };
-  case clientActions.SHOW_TUTORIAL:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        tutorial: {
-          ...state.components.tutorial,
-          visible: true,
-        }
-      }
-    };
-  case clientActions.HIDE_TUTORIAL:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        tutorial: {
-          ...state.components.tutorial,
-          visible: false,
-        }
-      }
-    };
+
   case clientActions.SHOW_QUERYBUILDER:
     return {
       ...state,
@@ -312,28 +248,6 @@ function clientReducer (state, action) {
         queryBuilder: {
           ...state.components.queryBuilder,
           visible: false,
-        }
-      }
-    };
-  case clientActions.START_TUTORIAL:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        tutorial: {
-          ...state.components.tutorial,
-          running: true,
-        }
-      }
-    };
-  case clientActions.STOP_TUTORIAL:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        tutorial: {
-          ...state.components.tutorial,
-          running: false,
         }
       }
     };
@@ -381,17 +295,6 @@ function clientReducer (state, action) {
         instance: action.data.instance,
       }
     };
-  case clientActions.CANVAS_INITIALISED:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        canvas: {
-          ...state.components.canvas,
-          available: true,
-        }
-      }
-    };
   case clientActions.PROJECT_MADE_PUBLIC:
     return {
       ...state,
@@ -401,28 +304,6 @@ function clientReducer (state, action) {
           ...state.project.properties,
           public: true,
         },
-      }
-    };
-  case clientActions.CONTROL_PANEL_OPEN:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        control_panel: {
-          ...state.components.control_panel,
-          visible: true,
-        }
-      }
-    };
-  case clientActions.CONTROL_PANEL_CLOSE:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        control_panel: {
-          ...state.components.control_panel,
-          visible: false,
-        }
       }
     };
   case clientActions.LIT_ENTITIES_CHANGED:
@@ -440,54 +321,7 @@ function clientReducer (state, action) {
         }
       }
     };
-  case clientActions.COMMAND_LOG:
-    return {
-      ...state,
-      logs: {
-        ...state.logs,
-        mode: clientActions.COMMAND_LOG,
-        message: action.data.message,
-        timestamp: action.data.timestamp
-      }
-    };
-  case clientActions.COMMAND_LOG_DEBUG:
-    return {
-      ...state,
-      logs: {
-        ...state.logs,
-        mode: clientActions.COMMAND_LOG_DEBUG,
-        message: action.data.message,
-        timestamp: action.data.timestamp
-      }
-    };
-  case clientActions.COMMAND_LOG_RUN:
-    return {
-      ...state,
-      logs: {
-        ...state.logs,
-        mode: clientActions.COMMAND_LOG_RUN,
-        message: action.data.message,
-        timestamp: action.data.timestamp
-      }
-    };
-  case clientActions.COMMAND_CLEAR:
-    return {
-      ...state,
-      logs: {
-        ...state.logs,
-        mode: clientActions.COMMAND_CLEAR,
-        timestamp: action.data.timestamp
-      }
-    };
-  case clientActions.COMMAND_TOGGLE_IMPLICIT:
-    return {
-      ...state,
-      logs: {
-        ...state.logs,
-        mode: clientActions.COMMAND_TOGGLE_IMPLICIT,
-        timestamp: action.data.timestamp
-      }
-    };
+
   case clientActions.RECEIVE_PYTHON_MESSAGE:
     return {
       ...state,
@@ -514,17 +348,6 @@ function clientReducer (state, action) {
     return {
       ...state,
       websocket_status: clientActions.WEBSOCKET_DISCONNECTED
-    };
-  case clientActions.UPDATE_CAMERA:
-    return {
-      ...state,
-      components: {
-        ...state.components,
-        canvas: {
-          ...state.components.canvas,
-          latestUpdate: action.data,
-        }
-      }
     };
   case clientActions.SPIN_LOGO:
     return {

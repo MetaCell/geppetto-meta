@@ -13,22 +13,15 @@ import {
   projectLoading,
   projectLoaded,
   projectDownloaded,
-  projectPersisted,
   projectConfigLoaded,
   instanceDeleted,
   instancesCreated,
   showSpinner,
   hideSpinner,
   parametersSet,
-  commandLog,
-  commandLogDebug,
-  commandLogRun,
-  commandClear,
-  commandToggleImplicit,
   receivePythonMessage,
   errorWhileExecPythonCommand,
   websocketDisconnected,
-  updateCamera,
   stopLogo,
   spinLogo,
   geppettoInfo,
@@ -119,9 +112,6 @@ class EventManager {
     [clientActions.PROJECT_CONFIG_LOADED]: configuration => (
       this.store.dispatch(projectConfigLoaded(configuration))
     ),
-    [clientActions.PROJECT_PERSISTED]: () => (
-      this.store.dispatch(projectPersisted())
-    ),
     [clientActions.INSTANCE_DELETED]: instancePath => (
       this.store.dispatch(instanceDeleted(instancePath))
     ),
@@ -131,21 +121,6 @@ class EventManager {
     [clientActions.PARAMETERS_SET]: () => (
       this.store.dispatch(parametersSet())
     ),
-    [clientActions.COMMAND_LOG]: message => (
-      this.store.dispatch(commandLog(message))
-    ),
-    [clientActions.COMMAND_LOG_DEBUG]: message => (
-      this.store.dispatch(commandLogDebug(message))
-    ),
-    [clientActions.COMMAND_LOG_RUN]: message => (
-      this.store.dispatch(commandLogRun(message))
-    ),
-    [clientActions.COMMAND_CLEAR]: () => (
-      this.store.dispatch(commandClear())
-    ),
-    [clientActions.COMMAND_TOGGLE_IMPLICIT]: () => (
-      this.store.dispatch(commandToggleImplicit())
-    ),
     [clientActions.RECEIVE_PYTHON_MESSAGE]: data => (
       this.store.dispatch(receivePythonMessage(data))
     ),
@@ -154,9 +129,6 @@ class EventManager {
     ),
     [clientActions.WEBSOCKET_DISCONNECTED]: () => (
       this.store.dispatch(websocketDisconnected())
-    ),
-    [clientActions.UPDATE_CAMERA]: () => (
-      this.store.dispatch(updateCamera())
     ),
     [clientActions.STOP_LOGO]: () => (
       this.store.dispatch(stopLogo())
@@ -218,32 +190,12 @@ class EventManager {
     this.actionsHandler[clientActions.PROJECT_CONFIG_LOADED](configuration)
   }
 
-  projectPersisted() {
-    this.actionsHandler[clientActions.PROJECT_PERSISTED]()
-  }
-
   instanceDeleted(instancePath) {
     this.actionsHandler[clientActions.INSTANCE_DELETED](instancePath)
   }
 
   instancesCreated(instances) {
     this.actionsHandler[clientActions.INSTANCES_CREATED](instances)
-  }
-
-  showTutorial() {
-    this.actionsHandler[clientActions.SHOW_TUTORIAL]()
-  }
-
-  hideTutorial() {
-    this.actionsHandler[clientActions.HIDE_TUTORIAL]()
-  }
-
-  startTutorial() {
-    this.actionsHandler[clientActions.START_TUTORIAL]()
-  }
-
-  stopTutorial() {
-    this.actionsHandler[clientActions.STOP_TUTORIAL]()
   }
 
   showQueryBuilder() {
@@ -270,20 +222,8 @@ class EventManager {
     this.actionsHandler[clientActions.COLOR_SET](parameters)
   }
 
-  canvasInitialised() {
-    this.actionsHandler[clientActions.CANVAS_INITIALISED]()
-  }
-
   projectMadePublic() {
     this.actionsHandler[clientActions.PROJECT_MADE_PUBLIC]()
-  }
-
-  openControlPanel() {
-    this.actionsHandler[clientActions.CONTROL_PANEL_OPEN]()
-  }
-
-  closeControlPanel() {
-    this.actionsHandler[clientActions.CONTROL_PANEL_CLOSE]()
   }
 
   litEntitiesChanged() {
@@ -302,26 +242,6 @@ class EventManager {
     this.actionsHandler[clientActions.PARAMETERS_SET]()
   }
 
-  commandLog(message) {
-    this.actionsHandler[clientActions.COMMAND_LOG](message)
-  }
-
-  commandLogDebug(message) {
-    this.actionsHandler[clientActions.COMMAND_LOG_DEBUG](message)
-  }
-
-  commandLogRun(message) {
-    this.actionsHandler[clientActions.COMMAND_LOG_RUN](message)
-  }
-
-  commandClear() {
-    this.actionsHandler[clientActions.COMMAND_CLEAR]()
-  }
-
-  commandToggleImplicit() {
-    this.actionsHandler[clientActions.COMMAND_TOGGLE_IMPLICIT]()
-  }
-
   receivePythonMessage(data) {
     this.actionsHandler[clientActions.RECEIVE_PYTHON_MESSAGE](data)
   }
@@ -332,10 +252,6 @@ class EventManager {
 
   websocketDisconnected() {
     this.actionsHandler[clientActions.WEBSOCKET_DISCONNECTED]()
-  }
-
-  updateCamera() {
-    this.actionsHandler[clientActions.UPDATE_CAMERA]()
   }
 
   stopLogo() {

@@ -27,18 +27,6 @@ Manager.prototype = {
    *
    * @param payload
    */
-  persistProject: function (projectID) {
-    window.Project.id = parseInt(projectID);
-    window.Project.persisted = true;
-    window.Project.readOnly = false;
-
-    EventManager.actionsHandler[EventManager.clientActions.PROJECT_PERSISTED]();
-  },
-
-  /**
-   *
-   * @param payload
-   */
   loadProject: function (project, persisted) {
     // we remove anything from any previous loaded project if there was one
     EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](Resources.LOADING_PROJECT);
