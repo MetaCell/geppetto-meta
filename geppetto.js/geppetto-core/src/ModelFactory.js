@@ -40,7 +40,6 @@ const ADerivedStateVariableCapability = require('./capabilities/ADerivedStateVar
 
 
 import Resources from './Resources';
-import Utility from './Utility';
 /**
  * @class ModelFactory
  */

@@ -9,3 +9,12 @@ export function hexToRGBNormalized (hex){
     .map(x => parseInt(x, 16) / 255)
   return { r: rgb[0], g: rgb[1], b: rgb[2], a: 1 }
 }
+
+function componentToHex (c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? '0' + hex : hex;
+}
+
+export function rgbToHex (r, g, b) {
+  return '0X' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}

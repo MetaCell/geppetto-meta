@@ -6,8 +6,6 @@ const ModelFactory = require('../src/ModelFactory').default;
 const testModel = require('./resources/test_model.json');
 
 
-const Utility = {};
-Utility.extractMethodsFromObject = () => [];
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 
 console.warn = () => null;

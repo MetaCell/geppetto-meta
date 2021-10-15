@@ -5,19 +5,19 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
-import { TrackballControls } from './TrackballControls';
 
 import MeshFactory from './MeshFactory';
-import CameraManager from './CameraManager';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import ArrayInstance from '@metacell/geppetto-meta-core//model/ArrayInstance';
 import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { hasVisualType } from "./util";
-import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
+
+import CameraManager from './CameraManager';
+import { TrackballControls } from './TrackballControls';
+import { rgbToHex, hasVisualType } from "./util";
 
 
 export default class ThreeDEngine {

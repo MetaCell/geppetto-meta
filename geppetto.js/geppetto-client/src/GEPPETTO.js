@@ -11,9 +11,6 @@ const Events = require('./Events').default;
 const Resources = require('@metacell/geppetto-meta-core/Resources').default;
 
 
-require('./common/Utility');
-
-
 const Manager = new (require('./common/GeppettoManager').default);
 
 
