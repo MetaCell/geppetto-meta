@@ -14,7 +14,9 @@ const Resources = require('@metacell/geppetto-meta-core/Resources').default;
 const Manager = new (require('./common/GeppettoManager').default);
 
 
-require('@metacell/geppetto-meta-core/ModelFactory').default;
+const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default;
+
+
 
 
 /**
@@ -27,6 +29,7 @@ const GEPPETTO = {
   debug: true,
   Resources,
   Manager,
+  ModelFactory,
   /**
    * @param{String} key - The pressed key
    * @returns {boolean} True if the key is pressed
@@ -126,10 +129,20 @@ const EventsMapping = {
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
 };
 
-export function initGeppetto () {
+export function initGeppetto (useWebsocket=true) {
+  if(useWebsocket) {
+    const WSMain = require('@metacell/geppetto-meta-client/WebsocketMain').default;
+    WSMain.init();
+    GEPPETTO.MessageSocket = WSMain.socket
+
+    const Project = {
+      loadFromId: (projectId) => WSMain.send("load_project_from_id", parameters)
+    }
+  }
+  
   window.GEPPETTO = GEPPETTO;
 }
 
-export default window.GEPPETTO;
+export default GEPPETTO;
 
 

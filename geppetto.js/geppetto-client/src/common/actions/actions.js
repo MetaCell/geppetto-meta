@@ -7,6 +7,8 @@ export const clientActions = {
   PROJECT_LOADED: "PROJECT_LOADED",
   PROJECT_DOWNLOADED: "PROJECT_DOWNLOADED",
   PROJECT_CONFIG_LOADED: "PROJECT_CONFIG_LOADED",
+  PROJECT_LOAD_FROM_ID: "PROJECT_LOAD_FROM_ID",
+  PROJECT_LOAD_FROM_URL: "PROJECT_LOAD_FROM_URL",
   MODEL_LOADED: "MODEL_LOADED",
   MODELTREE_POPULATED: "MODELTREE_POPULATED",
   SIMULATIONTREE_POPULATED: "SIMULATIONTREE_POPULATED",
@@ -167,3 +169,13 @@ export const stopPersist = () => ({ type: clientActions.STOP_PERSIST, });
 export const jupyterGeppettoExtensionReady = () => ({ type: clientActions.JUPYTER_GEPPETTO_EXTENSION_READY, });
 
 export const disableControls = () => ({ type: clientActions.DISABLE_CONTROLS, });
+
+export const loadProjectFromId = projectId => ({
+  type: clientActions.PROJECT_LOAD_FROM_ID,
+  data: projectId
+});
+
+export const loadProjectFromUrl = projectUrl => ({
+  type: clientActions.PROJECT_LOAD_FROM_ID,
+  data: projectUrl
+});

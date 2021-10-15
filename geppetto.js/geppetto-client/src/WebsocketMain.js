@@ -1,5 +1,5 @@
 
-import { urljoin } from 'url-join';
+import urljoin from 'url-join';
 
 import MessageSocket from './communication/MessageSocket';
 import Events from './Events';
@@ -13,17 +13,11 @@ import Events from './Events';
  */
     
     
-const Main = {
 
-  idleTime: 0,
-  disconnected: false,
-  statusWorker: null,
-  localStorageEnabled: false,
-
-  /**
+/**
    *
    */
-  createChannel: function () {
+function createChannel() {
     // Change link from blank to self for GEPPETTO_CONFIGURATION.embedded environments
     if (GEPPETTO_CONFIGURATION.embedded && GEPPETTO_CONFIGURATION.embedderURL !== "/" && typeof handleRequest == 'undefined') {
       if ($.isArray(GEPPETTO_CONFIGURATION.embedderURL)) {
@@ -32,12 +26,12 @@ const Main = {
         window.parent.postMessage({ "command": "ready" }, GEPPETTO_CONFIGURATION.embedderURL);
       }
     }
-  },
+  }
 
   /**
    * Initialize web socket communication
    */
-  init: function () {
+  export function init () {
     if (GEPPETTO_CONFIGURATION.contextPath == "/"){
       var host = urljoin(MessageSocket.protocol + window.location.host.replace("8081","8080"), '/GeppettoServlet');
     } else {
@@ -51,14 +45,11 @@ const Main = {
     MessageSocket.connect(host);
     console.log("Host for MessageSocket to connect: " + host);
     Events.listen();
-    this.createChannel();
+    createChannel();
     MessageSocket.send("geppetto_version", null);
-  },
+  }
 
 
-  /**
-   * Idle check
-   */
-  idleCheck: function () {}
-};
-export default Main;
+
+
+export default  {init};

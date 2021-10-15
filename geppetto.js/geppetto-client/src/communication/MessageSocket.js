@@ -7,10 +7,6 @@
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
 
-
-let messageHandlers = [];
-let clientID = null;
-let nextID = 0;
 const connectionInterval = 300;
 const pako = require("pako");
 const FileSaver = require('file-saver');
@@ -22,7 +18,9 @@ const callbackHandler = {};
  */
 export class MessageSocket {
   socket = null;
-
+  messageHandlers = [];
+  clientID = null;
+  nextID = 0;
   // sets protocol to use for connection
   protocol = GEPPETTO_CONFIGURATION.useSsl ? "wss://" : "ws://";
 
@@ -38,8 +36,13 @@ export class MessageSocket {
   autoReconnectInterval = 5 * 1000;
   socketStatus = Resources.SocketStatus.CLOSE;
 
+  constructor() {
+    this.connect = this.connect.bind(this);
+    this.reconnect = this.reconnect.bind(this);
+    this.send = this.send.bind(this);
+  }
+
   connect (host) {
-    const that = this;
     if (this.socket !== null) {
       delete this.socket;
     }
@@ -54,7 +57,9 @@ export class MessageSocket {
       return;
     }
 
-    this.socket.onopen = function (e) {
+   
+
+    this.socket.onopen = e => {
       console.log(Resources.WEBSOCKET_OPENED, true);
 
       /*
@@ -77,7 +82,7 @@ export class MessageSocket {
       console.log("%c WebSocket Status - Opened ", 'background: #444; color: #bada55')
     };
 
-    this.socket.onclose = function (e) {
+    this.socket.onclose = e => {
       switch (e.code) {
       case 1000:
         this.socketStatus = Resources.SocketStatus.CLOSE;
@@ -91,7 +96,7 @@ export class MessageSocket {
       }
     };
 
-    this.socket.onmessage = function (msg) {
+    this.socket.onmessage = msg => {
       const messageData = msg.data;
 
       if (messageData == "ping") {
@@ -111,7 +116,7 @@ export class MessageSocket {
     };
 
     // Detects problems when connecting to Geppetto server
-    this.socket.onerror = function (e) {
+    this.socket.onerror = e => {
       var message = Resources.SERVER_CONNECTION_ERROR;
       /*
        * Attempt to connect using ws first time wss fails,
@@ -137,21 +142,20 @@ export class MessageSocket {
           break;
         }
       }
-    };
+    }
   }
 
   /**
    * Attempt to reconnect to the backend
    */
   reconnect (e) {
-    var that = this;
     if (this.attempts < this.reconnectionLimit) {
       this.attempts++;
       this.socketStatus = Resources.SocketStatus.RECONNECTING;
       console.log(`WebSocket Status - retry in ${this.autoReconnectInterval}ms`, e);
-      setTimeout(function () {
+      setTimeout(() => {
         console.log("%c WebSocket Status - reconnecting... ", 'background: #444; color: #bada55');
-        this.connect(that.host);
+        this.connect(this.host);
       }, this.autoReconnectInterval);
     } else {
       this.socketStatus = Resources.SocketStatus.CLOSE;
@@ -207,7 +211,7 @@ export class MessageSocket {
   close () {
     this.socket.close();
     // dispose of handlers upon closing connection
-    messageHandlers = [];
+    this.messageHandlers = [];
     EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
 
   }
@@ -216,17 +220,17 @@ export class MessageSocket {
    * Add handler to receive updates from server
    */
   addHandler (handler) {
-    messageHandlers.push(handler);
+    this.messageHandlers.push(handler);
   }
 
   /**
    * Removes a handler from the socket
    */
   removeHandler (handler) {
-    var index = messageHandlers.indexOf(handler);
+    var index = this.messageHandlers.indexOf(handler);
 
     if (index > -1) {
-      messageHandlers.splice(index, 1);
+      this.messageHandlers.splice(index, 1);
     }
   }
 
@@ -234,7 +238,7 @@ export class MessageSocket {
    * Clear handlers
    */
   clearHandlers () {
-    messageHandlers = [];
+    this.messageHandlers = [];
   }
 
 
@@ -242,20 +246,32 @@ export class MessageSocket {
    * Sets the id of the client
    */
   setClientID (id) {
-    clientID = id;
+    this.clientID = id;
   }
 
   /**
    * Sets the id of the client
    */
   getClientID () {
-    return clientID;
+    return this.clientID;
   }
   /**
    * Creates a request id to send with the message to the server
    */
   createRequestID () {
-    return clientID + "-" + (nextID++);
+    return this.clientID + "-" + (this.nextID++);
+  }
+
+  loadProjectFromId (projectId) {
+    this.send("load_project_from_id", { projectId });
+  }
+  
+  loadProjectFromUrl (projectURL) {
+    this.send("load_project_from_url", projectURL);
+  }
+
+  loadProjectFromContent (content) {
+    this.send("load_project_from_content", content);
   }
 }
 
@@ -290,8 +306,8 @@ function parseAndNotify (messageData) {
   var parsedServerMessage = JSON.parse(messageData);
 
   // notify all handlers
-  for (var i = 0, len = messageHandlers.length; i < len; i++) {
-    var handler = messageHandlers[i];
+  for (var i = 0, len = this.messageHandlers.length; i < len; i++) {
+    var handler = this.messageHandlers[i];
     if (handler != null || handler != undefined) {
       handler.onMessage(parsedServerMessage);
     }
@@ -306,6 +322,8 @@ function parseAndNotify (messageData) {
   }
 
 }
+
+
 
 function processBinaryMessage (message) {
 
@@ -326,4 +344,4 @@ function processBinaryMessage (message) {
   }
 }
 
-export default MessageSocket;
+export default new MessageSocket();

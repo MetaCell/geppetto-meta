@@ -19,6 +19,8 @@ import {
   showSpinner,
   hideSpinner,
   parametersSet,
+  loadProjectFromId,
+  loadProjectFromUrl,
   receivePythonMessage,
   errorWhileExecPythonCommand,
   websocketDisconnected,
@@ -160,6 +162,13 @@ class EventManager {
     [clientActions.HIDE_SPINNER]: () => {
       this.store.dispatch(hideSpinner())
     },
+    [clientActions.PROJECT_LOAD_FROM_ID]: projectId => (
+      this.store.dispatch(loadProjectFromId(projectId))
+    ),
+    [clientActions.PROJECT_LOAD_FROM_URL]: projectUrl => (
+      this.store.dispatch(loadProjectFromUrl(projectUrl))
+    ),
+
   };
 
   select(scope, geometryIdentifier, point) {
@@ -176,6 +185,14 @@ class EventManager {
 
   modelLoaded() {
     this.actionsHandler[clientActions.MODEL_LOADED]()
+  }
+
+  loadProjectFromId(projectId) {
+    this.actionsHandler[clientActions.PROJECT_LOAD_FROM_ID](projectId)
+  }
+
+  loadProjectFromUrl(projectUrl) {
+    this.actionsHandler[clientActions.PROJECT_LOAD_FROM_URL](projectUrl)
   }
 
   projectLoaded() {
