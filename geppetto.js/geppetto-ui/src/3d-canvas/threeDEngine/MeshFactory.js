@@ -53,7 +53,9 @@ export default class MeshFactory {
   }
 
   async start (instances) {
-    this.cleanWithInstances(instances);
+    // TODO: do we still need the below? since I am already handling and synching instances between threeDengine
+    // and the meshfactory with cleanWith3DObject.
+    // this.cleanWithInstances(instances);
     await this.traverseInstances(instances);
   }
 
@@ -967,6 +969,14 @@ export default class MeshFactory {
 
     for (let meshToRemove of toRemove) {
       delete this.meshes[meshToRemove];
+    }
+  }
+
+  cleanWith3DObject(instance) {
+    for (let meshKey of Object.keys(this.meshes)) {
+      if (this.meshes[meshKey].uuid === instance.uuid) {
+        delete this.meshes[meshKey];
+      }
     }
   }
 

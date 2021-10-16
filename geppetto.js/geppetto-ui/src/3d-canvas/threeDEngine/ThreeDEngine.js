@@ -253,7 +253,10 @@ export default class ThreeDEngine {
 
   updateInstanceMaterial(mesh, instance) {
     if (mesh.type === 'Mesh') {
-      if (instance?.color?.r && instance?.color?.g && instance?.color?.b && instance?.color?.a) {
+      if (instance?.color?.r !== undefined
+        && instance?.color?.g !== undefined
+        && instance?.color?.b !== undefined
+        && instance?.color?.a !== undefined) {
         for (let child of this.scene.children) {
           if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
             child.material.color.setRGB(instance.color.r, instance.color.b, instance.color.b);
@@ -268,7 +271,10 @@ export default class ThreeDEngine {
         console.error("{r: [0-1], g: [0-1], b: [0-1], a: [0-1]}");
       }
     } else if (mesh.type === 'Group') {
-      if (instance?.color?.r && instance?.color?.g && instance?.color?.b && instance?.color?.a) {
+      if (instance?.color?.r !== undefined
+        && instance?.color?.g !== undefined
+        && instance?.color?.b !== undefined
+        && instance?.color?.a !== undefined) {
         for (let child of this.scene.children) {
           if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
             // TODO: can I have nested Group instances? to check and fix in case
@@ -305,14 +311,15 @@ export default class ThreeDEngine {
           // if the Mesh is present in the list of instances provided by the canvas then
           // we can remove this from that list itself and from the toRemove so that we don't recompute
           // the same mesh/instance twice
-          if (toRemove[i].instancePath.startsWith(id)) {
+          if (toRemove[i].instancePath.startsWith(topInstances[j])) {
             // if the color is the same then remove this
             if (this.checkMaterial(toRemove[i], instances[j])) {
-              this.updateInstanceColor(toRemove[i], instances[j]);
+              this.updateInstanceMaterial(toRemove[i], instances[j]);
             }
             toRemove.splice(i, 1);
             instances.splice(j, 1);
             topInstances.splice(j, 1);
+            break;
           }
         }
       }
@@ -322,6 +329,7 @@ export default class ThreeDEngine {
     }
 
     for (let child of toRemove) {
+        this.meshFactory.cleanWith3DObject(child);
         this.scene.remove(child);
     }
     return instances;
@@ -425,7 +433,7 @@ export default class ThreeDEngine {
     // TO FIX: this purge everything from the scene
     this.clearScene();
     for (const meshKey in meshes) {
-      this.scene.add(meshes[meshKey]);
+      this.addToScene(meshes[meshKey]);
     }
   }
 
@@ -820,20 +828,33 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
-    this.updateInstancesColor(proxyInstances);
-    this.updateInstancesConnectionLines(proxyInstances);
     proxyInstances = this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);
       threeDObjects.forEach(element => {
-        this.scene.add(element)
+        this.addToScene(element);
       });
+      this.updateInstancesColor(proxyInstances);
+      this.updateInstancesConnectionLines(proxyInstances);
       this.scene.updateMatrixWorld(true);
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
     this.cameraHandler(cameraOptions);
+  }
+
+  addToScene(instance) {
+    let found = false;
+    for (let child of this.scene.children) {
+      if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.scene.add(instance);
+    }
   }
 
   resize () {
