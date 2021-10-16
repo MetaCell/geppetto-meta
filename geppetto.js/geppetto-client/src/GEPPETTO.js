@@ -11,13 +11,11 @@ const Events = require('./Events').default;
 const Resources = require('@metacell/geppetto-meta-core/Resources').default;
 
 
-const Manager = new (require('./common/GeppettoManager').default);
+const Manager = require('./common/GeppettoManager').default;
 
 
 const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default;
-
-
-
+require('./style/less/main.less')
 
 /**
  * Initialise Geppetto
@@ -129,15 +127,15 @@ const EventsMapping = {
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
 };
 
-export function initGeppetto (useWebsocket=true) {
-  if(useWebsocket) {
-    const WSMain = require('@metacell/geppetto-meta-client/WebsocketMain').default;
+export function initGeppetto (useWebsocket = true, loadStyle = true) {
+  if (useWebsocket) {
+    const WSMain = require('./WebsocketMain').default;
     WSMain.init();
     GEPPETTO.MessageSocket = WSMain.socket
+  }
 
-    const Project = {
-      loadFromId: (projectId) => WSMain.send("load_project_from_id", parameters)
-    }
+  if (loadStyle) {
+    require('./style/less/main.less');
   }
   
   window.GEPPETTO = GEPPETTO;

@@ -112,8 +112,9 @@
 .flexlayout__tab_button {
     cursor: pointer;
     padding: 2px 8px 3px 8px;
-    margin: 2px;
-    float:left;
+    margin-right: 3px;
+    margin-left: 0;
+    float: left;
     vertical-align: top;
     box-sizing: border-box;
 }
@@ -121,7 +122,6 @@
 .flexlayout__tab_button--selected {
     color: @background_color_body_0;
     font-size: 16px;
-    font-family: 'Khand', sans-serif;
     background-color: #000000;
 
 }
@@ -143,7 +143,6 @@
     padding-right: 5px;
     margin-top: -2px;
     font-size: 16px;
-    font-family: 'Khand', sans-serif;
 }
 
 .flexlayout__tab_button_textbox {
@@ -181,17 +180,17 @@
     font-family: FontAwesome;
 }
 
+
+
 .flexlayout__tab_button_overflow {
-    float: left;
-    width: 20px;
-    height:15px;
-    margin-top:2px;
-    padding-left:12px;
-    border:none;
-    font-size: 14px;
-    color:@primary_color;
+    margin-left: 10px;
+    padding-left: 12px;
+    border: none;
+    color: gray;
+    font-size: inherit;
     background: transparent;
-}
+  }
+
 
 .flexlayout__tab_button_overflow:hover {
     color: @secondary_color
@@ -209,23 +208,37 @@
     box-sizing: border-box;
 }
 
-.flexlayout__tab_header_inner {
+
+.flexlayout__tabset_tabbar_outer {
+    box-sizing: border-box;
     position: absolute;
     left: 0;
+    right: 0;
+    overflow: hidden;
+    display: flex;
+
+  }
+  .flexlayout__tabset_tabbar_outer_top {
+
+  }
+  .flexlayout__tabset_tabbar_outer_bottom {
+
+  }
+  .flexlayout__tabset_tabbar_inner {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+  .flexlayout__tabset_tabbar_inner_tab_container {
+    display: flex;
+    box-sizing: border-box;
+    position: absolute;
     top: 0;
     bottom: 0;
     width: 10000px;
-}
-
-.flexlayout__tab_header_outer {
-    background: @background_color_body_0;
-    position: absolute;
-    left: -2px;
-    right: 0;
-    /*top: 0px;*/
-    /*height: 100px;*/
-    overflow: hidden;
-}
+  }
 
 .flexlayout__tabset-selected
 {
@@ -241,8 +254,6 @@
 
 .flexlayout__tab_toolbar {
     position:absolute;
-    display:flex;
-    // flex-direction: row-reverse;
     align-items: center;
     top:0;
     bottom:0;
@@ -296,7 +307,6 @@
     color: @primary_color;
     border: 1px solid;
     font-size: 16px;
-    font-family: 'Khand', sans-serif;
 }
 
 .flexlayout__popup_menu_item:hover {
@@ -403,7 +413,6 @@
 .flexlayout__border_button_content {
     display:inline-block;
     font-size: 16px;
-    font-family: 'Khand', sans-serif;
     padding-top: 2px;
     padding-left: 5px;
     padding-right: 4px;

@@ -12,11 +12,11 @@
   },
   "license": "MIT",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "test": "jest",
     "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:js": "babel src -d build --extensions '.js,.jsx,.ts,.tsx'",
-    "build:style": "cp -r style build",
+    "build:style": "cp -r src/style build",
     "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
     "publish:yalc": "cd build && yalc publish --push",
@@ -46,7 +46,6 @@
     "react-slick": "^0.23.2",
     "redux": "^4.1.0",
     "remarkable": "^1.7.3",
-    "styled-components": "^4.3.2",
     "typeahead.js": "^0.11.1",
     "underscore": "~1.9.1",
     "url-join": "^4.0.0"
@@ -63,7 +62,8 @@
     "eslint": "^6.0.1",
     "jest": "^24.9.0",
     "less": "^3.9.0",
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.13",
+    "redux": "^4.1.0"
   },
   "buildOptions": {
     "emitEntryPoint": true,

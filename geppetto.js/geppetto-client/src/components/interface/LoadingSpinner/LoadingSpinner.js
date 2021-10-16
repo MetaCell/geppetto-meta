@@ -7,7 +7,7 @@ export default class LoadingSpinner extends React.Component {
   /**
    * Legacy way to hide the spinner
    */
-  hideSpinner() {
+  hideSpinner () {
     this.props.hideSpinner();
   }
 
@@ -15,17 +15,17 @@ export default class LoadingSpinner extends React.Component {
    * Legacy way to show the spinner
    * @param {} label 
    */
-  showSpinner(label) {
+  showSpinner (label) {
     this.props.showSpinner(label);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (window.GEPPETTO) {
       GEPPETTO.Spinner = this;
     }
   }
 
-  render() {
+  render () {
     const { spinner } = this.props;
 
     return (

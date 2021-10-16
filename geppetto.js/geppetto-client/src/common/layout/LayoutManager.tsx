@@ -20,17 +20,17 @@ import {
 
 import { MINIMIZED_PANEL } from '.';
 
+
 const styles = (theme) => createStyles({
   container: {
-    height: '100%',
-    width: '100%',
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    position: 'relative'
   },
   spacer: { width: theme.spacing(1) },
-  flexlayout: { flexGrow: 1 }
+  flexlayout: { flexGrow: 1, position: 'relative' }
 });
 
 let instance: LayoutManager = null;

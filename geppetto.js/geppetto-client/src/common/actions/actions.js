@@ -129,7 +129,6 @@ export const parametersSet = () => ({
 });
 
 
-
 export const errorWhileExecPythonCommand = data => ({
   type: clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
   data: {
@@ -170,12 +169,22 @@ export const jupyterGeppettoExtensionReady = () => ({ type: clientActions.JUPYTE
 
 export const disableControls = () => ({ type: clientActions.DISABLE_CONTROLS, });
 
+export const receivePythonMessage = data => ({
+  type: clientActions.COMMAND_TOGGLE_IMPLICIT,
+  data: {
+    id: data.id,
+    type: data.type,
+    response: data.response,
+    timestamp: new Date().getTime().toString()
+  },
+});
+
 export const loadProjectFromId = projectId => ({
   type: clientActions.PROJECT_LOAD_FROM_ID,
   data: projectId
 });
 
 export const loadProjectFromUrl = projectUrl => ({
-  type: clientActions.PROJECT_LOAD_FROM_ID,
+  type: clientActions.PROJECT_LOAD_FROM_URL,
   data: projectUrl
 });

@@ -36,7 +36,7 @@ export class MessageSocket {
   autoReconnectInterval = 5 * 1000;
   socketStatus = Resources.SocketStatus.CLOSE;
 
-  constructor() {
+  constructor () {
     this.connect = this.connect.bind(this);
     this.reconnect = this.reconnect.bind(this);
     this.send = this.send.bind(this);
@@ -56,7 +56,6 @@ export class MessageSocket {
       console.log(Resources.WEBSOCKET_NOT_SUPPORTED, true);
       return;
     }
-
    
 
     this.socket.onopen = e => {
@@ -67,14 +66,15 @@ export class MessageSocket {
        * differently handle the reconnection scenario
        */
       
-      EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](Resources.LOADING_PROJECT);
-      const parameters = {};
-      parameters["connectionID"] = this.lostConnectionId;
-      parameters["projectId"] = this.projectId;
-      this.send("reconnect", parameters);
-      EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
+      if (this.lostConnectionId) {
+        const parameters = {};
+        parameters["connectionID"] = this.lostConnectionId;
+        parameters["projectId"] = this.projectId;
+        this.send("reconnect", parameters);
+        
+        this.lostConnectionId = undefined;
+      }
       
-      this.lostConnectionId = undefined;
 
       // Reset the counter for reconnection
       this.attempts = 0;
@@ -105,12 +105,12 @@ export class MessageSocket {
 
       // if it's a binary (possibly compressed) then determine its type and process it
       if (messageData instanceof ArrayBuffer) {
-        processBinaryMessage(messageData);
+        this.processBinaryMessage(messageData);
 
         // otherwise, for a text message, parse it and notify listeners
       } else {
         // a non compressed message
-        parseAndNotify(messageData);
+        this.parseAndNotify(messageData);
       }
 
     };
@@ -273,6 +273,53 @@ export class MessageSocket {
   loadProjectFromContent (content) {
     this.send("load_project_from_content", content);
   }
+
+  gzipUncompress (compressedMessage) {
+    var messageBytes = new Uint8Array(compressedMessage);
+    var message = pako.ungzip(messageBytes, { to: "string" });
+    return message;
+  }
+  
+  parseAndNotify (messageData) {
+    var parsedServerMessage = JSON.parse(messageData);
+  
+    // notify all handlers
+    for (var i = 0, len = this.messageHandlers.length; i < len; i++) {
+      var handler = this.messageHandlers[i];
+      if (handler != null || handler != undefined) {
+        handler.onMessage(parsedServerMessage);
+      }
+    }
+  
+    // run callback if any
+    if (parsedServerMessage.requestID != undefined){
+      if (callbackHandler[parsedServerMessage.requestID] != undefined) {
+        callbackHandler[parsedServerMessage.requestID](parsedServerMessage.data);
+        delete callbackHandler[parsedServerMessage.requestID];
+      }
+    }
+  
+  }
+  
+  
+  processBinaryMessage (message) {
+  
+    var messageBytes = new Uint8Array(message);
+  
+    /*
+     * if it's a binary message and first byte it's zero then assume it's a compressed json string
+     * otherwise is a file and a 'save as' dialog is opened
+     */
+    if (messageBytes[0] == 0) {
+      var message = pako.ungzip(messageBytes.subarray(1), { to: "string" });
+      this.parseAndNotify(message);
+    } else {
+      var fileNameLength = messageBytes[1];
+      var fileName = String.fromCharCode.apply(null, messageBytes.subarray(2, 2 + fileNameLength));
+      var blob = new Blob([message]);
+      FileSaver.saveAs(blob.slice(2 + fileNameLength), fileName);
+    }
+  }
 }
 
 /**
@@ -296,52 +343,5 @@ function messageTemplate (id, msgtype, payload) {
   return JSON.stringify(object);
 }
 
-function gzipUncompress (compressedMessage) {
-  var messageBytes = new Uint8Array(compressedMessage);
-  var message = pako.ungzip(messageBytes, { to: "string" });
-  return message;
-}
-
-function parseAndNotify (messageData) {
-  var parsedServerMessage = JSON.parse(messageData);
-
-  // notify all handlers
-  for (var i = 0, len = this.messageHandlers.length; i < len; i++) {
-    var handler = this.messageHandlers[i];
-    if (handler != null || handler != undefined) {
-      handler.onMessage(parsedServerMessage);
-    }
-  }
-
-  // run callback if any
-  if (parsedServerMessage.requestID != undefined){
-    if (callbackHandler[parsedServerMessage.requestID] != undefined) {
-      callbackHandler[parsedServerMessage.requestID](parsedServerMessage.data);
-      delete callbackHandler[parsedServerMessage.requestID];
-    }
-  }
-
-}
-
-
-
-function processBinaryMessage (message) {
-
-  var messageBytes = new Uint8Array(message);
-
-  /*
-   * if it's a binary message and first byte it's zero then assume it's a compressed json string
-   * otherwise is a file and a 'save as' dialog is opened
-   */
-  if (messageBytes[0] == 0) {
-    var message = pako.ungzip(messageBytes.subarray(1), { to: "string" });
-    parseAndNotify(message);
-  } else {
-    var fileNameLength = messageBytes[1];
-    var fileName = String.fromCharCode.apply(null, messageBytes.subarray(2, 2 + fileNameLength));
-    var blob = new Blob([message]);
-    FileSaver.saveAs(blob.slice(2 + fileNameLength), fileName);
-  }
-}
 
 export default new MessageSocket();
