@@ -270,10 +270,26 @@ export default class MeshFactory {
   }
 
   alreadyProcessed (instance, id, material) {
-    const instancePath = instance.getInstancePath() ;
-    const currentInstance = this.meshes[instancePath] ;
-    const path = `${instancePath}.${id}`
-    return currentInstance?.material.defaultColor === material.defaultColor && currentInstance.mergedMeshesPaths.indexOf(path) > -1 ; //same material for mershed group and id already there
+    const instancePath = instance.getInstancePath();
+    const currentInstance = this.meshes[instancePath];
+    return this.checkMaterial(currentInstance, material);
+  }
+
+  checkMaterial (currentInstance, material) {
+    if (currentInstance?.type === 'Mesh') {
+      if (currentInstance?.material?.color?.r === material?.color?.r
+        && currentInstance?.material?.color?.g === material?.color?.g
+        && currentInstance?.material?.color?.b === material?.color?.b
+        && currentInstance?.material?.color?.opacity === material?.color?.a) {
+          return true;
+        } else {
+          return false;
+        }
+    } else if (currentInstance?.type === 'Group') {
+      for (let child of currentInstance?.children) {
+        this.checkMaterial(child, material);
+      }
+    }
   }
 
   async create3DObjectFromInstance (instance, node, id, materials) {
