@@ -12,6 +12,20 @@ export default function exampleReducer(state = {}, action) {
                 };
             }
             break;
+        case Actions.CHANGE_INSTANCE_COLOR:
+            if (action.data !== undefined) {
+                let _instances = [...state.instances];
+                for (let instance of _instances) {
+                    if (instance.instancePath === action.data.instance) {
+                        instance.color = action.data.color
+                    }
+                }
+                return {
+                    ...state,
+                    instances: _instances
+                };
+            }
+            break;
         default:
             return state;
     }

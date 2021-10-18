@@ -94,6 +94,7 @@ const LeftSidebar = (props) => {
     }));
 
     const widgets = useSelector(state => state.widgets)
+    const exampleState = useSelector(state => state.exampleState)
 
     const handleChange = (event) => {
         setInstance(event.target.value);
@@ -117,8 +118,22 @@ const LeftSidebar = (props) => {
     };
 
     const handleChangeColor = () => {
-        console.log("Handle changing color");
+        if (vfbModelLoaded && instanceVisible()) {
+            dispatch(Actions.changeInstanceColor({
+                instance: instanceSelected,
+                color: COLORS[Math.floor(Math.random() * (COLORS.length - 1))]
+            }));
+        }
     };
+
+    const instanceVisible = () => {
+        for (let singleInstance of exampleState.instances) {
+            if (singleInstance.instancePath === instanceSelected) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     return (
         <>
