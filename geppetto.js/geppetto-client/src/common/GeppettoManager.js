@@ -25,8 +25,6 @@ export class Manager {
 
     window.Project = project;
     window.Project.readOnly = !persisted;
-
-    EventManager.projectLoaded();
   }
 
   /**

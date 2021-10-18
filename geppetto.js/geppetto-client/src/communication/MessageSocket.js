@@ -13,6 +13,11 @@ const FileSaver = require('file-saver');
 
 const callbackHandler = {};
 
+const messageTypes = {
+  CLIENT_ID: "client_id",
+  RECONNECTION_ERROR: "reconnection_error",
+};
+
 /**
  * Web socket creation and communication
  */
@@ -279,17 +284,38 @@ export class MessageSocket {
     var message = pako.ungzip(messageBytes, { to: "string" });
     return message;
   }
-  
+
+  /**
+   * Dispatches through Redux actions all messages received from the socket
+   * @param {*} messageData 
+   */
   parseAndNotify (messageData) {
     var parsedServerMessage = JSON.parse(messageData);
-  
-    // notify all handlers
-    for (var i = 0, len = this.messageHandlers.length; i < len; i++) {
-      var handler = this.messageHandlers[i];
-      if (handler != null || handler != undefined) {
-        handler.onMessage(parsedServerMessage);
+    console.debug("Received websocket message", parsedServerMessage);
+    let payload = JSON.parse(parsedServerMessage.data);
+    if (payload[parsedServerMessage.type]) {
+      try {
+        payload = JSON.parse(payload[parsedServerMessage.type]);
+      } catch (e) {
+        payload = payload[parsedServerMessage.type];
       }
     }
+
+    switch (parsedServerMessage.type) {
+    case messageTypes.CLIENT_ID: {
+      this.setClientID(payload.clientID);
+      break;
+    }
+    case messageTypes.RECONNECTION_ERROR: {
+      this.socketStatus = Resources.SocketStatus.CLOSE;
+      break;
+    }  
+    default:
+      break;
+    }
+    
+    
+    EventManager.store.dispatch({ type: parsedServerMessage.type, data: payload });
   
     // run callback if any
     if (parsedServerMessage.requestID != undefined){

@@ -28,6 +28,7 @@ const GEPPETTO = {
   Resources,
   Manager,
   ModelFactory,
+  Events,
   /**
    * @param{String} key - The pressed key
    * @returns {boolean} True if the key is pressed
@@ -68,6 +69,7 @@ const GEPPETTO = {
   },
 
   trigger: function (...args) {
+    console.warn("deprecated: GEPPETTO.trigger should be replaced by EventManager calls or redux actions dispatch");
     if (args.length == 0) {
       console.error("Trigger should be provided of the event to trigger");
       return;
@@ -81,10 +83,12 @@ const GEPPETTO = {
   },
 
   on: function (eventName, callback) {
+    console.warn("deprecated: GEPPETTO.on should be replaced by a Redux middleware");
     EventManager.eventsCallback[EventsMapping[eventName]].add(callback)
   },
 
   off: function (eventName, callback = null) {
+    console.warn("deprecated: GEPPETTO.on and GEPPETTO.off are now replaced by Redux");
     if (!eventName && callback) {
       for (const l of Object.values(EventManager.eventsCallback)) {
         EventManager.eventsCallback[EventsMapping[l]].delete(callback)

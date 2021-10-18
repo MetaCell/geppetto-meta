@@ -40,6 +40,42 @@ export const clientActions = {
   DISABLE_CONTROLS: "DISABLE_CONTROLS",
 };
 
+export const backendActions = {
+  CLIENT_ID: "client_id",
+  ERROR_LOADING_SIM: "error_loading_simulation",
+  ERROR_LOADING_PROJECT: "error_loading_project",
+  ERROR_DOWNLOADING_MODEL: "error_downloading_model",
+  ERROR_DOWNLOADING_RESULTS: "error_downloading_results",
+  ERROR: "generic_error",
+  INFO_MESSAGE: "info_message",
+  GEPPETTO_VERSION: "geppetto_version",
+  RECONNECTION_ERROR: "reconnection_error",
+  USER_PRIVILEGES: "user_privileges",
+  PROJECT_LOADED: "project_loaded",
+  DOWNLOAD_PROJECT : "download_project",
+  MODEL_LOADED: "geppetto_model_loaded",
+  PROJECT_PROPS_SAVED: "project_props_saved",
+  VARIABLE_FETCHED: "variable_fetched",
+  IMPORT_TYPE_RESOLVED: "import_type_resolved",
+  IMPORT_VALUE_RESOLVED: "import_value_resolved",
+  SET_WATCHED_VARIABLES: "set_watched_variables",
+  WATCHED_VARIABLES_SET: "watched_variables_set",
+  CLEAR_WATCH: "clear_watch",
+  GET_MODEL_TREE: "get_model_tree",
+  GET_SIMULATION_TREE: "get_simulation_tree",
+  SET_PARAMETERS: "set_parameters",
+  NO_FEATURE: "no_feature",
+  GET_SUPPORTED_OUTPUTS: "get_supported_outputs",
+  RESULTS_UPLOADED: "results_uploaded",
+  MODEL_UPLOADED: "model_uploaded",
+  UPDATE_MODEL_TREE: "update_model_tree",
+  DOWNLOAD_MODEL: "download_model",
+  DOWNLOAD_RESULTS: "download_results",
+  PROJECT_MADE_PUBLIC: "project_made_public",
+  FETCHED: "fetched",
+}
+
+
 export const IMPORT_APPLICATION_STATE = 'IMPORT_APPLICATION_STATE';
 
 export const selectInstance = (scope, geometryIdentifier, point) => ({
