@@ -304,22 +304,22 @@ Canvas.propTypes = {
       /**
        * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
        */
-      filter: PropTypes.string.isRequired,
+      filter: PropTypes.string,
       /**
        * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
        */
-      pixelRatio: PropTypes.number.isRequired,
+      pixelRatio: PropTypes.number,
       /**
        * A number between 0 and 1 indicating image quality (e.g. 0.92 => 92%) of the JPEG image.
        */
-      quality: PropTypes.number.isRequired,
+      quality: PropTypes.number,
       /**
        * Screenshot desired resolution
        */
       resolution: PropTypes.shape({
         height: PropTypes.number.isRequired,
         width: PropTypes.number.isRequired
-      }).isRequired
+      })
     }).isRequired
   }),
   /**
