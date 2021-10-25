@@ -1298,6 +1298,7 @@
     file-saver "^2.0.2"
     griddle-react "^1.13.1"
     handlebars "^4.0.5"
+    html-to-image "^1.9.0"
     html2canvas "^1.0.0-alpha.12"
     jquery "^3.4.0"
     jquery-ui-bundle "^1.12.1"
@@ -7953,6 +7954,11 @@ html-minifier@^3.5.8:
     param-case "2.1.x"
     relateurl "0.2.x"
     uglify-js "3.4.x"
+
+html-to-image@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/html-to-image/-/html-to-image-1.9.0.tgz#cb49bf9f4b37376771c85cfdd65863ae9420b268"
+  integrity sha512-9gaDCIYg62Ek07F2pBk76AHgYZ2gxq2YALU7rK3gNCqXuhu6cWzsOQqM7qGbjZiOzxGzrU1deDqZpAod2NEwbA==
 
 html-webpack-plugin@^4.5.2:
   version "4.5.2"

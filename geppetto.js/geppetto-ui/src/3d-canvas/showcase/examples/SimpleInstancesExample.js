@@ -7,7 +7,7 @@ import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from './Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
-import RecordControls from "../../../record-controls/RecordControls";
+import CaptureControls from "../../../capture-controls/CaptureControls";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -138,11 +138,20 @@ class SimpleInstancesExample extends Component {
         rotation: this.lastCameraUpdate.rotation,
       };
     }
-    const recorderOptions = {
-      recorderControls: {
-        instance: RecordControls,
+    const captureOptions = {
+      captureControls: {
+        instance: CaptureControls,
         props: {}
-      }
+      },
+      screenshotOptions:{
+        resolution:{
+          width: 3840,
+          height: 2160,
+        },
+        quality: 0.95,
+        pixelRatio: 1,
+        filter: () => true
+      },
     }
 
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
@@ -150,7 +159,7 @@ class SimpleInstancesExample extends Component {
         ref={this.canvasRef}
         data={canvasData}
         cameraOptions={camOptions}
-        recorderOptions={recorderOptions}
+        captureOptions={captureOptions}
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
         onSelection={this.onSelection}
