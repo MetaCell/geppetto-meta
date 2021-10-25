@@ -23,6 +23,7 @@ export default class ThreeDEngine {
     containerRef,
     cameraOptions,
     cameraHandler,
+    captureOptions,
     onSelection,
     backgroundColor,
     pickingEnabled,
@@ -54,7 +55,7 @@ export default class ThreeDEngine {
     this.setupCamera(cameraOptions, this.width / this.height);
 
     // Setup Renderer
-    this.setupRenderer(containerRef);
+    this.setupRenderer(containerRef, { antialias: true, alpha: true, preserveDrawingBuffer: captureOptions !== undefined });
 
     // Setup Lights
     this.setupLights();
@@ -88,8 +89,8 @@ export default class ThreeDEngine {
    * Setups the renderer
    * @param containerRef
    */
-  setupRenderer (containerRef) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  setupRenderer (containerRef, options) {
+    this.renderer = new THREE.WebGLRenderer(options);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.autoClear = false;

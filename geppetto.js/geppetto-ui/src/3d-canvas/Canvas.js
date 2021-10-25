@@ -21,10 +21,16 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.captureControls = React.createRef();
     this.state = { modelReady: false, showDownload: false }
+    this.constructorFromProps(props)
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+  }
+  
+  constructorFromProps (props) {
+    if (props.captureOptions !== undefined){
+      this.captureControls = React.createRef();
+    }
   }
 
   async componentDidMount () {
@@ -32,6 +38,7 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
@@ -46,6 +53,7 @@ class Canvas extends Component {
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       onSelection,
       backgroundColor,
       pickingEnabled,
@@ -55,7 +63,9 @@ class Canvas extends Component {
       selectionStrategy
     );
 
-    this.recorder = new Recorder(this.getCanvasElement())
+    if (captureOptions){
+      this.recorder = new Recorder(this.getCanvasElement())
+    }
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
@@ -89,6 +99,7 @@ class Canvas extends Component {
   }
 
   defaultCaptureControlsHandler (action) {
+    const { captureOptions } = this.props
     if (this.recorder) {
       switch (action) {
       case captureControlsActions.START:
@@ -104,8 +115,8 @@ class Canvas extends Component {
         break;
       }
     }
-    if (action === captureControlsActions.SCREENSHOT && this.props.captureOptions && this.props.captureOptions.screenshotOptions) {
-      const { quality, pixelRatio, resolution, filter } = this.props.captureOptions.screenshotOptions
+    if (action === captureControlsActions.SCREENSHOT && captureOptions && captureOptions.screenshotOptions) {
+      const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
       screenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
     }
 
@@ -192,18 +203,21 @@ class Canvas extends Component {
     const { classes, cameraOptions, captureOptions } = this.props;
     const { showDownload } = this.state;
     const { cameraControls } = cameraOptions
-    const { captureControls } = captureOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    const captureControlsHandler = captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
-    const captureInstance = captureControls.instance ? (
-      <captureControls.instance
-        ref={this.captureControls}
-        captureControlsHandler={captureControlsHandler}
-        showDownload={showDownload}
-        {...captureControls.props}
-      />
-    )
-      : null;
+    let captureInstance = null
+    if (captureOptions){
+      const { captureControls } = captureOptions
+      const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
+      captureInstance = captureControls && captureControls.instance ? (
+        <captureControls.instance
+          ref={this.captureControls}
+          captureControlsHandler={captureControlsHandler}
+          showDownload={showDownload}
+          {...captureControls.props}
+        />
+      )
+        : null;
+    }
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {
@@ -214,7 +228,6 @@ class Canvas extends Component {
           />
         }
         {captureInstance}
-
       </div>
     );
   }
@@ -237,21 +250,7 @@ Canvas.defaultProps = {
     },
     rotateSpeed: 0.5,
   },
-  captureOptions: {
-    screenshotOptions: {
-      resolution: {
-        width: 3840,
-        height: 2160,
-      },
-      quality: 0.95,
-      pixelRatio: 1,
-      filter: () => true
-    },
-    captureControls: {
-      instance: null,
-      props: {}
-    }
-  },
+  captureOptions: undefined,
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
@@ -284,7 +283,21 @@ Canvas.propTypes = {
   /**
    * Options to customize capture features
    */
-  captureOptions: PropTypes.object,
+  captureOptions: PropTypes.shape({
+    captureControls: PropTypes.shape({
+      instance: PropTypes.any,
+      props: PropTypes.shape({}).isRequired
+    }).isRequired,
+    screenshotOptions: PropTypes.shape({
+      filter: PropTypes.string.isRequired,
+      pixelRatio: PropTypes.number.isRequired,
+      quality: PropTypes.number.isRequired,
+      resolution: PropTypes.shape({
+        height: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired
+      }).isRequired
+    }).isRequired
+  }).isRequired,
   /**
    * Three JS objects to add to the scene
    */
