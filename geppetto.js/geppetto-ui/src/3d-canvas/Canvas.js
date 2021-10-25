@@ -284,20 +284,44 @@ Canvas.propTypes = {
    * Options to customize capture features
    */
   captureOptions: PropTypes.shape({
+    /**
+     * Capture controls component definition
+     */
     captureControls: PropTypes.shape({
+      /**
+       * Component instance
+       */
       instance: PropTypes.any,
-      props: PropTypes.shape({}).isRequired
-    }).isRequired,
+      /**
+       * Component props
+       */
+      props: PropTypes.shape({})
+    }),
+    /**
+     * Screenshot Options
+     */
     screenshotOptions: PropTypes.shape({
+      /**
+       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
+       */
       filter: PropTypes.string.isRequired,
+      /**
+       * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
+       */
       pixelRatio: PropTypes.number.isRequired,
+      /**
+       * A number between 0 and 1 indicating image quality (e.g. 0.92 => 92%) of the JPEG image.
+       */
       quality: PropTypes.number.isRequired,
+      /**
+       * Screenshot desired resolution
+       */
       resolution: PropTypes.shape({
         height: PropTypes.number.isRequired,
         width: PropTypes.number.isRequired
       }).isRequired
     }).isRequired
-  }).isRequired,
+  }),
   /**
    * Three JS objects to add to the scene
    */
