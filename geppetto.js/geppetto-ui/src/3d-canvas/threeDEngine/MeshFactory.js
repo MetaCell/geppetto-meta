@@ -71,6 +71,9 @@ export default class MeshFactory {
 
   async traverseInstances (instances) {
     for (let j = 0; j < instances.length; j++) {
+      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())) {
+        continue
+      }
       await this.checkVisualInstance(instances[j]);
     }
   }
@@ -269,28 +272,6 @@ export default class MeshFactory {
     return threeDeeObjList
   }
 
-  alreadyProcessed (instance, id, material) {
-    const instancePath = instance.getInstancePath();
-    const currentInstance = this.meshes[instancePath];
-    return this.checkMaterial(currentInstance, material);
-  }
-
-  checkMaterial (currentInstance, material) {
-    if (currentInstance?.type === 'Mesh') {
-      if (currentInstance?.material?.color?.r === material?.color?.r
-        && currentInstance?.material?.color?.g === material?.color?.g
-        && currentInstance?.material?.color?.b === material?.color?.b
-        && currentInstance?.material?.color?.opacity === material?.color?.a) {
-          return true;
-        } else {
-          return false;
-        }
-    } else if (currentInstance?.type === 'Group') {
-      for (let child of currentInstance?.children) {
-        this.checkMaterial(child, material);
-      }
-    }
-  }
 
   async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
@@ -298,9 +279,6 @@ export default class MeshFactory {
     const lines = this.getDefaultGeometryType() === 'lines';
 
     const material = lines ? materials.line : materials.mesh;
-
-    if (this.alreadyProcessed(instance, id, material))
-      return ;
 
     // eslint-disable-next-line default-case
     switch (node.eClass) {

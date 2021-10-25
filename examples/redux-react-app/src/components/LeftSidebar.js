@@ -121,7 +121,7 @@ const LeftSidebar = (props) => {
         if (vfbModelLoaded && instanceVisible()) {
             dispatch(Actions.changeInstanceColor({
                 instance: instanceSelected,
-                color: COLORS[Math.floor(Math.random() * (COLORS.length - 1))]
+                color: COLORS[Math.floor(Math.random(new Date().getTime()) * (COLORS.length - 1))]
             }));
         }
     };

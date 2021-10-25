@@ -16,8 +16,8 @@ export default function exampleReducer(state = {}, action) {
             if (action.data !== undefined) {
                 let _instances = [...state.instances];
                 for (let instance of _instances) {
-                    if (instance.instancePath === action.data.instance) {
-                        instance.color = action.data.color
+                    if (instance.instancePath === action.data.instance.instance) {
+                        instance.color = action.data.instance.color
                     }
                 }
                 return {
