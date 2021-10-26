@@ -13,7 +13,7 @@ import ArrayInstance from '@metacell/geppetto-meta-core//model/ArrayInstance';
 import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { hasVisualType } from "./util";
+import { hasVisualType, hasVisualValue } from "./util";
 import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
 
 require('./TrackballControls');
@@ -262,6 +262,7 @@ export default class ThreeDEngine {
       for (let child of this.scene.children) {
         if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
           this.setInstanceMaterial(child, instance)
+          break;
         }
       }
     } else {
@@ -273,7 +274,7 @@ export default class ThreeDEngine {
 
   setInstanceMaterial(mesh, instance) {
     if (mesh.type === 'Mesh') {
-      mesh.material.color.setRGB(instance.color.r, instance.color.b, instance.color.b);
+      mesh.material.color.set(instance.color);
       if (instance.color.a) {
         mesh.material.transparent = true;
         mesh.material.opacity = instance.color.a;
@@ -288,30 +289,100 @@ export default class ThreeDEngine {
   /**
    * Clears the scene
    *
+   * we have the list of strings instances
+   * we have the global Instances from the model
+   * we have the obj instances in the threeJS scene
    */
-  clearScene (instances) {
-    let instancesPaths = [];
-    let toRemove = this.scene.children.filter(
-      child => (child.type === 'Mesh' || child.type ===  'Group')
-    );
 
-    if (instances) {
-      instancesPaths = instances.map((i) => { return i.instancePath });
-      for (var i = toRemove.length - 1; i >= 0; i--) {
-        for (var j = 0; j <= instancesPaths.length - 1; j++) {
-          // if the Mesh is present in the list of instances provided by the canvas then
-          // we can remove this from that list itself and from the toRemove so that we don't recompute
-          // the same mesh/instance twice
-          if (toRemove[i].instancePath.startsWith(instancesPaths[j])) {
-            // if the color is the same then remove this
-            if (this.checkMaterial(toRemove[i], instances[j])) {
-              this.updateInstanceMaterial(toRemove[i], instances[j]);
-            }
-            toRemove.splice(i, 1);
-            instances.splice(j, 1);
-            instancesPaths.splice(j, 1);
-            break;
+  checkInstanceToRemove (geppettoInstance, proxyInstance, toRemove, pathsToRemove) {
+    try {
+      if (hasVisualValue(geppettoInstance)) {
+        var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
+        if (geppettoIndex > -1) {
+          if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
+            this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
           }
+          toRemove.splice(geppettoIndex, 1);
+          pathsToRemove.splice(geppettoIndex, 1);
+          return true;
+        }
+        return false;
+      } else if (hasVisualType(geppettoInstance)) {
+        if (
+          geppettoInstance.getType().getMetaType()
+            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            && geppettoInstance.getVisualType()
+        ) {
+          var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
+          if (geppettoIndex > -1) {
+            if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
+              this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
+            }
+            toRemove.splice(geppettoIndex, 1);
+            pathsToRemove.splice(geppettoIndex, 1);
+            return true;
+          }
+          return false;
+        }
+        // this block keeps traversing the instances
+        if (geppettoInstance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+          var returnValue = false;
+          var children = geppettoInstance.getChildren();
+          for (let i = 0; i < children.length; i++) {
+            let instanceReturn = this.checkInstanceToRemove(children[i], proxyInstance, toRemove, pathsToRemove);
+            returnValue = returnValue || instanceReturn;
+          }
+          return returnValue;
+        } else if (
+          geppettoInstance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+        ) {
+          var returnValue = false;
+          for (let i = 0; i < geppettoInstance.length; i++) {
+            let instanceReturn = this.checkInstanceToRemove(geppettoInstance[i], proxyInstance, toRemove, pathsToRemove);
+            returnValue = returnValue || instanceReturn;
+          }
+          return returnValue;
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+
+  async clearScene (proxyInstances) {
+    var pathsToRemove = [];
+    var sortedInstances = [];
+    var toRemove = this.scene.children.filter(child => {
+        if (child.type === 'Mesh' || child.type ===  'Group') {
+          pathsToRemove.push(child.instancePath)
+          return true;
+        }
+        return false;
+    });
+
+    if (proxyInstances) {
+      sortedInstances = proxyInstances.sort((a, b) => {
+        if (a.instancePath < b.instancePath) {
+          return -1;
+        }
+        if (a.instancePath > b.instancePath) {
+          return 1;
+        }
+        return 0;
+      });
+      if (toRemove.length === 0) {
+        return sortedInstances;
+      }
+      for (var i = sortedInstances.length - 1; i >= 0; i--) {
+        var geppettoInstance = Instances.getInstance(sortedInstances[i]?.instancePath);
+        if (geppettoInstance) {
+          let _check = await this.checkInstanceToRemove(geppettoInstance, sortedInstances[i], toRemove, pathsToRemove);
+          if (_check) {
+            sortedInstances.splice(i, 1);
+          }
+        } else {
+          sortedInstances.splice(i, 1);
         }
       }
     } else {
@@ -323,7 +394,7 @@ export default class ThreeDEngine {
         this.meshFactory.cleanWith3DObject(child);
         this.scene.remove(child);
     }
-    return instances;
+    return sortedInstances;
   }
 
   updateInstancesColor (proxyInstances) {
@@ -421,8 +492,6 @@ export default class ThreeDEngine {
       }
     }
     const meshes = this.meshFactory.getMeshes();
-    // TO FIX: this purge everything from the scene
-    this.clearScene();
     for (const meshKey in meshes) {
       this.addToScene(meshes[meshKey]);
     }
@@ -819,7 +888,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
-    proxyInstances = this.clearScene(proxyInstances);
+    proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
       await this.addInstancesToScene(proxyInstances);

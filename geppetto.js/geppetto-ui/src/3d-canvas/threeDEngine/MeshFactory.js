@@ -1,5 +1,5 @@
 import particle from '../textures/particle.png';
-import { hasVisualType } from "./util";
+import { hasVisualType, hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
@@ -80,7 +80,7 @@ export default class MeshFactory {
 
   async checkVisualInstance (instance) {
     try {
-      if (this.hasVisualValue(instance)) {
+      if (hasVisualValue(instance)) {
         await this.buildVisualInstance(instance)
       } else if (hasVisualType(instance)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
@@ -102,14 +102,6 @@ export default class MeshFactory {
       }
     } catch (e) {
       console.error(e)
-    }
-  }
-
-  hasVisualValue (instance) {
-    try {
-      return instance.hasVisualValue()
-    } catch (e) {
-      return false
     }
   }
 
@@ -194,7 +186,7 @@ export default class MeshFactory {
   }
 
   async walkVisTreeGen3DObjs (instance, materials) {
-    if (this.hasVisualValue(instance)) {
+    if (hasVisualValue(instance)) {
       const visualValue = instance.getVisualValue();
       const threeDObj = await this.create3DObjectFromInstance(
         instance,
