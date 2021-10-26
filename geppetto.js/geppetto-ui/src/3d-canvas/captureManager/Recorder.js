@@ -65,6 +65,15 @@ export class Recorder {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 100);
+    return filename
+  }
+
+  getRecordedBlobs(){
+    return this.recordedBlobs
+  }
+
+  getOptions(){
+    return this.options
   }
 
 }

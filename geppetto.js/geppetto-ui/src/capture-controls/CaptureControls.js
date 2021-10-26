@@ -10,8 +10,8 @@ import PropTypes from "prop-types";
 export const captureControlsActions = {
   START: 'START',
   STOP: 'STOP',
-  DOWNLOAD: 'DOWNLOAD',
-  SCREENSHOT: 'SCREENSHOT',
+  DOWNLOAD_VIDEO: 'DOWNLOAD_VIDEO',
+  DOWNLOAD_SCREENSHOT: 'DOWNLOAD_SCREENSHOT',
 };
 
 const styles = theme => ({ button: { color: theme.palette.button.main, }, });
@@ -62,14 +62,14 @@ class CaptureControls extends Component {
         { showDownload 
         && <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD)}
+          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_VIDEO)}
           className={`${classes.button} download squareB`}
           tooltip={"Download"}
           icon={faDownload}/>
         }
         <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.SCREENSHOT)}
+          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_SCREENSHOT)}
           className={`${classes.button} screenshot squareB`}
           tooltip={"Screenshot"}
           icon={faCamera}/>

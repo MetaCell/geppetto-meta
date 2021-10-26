@@ -1,7 +1,6 @@
 import * as htmlToImage from "html-to-image";
 
-export function screenshot (htmlElement, quality = 0.95, targetResolution = { width: 3840, height: 2160 },
-  pixelRatio = 1, filter = () => true, filename = `Canvas_${formatDate(new Date())}.png`) {
+function getOptions(htmlElement, targetResolution, quality, pixelRatio, filter) {
   const resolution = getResolutionFixedRatio(htmlElement, targetResolution)
   const options = {
     quality: quality,
@@ -10,6 +9,12 @@ export function screenshot (htmlElement, quality = 0.95, targetResolution = { wi
     pixelRatio: pixelRatio,
     filter: filter
   }
+  return options;
+}
+
+export function downloadScreenshot (htmlElement, quality = 0.95, targetResolution = { width: 3840, height: 2160 },
+  pixelRatio = 1, filter = () => true, filename = `Canvas_${formatDate(new Date())}.png`) {
+  const options = getOptions(htmlElement, targetResolution, quality, pixelRatio, filter);
 
   htmlToImage.toPng(htmlElement, options)
     .then(function (dataUrl) {

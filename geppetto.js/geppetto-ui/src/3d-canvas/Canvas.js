@@ -6,7 +6,7 @@ import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
-import { screenshot } from "./captureManager/Screenshoter";
+import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
@@ -105,21 +105,23 @@ class Canvas extends Component {
       case captureControlsActions.START:
         this.recorder.startRecording()
         this.setState({ showDownload: false })
-        break;
+        return [];
       case captureControlsActions.STOP:
         this.recorder.stopRecording()
         this.setState({ showDownload: true })
-        break;
-      case captureControlsActions.DOWNLOAD:
-        this.recorder.download()
-        break;
+        return [this.recorder.getRecordedBlobs(), this.recorder.getOptions()]
+      case captureControlsActions.DOWNLOAD_VIDEO:
+        return [this.recorder.download()]
       }
     }
-    if (action === captureControlsActions.SCREENSHOT && captureOptions && captureOptions.screenshotOptions) {
+    if (captureOptions && captureOptions.screenshotOptions) {
       const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
-      screenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+      switch(action){
+        case captureControlsActions.DOWNLOAD_SCREENSHOT:
+          downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+          return [];
+      }
     }
-
   }
 
   defaultCameraControlsHandler (action) {
