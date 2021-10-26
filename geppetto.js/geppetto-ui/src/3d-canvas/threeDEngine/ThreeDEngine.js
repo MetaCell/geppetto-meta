@@ -255,26 +255,23 @@ export default class ThreeDEngine {
 
 
   updateInstanceMaterial(mesh, instance) {
-    if (instance?.color?.r !== undefined
-      && instance?.color?.g !== undefined
-      && instance?.color?.b !== undefined
-      && instance?.color?.a !== undefined) {
-      for (let child of this.scene.children) {
-        if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
-          this.setInstanceMaterial(child, instance)
+    for (let child of this.scene.children) {
+      if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
+        if (instance?.color !== undefined) {
+          this.setInstanceMaterial(child, instance);
           break;
+        } else {
+          instance.color = GEPPETTO.Resources.COLORS.DEFAULT;
+          this.setInstanceMaterial(child, instance);
         }
       }
-    } else {
-      console.error("color for instance provided is malformed, please provide the color in the form");
-      console.error("{r: [0-1], g: [0-1], b: [0-1], a: [0-1]}");
     }
   }
 
 
   setInstanceMaterial(mesh, instance) {
     if (mesh.type === 'Mesh') {
-      mesh.material.color.set(instance.color);
+      this.MeshFactory.setThreeColor(mesh.material.color, instance.color);
       if (instance.color.a) {
         mesh.material.transparent = true;
         mesh.material.opacity = instance.color.a;
