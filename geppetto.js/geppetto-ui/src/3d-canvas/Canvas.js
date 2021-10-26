@@ -21,7 +21,7 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.state = { modelReady: false, showDownload: false }
+    this.state = { modelReady: false }
     this.constructorFromProps(props)
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
@@ -88,7 +88,7 @@ class Canvas extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props || this.state.showDownload !== nextState.showDownload
+    return nextState.modelReady || nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -113,10 +113,10 @@ class Canvas extends Component {
     }
     if (captureOptions && captureOptions.screenshotOptions) {
       const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
-      switch(action){
-        case captureControlsActions.DOWNLOAD_SCREENSHOT:
-          downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
-          break
+      switch (action){
+      case captureControlsActions.DOWNLOAD_SCREENSHOT:
+        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+        break
       }
     }
   }
@@ -200,7 +200,6 @@ class Canvas extends Component {
 
   render () {
     const { classes, cameraOptions, captureOptions } = this.props;
-    const { showDownload } = this.state;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     let captureInstance = null
@@ -211,7 +210,6 @@ class Canvas extends Component {
         <captureControls.instance
           ref={this.captureControls}
           captureControlsHandler={captureControlsHandler}
-          showDownload={showDownload}
           {...captureControls.props}
         />
       )
