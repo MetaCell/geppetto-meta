@@ -97,7 +97,7 @@ class Canvas extends Component {
       this.threeDEngine.getRenderer().domElement
     );
   }
-  // TODO: Update state to show download button
+
   defaultCaptureControlsHandler (action) {
     const { captureOptions } = this.props
     if (this.recorder) {
