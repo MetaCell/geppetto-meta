@@ -97,21 +97,18 @@ class Canvas extends Component {
       this.threeDEngine.getRenderer().domElement
     );
   }
-
+  // TODO: Update state to show download button
   defaultCaptureControlsHandler (action) {
     const { captureOptions } = this.props
     if (this.recorder) {
       switch (action) {
       case captureControlsActions.START:
         this.recorder.startRecording()
-        this.setState({ showDownload: false })
-        return [];
+        break
       case captureControlsActions.STOP:
-        this.recorder.stopRecording()
-        this.setState({ showDownload: true })
-        return [this.recorder.getRecordedBlobs(), this.recorder.getOptions()]
+        return this.recorder.stopRecording()
       case captureControlsActions.DOWNLOAD_VIDEO:
-        return [this.recorder.download()]
+        return this.recorder.download()
       }
     }
     if (captureOptions && captureOptions.screenshotOptions) {
@@ -119,7 +116,7 @@ class Canvas extends Component {
       switch(action){
         case captureControlsActions.DOWNLOAD_SCREENSHOT:
           downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
-          return [];
+          break
       }
     }
   }

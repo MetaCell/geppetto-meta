@@ -42,11 +42,12 @@ export class Recorder {
 
   startRecording (){
     this.recordedBlobs = []
-    this.mediaRecorder.start();
+    this.mediaRecorder.start(100);
   }
 
   stopRecording (){
     this.mediaRecorder.stop();
+    return this.getRecordingBlob()
   }
 
   download (filename){
@@ -65,15 +66,11 @@ export class Recorder {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 100);
-    return filename
+    return blob
   }
 
-  getRecordedBlobs(){
-    return this.recordedBlobs
-  }
-
-  getOptions(){
-    return this.options
+  getRecordingBlob(){
+    return new Blob(this.recordedBlobs, this.options);
   }
 
 }
