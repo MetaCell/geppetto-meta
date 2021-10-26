@@ -271,7 +271,7 @@ export default class ThreeDEngine {
 
   setInstanceMaterial(mesh, instance) {
     if (mesh.type === 'Mesh') {
-      this.MeshFactory.setThreeColor(mesh.material.color, instance.color);
+      this.meshFactory.setThreeColor(mesh.material.color, instance.color);
       if (instance.color.a) {
         mesh.material.transparent = true;
         mesh.material.opacity = instance.color.a;
