@@ -3,10 +3,10 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
-import contact from './Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
+import neuron from '../assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
+import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -128,7 +128,7 @@ class MultipleInstancesExample extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
-  addInstance() {
+  addInstance () {
     const next = this.state.numberOfInstances + 1;
     loadInstances()
     this.setState({
@@ -139,7 +139,7 @@ class MultipleInstancesExample extends Component {
     })
   }
 
-  removeInstance() {
+  removeInstance () {
     const next = this.state.numberOfInstances - 1 ;
     loadInstances()
     this.setState({
@@ -176,7 +176,7 @@ class MultipleInstancesExample extends Component {
             onSelection={this.onSelection}
             // hoverListeners={[this.hoverHandler]}
             onMount={this.onMount}
-        />) 
+          />) 
       }   
     </div> : <Button
       variant="outlined"

@@ -5,7 +5,7 @@ import CameraControls from '../../../camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "../examples/SelectionUtils";
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const INSTANCES = [
   'VFB_00017894',
