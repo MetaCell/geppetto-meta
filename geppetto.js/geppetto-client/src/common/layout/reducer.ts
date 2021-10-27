@@ -98,7 +98,8 @@ export const widgets = (state: WidgetMap = {}, action) => {
       return { ...state, ...action.data }
     }
 
-    case layoutActions.REMOVE_WIDGET: {
+    case layoutActions.REMOVE_WIDGET:
+    case layoutActions.DESTROY_WIDGET: {
       const newWidgets = { ...state };
       delete newWidgets[action.data.id];
       return newWidgets;
