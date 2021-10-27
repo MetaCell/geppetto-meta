@@ -6,7 +6,7 @@ import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
-import { screenshot } from "./captureManager/Screenshoter";
+import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
@@ -21,7 +21,7 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.state = { modelReady: false, showDownload: false }
+    this.state = { modelReady: false }
     this.constructorFromProps(props)
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
@@ -88,7 +88,7 @@ class Canvas extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props || this.state.showDownload !== nextState.showDownload
+    return nextState.modelReady || nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -104,22 +104,21 @@ class Canvas extends Component {
       switch (action) {
       case captureControlsActions.START:
         this.recorder.startRecording()
-        this.setState({ showDownload: false })
-        break;
+        break
       case captureControlsActions.STOP:
-        this.recorder.stopRecording()
-        this.setState({ showDownload: true })
-        break;
-      case captureControlsActions.DOWNLOAD:
-        this.recorder.download()
-        break;
+        return this.recorder.stopRecording()
+      case captureControlsActions.DOWNLOAD_VIDEO:
+        return this.recorder.download()
       }
     }
-    if (action === captureControlsActions.SCREENSHOT && captureOptions && captureOptions.screenshotOptions) {
+    if (captureOptions && captureOptions.screenshotOptions) {
       const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
-      screenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+      switch (action){
+      case captureControlsActions.DOWNLOAD_SCREENSHOT:
+        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+        break
+      }
     }
-
   }
 
   defaultCameraControlsHandler (action) {
@@ -201,7 +200,6 @@ class Canvas extends Component {
 
   render () {
     const { classes, cameraOptions, captureOptions } = this.props;
-    const { showDownload } = this.state;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     let captureInstance = null
@@ -212,7 +210,6 @@ class Canvas extends Component {
         <captureControls.instance
           ref={this.captureControls}
           captureControlsHandler={captureControlsHandler}
-          showDownload={showDownload}
           {...captureControls.props}
         />
       )
@@ -304,7 +301,7 @@ Canvas.propTypes = {
       /**
        * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
        */
-      filter: PropTypes.string,
+      filter: PropTypes.func,
       /**
        * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
        */

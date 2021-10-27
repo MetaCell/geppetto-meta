@@ -10,8 +10,8 @@ import PropTypes from "prop-types";
 export const captureControlsActions = {
   START: 'START',
   STOP: 'STOP',
-  DOWNLOAD: 'DOWNLOAD',
-  SCREENSHOT: 'SCREENSHOT',
+  DOWNLOAD_VIDEO: 'DOWNLOAD_VIDEO',
+  DOWNLOAD_SCREENSHOT: 'DOWNLOAD_SCREENSHOT',
 };
 
 const styles = theme => ({ button: { color: theme.palette.button.main, }, });
@@ -19,7 +19,7 @@ const styles = theme => ({ button: { color: theme.palette.button.main, }, });
 class CaptureControls extends Component {
   constructor (props) {
     super(props);
-    this.state = { isRecording: false }
+    this.state = { isRecording: false, hasRecorded: false }
     this.handleClickRecord = this.handleClickRecord.bind(this)
   }
 
@@ -30,12 +30,12 @@ class CaptureControls extends Component {
     } else {
       this.props.captureControlsHandler(captureControlsActions.START)
     }
-    this.setState({ isRecording: !isRecording })
+    this.setState({ isRecording: !isRecording, hasRecorded: true })
   }
 
   render () {
-    const { classes, showDownload, captureControlsHandler } = this.props;
-    const { isRecording } = this.state;
+    const { classes, captureControlsHandler } = this.props;
+    const { isRecording, hasRecorded } = this.state;
 
     const recordButton = !isRecording ? (
       <IconButtonWithTooltip
@@ -59,17 +59,17 @@ class CaptureControls extends Component {
     return (
       <div className="position-toolbar">
         {recordButton}
-        { showDownload 
+        { hasRecorded && !isRecording
         && <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD)}
+          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_VIDEO)}
           className={`${classes.button} download squareB`}
           tooltip={"Download"}
           icon={faDownload}/>
         }
         <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.SCREENSHOT)}
+          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_SCREENSHOT)}
           className={`${classes.button} screenshot squareB`}
           tooltip={"Screenshot"}
           icon={faCamera}/>
@@ -78,7 +78,7 @@ class CaptureControls extends Component {
   }
 }
 
-CaptureControls.defaultProps = { showDownload: false };
+CaptureControls.defaultProps = { };
 
 CaptureControls.propTypes = {
   /**
@@ -86,10 +86,6 @@ CaptureControls.propTypes = {
    */
   captureControlsHandler: PropTypes.func.isRequired,
 
-  /**
-   * Boolean to enable/disable download button
-   */
-  showDownload: PropTypes.bool,
 };
 
 export default withStyles(styles)(CaptureControls);
