@@ -174,7 +174,6 @@ class MultipleInstancesExample extends Component {
             cameraHandler={this.cameraHandler}
             backgroundColor={0x505050}
             onSelection={this.onSelection}
-            // hoverListeners={[this.hoverHandler]}
             onMount={this.onMount}
           />) 
       }   
