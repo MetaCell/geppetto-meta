@@ -301,7 +301,7 @@ Canvas.propTypes = {
       /**
        * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
        */
-      filter: PropTypes.string,
+      filter: PropTypes.func,
       /**
        * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
        */
