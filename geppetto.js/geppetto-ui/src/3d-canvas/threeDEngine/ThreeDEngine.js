@@ -50,6 +50,7 @@ export default class ThreeDEngine {
     this.width = containerRef.clientWidth;
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
+    this.lastRenderTimer = new Date();
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -905,7 +906,13 @@ export default class ThreeDEngine {
   }
 
   requestFrame () {
-    this.frameId = window.requestAnimationFrame(this.animate);
+    const timeDif = this.lastRenderTimer.getTime() - new Date().getTime();
+    if(Math.abs(timeDif) > 10)
+    {
+      this.lastRenderTimer = new Date() ;
+      this.frameId = window.requestAnimationFrame(this.animate);
+    }
+      
   }
 
   animate () {
