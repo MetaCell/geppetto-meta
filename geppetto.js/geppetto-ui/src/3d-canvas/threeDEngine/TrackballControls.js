@@ -143,6 +143,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
   };
 
   this.setCameraByConsole = function () {
+
     if (_this.cameraByConsoleLock) {
       return;
     }
