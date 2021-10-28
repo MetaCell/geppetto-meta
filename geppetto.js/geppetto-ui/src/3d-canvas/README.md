@@ -24,14 +24,6 @@
 3d-canvas/showcase/examples/VFBExample
 ```
 
-### Color Change Example
-
-Color Change Example
-
-```
-3d-canvas/showcase/examples/ColorChange
-```
-
 ### 3D Canvas CA1 Pyramidal Cell Example
 
 3D Canvas CA1 Pyramidal Cell Example
