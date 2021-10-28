@@ -29,35 +29,35 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
-      if (
-          reset
-          || (position === undefined && rotation === undefined && zoomTo === undefined)
-        ) {
-          this.resetCamera();
-      } else {
-        if (position && !this.startingPosition) {
-          this.startingPosition = true;
-          this.setCameraPosition(position.x, position.y, position.z);
-        if (rotation) {
-          this.setCameraRotation(
-            rotation.rx,
-            rotation.ry,
-            rotation.rz,
-            rotation.radius
-          );
+    if (
+        reset
+        || (position === undefined && rotation === undefined && zoomTo === undefined)
+      ) {
+        this.resetCamera();
+    } else {
+      if (position && !this.startingPosition) {
+        this.startingPosition = true;
+        this.setCameraPosition(position.x, position.y, position.z);
+      }
+      if (rotation) {
+        this.setCameraRotation(
+          rotation.rx,
+          rotation.ry,
+          rotation.rz,
+          rotation.radius
+        );
+      }
+      if (autoRotate) {
+        this.autoRotate(movieFilter);
+      }
+      if (zoomTo && Array.isArray(zoomTo)) {
+        const instances = zoomTo.map(element => Instances.getInstance(element));
+        if (instances.length > 0) {
+          this.zoomTo(instances);
         }
-        if (autoRotate) {
-          this.autoRotate(movieFilter);
-        }
-        if (zoomTo && Array.isArray(zoomTo)) {
-          const instances = zoomTo.map(element => Instances.getInstance(element));
-          if (instances.length > 0) {
-            this.zoomTo(instances);
-          }
-        }
-        if (rotateSpeed){
-          this.engine.controls.rotateSpeed = rotateSpeed
-        }
+      }
+      if (rotateSpeed){
+        this.engine.controls.rotateSpeed = rotateSpeed
       }
     }
   }
