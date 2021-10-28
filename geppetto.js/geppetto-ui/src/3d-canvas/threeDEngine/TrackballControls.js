@@ -54,7 +54,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
   this.target = new THREE.Vector3();
 
-  var EPS = 0.001;
+  var EPS = 0.0001;
 
   var lastPosition = new THREE.Vector3();
 
@@ -363,9 +363,6 @@ THREE.TrackballControls = function (object, domElement, handler) {
     if (lastPosition.distanceToSquared(_this.object.position) > EPS ) {
       lastPosition.copy(_this.object.position);
       _this.dispatchEvent(changeEvent);      
-    }
-    else {
-      _this.dispatchEvent(stopEvent);
     }
 
     // Has the camera stopped moving? (&& has the camera started moving)
