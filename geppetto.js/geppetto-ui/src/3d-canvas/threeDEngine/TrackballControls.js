@@ -144,6 +144,10 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
   this.setCameraByConsole = function () {
 
+    if (_this.cameraByConsoleLock) {
+      return;
+    }
+
     var p = _this.object.position.toArray();
     var u = _this.object.rotation.toArray();
     var l = _eye.length();
@@ -368,7 +372,11 @@ THREE.TrackballControls = function (object, domElement, handler) {
       _this.dispatchEvent(stopEvent);
     }
 
-    _this.setCameraByConsole();
+    // Has the camera stopped moving? (&& has the camera started moving)
+    if (_this.allSteady() && _this.cameraChanged) {
+      // Log the camera's position
+      _this.setCameraByConsole();
+    }
   };
 
   this.setPosition = function (x, y, z) {

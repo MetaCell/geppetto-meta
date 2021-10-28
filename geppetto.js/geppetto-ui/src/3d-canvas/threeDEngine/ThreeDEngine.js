@@ -199,33 +199,6 @@ export default class ThreeDEngine {
     this.updateGroupMeshes(proxyInstances);
   }
 
-  processInstancePath (instance) {
-    if (this.meshFactory.hasVisualValue(instance)) {
-      return [instance.getInstancePath()];
-    } else if (instance.hasVisualType() || instance.getChildren().some(i => hasVisualType(i))) {
-      if (
-        instance.getType().getMetaType()
-          !== GEPPETTO.Resources.ARRAY_TYPE_NODE
-          && instance.getVisualType()
-      ) {
-        return [instance.getInstancePath()];
-      }
-      // this block keeps traversing the instances
-      if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
-        for (let child of instance.getChildren()) {
-          return this.processInstancePath(child);
-        }
-      } else if (
-        instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
-      ) {
-        for (let child of instance.getChildren()) {
-          return this.processInstancePath(child);
-        }
-      }
-    }
-    return [];
-  }
-
 
   /*
    * Check that the material for the already present instance did not change.
@@ -899,7 +872,6 @@ export default class ThreeDEngine {
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
-    this.cameraHandler(cameraOptions);
   }
 
   addToScene(instance) {

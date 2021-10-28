@@ -53,9 +53,6 @@ export default class MeshFactory {
   }
 
   async start (instances) {
-    // TODO: do we still need the below? since I am already handling and synching instances between threeDengine
-    // and the meshfactory with cleanWith3DObject.
-    // this.cleanWithInstances(instances);
     await this.traverseInstances(instances);
   }
 
@@ -578,6 +575,14 @@ export default class MeshFactory {
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
       }
+
+      // If the same mesh already exists and for some reason has been regenerated then clean-up the previous and warn the user.
+      if (this.meshes[instancePath]) {
+        console.log("Mesh for " + instancePath + " already exists.");
+        console.log("cleaning mesh and re-init the object.");
+        delete this.meshes[instancePath];
+      }
+
       this.meshes[instancePath] = mesh;
       this.meshes[instancePath].visible = true;
       this.meshes[instancePath].defaultOpacity = 1;
@@ -940,22 +945,6 @@ export default class MeshFactory {
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
     return this.rayCasterLinePrecision;
-  }
-
-  cleanWithInstances(instances) {
-    const paths = instances.map((i)=>{ return i.getInstancePath() });
-    let toRemove = Object.keys(this.meshes).filter((m) => {
-      for (let singlePath of paths) {
-        if (m.indexOf(singlePath) !== -1) {
-          return false;
-        }
-      }
-      return true;
-    })
-
-    for (let meshToRemove of toRemove) {
-      delete this.meshes[meshToRemove];
-    }
   }
 
   cleanWith3DObject(instance) {
