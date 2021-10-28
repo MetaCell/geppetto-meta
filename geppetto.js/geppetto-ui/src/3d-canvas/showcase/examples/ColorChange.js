@@ -4,8 +4,8 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
-import CanvasTooltip from './CanvasTooltip'
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import CanvasTooltip from '../utils/CanvasTooltip'
 
 const INSTANCE_NAME = 'acnet2_color';
 const COLORS = [

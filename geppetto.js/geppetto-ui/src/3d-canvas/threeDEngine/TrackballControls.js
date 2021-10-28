@@ -144,6 +144,10 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
   this.setCameraByConsole = function () {
 
+    if (_this.cameraByConsoleLock) {
+      return;
+    }
+
     var p = _this.object.position.toArray();
     var u = _this.object.rotation.toArray();
     var l = _eye.length();
