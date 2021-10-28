@@ -4,7 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [

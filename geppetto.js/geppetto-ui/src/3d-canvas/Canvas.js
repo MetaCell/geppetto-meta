@@ -5,6 +5,9 @@ import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import { withResizeDetector } from 'react-resize-detector';
+import { Recorder } from "./captureManager/Recorder";
+import { downloadScreenshot } from "./captureManager/Screenshoter";
+import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
   container: {
@@ -19,7 +22,15 @@ class Canvas extends Component {
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
     this.state = { modelReady: false }
+    this.constructorFromProps(props)
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+  }
+  
+  constructorFromProps (props) {
+    if (props.captureOptions !== undefined){
+      this.captureControls = React.createRef();
+    }
   }
 
   async componentDidMount () {
@@ -27,6 +38,7 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
@@ -41,6 +53,7 @@ class Canvas extends Component {
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       onSelection,
       backgroundColor,
       pickingEnabled,
@@ -49,6 +62,10 @@ class Canvas extends Component {
       setColorHandler,
       selectionStrategy
     );
+
+    if (captureOptions){
+      this.recorder = new Recorder(this.getCanvasElement())
+    }
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
@@ -60,16 +77,16 @@ class Canvas extends Component {
       this.threeDEngine.resize();
     }
 
-    if (prevProps !== this.props){
+    if (prevProps !== this.props) {
       const { data, cameraOptions, threeDObjects } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
       this.threeDEngine.requestFrame();
       this.setState({ modelReady: true })
     } else {
-      this.setState({ modelReady:false })
+      this.setState({ modelReady: false })
     }
   }
-  
+
   shouldComponentUpdate (nextProps, nextState, nextContext) {
     return nextState.modelReady || nextProps !== this.props
   }
@@ -79,6 +96,29 @@ class Canvas extends Component {
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
     );
+  }
+
+  defaultCaptureControlsHandler (action) {
+    const { captureOptions } = this.props
+    if (this.recorder) {
+      switch (action) {
+      case captureControlsActions.START:
+        this.recorder.startRecording()
+        break
+      case captureControlsActions.STOP:
+        return this.recorder.stopRecording()
+      case captureControlsActions.DOWNLOAD_VIDEO:
+        return this.recorder.download()
+      }
+    }
+    if (captureOptions && captureOptions.screenshotOptions) {
+      const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
+      switch (action){
+      case captureControlsActions.DOWNLOAD_SCREENSHOT:
+        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+        break
+      }
+    }
   }
 
   defaultCameraControlsHandler (action) {
@@ -149,25 +189,42 @@ class Canvas extends Component {
     }
   }
 
+  getCanvasElement () {
+    return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
+  }
+
   shouldEngineTraverse () {
     // TODO: check if new instance added, check if split meshes changed?
     return true;
   }
 
   render () {
-    const { classes, cameraOptions } = this.props;
+    const { classes, cameraOptions, captureOptions } = this.props;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    
+    let captureInstance = null
+    if (captureOptions){
+      const { captureControls } = captureOptions
+      const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
+      captureInstance = captureControls && captureControls.instance ? (
+        <captureControls.instance
+          ref={this.captureControls}
+          captureControlsHandler={captureControlsHandler}
+          {...captureControls.props}
+        />
+      )
+        : null;
+    }
     return (
       <div className={classes.container} ref={this.sceneRef}>
         {
-          <cameraOptions.cameraControls.instance
+          <cameraControls.instance
             ref={this.cameraControls}
             cameraControlsHandler={cameraControlsHandler}
             {...cameraControls.props}
           />
         }
+        {captureInstance}
       </div>
     );
   }
@@ -181,25 +238,29 @@ Canvas.defaultProps = {
     far: 1000,
     baseZoom: 1,
     reset: false,
-    autorotate:false,
-    wireframe:false,
+    autorotate: false,
+    wireframe: false,
     zoomTo: undefined,
-    cameraControls:  {
+    cameraControls: {
       instance: null,
       props: {},
     },
     rotateSpeed: 0.5,
   },
+  captureOptions: undefined,
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
   hoverListeners: [],
   threeDObjects: [],
-  cameraHandler: () => {},
+  cameraHandler: () => {
+  },
   selectionStrategy: selectionStrategies.nearest,
-  onSelection: () => {},
+  onSelection: () => {
+  },
   setColorHandler: () => true,
-  onMount: () => {},
+  onMount: () => {
+  },
   modelVersion: 0
 };
 
@@ -216,6 +277,48 @@ Canvas.propTypes = {
    * Options to customize camera
    */
   cameraOptions: PropTypes.object,
+  /**
+   * Options to customize capture features
+   */
+  captureOptions: PropTypes.shape({
+    /**
+     * Capture controls component definition
+     */
+    captureControls: PropTypes.shape({
+      /**
+       * Component instance
+       */
+      instance: PropTypes.any,
+      /**
+       * Component props
+       */
+      props: PropTypes.shape({})
+    }),
+    /**
+     * Screenshot Options
+     */
+    screenshotOptions: PropTypes.shape({
+      /**
+       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
+       */
+      filter: PropTypes.func,
+      /**
+       * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
+       */
+      pixelRatio: PropTypes.number,
+      /**
+       * A number between 0 and 1 indicating image quality (e.g. 0.92 => 92%) of the JPEG image.
+       */
+      quality: PropTypes.number,
+      /**
+       * Screenshot desired resolution
+       */
+      resolution: PropTypes.shape({
+        height: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired
+      })
+    }).isRequired
+  }),
   /**
    * Three JS objects to add to the scene
    */
