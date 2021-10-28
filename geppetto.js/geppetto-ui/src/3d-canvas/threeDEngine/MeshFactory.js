@@ -578,8 +578,6 @@ export default class MeshFactory {
 
       // If the same mesh already exists and for some reason has been regenerated then clean-up the previous and warn the user.
       if (this.meshes[instancePath]) {
-        console.log("Mesh for " + instancePath + " already exists.");
-        console.log("cleaning mesh and re-init the object.");
         delete this.meshes[instancePath];
       }
 
