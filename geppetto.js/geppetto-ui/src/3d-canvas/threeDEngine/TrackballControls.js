@@ -365,11 +365,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
       _this.dispatchEvent(changeEvent);      
     }
 
-    // Has the camera stopped moving? (&& has the camera started moving)
-    if (_this.allSteady() && _this.cameraChanged) {
-      // Log the camera's position
       _this.setCameraByConsole();
-    }
   };
 
   this.setPosition = function (x, y, z) {
