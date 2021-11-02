@@ -26,9 +26,9 @@ class Canvas extends Component {
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
   }
-  
+
   constructorFromProps (props) {
-    if (props.captureOptions !== undefined){
+    if (props.captureOptions !== undefined) {
       this.captureControls = React.createRef();
     }
   }
@@ -63,7 +63,7 @@ class Canvas extends Component {
       selectionStrategy
     );
 
-    if (captureOptions){
+    if (captureOptions) {
       this.recorder = new Recorder(this.getCanvasElement())
     }
     await this.threeDEngine.start(data, cameraOptions, true);
@@ -101,22 +101,26 @@ class Canvas extends Component {
   defaultCaptureControlsHandler (action) {
     const { captureOptions } = this.props
     if (this.recorder) {
-      switch (action) {
+      switch (action.type) {
       case captureControlsActions.START:
         this.recorder.startRecording()
         break
       case captureControlsActions.STOP:
         return this.recorder.stopRecording()
-      case captureControlsActions.DOWNLOAD_VIDEO:
-        return this.recorder.download()
+      case captureControlsActions.DOWNLOAD_VIDEO: {
+        const { filename } = action.data;
+        return this.recorder.download(filename)
+      }
       }
     }
     if (captureOptions && captureOptions.screenshotOptions) {
       const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
-      switch (action){
-      case captureControlsActions.DOWNLOAD_SCREENSHOT:
-        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter)
+      switch (action.type) {
+      case captureControlsActions.DOWNLOAD_SCREENSHOT:{
+        const { filename } = action.data;
+        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter, filename)
         break
+      }
       }
     }
   }
@@ -203,7 +207,7 @@ class Canvas extends Component {
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     let captureInstance = null
-    if (captureOptions){
+    if (captureOptions) {
       const { captureControls } = captureOptions
       const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
       captureInstance = captureControls && captureControls.instance ? (

@@ -1,6 +1,7 @@
 import * as htmlToImage from "html-to-image";
+import { formatDate } from "./utils";
 
-function getOptions(htmlElement, targetResolution, quality, pixelRatio, filter) {
+function getOptions (htmlElement, targetResolution, quality, pixelRatio, filter) {
   const resolution = getResolutionFixedRatio(htmlElement, targetResolution)
   const options = {
     quality: quality,
@@ -43,14 +44,3 @@ function getResolutionFixedRatio (htmlElement, target) {
   }
 }
 
-function formatDate (d) {
-  return `${d.getFullYear()}${(d.getMonth() + 1)}${d.getDate()}-${pad(d.getHours(), 2)}${pad(d.getMinutes(), 2)}${pad(d.getSeconds(), 2)}`;
-}
-
-function pad (num, size) {
-  let s = num + "";
-  while (s.length < size) {
-    s = "0" + s;
-  }
-  return s;
-}
