@@ -682,6 +682,10 @@ export default class ThreeDEngine {
   setupListeners (onSelection) {
     const that = this;
 
+    this.controls.removeEventListener('start', this.requestFrame());
+    this.controls.removeEventListener('change', this.requestFrame());
+    this.controls.removeEventListener('stop', this.stop());
+
     this.controls.addEventListener('start', function (e) {
       that.requestFrame();
     });
@@ -841,6 +845,8 @@ export default class ThreeDEngine {
       },
       false
     );
+
+    console.log('hover listeners after: ', this.controls);
   }
 
   /**
