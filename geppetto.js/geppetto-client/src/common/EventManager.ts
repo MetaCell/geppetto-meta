@@ -156,8 +156,8 @@ class EventManager {
     [clientActions.DISABLE_CONTROLS]: () => (
       this.store.dispatch(disableControls())
     ),
-    [clientActions.SHOW_SPINNER]: (message) => {
-      this.store.dispatch(showSpinner(message))
+    [clientActions.SHOW_SPINNER]: (message, offAction) => {
+      this.store.dispatch(showSpinner(message, offAction))
     },
     [clientActions.HIDE_SPINNER]: () => {
       this.store.dispatch(hideSpinner())
@@ -223,8 +223,8 @@ class EventManager {
     this.actionsHandler[clientActions.HIDE_QUERYBUILDER]()
   }
 
-  showSpinner(message) {
-    this.actionsHandler[clientActions.SHOW_SPINNER](message)
+  showSpinner(message, offAction=null) {
+    this.actionsHandler[clientActions.SHOW_SPINNER](message, offAction)
   }
 
   showHelp() {
