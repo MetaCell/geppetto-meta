@@ -103,8 +103,15 @@ export default class MeshFactory {
   }
 
   async buildVisualInstance (instance) {
-    const meshes = await this.generate3DObjects(instance);
-    this.init3DObject(meshes, instance);
+    const instancePath = instance.getInstancePath();
+
+    // If the same mesh already exists skip the recreation
+    if (this.meshes[instancePath]) {
+      return;
+    } else {
+      const meshes = await this.generate3DObjects(instance);
+      this.init3DObject(meshes, instance);
+    }
   }
 
   async generate3DObjects (instance) {
@@ -574,11 +581,6 @@ export default class MeshFactory {
       */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
-      }
-
-      // If the same mesh already exists and for some reason has been regenerated then clean-up the previous and warn the user.
-      if (this.meshes[instancePath]) {
-        delete this.meshes[instancePath];
       }
 
       this.meshes[instancePath] = mesh;

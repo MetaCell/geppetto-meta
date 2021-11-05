@@ -54,7 +54,7 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
   this.target = new THREE.Vector3();
 
-  var EPS = 200;
+  var EPS = 0.0001;
 
   var lastPosition = new THREE.Vector3();
 
@@ -143,10 +143,6 @@ THREE.TrackballControls = function (object, domElement, handler) {
   };
 
   this.setCameraByConsole = function () {
-
-    if (_this.cameraByConsoleLock) {
-      return;
-    }
 
     var p = _this.object.position.toArray();
     var u = _this.object.rotation.toArray();
@@ -364,12 +360,9 @@ THREE.TrackballControls = function (object, domElement, handler) {
 
     _this.object.lookAt(_this.target);
 
-    if (lastPosition.distanceToSquared(_this.object.position) > ( EPS * Math.abs(_zoomStart.y ) ) ) {
+    if (lastPosition.distanceToSquared(_this.object.position) > EPS ) {
       lastPosition.copy(_this.object.position);
       _this.dispatchEvent(changeEvent);      
-    }
-    else {
-      _this.dispatchEvent(stopEvent);
     }
 
     // Has the camera stopped moving? (&& has the camera started moving)
