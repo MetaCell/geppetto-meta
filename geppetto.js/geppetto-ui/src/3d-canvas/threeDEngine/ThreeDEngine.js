@@ -860,7 +860,7 @@ export default class ThreeDEngine {
   }
 
   setBackgroundColor (color) {
-    this.threeDEngine.scene.background.getHex()
+    this.scene.background.getHex()
     let newColor = new THREE.Color(color);
     if (this.scene.background.getHex() !== newColor.getHex()) {
       this.scene.background = newColor;
