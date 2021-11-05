@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
-import { withResizeDetector } from 'react-resize-detector';
+import ReactResizeDetector from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
 import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
@@ -26,7 +26,7 @@ class Canvas extends Component {
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
   }
-  
+
   constructorFromProps (props) {
     if (props.captureOptions !== undefined){
       this.captureControls = React.createRef();
@@ -70,6 +70,7 @@ class Canvas extends Component {
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
     this.threeDEngine.requestFrame();
+    this.threeDEngine.setBackgroundColor(backgroundColor);
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
@@ -216,16 +217,18 @@ class Canvas extends Component {
         : null;
     }
     return (
-      <div className={classes.container} ref={this.sceneRef}>
-        {
-          <cameraControls.instance
-            ref={this.cameraControls}
-            cameraControlsHandler={cameraControlsHandler}
-            {...cameraControls.props}
-          />
-        }
-        {captureInstance}
-      </div>
+      <ReactResizeDetector skipOnMount='true'>
+        <div className={classes.container} ref={this.sceneRef}>
+          {
+            <cameraControls.instance
+              ref={this.cameraControls}
+              cameraControlsHandler={cameraControlsHandler}
+              {...cameraControls.props}
+            />
+          }
+          {captureInstance}
+        </div>
+      </ReactResizeDetector>
     );
   }
 }
@@ -361,4 +364,4 @@ Canvas.propTypes = {
   hoverListeners: PropTypes.array,
 };
 
-export default withResizeDetector(withStyles(styles)(Canvas));
+export default withStyles(styles)(Canvas);

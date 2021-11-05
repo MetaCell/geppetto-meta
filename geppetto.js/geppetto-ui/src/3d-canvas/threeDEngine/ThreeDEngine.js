@@ -33,7 +33,6 @@ export default class ThreeDEngine {
     selectionStrategy
   ) {
     this.scene = new THREE.Scene();
-    this.backgroundColor = backgroundColor;
     this.scene.background = new THREE.Color(backgroundColor);
     this.cameraManager = null;
     this.renderer = null;
@@ -860,11 +859,16 @@ export default class ThreeDEngine {
     });
   }
 
-  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
-    if (this.backgroundColor !== newBackgroundColor) {
-      this.backgroundColor = newBackgroundColor;
-      this.scene.background = new THREE.Color(newBackgroundColor);
+  setBackgroundColor (color) {
+    this.threeDEngine.scene.background.getHex()
+    let newColor = new THREE.Color(color);
+    if (this.scene.background.getHex() !== newColor.getHex()) {
+      this.scene.background = newColor;
     }
+  }
+
+  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
