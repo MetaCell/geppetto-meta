@@ -15,7 +15,7 @@ export default class CameraManager {
     this.camera.direction = new THREE.Vector3(0, 0, 1);
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
-    this.startingPosition = false;
+    this.firstLoad = false;
   }
 
   update (cameraOptions) {
@@ -30,13 +30,13 @@ export default class CameraManager {
     } = cameraOptions;
 
     if (
-        reset
-        || (position === undefined && rotation === undefined && zoomTo === undefined)
-      ) {
-        this.resetCamera();
+      reset
+      || (position === undefined && rotation === undefined && zoomTo === undefined)
+    ) {
+      this.resetCamera(position);
     } else {
-      if (position && !this.startingPosition) {
-        this.startingPosition = true;
+      if (position && !this.firstLoad) {
+        this.firstLoad = true;
         this.setCameraPosition(position.x, position.y, position.z);
       }
       if (rotation) {
@@ -145,7 +145,12 @@ export default class CameraManager {
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
-  resetCamera () {
+  resetCamera (position) {
+    if (position) {
+      this.setCameraPosition(position.x, position.y, position.z);
+      return;
+    }
+
     this.engine.controls.reset();
 
     let aabbMin = null;
