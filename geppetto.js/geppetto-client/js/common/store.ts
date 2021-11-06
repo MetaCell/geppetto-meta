@@ -30,6 +30,8 @@ const staticReducers = {
   widgets
 }
 
+// Use the below for redux debugging with stack trace
+//const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true, traceLimit: 25}) || redux.compose;
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || redux.compose;
 
 

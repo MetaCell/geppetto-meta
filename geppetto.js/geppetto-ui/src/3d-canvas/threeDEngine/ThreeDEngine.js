@@ -865,7 +865,16 @@ export default class ThreeDEngine {
     });
   }
 
-  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse) {
+  setBackgroundColor (color) {
+    this.scene.background.getHex()
+    let newColor = new THREE.Color(color);
+    if (this.scene.background.getHex() !== newColor.getHex()) {
+      this.scene.background = newColor;
+    }
+  }
+
+  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
     if (toTraverse) {
