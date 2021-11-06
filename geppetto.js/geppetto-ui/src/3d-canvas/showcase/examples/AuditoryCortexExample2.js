@@ -23,145 +23,273 @@ const styles = () => ({
   },
 });
 
-class AuditoryCortexExample2 extends Component {
-  constructor (props) {
-    super(props);
-    this.canvasRef = React.createRef();
-    this.state = {
-      showLoader: false,
-      hasModelLoaded: false,
-      data: [
-        {
-          instancePath: 'acnet2.baskets_12',
-          color: COLORS[1],
-        },
-        { instancePath: 'acnet2' },
-        {
-          instancePath: 'acnet2.baskets_12[0]',
-          color: COLORS[2],
-        },
-        {
-          instancePath: 'acnet2.baskets_12[7]',
-          color: COLORS[3],
-        },
-      ],
-      selected: {},
-      cameraOptions: {
-        angle: 60,
-        near: 10,
-        far: 2000000,
-        baseZoom: 1,
-        zoomTo: ['acnet2.baskets_12[7]'],
-        cameraControls: { 
-          instance: CameraControls,
-          props: { wireframeButtonEnabled: false, },
-          incrementPan: {
-            x:0.05,
-            y:0.05
-          },
-          incrementRotation: {
-            x:0.05,
-            y:0.05,
-            z:0.05,
-          },
-          incrementZoom: 0.5,
-          reset: false,
-        },
-        movieFilter: false,
-        autorotate:false,
-        wireframe:false
+const AuditoryCortexExample2 = (props) => {
+  const { classes } = props;
+  const canvasRef = React.createRef();
+  const node = React.createRef();
+  const [showLoader, setShowLoader] = React.useState(false);
+  const [hasModelLoaded, setHasModelLoaded] = React.useState(false);
+  const [data, setData] = React.useState([
+    {
+      instancePath: 'acnet2.baskets_12',
+      color: COLORS[1], node
+    },
+    {
+      instancePath: 'acnet2',
+    },
+    {
+      instancePath: 'acnet2.baskets_12[0]',
+      color: COLORS[2],
+    },
+    {
+      instancePath: 'acnet2.baskets_12[7]',
+      color: COLORS[3],
+    },
+  ]);
+  const [selected, setSelected] = React.useState({});
+  const [cameraOptions, setCameraOptions] = React.useState({
+    angle: 60,
+    near: 10,
+    far: 2000000,
+    baseZoom: 1,
+    zoomTo: ['acnet2.baskets_12[7]'],
+    cameraControls: { 
+      instance: CameraControls,
+      props: { wireframeButtonEnabled: false, },
+      incrementPan: {
+        x:0.05,
+        y:0.05
       },
-    };
+      incrementRotation: {
+        x:0.05,
+        y:0.05,
+        z:0.05,
+      },
+      incrementZoom: 0.5,
+      reset: false,
+    },
+    movieFilter: false,
+    autorotate:false,
+    wireframe:false,
+  });
 
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
-    this.onSelection = this.onSelection.bind(this)
-    this.hoverHandler = this.hoverHandler.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
-  }
+  React.useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+  }, []);
 
-  componentDidMount () {
-    document.addEventListener('mousedown', this.handleClickOutside);
-  }
+  let lastCameraUpdate = null;
 
-  componentWillUnmount () {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-
-  handleClickOutside (event) {
-
-    if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
-        this.setState({ hasModelLoaded: false })
+  const handleClickOutside = (event) => {
+    if (node && node.contains(event.target)) {
+      if (event.offsetX <= event.target.clientWidth) {
+        setHasModelLoaded(false);
       }
     }
   }
-  
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
+
+
+  const cameraHandler = (obj) => {
+    lastCameraUpdate = obj;
   }
 
-
-  hoverHandler (obj) {
+  const hoverHandler = (obj) => {
     console.log('Hover handler called:');
   }
 
-  async handleToggle () {
-    this.setState({ showLoader: true })
+  async function handleToggle () {
+    setShowLoader(true);
 
     const response = await fetch('../assets/acnet_model.json');
     const model = await response.json();
     GEPPETTO.Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
-    this.setState({ hasModelLoaded: true, showLoader: false })
+    setHasModelLoaded(true);
+    setShowLoader(true);
   }
 
-  onSelection (selectedInstances){
-    this.setState({ data: applySelection(this.state.data, selectedInstances) })
+  const onSelection = (selectedInstances) => {
+    setData(applySelection(data, selectedInstances));
   }
 
-  render () {
-    const { classes } = this.props;
-    const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
-    const canvasData = mapToCanvasData(data)
-
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
+  let camOptions = cameraOptions;
+  if (lastCameraUpdate) {
+    camOptions = {
+      ...cameraOptions,
+      position: lastCameraUpdate.position,
+      zoomTo: [],
+    };
+    if (lastCameraUpdate.rotation.radius) {
       camOptions = {
         ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        zoomTo: [],
+        rotation: lastCameraOptions.rotation,
       };
-      if (this.lastCameraUpdate.rotation.radius){
-        camOptions = {
-          ...cameraOptions,
-          rotation: this.lastCameraUpdate.rotation,
-        };
-      }
     }
+  }
 
-    return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div ref={node => this.node = node} className={classes.container}>
-        <Canvas
-          ref={this.canvasRef}
-          data={canvasData}
+  return <>
+    {showLoader ? <Loader active={true} /> : hasModelLoaded ? (
+      <div ref={node}>
+        <Canvas 
+          ref={canvasRef}
+          data={mapToCanvasData(data)}
           cameraOptions={camOptions}
-          cameraHandler={this.cameraHandler}
-          onSelection={this.onSelection}
+          cameraHandler={cameraHandler}
+          onSelection={onSelection}
           backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
+          hoverListener={[hoverHandler]}
         />
       </div>
-    )
-      : <Button
+    ) : (
+      <Button
         variant="outlined"
         color="primary"
-        onClick={this.handleToggle}
+        onClick={handleToggle}
       >
-          Show Example
+        Show Example
       </Button>
+    )
   }
+  </>
 }
+// class AuditoryCortexExample2 extends Component {
+//   constructor (props) {
+//     super(props);
+//     this.canvasRef = React.createRef();
+//     this.state = {
+//       showLoader: false,
+//       hasModelLoaded: false,
+//       data: [
+//         {
+//           instancePath: 'acnet2.baskets_12',
+//           color: COLORS[1],
+//         },
+//         { instancePath: 'acnet2' },
+//         {
+//           instancePath: 'acnet2.baskets_12[0]',
+//           color: COLORS[2],
+//         },
+//         {
+//           instancePath: 'acnet2.baskets_12[7]',
+//           color: COLORS[3],
+//         },
+//       ],
+//       selected: {},
+//       cameraOptions: {
+//         angle: 60,
+//         near: 10,
+//         far: 2000000,
+//         baseZoom: 1,
+//         zoomTo: ['acnet2.baskets_12[7]'],
+//         cameraControls: { 
+//           instance: CameraControls,
+//           props: { wireframeButtonEnabled: false, },
+//           incrementPan: {
+//             x:0.05,
+//             y:0.05
+//           },
+//           incrementRotation: {
+//             x:0.05,
+//             y:0.05,
+//             z:0.05,
+//           },
+//           incrementZoom: 0.5,
+//           reset: false,
+//         },
+//         movieFilter: false,
+//         autorotate:false,
+//         wireframe:false
+//       },
+//     };
 
-export default withStyles(styles)(AuditoryCortexExample2);
+//     this.lastCameraUpdate = null;
+//     this.cameraHandler = this.cameraHandler.bind(this);
+//     this.onSelection = this.onSelection.bind(this)
+//     this.hoverHandler = this.hoverHandler.bind(this);
+//     this.handleClickOutside = this.handleClickOutside.bind(this);
+//     this.handleToggle = this.handleToggle.bind(this);
+//   }
+
+//   componentDidMount () {
+//     document.addEventListener('mousedown', this.handleClickOutside);
+//   }
+
+//   componentWillUnmount () {
+//     document.removeEventListener('mousedown', this.handleClickOutside);
+//   }
+
+//   handleClickOutside (event) {
+
+//     if (this.node && !this.node.contains(event.target)) {
+//       if (event.offsetX <= event.target.clientWidth){
+//         this.setState({ hasModelLoaded: false })
+//       }
+//     }
+//   }
+  
+//   cameraHandler (obj) {
+//     this.lastCameraUpdate = obj;
+//   }
+
+
+//   hoverHandler (obj) {
+//     console.log('Hover handler called:');
+//   }
+
+//   async handleToggle () {
+//     this.setState({ showLoader: true })
+
+//     const response = await fetch('../assets/acnet_model.json');
+//     const model = await response.json();
+//     GEPPETTO.Manager.loadModel(model);
+//     Instances.getInstance(INSTANCE_NAME);
+//     this.setState({ hasModelLoaded: true, showLoader: false })
+//   }
+
+//   onSelection (selectedInstances){
+//     this.setState({ data: applySelection(this.state.data, selectedInstances) })
+//   }
+
+//   render () {
+//     const { classes } = this.props;
+//     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
+//     const canvasData = mapToCanvasData(data)
+
+//     let camOptions = cameraOptions;
+//     if (this.lastCameraUpdate) {
+//       camOptions = {
+//         ...cameraOptions,
+//         position: this.lastCameraUpdate.position,
+//         zoomTo: [],
+//       };
+//       if (this.lastCameraUpdate.rotation.radius){
+//         camOptions = {
+//           ...cameraOptions,
+//           rotation: this.lastCameraUpdate.rotation,
+//         };
+//       }
+//     }
+
+//     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
+//       <div ref={node => this.node = node} className={classes.container}>
+//         <Canvas
+//           ref={this.canvasRef}
+//           data={canvasData}
+//           cameraOptions={camOptions}
+//           cameraHandler={this.cameraHandler}
+//           onSelection={this.onSelection}
+//           backgroundColor={0x505050}
+//           hoverListeners={[this.hoverHandler]}
+//         />
+//       </div>
+//     )
+//       : <Button
+//         variant="outlined"
+//         color="primary"
+//         onClick={this.handleToggle}
+//       >
+//           Show Example
+//       </Button>
+//   }
+// }
+
+export default AuditoryCortexExample2;
