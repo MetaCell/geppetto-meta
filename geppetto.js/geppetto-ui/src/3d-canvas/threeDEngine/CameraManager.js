@@ -29,23 +29,25 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
-    if (
-      reset
-      || (position === undefined && rotation === undefined && zoomTo === undefined)
-    ) {
+    if (reset || (!this.firstLoad && position === undefined)) {
       this.resetCamera(position);
+      if (!this.firstLoad) {
+        this.firstLoad = true;
+      }
     } else {
       if (position && !this.firstLoad) {
-        this.firstLoad = true;
         this.setCameraPosition(position.x, position.y, position.z);
       }
-      if (rotation) {
+      if (rotation && !this.firstLoad) {
         this.setCameraRotation(
           rotation.rx,
           rotation.ry,
           rotation.rz,
           rotation.radius
         );
+      }
+      if (!this.firstLoad) {
+        this.firstLoad = true;
       }
       if (autoRotate) {
         this.autoRotate(movieFilter);
