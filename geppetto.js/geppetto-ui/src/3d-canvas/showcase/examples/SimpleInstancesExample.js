@@ -102,12 +102,7 @@ class SimpleInstancesExample extends Component {
 
   handleToggle () {
     loadInstances()
-    this.setState({
-      showModel: true, data: getProxyInstances(), cameraOptions: {
-        ...this.state.cameraOptions,
-        reset: true,
-      } 
-    })
+    this.setState({ showModel: true, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   handleClickOutside (event) {

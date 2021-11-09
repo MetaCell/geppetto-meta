@@ -14,6 +14,18 @@ export const captureControlsActions = {
   DOWNLOAD_SCREENSHOT: 'DOWNLOAD_SCREENSHOT',
 };
 
+export const captureControlsActionsStart = (() => ({ type: captureControlsActions.START, }));
+export const captureControlsActionsStop = (() => ({ type: captureControlsActions.STOP, }));
+export const captureControlsActionsDownloadVideo = (filename => ({
+  type: captureControlsActions.DOWNLOAD_VIDEO,
+  data: { filename:filename },
+}));
+export const captureControlsActionsDownloadScreenshot = (filename => ({
+  type: captureControlsActions.DOWNLOAD_SCREENSHOT,
+  data: { filename:filename },
+}));
+
+
 const styles = theme => ({ button: { color: theme.palette.button.main, }, });
 
 class CaptureControls extends Component {
@@ -26,9 +38,9 @@ class CaptureControls extends Component {
   handleClickRecord (){
     const { isRecording } = this.state;
     if (isRecording){
-      this.props.captureControlsHandler(captureControlsActions.STOP)
+      this.props.captureControlsHandler(captureControlsActionsStop())
     } else {
-      this.props.captureControlsHandler(captureControlsActions.START)
+      this.props.captureControlsHandler(captureControlsActionsStart())
     }
     this.setState({ isRecording: !isRecording, hasRecorded: true })
   }
@@ -62,14 +74,14 @@ class CaptureControls extends Component {
         { hasRecorded && !isRecording
         && <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_VIDEO)}
+          onClick={() => captureControlsHandler(captureControlsActionsDownloadVideo())}
           className={`${classes.button} download squareB`}
           tooltip={"Download"}
           icon={faDownload}/>
         }
         <IconButtonWithTooltip
           disabled={false}
-          onClick={() => captureControlsHandler(captureControlsActions.DOWNLOAD_SCREENSHOT)}
+          onClick={() => captureControlsHandler(captureControlsActionsDownloadScreenshot())}
           className={`${classes.button} screenshot squareB`}
           tooltip={"Screenshot"}
           icon={faCamera}/>

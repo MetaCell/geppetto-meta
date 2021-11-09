@@ -1,3 +1,5 @@
+import { formatDate } from "./utils";
+
 export class Recorder {
   constructor (canvas) {
     this.stream = canvas.captureStream();
@@ -52,7 +54,7 @@ export class Recorder {
 
   download (filename){
     if (!filename){
-      filename = `${Math.random().toString(36).slice(2)}.webm`
+      filename = `CanvasRecording_${formatDate(new Date())}.webm`
     }
     const blob = new Blob(this.recordedBlobs, this.options);
     const url = window.URL.createObjectURL(blob);
@@ -69,7 +71,7 @@ export class Recorder {
     return blob
   }
 
-  getRecordingBlob(){
+  getRecordingBlob (){
     return new Blob(this.recordedBlobs, this.options);
   }
 
