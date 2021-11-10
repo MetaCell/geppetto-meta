@@ -51,61 +51,55 @@ const styles = (theme) => ({
   },
 });
 
-class Showcase extends Component {
-  constructor(props) {
-    super(props);
-    this.componentRef = React.createRef();
-  }
+const Showcase = (props) => {
+  const { classes, markdown, currentPageHandler } = props;
+  const configs = getConfigFromMarkdown(markdown);
+  const componentRef = React.useRef(null);
 
-  render() {
-    const { classes, markdown, currentPageHandler } = this.props;
-    const configs = getConfigFromMarkdown(markdown);
-
-    return (
-      <div className={classes.root}>
-        <div className={classes.innerRoot}>
-          <h1 className={classes.mainTitle}>{configs.name}</h1>
-          <div className={classes.mainDescription}>{configs.description}</div>
-          <span className={classes.secondaryDescription}>
-            {configs.detailedDescription}
-          </span>
-          {configs.examples.map((obj) => {
-            const file = obj.file.default.split('\n').join('\n');
-            return (
-              <div key={obj.name}>
-                <h2 className={classes.secondaryTitle}>{obj.name}</h2>
-                <span className={classes.secondaryDescription}>
-                  {obj.description}
-                </span>
-                <Paper variant="outlined">
-                  <div className={classes.centerComponent}>
-                    <obj.component ref={this.componentRef} />
-                  </div>
-                </Paper>
-                <Code file={file} element={configs.reactElement}></Code>
-              </div>
-            );
-          })}
-          <h2 className={classes.secondaryTitle}>Props</h2>
-          <PropsTable propsConfigs={configs.props} />
-          <h2 className={classes.secondaryTitle}>Libraries</h2>
-          {configs.libraries.map((library, i) => (
-            <Chip
-              key={i}
-              className={classes.library}
-              label={library.name}
-              component="a"
-              href={library.href}
-              target={'_blank'}
-              clickable
-              color="secondary"
-            />
-          ))}
-        </div>
-        <BottomNavigation currentPageHandler={currentPageHandler} />
+  return (
+    <div className={classes.root}>
+      <div className={classes.innerRoot}>
+        <h1 className={classes.mainTitle}>{configs.name}</h1>
+        <div className={classes.mainDescription}>{configs.description}</div>
+        <span className={classes.secondaryDescription}>
+          {configs.detailedDescription}
+        </span>
+        {configs.examples.map(obj => {
+          const file = obj.file.default.split('\n').join('\n');
+          return (
+            <div key={obj.name}>
+              <h2 className={classes.secondaryTitle}>{obj.name}</h2>
+              <span className={classes.secondaryDescription}>
+                {obj.description}
+              </span>
+              <Paper variant="outlined">
+                <div className={classes.centerComponent}>
+                  <obj.component ref={componentRef} />
+                </div>
+              </Paper>
+              <Code file={file} element={configs.reactElement}></Code>
+            </div>
+          );
+        })}
+        <h2 className={classes.secondaryTitle}>Props</h2>
+        <PropsTable propsConfigs={configs.props} />
+        <h2 className={classes.secondaryTitle}>Libraries</h2>
+        {configs.libraries.map((library, i) => (
+          <Chip
+            key={i}
+            className={classes.library}
+            label={library.name}
+            component="a"
+            href={library.href}
+            target={'_blank'}
+            clickable
+            color="secondary"
+          />
+        ))}
       </div>
-    );
-  }
+      <BottomNavigation currentPageHandler={currentPageHandler} />
+    </div>
+  )
 }
 
 export default withStyles(styles, { withTheme: true })(Showcase);
