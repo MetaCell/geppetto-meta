@@ -676,177 +676,173 @@ export default class ThreeDEngine {
     }
   }
 
-  /**
-   * Set up the listeners use to detect mouse movement and window resizing
-   */
-  setupListeners (onSelection) {
-    const that = this;
+  clickListener(event) {
+      that.clientX = event.clientX;
+      that.clientY = event.clientY;
+  }
 
-    this.controls.removeEventListener('start', this.requestFrame());
-    this.controls.removeEventListener('change', this.requestFrame());
-    this.controls.removeEventListener('stop', this.stop());
+  mouseUpListener(event) {
+      if (event.target === that.renderer.domElement) {
+        const x = event.clientX;
+        const y = event.clientY;
 
-    this.controls.addEventListener('start', function (e) {
-      that.requestFrame();
-    });
-
-    this.controls.addEventListener('change', function (e) {
-      that.requestFrame();
-    });
-
-    this.controls.addEventListener('stop', function (e) {
-      that.stop()
-    });
-    // when the mouse moves, call the given function
-    this.renderer.domElement.addEventListener(
-      'mousedown',
-      function (event) {
-        that.clientX = event.clientX;
-        that.clientY = event.clientY;
-      },
-      false
-    );
-
-    // when the mouse moves, call the given function
-    this.renderer.domElement.addEventListener(
-      'mouseup',
-      function (event) {
-        if (event.target === that.renderer.domElement) {
-          const x = event.clientX;
-          const y = event.clientY;
-
-          // If the mouse moved since the mousedown then don't consider this a selection
-          if (
-            typeof that.clientX === 'undefined'
-            || typeof that.clientY === 'undefined'
-            || x !== that.clientX
-            || y !== that.clientY
-          ) {
-            return;
-          }
-
-          that.mouse.y
-            = -(
-              (event.clientY
-                - that.renderer.domElement.getBoundingClientRect().top)
-              / that.renderer.domElement.getBoundingClientRect().height
-            )
-              * 2
-            + 1;
-          that.mouse.x
-            = ((event.clientX
-              - that.renderer.domElement.getBoundingClientRect().left)
-              / that.renderer.domElement.getBoundingClientRect().width)
-              * 2
-            - 1;
-
-          if (event.button === 0) {
-            // only for left click
-            if (that.pickingEnabled) {
-              const intersects = that.getIntersectedObjects();
-
-              if (intersects.length > 0) {
-                // sort intersects
-                const compare = function (a, b) {
-                  if (a.distance < b.distance) {
-                    return -1;
-                  }
-                  if (a.distance > b.distance) {
-                    return 1;
-                  }
-                  return 0;
-                };
-
-                intersects.sort(compare);
-
-                let selectedMap = {};
-                // Iterate and get the first visible item (they are now ordered by proximity)
-                for (let i = 0; i < intersects.length; i++) {
-                  // figure out if the entity is visible
-                  let instancePath = '';
-                  let geometryIdentifier = '';
-                  if (
-                    Object.prototype.hasOwnProperty.call(
-                      intersects[i].object,
-                      'instancePath'
-                    )
-                  ) {
-                    instancePath = intersects[i].object.instancePath;
-                    geometryIdentifier
-                      = intersects[i].object.geometryIdentifier;
-                  } else {
-                    // weak assumption: if the object doesn't have an instancePath its parent will
-                    instancePath = intersects[i].object.parent.instancePath;
-                    geometryIdentifier
-                      = intersects[i].object.parent.geometryIdentifier;
-                  }
-                  if (
-                    (instancePath != null
-                      && Object.prototype.hasOwnProperty.call(
-                        that.meshFactory.meshes,
-                        instancePath
-                      ))
-                    || Object.prototype.hasOwnProperty.call(
-                      that.meshFactory.splitMeshes,
-                      instancePath
-                    )
-                  ) {
-                    if (geometryIdentifier === undefined) {
-                      geometryIdentifier = '';
-                    }
-                    if (!(instancePath in selectedMap)) {
-                      selectedMap[instancePath] = {
-                        ...intersects[i],
-                        geometryIdentifier: geometryIdentifier,
-                        distanceIndex: i,
-                      };
-                    }
-                  }
-                }
-                that.requestFrame();
-                onSelection(that.selectionStrategy(selectedMap))
-              }
-            }
-          }
+        // If the mouse moved since the mousedown then don't consider this a selection
+        if (
+          typeof that.clientX === 'undefined'
+          || typeof that.clientY === 'undefined'
+          || x !== that.clientX
+          || y !== that.clientY
+        ) {
+          return;
         }
-      },
-      false
-    );
 
-    this.renderer.domElement.addEventListener(
-      'mousemove',
-      function (event) {
         that.mouse.y
           = -(
             (event.clientY
               - that.renderer.domElement.getBoundingClientRect().top)
-            / that.renderer.domElement.height
+            / that.renderer.domElement.getBoundingClientRect().height
           )
             * 2
           + 1;
         that.mouse.x
           = ((event.clientX
             - that.renderer.domElement.getBoundingClientRect().left)
-            / that.renderer.domElement.width)
+            / that.renderer.domElement.getBoundingClientRect().width)
             * 2
           - 1;
 
-        that.mouseContainer.x = event.clientX ;
-        that.mouseContainer.y = event.clientY ;
+        if (event.button === 0) {
+          // only for left click
+          if (that.pickingEnabled) {
+            const intersects = that.getIntersectedObjects();
 
-        if (that.hoverListeners && that.hoverListeners.length > 0) {
-          const intersects = that.getIntersectedObjects();
-          for (const listener in that.hoverListeners) {
-            if (intersects.length !== 0) {
-              that.hoverListeners[listener](intersects, that.mouseContainer.x, that.mouseContainer.y);
+            if (intersects.length > 0) {
+              // sort intersects
+              const compare = function (a, b) {
+                if (a.distance < b.distance) {
+                  return -1;
+                }
+                if (a.distance > b.distance) {
+                  return 1;
+                }
+                return 0;
+              };
+
+              intersects.sort(compare);
+
+              let selectedMap = {};
+              // Iterate and get the first visible item (they are now ordered by proximity)
+              for (let i = 0; i < intersects.length; i++) {
+                // figure out if the entity is visible
+                let instancePath = '';
+                let geometryIdentifier = '';
+                if (
+                  Object.prototype.hasOwnProperty.call(
+                    intersects[i].object,
+                    'instancePath'
+                  )
+                ) {
+                  instancePath = intersects[i].object.instancePath;
+                  geometryIdentifier
+                    = intersects[i].object.geometryIdentifier;
+                } else {
+                  // weak assumption: if the object doesn't have an instancePath its parent will
+                  instancePath = intersects[i].object.parent.instancePath;
+                  geometryIdentifier
+                    = intersects[i].object.parent.geometryIdentifier;
+                }
+                if (
+                  (instancePath != null
+                    && Object.prototype.hasOwnProperty.call(
+                      that.meshFactory.meshes,
+                      instancePath
+                    ))
+                  || Object.prototype.hasOwnProperty.call(
+                    that.meshFactory.splitMeshes,
+                    instancePath
+                  )
+                ) {
+                  if (geometryIdentifier === undefined) {
+                    geometryIdentifier = '';
+                  }
+                  if (!(instancePath in selectedMap)) {
+                    selectedMap[instancePath] = {
+                      ...intersects[i],
+                      geometryIdentifier: geometryIdentifier,
+                      distanceIndex: i,
+                    };
+                  }
+                }
+              }
+              that.requestFrame();
+              onSelection(that.selectionStrategy(selectedMap))
             }
           }
         }
-      },
+      
+  }
+}
+mouseMoveListener (event) {
+  that.mouse.y
+    = -(
+      (event.clientY
+        - that.renderer.domElement.getBoundingClientRect().top)
+      / that.renderer.domElement.height
+    )
+      * 2
+    + 1;
+  that.mouse.x
+    = ((event.clientX
+      - that.renderer.domElement.getBoundingClientRect().left)
+      / that.renderer.domElement.width)
+      * 2
+    - 1;
+
+  that.mouseContainer.x = event.clientX ;
+  that.mouseContainer.y = event.clientY ;
+
+  if (that.hoverListeners && that.hoverListeners.length > 0) {
+    const intersects = that.getIntersectedObjects();
+    for (const listener in that.hoverListeners) {
+      if (intersects.length !== 0) {
+        that.hoverListeners[listener](intersects, that.mouseContainer.x, that.mouseContainer.y);
+      }
+    }
+  }
+}
+
+
+  /**
+   * Set up the listeners use to detect mouse movement and window resizing
+   */
+  setupListeners (onSelection) {
+    const that = this;
+
+    this.controls.addEventListener('start', that.requestFrame);
+
+    this.controls.addEventListener('change', that.requestFrame);
+
+    this.controls.addEventListener('stop', that.stop);
+
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mousedown',
+      that.clickListener,
       false
     );
 
-    console.log('hover listeners after: ', this.controls);
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mouseup',
+      that.mouseUpListener,
+      false
+    );
+
+    this.renderer.domElement.addEventListener(
+      'mousemove',
+      that.mouseMoveListener,
+      false
+    );
   }
 
   /**
