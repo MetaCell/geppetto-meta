@@ -48,6 +48,14 @@ Simple Instances Example
 3d-canvas/showcase/examples/SimpleInstancesExample
 ```
 
+### Multiple Instances Example
+
+Multiple Instances Example
+
+```
+3d-canvas/showcase/examples/MultipleInstancesExample
+```
+
 ## Libraries
 
 [three.js](https://www.npmjs.com/package/three)

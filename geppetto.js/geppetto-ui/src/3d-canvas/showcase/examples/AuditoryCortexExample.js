@@ -4,7 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -87,14 +87,14 @@ class AuditoryCortexExample extends Component {
     }
   }
 
-  handleToggle () {
+  async handleToggle () {
     this.setState({ showLoader: true })
 
-    import(/* webpackChunkName: "acnet_model.json" */'./acnet_model.json').then(model => {
-      GEPPETTO.Manager.loadModel(model);
-      Instances.getInstance(INSTANCE_NAME);
-      this.setState({ hasModelLoaded: true, showLoader: false })
-    })
+    const response = await fetch('../assets/acnet_model.json');
+    const model = await response.json();
+    GEPPETTO.Manager.loadModel(model);
+    Instances.getInstance(INSTANCE_NAME);
+    this.setState({ hasModelLoaded: true, showLoader: false });
   }
 
   cameraHandler (obj) {

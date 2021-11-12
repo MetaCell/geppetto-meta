@@ -50,14 +50,13 @@ class Code extends Component {
   }
 
   getInstantiation (file, element) {
-    let re = new RegExp(`<${element}(.|\\n)+?\/>`);
+    let re = new RegExp(`<${element}[\\s\\n](.|\\n)+?\/>`);
     let matches = file.match(re);
     if (!matches) {
-      re = new RegExp(`<${element}(.|\\n)+>(.|\n)*<\/${element}>`);
+      re = new RegExp(`<${element}[\\s\\n](.|\\n)+>(.|\\n)*<\/${element}>`);
       matches = file.match(re);
     }
-    let match = matches[0].replace(/  +/g, '  ').replace(/ +\/>/g, '/>').replace(/ +<\//g, '</')
-    return matches ? match : INSTANTIATION_NOT_FOUND;
+    return matches ? matches[0].replace(/  +/g, '  ').replace(/ +\/>/g, '/>').replace(/ +<\//g, '</') : INSTANTIATION_NOT_FOUND;
   }
 
   handleSourceClick () {

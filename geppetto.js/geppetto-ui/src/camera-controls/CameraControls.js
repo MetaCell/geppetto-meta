@@ -12,7 +12,7 @@ import {
   faRedo,
   faVideo,
   faSearchPlus,
-  faSearchMinus,
+  faSearchMinus
 } from '@fortawesome/free-solid-svg-icons';
 
 import './CameraControls.less';
@@ -160,7 +160,7 @@ class CameraControls extends Component {
   }
 }
 
-CameraControls.defaultProps = { wireframeButtonEnabled: false, };
+CameraControls.defaultProps = { wireframeButtonEnabled: false };
 
 CameraControls.propTypes = {
   /**
@@ -169,7 +169,7 @@ CameraControls.propTypes = {
   cameraControlsHandler: PropTypes.func.isRequired,
 
   /**
-   * Boolean to enable/disable wireframe
+   * Boolean to enable/disable wireframe button
    */
   wireframeButtonEnabled: PropTypes.bool,
 };

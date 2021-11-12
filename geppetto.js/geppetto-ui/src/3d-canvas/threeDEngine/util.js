@@ -2,6 +2,14 @@ export function hasVisualType (instance){
   return instance.getVisualType() !== undefined || instance.getChildren().some(i => hasVisualType(i))
 }
 
+export function hasVisualValue (instance) {
+  try {
+    return instance.hasVisualValue()
+  } catch (e) {
+    return false
+  }
+}
+
 export function hexToRGBNormalized (hex){
   const rgb = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
     ,(m, r, g, b) => '#' + r + r + g + g + b + b)

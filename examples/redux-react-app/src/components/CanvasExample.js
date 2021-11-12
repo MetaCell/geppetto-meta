@@ -3,6 +3,9 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import { withStyles } from '@material-ui/core';
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/showcase/examples/SelectionUtils";
+import {compose} from 'redux';
+import {connect} from 'react-redux';
+
 
 const styles = () => ({
     canvasContainer: {
@@ -25,7 +28,7 @@ class CanvasExample extends Component {
                     instance: CameraControls,
                     props: { wireframeButtonEnabled: false, },
                 },
-                reset: false,
+                reset: true,
                 autorotate: false,
                 wireframe: false,
             },
@@ -51,7 +54,8 @@ class CanvasExample extends Component {
     }
 
     render() {
-        const { data, cameraOptions } = this.state
+        const data = this.props.canvasData;
+        const { cameraOptions } = this.state;
         const canvasData = mapToCanvasData(data)
         const { classes } = this.props
         let camOptions = cameraOptions;
@@ -75,4 +79,18 @@ class CanvasExample extends Component {
     }
 }
 
-export default withStyles(styles)(CanvasExample);
+const mapStateToProps = state => {
+    return {
+        canvasData: state.exampleState.instances
+    }
+}
+
+export default compose(
+    connect(
+        mapStateToProps,
+        null
+    ),
+    withStyles(styles),
+  )(CanvasExample);
+
+// export default withStyles(styles)(CanvasExample);

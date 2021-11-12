@@ -3,10 +3,11 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import neuron from './SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
-import contact from './Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
+import neuron from '../assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
+import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "./SelectionUtils";
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import CaptureControls from "../../../capture-controls/CaptureControls";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -64,7 +65,7 @@ class SimpleInstancesExample extends Component {
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false, },
+          props: { wireframeButtonEnabled: false },
         },
         reset: false,
         autorotate: false,
@@ -101,12 +102,7 @@ class SimpleInstancesExample extends Component {
 
   handleToggle () {
     loadInstances()
-    this.setState({
-      showModel: true, data: getProxyInstances(), cameraOptions: {
-        ...this.state.cameraOptions,
-        reset: true,
-      } 
-    })
+    this.setState({ showModel: true, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   handleClickOutside (event) {
@@ -137,15 +133,31 @@ class SimpleInstancesExample extends Component {
         rotation: this.lastCameraUpdate.rotation,
       };
     }
+    const captureOptions = {
+      captureControls: {
+        instance: CaptureControls,
+        props: {}
+      },
+      screenshotOptions:{
+        resolution:{
+          width: 3840,
+          height: 2160,
+        },
+        quality: 0.95,
+        pixelRatio: 1,
+        filter: () => true
+      },
+    }
+
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
       <Canvas
         ref={this.canvasRef}
         data={canvasData}
         cameraOptions={camOptions}
+        captureOptions={captureOptions}
         cameraHandler={this.cameraHandler}
         backgroundColor={0x505050}
         onSelection={this.onSelection}
-        // hoverListeners={[this.hoverHandler]}
         onMount={this.onMount}
       />
     </div> : <Button
