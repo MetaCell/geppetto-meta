@@ -14,10 +14,10 @@ import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
-import { hasVisualType, hasVisualValue } from "./util";
-import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
+
 import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
+import { rgbToHex, hasVisualType } from "./util";
 
 export default class ThreeDEngine {
   constructor (
@@ -208,16 +208,16 @@ export default class ThreeDEngine {
    */
 
 
-  checkMaterial(mesh, instance) {
+  checkMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       if (mesh.material.color.r === instance?.color?.r
         && mesh.material.color.g === instance?.color?.g
         && mesh.material.color.b === instance?.color?.b
         && mesh.material.color.opacity === instance?.color?.a) {
-          return false;
-        } else {
-          return true;
-        }
+        return false;
+      } else {
+        return true;
+      }
     } else if (mesh.type === 'Group') {
       var changed = false;
       for (let child of mesh.children) {
@@ -230,7 +230,7 @@ export default class ThreeDEngine {
   }
 
 
-  updateInstanceMaterial(mesh, instance) {
+  updateInstanceMaterial (mesh, instance) {
     for (let child of this.scene.children) {
       if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
         if (instance?.color !== undefined) {
@@ -245,7 +245,7 @@ export default class ThreeDEngine {
   }
 
 
-  setInstanceMaterial(mesh, instance) {
+  setInstanceMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       this.meshFactory.setThreeColor(mesh.material.color, instance.color);
       if (instance.color.a) {
@@ -327,11 +327,11 @@ export default class ThreeDEngine {
     var pathsToRemove = [];
     var sortedInstances = [];
     var toRemove = this.scene.children.filter(child => {
-        if (child.type === 'Mesh' || child.type ===  'Group') {
-          pathsToRemove.push(child.instancePath)
-          return true;
-        }
-        return false;
+      if (child.type === 'Mesh' || child.type === 'Group') {
+        pathsToRemove.push(child.instancePath)
+        return true;
+      }
+      return false;
     });
 
     if (proxyInstances) {
@@ -364,8 +364,8 @@ export default class ThreeDEngine {
     }
 
     for (let child of toRemove) {
-        this.meshFactory.cleanWith3DObject(child);
-        this.scene.remove(child);
+      this.meshFactory.cleanWith3DObject(child);
+      this.scene.remove(child);
     }
     return sortedInstances;
   }
@@ -885,7 +885,7 @@ export default class ThreeDEngine {
     this.cameraManager.update(cameraOptions);
   }
 
-  addToScene(instance) {
+  addToScene (instance) {
     let found = false;
     for (let child of this.scene.children) {
       if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
@@ -917,8 +917,7 @@ export default class ThreeDEngine {
 
   requestFrame () {
     const timeDif = this.lastRenderTimer.getTime() - new Date().getTime();
-    if(Math.abs(timeDif) > 10)
-    {
+    if (Math.abs(timeDif) > 10) {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }

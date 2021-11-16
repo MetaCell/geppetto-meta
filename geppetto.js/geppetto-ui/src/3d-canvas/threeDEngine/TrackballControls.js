@@ -14,13 +14,17 @@ const _endEvent = { type: 'end' };
 class TrackballControls extends EventDispatcher {
 
   // @metacell change
-  constructor(object, domElement, handler) {
+  constructor (object, domElement, handler) {
     // end of @metacell changes
 
     super();
 
-    if (domElement === undefined) console.warn('TrackballControls: The second parameter "domElement" is now mandatory.');
-    if (domElement === document) console.error('TrackballControls: "document" should not be used as the target "domElement". Please use "renderer.domElement" instead.');
+    if (domElement === undefined) {
+      console.warn('TrackballControls: The second parameter "domElement" is now mandatory.');
+    }
+    if (domElement === document) {
+      console.error('TrackballControls: "document" should not be used as the target "domElement". Please use "renderer.domElement" instead.');
+    }
 
     const scope = this;
     const STATE = { NONE: - 1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
@@ -49,9 +53,9 @@ class TrackballControls extends EventDispatcher {
     this.minDistance = 0;
     this.maxDistance = Infinity;
 
-    this.keys = ['KeyA' /*A*/, 'KeyS' /*S*/, 'KeyD' /*D*/];
+    this.keys = ['KeyA' /* A*/, 'KeyS' /* S*/, 'KeyD' /* D*/];
 
-    //@metacell changes
+    // @metacell changes
     this.logDecimalPlaces = 3;
     this.cameraByConsoleLock = true;
     this.cameraChanged = false;
@@ -65,7 +69,7 @@ class TrackballControls extends EventDispatcher {
 
     this.target = new Vector3();
 
-    const EPS = 0.000001;
+    const EPS = 0.0001;
 
     const lastPosition = new Vector3();
     let lastZoom = 1;
@@ -122,7 +126,7 @@ class TrackballControls extends EventDispatcher {
 
       const vector = new Vector2();
 
-      return function getMouseOnScreen(pageX, pageY) {
+      return function getMouseOnScreen (pageX, pageY) {
 
         vector.set(
           (pageX - scope.screen.left) / scope.screen.width,
@@ -139,7 +143,7 @@ class TrackballControls extends EventDispatcher {
 
       const vector = new Vector2();
 
-      return function getMouseOnCircle(pageX, pageY) {
+      return function getMouseOnCircle (pageX, pageY) {
 
         vector.set(
           ((pageX - scope.screen.width * 0.5 - scope.screen.left) / (scope.screen.width * 0.5)),
@@ -158,10 +162,8 @@ class TrackballControls extends EventDispatcher {
       scope.cameraByConsoleLock = false;
     };
 
+
     this.setCameraByConsole = function () {
-      if (scope.cameraByConsoleLock) {
-        return;
-      }
 
       var p = scope.object.position.toArray();
       var u = scope.object.rotation.toArray();
@@ -217,7 +219,7 @@ class TrackballControls extends EventDispatcher {
         objectSidewaysDirection = new Vector3(),
         moveDirection = new Vector3();
 
-      return function rotateCamera() {
+      return function rotateCamera () {
 
         moveDirection.set(_moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0);
         let angle = moveDirection.length();
@@ -330,7 +332,7 @@ class TrackballControls extends EventDispatcher {
         objectUp = new Vector3(),
         pan = new Vector3();
 
-      return function panCamera() {
+      return function panCamera () {
 
         mouseChange.copy(_panEnd).sub(_panStart);
 
@@ -430,10 +432,8 @@ class TrackballControls extends EventDispatcher {
 
         if (lastPosition.distanceToSquared(scope.object.position) > EPS) {
 
-          scope.dispatchEvent(_changeEvent);
-
           lastPosition.copy(scope.object.position);
-
+          scope.dispatchEvent(_changeEvent);
         }
 
       } else if (scope.object.isOrthographicCamera) {
@@ -551,7 +551,7 @@ class TrackballControls extends EventDispatcher {
       scope.update();
     };
 
-    function nanToZero(vector) {
+    function nanToZero (vector) {
       if (isNaN(vector.x)) {
         vector.x = 0;
       }
@@ -587,9 +587,11 @@ class TrackballControls extends EventDispatcher {
 
     // listeners
 
-    function onPointerDown(event) {
+    function onPointerDown (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       if (_pointers.length === 0) {
 
@@ -616,9 +618,11 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onPointerMove(event) {
+    function onPointerMove (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       if (event.pointerType === 'touch') {
 
@@ -632,9 +636,11 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onPointerUp(event) {
+    function onPointerUp (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       if (event.pointerType === 'touch') {
 
@@ -662,15 +668,17 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onPointerCancel(event) {
+    function onPointerCancel (event) {
 
       removePointer(event);
 
     }
 
-    function keydown(event) {
+    function keydown (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       window.removeEventListener('keydown', keydown);
 
@@ -694,9 +702,11 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function keyup() {
+    function keyup () {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       _keyState = STATE.NONE;
 
@@ -704,26 +714,26 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onMouseDown(event) {
+    function onMouseDown (event) {
 
       if (_state === STATE.NONE) {
 
         switch (event.button) {
 
-          case scope.mouseButtons.LEFT:
-            _state = STATE.ROTATE;
-            break;
+        case scope.mouseButtons.LEFT:
+          _state = STATE.ROTATE;
+          break;
 
-          case scope.mouseButtons.MIDDLE:
-            _state = STATE.ZOOM;
-            break;
+        case scope.mouseButtons.MIDDLE:
+          _state = STATE.ZOOM;
+          break;
 
-          case scope.mouseButtons.RIGHT:
-            _state = STATE.PAN;
-            break;
+        case scope.mouseButtons.RIGHT:
+          _state = STATE.PAN;
+          break;
 
-          default:
-            _state = STATE.NONE;
+        default:
+          _state = STATE.NONE;
 
         }
 
@@ -755,7 +765,7 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onMouseMove(event) {
+    function onMouseMove (event) {
 
       const state = (_keyState !== STATE.NONE) ? _keyState : _state;
 
@@ -779,7 +789,7 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onMouseUp() {
+    function onMouseUp () {
 
       _state = STATE.NONE;
 
@@ -793,30 +803,34 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onMouseWheel(event) {
+    function onMouseWheel (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
-      if (scope.noZoom === true) return;
+      if (scope.noZoom === true) {
+        return;
+      }
 
       event.preventDefault();
 
       switch (event.deltaMode) {
 
-        case 2:
-          // Zoom in pages
-          _zoomStart.y -= event.deltaY * 0.025;
-          break;
+      case 2:
+        // Zoom in pages
+        _zoomStart.y -= event.deltaY * 0.025;
+        break;
 
-        case 1:
-          // Zoom in lines
-          _zoomStart.y -= event.deltaY * 0.01;
-          break;
+      case 1:
+        // Zoom in lines
+        _zoomStart.y -= event.deltaY * 0.01;
+        break;
 
-        default:
-          // undefined, 0, assume pixels
-          _zoomStart.y -= event.deltaY * 0.00025;
-          break;
+      default:
+        // undefined, 0, assume pixels
+        _zoomStart.y -= event.deltaY * 0.00025;
+        break;
 
       }
 
@@ -830,29 +844,29 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onTouchStart(event) {
+    function onTouchStart (event) {
 
       trackPointer(event);
 
       switch (_pointers.length) {
 
-        case 1:
-          _state = STATE.TOUCH_ROTATE;
-          _moveCurr.copy(getMouseOnCircle(_pointers[0].pageX, _pointers[0].pageY));
-          _movePrev.copy(_moveCurr);
-          break;
+      case 1:
+        _state = STATE.TOUCH_ROTATE;
+        _moveCurr.copy(getMouseOnCircle(_pointers[0].pageX, _pointers[0].pageY));
+        _movePrev.copy(_moveCurr);
+        break;
 
-        default: // 2 or more
-          _state = STATE.TOUCH_ZOOM_PAN;
-          const dx = _pointers[0].pageX - _pointers[1].pageX;
-          const dy = _pointers[0].pageY - _pointers[1].pageY;
-          _touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt(dx * dx + dy * dy);
+      default: // 2 or more
+        _state = STATE.TOUCH_ZOOM_PAN;
+        const dx = _pointers[0].pageX - _pointers[1].pageX;
+        const dy = _pointers[0].pageY - _pointers[1].pageY;
+        _touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt(dx * dx + dy * dy);
 
-          const x = (_pointers[0].pageX + _pointers[1].pageX) / 2;
-          const y = (_pointers[0].pageY + _pointers[1].pageY) / 2;
-          _panStart.copy(getMouseOnScreen(x, y));
-          _panEnd.copy(_panStart);
-          break;
+        const x = (_pointers[0].pageX + _pointers[1].pageX) / 2;
+        const y = (_pointers[0].pageY + _pointers[1].pageY) / 2;
+        _panStart.copy(getMouseOnScreen(x, y));
+        _panEnd.copy(_panStart);
+        break;
 
       }
 
@@ -863,29 +877,29 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onTouchMove(event) {
+    function onTouchMove (event) {
 
       trackPointer(event);
 
       switch (_pointers.length) {
 
-        case 1:
-          _movePrev.copy(_moveCurr);
-          _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
-          break;
+      case 1:
+        _movePrev.copy(_moveCurr);
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+        break;
 
-        default: // 2 or more
+      default: // 2 or more
 
-          const position = getSecondPointerPosition(event);
+        const position = getSecondPointerPosition(event);
 
-          const dx = event.pageX - position.x;
-          const dy = event.pageY - position.y;
-          _touchZoomDistanceEnd = Math.sqrt(dx * dx + dy * dy);
+        const dx = event.pageX - position.x;
+        const dy = event.pageY - position.y;
+        _touchZoomDistanceEnd = Math.sqrt(dx * dx + dy * dy);
 
-          const x = (event.pageX + position.x) / 2;
-          const y = (event.pageY + position.y) / 2;
-          _panEnd.copy(getMouseOnScreen(x, y));
-          break;
+        const x = (event.pageX + position.x) / 2;
+        const y = (event.pageY + position.y) / 2;
+        _panEnd.copy(getMouseOnScreen(x, y));
+        break;
 
       }
 
@@ -895,25 +909,25 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function onTouchEnd(event) {
+    function onTouchEnd (event) {
 
       switch (_pointers.length) {
 
-        case 0:
-          _state = STATE.NONE;
-          break;
+      case 0:
+        _state = STATE.NONE;
+        break;
 
-        case 1:
-          _state = STATE.TOUCH_ROTATE;
-          _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
-          _movePrev.copy(_moveCurr);
-          break;
+      case 1:
+        _state = STATE.TOUCH_ROTATE;
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+        _movePrev.copy(_moveCurr);
+        break;
 
-        case 2:
-          _state = STATE.TOUCH_ZOOM_PAN;
-          _moveCurr.copy(getMouseOnCircle(event.pageX - _movePrev.pageX, event.pageY - _movePrev.pageY));
-          _movePrev.copy(_moveCurr);
-          break;
+      case 2:
+        _state = STATE.TOUCH_ZOOM_PAN;
+        _moveCurr.copy(getMouseOnCircle(event.pageX - _movePrev.pageX, event.pageY - _movePrev.pageY));
+        _movePrev.copy(_moveCurr);
+        break;
 
       }
 
@@ -926,9 +940,11 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function contextmenu(event) {
+    function contextmenu (event) {
 
-      if (scope.enabled === false) return;
+      if (scope.enabled === false) {
+        return;
+      }
 
       event.preventDefault();
       // @metacell changes
@@ -937,13 +953,13 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function addPointer(event) {
+    function addPointer (event) {
 
       _pointers.push(event);
 
     }
 
-    function removePointer(event) {
+    function removePointer (event) {
 
       delete _pointerPositions[event.pointerId];
 
@@ -960,7 +976,7 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function trackPointer(event) {
+    function trackPointer (event) {
 
       let position = _pointerPositions[event.pointerId];
 
@@ -975,7 +991,7 @@ class TrackballControls extends EventDispatcher {
 
     }
 
-    function getSecondPointerPosition(event) {
+    function getSecondPointerPosition (event) {
 
       const pointer = (event.pointerId === _pointers[0].pointerId) ? _pointers[1] : _pointers[0];
 
@@ -1015,7 +1031,6 @@ class TrackballControls extends EventDispatcher {
     this.update();
 
   }
-
 
 
 }

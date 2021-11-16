@@ -26,7 +26,8 @@
     "publish:yalc": "cd build && yalc publish --push",
     "watch": "nodemon -e js,ts --ignore build --exec \"babel src -d build --extensions '.js,.jsx,.ts,.tsx' && yalc push --changed\""
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.4",
@@ -71,6 +72,7 @@
     "file-saver": "^2.0.2",
     "griddle-react": "^1.13.1",
     "html2canvas": "^1.0.0-alpha.12",
+    "html-to-image": "^1.9.0",
     "jszip": "^3.2.1",
     "mathjs": "^3.5.3",
     "openseadragon": "^2.2.1",
