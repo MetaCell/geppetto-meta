@@ -1,5 +1,5 @@
 import particle from '../textures/particle.png';
-import { hasVisualType } from "./util";
+import { hasVisualType, hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "./OBJLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -56,7 +56,6 @@ export default class MeshFactory {
   }
 
   async start (instances) {
-    this.clean();
     await this.traverseInstances(instances);
   }
 
@@ -81,7 +80,7 @@ export default class MeshFactory {
 
   async checkVisualInstance (instance) {
     try {
-      if (this.hasVisualValue(instance)) {
+      if (hasVisualValue(instance)) {
         await this.buildVisualInstance(instance)
       } else if (hasVisualType(instance)) {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
@@ -106,17 +105,16 @@ export default class MeshFactory {
     }
   }
 
-  hasVisualValue (instance) {
-    try {
-      return instance.hasVisualValue()
-    } catch (e) {
-      return false
-    }
-  }
-
   async buildVisualInstance (instance) {
-    const meshes = await this.generate3DObjects(instance);
-    this.init3DObject(meshes, instance);
+    const instancePath = instance.getInstancePath();
+
+    // If the same mesh already exists skip the recreation
+    if (this.meshes[instancePath]) {
+      return;
+    } else {
+      const meshes = await this.generate3DObjects(instance);
+      this.init3DObject(meshes, instance);
+    }
   }
 
   async generate3DObjects (instance) {
@@ -195,7 +193,7 @@ export default class MeshFactory {
   }
 
   async walkVisTreeGen3DObjs (instance, materials) {
-    if (this.hasVisualValue(instance)) {
+    if (hasVisualValue(instance)) {
       const visualValue = instance.getVisualValue();
       const threeDObj = await this.create3DObjectFromInstance(
         instance,
@@ -272,6 +270,7 @@ export default class MeshFactory {
     }
     return threeDeeObjList
   }
+
 
   async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
@@ -581,11 +580,12 @@ export default class MeshFactory {
 
       mesh.instancePath = instancePath;
       /*
-       * if the model file is specifying a position for the loaded meshes then we translate them here
-       */
+      * if the model file is specifying a position for the loaded meshes then we translate them here
+      */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
       }
+
       this.meshes[instancePath] = mesh;
       this.meshes[instancePath].visible = true;
       this.meshes[instancePath].defaultOpacity = 1;
@@ -948,6 +948,14 @@ export default class MeshFactory {
     this.rayCasterLinePrecision = Math.round(this.rayCasterLinePrecision);
 
     return this.rayCasterLinePrecision;
+  }
+
+  cleanWith3DObject(instance) {
+    for (let meshKey of Object.keys(this.meshes)) {
+      if (this.meshes[meshKey].uuid === instance.uuid) {
+        delete this.meshes[meshKey];
+      }
+    }
   }
 
   clean () {

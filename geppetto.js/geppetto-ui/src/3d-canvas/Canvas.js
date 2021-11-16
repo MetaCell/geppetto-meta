@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
-import { withResizeDetector } from 'react-resize-detector';
-import { Recorder } from "./Recorder";
-import { recordControlsActions } from "../record-controls/RecordControls";
+import ReactResizeDetector from 'react-resize-detector';
+import { Recorder } from "./captureManager/Recorder";
+import { downloadScreenshot } from "./captureManager/Screenshoter";
+import { captureControlsActions } from "../capture-controls/CaptureControls";
 
 const styles = () => ({
   container: {
@@ -20,10 +21,16 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.recordControls = React.createRef();
-    this.state = { modelReady: false, showDownload: false }
+    this.state = { modelReady: false }
+    this.constructorFromProps(props)
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
-    this.defaultRecordControlsHandler = this.defaultRecordControlsHandler.bind(this)
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+  }
+
+  constructorFromProps (props) {
+    if (props.captureOptions !== undefined) {
+      this.captureControls = React.createRef();
+    }
   }
 
   async componentDidMount () {
@@ -31,6 +38,7 @@ class Canvas extends Component {
       data,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
@@ -45,6 +53,7 @@ class Canvas extends Component {
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
+      captureOptions,
       onSelection,
       backgroundColor,
       pickingEnabled,
@@ -54,11 +63,14 @@ class Canvas extends Component {
       selectionStrategy
     );
 
-    this.recorder = new Recorder(this.getCanvasElement())
+    if (captureOptions) {
+      this.recorder = new Recorder(this.getCanvasElement())
+    }
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
     this.setState({ modelReady: true })
     this.threeDEngine.requestFrame();
+    this.threeDEngine.setBackgroundColor(backgroundColor);
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
@@ -67,8 +79,8 @@ class Canvas extends Component {
     }
 
     if (prevProps !== this.props) {
-      const { data, cameraOptions, threeDObjects } = this.props;
-      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse());
+      const { data, cameraOptions, threeDObjects, backgroundColor } = this.props;
+      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse(), backgroundColor);
       this.threeDEngine.requestFrame();
       this.setState({ modelReady: true })
     } else {
@@ -77,7 +89,7 @@ class Canvas extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props || this.state.showDownload !== nextState.showDownload
+    return nextState.modelReady || nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -87,23 +99,31 @@ class Canvas extends Component {
     );
   }
 
-  defaultRecordControlsHandler (action) {
+  defaultCaptureControlsHandler (action) {
+    const { captureOptions } = this.props
     if (this.recorder) {
-      switch (action) {
-      case recordControlsActions.START:
+      switch (action.type) {
+      case captureControlsActions.START:
         this.recorder.startRecording()
-        this.setState({ showDownload: false })
-        break;
-      case recordControlsActions.STOP:
-        this.recorder.stopRecording()
-        this.setState({ showDownload: true })
-        break;
-      case recordControlsActions.DOWNLOAD:
-        this.recorder.download()
-        break;
+        break
+      case captureControlsActions.STOP:
+        return this.recorder.stopRecording()
+      case captureControlsActions.DOWNLOAD_VIDEO: {
+        const { filename } = action.data;
+        return this.recorder.download(filename)
+      }
       }
     }
-
+    if (captureOptions && captureOptions.screenshotOptions) {
+      const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
+      switch (action.type) {
+      case captureControlsActions.DOWNLOAD_SCREENSHOT:{
+        const { filename } = action.data;
+        downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter, filename)
+        break
+      }
+      }
+    }
   }
 
   defaultCameraControlsHandler (action) {
@@ -184,33 +204,35 @@ class Canvas extends Component {
   }
 
   render () {
-    const { classes, cameraOptions, recorderOptions } = this.props;
-    const { showDownload } = this.state;
+    const { classes, cameraOptions, captureOptions } = this.props;
     const { cameraControls } = cameraOptions
-    const { recorderControls } = recorderOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
-    const recordControlsHandler = recorderControls.cameraControlsHandler ? recorderControls.cameraControlsHandler : this.defaultRecordControlsHandler
-    const recorderInstance = recorderControls.instance ? (
-      <recorderControls.instance
-        ref={this.recordControls}
-        recordControlsHandler={recordControlsHandler}
-        showDownload={showDownload}
-        {...recorderControls.props}
-      />
-    )
-      : null;
+    let captureInstance = null
+    if (captureOptions) {
+      const { captureControls } = captureOptions
+      const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
+      captureInstance = captureControls && captureControls.instance ? (
+        <captureControls.instance
+          ref={this.captureControls}
+          captureControlsHandler={captureControlsHandler}
+          {...captureControls.props}
+        />
+      )
+        : null;
+    }
     return (
-      <div className={classes.container} ref={this.sceneRef}>
-        {
-          <cameraControls.instance
-            ref={this.cameraControls}
-            cameraControlsHandler={cameraControlsHandler}
-            {...cameraControls.props}
-          />
-        }
-        {recorderInstance}
-
-      </div>
+      <ReactResizeDetector skipOnMount='true'>
+        <div className={classes.container} ref={this.sceneRef}>
+          {
+            <cameraControls.instance
+              ref={this.cameraControls}
+              cameraControlsHandler={cameraControlsHandler}
+              {...cameraControls.props}
+            />
+          }
+          {captureInstance}
+        </div>
+      </ReactResizeDetector>
     );
   }
 }
@@ -232,12 +254,7 @@ Canvas.defaultProps = {
     },
     rotateSpeed: 0.5,
   },
-  recorderOptions: {
-    recorderControls: {
-      instance: null,
-      props: {}
-    }
-  },
+  captureOptions: undefined,
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
@@ -268,9 +285,47 @@ Canvas.propTypes = {
    */
   cameraOptions: PropTypes.object,
   /**
-   * Options to customize recorder
+   * Options to customize capture features
    */
-  recorderOptions: PropTypes.object,
+  captureOptions: PropTypes.shape({
+    /**
+     * Capture controls component definition
+     */
+    captureControls: PropTypes.shape({
+      /**
+       * Component instance
+       */
+      instance: PropTypes.any,
+      /**
+       * Component props
+       */
+      props: PropTypes.shape({})
+    }),
+    /**
+     * Screenshot Options
+     */
+    screenshotOptions: PropTypes.shape({
+      /**
+       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
+       */
+      filter: PropTypes.func,
+      /**
+       * The pixel ratio of the captured image. Default use the actual pixel ratio of the device. Set 1 to use as initial-scale 1 for the image.
+       */
+      pixelRatio: PropTypes.number,
+      /**
+       * A number between 0 and 1 indicating image quality (e.g. 0.92 => 92%) of the JPEG image.
+       */
+      quality: PropTypes.number,
+      /**
+       * Screenshot desired resolution
+       */
+      resolution: PropTypes.shape({
+        height: PropTypes.number.isRequired,
+        width: PropTypes.number.isRequired
+      })
+    }).isRequired
+  }),
   /**
    * Three JS objects to add to the scene
    */
@@ -313,4 +368,4 @@ Canvas.propTypes = {
   hoverListeners: PropTypes.array,
 };
 
-export default withResizeDetector(withStyles(styles)(Canvas));
+export default withStyles(styles)(Canvas);

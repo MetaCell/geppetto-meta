@@ -7,6 +7,7 @@ import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import { applySelection, mapToCanvasData } from "./SelectionUtils";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 
+import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [

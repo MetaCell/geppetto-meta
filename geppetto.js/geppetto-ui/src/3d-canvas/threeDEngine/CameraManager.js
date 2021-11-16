@@ -15,6 +15,7 @@ export default class CameraManager {
     this.camera.direction = new THREE.Vector3(0, 0, 1);
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
+    this.firstLoad = false;
   }
 
   update (cameraOptions) {
@@ -28,22 +29,25 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
-    if (
-      reset
-      || (position === undefined && rotation === undefined && zoomTo === undefined)
-    ) {
-      this.resetCamera();
+    if (reset || (!this.firstLoad && position === undefined)) {
+      this.resetCamera(position);
+      if (!this.firstLoad) {
+        this.firstLoad = true;
+      }
     } else {
-      if (position) {
+      if (position && !this.firstLoad) {
         this.setCameraPosition(position.x, position.y, position.z);
       }
-      if (rotation) {
+      if (rotation && !this.firstLoad) {
         this.setCameraRotation(
           rotation.rx,
           rotation.ry,
           rotation.rz,
           rotation.radius
         );
+      }
+      if (!this.firstLoad) {
+        this.firstLoad = true;
       }
       if (autoRotate) {
         this.autoRotate(movieFilter);
@@ -143,7 +147,12 @@ export default class CameraManager {
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
-  resetCamera () {
+  resetCamera (position) {
+    if (position) {
+      this.setCameraPosition(position.x, position.y, position.z);
+      return;
+    }
+
     this.engine.controls.reset();
 
     let aabbMin = null;
