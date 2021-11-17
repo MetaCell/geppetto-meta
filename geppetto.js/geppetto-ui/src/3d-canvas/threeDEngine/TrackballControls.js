@@ -110,6 +110,10 @@ THREE.TrackballControls = function (object, domElement, handler) {
     }
   };
 
+  this.dispatchEvent = (e) => {
+    this.handleEvent(e);
+  }
+
   var getMouseOnScreen = (function () {
     var vector = new THREE.Vector2();
 

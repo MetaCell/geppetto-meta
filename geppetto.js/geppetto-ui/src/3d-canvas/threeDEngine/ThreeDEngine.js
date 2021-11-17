@@ -51,6 +51,8 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.mouseRayCaster = new THREE.Raycaster();
+    this.setupRenderer = this.setupRenderer.bind(this);
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -683,12 +685,12 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseDownEventListener (event) {
+  mouseDownEventListener = (event) => {
     this.clientX = event.clientX;
     this.clientY = event.clientY;
   }
   
-  mouseUpEventListener (event) {
+  mouseUpEventListener = (event) => {
     if (event.target === this.renderer.domElement) {
       const x = event.clientX;
       const y = event.clientY;
@@ -789,7 +791,7 @@ export default class ThreeDEngine {
     }
   }
   
-  mouseMoveEventListener (event) {
+  mouseMoveEventListener =  (event) => {
     this.mouse.y
       = -(
         (event.clientY
