@@ -8,6 +8,9 @@ import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 import CaptureControls from "../../../capture-controls/CaptureControls";
+import Resources from '@metacell/geppetto-meta-core/Resources';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -15,7 +18,7 @@ const instance1spec = {
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': neuron
   }
 }
@@ -25,17 +28,17 @@ const instance2spec = {
   "name": "The second SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': contact
   }
 }
 
 function loadInstances (){
-  GEPPETTO.ModelFactory.cleanModel();
+  ModelFactory.cleanModel();
   const instance1 = new SimpleInstance(instance1spec)
   const instance2 = new SimpleInstance(instance2spec)
   window.Instances = [instance1, instance2]
-  GEPPETTO.Manager.augmentInstancesArray(window.Instances);
+  augmentInstancesArray(window.Instances);
 }
 
 function getProxyInstances () {

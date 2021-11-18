@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Matrix } from '../../layouts/Matrix';
 import ConnectivityComponent from '../../ConnectivityComponent';
 import { withStyles } from '@material-ui/core';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 
 const styles = {
   connectivity: {
@@ -15,18 +17,18 @@ const styles = {
 class ConnectivityShowcaseMatrix extends Component {
   constructor (props) {
     super(props);
-    // GEPPETTO.Manager.loadModel(model);
+    // Manager.loadModel(model);
     this.linkType = this.linkType.bind(this);
   }
 
   matrixHandler = () => {
-    console.log('Mock call to GEPPETTO.SceneController')
+    console.log('Mock call to SceneController')
   }
 
   linkType (c) {
-    return GEPPETTO.ModelFactory.getAllVariablesOfType(
+    return ModelFactory.getAllVariablesOfType(
       c.getParent(),
-      GEPPETTO.ModelFactory.geppettoModel.neuroml.synapse
+      ModelFactory.geppettoModel.neuroml.synapse
     )[0].getId();
   }
 
@@ -45,8 +47,8 @@ class ConnectivityShowcaseMatrix extends Component {
           colors={colors}
           names={names}
           layout={layout}
-          modelFactory={GEPPETTO.ModelFactory}
-          resources={GEPPETTO.Resources}
+          modelFactory={ModelFactory}
+          resources={Resources}
           matrixOnClickHandler={this.matrixHandler}
           nodeType={null}
           linkWeight={null}

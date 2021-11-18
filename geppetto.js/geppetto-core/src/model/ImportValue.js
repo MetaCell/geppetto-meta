@@ -18,7 +18,8 @@ ImportValue.prototype = Object.create(Value.prototype);
 ImportValue.prototype.constructor = ImportValue;
     
 ImportValue.prototype.resolve = function (callback) {
-  GEPPETTO.Manager.resolveImportValue(this.getPath(), callback);
+  console.warn("Deprecated api call: use the GeppettoManager api");
+  console.trace();
 };
     
     

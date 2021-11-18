@@ -4,6 +4,7 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 import CanvasTooltip from '../utils/CanvasTooltip'
 
@@ -91,7 +92,7 @@ class CA1Example extends Component {
     this.setState({ showLoader: true })
     const response = await fetch('../assets/ca1_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.setState({ hasModelLoaded: true, showLoader:false })
   }
@@ -134,12 +135,12 @@ class CA1Example extends Component {
         <div ref={node => this.node = node} className={classes.container}>
           <div id={'canvas-tooltips-container'}>
             <div>
-              { this.state.intersected.length > 0 
-                && <CanvasTooltip 
+              { this.state.intersected.length > 0
+                && <CanvasTooltip
                   visible={ this.state.tooltipVisible } 
-                  x={this.state.intersected[this.state.intersected.length - 1].x} 
-                  y={this.state.intersected[this.state.intersected.length - 1].y} 
-                  text={this.state.intersected[this.state.intersected.length - 1].o.object.uuid} 
+                  x={this.state.intersected[this.state.intersected.length - 1].x}
+                  y={this.state.intersected[this.state.intersected.length - 1].y}
+                  text={this.state.intersected[this.state.intersected.length - 1].o.object.uuid}
                   id={'canvas-tooltip-' + this.state.intersected[this.state.intersected.length - 1].o.object.uuid}>
                 </CanvasTooltip>
               }

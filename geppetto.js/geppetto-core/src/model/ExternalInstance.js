@@ -147,7 +147,7 @@ class ExternalInstance extends Instance {
   }
 
   /**
-   * Return connections, user GEPPETTO.Resources.INPUT / OUTPUT /
+   * Return connections, user Resources.INPUT / OUTPUT /
    * INPUT_OUTPUT to filter
    *
    * @command Instance.getConnections(direction)

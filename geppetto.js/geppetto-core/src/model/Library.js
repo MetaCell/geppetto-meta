@@ -9,7 +9,7 @@
 
 var ObjectWrapper = require('./ObjectWrapper').default;
 var ImportType = require('./ImportType').default;
-var EventManager = require('@metacell/geppetto-meta-client/common/EventManager').default
+
 
 function Library (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -54,23 +54,8 @@ Library.prototype.removeImportType = function (importType) {
 };
     
 Library.prototype.resolveAllImportTypes = function (callback) {
-  if (this.importTypes.length > 0){
-    EventManager.actionsHandler[EventManager.clientActions.SHOW_SPINNER](GEPPETTO.Resources.RESOLVING_TYPES);
-    var b = [];
-    const BATCH = 50;
-    for (var i = 0;i < this.importTypes.length;i++){
-      b.push(this.importTypes[i].getPath());
-    } 
-    while (b.length > BATCH){
-      GEPPETTO.Manager.resolveImportType(b.splice(0,BATCH));
-    }
-    GEPPETTO.Manager.resolveImportType(b, function (){
-      if (callback != undefined){
-        callback();
-      } 
-      EventManager.actionsHandler[EventManager.clientActions.HIDE_SPINNER]();
-    });
-  }
+  console.warn("Deprecated api call");
+  console.trace();
 
 };
 

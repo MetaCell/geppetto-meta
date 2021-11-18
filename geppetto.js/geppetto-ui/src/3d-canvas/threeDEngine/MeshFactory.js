@@ -1,9 +1,12 @@
 import particle from '../textures/particle.png';
 import { hasVisualType, hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OBJLoader } from "./OBJLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
-require('./OBJLoader');
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Resources from '@metacell/geppetto-meta-core/Resources';
+
 
 export default class MeshFactory {
   constructor (
@@ -38,16 +41,16 @@ export default class MeshFactory {
     manager.onProgress = function (item, loaded, total) {
       console.log(item, loaded, total);
     };
-    const objLoader = new this.THREE.OBJLoader(manager);
+    const objLoader = new OBJLoader(manager);
 
     const gltfLoader = new GLTFLoader();
     gltfLoader.setDRACOLoader( dracoLoader );
 
     this.loaders = {
-      [GEPPETTO.Resources.GLTF]: gltfLoader,
-      [GEPPETTO.Resources.DRC]: dracoLoader,
-      [GEPPETTO.Resources.OBJ]: objLoader,
-      [GEPPETTO.Resources.COLLADA]: new ColladaLoader(),
+      [Resources.GLTF]: gltfLoader,
+      [Resources.DRC]: dracoLoader,
+      [Resources.OBJ]: objLoader,
+      [Resources.COLLADA]: new ColladaLoader(),
       'TextureLoader': new this.THREE.TextureLoader()
     }
   }
@@ -83,16 +86,16 @@ export default class MeshFactory {
         // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
         if (
           instance.getType().getMetaType()
-            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            !== Resources.ARRAY_TYPE_NODE
             && instance.getVisualType()
         ) {
           await this.buildVisualInstance(instance);
         }
         // this block keeps traversing the instances
-        if (instance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+        if (instance.getMetaType() === Resources.INSTANCE_NODE) {
           await this.traverseInstances(instance.getChildren());
         } else if (
-          instance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+          instance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
           await this.traverseInstances(instance);
         }
@@ -145,7 +148,7 @@ export default class MeshFactory {
 
   getMeshPhongMaterial (color) {
     if (color === undefined) {
-      color = GEPPETTO.Resources.COLORS.DEFAULT;
+      color = Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.MeshPhongMaterial({
       opacity: 1,
@@ -155,19 +158,19 @@ export default class MeshFactory {
 
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
-    material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+    material.defaultOpacity = Resources.OPACITY.DEFAULT;
     material.nowireframe = true;
     return material;
   }
 
   getLineMaterial (color) {
     if (color === undefined) {
-      color = GEPPETTO.Resources.COLORS.DEFAULT;
+      color = Resources.COLORS.DEFAULT;
     }
     const material = new this.THREE.LineBasicMaterial();
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
-    material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+    material.defaultOpacity = Resources.OPACITY.DEFAULT;
     return material;
   }
 
@@ -225,7 +228,7 @@ export default class MeshFactory {
     const threeDeeObjList = [];
     let threeDeeObj = null;
     if (
-      visualType.getMetaType() === GEPPETTO.Resources.COMPOSITE_VISUAL_TYPE_NODE
+      visualType.getMetaType() === Resources.COMPOSITE_VISUAL_TYPE_NODE
     ) {
       for (const v in visualType.getVariables()) {
         const visualValue = visualType.getVariables()[v].getWrappedObj().initialValues[0].value;
@@ -240,7 +243,7 @@ export default class MeshFactory {
         }
       }
     } else if (
-      visualType.getMetaType() === GEPPETTO.Resources.VISUAL_TYPE_NODE
+      visualType.getMetaType() === Resources.VISUAL_TYPE_NODE
         && visualType.getId() === 'particles'
     ) {
       const visualValue = instance.getVariable().getWrappedObj().initialValues[0].value;
@@ -278,11 +281,11 @@ export default class MeshFactory {
 
     // eslint-disable-next-line default-case
     switch (node.eClass) {
-    case GEPPETTO.Resources.PARTICLES:
+    case Resources.PARTICLES:
       threeObject = this.createParticles(node);
       break;
 
-    case GEPPETTO.Resources.CYLINDER:
+    case Resources.CYLINDER:
       if (lines) {
         threeObject = this.create3DLineFromNode(node, material);
       } else {
@@ -291,7 +294,7 @@ export default class MeshFactory {
       this.complexity++;
       break;
 
-    case GEPPETTO.Resources.SPHERE:
+    case Resources.SPHERE:
       if (lines) {
         threeObject = this.create3DLineFromNode(node, material);
       } else {
@@ -299,19 +302,19 @@ export default class MeshFactory {
       }
       this.complexity++;
       break;
-    case GEPPETTO.Resources.COLLADA:
+    case Resources.COLLADA:
       threeObject = this.loadColladaModelFromNode(node);
       this.complexity++;
       break;
-    case GEPPETTO.Resources.OBJ:
+    case Resources.OBJ:
       threeObject = this.loadThreeOBJModelFromNode(node);
       this.complexity++;
       break;
-    case GEPPETTO.Resources.GLTF:
+    case Resources.GLTF:
       threeObject = await this.loadThreeGLTFModelFromNode(node);
       this.complexity++;
       break;
-    case GEPPETTO.Resources.DRC:
+    case Resources.DRC:
       threeObject = await this.loadThreeDRCModelFromNode(node);
       this.complexity++;
       break;
@@ -379,7 +382,7 @@ export default class MeshFactory {
 
   create3DLineFromNode (node, material) {
     let threeObject = null;
-    if (node.eClass === GEPPETTO.Resources.CYLINDER) {
+    if (node.eClass === Resources.CYLINDER) {
       const bottomBasePos = new this.THREE.Vector3(
         node.position.x,
         node.position.y,
@@ -413,7 +416,7 @@ export default class MeshFactory {
       );
 
       threeObject.geometry.verticesNeedUpdate = true;
-    } else if (node.eClass === GEPPETTO.Resources.SPHERE) {
+    } else if (node.eClass === Resources.SPHERE) {
       const sphere = new this.THREE.SphereGeometry(node.radius, 20, 20);
       threeObject = new this.THREE.Mesh(sphere, material);
       threeObject.position.set(
@@ -482,7 +485,7 @@ export default class MeshFactory {
 
   // TODO: Collada example
   loadColladaModelFromNode (node) {
-    const loader = this.loaders[GEPPETTO.Resources.COLLADA]
+    const loader = this.loaders[Resources.COLLADA]
     loader.options.convertUpAxis = true;
     let scene = null;
     const that = this;
@@ -491,18 +494,18 @@ export default class MeshFactory {
       scene = collada.scene;
       scene.traverse(function (child) {
         if (child instanceof that.THREE.Mesh) {
-          child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
-          child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.defaultColor = Resources.COLORS.DEFAULT;
+          child.material.defaultOpacity = Resources.OPACITY.DEFAULT;
           child.material.wireframe = that.wireframe;
-          child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.opacity = Resources.OPACITY.DEFAULT;
           child.geometry.computeVertexNormals();
         }
         if (child instanceof that.THREE.SkinnedMesh) {
           child.material.skinning = true;
-          child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
-          child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.defaultColor = Resources.COLORS.DEFAULT;
+          child.material.defaultOpacity = Resources.OPACITY.DEFAULT;
           child.material.wireframe = that.wireframe;
-          child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.opacity = Resources.OPACITY.DEFAULT;
           child.geometry.computeVertexNormals();
         }
       });
@@ -511,7 +514,7 @@ export default class MeshFactory {
   }
 
   loadThreeOBJModelFromNode (node) {
-    const loader = this.loaders[GEPPETTO.Resources.OBJ];
+    const loader = this.loaders[Resources.OBJ];
     const textureLoader = this.loaders['TextureLoader']
     const particleTexture = this.particleTexture
       ? this.particleTexture
@@ -523,12 +526,12 @@ export default class MeshFactory {
       if (child instanceof that.THREE.Mesh) {
         that.setThreeColor(
           child.material.color,
-          GEPPETTO.Resources.COLORS.DEFAULT
+          Resources.COLORS.DEFAULT
         );
         child.material.wireframe = that.wireframe;
-        child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
-        child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
-        child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+        child.material.defaultColor = Resources.COLORS.DEFAULT;
+        child.material.defaultOpacity = Resources.OPACITY.DEFAULT;
+        child.material.opacity = Resources.OPACITY.DEFAULT;
         child.geometry.computeVertexNormals();
       }
     });
@@ -537,13 +540,13 @@ export default class MeshFactory {
   }
 
   async loadThreeGLTFModelFromNode (node) {
-    const loader = this.loaders[GEPPETTO.Resources.GLTF]
+    const loader = this.loaders[Resources.GLTF]
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
     return gltfData.scene
   }
 
   async loadThreeDRCModelFromNode (node) {
-    const dracoLoader = this.loaders[GEPPETTO.Resources.DRC];
+    const dracoLoader = this.loaders[Resources.DRC];
     const geometry = await this.modelLoader(dracoLoader, node.drc);
     geometry.computeVertexNormals();
     return new this.THREE.Mesh(geometry, this.getMeshPhongMaterial())
@@ -735,7 +738,7 @@ export default class MeshFactory {
           // get group elements list for object
           const groupElementsReference = object.getInitialValue().value.groupElements;
           for (let i = 0; i < groupElementsReference.length; i++) {
-            const objectGroup = GEPPETTO.ModelFactory.resolve(
+            const objectGroup = ModelFactory.resolve(
               groupElementsReference[i].$ref
             ).getId();
             if (objectGroup in groupElements) {
@@ -770,7 +773,7 @@ export default class MeshFactory {
     }
 
     groupElements[instancePath] = {};
-    groupElements[instancePath].color = GEPPETTO.Resources.COLORS.SPLIT;
+    groupElements[instancePath].color = Resources.COLORS.SPLIT;
     this.createGroupMeshes(instancePath, geometryGroups, groupElements);
   }
 
