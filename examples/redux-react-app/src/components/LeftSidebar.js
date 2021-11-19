@@ -3,9 +3,9 @@ import { Button, ButtonGroup, Drawer, FormControl, InputLabel, MenuItem, Select,
 import { useDispatch, useSelector } from 'react-redux';
 import { activateWidget, addWidget, deleteWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { makeStyles } from '@material-ui/core/styles';
-import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from 'widgets';
-import { layout } from 'app/layout';
-import * as Actions from 'redux/actions';
+import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from '../widgets';
+import { layout } from '../app/layout';
+import * as Actions from '../redux/actions';
 import * as model from './resources/vfb_model';
 
 const newTabset = {

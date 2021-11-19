@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import { withStyles } from '@material-ui/core';
-import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/showcase/examples/SelectionUtils";
-import {compose} from 'redux';
-import {connect} from 'react-redux';
+import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/showcase/utils/SelectionUtils";
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 
 
 const styles = () => ({
@@ -91,6 +91,6 @@ export default compose(
         null
     ),
     withStyles(styles),
-  )(CanvasExample);
+)(CanvasExample);
 
 // export default withStyles(styles)(CanvasExample);
