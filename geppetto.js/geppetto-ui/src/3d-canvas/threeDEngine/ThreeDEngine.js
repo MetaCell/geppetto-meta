@@ -17,7 +17,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 
 import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
-import { rgbToHex, hasVisualType } from "./util";
+import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
 export default class ThreeDEngine {
   constructor (
@@ -52,6 +52,7 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.visibleChildren = [];
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -159,6 +160,20 @@ export default class ThreeDEngine {
     this.controls.noPan = false;
   }
 
+  updatevisibleChildren() {
+    this.visibleChildren = [];
+    this.scene.traverse( (child) => {
+      if (child.visible && !(child.clickThrough === true)) {
+        if (child.geometry != null) {
+          if (child.type !== 'Points') {
+            child.geometry.computeBoundingBox();
+          }
+          this.visibleChildren.push(child);
+        }
+      }
+    });
+  }
+
   /**
    * Returns intersected objects from mouse click
    *
@@ -175,20 +190,8 @@ export default class ThreeDEngine {
     );
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
 
-    const visibleChildren = [];
-    this.scene.traverse(function (child) {
-      if (child.visible && !(child.clickThrough === true)) {
-        if (child.geometry != null) {
-          if (child.type !== 'Points') {
-            child.geometry.computeBoundingBox();
-          }
-          visibleChildren.push(child);
-        }
-      }
-    });
-
     // returns an array containing all objects in the scene with which the ray intersects
-    return raycaster.intersectObjects(visibleChildren);
+    return raycaster.intersectObjects(this.visibleChildren);
   }
 
   /**
@@ -880,6 +883,7 @@ export default class ThreeDEngine {
       this.updateInstancesColor(proxyInstances);
       this.updateInstancesConnectionLines(proxyInstances);
       this.scene.updateMatrixWorld(true);
+      this.updatevisibleChildren();
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
