@@ -8,7 +8,10 @@ const useStyles = makeStyles({
     layoutContainer: {
         position: 'relative',
         width: '100%',
-        height: '90vh'
+        height: '90vh',
+        '&> div': {
+            height: '100%',
+        }
     }
 });
 

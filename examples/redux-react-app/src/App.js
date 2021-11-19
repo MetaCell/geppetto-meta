@@ -7,14 +7,14 @@ import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import LeftSidebar from './components/LeftSidebar';
 import { LoadingSpinner } from '@metacell/geppetto-meta-client/components/index';
-import { initGeppetto } from '@metacell/geppetto-meta-client/GEPPETTO';
+
 import './styles/cameraControls.css';
 // Three different FlexLayout styles
 // import '@metacell/geppetto-meta-ui/flex-layout/style/gray.scss'
-// import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
+import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 // import '@metacell/geppetto-meta-ui/flex-layout/style/light.scss'
+// import '@metacell/geppetto-meta-client/style/less/main.less'
 
-initGeppetto(false, true);
 
 // TODO: fix css, flexlayout.css causes icons to not show up
 // import './styles/flexlayout.css';
