@@ -26,7 +26,7 @@ export class MessageSocket {
   clientID = null;
   nextID = 0;
   // sets protocol to use for connection
-  protocol = GEPPETTO_CONFIGURATION.useSsl ? "wss://" : "ws://";
+  protocol = window.location.protocol === 'https:' ? "wss://" : "ws://";
 
   // flag used to connect using ws protocol if wss failed
   failsafe = false;
