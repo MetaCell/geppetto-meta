@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "test": "jest",
     "build": "yarn build:js && yarn build:types && yarn build:remove-large-files && yarn build:package",
-    "build:dev": "yarn build:js-dev && yarn build:types && yarn build:remove-large-files && yarn build:package",
+    "build:dev": "yarn build:js-dev && yarn build:package",
     "build:js": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx'",
     "build:js-dev": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx' --source-maps",
     "build:types": "tsc --emitDeclarationOnly",
@@ -29,6 +29,7 @@
     "watch": "nodemon -e js,ts --ignore build --exec \"babel src -d build --extensions '.js,.jsx,.ts,.tsx' && yalc push --changed\""
   },
   "dependencies": {
+    "babel-plugin-import-less": "^0.1.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -73,8 +74,8 @@
     "d3-plugins-dist": "^3.2.0",
     "file-saver": "^2.0.2",
     "griddle-react": "^1.13.1",
-    "html2canvas": "^1.0.0-alpha.12",
     "html-to-image": "^1.9.0",
+    "html2canvas": "^1.0.0-alpha.12",
     "jszip": "^3.2.1",
     "mathjs": "^3.5.3",
     "openseadragon": "^2.2.1",

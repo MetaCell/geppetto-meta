@@ -1717,13 +1717,13 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "0.0.5"
+  version "1.0.0-alpha1"
 
 "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "0.0.5"
+  version "1.0.0-alpha1"
 
 "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "0.0.5"
+  version "1.0.0-alpha1"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -8563,6 +8563,11 @@ html-minifier-terser@^5.0.1:
     param-case "^3.0.3"
     relateurl "^0.2.7"
     terser "^4.6.3"
+
+html-to-image@^1.6.1:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/html-to-image/-/html-to-image-1.9.0.tgz#cb49bf9f4b37376771c85cfdd65863ae9420b268"
+  integrity sha512-9gaDCIYg62Ek07F2pBk76AHgYZ2gxq2YALU7rK3gNCqXuhu6cWzsOQqM7qGbjZiOzxGzrU1deDqZpAod2NEwbA==
 
 html-webpack-plugin@4.5.0:
   version "4.5.0"

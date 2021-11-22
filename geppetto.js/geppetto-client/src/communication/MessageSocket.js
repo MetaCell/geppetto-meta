@@ -23,11 +23,10 @@ const messageTypes = {
  */
 export class MessageSocket {
   socket = null;
-  messageHandlers = [];
   clientID = null;
   nextID = 0;
   // sets protocol to use for connection
-  protocol = GEPPETTO_CONFIGURATION.useSsl ? "wss://" : "ws://";
+  protocol = window.location.protocol === 'https:' ? "wss://" : "ws://";
 
   // flag used to connect using ws protocol if wss failed
   failsafe = false;
@@ -41,13 +40,13 @@ export class MessageSocket {
   autoReconnectInterval = 5 * 1000;
   socketStatus = Resources.SocketStatus.CLOSE;
 
-  constructor () {
+  constructor() {
     this.connect = this.connect.bind(this);
     this.reconnect = this.reconnect.bind(this);
     this.send = this.send.bind(this);
   }
 
-  connect (host) {
+  connect(host) {
     if (this.socket !== null) {
       delete this.socket;
     }
@@ -61,7 +60,7 @@ export class MessageSocket {
       console.log(Resources.WEBSOCKET_NOT_SUPPORTED, true);
       return;
     }
-   
+
 
     this.socket.onopen = e => {
       console.log(Resources.WEBSOCKET_OPENED, true);
@@ -70,16 +69,16 @@ export class MessageSocket {
        * attach the handlers once socket is opened on the first connection
        * differently handle the reconnection scenario
        */
-      
+
       if (this.lostConnectionId) {
         const parameters = {};
         parameters["connectionID"] = this.lostConnectionId;
         parameters["projectId"] = this.projectId;
         this.send("reconnect", parameters);
-        
+
         this.lostConnectionId = undefined;
       }
-      
+
 
       // Reset the counter for reconnection
       this.attempts = 0;
@@ -89,15 +88,15 @@ export class MessageSocket {
 
     this.socket.onclose = e => {
       switch (e.code) {
-      case 1000:
-        this.socketStatus = Resources.SocketStatus.CLOSE;
-        console.log(Resources.WEBSOCKET_CLOSED, true);
-        break;
-      default:
-        if (this.lostConnectionId === undefined) {
-          this.lostConnectionId = this.getClientID();
-        }
-        this.reconnect(e);
+        case 1000:
+          this.socketStatus = Resources.SocketStatus.CLOSE;
+          console.log(Resources.WEBSOCKET_CLOSED, true);
+          break;
+        default:
+          if (this.lostConnectionId === undefined) {
+            this.lostConnectionId = this.getClientID();
+          }
+          this.reconnect(e);
       }
     };
 
@@ -133,18 +132,18 @@ export class MessageSocket {
         this.connect(this.protocol + window.location.host + '/' + GEPPETTO_CONFIGURATION.contextPath + '/GeppettoServlet');
       } else {
         switch (e.code) {
-        case 'ECONNREFUSED':
-          console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
-          console.log(Resources.WEBSOCKET_CONNECTION_ERROR, true);
-          break;
-        case undefined:
-          console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
-          console.log(Resources.WEBSOCKET_RECONNECTION, true);
-          break;
-        default:
-          console.log("%c WebSocket Status - Closed ", 'background: #000; color: red');
-          this.socketStatus = Resources.SocketStatus.CLOSE;
-          break;
+          case 'ECONNREFUSED':
+            console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
+            console.log(Resources.WEBSOCKET_CONNECTION_ERROR, true);
+            break;
+          case undefined:
+            console.log("%c WebSocket Status - Open connection error ", 'background: #000; color: red');
+            console.log(Resources.WEBSOCKET_RECONNECTION, true);
+            break;
+          default:
+            console.log("%c WebSocket Status - Closed ", 'background: #000; color: red');
+            this.socketStatus = Resources.SocketStatus.CLOSE;
+            break;
         }
       }
     }
@@ -153,7 +152,7 @@ export class MessageSocket {
   /**
    * Attempt to reconnect to the backend
    */
-  reconnect (e) {
+  reconnect(e) {
     if (this.attempts < this.reconnectionLimit) {
       this.attempts++;
       this.socketStatus = Resources.SocketStatus.RECONNECTING;
@@ -172,7 +171,7 @@ export class MessageSocket {
   /**
    * Sends messages to the server
    */
-  send (command, parameter, callback) {
+  send(command, parameter, callback) {
     if (this.socketStatus === Resources.SocketStatus.RECONNECTING && command !== "reconnect") {
       EventManager.actionsHandler[EventManager.clientActions.STOP_LOGO]();
       return;
@@ -190,10 +189,10 @@ export class MessageSocket {
     return requestID;
   }
 
-  waitForConnection (messageTemplate, interval) {
+  waitForConnection(messageTemplate, interval) {
     if (this.isReady() === 1) {
       this.socket.send(messageTemplate);
-    } else if (this.isReady() > 1){
+    } else if (this.isReady() > 1) {
       // connection is either closing (2) or already closed (3).
       EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
     } else {
@@ -205,7 +204,7 @@ export class MessageSocket {
     }
   }
 
-  isReady () {
+  isReady() {
     if (this.socket !== null) {
       return this.socket.readyState;
     } else {
@@ -213,73 +212,45 @@ export class MessageSocket {
     }
   }
 
-  close () {
+  close() {
     this.socket.close();
-    // dispose of handlers upon closing connection
-    this.messageHandlers = [];
     EventManager.actionsHandler[EventManager.clientActions.WEBSOCKET_DISCONNECTED]();
 
   }
 
   /**
-   * Add handler to receive updates from server
-   */
-  addHandler (handler) {
-    this.messageHandlers.push(handler);
-  }
-
-  /**
-   * Removes a handler from the socket
-   */
-  removeHandler (handler) {
-    var index = this.messageHandlers.indexOf(handler);
-
-    if (index > -1) {
-      this.messageHandlers.splice(index, 1);
-    }
-  }
-
-  /**
-   * Clear handlers
-   */
-  clearHandlers () {
-    this.messageHandlers = [];
-  }
-
-
-  /**
    * Sets the id of the client
    */
-  setClientID (id) {
+  setClientID(id) {
     this.clientID = id;
   }
 
   /**
    * Sets the id of the client
    */
-  getClientID () {
+  getClientID() {
     return this.clientID;
   }
   /**
    * Creates a request id to send with the message to the server
    */
-  createRequestID () {
+  createRequestID() {
     return this.clientID + "-" + (this.nextID++);
   }
 
-  loadProjectFromId (projectId) {
+  loadProjectFromId(projectId) {
     this.send("load_project_from_id", { projectId });
   }
-  
-  loadProjectFromUrl (projectURL) {
+
+  loadProjectFromUrl(projectURL) {
     this.send("load_project_from_url", projectURL);
   }
 
-  loadProjectFromContent (content) {
+  loadProjectFromContent(content) {
     this.send("load_project_from_content", content);
   }
 
-  gzipUncompress (compressedMessage) {
+  gzipUncompress(compressedMessage) {
     var messageBytes = new Uint8Array(compressedMessage);
     var message = pako.ungzip(messageBytes, { to: "string" });
     return message;
@@ -289,7 +260,7 @@ export class MessageSocket {
    * Dispatches through Redux actions all messages received from the socket
    * @param {*} messageData 
    */
-  parseAndNotify (messageData) {
+  parseAndNotify(messageData) {
     var parsedServerMessage = JSON.parse(messageData);
     console.debug("Received websocket message", parsedServerMessage);
     let payload = JSON.parse(parsedServerMessage.data);
@@ -302,36 +273,36 @@ export class MessageSocket {
     }
 
     switch (parsedServerMessage.type) {
-    case messageTypes.CLIENT_ID: {
-      this.setClientID(payload.clientID);
-      break;
+      case messageTypes.CLIENT_ID: {
+        this.setClientID(payload.clientID);
+        break;
+      }
+      case messageTypes.RECONNECTION_ERROR: {
+        this.socketStatus = Resources.SocketStatus.CLOSE;
+        break;
+      }
+      default:
+        break;
     }
-    case messageTypes.RECONNECTION_ERROR: {
-      this.socketStatus = Resources.SocketStatus.CLOSE;
-      break;
-    }  
-    default:
-      break;
-    }
-    
-    
+
+
     EventManager.store.dispatch({ type: parsedServerMessage.type, data: payload });
-  
+
     // run callback if any
-    if (parsedServerMessage.requestID != undefined){
+    if (parsedServerMessage.requestID != undefined) {
       if (callbackHandler[parsedServerMessage.requestID] != undefined) {
         callbackHandler[parsedServerMessage.requestID](parsedServerMessage.data);
         delete callbackHandler[parsedServerMessage.requestID];
       }
     }
-  
+
   }
-  
-  
-  processBinaryMessage (message) {
-  
+
+
+  processBinaryMessage(message) {
+
     var messageBytes = new Uint8Array(message);
-  
+
     /*
      * if it's a binary message and first byte it's zero then assume it's a compressed json string
      * otherwise is a file and a 'save as' dialog is opened
@@ -355,7 +326,7 @@ export class MessageSocket {
  * @param payload - message payload, can be anything
  * @returns JSON stringified object
  */
-function messageTemplate (id, msgtype, payload) {
+function messageTemplate(id, msgtype, payload) {
 
   if (!(typeof payload == 'string' || payload instanceof String)) {
     payload = JSON.stringify(payload);

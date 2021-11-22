@@ -3,7 +3,6 @@
  *
  * Different types of events that exist
  * 
- * @deprecated
  * @enum
  */
 export const Events = {
@@ -20,12 +19,12 @@ export const Events = {
   Project_made_public: "project_made_public",
   Lit_entities_changed: "lit_entities_changed",
   Component_destroyed: "component_destroyed",
-  Project_properties_saved : "project_properties_saved",
-  Parameters_set : "parameters_set",
+  Project_properties_saved: "project_properties_saved",
+  Parameters_set: "parameters_set",
   Receive_Python_Message: "receive_python_message",
-  Websocket_disconnected : "websocket_disconnected",
+  Websocket_disconnected: "websocket_disconnected",
   Error_while_exec_python_command: "error_while_exec_python_command",
-  
+
   listen: function () {
   }
 }
