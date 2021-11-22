@@ -85,7 +85,7 @@ class TrackballControls extends EventDispatcher {
 
       _lastAngle = 0;
 
-    const _eye = new Vector3(),
+    let _eye = new Vector3(),
 
       _movePrev = new Vector2(),
       _moveCurr = new Vector2(),
