@@ -131,7 +131,10 @@ const EventsMapping = {
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
 };
 
-export function initGeppetto (useWebsocket = true, loadStyle = true) {
+export function initGeppetto(useWebsocket = true, loadStyle = true) {
+  if (!window.GEPPETTO_CONFIGURATION) {
+    window.GEPPETTO_CONFIGURATION = {}
+  }
   if (useWebsocket) {
     const WSMain = require('./WebsocketMain').default;
     WSMain.init();
@@ -141,7 +144,7 @@ export function initGeppetto (useWebsocket = true, loadStyle = true) {
   if (loadStyle) {
     require('./style/less/main.less');
   }
-  
+
   window.GEPPETTO = GEPPETTO;
 }
 
