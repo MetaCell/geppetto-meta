@@ -88,7 +88,6 @@ class TrackballControls extends EventDispatcher {
     const _eye = new Vector3(),
 
       _movePrev = new Vector2(),
-      _moveCurr = new Vector2(),
 
       _lastAxis = new Vector3(),
 
@@ -96,10 +95,13 @@ class TrackballControls extends EventDispatcher {
       _zoomEnd = new Vector2(),
 
       _panStart = new Vector2(),
-      _panEnd = new Vector2(),
 
       _pointers = [],
       _pointerPositions = {};
+
+    let _panEnd = new Vector2(),
+      _moveCurr = new Vector2()
+
 
     // for reset
 
