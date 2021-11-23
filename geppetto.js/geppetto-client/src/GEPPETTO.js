@@ -129,6 +129,7 @@ const EventsMapping = {
   [Events.Receive_Python_Message]: EventManager.clientActions.RECEIVE_PYTHON_MESSAGE,
   [Events.Websocket_disconnected]: EventManager.clientActions.WEBSOCKET_DISCONNECTED,
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
+  [Events.Jupyter_geppetto_extension_ready]: EventManager.clientActions.JUPYTER_GEPPETTO_EXTENSION_READY,
 };
 
 export function initGeppetto(useWebsocket = true, loadStyle = true) {
