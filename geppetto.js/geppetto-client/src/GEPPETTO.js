@@ -12,7 +12,7 @@ const Resources = require('@metacell/geppetto-meta-core/Resources').default;
 
 
 const Manager = require('./common/GeppettoManager').default;
-
+const ComponentFactory = require('./components/ComponentFactory').default;
 
 const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default;
 require('./style/less/main.less')
@@ -146,6 +146,7 @@ export function initGeppetto(useWebsocket = true, loadStyle = true) {
     require('./style/less/main.less');
   }
 
+  GEPPETTO.ComponentFactory = ComponentFactory;
   window.GEPPETTO = GEPPETTO;
 }
 
