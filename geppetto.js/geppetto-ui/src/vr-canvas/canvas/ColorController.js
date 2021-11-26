@@ -1,3 +1,5 @@
+import Resources from '@metacell/geppetto-meta-core/Resources';
+
 export default class ColorController {
   constructor (meshFactory) {
     this.meshFactory = meshFactory;
@@ -24,7 +26,7 @@ export default class ColorController {
 
       while (
         composite.getMetaType()
-        != GEPPETTO.Resources.ARRAY_ELEMENT_INSTANCE_NODE
+        != Resources.ARRAY_ELEMENT_INSTANCE_NODE
       ) {
         if (composite.getParent() == null) {
           // eslint-disable-next-line no-throw-literal

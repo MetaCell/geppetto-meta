@@ -165,8 +165,6 @@ export default {
 
   COPY_TO_CLIPBOARD_MAC: "Copy to Clipboard: Cmd+C , OK",
 
-  INVALID_WAIT_USE: "GEPPETTO.G.wait(ms) command must be used inside script",
-
   WAITING: "Waiting ms",
 
   SHOW_CONSOLE: "Showing Console",

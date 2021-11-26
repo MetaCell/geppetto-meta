@@ -7,16 +7,17 @@ import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
 
 import MeshFactory from './MeshFactory';
-import CameraManager from './CameraManager';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import ArrayInstance from '@metacell/geppetto-meta-core//model/ArrayInstance';
 import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { hasVisualType, hasVisualValue } from "./util";
-import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 
-require('./TrackballControls');
+import CameraManager from './CameraManager';
+import { TrackballControls } from './TrackballControls';
+import { rgbToHex, hasVisualType } from "./util";
 
 export default class ThreeDEngine {
   constructor (
@@ -149,7 +150,7 @@ export default class ThreeDEngine {
   }
 
   setupControls () {
-    this.controls = new THREE.TrackballControls(
+    this.controls = new TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
@@ -207,16 +208,16 @@ export default class ThreeDEngine {
    */
 
 
-  checkMaterial(mesh, instance) {
+  checkMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       if (mesh.material.color.r === instance?.color?.r
         && mesh.material.color.g === instance?.color?.g
         && mesh.material.color.b === instance?.color?.b
         && mesh.material.color.opacity === instance?.color?.a) {
-          return false;
-        } else {
-          return true;
-        }
+        return false;
+      } else {
+        return true;
+      }
     } else if (mesh.type === 'Group') {
       var changed = false;
       for (let child of mesh.children) {
@@ -229,7 +230,7 @@ export default class ThreeDEngine {
   }
 
 
-  updateInstanceMaterial(mesh, instance) {
+  updateInstanceMaterial (mesh, instance) {
     for (let child of this.scene.children) {
       if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
         if (instance?.color !== undefined) {
@@ -244,7 +245,7 @@ export default class ThreeDEngine {
   }
 
 
-  setInstanceMaterial(mesh, instance) {
+  setInstanceMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       this.meshFactory.setThreeColor(mesh.material.color, instance.color);
       if (instance.color.a) {
@@ -326,11 +327,11 @@ export default class ThreeDEngine {
     var pathsToRemove = [];
     var sortedInstances = [];
     var toRemove = this.scene.children.filter(child => {
-        if (child.type === 'Mesh' || child.type ===  'Group') {
-          pathsToRemove.push(child.instancePath)
-          return true;
-        }
-        return false;
+      if (child.type === 'Mesh' || child.type === 'Group') {
+        pathsToRemove.push(child.instancePath)
+        return true;
+      }
+      return false;
     });
 
     if (proxyInstances) {
@@ -363,8 +364,8 @@ export default class ThreeDEngine {
     }
 
     for (let child of toRemove) {
-        this.meshFactory.cleanWith3DObject(child);
-        this.scene.remove(child);
+      this.meshFactory.cleanWith3DObject(child);
+      this.scene.remove(child);
     }
     return sortedInstances;
   }
@@ -421,7 +422,7 @@ export default class ThreeDEngine {
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
         // fetch all instances for the given type or variable and call hide on each
-        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+        const instances = ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setInstanceColor(instances[j].getInstancePath(), color);
         }
@@ -534,7 +535,7 @@ export default class ThreeDEngine {
       }
     } else if (entity instanceof Type || entity instanceof Variable) {
       // fetch all instances for the given type or variable and call hide on each
-      const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+      const instances = ModelFactory.getAllInstancesOf(entity);
       for (let j = 0; j < instances.length; j++) {
         if (hasVisualType(instances[j])) {
           this.showConnectionLines(instances[j], mode);
@@ -560,8 +561,8 @@ export default class ThreeDEngine {
 
       const connection = connections[c];
       const type = connection.getA().getPath() === instance.getInstancePath()
-        ? GEPPETTO.Resources.OUTPUT
-        : GEPPETTO.Resources.INPUT;
+        ? Resources.OUTPUT
+        : Resources.INPUT;
 
       const thisEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getA() : connection.getB();
       const otherEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getB() : connection.getA();
@@ -599,13 +600,13 @@ export default class ThreeDEngine {
       let colour = null;
 
 
-      if (type === GEPPETTO.Resources.INPUT) {
+      if (type === Resources.INPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED;
+        colour = Resources.COLORS.INPUT_TO_SELECTED;
 
         // figure out if connection is both, input and output
         if (outputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (inputs[otherEndPath]) {
@@ -614,12 +615,12 @@ export default class ThreeDEngine {
           inputs[otherEndPath] = [];
           inputs[otherEndPath].push(connection.getInstancePath());
         }
-      } else if (type === GEPPETTO.Resources.OUTPUT) {
+      } else if (type === Resources.OUTPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
+        colour = Resources.COLORS.OUTPUT_TO_SELECTED;
         // figure out if connection is both, input and output
         if (inputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (outputs[otherEndPath]) {
@@ -884,7 +885,7 @@ export default class ThreeDEngine {
     this.cameraManager.update(cameraOptions);
   }
 
-  addToScene(instance) {
+  addToScene (instance) {
     let found = false;
     for (let child of this.scene.children) {
       if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
@@ -916,12 +917,11 @@ export default class ThreeDEngine {
 
   requestFrame () {
     const timeDif = this.lastRenderTimer.getTime() - new Date().getTime();
-    if(Math.abs(timeDif) > 10)
-    {
+    if (Math.abs(timeDif) > 10) {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-      
+
   }
 
   animate () {

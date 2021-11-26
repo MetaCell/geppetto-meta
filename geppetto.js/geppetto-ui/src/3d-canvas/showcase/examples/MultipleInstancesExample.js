@@ -6,6 +6,9 @@ import { withStyles } from '@material-ui/core';
 import neuron from '../assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
+import Resources from '@metacell/geppetto-meta-core/Resources';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 
 const instance1spec = {
@@ -14,7 +17,7 @@ const instance1spec = {
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': neuron
   }
 }
@@ -24,17 +27,17 @@ const instance2spec = {
   "name": "The second SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': contact
   }
 }
 
 function loadInstances (){
-  GEPPETTO.ModelFactory.cleanModel();
+  ModelFactory.cleanModel();
   const instance1 = new SimpleInstance(instance1spec)
   const instance2 = new SimpleInstance(instance2spec)
   window.Instances = [instance1, instance2]
-  GEPPETTO.Manager.augmentInstancesArray(window.Instances);
+  augmentInstancesArray(window.Instances);
 }
 
 function getProxyInstances () {
@@ -175,7 +178,7 @@ class MultipleInstancesExample extends Component {
             backgroundColor={0x505050}
             onSelection={this.onSelection}
             onMount={this.onMount}
-          />) 
+          />)
       }   
     </div> : <Button
       variant="outlined"

@@ -1,738 +1,1040 @@
-/**
- * @author Eberhard Graether / http://egraether.com/
- * @author Mark Lundin / http://mark-lundin.com
- * @author Simone Manini / http://daron1337.github.io
- * @author Luca Antiga / http://lantiga.github.io
- */
-var THREE = window.THREE || require('three');
-THREE.TrackballControls = function (object, domElement, handler) {
-  var _this = this;
-  var STATE = {
-    NONE: -1,
-    ROTATE: 0,
-    ZOOM: 1,
-    PAN: 2,
-    TOUCH_ROTATE: 3,
-    TOUCH_ZOOM_PAN: 4,
-  };
+import {
+  EventDispatcher,
+  MOUSE,
+  Quaternion,
+  Vector2,
+  Vector3,
+  Euler
+} from 'three';
 
-  this.object = object;
-  this.domElement = domElement !== undefined ? domElement : document;
+const _changeEvent = { type: 'change' };
+const _startEvent = { type: 'start' };
+const _endEvent = { type: 'end' };
 
-  // API
+class TrackballControls extends EventDispatcher {
 
-  this.enabled = true;
+  // @metacell change
+  constructor (object, domElement, handler) {
+    // end of @metacell changes
 
-  this.screen = { left: 0, top: 0, width: 0, height: 0 };
+    super();
 
-  this.rotateSpeed = 0.5;
-  this.zoomSpeed = 0.02;
-  this.panSpeed = 0.3;
+    if (domElement === undefined) {
+      console.warn('TrackballControls: The second parameter "domElement" is now mandatory.');
+    }
+    if (domElement === document) {
+      console.error('TrackballControls: "document" should not be used as the target "domElement". Please use "renderer.domElement" instead.');
+    }
 
-  this.noRotate = false;
-  this.noZoom = false;
-  this.noPan = false;
+    const scope = this;
+    const STATE = { NONE: - 1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
 
-  this.staticMoving = false;
-  this.dynamicDampingFactor = 0.2;
+    this.object = object;
+    this.domElement = domElement;
+    this.domElement.style.touchAction = 'none'; // disable touch scroll
 
-  this.minDistance = 0;
-  this.maxDistance = Infinity;
+    // API
 
-  this.keys = [65 /* A*/, 83 /* S*/, 68 /* D*/];
+    this.enabled = true;
 
-  /*
-   * internals
-   ** *******ADDITIONS****************
-   */
-  this.logDecimalPlaces = 3;
-  this.cameraByConsoleLock = true;
-  this.cameraChanged = false;
-  this.handler = handler;
-  this.rotationRadius = null;
-  //* *******END ADDITIONS****************
+    this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-  this.target = new THREE.Vector3();
+    this.rotateSpeed = 1.0;
+    this.zoomSpeed = 1.2;
+    this.panSpeed = 0.3;
 
-  var EPS = 0.0001;
+    this.noRotate = false;
+    this.noZoom = false;
+    this.noPan = false;
 
-  var lastPosition = new THREE.Vector3();
+    this.staticMoving = false;
+    this.dynamicDampingFactor = 0.2;
 
-  var _state = STATE.NONE,
-    _prevState = STATE.NONE,
-    _eye = new THREE.Vector3(),
-    _movePrev = new THREE.Vector3(),
-    _moveCurr = new THREE.Vector3(),
-    _lastAxis = new THREE.Vector3(),
-    _lastAngle = 0,
-    _zoomStart = new THREE.Vector2(),
-    _zoomEnd = new THREE.Vector2(),
-    _touchZoomDistanceStart = 0,
-    _touchZoomDistanceEnd = 0,
-    _panStart = new THREE.Vector2(),
-    _panEnd = new THREE.Vector2();
+    this.minDistance = 0;
+    this.maxDistance = Infinity;
 
-  // for reset
+    this.keys = ['KeyA' /* A*/, 'KeyS' /* S*/, 'KeyD' /* D*/];
 
-  this.target0 = this.target.clone();
-  this.position0 = this.object.position.clone();
-  this.up0 = this.object.up.clone();
+    // @metacell changes
+    this.logDecimalPlaces = 3;
+    this.cameraByConsoleLock = true;
+    this.cameraChanged = false;
+    this.handler = handler;
+    this.rotationRadius = null;
+    // end of @metacell changes
 
-  // events
+    this.mouseButtons = { LEFT: MOUSE.ROTATE, MIDDLE: MOUSE.DOLLY, RIGHT: MOUSE.PAN };
 
-  var changeEvent = { type: 'change' };
-  var startEvent = { type: 'start' };
-  var endEvent = { type: 'end' };
-  var stopEvent = { type: 'stop' }
+    // internals
 
-  // methods
+    this.target = new Vector3();
 
-  this.handleResize = function () {
-    if (this.domElement === document) {
-      this.screen.left = 0;
-      this.screen.top = 0;
-      this.screen.width = window.innerWidth;
-      this.screen.height = window.innerHeight;
-    } else {
-      var box = this.domElement.getBoundingClientRect();
+    const EPS = 0.0001;
+
+    const lastPosition = new Vector3();
+    let lastZoom = 1;
+
+    let _state = STATE.NONE,
+      // @metacell changes
+      _prevState = STATE.NONE,
+      // end of @metacell changes
+      _keyState = STATE.NONE,
+
+      _touchZoomDistanceStart = 0,
+      _touchZoomDistanceEnd = 0,
+
+      _lastAngle = 0;
+
+    const _eye = new Vector3(),
+
+      _movePrev = new Vector2(),
+
+      _lastAxis = new Vector3(),
+
+      _zoomStart = new Vector2(),
+      _zoomEnd = new Vector2(),
+
+      _panStart = new Vector2(),
+
+      _pointers = [],
+      _pointerPositions = {};
+
+    let _panEnd = new Vector2(),
+      _moveCurr = new Vector2()
+
+
+    // for reset
+
+    this.target0 = this.target.clone();
+    this.position0 = this.object.position.clone();
+    this.up0 = this.object.up.clone();
+    this.zoom0 = this.object.zoom;
+
+    // methods
+
+    this.handleResize = function () {
+
+      const box = scope.domElement.getBoundingClientRect();
       // adjustments come from similar code in the jquery offset() function
-      var d = this.domElement.ownerDocument.documentElement;
-      this.screen.left = box.left + window.pageXOffset - d.clientLeft;
-      this.screen.top = box.top + window.pageYOffset - d.clientTop;
-      this.screen.width = box.width;
-      this.screen.height = box.height;
-    }
-  };
+      const d = scope.domElement.ownerDocument.documentElement;
+      scope.screen.left = box.left + window.pageXOffset - d.clientLeft;
+      scope.screen.top = box.top + window.pageYOffset - d.clientTop;
+      scope.screen.width = box.width;
+      scope.screen.height = box.height;
 
-  this.handleEvent = function (event) {
-    if (typeof this[event.type] == 'function') {
-      this[event.type](event);
-    }
-  };
-
-  var getMouseOnScreen = (function () {
-    var vector = new THREE.Vector2();
-
-    return function getMouseOnScreen (pageX, pageY) {
-      vector.set(
-        (pageX - _this.screen.left) / _this.screen.width,
-        (pageY - _this.screen.top) / _this.screen.height
-      );
-
-      return vector;
     };
-  })();
 
-  var getMouseOnCircle = (function () {
-    var vector = new THREE.Vector2();
+    const getMouseOnScreen = (function () {
 
-    return function getMouseOnCircle (pageX, pageY) {
-      vector.set(
-        (pageX - _this.screen.width * 0.5 - _this.screen.left)
-          / (_this.screen.width * 0.5),
-        (_this.screen.height + 2 * (_this.screen.top - pageY))
-          / _this.screen.width // screen.width intentional
-      );
+      const vector = new Vector2();
 
-      return vector;
+      return function getMouseOnScreen (pageX, pageY) {
+
+        vector.set(
+          (pageX - scope.screen.left) / scope.screen.width,
+          (pageY - scope.screen.top) / scope.screen.height
+        );
+
+        return vector;
+
+      };
+
+    }());
+
+    const getMouseOnCircle = (function () {
+
+      const vector = new Vector2();
+
+      return function getMouseOnCircle (pageX, pageY) {
+
+        vector.set(
+          ((pageX - scope.screen.width * 0.5 - scope.screen.left) / (scope.screen.width * 0.5)),
+          ((scope.screen.height + 2 * (scope.screen.top - pageY)) / scope.screen.width) // screen.width intentional
+        );
+
+        return vector;
+
+      };
+
+    }());
+
+    // @metacell changes
+
+    this.unsetCameraByConsoleLock = function () {
+      scope.cameraByConsoleLock = false;
     };
-  })();
 
-  this.unsetCameraByConsoleLock = function () {
-    _this.cameraByConsoleLock = false;
-  };
 
-  this.setCameraByConsole = function () {
+    this.setCameraByConsole = function () {
 
-    var p = _this.object.position.toArray();
-    var u = _this.object.rotation.toArray();
-    var l = _eye.length();
+      var p = scope.object.position.toArray();
+      var u = scope.object.rotation.toArray();
+      var l = _eye.length();
 
-    this.handler({
-      position: { x: p[0], y: p[1], z: p[2] },
-      rotation: { rx: u[0], ry: u[1], rz: u[2], radius: this.rotationRadius },
-      eyeLength: l,
-    });
+      this.handler({
+        position: { x: p[0], y: p[1], z: p[2] },
+        rotation: { rx: u[0], ry: u[1], rz: u[2], radius: this.rotationRadius },
+        eyeLength: l,
+      });
 
-    _this.cameraByConsoleLock = true;
-    _this.cameraChanged = false;
-  };
+      scope.cameraByConsoleLock = true;
+      scope.cameraChanged = false;
+    };
 
-  this.allSteady = function () {
-    var u = _this.lastUp;
-    var p = _this.lastPosition;
-    var nu = _this.object.up.toArray();
-    var np = _this.object.position.toArray();
+    this.allSteady = function () {
+      var u = scope.lastUp;
+      var p = scope.lastPosition;
+      var nu = scope.object.up.toArray();
+      var np = scope.object.position.toArray();
 
-    var threshold = 1 / (10 * _this.logDecimalPlaces);
+      var threshold = 1 / (10 * scope.logDecimalPlaces);
 
-    var steady
-      = Math.abs(u[0] + u[1] + u[2] - (nu[0] + nu[1] + nu[2])) < threshold
-      && Math.abs(p[0] + p[1] + p[2] - (np[0] + np[1] + np[2])) < threshold;
+      var steady
+        = Math.abs(u[0] + u[1] + u[2] - (nu[0] + nu[1] + nu[2])) < threshold
+        && Math.abs(p[0] + p[1] + p[2] - (np[0] + np[1] + np[2])) < threshold;
 
-    /*
-     * Console logging is unlocked, this means
-     * we had an input event
-     */
-    if (!_this.cameraByConsoleLock) {
       /*
-       * If the camera moved, set cameraChanged
-       * if not, keep it
+       * Console logging is unlocked, this means
+       * we had an input event
        */
-      if (!steady) {
-        _this.cameraChanged = true;
-      }
-    }
-
-    return steady;
-  };
-
-  this.rotateCamera = (function () {
-    var axis = new THREE.Vector3(),
-      quaternion = new THREE.Quaternion(),
-      eyeDirection = new THREE.Vector3(),
-      objectUpDirection = new THREE.Vector3(),
-      objectSidewaysDirection = new THREE.Vector3(),
-      moveDirection = new THREE.Vector3(),
-      angle;
-
-    return function rotateCamera () {
-      if (_moveCurr.z != undefined && _moveCurr.z != 0) {
-        moveDirection.set(0, 0, _moveCurr.z - _movePrev.z);
-      } else {
-        moveDirection.set(
-          _moveCurr.x - _movePrev.x,
-          _moveCurr.y - _movePrev.y,
-          0
-        );
+      if (!scope.cameraByConsoleLock) {
+        /*
+         * If the camera moved, set cameraChanged
+         * if not, keep it
+         */
+        if (!steady) {
+          scope.cameraChanged = true;
+        }
       }
 
-      angle = moveDirection.length();
+      return steady;
+    };
 
-      if (angle) {
-        _eye.copy(_this.object.position).sub(_this.target);
+    // end of metacell changes
 
-        eyeDirection.copy(_eye).normalize();
-        objectUpDirection.copy(_this.object.up).normalize();
-        objectSidewaysDirection
-          .crossVectors(objectUpDirection, eyeDirection)
-          .normalize();
+    this.rotateCamera = (function () {
 
-        objectUpDirection.setLength(_moveCurr.y - _movePrev.y);
-        objectSidewaysDirection.setLength(_moveCurr.x - _movePrev.x);
+      const axis = new Vector3(),
+        quaternion = new Quaternion(),
+        eyeDirection = new Vector3(),
+        objectUpDirection = new Vector3(),
+        objectSidewaysDirection = new Vector3(),
+        moveDirection = new Vector3();
 
-        moveDirection.copy(objectUpDirection.add(objectSidewaysDirection));
+      return function rotateCamera () {
 
-        if (_moveCurr.z != undefined && _moveCurr.z != 0) {
-          if (_moveCurr.z - _movePrev.z >= 0) {
-            axis = new THREE.Vector3(0, 0, 1);
-          } else {
-            axis = new THREE.Vector3(0, 0, -1);
-          }
-        } else {
+        moveDirection.set(_moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0);
+        let angle = moveDirection.length();
+
+        if (angle) {
+
+          _eye.copy(scope.object.position).sub(scope.target);
+
+          eyeDirection.copy(_eye).normalize();
+          objectUpDirection.copy(scope.object.up).normalize();
+          objectSidewaysDirection.crossVectors(objectUpDirection, eyeDirection).normalize();
+
+          objectUpDirection.setLength(_moveCurr.y - _movePrev.y);
+          objectSidewaysDirection.setLength(_moveCurr.x - _movePrev.x);
+
+          moveDirection.copy(objectUpDirection.add(objectSidewaysDirection));
+
           axis.crossVectors(moveDirection, _eye).normalize();
+
+          angle *= scope.rotateSpeed;
+          quaternion.setFromAxisAngle(axis, angle);
+
+          _eye.applyQuaternion(quaternion);
+          scope.object.up.applyQuaternion(quaternion);
+
+          _lastAxis.copy(axis);
+          _lastAngle = angle;
+
+        } else if (!scope.staticMoving && _lastAngle) {
+
+          _lastAngle *= Math.sqrt(1.0 - scope.dynamicDampingFactor);
+          _eye.copy(scope.object.position).sub(scope.target);
+          quaternion.setFromAxisAngle(_lastAxis, _lastAngle);
+          _eye.applyQuaternion(quaternion);
+          scope.object.up.applyQuaternion(quaternion);
+
         }
 
-        angle *= _this.rotateSpeed;
+        _movePrev.copy(_moveCurr);
 
-        quaternion.setFromAxisAngle(axis, angle);
+      };
 
-        _eye.applyQuaternion(quaternion);
-        _this.object.up.applyQuaternion(quaternion);
+    }());
 
-        _lastAxis.copy(axis);
-        _lastAngle = angle;
-      } else if (!_this.staticMoving && _lastAngle) {
-        _lastAngle *= Math.sqrt(1.0 - _this.dynamicDampingFactor);
-        _eye.copy(_this.object.position).sub(_this.target);
-        quaternion.setFromAxisAngle(_lastAxis, _lastAngle);
-        _eye.applyQuaternion(quaternion);
-        _this.object.up.applyQuaternion(quaternion);
-      }
 
-      _movePrev.copy(_moveCurr);
-    };
-  })();
+    this.zoomCamera = function () {
 
-  this.zoomCamera = function () {
-    var factor;
+      let factor;
 
-    if (_state === STATE.TOUCH_ZOOM_PAN) {
-      factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
-      _touchZoomDistanceStart = _touchZoomDistanceEnd;
-      _eye.multiplyScalar(factor);
-    } else {
-      factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * _this.zoomSpeed;
+      if (_state === STATE.TOUCH_ZOOM_PAN) {
 
-      if (factor !== 1.0 && factor > 0.0) {
-        _eye.multiplyScalar(factor);
+        factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
+        _touchZoomDistanceStart = _touchZoomDistanceEnd;
 
-        if (_this.staticMoving) {
+        if (scope.object.isPerspectiveCamera) {
+
+          _eye.multiplyScalar(factor);
+
+        } else if (scope.object.isOrthographicCamera) {
+
+          scope.object.zoom *= factor;
+          scope.object.updateProjectionMatrix();
+
+        } else {
+
+          console.warn('TrackballControls: Unsupported camera type');
+
+        }
+
+      } else {
+
+        factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * scope.zoomSpeed;
+
+        if (factor !== 1.0 && factor > 0.0) {
+
+          if (scope.object.isPerspectiveCamera) {
+
+            _eye.multiplyScalar(factor);
+
+          } else if (scope.object.isOrthographicCamera) {
+
+            scope.object.zoom /= factor;
+            scope.object.updateProjectionMatrix();
+
+          } else {
+
+            console.warn('TrackballControls: Unsupported camera type');
+
+          }
+
+        }
+
+        if (scope.staticMoving) {
+
           _zoomStart.copy(_zoomEnd);
+
         } else {
-          _zoomStart.y
-            += (_zoomEnd.y - _zoomStart.y) * this.dynamicDampingFactor;
+
+          _zoomStart.y += (_zoomEnd.y - _zoomStart.y) * this.dynamicDampingFactor;
+
         }
+
       }
-    }
-  };
 
-  this.panCamera = (function () {
-    var mouseChange = new THREE.Vector2(),
-      objectUp = new THREE.Vector3(),
-      pan = new THREE.Vector3();
-
-    return function panCamera () {
-      mouseChange.copy(_panEnd).sub(_panStart);
-
-      if (mouseChange.lengthSq()) {
-        mouseChange.multiplyScalar(_eye.length() * _this.panSpeed);
-
-        pan
-          .copy(_eye)
-          .cross(_this.object.up)
-          .setLength(mouseChange.x);
-        pan.add(objectUp.copy(_this.object.up).setLength(mouseChange.y));
-
-        _this.object.position.add(pan);
-        _this.target.add(pan);
-
-        if (_this.staticMoving) {
-          _panStart.copy(_panEnd);
-        } else {
-          _panStart.add(
-            mouseChange
-              .subVectors(_panEnd, _panStart)
-              .multiplyScalar(_this.dynamicDampingFactor)
-          );
-        }
-      }
     };
-  })();
 
-  this.checkDistances = function () {
-    if (!_this.noZoom || !_this.noPan) {
-      if (_eye.lengthSq() > _this.maxDistance * _this.maxDistance) {
-        _this.object.position.addVectors(
-          _this.target,
-          _eye.setLength(_this.maxDistance)
-        );
-        _zoomStart.copy(_zoomEnd);
+    this.panCamera = (function () {
+
+      const mouseChange = new Vector2(),
+        objectUp = new Vector3(),
+        pan = new Vector3();
+
+      return function panCamera () {
+
+        mouseChange.copy(_panEnd).sub(_panStart);
+
+        if (mouseChange.lengthSq()) {
+
+          if (scope.object.isOrthographicCamera) {
+
+            const scale_x = (scope.object.right - scope.object.left) / scope.object.zoom / scope.domElement.clientWidth;
+            const scale_y = (scope.object.top - scope.object.bottom) / scope.object.zoom / scope.domElement.clientWidth;
+
+            mouseChange.x *= scale_x;
+            mouseChange.y *= scale_y;
+
+          }
+
+          mouseChange.multiplyScalar(_eye.length() * scope.panSpeed);
+
+          pan.copy(_eye).cross(scope.object.up).setLength(mouseChange.x);
+          pan.add(objectUp.copy(scope.object.up).setLength(mouseChange.y));
+
+          scope.object.position.add(pan);
+          scope.target.add(pan);
+
+          if (scope.staticMoving) {
+
+            _panStart.copy(_panEnd);
+
+          } else {
+
+            _panStart.add(mouseChange.subVectors(_panEnd, _panStart).multiplyScalar(scope.dynamicDampingFactor));
+
+          }
+
+        }
+
+      };
+
+    }());
+
+    this.checkDistances = function () {
+
+      if (!scope.noZoom || !scope.noPan) {
+
+        if (_eye.lengthSq() > scope.maxDistance * scope.maxDistance) {
+
+          scope.object.position.addVectors(scope.target, _eye.setLength(scope.maxDistance));
+          _zoomStart.copy(_zoomEnd);
+
+        }
+
+        if (_eye.lengthSq() < scope.minDistance * scope.minDistance) {
+
+          scope.object.position.addVectors(scope.target, _eye.setLength(scope.minDistance));
+          _zoomStart.copy(_zoomEnd);
+
+        }
+
       }
 
-      if (_eye.lengthSq() < _this.minDistance * _this.minDistance) {
-        _this.object.position.addVectors(
-          _this.target,
-          _eye.setLength(_this.minDistance)
-        );
-        _zoomStart.copy(_zoomEnd);
+    };
+
+    this.update = function () {
+
+      // @metacell changes
+      scope.lastUp = scope.object.up.toArray();
+      scope.lastPosition = scope.object.position.toArray();
+      // end of @metacell changes
+
+
+      _eye.subVectors(scope.object.position, scope.target);
+
+      if (!scope.noRotate) {
+
+        scope.rotateCamera();
+
       }
-    }
-  };
 
-  this.update = function () {
-    /*
-     * Saves the lastUp & lastPosition coordinates to use them
-     * later to calculate the delta change after applying rotation/zoom/pan,
-     * which is used by allSteady() to find if the scene is steady
-     * or moving
-     */
-    _this.lastUp = _this.object.up.toArray();
-    _this.lastPosition = _this.object.position.toArray();
+      if (!scope.noZoom) {
 
-    _eye.subVectors(_this.object.position, _this.target);
+        scope.zoomCamera();
 
-    if (!_this.noRotate) {
-      _this.rotateCamera();
-    }
+      }
 
-    if (!_this.noZoom) {
-      _this.zoomCamera();
-    }
+      if (!scope.noPan) {
 
-    if (!_this.noPan) {
-      _this.panCamera();
-    }
+        scope.panCamera();
 
-    _this.object.position.addVectors(_this.target, _eye);
+      }
 
-    _this.checkDistances();
+      scope.object.position.addVectors(scope.target, _eye);
 
-    _this.object.lookAt(_this.target);
+      if (scope.object.isPerspectiveCamera) {
 
-    if (lastPosition.distanceToSquared(_this.object.position) > EPS ) {
-      lastPosition.copy(_this.object.position);
-      _this.dispatchEvent(changeEvent);      
-    }
+        scope.checkDistances();
 
-    // Has the camera stopped moving? (&& has the camera started moving)
-    if (_this.allSteady() && _this.cameraChanged) {
-      // Log the camera's position
-      _this.setCameraByConsole();
-    }
-  };
+        scope.object.lookAt(scope.target);
 
-  this.setPosition = function (x, y, z) {
-    _this.object.position.set(x, y, z);
+        if (lastPosition.distanceToSquared(scope.object.position) > EPS) {
 
-    var u = _this.object.rotation.toArray();
-    var l = _eye.length();
+          lastPosition.copy(scope.object.position);
+          scope.dispatchEvent(_changeEvent);
+        }
 
-    _this.setRotation(u[0], u[1], u[2], l);
-  };
+      } else if (scope.object.isOrthographicCamera) {
 
-  this.setRotation = function (x, y, z, radius) {
-    _state = STATE.NONE;
-    _prevState = STATE.NONE;
-
-    this.rotationRadius = radius;
-    var base = new THREE.Vector3(0, 0, -1);
-    base.applyEuler(new THREE.Euler(x, y, z));
-    base.multiplyScalar(radius);
+        scope.object.lookAt(scope.target);
 
-    _this.target.addVectors(_this.object.position, base);
-    _this.object.up.copy(_this.up0);
-    _this.object.up.applyEuler(new THREE.Euler(x, y, z));
+        if (lastPosition.distanceToSquared(scope.object.position) > EPS || lastZoom !== scope.object.zoom) {
 
-    _eye.subVectors(_this.object.position, _this.target);
+          scope.dispatchEvent(_changeEvent);
 
-    _this.object.lookAt(_this.target);
-
-    _this.dispatchEvent(changeEvent);
-    _this.update();
-  };
-
-  this.reset = function () {
-    _this.cameraByConsoleLock = true;
-
-    _state = STATE.NONE;
-    _prevState = STATE.NONE;
-
-    _this.target.copy(_this.target0);
-    _this.object.position.copy(_this.position0);
-    _this.object.up.copy(_this.up0);
-
-    _eye.subVectors(_this.object.position, _this.target);
-
-    _this.object.lookAt(_this.target);
-
-    _this.dispatchEvent(changeEvent);
-    _this.update();
-
-    lastPosition.copy(_this.object.position);
-
-    _this.cameraChanged = true;
-    _this.unsetCameraByConsoleLock();
-  };
-
-  // listeners
-
-  function keydown (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    window.removeEventListener('keydown', keydown);
-
-    _prevState = _state;
-
-    if (_state !== STATE.NONE) {
-      return;
-    } else if (event.keyCode === _this.keys[STATE.ROTATE] && !_this.noRotate) {
-      _state = STATE.ROTATE;
-    } else if (event.keyCode === _this.keys[STATE.ZOOM] && !_this.noZoom) {
-      _state = STATE.ZOOM;
-    } else if (event.keyCode === _this.keys[STATE.PAN] && !_this.noPan) {
-      _state = STATE.PAN;
-    }
-  }
-
-  function keyup (event) {
-    if (_this.enabled === false) {
-      return;
-    }
-
-    _state = _prevState;
-
-    window.addEventListener('keydown', keydown, false);
-  }
-
-  function mousedown (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    event.preventDefault();
-    /*
-     * Stop propagation removed to handle eventually others listeners in the main component
-     * that is hosting the canvas.
-     * event.stopPropagation();
-     */
-
-    if (_state === STATE.NONE) {
-      _state = event.button;
-    }
-
-    if (_state === STATE.ROTATE && !_this.noRotate) {
-      _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
-      _movePrev.copy(_moveCurr);
-    } else if (_state === STATE.ZOOM && !_this.noZoom) {
-      _zoomStart.copy(getMouseOnScreen(event.pageX, event.pageY));
-      _zoomEnd.copy(_zoomStart);
-    } else if (_state === STATE.PAN && !_this.noPan) {
-      _panStart.copy(getMouseOnScreen(event.pageX, event.pageY));
-      _panEnd.copy(_panStart);
-    }
-
-    document.addEventListener('mousemove', mousemove, false);
-    document.addEventListener('mouseup', mouseup, false);
-
-    _this.dispatchEvent(startEvent);
-    _this.update();
-  }
-
-  function mousemove (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (_state === STATE.ROTATE && !_this.noRotate) {
-      _movePrev.copy(_moveCurr);
-      _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
-    } else if (_state === STATE.ZOOM && !_this.noZoom) {
-      _zoomEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
-    } else if (_state === STATE.PAN && !_this.noPan) {
-      _panEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
-    }
-    _this.update();
-  }
-
-  function mouseup (event) {
-    if (_this.enabled === false) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    _state = STATE.NONE;
-
-    document.removeEventListener('mousemove', mousemove);
-    document.removeEventListener('mouseup', mouseup);
-    _this.dispatchEvent(endEvent);
-    _this.update();
-
-    _this.unsetCameraByConsoleLock();
-  }
-
-  function mousewheel (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    _zoomStart.y -= event.deltaY * 0.01;
-
-    _this.dispatchEvent(startEvent);
-    _this.dispatchEvent(endEvent);
-    _this.update();
-
-    _this.unsetCameraByConsoleLock();
-  }
-
-  function touchstart (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    switch (event.touches.length) {
-    case 1:
-      _state = STATE.TOUCH_ROTATE;
-      _moveCurr.copy(
-        getMouseOnCircle(event.touches[0].pageX, event.touches[0].pageY)
-      );
-      _movePrev.copy(_moveCurr);
-      break;
-
-    default:
-      // 2 or more
-      _state = STATE.TOUCH_ZOOM_PAN;
-      var dx = event.touches[0].pageX - event.touches[1].pageX;
-      var dy = event.touches[0].pageY - event.touches[1].pageY;
-      _touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt(
-        dx * dx + dy * dy
-      );
-
-      var x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
-      var y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
-      _panStart.copy(getMouseOnScreen(x, y));
-      _panEnd.copy(_panStart);
-      break;
-    }
-
-    _this.dispatchEvent(startEvent);
-    _this.update();
-  }
-
-  function touchmove (event) {
-    _this.cameraByConsoleLock = true;
-    if (_this.enabled === false) {
-      return;
-    }
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    switch (event.touches.length) {
-    case 1:
-      _movePrev.copy(_moveCurr);
-      _moveCurr.copy(
-        getMouseOnCircle(event.touches[0].pageX, event.touches[0].pageY)
-      );
-      break;
-
-    default:
-      // 2 or more
-      var dx = event.touches[0].pageX - event.touches[1].pageX;
-      var dy = event.touches[0].pageY - event.touches[1].pageY;
-      _touchZoomDistanceEnd = Math.sqrt(dx * dx + dy * dy);
-
-      var x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
-      var y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
-      _panEnd.copy(getMouseOnScreen(x, y));
-      break;
-    }
-    _this.update();
-  }
-
-  function touchend (event) {
-    if (_this.enabled === false) {
-      return;
-    }
-
-    switch (event.touches.length) {
-    case 0:
+          lastPosition.copy(scope.object.position);
+          lastZoom = scope.object.zoom;
+
+        }
+
+      } else {
+
+        console.warn('TrackballControls: Unsupported camera type');
+
+      }
+      // Has the camera stopped moving? (&& has the camera started moving)
+      if (scope.allSteady() && scope.cameraChanged) {
+        // Log the camera's position
+        scope.setCameraByConsole();
+      }
+
+    };
+
+
+    // @metacell changes
+    this.setPosition = function (x, y, z) {
+      scope.object.position.set(x, y, z);
+
+      var u = scope.object.rotation.toArray();
+      var l = _eye.length();
+
+      scope.setRotation(u[0], u[1], u[2], l);
+    };
+
+    this.setRotation = function (x, y, z, radius) {
       _state = STATE.NONE;
-      break;
+      _prevState = STATE.NONE;
 
-    case 1:
-      _state = STATE.TOUCH_ROTATE;
-      _moveCurr.copy(
-        getMouseOnCircle(event.touches[0].pageX, event.touches[0].pageY)
+      this.rotationRadius = radius;
+      var base = new Vector3(0, 0, -1);
+      base.applyEuler(new Euler(x, y, z));
+      base.multiplyScalar(radius);
+
+      scope.target.addVectors(scope.object.position, base);
+      scope.object.up.copy(scope.up0);
+      scope.object.up.applyEuler(new Euler(x, y, z));
+
+      _eye.subVectors(scope.object.position, scope.target);
+
+      scope.object.lookAt(scope.target);
+
+      scope.dispatchEvent(_changeEvent);
+      scope.update();
+    };
+    // end of @metacell changes
+
+    this.reset = function () {
+
+      _state = STATE.NONE;
+      _keyState = STATE.NONE;
+
+      scope.target.copy(scope.target0);
+      scope.object.position.copy(scope.position0);
+      scope.object.up.copy(scope.up0);
+      scope.object.zoom = scope.zoom0;
+
+      scope.object.updateProjectionMatrix();
+
+      _eye.subVectors(scope.object.position, scope.target);
+
+      scope.object.lookAt(scope.target);
+
+      scope.dispatchEvent(_changeEvent);
+
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+      lastPosition.copy(scope.object.position);
+      lastZoom = scope.object.zoom;
+
+      // @metacell changes
+      scope.cameraChanged = true;
+      scope.unsetCameraByConsoleLock();
+      // end of @metacell changes
+
+
+    };
+
+    // @metacell changes
+
+    this.incrementRotationEnd = function (valX, valY, valZ) {
+      if (valZ == 0) {
+        if (_movePrev.x === 0 && _movePrev.y === 0) {
+          _movePrev = new Vector2(0.1, 0.1);
+        }
+      }
+      _moveCurr = new Vector3(
+        _movePrev.x + valX,
+        _movePrev.y + valY,
+        _movePrev.z + valZ
       );
-      _movePrev.copy(_moveCurr);
-      break;
-    }
+      nanToZero(_moveCurr);
 
-    _this.dispatchEvent(endEvent);
-    _this.update(); 
+      _prevState = _state;
+      _state = STATE.ROTATE;
+      scope.noRotate = false;
 
-    _this.unsetCameraByConsoleLock();
-    _this.update();
-  }
+      scope.unsetCameraByConsoleLock();
+      scope.update();
+    };
 
-  function contextmenu (event) {
-    event.preventDefault();
-    _this.update();
-  }
-
-  this.incrementRotationEnd = function (valX, valY, valZ) {
-    if (valZ == 0) {
-      if (_movePrev.x === 0 && _movePrev.y === 0) {
-        _movePrev = new THREE.Vector2(0.1, 0.1);
+    function nanToZero (vector) {
+      if (isNaN(vector.x)) {
+        vector.x = 0;
+      }
+      if (isNaN(vector.y)) {
+        vector.y = 0;
+      }
+      if (isNaN(vector.z)) {
+        vector.z = 0;
       }
     }
-    _moveCurr = new THREE.Vector3(
-      _movePrev.x + valX,
-      _movePrev.y + valY,
-      _movePrev.z + valZ
-    );
-    nanToZero(_moveCurr);
 
-    _prevState = _state;
-    _state = STATE.ROTATE;
-    _this.noRotate = false;
+    this.incrementPanEnd = function (valX, valY) {
+      _panEnd = new Vector2(_panStart.x + valX, _panStart.y + valY);
+      _prevState = _state;
+      _state = STATE.PAN;
+      scope.noPan = false;
 
-    _this.unsetCameraByConsoleLock();
-    _this.update();
-  };
+      scope.unsetCameraByConsoleLock();
+      scope.update();
+    };
 
-  function nanToZero (vector) {
-    if (isNaN(vector.x)) {
-      vector.x = 0;
+    this.incrementZoomEnd = function (val) {
+      _zoomEnd.y = _zoomStart.y + val;
+      _prevState = _state;
+      _state = STATE.ZOOM;
+      scope.noZoom = false;
+
+      scope.unsetCameraByConsoleLock();
+      scope.update();
+    };
+
+    // end of @metacell changes
+
+    // listeners
+
+    function onPointerDown (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      if (_pointers.length === 0) {
+
+        scope.domElement.setPointerCapture(event.pointerId);
+
+        scope.domElement.addEventListener('pointermove', onPointerMove);
+        scope.domElement.addEventListener('pointerup', onPointerUp);
+
+      }
+
+      //
+
+      addPointer(event);
+
+      if (event.pointerType === 'touch') {
+
+        onTouchStart(event);
+
+      } else {
+
+        onMouseDown(event);
+
+      }
+
     }
-    if (isNaN(vector.y)) {
-      vector.y = 0;
+
+    function onPointerMove (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      if (event.pointerType === 'touch') {
+
+        onTouchMove(event);
+
+      } else {
+
+        onMouseMove(event);
+
+      }
+
     }
-    if (isNaN(vector.z)) {
-      vector.z = 0;
+
+    function onPointerUp (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      if (event.pointerType === 'touch') {
+
+        onTouchEnd(event);
+
+      } else {
+
+        onMouseUp();
+
+      }
+
+      //
+
+      removePointer(event);
+
+      if (_pointers.length === 0) {
+
+        scope.domElement.releasePointerCapture(event.pointerId);
+
+        scope.domElement.removeEventListener('pointermove', onPointerMove);
+        scope.domElement.removeEventListener('pointerup', onPointerUp);
+
+      }
+
+
     }
+
+    function onPointerCancel (event) {
+
+      removePointer(event);
+
+    }
+
+    function keydown (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      window.removeEventListener('keydown', keydown);
+
+      if (_keyState !== STATE.NONE) {
+
+        return;
+
+      } else if (event.code === scope.keys[STATE.ROTATE] && !scope.noRotate) {
+
+        _keyState = STATE.ROTATE;
+
+      } else if (event.code === scope.keys[STATE.ZOOM] && !scope.noZoom) {
+
+        _keyState = STATE.ZOOM;
+
+      } else if (event.code === scope.keys[STATE.PAN] && !scope.noPan) {
+
+        _keyState = STATE.PAN;
+
+      }
+
+    }
+
+    function keyup () {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      _keyState = STATE.NONE;
+
+      window.addEventListener('keydown', keydown);
+
+    }
+
+    function onMouseDown (event) {
+
+      if (_state === STATE.NONE) {
+
+        switch (event.button) {
+
+        case scope.mouseButtons.LEFT:
+          _state = STATE.ROTATE;
+          break;
+
+        case scope.mouseButtons.MIDDLE:
+          _state = STATE.ZOOM;
+          break;
+
+        case scope.mouseButtons.RIGHT:
+          _state = STATE.PAN;
+          break;
+
+        default:
+          _state = STATE.NONE;
+
+        }
+
+      }
+
+      const state = (_keyState !== STATE.NONE) ? _keyState : _state;
+
+      if (state === STATE.ROTATE && !scope.noRotate) {
+
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+        _movePrev.copy(_moveCurr);
+
+      } else if (state === STATE.ZOOM && !scope.noZoom) {
+
+        _zoomStart.copy(getMouseOnScreen(event.pageX, event.pageY));
+        _zoomEnd.copy(_zoomStart);
+
+      } else if (state === STATE.PAN && !scope.noPan) {
+
+        _panStart.copy(getMouseOnScreen(event.pageX, event.pageY));
+        _panEnd.copy(_panStart);
+
+      }
+
+      scope.dispatchEvent(_startEvent);
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+    }
+
+    function onMouseMove (event) {
+
+      const state = (_keyState !== STATE.NONE) ? _keyState : _state;
+
+      if (state === STATE.ROTATE && !scope.noRotate) {
+
+        _movePrev.copy(_moveCurr);
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+
+      } else if (state === STATE.ZOOM && !scope.noZoom) {
+
+        _zoomEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
+
+      } else if (state === STATE.PAN && !scope.noPan) {
+
+        _panEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
+
+      }
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+    }
+
+    function onMouseUp () {
+
+      _state = STATE.NONE;
+
+      scope.dispatchEvent(_endEvent);
+
+      // @metacell changes 
+      scope.update()
+      scope.unsetCameraByConsoleLock();
+      // end of @metacell changes
+
+
+    }
+
+    function onMouseWheel (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      if (scope.noZoom === true) {
+        return;
+      }
+
+      event.preventDefault();
+
+      switch (event.deltaMode) {
+
+      case 2:
+        // Zoom in pages
+        _zoomStart.y -= event.deltaY * 0.025;
+        break;
+
+      case 1:
+        // Zoom in lines
+        _zoomStart.y -= event.deltaY * 0.01;
+        break;
+
+      default:
+        // undefined, 0, assume pixels
+        _zoomStart.y -= event.deltaY * 0.00025;
+        break;
+
+      }
+
+      scope.dispatchEvent(_startEvent);
+      scope.dispatchEvent(_endEvent);
+
+      // @metacell changes
+      scope.update()
+      scope.unsetCameraByConsoleLock();
+      // end of @metacell changes
+
+    }
+
+    function onTouchStart (event) {
+
+      trackPointer(event);
+
+      switch (_pointers.length) {
+
+      case 1:
+        _state = STATE.TOUCH_ROTATE;
+        _moveCurr.copy(getMouseOnCircle(_pointers[0].pageX, _pointers[0].pageY));
+        _movePrev.copy(_moveCurr);
+        break;
+
+      default: // 2 or more
+        _state = STATE.TOUCH_ZOOM_PAN;
+        const dx = _pointers[0].pageX - _pointers[1].pageX;
+        const dy = _pointers[0].pageY - _pointers[1].pageY;
+        _touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt(dx * dx + dy * dy);
+
+        const x = (_pointers[0].pageX + _pointers[1].pageX) / 2;
+        const y = (_pointers[0].pageY + _pointers[1].pageY) / 2;
+        _panStart.copy(getMouseOnScreen(x, y));
+        _panEnd.copy(_panStart);
+        break;
+
+      }
+
+      scope.dispatchEvent(_startEvent);
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+    }
+
+    function onTouchMove (event) {
+
+      trackPointer(event);
+
+      switch (_pointers.length) {
+
+      case 1:
+        _movePrev.copy(_moveCurr);
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+        break;
+
+      default: // 2 or more
+
+        const position = getSecondPointerPosition(event);
+
+        const dx = event.pageX - position.x;
+        const dy = event.pageY - position.y;
+        _touchZoomDistanceEnd = Math.sqrt(dx * dx + dy * dy);
+
+        const x = (event.pageX + position.x) / 2;
+        const y = (event.pageY + position.y) / 2;
+        _panEnd.copy(getMouseOnScreen(x, y));
+        break;
+
+      }
+
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+    }
+
+    function onTouchEnd (event) {
+
+      switch (_pointers.length) {
+
+      case 0:
+        _state = STATE.NONE;
+        break;
+
+      case 1:
+        _state = STATE.TOUCH_ROTATE;
+        _moveCurr.copy(getMouseOnCircle(event.pageX, event.pageY));
+        _movePrev.copy(_moveCurr);
+        break;
+
+      case 2:
+        _state = STATE.TOUCH_ZOOM_PAN;
+        _moveCurr.copy(getMouseOnCircle(event.pageX - _movePrev.pageX, event.pageY - _movePrev.pageY));
+        _movePrev.copy(_moveCurr);
+        break;
+
+      }
+
+      scope.dispatchEvent(_endEvent);
+
+      // @metacell changes
+      scope.update()
+      scope.unsetCameraByConsoleLock();
+      // end of @metacell changes
+
+    }
+
+    function contextmenu (event) {
+
+      if (scope.enabled === false) {
+        return;
+      }
+
+      event.preventDefault();
+      // @metacell changes
+      scope.update()
+      // end of @metacell changes
+
+    }
+
+    function addPointer (event) {
+
+      _pointers.push(event);
+
+    }
+
+    function removePointer (event) {
+
+      delete _pointerPositions[event.pointerId];
+
+      for (let i = 0; i < _pointers.length; i++) {
+
+        if (_pointers[i].pointerId == event.pointerId) {
+
+          _pointers.splice(i, 1);
+          return;
+
+        }
+
+      }
+
+    }
+
+    function trackPointer (event) {
+
+      let position = _pointerPositions[event.pointerId];
+
+      if (position === undefined) {
+
+        position = new Vector2();
+        _pointerPositions[event.pointerId] = position;
+
+      }
+
+      position.set(event.pageX, event.pageY);
+
+    }
+
+    function getSecondPointerPosition (event) {
+
+      const pointer = (event.pointerId === _pointers[0].pointerId) ? _pointers[1] : _pointers[0];
+
+      return _pointerPositions[pointer.pointerId];
+
+    }
+
+    this.dispose = function () {
+
+      scope.domElement.removeEventListener('contextmenu', contextmenu);
+
+      scope.domElement.removeEventListener('pointerdown', onPointerDown);
+      scope.domElement.removeEventListener('pointercancel', onPointerCancel);
+      scope.domElement.removeEventListener('wheel', onMouseWheel);
+
+      scope.domElement.removeEventListener('pointermove', onPointerMove);
+      scope.domElement.removeEventListener('pointerup', onPointerUp);
+
+      window.removeEventListener('keydown', keydown);
+      window.removeEventListener('keyup', keyup);
+
+    };
+
+    this.domElement.addEventListener('contextmenu', contextmenu);
+
+    this.domElement.addEventListener('pointerdown', onPointerDown);
+    this.domElement.addEventListener('pointercancel', onPointerCancel);
+    this.domElement.addEventListener('wheel', onMouseWheel, { passive: false });
+
+
+    window.addEventListener('keydown', keydown);
+    window.addEventListener('keyup', keyup);
+
+    this.handleResize();
+
+    // force an update at start
+    this.update();
+
   }
 
-  this.incrementPanEnd = function (valX, valY) {
-    _panEnd = new THREE.Vector2(_panStart.x + valX, _panStart.y + valY);
-    _prevState = _state;
-    _state = STATE.PAN;
-    _this.noPan = false;
 
-    _this.unsetCameraByConsoleLock();
-    _this.update();
-  };
+}
 
-  this.incrementZoomEnd = function (val) {
-    _zoomEnd.y = _zoomStart.y + val;
-    _prevState = _state;
-    _state = STATE.ZOOM;
-    _this.noZoom = false;
-
-    _this.unsetCameraByConsoleLock();
-    _this.update();
-  };
-
-  this.dispose = function () {
-    this.domElement.removeEventListener('contextmenu', contextmenu, false);
-    this.domElement.removeEventListener('mousedown', mousedown, false);
-    this.domElement.removeEventListener('wheel', mousewheel, false);
-
-    this.domElement.removeEventListener('touchstart', touchstart, false);
-    this.domElement.removeEventListener('touchend', touchend, false);
-    this.domElement.removeEventListener('touchmove', touchmove, false);
-
-    document.removeEventListener('mousemove', mousemove, false);
-    document.removeEventListener('mouseup', mouseup, false);
-
-    window.removeEventListener('keydown', keydown, false);
-    window.removeEventListener('keyup', keyup, false);
-  };
-
-  this.domElement.addEventListener('contextmenu', contextmenu, false);
-  this.domElement.addEventListener('mousedown', mousedown, false);
-  this.domElement.addEventListener('wheel', mousewheel, false);
-
-  this.domElement.addEventListener('touchstart', touchstart, false);
-  this.domElement.addEventListener('touchend', touchend, false);
-  this.domElement.addEventListener('touchmove', touchmove, false);
-
-  window.addEventListener('keydown', keydown, false);
-  window.addEventListener('keyup', keyup, false);
-
-  this.handleResize();
-
-  // force an update at start
-  this.update();
-};
-
-THREE.TrackballControls.prototype = Object.create(
-  THREE.EventDispatcher.prototype
-);
-THREE.TrackballControls.prototype.constructor = THREE.TrackballControls;
+export { TrackballControls };

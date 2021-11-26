@@ -7,12 +7,6 @@
  * @author Giovanni Idili
  */
 
-import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
-
-var Instance = require('../model/Instance').default;
-var ArrayInstance = require('../model/ArrayInstance').default;
-var Type = require('../model/Type').default;
-var Variable = require('../model/Variable').default;
 
 export default {
   capabilityId: 'VisualCapability',
@@ -26,38 +20,8 @@ export default {
    *
    */
   hide: function (nested) {
-    if (nested === undefined) {
-      nested = true;
-    }
-
-    if (this instanceof Instance || this instanceof ArrayInstance) {
-      GEPPETTO.SceneController.hideInstance(this.getInstancePath());
-      this.visible = false;
-
-      if (nested === true && typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var i = 0; i < children.length; i++) {
-          if (typeof children[i].hide === "function") {
-            children[i].hide(nested);
-          }
-        }
-      }
-
-      var message = GEPPETTO.Resources.HIDE_ASPECT + this.getInstancePath();
-    } else if (this instanceof Type || this instanceof Variable) {
-      // fetch all instances for the given type or variable and call hide on each
-      var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this);
-      for (var j = 0; j < instances.length; j++) {
-        if (instances[j].hasCapability(this.capabilityId)) {
-          instances[j].hide(nested);
-        }
-      }
-
-      var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
-    }
-    EventManager.actionsHandler[EventManager.clientActions.VISIBILITY_CHANGED](this);
-
-    return message;
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
@@ -67,38 +31,8 @@ export default {
    *
    */
   show: function (nested) {
-    if (nested === undefined) {
-      nested = true;
-    }
-
-    if (this instanceof Instance || this instanceof ArrayInstance) {
-      GEPPETTO.SceneController.showInstance(this.getInstancePath());
-      this.visible = true;
-
-      if (nested === true && typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var i = 0; i < children.length; i++) {
-          if (typeof children[i].show === "function") {
-            children[i].show(nested);
-          }
-        }
-      }
-
-      var message = GEPPETTO.Resources.SHOW_ASPECT + this.getInstancePath();
-    } else if (this instanceof Type || this instanceof Variable) {
-      // fetch all instances for the given type or variable and call show on each
-      var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this);
-      for (var j = 0; j < instances.length; j++) {
-        if (instances[j].hasCapability(this.capabilityId)) {
-          instances[j].show(nested);
-        }
-      }
-
-      var message = GEPPETTO.Resources.HIDE_ASPECT + this.getPath();
-    }
-
-    EventManager.actionsHandler[EventManager.clientActions.VISIBILITY_CHANGED](this);
-    return message;
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
@@ -128,8 +62,8 @@ export default {
    *
    */
   setOpacity: function (opacity) {
-
-    GEPPETTO.SceneController.setOpacity(this.getInstancePath(), opacity);
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
 
@@ -138,7 +72,8 @@ export default {
    * @returns {*}
    */
   getColor: function () {
-    return GEPPETTO.SceneController.getColor(this);
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
@@ -149,12 +84,9 @@ export default {
    */
   setColor: function (color) {
 
-    GEPPETTO.SceneController.setColor(this.getInstancePath(), color);
+    console.warn("Deprecated api call");
+    console.trace();
 
-    EventManager.actionsHandler[EventManager.clientActions.COLOR_SET]({
-      instance: this,
-      color: color
-    });
 
     return this;
   },
@@ -166,44 +98,8 @@ export default {
    *
    */
   select: function (nested, geometryIdentifier, point) {
-    if (nested === undefined) {
-      nested = true;
-    }
-
-    var message;
-
-    if (this instanceof Instance || this instanceof ArrayInstance) {
-      if (!this.selected) {
-        // set selection flag local to the instance and add to geppetto selection list
-        this.selected = true;
-        GEPPETTO.SceneController.selectInstance(this.getInstancePath(), geometryIdentifier);
-        message = GEPPETTO.Resources.SELECTING_ASPECT + this.getInstancePath();
-
-        // signal selection has changed in simulation pass instance
-        EventManager.select(this, geometryIdentifier, point)
-      } else {
-        message = GEPPETTO.Resources.ASPECT_ALREADY_SELECTED;
-      }
-
-      if (nested === true && typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var i = 0; i < children.length; i++) {
-          if (typeof children[i].select === "function") {
-            children[i].select(nested, geometryIdentifier, point);
-          }
-        }
-      }
-    } else if (this instanceof Type || this instanceof Variable) {
-      // fetch all instances for the given type or variable and call hide on each
-      var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this);
-      for (var j = 0; j < instances.length; j++) {
-        if (instances[j].hasCapability(this.capabilityId)) {
-          instances[j].select(nested, geometryIdentifier, point);
-        }
-      }
-
-      message = GEPPETTO.Resources.BATCH_SELECTION;
-    }
+    console.warn("Deprecated api call");
+    console.trace();
 
     return message;
   },
@@ -215,45 +111,8 @@ export default {
    *
    */
   deselect: function (nested) {
-    if (nested === undefined) {
-      nested = true;
-    }
-
-    var message;
-
-    if (this instanceof Instance || this instanceof ArrayInstance) {
-      if (this.selected) {
-        message = GEPPETTO.Resources.DESELECTING_ASPECT + this.getInstancePath();
-        GEPPETTO.SceneController.deselectInstance(this.getInstancePath());
-        this.selected = false;
-        // trigger event that selection has been changed
-        EventManager.actionsHandler[EventManager.clientActions.SELECT](this, undefined, undefined);
-      } else {
-        message = GEPPETTO.Resources.ASPECT_NOT_SELECTED;
-      }
-
-      // nested
-      if (nested === true && typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var i = 0; i < children.length; i++) {
-          if (typeof children[i].deselect === "function") {
-            children[i].deselect(nested);
-          }
-        }
-      }
-    } else if (this instanceof Type || this instanceof Variable) {
-      // fetch all instances for the given type or variable and call hide on each
-      var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this);
-      for (var j = 0; j < instances.length; j++) {
-        if (instances[j].hasCapability(this.capabilityId)) {
-          instances[j].deselect(nested);
-        }
-      }
-
-      message = GEPPETTO.Resources.BATCH_DESELECTION;
-    }
-
-    return message;
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
@@ -263,23 +122,16 @@ export default {
    *
    */
   zoomTo: function () {
-    if (this instanceof Instance || this instanceof ArrayInstance) {
-      GEPPETTO.SceneController.zoomTo([this]);
-      return GEPPETTO.Resources.ZOOM_TO_ENTITY + this.getInstancePath();
-    } else if (this instanceof Type || this instanceof Variable) {
-      // fetch all instances for the given type or variable and call hide on each
-      var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this);
-      GEPPETTO.SceneController.zoomTo(instances);
-    }
-    return this;
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
    * Set the type of geometry to be used for this aspect
    */
   setGeometryType: function (type, thickness) {
-    GEPPETTO.SceneController.setGeometryType(this, type, thickness)
-    return this;
+    console.warn("Deprecated api call");
+    console.trace();
   },
 
   /**
@@ -287,7 +139,7 @@ export default {
    * @param {boolean} mode - Show or hide connection lines
    */
   showConnectionLines: function (mode) {
-    GEPPETTO.SceneController.showConnectionLines(this.getInstancePath(), mode);
-    return this;
+    console.warn("Deprecated api call");
+    console.trace();
   }
 }

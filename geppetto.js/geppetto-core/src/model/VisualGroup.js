@@ -7,8 +7,8 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-
-import { rgbToHex } from '../Utility';
+import ModelFactory from '../ModelFactory';
+import Resources from '../Resources';
 
 var ObjectWrapper = require('./ObjectWrapper').default;
 
@@ -72,57 +72,27 @@ VisualGroup.prototype.show = function (mode, instances) {
   var elements = this.getVisualGroupElements();
 
   if (instances == undefined) {
-    var instances = GEPPETTO.ModelFactory.getAllInstancesOf(this.getParent());
+    var instances = ModelFactory.getAllInstancesOf(this.getParent());
   }
 
   if (mode) {
-    message = GEPPETTO.Resources.SHOWING_VISUAL_GROUPS + this.id;
+    message = Resources.SHOWING_VISUAL_GROUPS + this.id;
   } else {
-    message = GEPPETTO.Resources.HIDING_VISUAL_GROUPS + this.id;
+    message = Resources.HIDING_VISUAL_GROUPS + this.id;
   }
 
   if (elements.length > 0) {
     this.showAllVisualGroupElements(elements, mode, instances);
   } else {
-    message = GEPPETTO.Resources.NO_VISUAL_GROUP_ELEMENTS;
+    message = Resources.NO_VISUAL_GROUP_ELEMENTS;
   }
 
   return message;
 };
 
 VisualGroup.prototype.showAllVisualGroupElements = function (elements, mode, instances) {
-  var groups = {};
-  var allElements = [];
-
-  var total = 0;
-
-
-  for (var i = 0; i < elements.length; i++) {
-    if (elements[i].getValue() != null) {
-      total = total + parseFloat(elements[i].getValue());
-      allElements.push(elements[i].getValue());
-    }
-  }
-
-  this.minDensity = Math.min.apply(null, allElements);
-  this.maxDensity = Math.max.apply(null, allElements);
-
-  // highlight all reference nodes
-  for (var j = 0; j < elements.length; j++) {
-    groups[elements[j].getId()] = {};
-    var color = elements[j].getColor();
-    if (elements[j].getValue() != null) {
-      var intensity = 1;
-      if (this.maxDensity != this.minDensity) {
-        intensity = (elements[j].getValue() - this.minDensity) / (this.maxDensity - this.minDensity);
-      }
-
-      color = rgbToHex(255, Math.floor(255 - (255 * intensity)), 0);
-    }
-    groups[elements[j].getId()].color = color;
-  }
-
-  GEPPETTO.SceneController.showVisualGroups(groups, mode, instances);
+  console.warn("Deprecated api call");
+  console.trace();
 };
 
 VisualGroup.prototype.getMinDensity = function () {
