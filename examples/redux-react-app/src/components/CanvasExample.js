@@ -1,10 +1,16 @@
 import React from 'react';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
+import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
+import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/showcase/utils/CanvasTooltip";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import { makeStyles } from '@material-ui/core';
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/showcase/utils/SelectionUtils";
 import { connect } from 'react-redux';
 
+// @ts-ignore
+const ca1_model_json = require('./resources/ca1_model.json');
+
+const INSTANCE_NAME = 'network_CA1PyramidalCell';
 
 const useStyles = makeStyles(() => ({
     canvasContainer: {
@@ -19,9 +25,27 @@ const mapStateToProps = state => {
     }
 }
 
+const COLORS = [
+    { r: 0, g: 0.29, b: 0.71, a: 1 },
+    { r: 0.43, g: 0.57, b: 0, a: 1 },
+    { r: 1, g: 0.41, b: 0.71, a: 1 },
+];
+
 function CanvasExample(props) {
     const style = useStyles();
-    const [data, setData] = React.useState(props.canvasData);
+    const [data, setData] = React.useState([
+        {
+            instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
+            visualGroups: {
+                index: 4,
+                custome: {
+                    soma_group: { color: COLORS[0], },
+                    dendrite_group: { color: COLORS[1], },
+                    axon_group: { color: COLORS[2], }
+                },
+            },
+        },
+    ]);
     const [cameraOptions, setCameraOptions] = React.useState({
         angle: 50,
         near: 0.01,
@@ -36,7 +60,22 @@ function CanvasExample(props) {
     });
     const [canvasIndex, setCanvasIndex] = React.useState(3);
     const [lastCameraUpdate, setLastCameraUpdate] = React.useState(null);
-    const ref = React.useRef();
+    const ref = React.createRef();
+    const [showLoader, setShowLoader] = React.useState(true);
+    const [hasModelLoaded, setHasModelLoaded] = React.useState(false);
+    const [intersected, setIntersected] = React.useState([]);
+    const [tooltipVisible, setTooltipVisible] = React.useState(false);
+
+    React.useEffect(() => {
+        setShowLoader(true); //temporary
+
+        const model = ca1_model_json;
+        window.GEPPETTO.Manager.loadModel(model);
+        setHasModelLoaded(true);
+        setShowLoader(false);
+        window.Instances.getInstance(INSTANCE_NAME);
+
+    });
 
     const onMount = (scene) => {
         console.log('scene', scene);
@@ -49,6 +88,22 @@ function CanvasExample(props) {
 
     const onSelection = (selectedInstances) => {
         setData(applySelection(data, selectedInstances));
+    }
+
+    const hoverListener = (objs, canvasX, canvasY) => {
+        setIntersected([]);
+        const temp = new Array(0);
+        objs.forEach(o => {
+            temp.push({ o: o, x: canvasX, y: canvasY });
+        });
+
+        setIntersected(temp);
+
+        setTooltipVisible(true);
+
+        setTimeout(() => {
+            setTooltipVisible(false);
+        }, 1500);
     }
 
     const canvasData = mapToCanvasData(data);
@@ -65,17 +120,37 @@ function CanvasExample(props) {
     }
 
     return (
-        <div className={style.canvasContainer}>
-            <Canvas
-                ref={ref}
-                data={canvasData}
-                cameraOptions={camOptions}
-                cameraHandler={cameraHandler}
-                backgroundColor={0x505050}
-                onSelection={onSelection}
-                onMount={onMount}
-            />
-        </div>
+        showLoader ? <Loader active={true} /> :
+        hasModelLoaded ? (
+            <div className={style.canvasContainer}>
+                <div id={'canvas-tooltips-container'}>
+                    <div>
+                        { intersected.length > 0
+                            && <CanvasTooltip
+                            visible={tooltipVisible}
+                            x={intersected[intersected.length - 1].x}
+                            y={intersected[intersected.length - 1].y}
+                            text={intersected[intersected.length - 1].o.object.uuid}
+                            id={'canvas-tooltip-' + intersected[intersected.length - 1].o.object.uuid}
+                            ></CanvasTooltip>
+                        }
+                    </div>
+                </div>
+            
+                <div className={style.canvasContainer}>
+                    <Canvas
+                        ref={ref}
+                        data={canvasData}
+                        cameraOptions={camOptions}
+                        cameraHandler={cameraHandler}
+                        backgroundColor={0x505050}
+                        onSelection={onSelection}
+                        hoverListeners={[hoverListener]}
+                        onMount={onMount}
+                    />
+                </div>
+            </div>
+        ) : null
     )
 }
 
