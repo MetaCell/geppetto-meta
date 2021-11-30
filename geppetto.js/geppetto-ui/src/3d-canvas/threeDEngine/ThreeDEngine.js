@@ -898,12 +898,17 @@ export default class ThreeDEngine {
   }
 
   resize () {
-    this.width = this.containerRef.clientWidth;
-    this.height = this.containerRef.clientHeight;
-    this.cameraManager.camera.aspect = this.width / this.height;
-    this.cameraManager.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height);
-    this.composer.setSize(this.width, this.height);
+    if (this.width !== this.containerRef.clientWidth || this.height !== this.containerRef.clientHeight) {
+      this.width = this.containerRef.clientWidth;
+      this.height = this.containerRef.clientHeight;
+      this.cameraManager.camera.aspect = this.width / this.height;
+      this.cameraManager.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+      this.composer.setSize(this.width, this.height);
+      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+      // the resizing works but the image gets stretched.
+      this.cameraManager.engine.controls.updateOnResize();
+    }
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
@@ -921,7 +926,6 @@ export default class ThreeDEngine {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-      
   }
 
   animate () {
