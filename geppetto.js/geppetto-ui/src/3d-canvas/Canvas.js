@@ -22,9 +22,10 @@ class Canvas extends Component {
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
     this.state = { modelReady: false }
-    this.constructorFromProps(props)
-    this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this)
-    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+    this.constructorFromProps(props);
+    this.frameResizing = this.frameResizing.bind(this);
+    this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this);
   }
 
   constructorFromProps (props) {
@@ -74,10 +75,6 @@ class Canvas extends Component {
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
-    if (prevProps.width !== this.props.width || prevProps.height !== this.props.height) {
-      this.threeDEngine.resize();
-    }
-
     if (prevProps !== this.props) {
       const { data, cameraOptions, threeDObjects, backgroundColor } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse(), backgroundColor);
@@ -203,6 +200,10 @@ class Canvas extends Component {
     return true;
   }
 
+  frameResizing(width, height, targetRef) {
+    this.threeDEngine.resize();
+  }
+
   render () {
     const { classes, cameraOptions, captureOptions } = this.props;
     const { cameraControls } = cameraOptions
@@ -221,7 +222,7 @@ class Canvas extends Component {
         : null;
     }
     return (
-      <ReactResizeDetector skipOnMount='true'>
+      <ReactResizeDetector skipOnMount='true' onResize={this.frameResizing}>
         <div className={classes.container} ref={this.sceneRef}>
           {
             <cameraControls.instance

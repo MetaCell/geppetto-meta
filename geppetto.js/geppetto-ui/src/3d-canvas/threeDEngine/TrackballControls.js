@@ -699,6 +699,13 @@ THREE.TrackballControls = function (object, domElement, handler) {
     _this.update();
   };
 
+  this.updateOnResize = function () {
+    _this.dispatchEvent(startEvent);
+    _this.dispatchEvent(endEvent);
+    _this.update();
+    _this.unsetCameraByConsoleLock();
+  }
+
   this.dispose = function () {
     this.domElement.removeEventListener('contextmenu', contextmenu, false);
     this.domElement.removeEventListener('mousedown', mousedown, false);
