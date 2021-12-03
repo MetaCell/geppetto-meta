@@ -124,6 +124,16 @@ class TrackballControls extends EventDispatcher {
 
     };
 
+    this.handleEvent = function (event) {
+      if (typeof this[event.type] == 'function') {
+        this[event.type](event);
+      }
+    }
+
+    this.dispatchEvent = (e) => {
+      this.handleEvent(e);
+    }
+
     const getMouseOnScreen = (function () {
 
       const vector = new Vector2();
