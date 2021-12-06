@@ -399,7 +399,7 @@ GeppettoGraphVisualization.propTypes = {
    * Object with arrays of nodes and links used to render the graph.
    */
   data: PropTypes.shape({
-    nodes : PropTypes.arrayOf(PropTypes.shape({ id : PropTypes.number.isRequired })).isRequired,
+    nodes : PropTypes.arrayOf(PropTypes.shape({ id : PropTypes.any.isRequired })).isRequired,
     links : PropTypes.arrayOf(PropTypes.shape({
       source: PropTypes.number.isRequired,
       target: PropTypes.number.isRequired
