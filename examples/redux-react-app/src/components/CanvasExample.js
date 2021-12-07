@@ -58,13 +58,14 @@ function CanvasExample(props) {
             }
         }
     });
-    const [canvasIndex, setCanvasIndex] = React.useState(3);
-    const [lastCameraUpdate, setLastCameraUpdate] = React.useState(null);
+
     const ref = React.createRef();
     const [showLoader, setShowLoader] = React.useState(true);
     const [hasModelLoaded, setHasModelLoaded] = React.useState(false);
     const [intersected, setIntersected] = React.useState([]);
     const [tooltipVisible, setTooltipVisible] = React.useState(false);
+
+    console.log('inside canvas example');
 
     React.useEffect(() => {
         setShowLoader(true); //temporary
@@ -75,15 +76,10 @@ function CanvasExample(props) {
         setShowLoader(false);
         window.Instances.getInstance(INSTANCE_NAME);
 
-    });
+    }, []);
 
     const onMount = (scene) => {
         console.log('scene', scene);
-    }
-
-
-    const cameraHandler = (obj) => {
-        setLastCameraUpdate(obj);
     }
 
     const onSelection = (selectedInstances) => {
@@ -107,17 +103,8 @@ function CanvasExample(props) {
     }
 
     const canvasData = mapToCanvasData(data);
-    const classes = props.classes;
     let camOptions = cameraOptions;
 
-    if (lastCameraUpdate) {
-        camOptions = {
-            ...cameraOptions,
-            // @ts-ignore
-            position: lastCameraUpdate.position,
-            rotation: lastCameraUpdate.rotation,
-        }
-    }
 
     return (
         showLoader ? <Loader active={true} /> :
@@ -142,7 +129,6 @@ function CanvasExample(props) {
                         ref={ref}
                         data={canvasData}
                         cameraOptions={camOptions}
-                        cameraHandler={cameraHandler}
                         backgroundColor={0x505050}
                         onSelection={onSelection}
                         hoverListeners={[hoverListener]}
