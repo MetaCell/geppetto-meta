@@ -81,11 +81,6 @@ function CanvasExample(props) {
         console.log('scene', scene);
     }
 
-
-    const cameraHandler = (obj) => {
-        setLastCameraUpdate(obj);
-    }
-
     const onSelection = (selectedInstances) => {
         setData(applySelection(data, selectedInstances));
     }
@@ -123,7 +118,7 @@ function CanvasExample(props) {
         showLoader ? <Loader active={true} /> :
         hasModelLoaded ? (
             <div className={style.canvasContainer}>
-                <div id={'canvas-tooltips-container'}>
+                {/* <div id={'canvas-tooltips-container'}>
                     <div>
                         { intersected.length > 0
                             && <CanvasTooltip
@@ -135,14 +130,13 @@ function CanvasExample(props) {
                             ></CanvasTooltip>
                         }
                     </div>
-                </div>
+                </div> */}
             
                 <div className={style.canvasContainer}>
                     <Canvas
                         ref={ref}
                         data={canvasData}
                         cameraOptions={camOptions}
-                        cameraHandler={cameraHandler}
                         backgroundColor={0x505050}
                         onSelection={onSelection}
                         hoverListeners={[hoverListener]}
