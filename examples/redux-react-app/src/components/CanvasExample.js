@@ -110,7 +110,7 @@ function CanvasExample(props) {
         showLoader ? <Loader active={true} /> :
         hasModelLoaded ? (
             <div className={style.canvasContainer}>
-                <div id={'canvas-tooltips-container'}>
+                {/* <div id={'canvas-tooltips-container'}>
                     <div>
                         { intersected.length > 0
                             && <CanvasTooltip
@@ -122,7 +122,7 @@ function CanvasExample(props) {
                             ></CanvasTooltip>
                         }
                     </div>
-                </div>
+                </div> */}
             
                 <div className={style.canvasContainer}>
                     <Canvas
