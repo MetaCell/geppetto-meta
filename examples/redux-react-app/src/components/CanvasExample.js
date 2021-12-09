@@ -65,7 +65,6 @@ function CanvasExample(props) {
     const [intersected, setIntersected] = React.useState([]);
     const [tooltipVisible, setTooltipVisible] = React.useState(false);
 
-    console.log('inside canvas example');
 
     React.useEffect(() => {
         setShowLoader(true); //temporary

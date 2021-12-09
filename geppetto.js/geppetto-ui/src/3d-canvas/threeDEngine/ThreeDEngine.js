@@ -36,6 +36,8 @@ export default class ThreeDEngine {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
     this.cameraManager = null;
+    this.cameraOptions = cameraOptions;
+    this.onSelection = onSelection;
     this.renderer = null;
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
@@ -66,6 +68,7 @@ export default class ThreeDEngine {
     this.setupControls();
 
     // Setup Listeners
+    this.setupListeners = this.setupListeners.bind(this);
     this.setupListeners(onSelection);
 
     this.start = this.start.bind(this);
@@ -818,7 +821,8 @@ export default class ThreeDEngine {
   /**
    * Set up the listeners use to detect mouse movement and window resizing
    */
-  setupListeners (onSelection) {
+  setupListeners = (onSelection) => {
+    console.log('inside set up listeners');
     this.controls.addEventListener('start', this.requestFrameBounding);
     this.controls.addEventListener('change', this.requestFrameBounding);
     this.controls.addEventListener('stop', this.stop);
