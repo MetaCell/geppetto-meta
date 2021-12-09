@@ -74,8 +74,6 @@ class AuditoryCortexExample2 extends Component {
       },
     };
 
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -97,10 +95,6 @@ class AuditoryCortexExample2 extends Component {
         this.setState({ hasModelLoaded: false })
       }
     }
-  }
-  
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
   }
 
 
@@ -127,28 +121,12 @@ class AuditoryCortexExample2 extends Component {
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
     const canvasData = mapToCanvasData(data)
 
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        zoomTo: [],
-      };
-      if (this.lastCameraUpdate.rotation.radius){
-        camOptions = {
-          ...cameraOptions,
-          rotation: this.lastCameraUpdate.rotation,
-        };
-      }
-    }
-
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div ref={node => this.node = node} className={classes.container}>
         <Canvas
           ref={this.canvasRef}
           data={canvasData}
-          cameraOptions={camOptions}
-          cameraHandler={this.cameraHandler}
+          cameraOptions={cameraOptions}
           onSelection={this.onSelection}
           backgroundColor={0x505050}
           hoverListeners={[this.hoverHandler]}
