@@ -55,6 +55,22 @@ export default class ThreeDEngine {
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
 
+    // Setup Listeners
+    this.start = this.start.bind(this);
+    this.animate = this.animate.bind(this);
+    this.renderScene = this.renderScene.bind(this);
+    this.stop = this.stop.bind(this);
+    this.resize = this.resize.bind(this);
+    this.requestFrame = this.requestFrame.bind(this);
+    this.stop = this.stop.bind(this);
+    this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
+    this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
+    this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
+    this.update = this.update.bind(this);
+    this.mouseRayCaster = new THREE.Raycaster();
+    this.setupRenderer = this.setupRenderer.bind(this);
+    this.setupListeners = this.setupListeners.bind(this);
+
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
 
@@ -68,22 +84,7 @@ export default class ThreeDEngine {
     this.setupControls();
 
     // Setup Listeners
-    this.setupListeners = this.setupListeners.bind(this);
-    this.setupListeners(onSelection);
-
-    this.start = this.start.bind(this);
-    this.animate = this.animate.bind(this);
-    this.renderScene = this.renderScene.bind(this);
-    this.stop = this.stop.bind(this);
-    this.resize = this.resize.bind(this);
-    this.requestFrameBounding = this.requestFrame.bind(this);
-    this.stop = this.stop.bind(this);
-    this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
-    this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
-    this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
-    this.update = this.update.bind(this);
-    this.mouseRayCaster = new THREE.Raycaster();
-    this.setupRenderer = this.setupRenderer.bind(this);
+    this.setupListeners();
   }
 
   /**
@@ -821,10 +822,10 @@ export default class ThreeDEngine {
   /**
    * Set up the listeners use to detect mouse movement and window resizing
    */
-  setupListeners = (onSelection) => {
+  setupListeners = () => {
     console.log('inside set up listeners');
-    this.controls.addEventListener('start', this.requestFrameBounding);
-    this.controls.addEventListener('change', this.requestFrameBounding);
+    this.controls.addEventListener('start', this.requestFrame);
+    this.controls.addEventListener('change', this.requestFrame);
     this.controls.addEventListener('stop', this.stop);
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
