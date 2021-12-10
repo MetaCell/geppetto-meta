@@ -40,7 +40,7 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
