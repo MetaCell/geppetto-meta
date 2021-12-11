@@ -248,6 +248,7 @@ Canvas.defaultProps = {
     reset: false,
     autorotate: false,
     wireframe: false,
+    depthWrite: true,
     zoomTo: undefined,
     cameraControls: {
       instance: null,

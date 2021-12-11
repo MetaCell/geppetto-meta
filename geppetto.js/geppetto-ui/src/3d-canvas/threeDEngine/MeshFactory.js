@@ -9,12 +9,14 @@ export default class MeshFactory {
   constructor (
     scene,
     linesThreshold = 2000,
+    depthWrite = true,
     linePrecisionMinRadius = 300,
     minAllowedLinePrecision = 1,
     particleTexture,
     THREE
   ) {
     this.scene = scene;
+    this.depthWrite = depthWrite;
     this.meshes = {};
     this.splitMeshes = {};
     this.visualModelMap = {};
@@ -151,6 +153,7 @@ export default class MeshFactory {
       opacity: 1,
       shininess: 10,
       flatShading: false,
+      depthWrite: this.depthWrite,
     });
 
     this.setThreeColor(material.color, color);
@@ -164,7 +167,9 @@ export default class MeshFactory {
     if (color === undefined) {
       color = GEPPETTO.Resources.COLORS.DEFAULT;
     }
-    const material = new this.THREE.LineBasicMaterial();
+    const material = new this.THREE.LineBasicMaterial({
+      depthWrite: this.depthWrite,
+    });
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
     material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
@@ -356,6 +361,7 @@ export default class MeshFactory {
       depthTest: true,
       transparent: true,
       color: threeColor,
+      depthWrite: this.depthWrite,
     });
 
     for (let p = 0; p < node.particles.length; p++) {
