@@ -17,7 +17,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 
 import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
-import { rgbToHex, hasVisualType } from "./util";
+import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
 export default class ThreeDEngine {
   constructor (
