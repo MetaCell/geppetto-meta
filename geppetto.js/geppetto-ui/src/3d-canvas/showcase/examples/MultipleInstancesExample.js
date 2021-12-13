@@ -77,9 +77,6 @@ class MultipleInstancesExample extends Component {
       showModel: false
     };
     this.canvasIndex = 3
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
-    this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.onSelection = this.onSelection.bind(this)
@@ -97,9 +94,6 @@ class MultipleInstancesExample extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
-  }
 
   hoverHandler (obj) {
     // deactivated due to performance issues
@@ -158,14 +152,7 @@ class MultipleInstancesExample extends Component {
     const { data, cameraOptions, showModel } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
+
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
       { 
         [...Array(this.state.numberOfInstances)].map((e, i) =>
@@ -173,8 +160,7 @@ class MultipleInstancesExample extends Component {
             key={`canvas_${i}`}
             ref={this.canvasRef}
             data={canvasData}
-            cameraOptions={camOptions}
-            cameraHandler={this.cameraHandler}
+            cameraOptions={cameraOptions}
             backgroundColor={0x505050}
             onSelection={this.onSelection}
             onMount={this.onMount}
