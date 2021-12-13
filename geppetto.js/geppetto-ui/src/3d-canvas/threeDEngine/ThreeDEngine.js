@@ -176,32 +176,35 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-  getIntersectedObjects () {
+   getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
-
+  
     const raycaster = new THREE.Raycaster(
       this.cameraManager.getCamera().position,
       vector.sub(this.cameraManager.getCamera().position).normalize()
     );
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
-
-    const visibleChildren = [];
-    this.scene.traverse(function (child) {
+  
+    // returns an array containing all objects in the scene with which the ray intersects
+    return raycaster.intersectObjects(this.visibleChildren);
+  }
+  
+  updatevisibleChildren() {
+    this.visibleChildren = [];
+    this.scene.traverse( (child) => {
       if (child.visible && !(child.clickThrough === true)) {
         if (child.geometry != null) {
           if (child.type !== 'Points') {
             child.geometry.computeBoundingBox();
           }
-          visibleChildren.push(child);
+          this.visibleChildren.push(child);
         }
       }
     });
-
-    // returns an array containing all objects in the scene with which the ray intersects
-    return raycaster.intersectObjects(visibleChildren);
   }
+  
 
   /**
    * Adds instances to the ThreeJS Scene
@@ -881,6 +884,7 @@ export default class ThreeDEngine {
       threeDObjects.forEach(element => {
         this.addToScene(element);
       });
+      this.updatevisibleChildren();
       this.updateInstancesColor(proxyInstances);
       this.updateInstancesConnectionLines(proxyInstances);
       this.scene.updateMatrixWorld(true);

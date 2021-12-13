@@ -340,13 +340,15 @@ export default class CameraManager {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(true);
       }
+      this.engine.controls.setRotationalSpeed(0.075);
       this.rotate = setInterval(function () {
-        that.incrementCameraRotate(0.05, 0);
-      }, 75);
+        that.incrementCameraRotate(0.5, 0);
+      }, 25);
     } else {
       if (movieFilter === undefined || movieFilter === true) {
         this.movieMode(false);
       }
+      this.engine.controls.resetRotationalSpeed();
       clearInterval(this.rotate);
       this.rotate = null;
     }
