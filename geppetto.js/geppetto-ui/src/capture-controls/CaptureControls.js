@@ -15,10 +15,13 @@ export const captureControlsActions = {
 };
 
 export const captureControlsActionsStart = (() => ({ type: captureControlsActions.START, }));
-export const captureControlsActionsStop = (() => ({ type: captureControlsActions.STOP, }));
-export const captureControlsActionsDownloadVideo = (filename => ({
+export const captureControlsActionsStop = ((options) => ({
+  type: captureControlsActions.STOP,
+  data: { options:options },
+}))
+export const captureControlsActionsDownloadVideo = ((filename, options) => ({
   type: captureControlsActions.DOWNLOAD_VIDEO,
-  data: { filename:filename },
+  data: { filename:filename, options:options },
 }));
 export const captureControlsActionsDownloadScreenshot = (filename => ({
   type: captureControlsActions.DOWNLOAD_SCREENSHOT,
