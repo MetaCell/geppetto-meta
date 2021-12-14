@@ -64,7 +64,7 @@ class Canvas extends Component {
     );
 
     if (captureOptions) {
-      this.recorder = new Recorder(this.getCanvasElement())
+      this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
     }
     await this.threeDEngine.start(data, cameraOptions, true);
     onMount(this.threeDEngine.scene)
@@ -107,10 +107,11 @@ class Canvas extends Component {
         this.recorder.startRecording()
         break
       case captureControlsActions.STOP:
-        return this.recorder.stopRecording()
+        const { options } = action.data;
+        return this.recorder.stopRecording(options)
       case captureControlsActions.DOWNLOAD_VIDEO: {
-        const { filename } = action.data;
-        return this.recorder.download(filename)
+        const { filename, options } = action.data;
+        return this.recorder.download(filename, options)
       }
       }
     }
@@ -300,6 +301,20 @@ Canvas.propTypes = {
        * Component props
        */
       props: PropTypes.shape({})
+    }),
+    /**
+     * Recorder Options
+     */
+    recorderOptions: PropTypes.shape({
+      /**
+       * Media Recorder options
+       */
+      mediaRecorderOptions: PropTypes.shape({
+        mimeType: PropTypes.string,
+      }),
+      blobOptions: PropTypes.shape({
+        type: PropTypes.string,
+      })
     }),
     /**
      * Screenshot Options
