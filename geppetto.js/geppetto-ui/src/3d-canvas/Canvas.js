@@ -274,7 +274,11 @@ Canvas.defaultProps = {
   setColorHandler: () => true,
   onMount: () => {
   },
-  modelVersion: 0
+  modelVersion: 0,
+  updateStarted: () => {
+  },
+  updateEnded: () => {
+  },
 };
 
 Canvas.propTypes = {
