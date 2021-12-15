@@ -30,7 +30,9 @@ export default class ThreeDEngine {
     linesThreshold,
     hoverListeners,
     setColorHandler,
-    selectionStrategy
+    selectionStrategy,
+    updateStarted,
+    updateEnded,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -51,6 +53,8 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.updateStarted = updateStarted;
+    this.updateEnded = updateEnded;
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -868,6 +872,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.updateStarted();
     this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
@@ -882,6 +887,7 @@ export default class ThreeDEngine {
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.updateEnded();
   }
 
   addToScene(instance) {

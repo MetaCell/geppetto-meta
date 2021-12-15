@@ -545,7 +545,25 @@ export default class MeshFactory {
   async loadThreeGLTFModelFromNode (node) {
     const loader = this.loaders[GEPPETTO.Resources.GLTF]
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
-    return gltfData.scene
+    if (gltfData.scene.children.length === 1) {
+      const that = this;
+      gltfData.scene.children[0].traverse(function (child) {
+        if (child instanceof that.THREE.Mesh) {
+          that.setThreeColor(
+            child.material.color,
+            GEPPETTO.Resources.COLORS.DEFAULT
+          );
+          child.material.wireframe = that.wireframe;
+          child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
+          child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.geometry.computeVertexNormals();
+        }
+      });
+    } else {
+      console.error("GEPPETTO Error - GLTF loaded more than one object in the scene.");
+    }
+    return gltfData.scene.children[0];
   }
 
   async loadThreeDRCModelFromNode (node) {
@@ -569,10 +587,13 @@ export default class MeshFactory {
     });
   }
 
-  modelParser (loader, data) {
-    return new Promise((resolve, reject) => {
-      loader.parse(data, null, data => resolve(data), reject);
+  async modelParser (loader, data) {
+    let results = await new Promise((resolve, reject) => {
+      loader.parse(data, null, data => {
+        return resolve(data);
+      }, reject);
     });
+    return results;
   }
 
   init3DObject (meshes, instance) {
