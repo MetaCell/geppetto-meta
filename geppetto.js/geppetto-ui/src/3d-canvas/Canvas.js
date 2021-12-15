@@ -47,7 +47,9 @@ class Canvas extends Component {
       setColorHandler,
       onMount,
       selectionStrategy,
-      onSelection
+      onSelection,
+      updateStarted,
+      updateEnded
     } = this.props;
 
     this.threeDEngine = new ThreeDEngine(
@@ -61,7 +63,9 @@ class Canvas extends Component {
       linesThreshold,
       hoverListeners,
       setColorHandler,
-      selectionStrategy
+      selectionStrategy,
+      updateStarted,
+      updateEnded,
     );
 
     if (captureOptions) {
@@ -368,6 +372,14 @@ Canvas.propTypes = {
    * Array of hover handlers to callback
    */
   hoverListeners: PropTypes.array,
+  /**
+   * Function to callback when the loading of elements of the canvas starts
+   */
+  updateStarted: PropTypes.func,
+  /**
+   * Function to callback when the loading of elements of the canvas ends
+   */
+  updateEnded: PropTypes.func,
 };
 
 export default withStyles(styles)(Canvas);
