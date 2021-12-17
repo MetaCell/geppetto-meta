@@ -1,12 +1,10 @@
 import { formatDate } from "./utils";
 
 export class Recorder {
-  constructor (canvas, recorderOptions) {
+  constructor (canvas) {
     this.stream = canvas.captureStream();
-    const {mediaRecorderOptions, blobOptions} = recorderOptions
-    this.setupMediaRecorder(mediaRecorderOptions)
+    this.setupMediaRecorder()
     this.recordedBlobs = []
-    this.blobOptions = blobOptions
   }
 
   handleDataAvailable (event) {
@@ -15,10 +13,8 @@ export class Recorder {
     }
   }
 
-  setupMediaRecorder (options){
-    if(options == null){
-      options = { mimeType: 'video/webm' };
-    }
+  setupMediaRecorder (){
+    let options = { mimeType: 'video/webm' };
     let mediaRecorder;
     try {
       mediaRecorder = new MediaRecorder(this.stream, options);
@@ -30,7 +26,7 @@ export class Recorder {
       } catch (e1) {
         console.log('Unable to create MediaRecorder with options Object: ', e1);
         try {
-          options = { mimeType: 'video/webm,codecs=vp8' }; // Chrome 47
+          options = 'video/vp8'; // Chrome 47
           mediaRecorder = new MediaRecorder(this.stream, options);
         } catch (e2) {
           alert('MediaRecorder is not supported by this browser.\n\n'
@@ -44,10 +40,6 @@ export class Recorder {
     mediaRecorder.ondataavailable = evt => this.handleDataAvailable(evt);
     this.mediaRecorder = mediaRecorder
     this.options = options
-    if(!this.blobOptions){
-      const {mimeType} = options
-      this.blobOptions = {type: mimeType}
-    }
   }
 
   startRecording (){
@@ -55,16 +47,16 @@ export class Recorder {
     this.mediaRecorder.start(100);
   }
 
-  stopRecording (options){
+  stopRecording (){
     this.mediaRecorder.stop();
-    return this.getRecordingBlob(options)
+    return this.getRecordingBlob()
   }
 
-  download (filename, options){
+  download (filename){
     if (!filename){
       filename = `CanvasRecording_${formatDate(new Date())}.webm`
     }
-    const blob = this.getRecordingBlob(options)
+    const blob = new Blob(this.recordedBlobs, this.options);
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -79,11 +71,8 @@ export class Recorder {
     return blob
   }
 
-  getRecordingBlob (options){
-    if(!options){
-      options = this.blobOptions
-    }
-    return new Blob(this.recordedBlobs, options);
+  getRecordingBlob (){
+    return new Blob(this.recordedBlobs, this.options);
   }
 
 }
