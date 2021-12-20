@@ -14,7 +14,7 @@ export class Recorder {
   }
 
   setupMediaRecorder (){
-    let options = { mimeType: 'video/webm' };
+    let options = { mimeType: 'video/webm;codecs=h265' };
     let mediaRecorder;
     try {
       mediaRecorder = new MediaRecorder(this.stream, options);
