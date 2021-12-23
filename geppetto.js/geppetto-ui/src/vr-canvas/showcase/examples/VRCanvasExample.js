@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import Canvas from '../../canvas/Canvas';
+
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
+import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
+
+import Canvas from '../../canvas/Canvas';
+
 export default class VRCanvasExample extends Component {
   constructor (props) {
     super(props);
@@ -48,7 +52,7 @@ export default class VRCanvasExample extends Component {
         },
       };
 
-      GEPPETTO.Manager.loadModel(model.model);
+      ModelManager.loadModel(model.model);
       this.instances = [];
       model.instances.forEach(instance =>
         this.instances.push(Instances.getInstance(instance))

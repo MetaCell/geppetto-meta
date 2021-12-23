@@ -9,8 +9,7 @@
  * @author Giovanni Idili
  */
 
-
-var ObjectWrapper = require('./ObjectWrapper').default;
+import ObjectWrapper from './ObjectWrapper';
 
 function VisualGroupElement (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -71,14 +70,8 @@ VisualGroupElement.prototype.print = function () {
 
 VisualGroupElement.prototype.show = function (mode, instances) {
 
-  if (instances == undefined) {
-    instances = GEPPETTO.ModelFactory.getAllInstancesOf(this.getParent().getParent());
-  }
-        
-  for (var i = 0; i < instances.length; i++) {
-    GEPPETTO.SceneController.showVisualGroupsForInstance(instances[i], this);
-
-  }
+  console.warn("Deprecated api call");
+  console.trace();
 };
 
 // Compatibility with new imports and old require syntax
