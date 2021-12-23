@@ -30,7 +30,9 @@ export default class ThreeDEngine {
     linesThreshold,
     hoverListeners,
     setColorHandler,
-    selectionStrategy
+    selectionStrategy,
+    updateStarted,
+    updateEnded,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -40,7 +42,7 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
@@ -51,6 +53,8 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.updateStarted = updateStarted;
+    this.updateEnded = updateEnded;
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -868,6 +872,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.updateStarted();
     this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
@@ -882,6 +887,7 @@ export default class ThreeDEngine {
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.updateEnded();
   }
 
   addToScene(instance) {
@@ -898,12 +904,17 @@ export default class ThreeDEngine {
   }
 
   resize () {
-    this.width = this.containerRef.clientWidth;
-    this.height = this.containerRef.clientHeight;
-    this.cameraManager.camera.aspect = this.width / this.height;
-    this.cameraManager.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height);
-    this.composer.setSize(this.width, this.height);
+    if (this.width !== this.containerRef.clientWidth || this.height !== this.containerRef.clientHeight) {
+      this.width = this.containerRef.clientWidth;
+      this.height = this.containerRef.clientHeight;
+      this.cameraManager.camera.aspect = this.width / this.height;
+      this.cameraManager.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+      this.composer.setSize(this.width, this.height);
+      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+      // the resizing works but the image gets stretched.
+      this.cameraManager.engine.controls.updateOnResize();
+    }
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
@@ -921,7 +932,6 @@ export default class ThreeDEngine {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-      
   }
 
   animate () {
