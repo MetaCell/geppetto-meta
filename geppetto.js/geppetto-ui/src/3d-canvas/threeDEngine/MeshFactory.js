@@ -12,12 +12,14 @@ export default class MeshFactory {
   constructor (
     scene,
     linesThreshold = 2000,
+    depthWrite = true,
     linePrecisionMinRadius = 300,
     minAllowedLinePrecision = 1,
     particleTexture,
     THREE
   ) {
     this.scene = scene;
+    this.depthWrite = depthWrite;
     this.meshes = {};
     this.splitMeshes = {};
     this.visualModelMap = {};
@@ -154,6 +156,7 @@ export default class MeshFactory {
       opacity: 1,
       shininess: 10,
       flatShading: false,
+      depthWrite: this.depthWrite,
     });
 
     this.setThreeColor(material.color, color);
@@ -167,7 +170,9 @@ export default class MeshFactory {
     if (color === undefined) {
       color = Resources.COLORS.DEFAULT;
     }
-    const material = new this.THREE.LineBasicMaterial();
+    const material = new this.THREE.LineBasicMaterial({
+      depthWrite: this.depthWrite,
+    });
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
     material.defaultOpacity = Resources.OPACITY.DEFAULT;
@@ -359,6 +364,7 @@ export default class MeshFactory {
       depthTest: true,
       transparent: true,
       color: threeColor,
+      depthWrite: this.depthWrite,
     });
 
     for (let p = 0; p < node.particles.length; p++) {
@@ -542,7 +548,25 @@ export default class MeshFactory {
   async loadThreeGLTFModelFromNode (node) {
     const loader = this.loaders[Resources.GLTF]
     const gltfData = await this.modelParser(loader, this.parseBase64(node.gltf));
-    return gltfData.scene
+    if (gltfData.scene.children.length === 1) {
+      const that = this;
+      gltfData.scene.children[0].traverse(function (child) {
+        if (child instanceof that.THREE.Mesh) {
+          that.setThreeColor(
+            child.material.color,
+            GEPPETTO.Resources.COLORS.DEFAULT
+          );
+          child.material.wireframe = that.wireframe;
+          child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
+          child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.geometry.computeVertexNormals();
+        }
+      });
+    } else {
+      console.error("GEPPETTO Error - GLTF loaded more than one object in the scene.");
+    }
+    return gltfData.scene.children[0];
   }
 
   async loadThreeDRCModelFromNode (node) {
@@ -566,10 +590,13 @@ export default class MeshFactory {
     });
   }
 
-  modelParser (loader, data) {
-    return new Promise((resolve, reject) => {
-      loader.parse(data, null, data => resolve(data), reject);
+  async modelParser (loader, data) {
+    let results = await new Promise((resolve, reject) => {
+      loader.parse(data, null, data => {
+        return resolve(data);
+      }, reject);
     });
+    return results;
   }
 
   init3DObject (meshes, instance) {

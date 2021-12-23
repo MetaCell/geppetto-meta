@@ -141,6 +141,14 @@ class SimpleInstancesExample extends Component {
         instance: CaptureControls,
         props: {}
       },
+      recorderOptions: {
+        mediaRecorderOptions: {
+          mimeType: 'video/webm',
+        },
+        blobOptions:{
+          type: 'video/webm'
+        }
+      },
       screenshotOptions:{
         resolution:{
           width: 3840,
