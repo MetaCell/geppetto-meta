@@ -823,7 +823,6 @@ export default class ThreeDEngine {
    * Set up the listeners use to detect mouse movement and window resizing
    */
   setupListeners = () => {
-    console.log('inside set up listeners');
     this.controls.addEventListener('start', this.requestFrame);
     this.controls.addEventListener('change', this.requestFrame);
     this.controls.addEventListener('stop', this.stop);
