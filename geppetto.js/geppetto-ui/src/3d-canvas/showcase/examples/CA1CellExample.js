@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import Loader from "../../../loader/Loader";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
-import CanvasTooltip from '../utils/CanvasTooltip'
+import CanvasTooltip from '../utils/CanvasTooltip';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -26,12 +26,10 @@ class CA1Example extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-
+    this.tooltipRef = React.createRef();
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
-      intersected: [],
-      tooltipVisible: false,
       data: [
         {
           instancePath: 'network_CA1PyramidalCell.CA1_CG[0]',
@@ -97,15 +95,11 @@ class CA1Example extends Component {
   }
 
   hoverListener (objs, canvasX, canvasY) {
-    this.state.intersected = [];
-    objs.forEach(o => {
-      this.state.intersected.push({ o: o, x: canvasX, y: canvasY });
-    })
-    this.setState({ intersected: this.state.intersected, tooltipVisible: true });
-
-    setTimeout(() => {
-      this.setState({ tooltipVisible: false })
-    },1500);
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
 
   render () {
@@ -119,15 +113,7 @@ class CA1Example extends Component {
         <div ref={node => this.node = node} className={classes.container}>
           <div id={'canvas-tooltips-container'}>
             <div>
-              { this.state.intersected.length > 0
-                && <CanvasTooltip
-                  visible={ this.state.tooltipVisible } 
-                  x={this.state.intersected[this.state.intersected.length - 1].x}
-                  y={this.state.intersected[this.state.intersected.length - 1].y}
-                  text={this.state.intersected[this.state.intersected.length - 1].o.object.uuid}
-                  id={'canvas-tooltip-' + this.state.intersected[this.state.intersected.length - 1].o.object.uuid}>
-                </CanvasTooltip>
-              }
+              <CanvasTooltip ref={this.tooltipRef} />
             </div>
           </div>
           <Canvas
