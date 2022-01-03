@@ -554,12 +554,12 @@ export default class MeshFactory {
         if (child instanceof that.THREE.Mesh) {
           that.setThreeColor(
             child.material.color,
-            GEPPETTO.Resources.COLORS.DEFAULT
+            Resources.COLORS.DEFAULT
           );
           child.material.wireframe = that.wireframe;
-          child.material.defaultColor = GEPPETTO.Resources.COLORS.DEFAULT;
-          child.material.defaultOpacity = GEPPETTO.Resources.OPACITY.DEFAULT;
-          child.material.opacity = GEPPETTO.Resources.OPACITY.DEFAULT;
+          child.material.defaultColor = Resources.COLORS.DEFAULT;
+          child.material.defaultOpacity = Resources.OPACITY.DEFAULT;
+          child.material.opacity = Resources.OPACITY.DEFAULT;
           child.geometry.computeVertexNormals();
         }
       });

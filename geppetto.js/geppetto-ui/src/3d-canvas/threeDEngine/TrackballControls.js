@@ -1001,6 +1001,13 @@ class TrackballControls extends EventDispatcher {
 
     }
 
+    this.updateOnResize = function () {
+      scope.dispatchEvent(_startEvent);
+      scope.dispatchEvent(_endEvent);
+      scope.update();
+      scope.unsetCameraByConsoleLock();
+    }
+
     this.dispose = function () {
 
       scope.domElement.removeEventListener('contextmenu', contextmenu);
@@ -1016,17 +1023,6 @@ class TrackballControls extends EventDispatcher {
       window.removeEventListener('keyup', keyup);
 
     };
-  this.updateOnResize = function () {
-    _this.dispatchEvent(startEvent);
-    _this.dispatchEvent(endEvent);
-    _this.update();
-    _this.unsetCameraByConsoleLock();
-  }
-
-  this.dispose = function () {
-    this.domElement.removeEventListener('contextmenu', contextmenu, false);
-    this.domElement.removeEventListener('mousedown', mousedown, false);
-    this.domElement.removeEventListener('wheel', mousewheel, false);
 
     this.domElement.addEventListener('contextmenu', contextmenu);
 
@@ -1044,8 +1040,6 @@ class TrackballControls extends EventDispatcher {
     this.update();
 
   }
-
-
 }
 
 export { TrackballControls };

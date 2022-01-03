@@ -241,7 +241,7 @@ export default class ThreeDEngine {
           this.setInstanceMaterial(child, instance);
           break;
         } else {
-          instance.color = GEPPETTO.Resources.COLORS.DEFAULT;
+          instance.color = Resources.COLORS.DEFAULT;
           this.setInstanceMaterial(child, instance);
         }
       }
@@ -287,7 +287,7 @@ export default class ThreeDEngine {
       } else if (hasVisualType(geppettoInstance)) {
         if (
           geppettoInstance.getType().getMetaType()
-            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            !== Resources.ARRAY_TYPE_NODE
             && geppettoInstance.getVisualType()
         ) {
           var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
@@ -302,7 +302,7 @@ export default class ThreeDEngine {
           return false;
         }
         // this block keeps traversing the instances
-        if (geppettoInstance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+        if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
           var returnValue = false;
           var children = geppettoInstance.getChildren();
           for (let i = 0; i < children.length; i++) {
@@ -311,7 +311,7 @@ export default class ThreeDEngine {
           }
           return returnValue;
         } else if (
-          geppettoInstance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+          geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
           var returnValue = false;
           for (let i = 0; i < geppettoInstance.length; i++) {
