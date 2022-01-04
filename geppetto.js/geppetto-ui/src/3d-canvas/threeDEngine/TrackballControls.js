@@ -1001,6 +1001,13 @@ class TrackballControls extends EventDispatcher {
 
     }
 
+    this.updateOnResize = function () {
+      scope.dispatchEvent(_startEvent);
+      scope.dispatchEvent(_endEvent);
+      scope.update();
+      scope.unsetCameraByConsoleLock();
+    }
+
     this.dispose = function () {
 
       scope.domElement.removeEventListener('contextmenu', contextmenu);
@@ -1033,8 +1040,6 @@ class TrackballControls extends EventDispatcher {
     this.update();
 
   }
-
-
 }
 
 export { TrackballControls };
