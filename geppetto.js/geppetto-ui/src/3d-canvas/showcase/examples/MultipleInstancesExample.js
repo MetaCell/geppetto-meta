@@ -10,6 +10,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -57,6 +58,7 @@ const styles = () => ({
 class MultipleInstancesExample extends Component {
   constructor (props) {
     super(props);
+    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -77,9 +79,6 @@ class MultipleInstancesExample extends Component {
       showModel: false
     };
     this.canvasIndex = 3
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
-    this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.onSelection = this.onSelection.bind(this)
@@ -97,12 +96,12 @@ class MultipleInstancesExample extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
-  }
-
-  hoverHandler (obj) {
-    // deactivated due to performance issues
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
 
   handleToggle () {
@@ -158,28 +157,28 @@ class MultipleInstancesExample extends Component {
     const { data, cameraOptions, showModel } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
+
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      { 
-        [...Array(this.state.numberOfInstances)].map((e, i) =>
-          <Canvas
-            key={`canvas_${i}`}
-            ref={this.canvasRef}
-            data={canvasData}
-            cameraOptions={camOptions}
-            cameraHandler={this.cameraHandler}
-            backgroundColor={0x505050}
-            onSelection={this.onSelection}
-            onMount={this.onMount}
-          />)
-      }   
+      <>
+        <div>
+          <CanvasTooltip ref={this.tooltipRef} />
+        </div>
+        { 
+          [...Array(this.state.numberOfInstances)].map((e, i) =>
+            <Canvas
+              key={`canvas_${i}`}
+              ref={this.canvasRef}
+              data={canvasData}
+              cameraOptions={cameraOptions}
+              backgroundColor={0x505050}
+              onSelection={this.onSelection}
+              onMount={this.onMount}
+              hoverListeners={[this.hoverHandler]}
+            />
+
+          )
+        }
+      </>
     </div> : <Button
       variant="outlined"
       color="primary"
