@@ -26,6 +26,7 @@ export interface ExtendedNode extends Node {
  */
 export interface Widget {
   id: string;
+  model: string;
   status: WidgetStatus;
   panelName: string;
   defaultPanel?: any;

@@ -57,6 +57,7 @@ class WidgetFactory {
     return Component ?
       <Component
         key={widgetConfig.id}
+        model={widgetConfig.model}
         session={widgetConfig.session}
         onSessionChange={sessionChange}
         {...widgetConfig.config}
