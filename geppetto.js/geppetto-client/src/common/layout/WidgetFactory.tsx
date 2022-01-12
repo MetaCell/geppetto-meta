@@ -56,6 +56,7 @@ class WidgetFactory {
     }
     return Component ?
       <Component
+        id={widgetConfig.id}
         key={widgetConfig.id}
         model={widgetConfig.model}
         session={widgetConfig.session}
