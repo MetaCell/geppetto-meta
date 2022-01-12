@@ -83,8 +83,6 @@ class VFBExample extends Component {
         rotateSpeed: 3,
       }
     };
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -172,10 +170,6 @@ class VFBExample extends Component {
 
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
-  }
-
   async handleToggle () {
     this.setState({ showLoader: true })
 
@@ -197,14 +191,6 @@ class VFBExample extends Component {
     const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
     const canvasData = mapToCanvasData(data)
     
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div ref={node => this.node = node} className={classes.container}>
@@ -213,9 +199,8 @@ class VFBExample extends Component {
           modelVersion={modelVersion}
           data={canvasData}
           threeDObjects={threeDObjects}
-          cameraOptions={camOptions}
+          cameraOptions={cameraOptions}
           onMount={this.onMount}
-          cameraHandler={this.cameraHandler}
           onSelection={this.onSelection}
           linesThreshold={10000}
           backgroundColor={0x505050}
