@@ -248,14 +248,52 @@ Canvas.defaultProps = {
     reset: false,
     autorotate: false,
     wireframe: false,
-    zoomTo: undefined,
+    zoomTo: [],
+    rotationSpeed: 0.5,
+    movieFilter: false,
+    position: {
+      x: 319.7,
+      y: 153.12,
+      z: -494.2,
+    },
+    rotation: {
+      rx: -3.14,
+      ry: 0,
+      rz: -3.14,
+      radius: 559.83,
+    },
     cameraControls: {
+      instance: null,
+      props: {
+        wireframeButtonEnabled: false,
+      },
+      incrementsPan: {
+        x: 0.05,
+        y: 0.05,
+      },
+      incrementRotation: {
+        x: 0.05,
+        y: 0.05,
+        z:0.05,
+      },
+      incrementZoom: 0.5,
+      reset: false,
+    },
+  },
+  captureOptions: {
+    captureControls: {
       instance: null,
       props: {},
     },
-    rotateSpeed: 0.5,
+    recorderOptions: {
+      mediaRecorderOptions: {
+        mimeType: 'video/webm',
+      },
+      blobOptions: {
+        type: 'video/webm',
+      }
+    },
   },
-  captureOptions: undefined,
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
@@ -284,7 +322,49 @@ Canvas.propTypes = {
   /**
    * Options to customize camera
    */
-  cameraOptions: PropTypes.object,
+  cameraOptions: PropTypes.shape({
+    angle: PropTypes.number,
+    near: PropTypes.number,
+    far: PropTypes.number,
+    baseZoom: PropTypes.number,
+    reset: PropTypes.bool,
+    autorotate: PropTypes.bool,
+    wireframe: PropTypes.bool,
+    zoomTo: PropTypes.arrayOf(PropTypes.string),
+    rotationSpeed: PropTypes.number,
+    movieFilter: PropTypes.bool,
+    position: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      z: PropTypes.number,
+    }),
+    rotation: PropTypes.shape({
+      rx: PropTypes.number,
+      ry: PropTypes.number,
+      rz: PropTypes.number,
+      radius: PropTypes.number,
+    }),
+    /**
+     * Options to customize camera controls
+     */
+    cameraControls: PropTypes.shape({
+      instance: PropTypes.any,
+      props: PropTypes.shape({
+        wireframeButtonEnabled: PropTypes.bool,
+      }),
+      incrementPan: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+      }),
+      incrementRotation: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+        z: PropTypes.number,
+      }),
+      incrementZoom: PropTypes.number,
+      reset: PropTypes.bool,
+    })
+  }),
   /**
    * Options to customize capture features
    */
