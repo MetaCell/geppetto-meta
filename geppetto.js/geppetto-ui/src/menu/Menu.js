@@ -177,6 +177,11 @@ class Menu extends React.Component {
   }
 }
 
+Menu.defaultProps = {
+  configuration: {},
+  menuHandler: () => {},
+}
+
 Menu.propTypes = {
   /**
    * All the required and optional configurations for instantiating a new instance of a Menu
@@ -254,6 +259,10 @@ Menu.propTypes = {
       })
     ).isRequired,
   }),
+  /**
+   * Function to handle the menu
+   */
+  menuHandler: PropTypes.func,
 };
 
 export default Menu;
