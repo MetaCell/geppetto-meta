@@ -72,6 +72,16 @@ export default class MoviePlayer extends Component {
   }
 }
 
+MoviePlayer.defaultValues = {
+  controls: {
+    playAtStart: false,
+    loop: false,
+    volume: 10,
+    width: '800px',
+    height: '640px',
+  }
+}
+
 MoviePlayer.propTypes = {
   /**
    * URL pointing to the video to be render in this component.
