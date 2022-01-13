@@ -115,7 +115,7 @@ Loader.defaultProps = {
   messages: [],
   messagesInterval: 10000,
   elapsed: null,
-  backgroundStyle: {},
+  backgroundStyle: { backgroundColor: 'rgba(255,142,0,0.1)' },
   handleClose: () => {},
 };
 
@@ -147,7 +147,9 @@ Loader.propTypes = {
   /**
    * Style to be applied to the Loader background
    */
-  backgroundStyle: PropTypes.object,
+  backgroundStyle: PropTypes.shape({
+    backgroundColor: PropTypes.string,
+  }),
 };
 
 export default withStyles(styles)(Loader);
