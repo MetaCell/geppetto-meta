@@ -813,7 +813,16 @@ class DicomViewer extends Component {
   }
 }
 
-DicomViewer.defaultProps = { onLoaded: () => {}, };
+DicomViewer.defaultProps = { 
+  onLoaded: () => {},
+  mode: 'coronal',
+  orientation: 'goToPoint',
+  onClick: 'goToPoint',
+  onCtrlClick: 'goToPoint',
+  onShiftClick: 'goToPoint',
+  onDoubleClick: 'goToPoint',
+  showDownloadButton: false,
+};
 
 
 DicomViewer.propTypes = {
