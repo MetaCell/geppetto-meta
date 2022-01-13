@@ -394,6 +394,27 @@ export default class GeppettoGraphVisualization extends Component {
   }
 }
 
+GeppettoGraphVisualization.defaultProps = {
+  d2: false,
+  nodeLabel: () => {
+  },
+  linkLabel: () => {
+  },
+  url: '',
+  wireframe: true,
+  wireframeColor: '0x6893DE',
+  xGap: 20,
+  yGap: 45,
+  font: '6px Source Sans Pro',
+  nodeRelSize: 20,
+  forceLinkDistance: 90,
+  forceLinkStrength: 0.7,
+  forceChargeStrength: -200,
+  timeToCenter2DCamera: 0,
+  forceRadial: 1,
+}
+
+
 GeppettoGraphVisualization.propTypes = {
   /**
    * Object with arrays of nodes and links used to render the graph.
