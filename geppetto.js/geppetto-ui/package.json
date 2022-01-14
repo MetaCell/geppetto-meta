@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-ui",
-  "version": "0.0.7-rc2",
+  "version": "1.0.0-rc3",
   "description": "React components from geppetto-meta to create neuroscience applications and visualize data.",
   "repository": {
     "type": "git",
