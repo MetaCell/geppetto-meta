@@ -62,8 +62,7 @@ function CanvasExample(props) {
     const ref = React.createRef();
     const [showLoader, setShowLoader] = React.useState(true);
     const [hasModelLoaded, setHasModelLoaded] = React.useState(false);
-    const [intersected, setIntersected] = React.useState([]);
-    const [tooltipVisible, setTooltipVisible] = React.useState(false);
+    const tooltipRef = React.useRef(null);
 
 
     React.useEffect(() => {
@@ -86,19 +85,11 @@ function CanvasExample(props) {
     }
 
     const hoverListener = (objs, canvasX, canvasY) => {
-        setIntersected([]);
-        const temp = new Array(0);
-        objs.forEach(o => {
-            temp.push({ o: o, x: canvasX, y: canvasY });
+        tooltipRef?.current?.updateIntersected({
+            o: objs[objs.length - 1],
+            x: canvasX,
+            y: canvasY,
         });
-
-        setIntersected(temp);
-
-        setTooltipVisible(true);
-
-        setTimeout(() => {
-            setTooltipVisible(false);
-        }, 1500);
     }
 
     const canvasData = mapToCanvasData(data);
@@ -111,15 +102,10 @@ function CanvasExample(props) {
             <div className={style.canvasContainer}>
                 <div id={'canvas-tooltips-container'}>
                     <div>
-                        { intersected.length > 0
-                            && <CanvasTooltip
-                            visible={tooltipVisible}
-                            x={intersected[intersected.length - 1].x}
-                            y={intersected[intersected.length - 1].y}
-                            text={intersected[intersected.length - 1].o.object.uuid}
-                            id={'canvas-tooltip-' + intersected[intersected.length - 1].o.object.uuid}
-                            ></CanvasTooltip>
-                        }
+                        <CanvasTooltip
+                            ref={tooltipRef}
+                        />
+                        
                     </div>
                 </div>
             

@@ -7,6 +7,8 @@ export class Recorder {
     this.setupMediaRecorder(mediaRecorderOptions)
     this.recordedBlobs = []
     this.blobOptions = blobOptions
+    this.ctx = canvas.getContext('webgl')
+    this.animationLoop = this.animationLoop.bind(this)
   }
 
   handleDataAvailable (event) {
@@ -42,6 +44,8 @@ export class Recorder {
       }
     }
     mediaRecorder.ondataavailable = evt => this.handleDataAvailable(evt);
+    mediaRecorder.onstart = () => this.animationLoop();
+
     this.mediaRecorder = mediaRecorder
     this.options = options
     if(!this.blobOptions){
@@ -86,4 +90,11 @@ export class Recorder {
     return new Blob(this.recordedBlobs, options);
   }
 
+  animationLoop() {
+    // draw nothing, but still draw
+    this.ctx.drawArrays(this.ctx.POINTS, 0, 0)
+    if (this.mediaRecorder.state !== "inactive") {
+      requestAnimationFrame(this.animationLoop);
+    }
+  }
 }

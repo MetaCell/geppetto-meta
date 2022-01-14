@@ -26,6 +26,8 @@ Create a release branch `release/v.x.x.x`.
 
 And follow the steps for each package below.
 
+* first of all do a `npm login` (you will need 2FA enable on your account before proceeding)
+
 **geppetto-ui**
 
 * Increase version in `geppetto-ui/package.json` to new version.
@@ -39,7 +41,7 @@ And follow the steps for each package below.
   
   ```bash
   cd build
-  yarn publish --access public
+  npm publish --access public
   ```
 
 **geppetto-core**
