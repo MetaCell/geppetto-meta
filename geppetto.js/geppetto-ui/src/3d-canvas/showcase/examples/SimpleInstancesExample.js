@@ -8,6 +8,10 @@ import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 import CaptureControls from "../../../capture-controls/CaptureControls";
+import Resources from '@metacell/geppetto-meta-core/Resources';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -15,7 +19,7 @@ const instance1spec = {
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': neuron
   }
 }
@@ -25,17 +29,17 @@ const instance2spec = {
   "name": "The second SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
-    "eClass": GEPPETTO.Resources.GLTF,
+    "eClass": Resources.GLTF,
     'gltf': contact
   }
 }
 
 function loadInstances (){
-  GEPPETTO.ModelFactory.cleanModel();
+  ModelFactory.cleanModel();
   const instance1 = new SimpleInstance(instance1spec)
   const instance2 = new SimpleInstance(instance2spec)
   window.Instances = [instance1, instance2]
-  GEPPETTO.Manager.augmentInstancesArray(window.Instances);
+  augmentInstancesArray(window.Instances);
 }
 
 function getProxyInstances () {
@@ -55,6 +59,7 @@ const styles = () => ({
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
+    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -74,8 +79,6 @@ class SimpleInstancesExample extends Component {
       showModel: false
     };
     this.canvasIndex = 3
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -92,12 +95,13 @@ class SimpleInstancesExample extends Component {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
-  }
 
-  hoverHandler (obj) {
-    // deactivated due to performance issues
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
 
   handleToggle () {
@@ -125,18 +129,19 @@ class SimpleInstancesExample extends Component {
     const { data, cameraOptions, showModel } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
+
     const captureOptions = {
       captureControls: {
         instance: CaptureControls,
         props: {}
+      },
+      recorderOptions: {
+        mediaRecorderOptions: {
+          mimeType: 'video/webm',
+        },
+        blobOptions:{
+          type: 'video/webm'
+        }
       },
       screenshotOptions:{
         resolution:{
@@ -150,16 +155,21 @@ class SimpleInstancesExample extends Component {
     }
 
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <Canvas
-        ref={this.canvasRef}
-        data={canvasData}
-        cameraOptions={camOptions}
-        captureOptions={captureOptions}
-        cameraHandler={this.cameraHandler}
-        backgroundColor={0x505050}
-        onSelection={this.onSelection}
-        onMount={this.onMount}
-      />
+      <>
+        <div>
+          <CanvasTooltip ref={this.tooltipRef} />
+        </div>
+        <Canvas
+          ref={this.canvasRef}
+          data={canvasData}
+          cameraOptions={cameraOptions}
+          captureOptions={captureOptions}
+          backgroundColor={0x505050}
+          onSelection={this.onSelection}
+          onMount={this.onMount}
+          hoverListeners={[this.hoverHandler]}
+        />
+      </>
     </div> : <Button
       variant="outlined"
       color="primary"

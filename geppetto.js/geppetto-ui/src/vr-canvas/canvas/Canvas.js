@@ -5,6 +5,7 @@ import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import ArrayInstance from '@metacell/geppetto-meta-core/model/ArrayInstance';
 import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import 'aframe';
 import 'aframe-slice9-component';
 import MeshFactory from '@metacell/geppetto-meta-ui/3d-canvas/threeDEngine/MeshFactory';
@@ -171,7 +172,7 @@ class Canvas extends Component {
          * fetch all instances for the given type or variable and call hide on each
          * TODO: Pass ModelFactory to prop?
          */
-        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+        const instances = ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setColor(instances[j].getInstancePath(), color);
         }
@@ -328,8 +329,8 @@ class Canvas extends Component {
       const t0 = performance.now();
 
       this.colorController.addColorFunction(
-        GEPPETTO.ModelFactory.instances.getInstance(
-          GEPPETTO.ModelFactory.getAllPotentialInstancesEndingWith('.v')
+        ModelFactory.instances.getInstance(
+          ModelFactory.getAllPotentialInstancesEndingWith('.v')
         ),
         getVoltageColor
       );

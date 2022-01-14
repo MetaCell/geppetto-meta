@@ -6,10 +6,10 @@ import store from './redux/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { initGeppetto } from 'geppetto';
+import { initGeppetto } from '@metacell/geppetto-meta-client/GEPPETTO';
 import theme from './theme';
-
-initGeppetto();
+console.log(store)
+initGeppetto(false, true);
 
 ReactDOM.render(
   <React.StrictMode>

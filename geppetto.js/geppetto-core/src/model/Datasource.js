@@ -123,10 +123,8 @@ Datasource.prototype.getChildren = function () {
  * @param variableId
  */
 Datasource.prototype.fetchVariable = function (variableIds, callback) {
-  if (typeof(variableIds) == "string"){
-    variableIds = [variableIds];   
-  }
-  GEPPETTO.Manager.fetchVariables(variableIds, this.getId(), callback);
+  console.warn("Deprecated api call. Use Manager.fetchVariables(");
+  console.trace();
 };
 
 // Compatibility with new imports and old require syntax

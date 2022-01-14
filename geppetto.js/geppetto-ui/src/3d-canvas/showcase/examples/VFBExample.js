@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const INSTANCES = [
   'VFB_00017894',
@@ -39,6 +41,7 @@ class VFBExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.tooltipRef = React.createRef();
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
@@ -82,10 +85,9 @@ class VFBExample extends Component {
         rotateSpeed: 3,
       }
     };
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
+    this.hoverHandler = this.hoverHandler.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
@@ -171,16 +173,12 @@ class VFBExample extends Component {
 
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
-  }
-
   async handleToggle () {
     this.setState({ showLoader: true })
 
     const response = await fetch('../assets/vfb_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    Manager.loadModel(model);
     for (const iname of INSTANCES) {
       Instances.getInstance(iname);
     }
@@ -191,34 +189,39 @@ class VFBExample extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
+  }
+
   render () {
     const { classes } = this.props;
     const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
     const canvasData = mapToCanvasData(data)
     
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div ref={node => this.node = node} className={classes.container}>
-        <Canvas
-          ref={this.canvasRef}
-          modelVersion={modelVersion}
-          data={canvasData}
-          threeDObjects={threeDObjects}
-          cameraOptions={camOptions}
-          onMount={this.onMount}
-          cameraHandler={this.cameraHandler}
-          onSelection={this.onSelection}
-          linesThreshold={10000}
-          backgroundColor={0x505050}
-        />
+        <>
+          <div>
+            <CanvasTooltip ref={this.tooltipRef} />
+          </div>
+          <Canvas
+            ref={this.canvasRef}
+            modelVersion={modelVersion}
+            data={canvasData}
+            threeDObjects={threeDObjects}
+            cameraOptions={cameraOptions}
+            onMount={this.onMount}
+            onSelection={this.onSelection}
+            linesThreshold={10000}
+            backgroundColor={0x505050}
+            hoverListeners={[this.hoverHandler]}
+          />
+        </>
       </div>
     ) : <Button
       variant="outlined"

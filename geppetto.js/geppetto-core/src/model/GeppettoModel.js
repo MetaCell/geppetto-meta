@@ -6,11 +6,11 @@
  * @module model/GeppettoModel
  * @author Giovanni Idili
  */
+import Resources from '../Resources';
+import ObjectWrapper from './ObjectWrapper';
 
-var ObjectWrapper = require('./ObjectWrapper').default;
 
-
-function GeppettoModel (options) {
+export function GeppettoModel (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
   this.variables = (options.variables != undefined) ? options.variables : [];
   this.libraries = (options.libraries != undefined) ? options.libraries : [];
@@ -68,7 +68,7 @@ GeppettoModel.prototype.getAllVariables = function () {
  *
  */
 GeppettoModel.prototype.getId = function () {
-  return GEPPETTO.Resources.MODEL_PREFIX_CLIENT;
+  return Resources.MODEL_PREFIX_CLIENT;
 };
 
 /**
@@ -153,6 +153,4 @@ GeppettoModel.prototype.activateWorld = function (worldOrIndex) {
   }
 };
 
-// Compatibility with new imports and old require syntax
-GeppettoModel.default = GeppettoModel;
-module.exports = GeppettoModel;
+export default GeppettoModel;

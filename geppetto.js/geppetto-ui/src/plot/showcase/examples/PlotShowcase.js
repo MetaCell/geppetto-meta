@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
+
 import model from './../model.json';
 import PlotComponent from "./../../PlotComponent";
 
@@ -6,7 +8,7 @@ export default class PlotShowcase extends Component {
   constructor (props) {
     super(props);
     this.instancePath = "nwbfile.acquisition.test_sine_1";
-    GEPPETTO.Manager.loadModel(model);
+    ModelManager.loadModel(model);
     Instances.getInstance(this.instancePath);
     Instances.getInstance(`${this.instancePath}.data`);
     Instances.getInstance(`${this.instancePath}.timestamps`);

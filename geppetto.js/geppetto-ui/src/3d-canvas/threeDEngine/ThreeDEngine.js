@@ -7,16 +7,17 @@ import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FocusShader } from 'three/examples/jsm/shaders/FocusShader.js';
 
 import MeshFactory from './MeshFactory';
-import CameraManager from './CameraManager';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import ArrayInstance from '@metacell/geppetto-meta-core//model/ArrayInstance';
 import Type from '@metacell/geppetto-meta-core/model/Type';
 import Variable from '@metacell/geppetto-meta-core/model/Variable';
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { hasVisualType, hasVisualValue } from "./util";
-import { rgbToHex } from '@metacell/geppetto-meta-core/Utility';
+import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 
-require('./TrackballControls');
+import CameraManager from './CameraManager';
+import { TrackballControls } from './TrackballControls';
+import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
 export default class ThreeDEngine {
   constructor (
@@ -30,17 +31,21 @@ export default class ThreeDEngine {
     linesThreshold,
     hoverListeners,
     setColorHandler,
-    selectionStrategy
+    selectionStrategy,
+    updateStarted,
+    updateEnded,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
     this.cameraManager = null;
+    this.cameraOptions = cameraOptions;
+    this.onSelection = onSelection;
     this.renderer = null;
     this.controls = null;
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
@@ -51,6 +56,24 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.updateStarted = updateStarted;
+    this.updateEnded = updateEnded;
+
+    // Setup Listeners
+    this.start = this.start.bind(this);
+    this.animate = this.animate.bind(this);
+    this.renderScene = this.renderScene.bind(this);
+    this.stop = this.stop.bind(this);
+    this.resize = this.resize.bind(this);
+    this.requestFrame = this.requestFrame.bind(this);
+    this.stop = this.stop.bind(this);
+    this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
+    this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
+    this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
+    this.update = this.update.bind(this);
+    this.mouseRayCaster = new THREE.Raycaster();
+    this.setupRenderer = this.setupRenderer.bind(this);
+    this.setupListeners = this.setupListeners.bind(this);
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -65,13 +88,7 @@ export default class ThreeDEngine {
     this.setupControls();
 
     // Setup Listeners
-    this.setupListeners(onSelection);
-
-    this.start = this.start.bind(this);
-    this.animate = this.animate.bind(this);
-    this.renderScene = this.renderScene.bind(this);
-    this.stop = this.stop.bind(this);
-    this.resize = this.resize.bind(this);
+    this.setupListeners();
   }
 
   /**
@@ -149,7 +166,7 @@ export default class ThreeDEngine {
   }
 
   setupControls () {
-    this.controls = new THREE.TrackballControls(
+    this.controls = new TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
@@ -163,32 +180,35 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-  getIntersectedObjects () {
+   getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
-
+  
     const raycaster = new THREE.Raycaster(
       this.cameraManager.getCamera().position,
       vector.sub(this.cameraManager.getCamera().position).normalize()
     );
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
-
-    const visibleChildren = [];
-    this.scene.traverse(function (child) {
+  
+    // returns an array containing all objects in the scene with which the ray intersects
+    return raycaster.intersectObjects(this.visibleChildren);
+  }
+  
+  updatevisibleChildren() {
+    this.visibleChildren = [];
+    this.scene.traverse( (child) => {
       if (child.visible && !(child.clickThrough === true)) {
         if (child.geometry != null) {
           if (child.type !== 'Points') {
             child.geometry.computeBoundingBox();
           }
-          visibleChildren.push(child);
+          this.visibleChildren.push(child);
         }
       }
     });
-
-    // returns an array containing all objects in the scene with which the ray intersects
-    return raycaster.intersectObjects(visibleChildren);
   }
+  
 
   /**
    * Adds instances to the ThreeJS Scene
@@ -207,16 +227,16 @@ export default class ThreeDEngine {
    */
 
 
-  checkMaterial(mesh, instance) {
+  checkMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       if (mesh.material.color.r === instance?.color?.r
         && mesh.material.color.g === instance?.color?.g
         && mesh.material.color.b === instance?.color?.b
         && mesh.material.color.opacity === instance?.color?.a) {
-          return false;
-        } else {
-          return true;
-        }
+        return false;
+      } else {
+        return true;
+      }
     } else if (mesh.type === 'Group') {
       var changed = false;
       for (let child of mesh.children) {
@@ -229,14 +249,14 @@ export default class ThreeDEngine {
   }
 
 
-  updateInstanceMaterial(mesh, instance) {
+  updateInstanceMaterial (mesh, instance) {
     for (let child of this.scene.children) {
       if (child.instancePath === mesh.instancePath && child.uuid === mesh.uuid) {
         if (instance?.color !== undefined) {
           this.setInstanceMaterial(child, instance);
           break;
         } else {
-          instance.color = GEPPETTO.Resources.COLORS.DEFAULT;
+          instance.color = Resources.COLORS.DEFAULT;
           this.setInstanceMaterial(child, instance);
         }
       }
@@ -244,7 +264,7 @@ export default class ThreeDEngine {
   }
 
 
-  setInstanceMaterial(mesh, instance) {
+  setInstanceMaterial (mesh, instance) {
     if (mesh.type === 'Mesh') {
       this.meshFactory.setThreeColor(mesh.material.color, instance.color);
       if (instance.color.a) {
@@ -282,7 +302,7 @@ export default class ThreeDEngine {
       } else if (hasVisualType(geppettoInstance)) {
         if (
           geppettoInstance.getType().getMetaType()
-            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            !== Resources.ARRAY_TYPE_NODE
             && geppettoInstance.getVisualType()
         ) {
           var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
@@ -297,7 +317,7 @@ export default class ThreeDEngine {
           return false;
         }
         // this block keeps traversing the instances
-        if (geppettoInstance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+        if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
           var returnValue = false;
           var children = geppettoInstance.getChildren();
           for (let i = 0; i < children.length; i++) {
@@ -306,7 +326,7 @@ export default class ThreeDEngine {
           }
           return returnValue;
         } else if (
-          geppettoInstance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+          geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
           var returnValue = false;
           for (let i = 0; i < geppettoInstance.length; i++) {
@@ -326,11 +346,11 @@ export default class ThreeDEngine {
     var pathsToRemove = [];
     var sortedInstances = [];
     var toRemove = this.scene.children.filter(child => {
-        if (child.type === 'Mesh' || child.type ===  'Group') {
-          pathsToRemove.push(child.instancePath)
-          return true;
-        }
-        return false;
+      if (child.type === 'Mesh' || child.type === 'Group') {
+        pathsToRemove.push(child.instancePath)
+        return true;
+      }
+      return false;
     });
 
     if (proxyInstances) {
@@ -363,8 +383,8 @@ export default class ThreeDEngine {
     }
 
     for (let child of toRemove) {
-        this.meshFactory.cleanWith3DObject(child);
-        this.scene.remove(child);
+      this.meshFactory.cleanWith3DObject(child);
+      this.scene.remove(child);
     }
     return sortedInstances;
   }
@@ -421,7 +441,7 @@ export default class ThreeDEngine {
         }
       } else if (entity instanceof Type || entity instanceof Variable) {
         // fetch all instances for the given type or variable and call hide on each
-        const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+        const instances = ModelFactory.getAllInstancesOf(entity);
         for (let j = 0; j < instances.length; j++) {
           this.setInstanceColor(instances[j].getInstancePath(), color);
         }
@@ -534,7 +554,7 @@ export default class ThreeDEngine {
       }
     } else if (entity instanceof Type || entity instanceof Variable) {
       // fetch all instances for the given type or variable and call hide on each
-      const instances = GEPPETTO.ModelFactory.getAllInstancesOf(entity);
+      const instances = ModelFactory.getAllInstancesOf(entity);
       for (let j = 0; j < instances.length; j++) {
         if (hasVisualType(instances[j])) {
           this.showConnectionLines(instances[j], mode);
@@ -560,8 +580,8 @@ export default class ThreeDEngine {
 
       const connection = connections[c];
       const type = connection.getA().getPath() === instance.getInstancePath()
-        ? GEPPETTO.Resources.OUTPUT
-        : GEPPETTO.Resources.INPUT;
+        ? Resources.OUTPUT
+        : Resources.INPUT;
 
       const thisEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getA() : connection.getB();
       const otherEnd = connection.getA().getPath() === instance.getInstancePath() ? connection.getB() : connection.getA();
@@ -599,13 +619,13 @@ export default class ThreeDEngine {
       let colour = null;
 
 
-      if (type === GEPPETTO.Resources.INPUT) {
+      if (type === Resources.INPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.INPUT_TO_SELECTED;
+        colour = Resources.COLORS.INPUT_TO_SELECTED;
 
         // figure out if connection is both, input and output
         if (outputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (inputs[otherEndPath]) {
@@ -614,12 +634,12 @@ export default class ThreeDEngine {
           inputs[otherEndPath] = [];
           inputs[otherEndPath].push(connection.getInstancePath());
         }
-      } else if (type === GEPPETTO.Resources.OUTPUT) {
+      } else if (type === Resources.OUTPUT) {
 
-        colour = GEPPETTO.Resources.COLORS.OUTPUT_TO_SELECTED;
+        colour = Resources.COLORS.OUTPUT_TO_SELECTED;
         // figure out if connection is both, input and output
         if (inputs[otherEndPath]) {
-          colour = GEPPETTO.Resources.COLORS.INPUT_AND_OUTPUT;
+          colour = Resources.COLORS.INPUT_AND_OUTPUT;
         }
 
         if (outputs[otherEndPath]) {
@@ -676,169 +696,160 @@ export default class ThreeDEngine {
     }
   }
 
+  mouseDownEventListener = (event) => {
+    this.clientX = event.clientX;
+    this.clientY = event.clientY;
+  }
+
+  mouseUpEventListener = (event) => {
+    if (event.target === this.renderer.domElement) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // if the mouse moved since the mousedown then don't consider this a selection
+      if (
+        typeof this.clientX === 'undefined'
+        || typeof this.clientY === 'undefined'
+        ||  x !== this.clientX
+        || y !== this.clientY
+      ) {
+        return;
+      }
+
+      this.mouse.y
+      = -(
+        (event.clientY
+        - this.renderer.domElement.getBoundingClientRect().top)
+        / this.renderer.domElement.getBoundingClientRect().height
+      ) *2 + 1;
+
+      this.mouse.x
+      = ((event.clientY
+        - this.renderer.domElement.getBoundingClientRect().left)
+        / this.renderer.domElement.getBoundingClient().width) * 2 - 1;
+
+      if (event.button === 0) {
+        // only for left click
+        if (this.pickingEnabled) {
+          const intersects = this.getIntersectedObjects();
+
+          if (intersects.length > 0) {
+            // sort intersects
+            const compare = function (a, b) {
+              if (a.distance < b.distance) {
+                return -1;
+              }
+              if (a.distance > b.distance) {
+                return 1;
+              }
+              return 0;
+            }
+          }
+          intersects.sort(compare);
+
+          let selectedMap = {};
+          // Iterate and get the first visible item (they are now ordered by proximity)
+          for (let i = 0; i < intersects.length; i++) {
+            // figure out if the entity is visible
+            let instancePath = '';
+            let geometryIdentifier = '';
+            if (
+              Object.prototype.hasOwnProperty.call(
+                intersects[i].object,
+                'instancePath'
+              )
+            ) {
+              instancePath = intersects[i].object.instancePath;
+              geometryIdentifier
+              = intersects[i].object.geometryIdentifier;
+            }
+            else {
+              instancePath = intersects[i].object.parent.instancePath;
+              geometryIdentifier
+              = intersects[i].object.parent.geometryIdentifier;
+            }
+
+            if (
+              (instancePath != null
+                && Object.prototype.hasOwnProperty.call(
+                  this.meshFactory.meshes,
+                  instancePath
+                ))
+              || Object.prototype.hasOwnProperty.call(
+                this.meshFactory.splitMeshes,
+                instancePath
+              )
+            ) {
+              if (!(instancePath in selectedMap)) {
+                selectedMap[instancePath] = {
+                  ...intersects[i],
+                  geometryIdentifier: geometryIdentifier,
+                  distanceIndex: i,
+                };
+              }
+            }
+          }
+          this.requestFrame();
+          // this.onSelection(this.selectionStrategy(selectedMap))
+        }
+      }
+    }
+  }
+
+  mouseMoveEventListener = (event) => {
+    this.mouse.y
+    = -(
+      (event.clientY
+        - this.renderer.domElement.getBoundingClientRect().top)
+        / this.renderer.domElement.height
+    )
+    * 2 + 1;
+
+    this.mouse.x
+    = ((event.clientX
+      - this.renderer.domElement.getBoundingClientRect().left)
+      / this.renderer.domElement.width)
+      * 2 - 1;
+
+    this.mouseContainer.x = event.clientX;
+    this.mouseContainer.y = event.clientY;
+
+    this.mouseRayCaster.x = (event.clientX / this.renderer.domElement.width) * 2 - 1;
+    this.mouseRayCaster.y = - (event.clientY / this.renderer.domElement.height) * 2 + 1;
+
+    if (this.hoverListeners && this.hoverListeners.length  > 0) {
+      const intersects = this.getIntersectedObjects();
+      for (const listener in this.hoverListeners) {
+        if (intersects.length !== 0) {
+          this.hoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
+        }
+      }
+    }
+  }
   /**
    * Set up the listeners use to detect mouse movement and window resizing
    */
-  setupListeners (onSelection) {
-    const that = this;
-
-    this.controls.addEventListener('start', function (e) {
-      that.requestFrame();
-    });
-
-    this.controls.addEventListener('change', function (e) {
-      that.requestFrame();
-    });
-
-    this.controls.addEventListener('stop', function (e) {
-      that.stop()
-    });
+  setupListeners = () => {
+    this.controls.addEventListener('start', this.requestFrame);
+    this.controls.addEventListener('change', this.requestFrame);
+    this.controls.addEventListener('stop', this.stop);
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      function (event) {
-        that.clientX = event.clientX;
-        that.clientY = event.clientY;
-      },
+      this.controls.mouseDownEventListener,
       false
     );
 
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mouseup',
-      function (event) {
-        if (event.target === that.renderer.domElement) {
-          const x = event.clientX;
-          const y = event.clientY;
-
-          // If the mouse moved since the mousedown then don't consider this a selection
-          if (
-            typeof that.clientX === 'undefined'
-            || typeof that.clientY === 'undefined'
-            || x !== that.clientX
-            || y !== that.clientY
-          ) {
-            return;
-          }
-
-          that.mouse.y
-            = -(
-              (event.clientY
-                - that.renderer.domElement.getBoundingClientRect().top)
-              / that.renderer.domElement.getBoundingClientRect().height
-            )
-              * 2
-            + 1;
-          that.mouse.x
-            = ((event.clientX
-              - that.renderer.domElement.getBoundingClientRect().left)
-              / that.renderer.domElement.getBoundingClientRect().width)
-              * 2
-            - 1;
-
-          if (event.button === 0) {
-            // only for left click
-            if (that.pickingEnabled) {
-              const intersects = that.getIntersectedObjects();
-
-              if (intersects.length > 0) {
-                // sort intersects
-                const compare = function (a, b) {
-                  if (a.distance < b.distance) {
-                    return -1;
-                  }
-                  if (a.distance > b.distance) {
-                    return 1;
-                  }
-                  return 0;
-                };
-
-                intersects.sort(compare);
-
-                let selectedMap = {};
-                // Iterate and get the first visible item (they are now ordered by proximity)
-                for (let i = 0; i < intersects.length; i++) {
-                  // figure out if the entity is visible
-                  let instancePath = '';
-                  let geometryIdentifier = '';
-                  if (
-                    Object.prototype.hasOwnProperty.call(
-                      intersects[i].object,
-                      'instancePath'
-                    )
-                  ) {
-                    instancePath = intersects[i].object.instancePath;
-                    geometryIdentifier
-                      = intersects[i].object.geometryIdentifier;
-                  } else {
-                    // weak assumption: if the object doesn't have an instancePath its parent will
-                    instancePath = intersects[i].object.parent.instancePath;
-                    geometryIdentifier
-                      = intersects[i].object.parent.geometryIdentifier;
-                  }
-                  if (
-                    (instancePath != null
-                      && Object.prototype.hasOwnProperty.call(
-                        that.meshFactory.meshes,
-                        instancePath
-                      ))
-                    || Object.prototype.hasOwnProperty.call(
-                      that.meshFactory.splitMeshes,
-                      instancePath
-                    )
-                  ) {
-                    if (geometryIdentifier === undefined) {
-                      geometryIdentifier = '';
-                    }
-                    if (!(instancePath in selectedMap)) {
-                      selectedMap[instancePath] = {
-                        ...intersects[i],
-                        geometryIdentifier: geometryIdentifier,
-                        distanceIndex: i,
-                      };
-                    }
-                  }
-                }
-                that.requestFrame();
-                onSelection(that.selectionStrategy(selectedMap))
-              }
-            }
-          }
-        }
-      },
+      this.mouseUpEventListener,
       false
     );
 
     this.renderer.domElement.addEventListener(
       'mousemove',
-      function (event) {
-        that.mouse.y
-          = -(
-            (event.clientY
-              - that.renderer.domElement.getBoundingClientRect().top)
-            / that.renderer.domElement.height
-          )
-            * 2
-          + 1;
-        that.mouse.x
-          = ((event.clientX
-            - that.renderer.domElement.getBoundingClientRect().left)
-            / that.renderer.domElement.width)
-            * 2
-          - 1;
-
-        that.mouseContainer.x = event.clientX ;
-        that.mouseContainer.y = event.clientY ;
-
-        if (that.hoverListeners && that.hoverListeners.length > 0) {
-          const intersects = that.getIntersectedObjects();
-          for (const listener in that.hoverListeners) {
-            if (intersects.length !== 0) {
-              that.hoverListeners[listener](intersects, that.mouseContainer.x, that.mouseContainer.y);
-            }
-          }
-        }
-      },
+      this.mouseMoveEventListener,
       false
     );
   }
@@ -868,6 +879,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.updateStarted();
     this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
@@ -876,15 +888,17 @@ export default class ThreeDEngine {
       threeDObjects.forEach(element => {
         this.addToScene(element);
       });
+      this.updatevisibleChildren();
       this.updateInstancesColor(proxyInstances);
       this.updateInstancesConnectionLines(proxyInstances);
       this.scene.updateMatrixWorld(true);
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.updateEnded();
   }
 
-  addToScene(instance) {
+  addToScene (instance) {
     let found = false;
     for (let child of this.scene.children) {
       if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
@@ -898,12 +912,17 @@ export default class ThreeDEngine {
   }
 
   resize () {
-    this.width = this.containerRef.clientWidth;
-    this.height = this.containerRef.clientHeight;
-    this.cameraManager.camera.aspect = this.width / this.height;
-    this.cameraManager.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height);
-    this.composer.setSize(this.width, this.height);
+    if (this.width !== this.containerRef.clientWidth || this.height !== this.containerRef.clientHeight) {
+      this.width = this.containerRef.clientWidth;
+      this.height = this.containerRef.clientHeight;
+      this.cameraManager.camera.aspect = this.width / this.height;
+      this.cameraManager.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+      this.composer.setSize(this.width, this.height);
+      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+      // the resizing works but the image gets stretched.
+      this.cameraManager.engine.controls.updateOnResize();
+    }
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
@@ -916,12 +935,10 @@ export default class ThreeDEngine {
 
   requestFrame () {
     const timeDif = this.lastRenderTimer.getTime() - new Date().getTime();
-    if(Math.abs(timeDif) > 10)
-    {
+    if (Math.abs(timeDif) > 10) {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-      
   }
 
   animate () {

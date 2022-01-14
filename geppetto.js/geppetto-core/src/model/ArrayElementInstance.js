@@ -1,3 +1,4 @@
+import ModelFactory from '../ModelFactory';
 const Instance = require('./Instance').default;
 
 /**
@@ -24,7 +25,7 @@ class ArrayElementInstance extends Instance {
       children[c].delete();
     }
 
-    GEPPETTO.ModelFactory.deleteInstance(this);
+    ModelFactory.deleteInstance(this);
   }
 
 

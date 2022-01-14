@@ -4,6 +4,7 @@
  * @module model/ADerivedStateVariableCapability
  * @author Adrian Quintana
  */
+import ModelFactory from '../ModelFactory';
 
 export default {
   capabilityId: 'DerivedStateVariableCapability',
@@ -33,7 +34,7 @@ export default {
       this.inputs = []
       for (var inputIndex in this.getVariable().getWrappedObj().inputs){
         var inputId = this.getVariable().getWrappedObj().inputs[inputIndex]
-        this.inputs.push(GEPPETTO.ModelFactory.findMatchingInstanceByID(inputId, window.Instances[0].getChildren()))
+        this.inputs.push(ModelFactory.findMatchingInstanceByID(inputId, window.Instances[0].getChildren()))
       }
                 
     }

@@ -4,7 +4,9 @@ import Canvas from '../../Canvas';
 import CameraControls from '../../../camera-controls/CameraControls';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
+import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -26,6 +28,7 @@ class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.tooltipRef = React.createRef();
     this.state = {
       hasModelLoaded: false,
       showLoader: false,
@@ -62,8 +65,6 @@ class AuditoryCortexExample extends Component {
       },
     };
 
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -92,16 +93,18 @@ class AuditoryCortexExample extends Component {
 
     const response = await fetch('../assets/acnet_model.json');
     const model = await response.json();
-    GEPPETTO.Manager.loadModel(model);
+    Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
     this.setState({ hasModelLoaded: true, showLoader: false });
   }
 
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
-
-  hoverHandler (obj) {}
 
   onSelection (selectedInstances){
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
@@ -112,27 +115,23 @@ class AuditoryCortexExample extends Component {
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
     const canvasData = mapToCanvasData(data)
 
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: this.lastCameraUpdate.rotation,
-      };
-    }
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div ref={node => this.node = node} className={classes.container}>
-        <Canvas
-          ref={this.canvasRef}
-          data={canvasData}
-          cameraOptions={camOptions}
-          cameraHandler={this.cameraHandler}
-          onSelection={this.onSelection}
-          backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
-        />
-      </div>
+      <>
+        <div>
+          <CanvasTooltip ref={this.tooltipRef} />
+        </div>
+        <div ref={node => this.node = node} className={classes.container}>
+          <Canvas
+            ref={this.canvasRef}
+            data={canvasData}
+            cameraOptions={cameraOptions}
+            onSelection={this.onSelection}
+            backgroundColor={0x505050}
+            hoverListeners={[this.hoverHandler]}
+          />
+        </div>
+      </>
     ) : <Button
       variant="outlined"
       color="primary"
