@@ -392,6 +392,16 @@ export default class ListViewer extends React.Component {
     );
   }
 }
+
+ListViewer.defaultProps = {
+  handler: {},
+  infiniteScroll: true,
+  columnConfiguration: [],
+  filter: () => {},
+  customComponents: {},
+  showPagination: false,
+}
+
 ListViewer.propTypes = {
   /**
    * Instances object
@@ -408,7 +418,73 @@ ListViewer.propTypes = {
   /**
    * Specifies custom column definitions
    */
-  columnConfiguration: PropTypes.array,
+  columnConfiguration: PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Column id
+     */
+    id: PropTypes.string,
+    /**
+     * Column title
+     */
+    title: PropTypes.string,
+    /**
+     * Column source
+     */
+    source: PropTypes.string,
+    /**
+     * Column source
+     */
+    cssClassName: PropTypes.string,
+    /**
+     * Column action
+     */
+    action: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func,
+    ]),
+    /**
+     * Column custome component
+     */
+    customComponent: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+      PropTypes.func,
+    ]),
+    /**
+     * Column configuration settings
+     */
+    configuration: PropTypes.shape({
+      alt: PropTypes.string,
+      title: PropTypes.string,
+      action:  PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element,
+        PropTypes.func,
+      ]),
+      defaultColor: PropTypes.string,
+      label: PropTypes.string,
+      placeholder: PropTypes.string,
+      defaultValue: PropTypes.number,
+      type: PropTypes.string,
+      onBlur: PropTypes.func,
+      onKeyPress: PropTypes.func,
+      readOnly: PropTypes.bool,
+      classString: PropTypes.string,
+      unit: PropTypes.string,
+      text: PropTypes.string,
+      icon: PropTypes.string,
+      tooltip: PropTypes.string,
+      configuration: PropTypes.shape({
+        icon: PropTypes.string,
+        tooltip: PropTypes.string,
+        action:  PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.element,
+          PropTypes.func,
+        ]),
+      }),
+    }),
+  })),
   /**
    * Function to filter data given a custom criterion
    */
@@ -416,7 +492,27 @@ ListViewer.propTypes = {
   /**
    * Components passed in with a matching name will override the default in Griddle
    */
-  customComponents: PropTypes.object,
+  customComponents: PropTypes.shape({
+    Cell: PropTypes.elementType,
+    Filter: PropTypes.elementType,
+    Loading: PropTypes.elementType,
+    NextButton: PropTypes.elementType,
+    NoResults: PropTypes.elementType,
+    PageDropdown: PropTypes.elementType,
+    Pagination: PropTypes.elementType,
+    PreviousButton: PropTypes.elementType,
+    Row: PropTypes.elementType,
+    RowDefinition: PropTypes.elementType,
+    Settings: PropTypes.elementType,
+    SettingsToggle: PropTypes.elementType,
+    Table: PropTypes.elementType,
+    TableBody: PropTypes.elementType,
+    TableHeading: PropTypes.elementType,
+    TableHeadingCell: PropTypes.elementType,
+    TableHeadingCellAscending: PropTypes.elementType,
+    TableHeadingCellDescending: PropTypes.elementType,
+    Layout: PropTypes.elementType,
+  }),
   /**
    * Show Pagination button, used for changing pages
    */
