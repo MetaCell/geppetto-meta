@@ -323,21 +323,57 @@ Canvas.propTypes = {
    * Options to customize camera
    */
   cameraOptions: PropTypes.shape({
+    /**
+     * Camera angle in canvas
+     */
     angle: PropTypes.number,
+    /**
+     * Near value
+     */
     near: PropTypes.number,
+    /**
+     * Far value
+     */
     far: PropTypes.number,
+    /**
+     * Base zoom value
+     */
     baseZoom: PropTypes.number,
+    /**
+     * Boolean to enable/disable reset
+     */
     reset: PropTypes.bool,
+    /**
+     * Boolean to enable/disable auto rotate
+     */
     autorotate: PropTypes.bool,
+    /**
+     * Boolean to enable/disable wireframe
+     */
     wireframe: PropTypes.bool,
+    /**
+     * Objects to zoom into
+     */
     zoomTo: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Rotation speed
+     */
     rotationSpeed: PropTypes.number,
+    /**
+     * Boolean to enable/disable movie filter
+     */
     movieFilter: PropTypes.bool,
+    /**
+     * Position object to define x, y, and z values
+     */
     position: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,
       z: PropTypes.number,
     }),
+    /**
+     * Rotation object to define rx, ry, rz, and readuis values
+     */
     rotation: PropTypes.shape({
       rx: PropTypes.number,
       ry: PropTypes.number,
@@ -348,20 +384,38 @@ Canvas.propTypes = {
      * Options to customize camera controls
      */
     cameraControls: PropTypes.shape({
+      /**
+       * Reference to cameraControls instance?
+       */
       instance: PropTypes.any,
+      /**
+       * CameraControls props
+       */
       props: PropTypes.shape({
         wireframeButtonEnabled: PropTypes.bool,
       }),
+      /**
+       * Value for pan increment
+       */
       incrementPan: PropTypes.shape({
         x: PropTypes.number,
         y: PropTypes.number,
       }),
+      /**
+       * Value for rotation increment
+       */
       incrementRotation: PropTypes.shape({
         x: PropTypes.number,
         y: PropTypes.number,
         z: PropTypes.number,
       }),
+      /**
+       * Value for zoom increment
+       */
       incrementZoom: PropTypes.number,
+      /**
+       * Boolean to enable/disable reset
+       */
       reset: PropTypes.bool,
     })
   }),

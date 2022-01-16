@@ -593,17 +593,53 @@ Canvas.defaultProps = {
 
 // TODO: Add comments, fix instances subprop
 Canvas.propTypes = {
+  /**
+   * Instances
+   */
   instances: PropTypes.arrayOf(PropTypes.object).isRequired,
+  /**
+   * Model used in canvas
+   */
   model: PropTypes.object.isRequired,
+  /**
+   * Id of this canvas
+   */
   id: PropTypes.string.isRequired,
+  /**
+   * Threshold
+   */
   threshold: PropTypes.number,
-  colorMap: PropTypes.object,
+  /**
+   *  Color map
+   */
+  colorMap: PropTypes.shape({}),
+  /**
+   * Three values to describe position along x, y, and z axis. Format example => "-20 -20 -80"
+   */
   position: PropTypes.string,
+  /**
+   * Three values to describe rotation. Format example => "0 0 0"
+   */
   rotation: PropTypes.string,
+  /**
+   * Color applied to the scence's background. Format example => "color: #ECECEC"
+   */
   sceneBackground: PropTypes.string,
+  /**
+   * Function to callback on hover
+   */
   handleHover: PropTypes.func,
+  /**
+   * Function to callback on click
+   */
   handleClick: PropTypes.func,
+  /**
+   * Function to callback on hover leave
+   */
   handleHoverLeave: PropTypes.func,
+  /**
+   * Function to callback when model changes
+   */
   handleModelChange: PropTypes.func,
 };
 
