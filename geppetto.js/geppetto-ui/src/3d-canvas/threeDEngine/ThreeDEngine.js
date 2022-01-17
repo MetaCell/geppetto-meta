@@ -61,17 +61,15 @@ export default class ThreeDEngine {
 
     // Setup Listeners
     this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.stop = this.stop.bind(this);
     this.resize = this.resize.bind(this);
     this.requestFrame = this.requestFrame.bind(this);
-    this.stop = this.stop.bind(this);
     this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
     this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
     this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
     this.update = this.update.bind(this);
-    this.mouseRayCaster = new THREE.Raycaster();
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
 
@@ -184,17 +182,17 @@ export default class ThreeDEngine {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
-  
+
     const raycaster = new THREE.Raycaster(
       this.cameraManager.getCamera().position,
       vector.sub(this.cameraManager.getCamera().position).normalize()
     );
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
-  
+
     // returns an array containing all objects in the scene with which the ray intersects
     return raycaster.intersectObjects(this.visibleChildren);
   }
-  
+
   updatevisibleChildren() {
     this.visibleChildren = [];
     this.scene.traverse( (child) => {
@@ -208,7 +206,7 @@ export default class ThreeDEngine {
       }
     });
   }
-  
+
 
   /**
    * Adds instances to the ThreeJS Scene
@@ -726,7 +724,7 @@ export default class ThreeDEngine {
       this.mouse.x
       = ((event.clientY
         - this.renderer.domElement.getBoundingClientRect().left)
-        / this.renderer.domElement.getBoundingClient().width) * 2 - 1;
+        / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
       if (event.button === 0) {
         // only for left click
@@ -744,8 +742,8 @@ export default class ThreeDEngine {
               }
               return 0;
             }
+            intersects.sort(compare);
           }
-          intersects.sort(compare);
 
           let selectedMap = {};
           // Iterate and get the first visible item (they are now ordered by proximity)
@@ -790,7 +788,7 @@ export default class ThreeDEngine {
             }
           }
           this.requestFrame();
-          // this.onSelection(this.selectionStrategy(selectedMap))
+          this.onSelection(this.selectionStrategy(selectedMap))
         }
       }
     }
@@ -798,24 +796,21 @@ export default class ThreeDEngine {
 
   mouseMoveEventListener = (event) => {
     this.mouse.y
-    = -(
-      (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top)
+    = -(((event.clientY
+        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
         / this.renderer.domElement.height
     )
     * 2 + 1;
 
     this.mouse.x
-    = ((event.clientX
-      - this.renderer.domElement.getBoundingClientRect().left)
+    = (((event.clientX
+      - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
       / this.renderer.domElement.width)
       * 2 - 1;
 
     this.mouseContainer.x = event.clientX;
     this.mouseContainer.y = event.clientY;
 
-    this.mouseRayCaster.x = (event.clientX / this.renderer.domElement.width) * 2 - 1;
-    this.mouseRayCaster.y = - (event.clientY / this.renderer.domElement.height) * 2 + 1;
 
     if (this.hoverListeners && this.hoverListeners.length  > 0) {
       const intersects = this.getIntersectedObjects();
