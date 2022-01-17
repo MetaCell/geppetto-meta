@@ -722,7 +722,7 @@ export default class ThreeDEngine {
       ) *2 + 1;
 
       this.mouse.x
-      = ((event.clientY
+      = ((event.clientX
         - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
         / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
@@ -831,7 +831,7 @@ export default class ThreeDEngine {
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      this.controls.mouseDownEventListener,
+      this.mouseDownEventListener,
       false
     );
 
