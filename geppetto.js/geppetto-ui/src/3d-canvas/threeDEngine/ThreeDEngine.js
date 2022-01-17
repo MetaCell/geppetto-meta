@@ -717,13 +717,13 @@ export default class ThreeDEngine {
       this.mouse.y
       = -(
         (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top)
+        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
         / this.renderer.domElement.getBoundingClientRect().height
       ) *2 + 1;
 
       this.mouse.x
       = ((event.clientY
-        - this.renderer.domElement.getBoundingClientRect().left)
+        - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
         / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
       if (event.button === 0) {
