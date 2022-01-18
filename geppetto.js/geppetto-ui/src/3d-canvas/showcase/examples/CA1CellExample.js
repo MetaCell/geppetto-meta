@@ -63,8 +63,6 @@ class CA1Example extends Component {
       },
     };
 
-    this.lastCameraUpdate = null;
-    this.cameraHandler = this.cameraHandler.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -83,9 +81,6 @@ class CA1Example extends Component {
         this.setState({ hasModelLoaded: false })
       }
     }
-  }
-  cameraHandler (obj) {
-    this.lastCameraUpdate = obj;
   }
 
   async handleToggle () {
@@ -118,17 +113,6 @@ class CA1Example extends Component {
     const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
     const canvasData = mapToCanvasData(data)
 
-    let camOptions = cameraOptions;
-    if (this.lastCameraUpdate) {
-      camOptions = {
-        ...cameraOptions,
-        position: this.lastCameraUpdate.position,
-        rotation: {
-          ...this.lastCameraUpdate.rotation,
-          radius: cameraOptions.rotation.radius,
-        },
-      };
-    }
 
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
@@ -149,8 +133,7 @@ class CA1Example extends Component {
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
-            cameraOptions={camOptions}
-            cameraHandler={this.cameraHandler}
+            cameraOptions={cameraOptions}
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
