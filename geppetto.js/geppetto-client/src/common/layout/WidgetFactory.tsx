@@ -58,10 +58,10 @@ class WidgetFactory {
       <Component
         id={widgetConfig.id}
         key={widgetConfig.id}
-        model={widgetConfig.model}
         session={widgetConfig.session}
         onSessionChange={sessionChange}
         {...widgetConfig.config}
+        {...widgetConfig.props}
         {...ref}
       /> :
       <div>Error on widget configuration {widgetConfig.id}: no component matching "{widgetConfig.component}"</div>
