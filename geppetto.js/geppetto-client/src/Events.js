@@ -24,6 +24,7 @@ export const Events = {
   Receive_Python_Message: "receive_python_message",
   Websocket_disconnected: "websocket_disconnected",
   Error_while_exec_python_command: "error_while_exec_python_command",
+  Jupyter_geppetto_extension_ready: "jupyter_geppetto_extension_ready",
 
   listen: function () {
   }

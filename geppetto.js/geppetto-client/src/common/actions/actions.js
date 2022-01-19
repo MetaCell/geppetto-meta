@@ -206,7 +206,7 @@ export const jupyterGeppettoExtensionReady = () => ({ type: clientActions.JUPYTE
 export const disableControls = () => ({ type: clientActions.DISABLE_CONTROLS, });
 
 export const receivePythonMessage = data => ({
-  type: clientActions.COMMAND_TOGGLE_IMPLICIT,
+  type: clientActions.RECEIVE_PYTHON_MESSAGE,
   data: {
     id: data.id,
     type: data.type,

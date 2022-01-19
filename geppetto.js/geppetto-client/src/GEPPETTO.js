@@ -12,7 +12,7 @@ const Resources = require('@metacell/geppetto-meta-core/Resources').default;
 
 
 const Manager = require('./common/GeppettoManager').default;
-
+const ComponentFactory = require('./components/ComponentFactory').default;
 
 const ModelFactory = require('@metacell/geppetto-meta-core/ModelFactory').default;
 require('./style/less/main.less')
@@ -69,7 +69,6 @@ const GEPPETTO = {
   },
 
   trigger: function (...args) {
-    console.warn("deprecated: GEPPETTO.trigger should be replaced by EventManager calls or redux actions dispatch");
     if (args.length == 0) {
       console.error("Trigger should be provided of the event to trigger");
       return;
@@ -83,12 +82,10 @@ const GEPPETTO = {
   },
 
   on: function (eventName, callback) {
-    console.warn("deprecated: GEPPETTO.on should be replaced by a Redux middleware");
     EventManager.eventsCallback[EventsMapping[eventName]].add(callback)
   },
 
   off: function (eventName, callback = null) {
-    console.warn("deprecated: GEPPETTO.on and GEPPETTO.off are now replaced by Redux");
     if (!eventName && callback) {
       for (const l of Object.values(EventManager.eventsCallback)) {
         EventManager.eventsCallback[EventsMapping[l]].delete(callback)
@@ -129,6 +126,7 @@ const EventsMapping = {
   [Events.Receive_Python_Message]: EventManager.clientActions.RECEIVE_PYTHON_MESSAGE,
   [Events.Websocket_disconnected]: EventManager.clientActions.WEBSOCKET_DISCONNECTED,
   [Events.Error_while_exec_python_command]: EventManager.clientActions.ERROR_WHILE_EXEC_PYTHON_COMMAND,
+  [Events.Jupyter_geppetto_extension_ready]: EventManager.clientActions.JUPYTER_GEPPETTO_EXTENSION_READY,
 };
 
 export function initGeppetto(useWebsocket = true, loadStyle = true) {
@@ -145,6 +143,7 @@ export function initGeppetto(useWebsocket = true, loadStyle = true) {
     require('./style/less/main.less');
   }
 
+  GEPPETTO.ComponentFactory = ComponentFactory;
   window.GEPPETTO = GEPPETTO;
 }
 

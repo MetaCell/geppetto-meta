@@ -38,6 +38,7 @@ export interface Widget {
   pos?: number;
   session: any;
   config: any;
+  props: any;
 }
 
 /**
