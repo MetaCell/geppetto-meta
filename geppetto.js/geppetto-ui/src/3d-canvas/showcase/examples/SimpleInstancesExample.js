@@ -11,6 +11,7 @@ import CaptureControls from "../../../capture-controls/CaptureControls";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -58,6 +59,7 @@ const styles = () => ({
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
+    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -94,8 +96,12 @@ class SimpleInstancesExample extends Component {
   }
 
 
-  hoverHandler (obj) {
-    // deactivated due to performance issues
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
 
   handleToggle () {
@@ -149,15 +155,21 @@ class SimpleInstancesExample extends Component {
     }
 
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <Canvas
-        ref={this.canvasRef}
-        data={canvasData}
-        cameraOptions={cameraOptions}
-        captureOptions={captureOptions}
-        backgroundColor={0x505050}
-        onSelection={this.onSelection}
-        onMount={this.onMount}
-      />
+      <>
+        <div>
+          <CanvasTooltip ref={this.tooltipRef} />
+        </div>
+        <Canvas
+          ref={this.canvasRef}
+          data={canvasData}
+          cameraOptions={cameraOptions}
+          captureOptions={captureOptions}
+          backgroundColor={0x505050}
+          onSelection={this.onSelection}
+          onMount={this.onMount}
+          hoverListeners={[this.hoverHandler]}
+        />
+      </>
     </div> : <Button
       variant="outlined"
       color="primary"

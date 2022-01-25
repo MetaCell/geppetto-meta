@@ -17,7 +17,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 
 import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
-import { rgbToHex, hasVisualType } from "./util";
+import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
 export default class ThreeDEngine {
   constructor (
@@ -31,7 +31,9 @@ export default class ThreeDEngine {
     linesThreshold,
     hoverListeners,
     setColorHandler,
-    selectionStrategy
+    selectionStrategy,
+    updateStarted,
+    updateEnded,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -43,7 +45,7 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;
@@ -54,20 +56,20 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
+    this.updateStarted = updateStarted;
+    this.updateEnded = updateEnded;
 
     // Setup Listeners
     this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.stop = this.stop.bind(this);
     this.resize = this.resize.bind(this);
     this.requestFrame = this.requestFrame.bind(this);
-    this.stop = this.stop.bind(this);
     this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
     this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
     this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
     this.update = this.update.bind(this);
-    this.mouseRayCaster = new THREE.Raycaster();
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
 
@@ -176,7 +178,7 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-  getIntersectedObjects () {
+   getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
@@ -187,21 +189,24 @@ export default class ThreeDEngine {
     );
     raycaster.linePrecision = this.meshFactory.getLinePrecision();
 
-    const visibleChildren = [];
-    this.scene.traverse(function (child) {
+    // returns an array containing all objects in the scene with which the ray intersects
+    return raycaster.intersectObjects(this.visibleChildren);
+  }
+
+  updatevisibleChildren() {
+    this.visibleChildren = [];
+    this.scene.traverse( (child) => {
       if (child.visible && !(child.clickThrough === true)) {
         if (child.geometry != null) {
           if (child.type !== 'Points') {
             child.geometry.computeBoundingBox();
           }
-          visibleChildren.push(child);
+          this.visibleChildren.push(child);
         }
       }
     });
-
-    // returns an array containing all objects in the scene with which the ray intersects
-    return raycaster.intersectObjects(visibleChildren);
   }
+
 
   /**
    * Adds instances to the ThreeJS Scene
@@ -249,7 +254,7 @@ export default class ThreeDEngine {
           this.setInstanceMaterial(child, instance);
           break;
         } else {
-          instance.color = GEPPETTO.Resources.COLORS.DEFAULT;
+          instance.color = Resources.COLORS.DEFAULT;
           this.setInstanceMaterial(child, instance);
         }
       }
@@ -295,7 +300,7 @@ export default class ThreeDEngine {
       } else if (hasVisualType(geppettoInstance)) {
         if (
           geppettoInstance.getType().getMetaType()
-            !== GEPPETTO.Resources.ARRAY_TYPE_NODE
+            !== Resources.ARRAY_TYPE_NODE
             && geppettoInstance.getVisualType()
         ) {
           var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
@@ -310,7 +315,7 @@ export default class ThreeDEngine {
           return false;
         }
         // this block keeps traversing the instances
-        if (geppettoInstance.getMetaType() === GEPPETTO.Resources.INSTANCE_NODE) {
+        if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
           var returnValue = false;
           var children = geppettoInstance.getChildren();
           for (let i = 0; i < children.length; i++) {
@@ -319,7 +324,7 @@ export default class ThreeDEngine {
           }
           return returnValue;
         } else if (
-          geppettoInstance.getMetaType() === GEPPETTO.Resources.ARRAY_INSTANCE_NODE
+          geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
           var returnValue = false;
           for (let i = 0; i < geppettoInstance.length; i++) {
@@ -712,14 +717,14 @@ export default class ThreeDEngine {
       this.mouse.y
       = -(
         (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top)
+        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
         / this.renderer.domElement.getBoundingClientRect().height
       ) *2 + 1;
 
       this.mouse.x
-      = ((event.clientY
-        - this.renderer.domElement.getBoundingClientRect().left)
-        / this.renderer.domElement.getBoundingClient().width) * 2 - 1;
+      = ((event.clientX
+        - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
+        / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
 
       if (event.button === 0) {
         // only for left click
@@ -737,8 +742,8 @@ export default class ThreeDEngine {
               }
               return 0;
             }
+            intersects.sort(compare);
           }
-          intersects.sort(compare);
 
           let selectedMap = {};
           // Iterate and get the first visible item (they are now ordered by proximity)
@@ -783,7 +788,7 @@ export default class ThreeDEngine {
             }
           }
           this.requestFrame();
-          // this.onSelection(this.selectionStrategy(selectedMap))
+          this.onSelection(this.selectionStrategy(selectedMap))
         }
       }
     }
@@ -791,24 +796,21 @@ export default class ThreeDEngine {
 
   mouseMoveEventListener = (event) => {
     this.mouse.y
-    = -(
-      (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top)
+    = -(((event.clientY
+        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
         / this.renderer.domElement.height
     )
     * 2 + 1;
 
     this.mouse.x
-    = ((event.clientX
-      - this.renderer.domElement.getBoundingClientRect().left)
+    = (((event.clientX
+      - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
       / this.renderer.domElement.width)
       * 2 - 1;
 
     this.mouseContainer.x = event.clientX;
     this.mouseContainer.y = event.clientY;
 
-    this.mouseRayCaster.x = (event.clientX / this.renderer.domElement.width) * 2 - 1;
-    this.mouseRayCaster.y = - (event.clientY / this.renderer.domElement.height) * 2 + 1;
 
     if (this.hoverListeners && this.hoverListeners.length  > 0) {
       const intersects = this.getIntersectedObjects();
@@ -823,14 +825,13 @@ export default class ThreeDEngine {
    * Set up the listeners use to detect mouse movement and window resizing
    */
   setupListeners = () => {
-    console.log('inside set up listeners');
     this.controls.addEventListener('start', this.requestFrame);
     this.controls.addEventListener('change', this.requestFrame);
     this.controls.addEventListener('stop', this.stop);
     // when the mouse moves, call the given function
     this.renderer.domElement.addEventListener(
       'mousedown',
-      this.controls.mouseDownEventListener,
+      this.mouseDownEventListener,
       false
     );
 
@@ -873,6 +874,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
+    this.updateStarted();
     this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
@@ -881,12 +883,14 @@ export default class ThreeDEngine {
       threeDObjects.forEach(element => {
         this.addToScene(element);
       });
+      this.updatevisibleChildren();
       this.updateInstancesColor(proxyInstances);
       this.updateInstancesConnectionLines(proxyInstances);
       this.scene.updateMatrixWorld(true);
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
+    this.updateEnded();
   }
 
   addToScene (instance) {
@@ -903,12 +907,17 @@ export default class ThreeDEngine {
   }
 
   resize () {
-    this.width = this.containerRef.clientWidth;
-    this.height = this.containerRef.clientHeight;
-    this.cameraManager.camera.aspect = this.width / this.height;
-    this.cameraManager.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height);
-    this.composer.setSize(this.width, this.height);
+    if (this.width !== this.containerRef.clientWidth || this.height !== this.containerRef.clientHeight) {
+      this.width = this.containerRef.clientWidth;
+      this.height = this.containerRef.clientHeight;
+      this.cameraManager.camera.aspect = this.width / this.height;
+      this.cameraManager.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.width, this.height);
+      this.composer.setSize(this.width, this.height);
+      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+      // the resizing works but the image gets stretched.
+      this.cameraManager.engine.controls.updateOnResize();
+    }
   }
 
   start (proxyInstances, cameraOptions, toTraverse) {
@@ -925,7 +934,6 @@ export default class ThreeDEngine {
       this.lastRenderTimer = new Date() ;
       this.frameId = window.requestAnimationFrame(this.animate);
     }
-
   }
 
   animate () {

@@ -10,6 +10,7 @@ import {
 const _changeEvent = { type: 'change' };
 const _startEvent = { type: 'start' };
 const _endEvent = { type: 'end' };
+const defaultRotationalSpeed = 1.0 ;
 
 class TrackballControls extends EventDispatcher {
 
@@ -211,6 +212,14 @@ class TrackballControls extends EventDispatcher {
     };
 
     // end of metacell changes
+
+    this.setRotationalSpeed = function(s) {
+      scope.rotateSpeed = s ;
+    };
+    
+    this.resetRotationalSpeed = function() {
+      scope.rotateSpeed = defaultRotationalSpeed ;
+    };
 
     this.rotateCamera = (function () {
 
@@ -1001,6 +1010,13 @@ class TrackballControls extends EventDispatcher {
 
     }
 
+    this.updateOnResize = function () {
+      scope.dispatchEvent(_startEvent);
+      scope.dispatchEvent(_endEvent);
+      scope.update();
+      scope.unsetCameraByConsoleLock();
+    }
+
     this.dispose = function () {
 
       scope.domElement.removeEventListener('contextmenu', contextmenu);
@@ -1033,8 +1049,6 @@ class TrackballControls extends EventDispatcher {
     this.update();
 
   }
-
-
 }
 
 export { TrackballControls };

@@ -21,8 +21,6 @@ export class Manager {
    */
   loadProject (project, persisted) {
     // we remove anything from any previous loaded project if there was one
-     
-
     window.Project = project;
     window.Project.readOnly = !persisted;
   }
@@ -32,7 +30,6 @@ export class Manager {
    * @param payload
    */
   loadModel (model) {
-    
     ModelManager.loadModel(model);
     EventManager.modelLoaded();
 
