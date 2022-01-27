@@ -16059,15 +16059,15 @@ three-render-objects@>=1.13.3, three-render-objects@^1.26:
     kapsule "^1.13"
     polished "4"
 
-three@0.111.0:
-  version "0.111.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.111.0.tgz#9cedb73e79b7f6bf2440cb67a273f883faa923b6"
-  integrity sha512-AcTqyGJ3H75AIusOuADy0LsP958QKQwm/YhABHFMzd6RFXPNVay1rlSbbG6WYv7KM72G2THMMwqbjQd4dVHMkQ==
-
 three@0.118.0, "three@>=0.118 <1", three@latest:
   version "0.118.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.118.0.tgz#a471dd31f75b95e29ba73502f372d73191dda17b"
   integrity sha512-lCzCH6ZdOj4aO/qdp98vNyOY8NK5uGkVcd++vw2hTJMZwYLrEhAYirJ96C4j0/2bxaKRNyE+VF1G4nWeJP2l9g==
+
+three@0.137.0:
+  version "0.137.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.137.0.tgz#0ebd6ba66637a332c31f234bcdd35aeec071a6e3"
+  integrity sha512-rzSDhia6cU35UCy6y+zEEws6vSgytfHqFMSaBvUcySgzwvDO6vETyswtSNi/+aVqJw8WLMwyT1mlQQ1T/dxxOA==
 
 throat@^5.0.0:
   version "5.0.0"

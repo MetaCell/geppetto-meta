@@ -89,7 +89,7 @@
     "stats.js": "^0.17.0",
     "styled-components": "^4.3.2",
     "text": "^0.1.0",
-    "three": "0.111.0",
+    "three": "0.137.0",
     "three-render-objects": ">=1.13.3",
     "ts-pnp": "1.2.0",
     "typeahead.js": "^0.11.1",
