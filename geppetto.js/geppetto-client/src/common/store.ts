@@ -5,6 +5,7 @@ import { initLayoutManager } from './layout/LayoutManager';
 import EventManager from './EventManager';
 import { layoutInitialState, LayoutState, layout, widgets } from './reducer/geppettoLayout';
 import geppettoClientReducer, { clientInitialState, ClientState } from './reducer/geppettoClient';
+import { geppettoLoaderReducer, loaderInitialState, LoaderState } from './reducer/geppettoLoader'
 import { WidgetMap, ComponentMap } from "./layout/model";
 import TabsetIconFactory from "./layout/TabsetIconFactory";
 import { reducerDecorator } from "./reducer/reducerDecorator"
@@ -15,17 +16,20 @@ declare var window: any;
 interface GeppettoState{
   client: ClientState,
   layout: LayoutState,
-  widgets: WidgetMap
+  widgets: WidgetMap,
+  loader: LoaderState
 }
 
 const initialState: GeppettoState = {
   client: clientInitialState,
   layout: layoutInitialState,
+  loader: loaderInitialState,
   widgets: {}
 };
 
 const staticReducers = {
   client: geppettoClientReducer,
+  loader: geppettoLoaderReducer,
   layout,
   widgets
 }
