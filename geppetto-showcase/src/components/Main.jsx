@@ -130,7 +130,6 @@ class Main extends Component {
             <div className={classes.toolbar}/>
             <DrawerContent
               searchFilter={searchFilter}
-              currentPage={currentPage}
               currentPageHandler={this.currentPageHandler}
             />
           </Drawer>
