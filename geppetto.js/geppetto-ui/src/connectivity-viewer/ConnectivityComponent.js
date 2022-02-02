@@ -3,6 +3,9 @@ import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from './subcomponents/ConnectivityToolbar';
 import ConnectivityPlot from './subcomponents/ConnectivityPlot';
 import { Matrix } from './layouts/Matrix';
+import { Hive } from './layouts/Hive';
+import { Force } from './layouts/Force';
+import { Chord } from './layouts/Chord';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
@@ -166,6 +169,16 @@ class ConnectivityComponent extends Component {
   }
 }
 
+ConnectivityComponent.defaultProps = {
+  names: [],
+  colorMap: () => {},
+  linkType: () => {},
+  layout: new Matrix(),
+  linkWeight: () => {},
+  nodeType: () => {},
+  library: () => {},
+}
+
 ConnectivityComponent.propTypes = {
   /**
    * Component identifier
@@ -192,13 +205,22 @@ ConnectivityComponent.propTypes = {
    */
   matrixOnClickHandler: PropTypes.func.isRequired,
   /**
+   * Array of names supplied to the connectivity plot. Defaults to an empty array
+   */
+  names: PropTypes.arrayOf(PropTypes.string),
+  /**
    * Function returning a d3 scaleOrdinal
    */
   colorMap: PropTypes.func,
   /**
    * One of Matrix, Hive, Force or Chord objects. Defaults to Matrix
    */
-  layout: PropTypes.object,
+  layout: PropTypes.oneOfType([
+    PropTypes.instanceOf(Matrix),
+    PropTypes.instanceOf(Hive),
+    PropTypes.instanceOf(Force),
+    PropTypes.instanceOf(Chord),
+  ]),
   /**
    * Function to colour links (synapses) by neurotransmitter
    */
