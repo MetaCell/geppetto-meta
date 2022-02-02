@@ -1,4 +1,4 @@
-import { RuleResult } from './validator/RuleResult'
+import { RuleResult } from '../validator/RuleResult'
 
 export type UseCase = {
   type: string,
