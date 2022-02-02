@@ -74,6 +74,9 @@ class DrawerContent extends Component {
 
   isActivePage(page) {
     const { currentPage } = this.props;
+    if (window.location.href.split('/')[3] === "") {
+      return false;
+    }
     return page === currentPage;
   }
 
