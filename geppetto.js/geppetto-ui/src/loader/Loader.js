@@ -148,6 +148,9 @@ Loader.propTypes = {
    * Style to be applied to the Loader background
    */
   backgroundStyle: PropTypes.shape({
+    /**
+     * Loader's background color. Defaults to rgba(255,142,0,0.1)
+     */
     backgroundColor: PropTypes.string,
   }),
 };
