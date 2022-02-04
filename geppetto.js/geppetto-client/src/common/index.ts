@@ -1,2 +1,6 @@
-export { createStore } from './store';
+import { Application } from './Application';
 export * from './layout';
+
+const app = Application();
+
+export { app };

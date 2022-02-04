@@ -1,21 +1,22 @@
+import { app } from '../index';
 import { UseCase } from './base/UseCase';
 
-interface clearCanvasOptions {
+interface testUseCaseOptions {
   canvasId: string;
 }
 
-export const clearCanvasUseCase:UseCase = {
-  type: 'CLEAR_CANVAS',
+export const testUseCase:UseCase = {
+  type: 'TEST_USE_CASE',
 
-  run: (options: clearCanvasOptions) => {
+  run: (options: testUseCaseOptions) => {
 
   }
 };
 
-export function canClearCanvas(state): boolean {
-  return clearCanvasUseCase.checkConditions( state ).isAllowed;
+export function canTest(state): boolean {
+  return testUseCase.checkConditions( state ).isAllowed;
 }
 
-export function clearCanvas(options: clearCanvasOptions){
-  app.runUseCase(clearCanvasUseCase, options);
+export function test(options: testUseCaseOptions){
+  app.runUseCase(testUseCase, options);
 }
