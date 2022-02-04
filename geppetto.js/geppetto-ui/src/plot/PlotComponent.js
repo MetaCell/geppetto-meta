@@ -387,8 +387,17 @@ PlotComponent.propTypes = {
    * 'lineOptions' can be given, this will be used for modifying the visualization of the line plots.
    */
   plots: PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * The x value of the plot
+     */
     x: PropTypes.string.isRequired,
+    /**
+     * The y value of the plot
+     */
     y: PropTypes.string.isRequired,
+    /**
+     * An object specifying the line properties of the plot such as color
+     */
     lineOptions: PropTypes.object
   })).isRequired,
   /**
