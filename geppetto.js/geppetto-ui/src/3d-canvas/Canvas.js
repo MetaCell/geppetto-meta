@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
+import CameraControls from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import ReactResizeDetector from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
@@ -269,7 +270,7 @@ Canvas.defaultProps = {
       radius: 559.83,
     },
     cameraControls: {
-      instance: null,
+      instance: CameraControls,
       props: {
         wireframeButtonEnabled: false,
       },
@@ -395,9 +396,9 @@ Canvas.propTypes = {
      */
     cameraControls: PropTypes.shape({
       /**
-       * Reference to cameraControls instance?
+       * Reference to cameraControls instance
        */
-      instance: PropTypes.any,
+      instance: PropTypes.element,
       /**
        * CameraControls props
        */
