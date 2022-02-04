@@ -612,7 +612,7 @@ Canvas.propTypes = {
   /**
    *  Color map
    */
-  colorMap: PropTypes.shape({}),
+  colorMap: PropTypes.object,
   /**
    * Three values to describe position along x, y, and z axis. Format example => "-20 -20 -80"
    */
