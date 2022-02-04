@@ -418,6 +418,7 @@ ListViewer.propTypes = {
   /**
    * Specifies custom column definitions
    */
+  // columnConfiguration: PropTypes.array,
   columnConfiguration: PropTypes.arrayOf(PropTypes.shape({
     /**
      * Column id
@@ -430,7 +431,10 @@ ListViewer.propTypes = {
     /**
      * Column source
      */
-    source: PropTypes.string,
+    source: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func,
+    ]),
     /**
      * Column source
      */
@@ -453,28 +457,79 @@ ListViewer.propTypes = {
     /**
      * Column configuration settings
      */
-    configuration: PropTypes.shape({
+    configuration: PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Alternative text for an image
+     */
       alt: PropTypes.string,
+    /**
+     * Title of the column
+     */
       title: PropTypes.string,
+      /**
+       * Action associated with the column
+       */
       action:  PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.element,
         PropTypes.func,
       ]),
+      /**
+       * Default color of the column
+       */
       defaultColor: PropTypes.string,
+      /**
+       * The column's label
+       */
       label: PropTypes.string,
+      /**
+       * The column's placeholder
+       */
       placeholder: PropTypes.string,
+      /**
+       * The column's default value
+       */
       defaultValue: PropTypes.number,
+      /**
+       * The column's type
+       */
       type: PropTypes.string,
+      /**
+       * Callback function triggered by the onBlur event
+       */
       onBlur: PropTypes.func,
+      /**
+       * Callback function triggered by the onKeyPress event
+       */
       onKeyPress: PropTypes.func,
+      /**
+       * Boolean value indicating if the column is readOnly
+       */
       readOnly: PropTypes.bool,
+      /**
+       * A style string used to provide styling to the column
+       */
       classString: PropTypes.string,
+      /**
+       * The column data's unit
+       */
       unit: PropTypes.string,
+      /**
+       * The column's text
+       */
       text: PropTypes.string,
+      /**
+       * The column's icon. Icon codes are font awesome names
+       */
       icon: PropTypes.string,
+      /**
+       * A column's tooltip
+       */
       tooltip: PropTypes.string,
-      configuration: PropTypes.shape({
+      /**
+       * A column's more detailed configuration
+       */
+      configuration: PropTypes.arrayOf(PropTypes.shape({
         icon: PropTypes.string,
         tooltip: PropTypes.string,
         action:  PropTypes.oneOfType([
@@ -483,8 +538,8 @@ ListViewer.propTypes = {
           PropTypes.func,
         ]),
       }),
-    }),
-  })),
+    )}),
+  )})),
   /**
    * Function to filter data given a custom criterion
    */
@@ -493,24 +548,81 @@ ListViewer.propTypes = {
    * Components passed in with a matching name will override the default in Griddle
    */
   customComponents: PropTypes.shape({
+    /**
+     * Custom components' cell type
+     */
     Cell: PropTypes.elementType,
+    /**
+     * Filter for searching custom components
+     */
     Filter: PropTypes.elementType,
+    /**
+     * ElementType for loading the custom components
+     */
     Loading: PropTypes.elementType,
+    /**
+     * ElementType for the next button in the custom components
+     */
     NextButton: PropTypes.elementType,
+    /**
+     * ElementType for when there are no results returned from a search
+     */
     NoResults: PropTypes.elementType,
+    /**
+     * Page dropdown for the custom components
+      */
     PageDropdown: PropTypes.elementType,
+    /**
+     * Pagination for the custom components
+     */
     Pagination: PropTypes.elementType,
+    /**
+     * ElementType for the previous button in the custom components
+     */
     PreviousButton: PropTypes.elementType,
+    /**
+     * Row elementType for the custom components
+     */
     Row: PropTypes.elementType,
+    /**
+     * Definition of rows in the custom components
+     */
     RowDefinition: PropTypes.elementType,
+    /**
+     * Settings for the custom components
+     */
     Settings: PropTypes.elementType,
+    /**
+     * Settings for the List Viewer's custom component's toggle
+     */
     SettingsToggle: PropTypes.elementType,
+    /**
+     * Table for custome components
+     */
     Table: PropTypes.elementType,
+    /**
+     * Table body for custome components
+     */
     TableBody: PropTypes.elementType,
+    /**
+     * Table heading for custome components
+     */
     TableHeading: PropTypes.elementType,
+    /**
+     * Table heading for cells for custome components
+     */
     TableHeadingCell: PropTypes.elementType,
+    /**
+     * Table heading for cells in ascending order for custome components
+     */
     TableHeadingCellAscending: PropTypes.elementType,
+    /**
+     * Table heading for cells in descending order for custome components
+     */
     TableHeadingCellDescending: PropTypes.elementType,
+    /**
+     * Layout of the custom components
+     */
     Layout: PropTypes.elementType,
   }),
   /**
