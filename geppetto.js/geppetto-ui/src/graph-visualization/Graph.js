@@ -420,9 +420,26 @@ GeppettoGraphVisualization.propTypes = {
    * Object with arrays of nodes and links used to render the graph.
    */
   data: PropTypes.shape({
-    nodes : PropTypes.arrayOf(PropTypes.shape({ id : PropTypes.number.isRequired })).isRequired,
+    /**
+     * Nodes in the graph
+     */
+    nodes : PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Node id
+     */
+      id : PropTypes.number.isRequired 
+    })).isRequired,
+    /**
+   * Links between nodes in the graph
+   */
     links : PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Source node of he link
+     */
       source: PropTypes.number.isRequired,
+    /**
+     * Target node of he link
+     */
       target: PropTypes.number.isRequired
     })).isRequired
   }),
