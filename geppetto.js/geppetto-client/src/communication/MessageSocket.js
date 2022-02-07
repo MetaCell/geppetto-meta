@@ -242,6 +242,10 @@ export class MessageSocket {
     this.send("load_project_from_id", { projectId });
   }
 
+  loadProjectFromIdAsync(projectId, cb) {
+    this.send("load_project_from_id", { projectId }, cb);
+  }
+
   loadProjectFromUrl(projectURL) {
     this.send("load_project_from_url", projectURL);
   }

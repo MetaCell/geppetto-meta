@@ -30,9 +30,9 @@ export function callbacksMiddleware ({ getState, dispatch }) {
       }
 
       switch (action.type) {
-      case clientActions.PROJECT_LOAD_FROM_ID:
-        MessageSocket.loadProjectFromId(action.data);
-        break;
+      // case clientActions.PROJECT_LOAD_FROM_ID:
+      //   MessageSocket.loadProjectFromId(action.data);
+      //   break;
       case clientActions.PROJECT_LOAD_FROM_URL:
         MessageSocket.loadProjectFromUrl(action.data);
         break;
