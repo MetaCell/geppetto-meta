@@ -6,6 +6,7 @@ import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Button from "@material-ui/core/Button";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
+import CanvasTooltip from "../utils/CanvasTooltip";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -27,6 +28,7 @@ class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
+    this.tooltipRef = React.createRef();
     this.state = {
       hasModelLoaded: false,
       showLoader: false,
@@ -96,7 +98,13 @@ class AuditoryCortexExample extends Component {
     this.setState({ hasModelLoaded: true, showLoader: false });
   }
 
-  hoverHandler (obj) {}
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
+  }
 
   onSelection (selectedInstances){
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
@@ -109,16 +117,21 @@ class AuditoryCortexExample extends Component {
 
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div ref={node => this.node = node} className={classes.container}>
-        <Canvas
-          ref={this.canvasRef}
-          data={canvasData}
-          cameraOptions={cameraOptions}
-          onSelection={this.onSelection}
-          backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
-        />
-      </div>
+      <>
+        <div>
+          <CanvasTooltip ref={this.tooltipRef} />
+        </div>
+        <div ref={node => this.node = node} className={classes.container}>
+          <Canvas
+            ref={this.canvasRef}
+            data={canvasData}
+            cameraOptions={cameraOptions}
+            onSelection={this.onSelection}
+            backgroundColor={0x505050}
+            hoverListeners={[this.hoverHandler]}
+          />
+        </div>
+      </>
     ) : <Button
       variant="outlined"
       color="primary"
