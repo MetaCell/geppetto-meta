@@ -393,100 +393,9 @@ export default class ListViewer extends React.Component {
   }
 }
 
-// ListViewer.defaultProps = {
-//   handler: {},
-//   infiniteScroll: true,
-//   columnConfiguration: [],
-//   filter: () => {},
-//   customComponents: {},
-//   showPagination: true,
-// }
-
-const configurationShape = {
-  /**
-   * The column's text
-   */
-  text: PropTypes.string,
-  /**
-   * Alternative text for an image
-   */
-  alt: PropTypes.string,
-  /**
-   * Title of the column
-   */
-  title: PropTypes.string,
-  /**
-   * Action associated with the column
-   */
-  action: PropTypes.oneOfType([
-    PropTypes.func,
-  ]),
-  /**
-   * Default color of the column
-   */
-  defaultColor: PropTypes.string,
-  /**
-   * The column's label
-   */
-  label: PropTypes.string,
-  /**
-   * The column's tooltip
-   */
-  tooltip: PropTypes.string,
-  /**
-   * The column's placeholder text
-   */
-  placeholder: PropTypes.string,
-  /**
-   * The column's default value
-   */
-  defaultValue: PropTypes.number,
-  /**
-   * The column's type
-   */
-  type: PropTypes.string,
-  /**
-   * Callback function triggered by the onBlur event
-   */
-  onBlur: PropTypes.func,
-  /**
-   * Callback function triggered by the onKeyPress event
-   */
-  onKeyPress: PropTypes.func,
-  /**
-   * Boolean value indicating if the column is readOnly
-   */
-  readOnly: PropTypes.bool,
-  /**
-   * A style string used to provide styling to the column
-   */
-  classString: PropTypes.string,
-  /**
-   * The column's text
-   */
-  unit: PropTypes.string,
-  /**
-   * Column icon code. Icon codes are font awesome names
-   */
-  icon: PropTypes.string,
-  /**
-   * Column custom component
-   */
-  customComponent: PropTypes.oneOfType([
-    PropTypes.element,
-    PropTypes.string,
-  ]),
-};
-
-configurationShape.configuration = PropTypes.oneOfType([
-  PropTypes.shape(configurationShape),
-  PropTypes.arrayOf(PropTypes.shape(configurationShape)),
-]);
-
-const configurationPropTypes = PropTypes.oneOfType([
-  PropTypes.shape(configurationShape),
-  PropTypes.arrayOf(configurationShape),
-]);
+ListViewer.defaultProps = {
+  handler: {},
+}
 
 ListViewer.propTypes = {
   /**
@@ -558,7 +467,10 @@ ListViewer.propTypes = {
     /**
      * Configuration details of the column
      */
-    configuration: PropTypes.any,
+    configuration: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object),
+    ]),
   })),
   /**
    * Function to filter data given a custom criterion
@@ -576,6 +488,9 @@ ListViewer.propTypes = {
      * Filter for searching custom components
      */
     Filter: PropTypes.elementType,
+    /**
+     * Loading element
+     */
     Loading: PropTypes.elementType,
     /**
      * ElementType for the next button in the custom components
