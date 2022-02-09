@@ -403,11 +403,11 @@ ListViewer.propTypes = {
    */
   instances: PropTypes.array.isRequired,
   /**
-   * Specifies an handler context to which the callbacks specified are bound
+   * Specifies a handler context to which the callbacks specified are bound
    */
   handler: PropTypes.object,
   /**
-   * Bool that defines the presece or not of infiniteScroll
+   * Bool that defines the presence or not of infiniteScroll
    */
   infiniteScroll: PropTypes.bool,
   /**
@@ -415,7 +415,7 @@ ListViewer.propTypes = {
    */
   columnConfiguration: PropTypes.arrayOf(PropTypes.shape({
     /**
-     * Column id
+     * Column identifier
      */
     id: PropTypes.string,
     /**
@@ -461,7 +461,7 @@ ListViewer.propTypes = {
      */
     displayName: PropTypes.string,
     /**
-     * Boolean value for dertermining column visibility
+     * Boolean value for determining column visibility
      */
     visible: PropTypes.bool,
     /**
@@ -529,27 +529,27 @@ ListViewer.propTypes = {
      */
     SettingsToggle: PropTypes.elementType,
     /**
-     * Table for custome components
+     * Table for custom components
      */
     Table: PropTypes.elementType,
     /**
-     * Table body for custome components
+     * Table body for custom components
      */
     TableBody: PropTypes.elementType,
     /**
-     * Table heading for custome components
+     * Table heading for custom components
      */
     TableHeading: PropTypes.elementType,
     /**
-     * Table heading for cells for custome components
+     * Table heading for cells for custom components
      */
     TableHeadingCell: PropTypes.elementType,
     /**
-     * Table heading for cells in ascending order for custome components
+     * Table heading for cells in ascending order for custom components
      */
     TableHeadingCellAscending: PropTypes.elementType,
     /**
-     * Table heading for cells in descending order for custome components
+     * Table heading for cells in descending order for custom components
      */
     TableHeadingCellDescending: PropTypes.elementType,
     /**
@@ -558,7 +558,7 @@ ListViewer.propTypes = {
     Layout: PropTypes.elementType,
   }),
   /**
-   * Show Pagination button, used for changing pages
+   * Booleam to determine showing the Pagination button that is used for changing pages
    */
   showPagination:  PropTypes.bool
 };

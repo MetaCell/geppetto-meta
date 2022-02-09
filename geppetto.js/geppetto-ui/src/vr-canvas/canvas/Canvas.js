@@ -622,7 +622,7 @@ Canvas.propTypes = {
    */
   rotation: PropTypes.string,
   /**
-   * Color applied to the scence's background. Format example => "color: #ECECEC"
+   * Color applied to the scene's background. Format example => "color: #ECECEC"
    */
   sceneBackground: PropTypes.string,
   /**

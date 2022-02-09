@@ -383,7 +383,7 @@ Canvas.propTypes = {
       z: PropTypes.number,
     }),
     /**
-     * Rotation object to define rx, ry, rz, and readuis values
+     * Rotation object to define rx, ry, rz, and radius values
      */
     rotation: PropTypes.shape({
       rx: PropTypes.number,
@@ -466,7 +466,7 @@ Canvas.propTypes = {
      */
     screenshotOptions: PropTypes.shape({
       /**
-       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
+       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding its children as well.
        */
       filter: PropTypes.func,
       /**

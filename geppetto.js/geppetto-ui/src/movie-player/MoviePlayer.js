@@ -85,7 +85,7 @@ MoviePlayer.defaultValues = {
 
 MoviePlayer.propTypes = {
   /**
-   * URL pointing to the video to be render in this component.
+   * URL pointing to the video to be rendered in this component.
    */
   videoURL: PropTypes.string.isRequired,
   /**

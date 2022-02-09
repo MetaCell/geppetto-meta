@@ -212,7 +212,7 @@ Tree.defaultProps = {
 
 Tree.propTypes = {
   /**
-   * Tree data with the following keys: title, subtitle, expanded, children
+   * Tree data with the following keys: title, subtitle, expanded, and children
    */
   treeData: PropTypes.array.isRequired,
   /**

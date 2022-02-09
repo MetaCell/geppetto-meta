@@ -417,7 +417,7 @@ GeppettoGraphVisualization.defaultProps = {
 
 GeppettoGraphVisualization.propTypes = {
   /**
-   * Object with arrays of nodes and links used to render the graph.
+   * Object with arrays of nodes and links used to render the graph
    */
   data: PropTypes.shape({
     /**
@@ -425,7 +425,7 @@ GeppettoGraphVisualization.propTypes = {
      */
     nodes : PropTypes.arrayOf(PropTypes.shape({
     /**
-     * Node id
+     * Node identifier
      */
       id : PropTypes.number.isRequired 
     })).isRequired,
@@ -434,11 +434,11 @@ GeppettoGraphVisualization.propTypes = {
    */
     links : PropTypes.arrayOf(PropTypes.shape({
     /**
-     * Source node of he link
+     * Source node of the link
      */
       source: PropTypes.number.isRequired,
     /**
-     * Target node of he link
+     * Target node of the link
      */
       target: PropTypes.number.isRequired
     })).isRequired
@@ -457,7 +457,7 @@ GeppettoGraphVisualization.propTypes = {
    */
   linkLabel : PropTypes.func,
   /**
-   *  Specify a obj file URL to add to the scene.
+   *  Specify an obj file URL to add to the scene.
    */
   url : PropTypes.string,
   /**
@@ -511,7 +511,7 @@ GeppettoGraphVisualization.propTypes = {
    */
   timeToCenter2DCamera : PropTypes.number,
   /**
-   * Creates a radial atractive force of radial circle equal to forceRadial. 
+   * Creates a radial attractive force of radial circle equal to forceRadial. 
    * Useful to avoid nodes scattering away when they have no links. 
    * (Default : 1)
    */
