@@ -19,34 +19,51 @@ interface GeppettoState{
   client: ClientState,
   layout: LayoutState,
   widgets: WidgetMap,
-  loader: LoaderState
-}
-
-const initialState: GeppettoState = {
-  client: clientInitialState,
-  layout: layoutInitialState,
-  loader: loaderInitialState,
-  widgets: {}
-};
-
-const staticReducers = {
-  client: geppettoClientReducer,
-  loader: geppettoLoaderReducer,
-  layout,
-  widgets
+  //loader: LoaderState
 }
 
 // Use the below for redux debugging with stack trace
 //const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({trace: true, traceLimit: 25}) || redux.compose;
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || redux.compose;
 
-export function Application(){
+export function Application() {
 
   let _store:redux.Store<any, GeppettoAction> ;
 
+  const initialState: GeppettoState = {
+    client: clientInitialState,
+    layout: layoutInitialState,
+    //loader: loaderInitialState,
+    widgets: {}
+  };
+  
+  const staticReducers = {
+    client: geppettoClientReducer,
+    //loader: geppettoLoaderReducer,
+    layout,
+    widgets
+  }
+
+  const init = function(  reducers: redux.ReducersMapObject, 
+    state: any, 
+    enhancers: redux.Middleware[], 
+    layout: {iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap}={componentMap: {}}) {
+    const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory)
+    const allMiddlewares = [...enhancers, callbacksMiddleware, layoutManager.middleware];
+    const combinedReducers = reducerDecorator(redux.combineReducers({...staticReducers, ...reducers})) ;
+    
+    _store = redux.createStore(
+      combinedReducers,
+      {...initialState, ...state },
+      storeEnhancers(redux.applyMiddleware(...allMiddlewares))
+    );
+    
+    EventManager.setStore(this._store);
+  }
+
   const dispatch = function(data:any){
     console.log('dispatching...', data);
-    this._store.dispatch(data);
+    _store.dispatch(data);
   };
 
   const dispatchSuccess = function(data:any){
@@ -104,22 +121,18 @@ export function Application(){
 
   return Object.freeze({
 
-    initStore( 
-      reducers: redux.ReducersMapObject, 
-      state: any, 
-      enhancers: redux.Middleware[], 
-      layout: {iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap}={componentMap: {}}) 
-    {
-  
-      const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory)
-      const allMiddlewares = [...enhancers, callbacksMiddleware, layoutManager.middleware];
-  
-      this._store = redux.createStore(
-        reducerDecorator(redux.combineReducers({...staticReducers, ...reducers})),
-        {...initialState, ...state },
-        storeEnhancers(redux.applyMiddleware(...allMiddlewares))
-      );
-      EventManager.setStore(this._store);
+     _initialState : {
+      client: clientInitialState,
+      layout: layoutInitialState,
+      //loader: loaderInitialState,
+      widgets: {}
+    },
+    
+    _staticReducers : {
+      client: geppettoClientReducer,
+      //loader: geppettoLoaderReducer,
+      layout,
+      widgets
     },
 
     dispatch(key: string, data: any){
@@ -127,7 +140,7 @@ export function Application(){
     },
 
     getReduxStore(){
-      return this._store;
+      return _store;
     },
 
     runUseCase(useCase: UseCase, options:any = {}){

@@ -1,4 +1,4 @@
-import { app } from '../index';
+import app from '../index';
 import { UseCase } from './base/UseCase';
 import MessageSocket from '../../communication/MessageSocket';
 

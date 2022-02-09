@@ -3,4 +3,4 @@ export * from './layout';
 
 const app = Application();
 
-export { app };
+export default app ;
