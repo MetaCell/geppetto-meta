@@ -377,6 +377,11 @@ class PlotComponent extends Component {
   }
 }
 
+PlotComponent.defaultProp = {
+  layout: {},
+  extractLegendName: () => {},
+}
+
 PlotComponent.propTypes = {
   /**
    * The identifier used to name this Plot component.
