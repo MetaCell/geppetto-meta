@@ -109,11 +109,13 @@ class Showcase extends Component {
           {
             typeof createTabsForExamples !== 'undefined' && createTabsForExamples
               ? <>
-                <Tabs value={this.state.tabValue} indicatorColor="primary" aria-label="showcase-examples-tabs" variant="fullWidth" onChange={(e, newTabValue) => this.setState(() => ({ tabValue: newTabValue }))}>
-                  {configs.examples.map((obj, index) => (
-                    <Tab label={obj.name} key={obj.name} {...a11yProps(index)}/>
-                  ))}
-                </Tabs>
+                <Box>
+                  <Tabs value={this.state.tabValue} variant="scrollable" centered indicatorColor="primary" aria-label="showcase-examples-tabs" onChange={(e, newTabValue) => this.setState(() => ({ tabValue: newTabValue }))}>
+                    {configs.examples.map((obj, index) => (
+                      <Tab label={obj.name.replace(/example/i, '').trim()} key={obj.name} {...a11yProps(index)} />
+                    ))}
+                  </Tabs>
+                </Box>
                 {configs.examples.map((obj, index) => {
                   const file = obj.file.default.split('\n').join('\n');
                   return (
