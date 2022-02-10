@@ -433,7 +433,7 @@ class DicomViewer extends Component {
       }
     }
 
-    function togglMode (event) {
+    function toggleMode (event) {
       if (_this.state.mode === 'single_view') {
         _this.changeMode();
       } else {
@@ -487,7 +487,7 @@ class DicomViewer extends Component {
       if (
         action === 'goToPoint'
         || action === 'goToSingleView'
-        || action === 'togglMode'
+        || action === 'toggleMode'
       ) {
         eval(action + '(event)');
       } else {
