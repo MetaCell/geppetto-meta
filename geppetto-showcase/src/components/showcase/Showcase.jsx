@@ -109,7 +109,7 @@ class Showcase extends Component {
           {
             typeof createTabsForExamples !== 'undefined' && createTabsForExamples
               ? <>
-                <Tabs value={this.state.tabValue} aria-label="showcase-examples-tabs" variant="fullWidth" onChange={(e, newTabValue) => this.setState(() => ({ tabValue: newTabValue }))}>
+                <Tabs value={this.state.tabValue} indicatorColor="primary" aria-label="showcase-examples-tabs" variant="fullWidth" onChange={(e, newTabValue) => this.setState(() => ({ tabValue: newTabValue }))}>
                   {configs.examples.map((obj, index) => (
                     <Tab label={obj.name} key={obj.name} {...a11yProps(index)}/>
                   ))}
