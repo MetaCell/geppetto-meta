@@ -6,6 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import PropsTable from './PropsTable';
 import BottomNavigation from '../BottomNavigation';
@@ -52,7 +54,7 @@ const styles = theme => ({
   library: { margin: theme.spacing(1), },
 });
 
-function TabPanel(props) {
+function TabPanel (props) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -78,7 +80,7 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
+function a11yProps (index) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -112,6 +114,27 @@ class Showcase extends Component {
                     <Tab label={obj.name} key={obj.name} {...a11yProps(index)}/>
                   ))}
                 </Tabs>
+                {configs.examples.map((obj, index) => {
+                  const file = obj.file.default.split('\n').join('\n');
+                  return (
+                    <TabPanel value={this.state.tabValue} index={index} key={`tabpanel-${obj.name}`}>
+                      <div key={obj.name}>
+                        <h2 className={classes.secondaryTitle}>{obj.name}</h2>
+                        <span className={classes.secondaryDescription}>
+                          {obj.description}
+                        </span>
+                        <Paper variant="outlined">
+                          <div className={classes.centerComponent}>
+                            <obj.component ref={this.componentRef} />
+                          </div>
+                        </Paper>
+                        <Code file={file} element={configs.reactElement}></Code>
+                      </div>
+                    
+                    </TabPanel>
+                  );
+                })
+                }
               </>
               : <>
                 {configs.examples.map(obj => {
