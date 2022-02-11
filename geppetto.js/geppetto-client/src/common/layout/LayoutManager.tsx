@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as FlexLayout from "@metacell/geppetto-meta-ui/flex-layout/src/index";
-import Actions from "@metacell/geppetto-meta-ui/flex-layout/src/model/Actions";
-import DockLocation from "@metacell/geppetto-meta-ui/flex-layout/src/DockLocation";
-import Model from "@metacell/geppetto-meta-ui/flex-layout/src/model/Model";
-import { WidgetStatus, Widget, ComponentMap } from "./model";
+import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
+import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
+import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import { WidgetStatus, Widget, ComponentMap } from './model';
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -358,8 +358,10 @@ class LayoutManager {
     let defaultAction = true;
     switch (action.type) {
       case Actions.SET_ACTIVE_TABSET:
+        this.store.dispatch(updateWidget({...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE}))
         break;
       case Actions.SELECT_TAB:
+        this.store.dispatch(updateWidget({...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE}))
         break;
       case Actions.DELETE_TAB: {
         if (this.getWidget(action.data.node).hideOnClose) {
@@ -367,7 +369,7 @@ class LayoutManager {
           this.minimizeWidget(action.data.node);
           defaultAction = false;
         } else {
-          // remove widget from widgets list 
+          // remove widget from widgets list
           this.store.dispatch(removeWidgetFromStore(action.data.node))
         }
         break;
@@ -467,7 +469,7 @@ class LayoutManager {
     updatedWidget.status = WidgetStatus.MINIMIZED;
     updatedWidget.defaultPanel = updatedWidget.panelName;
     updatedWidget.panelName = MINIMIZED_PANEL;
-    this.updateWidget(updatedWidget);
+    this.store.dispatch(updateWidget(updatedWidget))
   }
 
   /**
