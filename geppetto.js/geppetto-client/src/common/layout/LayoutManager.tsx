@@ -155,8 +155,6 @@ class LayoutManager {
     const { model } = this;
     const rootNode = model.getNodeById("root");
 
-
-
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
 
     switch (position) {
@@ -174,7 +172,6 @@ class LayoutManager {
         tabset._setWeight(80);
         let hrow = new FlexLayout.RowNode(model, {});
         hrow._setWeight(100);
-  
 
         rootNode.getChildren().forEach(child => {
           if (child['getWeight']) {

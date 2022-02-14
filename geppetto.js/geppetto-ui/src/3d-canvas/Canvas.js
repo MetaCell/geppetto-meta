@@ -79,6 +79,10 @@ class Canvas extends Component {
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
+    if (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientEight !== this.threeDEngine.height) {
+      this.threeDEngine.resize();
+    }
+
     if (prevProps !== this.props) {
       const { data, cameraOptions, threeDObjects, backgroundColor } = this.props;
       await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse(), backgroundColor);
@@ -90,7 +94,7 @@ class Canvas extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props
+    return nextState.modelReady || nextProps !== this.props || (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height)
   }
 
   componentWillUnmount () {
