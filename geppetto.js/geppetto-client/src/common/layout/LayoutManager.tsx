@@ -152,14 +152,13 @@ class LayoutManager {
    * @private
    */
   private createTabSet(tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
-    // In case the tabset doesn't exist
     const { model } = this;
     const rootNode = model.getNodeById("root");
 
+
+
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
-    tabset._setWeight(weight);
-    let hrow = new FlexLayout.RowNode(model, {});
-    let hrowRowRow = null;
+
     switch (position) {
       case TabsetPosition.RIGHT:
         rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
@@ -171,30 +170,30 @@ class LayoutManager {
         break;
       case TabsetPosition.BOTTOM:
       case TabsetPosition.TOP: {
-        if (!hrow) {
-          hrow = new FlexLayout.RowNode(model, {});
-          hrow._setWeight(100);
 
-          hrowRowRow = new FlexLayout.RowNode(model, {});
-          hrowRowRow._setWeight(100 - weight);
-          hrow._addChild(hrowRowRow);
-          rootNode.getChildren().forEach(child => {
-            hrowRowRow._addChild(child);
-          });
-          rootNode._removeAll();
-          rootNode._addChild(hrow);
-        }
+        tabset._setWeight(80);
+        let hrow = new FlexLayout.RowNode(model, {});
+        hrow._setWeight(100);
+  
 
+        rootNode.getChildren().forEach(child => {
+          if (child['getWeight']) {
+            const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
+            child._setWeight(newWeight);
+            hrow._addChild(child);
+          }
+        });
         if (position === TabsetPosition.BOTTOM) {
           hrow._addChild(tabset)
         } else {
           hrow._addChild(tabset, 0);
         }
-        break;
+
+        rootNode._removeAll();
+        rootNode._addChild(hrow, 0);
       }
     }
   }
-
   /**
    * Export a session.
    */
@@ -377,10 +376,9 @@ class LayoutManager {
     let defaultAction = true;
     switch (action.type) {
       case Actions.SET_ACTIVE_TABSET:
-        this.store.dispatch(updateWidget({...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE}))
         break;
       case Actions.SELECT_TAB:
-        this.store.dispatch(updateWidget({...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE}))
+        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE }))
         break;
       case Actions.DELETE_TAB: {
         if (this.getWidget(action.data.node).hideOnClose) {
@@ -396,8 +394,8 @@ class LayoutManager {
       case Actions.MAXIMIZE_TOGGLE:
         break;
       case Actions.RENAME_TAB:
-        this.store.dispatch(updateWidget({...this.getWidget(action.data.node), name: action.data.text}))
-          break;
+        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.node), name: action.data.text }))
+        break;
       case Actions.ADJUST_SPLIT:
         break;
       case Actions.ADD_NODE: {
