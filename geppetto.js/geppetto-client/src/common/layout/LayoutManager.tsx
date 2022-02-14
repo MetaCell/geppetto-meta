@@ -3,7 +3,7 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import { WidgetStatus, Widget, ComponentMap } from './model';
+import { WidgetStatus, Widget, ComponentMap, TabsetPosition } from './model';
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -90,7 +90,7 @@ class LayoutManager {
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      this.createTabSet(widgetConfiguration.panelName);
+      this.createTabSet(widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     this.model.doAction(
       Actions.addNode(
@@ -151,29 +151,48 @@ class LayoutManager {
    * @param {string} tabsetID the id of the tab set
    * @private
    */
-  private createTabSet(tabsetID) {
+  private createTabSet(tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
     // In case the tabset doesn't exist
     const { model } = this;
     const rootNode = model.getNodeById("root");
 
-    let hrow = new FlexLayout.RowNode(model, {});
-    hrow._setWeight(100);
-
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
-    tabset._setWeight(80);
+    tabset._setWeight(weight);
+    let hrow = new FlexLayout.RowNode(model, {});
+    let hrowRowRow = null;
+    switch (position) {
+      case TabsetPosition.RIGHT:
+        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
+        rootNode._addChild(tabset);
+        break;
+      case TabsetPosition.LEFT:
+        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
+        rootNode._addChild(tabset, 0);
+        break;
+      case TabsetPosition.BOTTOM:
+      case TabsetPosition.TOP: {
+        if (!hrow) {
+          hrow = new FlexLayout.RowNode(model, {});
+          hrow._setWeight(100);
 
-    hrow._addChild(tabset);
+          hrowRowRow = new FlexLayout.RowNode(model, {});
+          hrowRowRow._setWeight(100 - weight);
+          hrow._addChild(hrowRowRow);
+          rootNode.getChildren().forEach(child => {
+            hrowRowRow._addChild(child);
+          });
+          rootNode._removeAll();
+          rootNode._addChild(hrow);
+        }
 
-    rootNode.getChildren().forEach(child => {
-      if (child['getWeight']) {
-        const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
-        child._setWeight(newWeight);
-        hrow._addChild(child);
+        if (position === TabsetPosition.BOTTOM) {
+          hrow._addChild(tabset)
+        } else {
+          hrow._addChild(tabset, 0);
+        }
+        break;
       }
-    });
-
-    rootNode._removeAll();
-    rootNode._addChild(hrow, 0);
+    }
   }
 
   /**
@@ -541,7 +560,7 @@ class LayoutManager {
     const panelName = widget.panelName;
     let tabset = model.getNodeById(panelName);
     if (tabset === undefined) {
-      this.createTabSet(panelName);
+      this.createTabSet(panelName, widget.defaultPosition, widget.defaultWeight);
     }
     this.moveWidget(widget);
   }
