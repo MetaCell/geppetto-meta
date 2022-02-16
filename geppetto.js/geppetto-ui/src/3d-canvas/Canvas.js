@@ -79,7 +79,7 @@ class Canvas extends Component {
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
-    if (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientEight !== this.threeDEngine.height) {
+    if (this.resizeRequired()) {
       this.threeDEngine.resize();
     }
 
@@ -93,8 +93,15 @@ class Canvas extends Component {
     }
   }
 
+  resizeRequired () {
+    if (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height) {
+      return true
+    }
+    return false;
+  }
+
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props || (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height)
+    return nextState.modelReady || nextProps !== this.props || this.resizeRequired()
   }
 
   componentWillUnmount () {
