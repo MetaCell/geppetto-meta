@@ -50,9 +50,9 @@
     "webpack-dev-server": "^3.11.2"
   },
   "peerDependencies": {
-    "@metacell/geppetto-meta-client": "^0.0.5",
-    "@metacell/geppetto-meta-core": "^0.0.5",
-    "@metacell/geppetto-meta-ui": "^0.0.5"
+    "@metacell/geppetto-meta-client": "^1.0.0-rc6",
+    "@metacell/geppetto-meta-core": "^1.0.0-rc6",
+    "@metacell/geppetto-meta-ui": "^1.0.0-rc6"
   },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
