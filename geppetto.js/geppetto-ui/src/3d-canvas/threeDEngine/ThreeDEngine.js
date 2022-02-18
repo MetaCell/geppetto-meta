@@ -19,6 +19,7 @@ import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
 import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
+
 export default class ThreeDEngine {
   constructor (
     containerRef,
@@ -58,6 +59,7 @@ export default class ThreeDEngine {
     this.lastRenderTimer = new Date();
     this.updateStarted = updateStarted;
     this.updateEnded = updateEnded;
+    this.instancesPath = null;
 
     // Setup Listeners
     this.start = this.start.bind(this);
@@ -72,6 +74,7 @@ export default class ThreeDEngine {
     this.update = this.update.bind(this);
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
+    this.checkParent = this.checkParent.bind(this);
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -178,7 +181,7 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-   getIntersectedObjects () {
+  getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
@@ -339,12 +342,31 @@ export default class ThreeDEngine {
     }
   }
 
+  // TO FIX:
+  // this can be improved by creating a flat list
+  checkParent (node, paths) {
+    if (this.instancesPath.get(node.instancePath) === undefined) {
+      const geppettoInstance = Instances.getInstance(node.instancePath);
+      const instanceType = geppettoInstance.getMetaType();
+      if (instanceType === Resources.ARRAY_INSTANCE_NODE || instanceType === Resources.ARRAY_ELEMENT_INSTANCE_NODE) {
+        const parent = geppettoInstance.getParent();
+        if (parent) {
+          return this.checkParent({instancePath: parent.getInstancePath()}, paths);
+        }
+      }
+      return true
+    } else {
+      return false;
+    }
+  }
+
 
   async clearScene (proxyInstances) {
     var pathsToRemove = [];
     var sortedInstances = [];
+    this.instancesPath = new Map(proxyInstances.map(child => [child.instancePath, child]));
     var toRemove = this.scene.children.filter(child => {
-      if (child.type === 'Mesh' || child.type === 'Group') {
+      if ((child.type === 'Mesh' || child.type === 'Group') && this.checkParent(child, this.instancesPath)) {
         pathsToRemove.push(child.instancePath)
         return true;
       }
