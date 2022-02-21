@@ -49,11 +49,6 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.2"
   },
-  "peerDependencies": {
-    "@metacell/geppetto-meta-client": "^1.0.0-rc6",
-    "@metacell/geppetto-meta-core": "^1.0.0-rc6",
-    "@metacell/geppetto-meta-ui": "^1.0.0-rc6"
-  },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
