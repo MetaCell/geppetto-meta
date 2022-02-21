@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-core",
-  "version": "1.0.0-rc6",
+  "version": "1.0.0-rc8",
   "description": "The core functionality of geppetto-meta to build and simulate neuroscience data and models.",
   "keywords": [
     "geppetto",
@@ -41,8 +41,5 @@
         "node_modules"
       ]
     }
-  },
-  "exports": {
-    "./": "./src/"
   }
 }
