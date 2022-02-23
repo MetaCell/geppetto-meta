@@ -97,6 +97,11 @@ module.exports = smp.wrap({
         test: /\.obj|\.drc|\.gltf/,
         loader: 'url-loader',
       },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: "javascript/auto"
+      }
     ],
   },
   plugins: [
