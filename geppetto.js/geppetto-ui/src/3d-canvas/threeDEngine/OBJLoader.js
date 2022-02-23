@@ -1,7 +1,10 @@
 import {
+	AdditiveBlending,
 	BufferGeometry,
+	Color,
 	FileLoader,
 	Float32BufferAttribute,
+	Geometry,
 	Group,
 	LineBasicMaterial,
 	LineSegments,
@@ -485,27 +488,27 @@ class OBJLoader extends Loader {
     var i, c;
     var vl = vertices.length;
 
-    var geometry = new THREE.Geometry();
+    var geometry = new Geometry();
 
     for (i = 0; i < vl; i++) {
       geometry.vertices.push(
-        new THREE.Vector3(vertices[i++], vertices[i++], vertices[i])
+        new Vector3(vertices[i++], vertices[i++], vertices[i])
       );
     }
-    var threeColor = new THREE.Color();
+    var threeColor = new Color();
     threeColor.setHex(color);
 
-    var material = new THREE.PointsMaterial({
+    var material = new PointsMaterial({
       size: 0.5,
       map: texture,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
       depthTest: false,
       transparent: true,
       color: threeColor,
     });
     material.defaultColor = color;
     material.defaultOpacity = 1;
-    return new THREE.Points(geometry, material);
+    return new Points(geometry, material);
   }
  
   // @metacell change
