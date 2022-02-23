@@ -1,4 +1,4 @@
-{
+const model = {
   "eClass": "GeppettoModel",
   "name": "NWB File",
   "variables": [
@@ -2759,3 +2759,5 @@
     }
   ]
 }
+
+export default model

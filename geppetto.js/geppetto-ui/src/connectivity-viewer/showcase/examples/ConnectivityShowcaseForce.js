@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import model from '../model.json';
+import model from '../model';
 import { Force } from '../../layouts/Force';
 import ConnectivityComponent from '../../ConnectivityComponent';
 import { withStyles } from '@material-ui/core';

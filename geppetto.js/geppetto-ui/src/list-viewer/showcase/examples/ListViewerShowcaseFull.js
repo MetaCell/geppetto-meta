@@ -1,6 +1,6 @@
 import React from 'react';
 import ListViewer from '../../ListViewer';
-import instances from '../instances-small.json';
+import instances from '../instances-small';
 import {
   GroupComponent,
   IconComponent,

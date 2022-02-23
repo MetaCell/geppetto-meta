@@ -1,4 +1,4 @@
-[
+const instances = [
     {
         "path": "acnet2",
         "metaType": "CompositeType",
@@ -286,5 +286,6 @@
         "type": "Model.common.StateVariable",
         "static": false
     }
-   
 ]
+
+export default instances
