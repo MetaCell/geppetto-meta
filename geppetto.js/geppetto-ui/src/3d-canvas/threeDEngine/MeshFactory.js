@@ -61,7 +61,7 @@ export default class MeshFactory {
 
   async start (instances, instancesMap) {
     this.instancesMap = instancesMap;
-    await this.traverseInstances(instances);
+    await this.traverseInstances(this.instancesMap);
   }
 
 
@@ -77,14 +77,15 @@ export default class MeshFactory {
 
 
   async traverseInstances (instances) {
-    for (const mInstance of this.instancesMap.entries()) {
+    for (const mInstance of instances.entries()) {
       if (!mInstance[1].visibility) {
+        delete this.meshes[mInstance[0]];
         return;
       } else if (this.meshes[mInstance[0]] !== undefined) {
         if (mInstance[1].color !== undefined) {
           this.setColor(mInstance[0], mInstance[1].color);
         }
-        return;
+        continue;
       }
       const gInstance = Instances.getInstance(mInstance[0]);
       await this.buildVisualInstance(gInstance);
@@ -97,13 +98,10 @@ export default class MeshFactory {
 
   async buildVisualInstance (instance) {
     const instancePath = instance.getInstancePath();
-    console.log("mesh factory - instancePath is " + instancePath);
     // If the same mesh already exists skip the recreation
     if (this.meshes[instancePath]) {
-      console.log("inside the if");
       return;
     } else {
-      console.log("inside the else");
       const meshes = await this.generate3DObjects(instance);
       this.init3DObject(meshes, instance);
     }
