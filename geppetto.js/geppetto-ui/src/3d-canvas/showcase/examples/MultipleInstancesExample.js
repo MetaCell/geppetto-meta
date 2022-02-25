@@ -62,6 +62,7 @@ class MultipleInstancesExample extends Component {
     loadInstances()
     this.state = {
       data: getProxyInstances(),
+      showLoader: false,
       numberOfInstances: 5,
       cameraOptions: {
         angle: 50,
@@ -105,9 +106,10 @@ class MultipleInstancesExample extends Component {
   }
 
   handleToggle () {
+    this.setState({ showLoader: true })
     loadInstances()
     this.setState({
-      showModel: true, data: getProxyInstances(), cameraOptions: {
+      showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: {
         ...this.state.cameraOptions,
         reset: true,
       } 
@@ -154,32 +156,34 @@ class MultipleInstancesExample extends Component {
 
 
   render () {
-    const { data, cameraOptions, showModel } = this.state
+    const { data, cameraOptions, showModel, showLoader } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
 
-    return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <>
-        <div>
-          <CanvasTooltip ref={this.tooltipRef} />
-        </div>
-        { 
-          [...Array(this.state.numberOfInstances)].map((e, i) =>
-            <Canvas
-              key={`canvas_${i}`}
-              ref={this.canvasRef}
-              data={canvasData}
-              cameraOptions={cameraOptions}
-              backgroundColor={0x505050}
-              onSelection={this.onSelection}
-              onMount={this.onMount}
-              hoverListeners={[this.hoverHandler]}
-            />
+    return showLoader ? <Loader active={true} /> : showModel ? (
+      <div ref={node => this.node = node} className={classes.container}>
+        <>
+          <div>
+            <CanvasTooltip ref={this.tooltipRef} />
+          </div>
+          { 
+            [...Array(this.state.numberOfInstances)].map((e, i) =>
+              <Canvas
+                key={`canvas_${i}`}
+                ref={this.canvasRef}
+                data={canvasData}
+                cameraOptions={cameraOptions}
+                backgroundColor={0x505050}
+                onSelection={this.onSelection}
+                onMount={this.onMount}
+                hoverListeners={[this.hoverHandler]}
+              />
 
-          )
-        }
-      </>
-    </div> : <Button
+            )
+          }
+        </>
+      </div>
+      ) : <Button
       variant="outlined"
       color="primary"
       onClick={this.handleToggle}

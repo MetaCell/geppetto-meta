@@ -11,6 +11,7 @@ export default class ThreeDCanvasPage extends Component {
       <Showcase
         markdown={Canvas3DMarkdown}
         currentPageHandler={currentPageHandler}
+        createTabsForExamples
       />
     );
   }
