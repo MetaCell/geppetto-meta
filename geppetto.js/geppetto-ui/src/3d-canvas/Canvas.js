@@ -319,11 +319,11 @@ Canvas.propTypes = {
       props:PropTypes.object,
       incrementPan:PropTypes.shape({
         x:PropTypes.number,
-        y:propTypes.number,
+        y:PropTypes.number,
       }),
       incrementRotation:PropTypes.shape({
         x:PropTypes.number,
-        y:propTypes.number,
+        y:PropTypes.number,
         z:PropTypes.number
       }),
       incrementZoom:PropTypes.number,
