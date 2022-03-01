@@ -130,16 +130,6 @@ class Canvas extends Component {
 
   defaultCameraControlsHandler (action) {
     const defaultProps = {
-      incrementPan: {
-        x: 0.01,
-        y: 0.01
-      },
-      incrementRotation: {
-        x: 0.01,
-        y: 0.01,
-        z: 0.01,
-      },
-      incrementZoom: 0.1,
       movieFilter: false,
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
@@ -258,6 +248,16 @@ Canvas.defaultProps = {
     cameraControls: {
       instance: null,
       props: {},
+      incrementPan: {
+        x: 0.01,
+        y: 0.01
+      },
+      incrementRotation: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+      incrementZoom: 0.1,
     },
     rotateSpeed: 0.5,
   },
@@ -294,7 +294,42 @@ Canvas.propTypes = {
   /**
    * Options to customize camera
    */
-  cameraOptions: PropTypes.object,
+  cameraOptions: PropTypes.shape({
+    angle:PropTypes.number,
+    near:PropTypes.number,
+    far:PropTypes.number,
+    baseZoom:PropTypes.number,
+    reset:PropTypes.bool,
+    autoRotate:PropTypes.bool,
+    wireframe:PropTypes.bool,
+    depthWrite:PropTypes.bool,
+    zoomTo:PropTypes.any,
+
+    /**
+     * Camera control component definition 
+     */
+    cameraControls:PropTypes.shape({
+      /**
+       * Component instance 
+       */
+      instance:PropTypes.any,
+      /**
+       * Component props
+       */
+      props:PropTypes.object,
+      incrementPan:PropTypes.shape({
+        x:PropTypes.number,
+        y:propTypes.number,
+      }),
+      incrementRotation:PropTypes.shape({
+        x:PropTypes.number,
+        y:propTypes.number,
+        z:PropTypes.number
+      }),
+      incrementZoom:PropTypes.number,
+    }),
+    rotateSpeed:PropTypes.number
+  }),
   /**
    * Options to customize capture features
    */
