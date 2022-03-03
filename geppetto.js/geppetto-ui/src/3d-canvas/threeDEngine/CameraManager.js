@@ -15,7 +15,7 @@ export default class CameraManager {
     this.camera.direction = new THREE.Vector3(0, 0, 1);
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
-    this.firstLoad = false;
+    this.isFirstRender = true;
   }
 
   update (cameraOptions) {
@@ -29,16 +29,16 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
-    if (reset || (!this.firstLoad && position === undefined)) {
+    if (reset || (this.isFirstRender && position === undefined && zoomTo === undefined)) {
       this.resetCamera(position);
-      if (!this.firstLoad) {
-        this.firstLoad = true;
+      if (this.isFirstRender) {
+        this.isFirstRender = false;
       }
     } else {
-      if (position && !this.firstLoad) {
+      if (position && this.isFirstRender) {
         this.setCameraPosition(position.x, position.y, position.z);
       }
-      if (rotation && !this.firstLoad) {
+      if (rotation && this.isFirstRender) {
         this.setCameraRotation(
           rotation.rx,
           rotation.ry,
@@ -46,20 +46,20 @@ export default class CameraManager {
           rotation.radius
         );
       }
-      if (!this.firstLoad) {
-        this.firstLoad = true;
-      }
-      if (autoRotate) {
-        this.autoRotate(movieFilter);
-      }
-      if (zoomTo && Array.isArray(zoomTo)) {
+      if (zoomTo && Array.isArray(zoomTo) && this.isFirstRender) {
         const instances = zoomTo.map(element => Instances.getInstance(element));
         if (instances.length > 0) {
           this.zoomTo(instances);
         }
       }
+      if (autoRotate) {
+        this.autoRotate(movieFilter);
+      }
       if (rotateSpeed){
         this.engine.controls.rotateSpeed = rotateSpeed
+      }
+      if (this.isFirstRender) {
+        this.isFirstRender = false;
       }
     }
   }
