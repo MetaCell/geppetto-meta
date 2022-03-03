@@ -8,6 +8,14 @@
 
 ## Examples
 
+### Multiple Instances Example
+
+Multiple Instances Example
+
+```
+3d-canvas/showcase/examples/MultipleInstancesExample
+```
+
 ### 3D Canvas Auditory Cortex Example 2
 
 3D Canvas Auditory Cortex Example 2
@@ -48,13 +56,6 @@ Simple Instances Example
 3d-canvas/showcase/examples/SimpleInstancesExample
 ```
 
-### Multiple Instances Example
-
-Multiple Instances Example
-
-```
-3d-canvas/showcase/examples/MultipleInstancesExample
-```
 
 ## Libraries
 

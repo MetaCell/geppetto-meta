@@ -178,7 +178,7 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-   getIntersectedObjects () {
+  getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
@@ -193,9 +193,9 @@ export default class ThreeDEngine {
     return raycaster.intersectObjects(this.visibleChildren);
   }
 
-  updatevisibleChildren() {
+  updatevisibleChildren () {
     this.visibleChildren = [];
-    this.scene.traverse( (child) => {
+    this.scene.traverse( child => {
       if (child.visible && !(child.clickThrough === true)) {
         if (child.geometry != null) {
           if (child.type !== 'Points') {
@@ -694,12 +694,12 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseDownEventListener = (event) => {
+  mouseDownEventListener = event => {
     this.clientX = event.clientX;
     this.clientY = event.clientY;
   }
 
-  mouseUpEventListener = (event) => {
+  mouseUpEventListener = event => {
     if (event.target === this.renderer.domElement) {
       const x = event.clientX;
       const y = event.clientY;
@@ -708,7 +708,7 @@ export default class ThreeDEngine {
       if (
         typeof this.clientX === 'undefined'
         || typeof this.clientY === 'undefined'
-        ||  x !== this.clientX
+        || x !== this.clientX
         || y !== this.clientY
       ) {
         return;
@@ -716,15 +716,15 @@ export default class ThreeDEngine {
 
       this.mouse.y
       = -(
-          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio) /
-          this.renderer.domElement.height
-      ) * 2 + 1;
+          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
+          / this.renderer.domElement.height
+        ) * 2 + 1;
 
       this.mouse.x
       = (
-          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio) /
-          this.renderer.domElement.width
-      ) * 2 - 1;
+          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
+          / this.renderer.domElement.width
+        ) * 2 - 1;
 
       if (event.button === 0) {
         // only for left click
@@ -760,8 +760,7 @@ export default class ThreeDEngine {
               instancePath = intersects[i].object.instancePath;
               geometryIdentifier
               = intersects[i].object.geometryIdentifier;
-            }
-            else {
+            } else {
               instancePath = intersects[i].object.parent.instancePath;
               geometryIdentifier
               = intersects[i].object.parent.geometryIdentifier;
@@ -794,12 +793,12 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseMoveEventListener = (event) => {
+  mouseMoveEventListener = event => {
     this.mouse.y
     = -(((event.clientY
         - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
         / this.renderer.domElement.height
-    )
+      )
     * 2 + 1;
 
     this.mouse.x
@@ -812,7 +811,7 @@ export default class ThreeDEngine {
     this.mouseContainer.y = event.clientY;
 
 
-    if (this.hoverListeners && this.hoverListeners.length  > 0) {
+    if (this.hoverListeners && this.hoverListeners.length > 0) {
       const intersects = this.getIntersectedObjects();
       for (const listener in this.hoverListeners) {
         if (intersects.length !== 0) {
@@ -914,8 +913,10 @@ export default class ThreeDEngine {
       this.cameraManager.camera.updateProjectionMatrix();
       this.renderer.setSize(this.width, this.height);
       this.composer.setSize(this.width, this.height);
-      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
-      // the resizing works but the image gets stretched.
+      /*
+       * TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+       * the resizing works but the image gets stretched.
+       */
       this.cameraManager.engine.controls.updateOnResize();
     }
   }
