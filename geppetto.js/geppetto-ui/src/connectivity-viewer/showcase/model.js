@@ -1,4 +1,4 @@
-{
+const model = {
   "eClass": "GeppettoModel",
   "id": "",
   "name": "",
@@ -76332,3 +76332,5 @@
     }
   ]
 }
+
+export default model

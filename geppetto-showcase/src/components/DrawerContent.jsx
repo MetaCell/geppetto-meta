@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import pages from '../pages/index';
 import stringSimilarity from 'string-similarity';
 
-const styles = (theme) => ({
+const styles = theme => ({
   nested: {
     paddingLeft: theme.spacing(4),
     textDecoration: 'none',
@@ -41,7 +41,7 @@ const styles = (theme) => ({
 });
 
 class DrawerContent extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       dataViewersOpen: true,
@@ -56,23 +56,19 @@ class DrawerContent extends Component {
     );
   }
 
-  dataViewersHandler() {
+  dataViewersHandler () {
     this.setState(() => ({ dataViewersOpen: !this.state.dataViewersOpen }));
   }
 
-  navigationLayoutHandler() {
-    this.setState(() => ({
-      navigationLayoutOpen: !this.state.navigationLayoutOpen,
-    }));
+  navigationLayoutHandler () {
+    this.setState(() => ({ navigationLayoutOpen: !this.state.navigationLayoutOpen, }));
   }
 
-  programmaticInterfacesHandler() {
-    this.setState(() => ({
-      programmaticInterfacesOpen: !this.state.programmaticInterfacesOpen,
-    }));
+  programmaticInterfacesHandler () {
+    this.setState(() => ({ programmaticInterfacesOpen: !this.state.programmaticInterfacesOpen, }));
   }
 
-  isActivePage(page) {
+  isActivePage (page) {
     const { currentPage } = this.props;
     if (window.location.href.split('/')[3] === "") {
       return false;
@@ -80,7 +76,7 @@ class DrawerContent extends Component {
     return page === currentPage;
   }
 
-  filterContent(searchFilter) {
+  filterContent (searchFilter) {
     const {
       dataViewersOpen,
       navigationLayoutOpen,
@@ -105,9 +101,7 @@ class DrawerContent extends Component {
       },
     };
 
-    let componentsNames = pages.map((page) => {
-      return page.name;
-    });
+    let componentsNames = pages.map(page => page.name);
 
     const matches = stringSimilarity.findBestMatch(
       searchFilter,
@@ -118,9 +112,7 @@ class DrawerContent extends Component {
       matches.ratings,
       matches.bestMatch.rating
     );
-    let filteredComponentsNames = filteredContent.map((elem) => {
-      return elem.target.toLowerCase();
-    });
+    let filteredComponentsNames = filteredContent.map(elem => elem.target.toLowerCase());
 
     for (let page of pages) {
       if (filteredComponentsNames.includes(page.name.toLowerCase())) {
@@ -140,19 +132,17 @@ class DrawerContent extends Component {
     return content;
   }
 
-  bestMatches(ratings, bestRating, threshold = 0.2) {
-    return ratings.filter((rating) => {
-      return rating.rating >= bestRating - threshold;
-    });
+  bestMatches (ratings, bestRating, threshold = 0.2) {
+    return ratings.filter(rating => rating.rating >= bestRating - threshold);
   }
 
-  render() {
+  render () {
     const { classes, theme, searchFilter, currentPageHandler } = this.props;
     const content = this.filterContent(searchFilter);
 
     return (
       <nav className={classes.lists} aria-label="mailbox folders">
-        {Object.keys(content).map((key) => {
+        {Object.keys(content).map(key => {
           const open = content[key].open;
           const handler = content[key].handler;
           const children = content[key].children;
@@ -164,7 +154,7 @@ class DrawerContent extends Component {
               </ListItem>
               <Collapse component="li" in={open} timeout="auto" unmountOnExit>
                 <List disablePadding>
-                  {children.map((value) => {
+                  {children.map(value => {
                     const name = value.name;
                     const to = value.to;
                     const disabled = value.disabled;
@@ -172,9 +162,7 @@ class DrawerContent extends Component {
                       <ListItem
                         key={value.name}
                         button
-                        {...(this.isActivePage(to) && {
-                          style: { color: theme.palette.primary.main },
-                        })}
+                        {...(this.isActivePage(to) && { style: { color: theme.palette.primary.main }, })}
                         className={classes.nested}
                         component={Link}
                         to={to}

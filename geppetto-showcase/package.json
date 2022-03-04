@@ -49,17 +49,12 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.2"
   },
-  "peerDependencies": {
-    "@metacell/geppetto-meta-client": "^0.0.5",
-    "@metacell/geppetto-meta-core": "^0.0.5",
-    "@metacell/geppetto-meta-ui": "^0.0.5"
-  },
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
-    "@material-ui/core": "^4.9.14",
+    "@material-ui/core": "4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@metacell/geppetto-meta-client": "file:.yalc/@metacell/geppetto-meta-client",
     "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",

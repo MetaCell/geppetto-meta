@@ -1,6 +1,6 @@
 import React from 'react';
 import ListViewer from '../../ListViewer';
-import instances from '../instances-small.json';
+import instances from '../instances-small';
 
 export default class ListViewerShowcaseDefault extends React.Component {
   render () {

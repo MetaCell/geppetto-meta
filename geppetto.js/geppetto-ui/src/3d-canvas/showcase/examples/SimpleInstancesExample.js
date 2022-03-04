@@ -34,7 +34,7 @@ const instance2spec = {
   }
 }
 
-function loadInstances () {
+function loadInstances (){
   ModelFactory.cleanModel();
   const instance1 = new SimpleInstance(instance1spec)
   const instance2 = new SimpleInstance(instance2spec)
@@ -63,6 +63,7 @@ class SimpleInstancesExample extends Component {
     loadInstances()
     this.state = {
       data: getProxyInstances(),
+      showLoader: false,
       cameraOptions: {
         angle: 50,
         near: 0.01,
@@ -105,28 +106,29 @@ class SimpleInstancesExample extends Component {
   }
 
   handleToggle () {
+    this.setState({ showLoader: true })
     loadInstances()
-    this.setState({ showModel: true, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+    this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth) {
+      if (event.offsetX <= event.target.clientWidth){
         this.setState({ showModel: false })
       }
     }
   }
 
-  onMount (scene) {
+  onMount (scene){
     console.log(scene)
   }
 
-  onSelection (selectedInstances) {
+  onSelection (selectedInstances){
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
   render () {
-    const { data, cameraOptions, showModel } = this.state
+    const { data, cameraOptions, showModel, showLoader } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
 
@@ -136,11 +138,15 @@ class SimpleInstancesExample extends Component {
         props: {}
       },
       recorderOptions: {
-        mediaRecorderOptions: { mimeType: 'video/webm', },
-        blobOptions: { type: 'video/webm' }
+        mediaRecorderOptions: {
+          mimeType: 'video/webm',
+        },
+        blobOptions:{
+          type: 'video/webm'
+        }
       },
-      screenshotOptions: {
-        resolution: {
+      screenshotOptions:{
+        resolution:{
           width: 3840,
           height: 2160,
         },
@@ -150,26 +156,30 @@ class SimpleInstancesExample extends Component {
       },
     }
 
-    return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <div>
-        <CanvasTooltip ref={this.tooltipRef}/>
+    return showLoader ? <Loader active={true} /> : showModel ? (
+      <div ref={node => this.node = node} className={classes.container}>
+        <>
+          <div>
+            <CanvasTooltip ref={this.tooltipRef} />
+          </div>
+          <Canvas
+            ref={this.canvasRef}
+            data={canvasData}
+            cameraOptions={cameraOptions}
+            captureOptions={captureOptions}
+            backgroundColor={0x505050}
+            onSelection={this.onSelection}
+            onMount={this.onMount}
+            hoverListeners={[this.hoverHandler]}
+          />
+        </>
       </div>
-      <Canvas
-        ref={this.canvasRef}
-        data={canvasData}
-        cameraOptions={cameraOptions}
-        captureOptions={captureOptions}
-        backgroundColor={0x505050}
-        onSelection={this.onSelection}
-        onMount={this.onMount}
-        hoverListeners={[this.hoverHandler]}
-      />
-    </div> : <Button
+    ) : <Button
       variant="outlined"
       color="primary"
       onClick={this.handleToggle}
     >
-            Show Example
+      Show Example
     </Button>
   }
 }
