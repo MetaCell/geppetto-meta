@@ -30,7 +30,7 @@ export default class CameraManager {
     } = cameraOptions;
 
     if (reset || (this.isFirstRender && position === undefined && zoomTo === undefined)) {
-      this.resetCamera(position);
+      this.resetCamera(position, rotation, zoomTo);
       if (this.isFirstRender) {
         this.isFirstRender = false;
       }
@@ -146,10 +146,29 @@ export default class CameraManager {
 
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
-
-  resetCamera (position) {
+  
+  resetCamera (position, rotation, zoomTo) {
+    const applyRotation = rotation => {
+      if (rotation){
+        this.setCameraRotation(
+          rotation.rx,
+          rotation.ry,
+          rotation.rz,
+          rotation.radius
+        );
+      }
+    }
+    if (zoomTo){
+      const instances = zoomTo.map(element => Instances.getInstance(element));
+      if (instances.length > 0) {
+        this.zoomTo(instances);
+      }
+      applyRotation(rotation)
+      return;
+    }
     if (position) {
       this.setCameraPosition(position.x, position.y, position.z);
+      applyRotation(rotation)
       return;
     }
 
@@ -199,6 +218,8 @@ export default class CameraManager {
       this.camera.far = maxSize * 100;
       this.updateCamera(aabbMax, aabbMin);
     }
+
+    applyRotation(rotation)
   }
 
   /**
