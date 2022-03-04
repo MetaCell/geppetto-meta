@@ -693,15 +693,15 @@ export default class ThreeDEngine {
 
       this.mouse.y
       = -(
-        (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
-        / this.renderer.domElement.getBoundingClientRect().height
-      ) *2 + 1;
+          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio) /
+          this.renderer.domElement.height
+      ) * 2 + 1;
 
       this.mouse.x
-      = ((event.clientX
-        - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
-        / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
+      = (
+          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio) /
+          this.renderer.domElement.width
+      ) * 2 - 1;
 
       if (event.button === 0) {
         // only for left click
