@@ -30,11 +30,11 @@ export default class ThreeDEngine {
     backgroundColor,
     pickingEnabled,
     linesThreshold,
-    hoverListeners,
+    onHoverListeners,
     setColorHandler,
     selectionStrategy,
-    updateStarted,
-    updateEnded,
+    onUpdateStart,
+    onUpdateEnd,
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -48,7 +48,7 @@ export default class ThreeDEngine {
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
-    this.hoverListeners = hoverListeners;
+    this.onHoverListeners = onHoverListeners;
     this.cameraHandler = cameraHandler;
     this.setColorHandler = setColorHandler;
     this.selectionStrategy = selectionStrategy
@@ -57,8 +57,8 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
-    this.updateStarted = updateStarted;
-    this.updateEnded = updateEnded;
+    this.onUpdateStart = onUpdateStart;
+    this.onUpdateEnd = onUpdateEnd;
     this.instancesMap = new Map();
 
     // Setup Listeners
@@ -788,11 +788,11 @@ export default class ThreeDEngine {
     this.mouseContainer.y = event.clientY;
 
 
-    if (this.hoverListeners && this.hoverListeners.length > 0) {
+    if (this.onHoverListeners && this.onHoverListeners.length > 0) {
       const intersects = this.getIntersectedObjects();
-      for (const listener in this.hoverListeners) {
+      for (const listener in this.onHoverListeners) {
         if (intersects.length !== 0) {
-          this.hoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
+          this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
         }
       }
     }
@@ -850,7 +850,7 @@ export default class ThreeDEngine {
   }
 
   async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
-    this.updateStarted();
+    this.onUpdateStart(this.scene);
     this.setBackgroundColor(newBackgroundColor);
     proxyInstances = await this.clearScene(proxyInstances);
     // Todo: resolve proxyInstances to populate child meshes
@@ -866,7 +866,7 @@ export default class ThreeDEngine {
     }
     // TODO: only update camera when cameraOptions changes
     this.cameraManager.update(cameraOptions);
-    this.updateEnded();
+    this.onUpdateEnd(this.scene);
   }
 
   addToScene (instance) {

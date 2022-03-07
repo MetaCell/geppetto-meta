@@ -74,7 +74,6 @@ class VFBExample extends Component {
       ],
       selected: {},
       threeDObjects: [],
-      modelVersion: 0,
       cameraOptions: {
         position: { x: 319.7, y: 153.12, z: -494.2 },
         rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
@@ -199,7 +198,7 @@ class VFBExample extends Component {
 
   render () {
     const { classes } = this.props;
-    const { data, threeDObjects, modelVersion, hasModelLoaded, showLoader, cameraOptions } = this.state;
+    const { data, threeDObjects, hasModelLoaded, showLoader, cameraOptions } = this.state;
     const canvasData = mapToCanvasData(data)
     
 
@@ -211,7 +210,6 @@ class VFBExample extends Component {
           </div>
           <Canvas
             ref={this.canvasRef}
-            modelVersion={modelVersion}
             data={canvasData}
             threeDObjects={threeDObjects}
             cameraOptions={cameraOptions}
@@ -219,7 +217,7 @@ class VFBExample extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
-            hoverListeners={[this.hoverHandler]}
+            onHoverListeners={[this.hoverHandler]}
           />
         </>
       </div>

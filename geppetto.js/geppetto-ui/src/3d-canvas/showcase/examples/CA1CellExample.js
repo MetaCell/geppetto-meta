@@ -124,7 +124,7 @@ class CA1Example extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
-            hoverListeners={[this.hoverListener]}
+            onHoverListeners={[this.hoverListener]}
           />
         </div>
       ) : <Button

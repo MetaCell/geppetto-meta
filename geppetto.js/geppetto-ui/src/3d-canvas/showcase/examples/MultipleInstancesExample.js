@@ -176,7 +176,7 @@ class MultipleInstancesExample extends Component {
                 backgroundColor={0x505050}
                 onSelection={this.onSelection}
                 onMount={this.onMount}
-                hoverListeners={[this.hoverHandler]}
+                onHoverListeners={[this.hoverHandler]}
               />
 
             )

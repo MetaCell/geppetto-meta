@@ -138,7 +138,7 @@ class AuditoryCortexExample2 extends Component {
           cameraOptions={cameraOptions}
           onSelection={this.onSelection}
           backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
+          onHoverListeners={[this.hoverHandler]}
         />
       </div>
     )

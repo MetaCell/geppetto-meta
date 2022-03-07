@@ -43,13 +43,13 @@ class Canvas extends Component {
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      hoverListeners,
+      onHoverListeners,
       setColorHandler,
       onMount,
-      selectionStrategy,
       onSelection,
-      updateStarted,
-      updateEnded
+      selectionStrategy,
+      onUpdateStart,
+      onUpdateEnd
     } = this.props;
 
     this.threeDEngine = new ThreeDEngine(
@@ -61,25 +61,25 @@ class Canvas extends Component {
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      hoverListeners,
+      onHoverListeners,
       setColorHandler,
       selectionStrategy,
-      updateStarted,
-      updateEnded,
+      onUpdateStart,
+      onUpdateEnd,
     );
 
     if (captureOptions) {
       this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
     }
     await this.threeDEngine.start(data, cameraOptions, true);
-    onMount(this.threeDEngine.scene)
-    this.setState({ modelReady: true })
-    this.threeDEngine.requestFrame();
     this.threeDEngine.setBackgroundColor(backgroundColor);
+    onMount(this.threeDEngine.scene)
+    this.threeDEngine.requestFrame();
+    this.setState({ modelReady: true })
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
-    if (this.resizeRequired()) {
+    if (this.isResizeRequired()) {
       this.threeDEngine.resize();
     }
 
@@ -93,15 +93,16 @@ class Canvas extends Component {
     }
   }
 
-  resizeRequired () {
-    if (this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height) {
-      return true
-    }
-    return false;
+  isResizeRequired () {
+    return this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height;
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || nextProps !== this.props || this.resizeRequired()
+    return nextState.modelReady || this.isResizeRequired() || this.arePropsDifferent(nextProps)
+  }
+
+  arePropsDifferent (nextProps) {
+    return nextProps !== this.props
   }
 
   componentWillUnmount () {
@@ -119,6 +120,7 @@ class Canvas extends Component {
         this.recorder.startRecording()
         break
       case captureControlsActions.STOP:
+        // eslint-disable-next-line no-case-declarations
         const { options } = action.data;
         return this.recorder.stopRecording(options)
       case captureControlsActions.DOWNLOAD_VIDEO: {
@@ -130,7 +132,7 @@ class Canvas extends Component {
     if (captureOptions && captureOptions.screenshotOptions) {
       const { quality, pixelRatio, resolution, filter } = captureOptions.screenshotOptions
       switch (action.type) {
-      case captureControlsActions.DOWNLOAD_SCREENSHOT:{
+      case captureControlsActions.DOWNLOAD_SCREENSHOT: {
         const { filename } = action.data;
         downloadScreenshot(this.getCanvasElement(), quality, resolution, pixelRatio, filter, filename)
         break
@@ -217,7 +219,7 @@ class Canvas extends Component {
     return true;
   }
 
-  frameResizing(width, height, targetRef) {
+  frameResizing (width, height, targetRef) {
     this.threeDEngine.resize();
   }
 
@@ -277,21 +279,15 @@ Canvas.defaultProps = {
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
-  hoverListeners: [],
   threeDObjects: [],
-  cameraHandler: () => {
-  },
-  selectionStrategy: selectionStrategies.nearest,
-  onSelection: () => {
-  },
+  cameraHandler: () => {},
   setColorHandler: () => true,
-  onMount: () => {
-  },
-  modelVersion: 0,
-  updateStarted: () => {
-  },
-  updateEnded: () => {
-  },
+  onSelection: () => {},
+  selectionStrategy: selectionStrategies.nearest,
+  onHoverListeners: [],
+  onMount: () => {},
+  onUpdateStart: () => {},
+  onUpdateEnd: () => {},
 };
 
 Canvas.propTypes = {
@@ -299,10 +295,6 @@ Canvas.propTypes = {
    * (Proxy) Instances to visualize
    */
   data: PropTypes.array.isRequired,
-  /**
-   * Model identifier needed to propagate updates on async changes
-   */
-  modelVersion: PropTypes.number,
   /**
    * Options to customize camera
    */
@@ -331,12 +323,8 @@ Canvas.propTypes = {
       /**
        * Media Recorder options
        */
-      mediaRecorderOptions: PropTypes.shape({
-        mimeType: PropTypes.string,
-      }),
-      blobOptions: PropTypes.shape({
-        type: PropTypes.string,
-      })
+      mediaRecorderOptions: PropTypes.shape({ mimeType: PropTypes.string, }),
+      blobOptions: PropTypes.shape({ type: PropTypes.string, })
     }),
     /**
      * Screenshot Options
@@ -372,21 +360,9 @@ Canvas.propTypes = {
    */
   cameraHandler: PropTypes.func,
   /**
-   * function to apply the selection strategy
-   */
-  selectionStrategy: PropTypes.func,
-  /**
-   * Function to callback on selection changes
-   */
-  onSelection: PropTypes.func,
-  /**
    * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
    */
   setColorHandler: PropTypes.func,
-  /**
-   * Function to callback on component did mount with scene
-   */
-  onMount: PropTypes.func,
   /**
    * Scene background color
    */
@@ -402,15 +378,27 @@ Canvas.propTypes = {
   /**
    * Array of hover handlers to callback
    */
-  hoverListeners: PropTypes.array,
+  onHoverListeners: PropTypes.array,
   /**
-   * Function to callback when the loading of elements of the canvas starts
+   * Function to callback on selection changes
    */
-  updateStarted: PropTypes.func,
+  onSelection: PropTypes.func,
   /**
-   * Function to callback when the loading of elements of the canvas ends
+   * Function to apply the selection strategy
    */
-  updateEnded: PropTypes.func,
+  selectionStrategy: PropTypes.func,
+  /**
+   * Function to callback on component did mount with scene obj
+   */
+  onMount: PropTypes.func,
+  /**
+   * Function to callback when the loading of elements of the canvas starts with scene obj
+   */
+  onUpdateStart: PropTypes.func,
+  /**
+   * Function to callback when the loading of elements of the canvas ends with scene obj
+   */
+  onUpdateEnd: PropTypes.func,
 };
 
 export default withStyles(styles)(Canvas);
