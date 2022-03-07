@@ -36,16 +36,16 @@ export const layout = (state = layoutInitialState, action) => {
 
   switch (action.type) {
 
-    case layoutActions.SET_LAYOUT: {
-      return { ...state, ...action.data }
-    }
+  case layoutActions.SET_LAYOUT: {
+    return { ...state, ...action.data }
+  }
 
-    case General.IMPORT_APPLICATION_STATE: {
-      const incomingState = action.data.redux.layout;
-      return incomingState;
-    }
-    default:
-      return state
+  case General.IMPORT_APPLICATION_STATE: {
+    const incomingState = action.data.redux.layout;
+    return incomingState;
+  }
+  default:
+    return state
   }
 }
 
@@ -83,29 +83,30 @@ export const widgets = (state: WidgetMap = {}, action) => {
 
   switch (action.type) {
 
-    case layoutActions.ADD_WIDGET:
-    case layoutActions.UPDATE_WIDGET: {
-      const newWidget = { ...state[action.data.id], panelName: extractPanelName(action), ...action.data };
-      return {
-        ...updateWidgetStatus(state, newWidget),
-        [action.data.id]: newWidget
-      }
+  case layoutActions.ADD_WIDGET:
+  case layoutActions.ACTIVATE_WIDGET:
+  case layoutActions.UPDATE_WIDGET: {
+    const newWidget = { ...state[action.data.id], panelName: extractPanelName(action), ...action.data };
+    return {
+      ...updateWidgetStatus(state, newWidget),
+      [action.data.id]: newWidget
     }
-    case layoutActions.SET_WIDGETS: {
-      return { ...action.data }
-    }
-    case layoutActions.ADD_WIDGETS: {
-      return { ...state, ...action.data }
-    }
+  }
+  case layoutActions.SET_WIDGETS: {
+    return { ...action.data }
+  }
+  case layoutActions.ADD_WIDGETS: {
+    return { ...state, ...action.data }
+  }
 
-    case layoutActions.REMOVE_WIDGET:
-    case layoutActions.DESTROY_WIDGET: {
-      const newWidgets = { ...state };
-      delete newWidgets[action.data.id];
-      return newWidgets;
-    }
-    default:
-      return state;
+  case layoutActions.REMOVE_WIDGET:
+  case layoutActions.DESTROY_WIDGET: {
+    const newWidgets = { ...state };
+    delete newWidgets[action.data.id];
+    return newWidgets;
+  }
+  default:
+    return state;
   }
 }
 

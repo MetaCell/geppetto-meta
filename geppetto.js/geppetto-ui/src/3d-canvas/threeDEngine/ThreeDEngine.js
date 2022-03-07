@@ -19,6 +19,7 @@ import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
 import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
+
 export default class ThreeDEngine {
   constructor (
     containerRef,
@@ -58,6 +59,7 @@ export default class ThreeDEngine {
     this.lastRenderTimer = new Date();
     this.updateStarted = updateStarted;
     this.updateEnded = updateEnded;
+    this.instancesMap = new Map();
 
     // Setup Listeners
     this.start = this.start.bind(this);
@@ -193,6 +195,7 @@ export default class ThreeDEngine {
     return raycaster.intersectObjects(this.visibleChildren);
   }
 
+
   updatevisibleChildren () {
     this.visibleChildren = [];
     this.scene.traverse( child => {
@@ -213,8 +216,8 @@ export default class ThreeDEngine {
    * @param proxyInstances
    */
   async addInstancesToScene (proxyInstances) {
-    const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
-    await this.meshFactory.start(instances);
+    // const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
+    await this.meshFactory.start(proxyInstances, this.instancesMap);
     this.updateGroupMeshes(proxyInstances);
   }
 
@@ -226,7 +229,7 @@ export default class ThreeDEngine {
 
 
   checkMaterial (mesh, instance) {
-    if (mesh.type === 'Mesh') {
+    if (mesh.type === 'Mesh' || mesh.type === 'LineSegment') {
       if (mesh.material.color.r === instance?.color?.r
         && mesh.material.color.g === instance?.color?.g
         && mesh.material.color.b === instance?.color?.b
@@ -276,62 +279,45 @@ export default class ThreeDEngine {
     }
   }
 
-  /**
-   * Clears the scene
-   *
-   * we have the list of strings instances
-   * we have the global Instances from the model
-   * we have the obj instances in the threeJS scene
-   */
 
-  checkInstanceToRemove (geppettoInstance, proxyInstance, toRemove, pathsToRemove) {
+  sortInstances (proxyInstances) {
+    let sortedInstances = [];
+    sortedInstances = proxyInstances.sort((a, b) => {
+      if (a.instancePath < b.instancePath) {
+        return -1;
+      }
+      if (a.instancePath > b.instancePath) {
+        return 1;
+      }
+      return 0;
+    });
+    return sortedInstances;
+  }
+
+
+  traverseInstance (proxyInstance, geppettoInstance) {
     try {
       if (hasVisualValue(geppettoInstance)) {
-        var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
-        if (geppettoIndex > -1) {
-          if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
-            this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
-          }
-          toRemove.splice(geppettoIndex, 1);
-          pathsToRemove.splice(geppettoIndex, 1);
-          return true;
-        }
-        return false;
+        this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
       } else if (hasVisualType(geppettoInstance)) {
         if (
           geppettoInstance.getType().getMetaType()
             !== Resources.ARRAY_TYPE_NODE
             && geppettoInstance.getVisualType()
         ) {
-          var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
-          if (geppettoIndex > -1) {
-            if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
-              this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
-            }
-            toRemove.splice(geppettoIndex, 1);
-            pathsToRemove.splice(geppettoIndex, 1);
-            return true;
-          }
-          return false;
+          this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
         }
-        // this block keeps traversing the instances
         if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
-          var returnValue = false;
-          var children = geppettoInstance.getChildren();
+          const children = geppettoInstance.getChildren();
           for (let i = 0; i < children.length; i++) {
-            let instanceReturn = this.checkInstanceToRemove(children[i], proxyInstance, toRemove, pathsToRemove);
-            returnValue = returnValue || instanceReturn;
+            this.traverseInstance(proxyInstance, children[i]);
           }
-          return returnValue;
         } else if (
           geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
-          var returnValue = false;
           for (let i = 0; i < geppettoInstance.length; i++) {
-            let instanceReturn = this.checkInstanceToRemove(geppettoInstance[i], proxyInstance, toRemove, pathsToRemove);
-            returnValue = returnValue || instanceReturn;
+            this.traverseInstance(proxyInstance, geppettoInstance[i]);
           }
-          return returnValue;
         }
       }
     } catch (e) {
@@ -341,51 +327,42 @@ export default class ThreeDEngine {
 
 
   async clearScene (proxyInstances) {
-    var pathsToRemove = [];
-    var sortedInstances = [];
-    var toRemove = this.scene.children.filter(child => {
-      if (child.type === 'Mesh' || child.type === 'Group') {
-        pathsToRemove.push(child.instancePath)
-        return true;
+    // safe check, if something different than an array is given we wipe the canvas.
+    if (!Array.isArray(proxyInstances) && proxyInstances === undefined) {
+      console.error("The Geppetto ThreeDEngine has been given an invalid object instead of a list of proxy instances, please check your usage of the 3D Canvas");
+      proxyInstances = [];
+    }
+
+    this.instancesMap.clear();
+    const sortedInstances = this.sortInstances(proxyInstances);
+    // traverse all the geppetto instances
+    sortedInstances.forEach( instance => {
+      const geppettoInstance = Instances.getInstance(instance.instancePath);
+      if (geppettoInstance) {
+        this.traverseInstance(instance, geppettoInstance);
+      }
+    });
+
+    const toRemove = this.scene.children.filter(child => {
+      const mappedInstance = this.instancesMap.get(child.instancePath);
+      if (child.instancePath !== undefined) {
+        if (!mappedInstance || !mappedInstance.visibility) {
+          return true;
+        }
+        if (this.checkMaterial(child, mappedInstance) && mappedInstance) {
+          this.updateInstanceMaterial(child, mappedInstance);
+        }
       }
       return false;
     });
 
-    if (proxyInstances) {
-      sortedInstances = proxyInstances.sort((a, b) => {
-        if (a.instancePath < b.instancePath) {
-          return -1;
-        }
-        if (a.instancePath > b.instancePath) {
-          return 1;
-        }
-        return 0;
-      });
-      if (toRemove.length === 0) {
-        return sortedInstances;
-      }
-      for (var i = sortedInstances.length - 1; i >= 0; i--) {
-        var geppettoInstance = Instances.getInstance(sortedInstances[i]?.instancePath);
-        if (geppettoInstance) {
-          let _check = await this.checkInstanceToRemove(geppettoInstance, sortedInstances[i], toRemove, pathsToRemove);
-          if (_check) {
-            sortedInstances.splice(i, 1);
-          }
-        } else {
-          sortedInstances.splice(i, 1);
-        }
-      }
-    } else {
-      console.error("Give me an empty list if you want to wipe all the instances from the 3d viewer.");
-      return [];
-    }
-
-    for (let child of toRemove) {
+    toRemove.forEach( child => {
       this.meshFactory.cleanWith3DObject(child);
       this.scene.remove(child);
-    }
+    });
     return sortedInstances;
   }
+
 
   updateInstancesColor (proxyInstances) {
     const sortedInstances = proxyInstances.sort((a, b) => {

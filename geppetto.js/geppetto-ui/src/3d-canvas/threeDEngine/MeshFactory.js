@@ -31,8 +31,9 @@ export default class MeshFactory {
     this.linesThreshold = linesThreshold;
     this.particleTexture = particleTexture;
     this.THREE = THREE ? THREE : require('three');
-    this.THREE.Cache.enabled = true
-    this.setupLoaders()
+    this.THREE.Cache.enabled = true;
+    this.setupLoaders();
+    this.instancesMap = new Map();
   }
 
   setupLoaders (){
@@ -57,9 +58,12 @@ export default class MeshFactory {
     }
   }
 
-  async start (instances) {
-    await this.traverseInstances(instances);
+
+  async start (instances, instancesMap) {
+    this.instancesMap = instancesMap;
+    await this.traverseInstances(this.instancesMap);
   }
+
 
   getMeshes () {
     const meshes = { ...this.splitMeshes };
@@ -71,45 +75,29 @@ export default class MeshFactory {
     return meshes;
   }
 
+
   async traverseInstances (instances) {
-    for (let j = 0; j < instances.length; j++) {
-      if (Object.keys(this.meshes).includes(instances[j].getInstancePath())) {
-        continue
+    for (const mInstance of instances.entries()) {
+      if (mInstance[1].visibility === false) {
+        delete this.meshes[mInstance[0]];
+        return;
+      } else if (this.meshes[mInstance[0]] !== undefined) {
+        if (mInstance[1].color !== undefined) {
+          this.setColor(mInstance[0], mInstance[1].color);
+        }
+        continue;
       }
-      await this.checkVisualInstance(instances[j]);
+      const gInstance = Instances.getInstance(mInstance[0]);
+      await this.buildVisualInstance(gInstance);
+      if (mInstance[1].color !== undefined) {
+        this.setColor(mInstance[0], mInstance[1].color);
+      }
     }
   }
 
-  async checkVisualInstance (instance) {
-    try {
-      if (hasVisualValue(instance)) {
-        await this.buildVisualInstance(instance)
-      } else if (hasVisualType(instance)) {
-        // since the visualcapability propagates up through the parents we can avoid visiting things that don't have it
-        if (
-          instance.getType().getMetaType()
-            !== Resources.ARRAY_TYPE_NODE
-            && instance.getVisualType()
-        ) {
-          await this.buildVisualInstance(instance);
-        }
-        // this block keeps traversing the instances
-        if (instance.getMetaType() === Resources.INSTANCE_NODE) {
-          await this.traverseInstances(instance.getChildren());
-        } else if (
-          instance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
-        ) {
-          await this.traverseInstances(instance);
-        }
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
 
   async buildVisualInstance (instance) {
     const instancePath = instance.getInstancePath();
-
     // If the same mesh already exists skip the recreation
     if (this.meshes[instancePath]) {
       return;
