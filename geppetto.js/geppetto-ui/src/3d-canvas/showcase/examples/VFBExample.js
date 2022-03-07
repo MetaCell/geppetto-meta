@@ -217,7 +217,7 @@ class VFBExample extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
-            onHoverListeners={[this.hoverHandler]}
+            onHoverListeners={{ 'hoverId':this.hoverHandler }}
           />
         </>
       </div>

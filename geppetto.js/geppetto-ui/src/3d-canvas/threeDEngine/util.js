@@ -26,3 +26,24 @@ function componentToHex (c) {
 export function rgbToHex (r, g, b) {
   return '0X' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
+
+function sortInstances (proxyInstances) {
+  let sortedInstances = [];
+  sortedInstances = proxyInstances.sort((a, b) => {
+    if (a.instancePath < b.instancePath) {
+      return -1;
+    }
+    if (a.instancePath > b.instancePath) {
+      return 1;
+    }
+    return 0;
+  });
+  return sortedInstances;
+}
+
+export function hasDifferentProxyInstances (data, prevData){
+  data = sortInstances(data)
+  prevData = sortInstances(prevData)
+  // FIXME: attribute order matters in the comparation below but it provably shouldn't:
+  return JSON.stringify(data) !== JSON.stringify(prevData)
+}

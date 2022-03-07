@@ -8,6 +8,7 @@ import ReactResizeDetector from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
 import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
+import { hasDifferentProxyInstances } from "./threeDEngine/util";
 
 const styles = () => ({
   container: {
@@ -21,16 +22,16 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.state = { modelReady: false }
+    this.state = { isCanvasReady: false }
     this.constructorFromProps(props);
-    this.frameResizing = this.frameResizing.bind(this);
+    this.onResize = this.onResize.bind(this);
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
     this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this);
   }
 
   constructorFromProps (props) {
     if (props.captureOptions !== undefined) {
-      this.captureControls = React.createRef();
+      this.captureControlsRef = React.createRef();
     }
   }
 
@@ -38,78 +39,137 @@ class Canvas extends Component {
     const {
       data,
       cameraOptions,
-      cameraHandler,
       captureOptions,
+      cameraHandler,
+      setColorHandler,
       backgroundColor,
+      threeDObjects,
       pickingEnabled,
       linesThreshold,
-      onHoverListeners,
-      setColorHandler,
-      onMount,
       onSelection,
       selectionStrategy,
+      onHoverListeners,
+      onMount,
       onUpdateStart,
-      onUpdateEnd
+      onUpdateEnd,
     } = this.props;
+    const hasCaptureOptions = captureOptions !== undefined
 
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
       cameraHandler,
-      captureOptions,
-      onSelection,
+      setColorHandler,
       backgroundColor,
       pickingEnabled,
       linesThreshold,
-      onHoverListeners,
-      setColorHandler,
+      onSelection,
       selectionStrategy,
-      onUpdateStart,
-      onUpdateEnd,
+      onHoverListeners,
+      hasCaptureOptions
     );
+    onUpdateStart();
+    await this.threeDEngine.update(data, cameraOptions, threeDObjects, backgroundColor);
+    onMount(this.threeDEngine.scene)
 
-    if (captureOptions) {
+    if (hasCaptureOptions) {
+      // todo captureOptions prop should force recorderOptions attribute
       this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
     }
-    await this.threeDEngine.start(data, cameraOptions, true);
-    this.threeDEngine.setBackgroundColor(backgroundColor);
-    onMount(this.threeDEngine.scene)
-    this.threeDEngine.requestFrame();
-    this.setState({ modelReady: true })
+
+    this.setState({ isCanvasReady: true })
   }
 
+  shouldComponentUpdate (nextProps, nextState, nextContext) {
+    return nextState.isCanvasReady || this.isResizeRequired() || nextProps !== this.props
+  }
+  
   async componentDidUpdate (prevProps, prevState, snapshot) {
-    if (this.isResizeRequired()) {
-      this.threeDEngine.resize();
+    
+    if (this.isResizeRequired()){
+      this.threeDEngine.resize()
     }
-
+    
     if (prevProps !== this.props) {
-      const { data, cameraOptions, threeDObjects, backgroundColor } = this.props;
-      await this.threeDEngine.update(data, cameraOptions, threeDObjects, this.shouldEngineTraverse(), backgroundColor);
-      this.threeDEngine.requestFrame();
-      this.setState({ modelReady: true })
+      const {
+        data,
+        cameraOptions,
+        captureOptions,
+        cameraHandler,
+        setColorHandler,
+        backgroundColor,
+        threeDObjects,
+        pickingEnabled,
+        linesThreshold,
+        onSelection,
+        selectionStrategy,
+        onHoverListeners,
+        onMount,
+        onUpdateStart,
+        onUpdateEnd,
+      } = this.props;      
+      const {
+        data: prevData,
+        cameraOptions: prevCameraOptions,
+        captureOptions: prevCaptureOptions,
+        cameraHandler: prevCameraHandler,
+        setColorHandler: prevSetColorHandler,
+        backgroundColor: prevBackgroundColor,
+        threeDObjects: prevThreeDObjects,
+        pickingEnabled: prevPickingEnabled,
+        linesThreshold: prevLinesThreshold,
+        onSelection: prevOnSelection,
+        selectionStrategy: prevSelectionStrategy,
+        onHoverListeners: prevOnHoverListeners,
+      } = prevProps;
+      
+      onUpdateStart();
+      if (backgroundColor !== prevBackgroundColor){
+        this.threeDEngine.setBackgroundColor(backgroundColor);
+      }
+      if (!hasDifferentProxyInstances(data, prevData)) {
+        await this.threeDEngine.updateInstances(data)
+      }
+      if (cameraOptions !== prevCameraOptions){
+        this.threeDEngine.updateCamera(cameraOptions);
+      }
+      if (onHoverListeners.keys().sort().toString() !== prevOnHoverListeners.keys().sort().toString()){
+        this.threeDEngine.setOnHoverListeners(onHoverListeners)
+      }
+      this.threeDEngine.requestFrame()
+      onUpdateEnd()
+
+      if (captureOptions !== prevProps.captureOptions) {
+        if (captureOptions !== undefined){
+          this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
+        } else {
+          this.recorder = null
+        }
+      }
+      this.setState({ isCanvasReady: true })
     } else {
-      this.setState({ modelReady: false })
+      this.setState({ isCanvasReady: false })
     }
+  }
+  
+  
+  componentWillUnmount () {
+    this.threeDEngine.stop();
+    this.sceneRef.current.removeChild(
+      this.threeDEngine.getRenderer().domElement
+    );
   }
 
   isResizeRequired () {
     return this.sceneRef.current.clientWidth !== this.threeDEngine.width || this.sceneRef.current.clientHeight !== this.threeDEngine.height;
   }
 
-  shouldComponentUpdate (nextProps, nextState, nextContext) {
-    return nextState.modelReady || this.isResizeRequired() || this.arePropsDifferent(nextProps)
+  onResize (width, height, targetRef) {
+    this.threeDEngine.resize();
   }
 
-  arePropsDifferent (nextProps) {
-    return nextProps !== this.props
-  }
-
-  componentWillUnmount () {
-    this.threeDEngine.stop();
-    this.sceneRef.current.removeChild(
-      this.threeDEngine.getRenderer().domElement
-    );
+  getCanvasElement () {
+    return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
   }
 
   defaultCaptureControlsHandler (action) {
@@ -210,19 +270,6 @@ class Canvas extends Component {
     }
   }
 
-  getCanvasElement () {
-    return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
-  }
-
-  shouldEngineTraverse () {
-    // TODO: check if new instance added, check if split meshes changed?
-    return true;
-  }
-
-  frameResizing (width, height, targetRef) {
-    this.threeDEngine.resize();
-  }
-
   render () {
     const { classes, cameraOptions, captureOptions } = this.props;
     const { cameraControls } = cameraOptions
@@ -233,7 +280,7 @@ class Canvas extends Component {
       const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler
       captureInstance = captureControls && captureControls.instance ? (
         <captureControls.instance
-          ref={this.captureControls}
+          ref={this.captureControlsRef}
           captureControlsHandler={captureControlsHandler}
           {...captureControls.props}
         />
@@ -241,7 +288,7 @@ class Canvas extends Component {
         : null;
     }
     return (
-      <ReactResizeDetector skipOnMount='true' onResize={this.frameResizing}>
+      <ReactResizeDetector skipOnMount='true' onResize={this.onResize}>
         <div className={classes.container} ref={this.sceneRef}>
           {
             <cameraControls.instance
@@ -376,9 +423,9 @@ Canvas.propTypes = {
    */
   linesThreshold: PropTypes.number,
   /**
-   * Array of hover handlers to callback
+   * Map<string, function> of hover handlers to callback
    */
-  onHoverListeners: PropTypes.array,
+  onHoverListeners: PropTypes.object,
   /**
    * Function to callback on selection changes
    */
@@ -392,11 +439,11 @@ Canvas.propTypes = {
    */
   onMount: PropTypes.func,
   /**
-   * Function to callback when the loading of elements of the canvas starts with scene obj
+   * Function to callback when the loading of elements of the canvas starts
    */
   onUpdateStart: PropTypes.func,
   /**
-   * Function to callback when the loading of elements of the canvas ends with scene obj
+   * Function to callback when the loading of elements of the canvas ends
    */
   onUpdateEnd: PropTypes.func,
 };

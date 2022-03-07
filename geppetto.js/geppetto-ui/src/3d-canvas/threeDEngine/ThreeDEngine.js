@@ -25,16 +25,14 @@ export default class ThreeDEngine {
     containerRef,
     cameraOptions,
     cameraHandler,
-    captureOptions,
-    onSelection,
+    setColorHandler,
     backgroundColor,
     pickingEnabled,
     linesThreshold,
-    onHoverListeners,
-    setColorHandler,
+    onSelection,
     selectionStrategy,
-    onUpdateStart,
-    onUpdateEnd,
+    onHoverListeners,
+    preserveDrawingBuffer
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -57,12 +55,10 @@ export default class ThreeDEngine {
     this.height = containerRef.clientHeight;
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
-    this.onUpdateStart = onUpdateStart;
-    this.onUpdateEnd = onUpdateEnd;
     this.instancesMap = new Map();
 
-    // Setup Listeners
     this.start = this.start.bind(this);
+    this.update = this.update.bind(this);
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -71,7 +67,6 @@ export default class ThreeDEngine {
     this.mouseDownEventListener = this.mouseDownEventListener.bind(this);
     this.mouseUpEventListener = this.mouseUpEventListener.bind(this);
     this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
-    this.update = this.update.bind(this);
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
 
@@ -79,7 +74,7 @@ export default class ThreeDEngine {
     this.setupCamera(cameraOptions, this.width / this.height);
 
     // Setup Renderer
-    this.setupRenderer(containerRef, { antialias: true, alpha: true, preserveDrawingBuffer: captureOptions !== undefined });
+    this.setupRenderer(containerRef, { antialias: true, alpha: true, preserveDrawingBuffer: preserveDrawingBuffer });
 
     // Setup Lights
     this.setupLights();
@@ -176,6 +171,269 @@ export default class ThreeDEngine {
   }
 
   /**
+   * Set up the listeners use to detect mouse movement and window resizing
+   */
+  setupListeners = () => {
+    this.controls.addEventListener('start', this.requestFrame);
+    this.controls.addEventListener('change', this.requestFrame);
+    this.controls.addEventListener('stop', this.stop);
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mousedown',
+      this.mouseDownEventListener,
+      false
+    );
+
+    // when the mouse moves, call the given function
+    this.renderer.domElement.addEventListener(
+      'mouseup',
+      this.mouseUpEventListener,
+      false
+    );
+
+    this.renderer.domElement.addEventListener(
+      'mousemove',
+      this.mouseMoveEventListener,
+      false
+    );
+  }
+
+  mouseDownEventListener = event => {
+    this.clientX = event.clientX;
+    this.clientY = event.clientY;
+  }
+
+  mouseUpEventListener = event => {
+    if (event.target === this.renderer.domElement) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // if the mouse moved since the mousedown then don't consider this a selection
+      if (
+        typeof this.clientX === 'undefined'
+          || typeof this.clientY === 'undefined'
+          || x !== this.clientX
+          || y !== this.clientY
+      ) {
+        return;
+      }
+
+      this.mouse.y
+          = -(
+          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
+          / this.renderer.domElement.height
+        ) * 2 + 1;
+
+      this.mouse.x
+          = (
+          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
+          / this.renderer.domElement.width
+        ) * 2 - 1;
+
+      if (event.button === 0) {
+        // only for left click
+        if (this.pickingEnabled) {
+          const intersects = this.getIntersectedObjects();
+
+          if (intersects.length > 0) {
+            // sort intersects
+            const compare = function (a, b) {
+              if (a.distance < b.distance) {
+                return -1;
+              }
+              if (a.distance > b.distance) {
+                return 1;
+              }
+              return 0;
+            }
+            intersects.sort(compare);
+          }
+
+          let selectedMap = {};
+          // Iterate and get the first visible item (they are now ordered by proximity)
+          for (let i = 0; i < intersects.length; i++) {
+            // figure out if the entity is visible
+            let instancePath = '';
+            let geometryIdentifier = '';
+            if (
+              Object.prototype.hasOwnProperty.call(
+                intersects[i].object,
+                'instancePath'
+              )
+            ) {
+              instancePath = intersects[i].object.instancePath;
+              geometryIdentifier
+                  = intersects[i].object.geometryIdentifier;
+            } else {
+              instancePath = intersects[i].object.parent.instancePath;
+              geometryIdentifier
+                  = intersects[i].object.parent.geometryIdentifier;
+            }
+
+            if (
+              (instancePath != null
+                    && Object.prototype.hasOwnProperty.call(
+                      this.meshFactory.meshes,
+                      instancePath
+                    ))
+                || Object.prototype.hasOwnProperty.call(
+                  this.meshFactory.splitMeshes,
+                  instancePath
+                )
+            ) {
+              if (!(instancePath in selectedMap)) {
+                selectedMap[instancePath] = {
+                  ...intersects[i],
+                  geometryIdentifier: geometryIdentifier,
+                  distanceIndex: i,
+                };
+              }
+            }
+          }
+          this.requestFrame();
+          this.onSelection(this.selectionStrategy(selectedMap))
+        }
+      }
+    }
+  }
+
+  mouseMoveEventListener = event => {
+    this.mouse.y
+        = -(((event.clientY
+                - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
+            / this.renderer.domElement.height
+      )
+        * 2 + 1;
+
+    this.mouse.x
+        = (((event.clientX
+                - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
+            / this.renderer.domElement.width)
+        * 2 - 1;
+
+    this.mouseContainer.x = event.clientX;
+    this.mouseContainer.y = event.clientY;
+
+
+    if (this.onHoverListeners && this.onHoverListeners.length > 0) {
+      const intersects = this.getIntersectedObjects();
+      for (const listener in this.onHoverListeners) {
+        if (intersects.length !== 0) {
+          this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
+        }
+      }
+    }
+  }
+
+  async updateInstances (proxyInstances) {
+    proxyInstances = await this.clearScene(proxyInstances);
+    // Todo: resolve proxyInstances to populate child meshes
+    await this.addInstancesToScene(proxyInstances);
+    this.updateVisibleChildren();
+    this.updateInstancesColor(proxyInstances);
+    this.updateInstancesConnectionLines(proxyInstances);
+    this.scene.updateMatrixWorld(true);
+  }
+
+  updateCamera(cameraOptions){
+    this.cameraManager.update(cameraOptions)
+  }
+
+  stop () {
+    cancelAnimationFrame(this.frameId);
+  }
+
+  /**
+   * Adds instances to the ThreeJS Scene
+   * @param proxyInstances
+   */
+  async addInstancesToScene (proxyInstances) {
+    // const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
+    await this.meshFactory.start(proxyInstances, this.instancesMap);
+    this.updateGroupMeshes(proxyInstances);
+  }
+
+  addToScene (instance) {
+    let found = false;
+    for (let child of this.scene.children) {
+      if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      this.scene.add(instance);
+    }
+  }
+
+  async clearScene (proxyInstances) {
+    // safe check, if something different than an array is given we wipe the canvas.
+    if (!Array.isArray(proxyInstances) && proxyInstances === undefined) {
+      console.error("The Geppetto ThreeDEngine has been given an invalid object instead of a list of proxy instances, please check your usage of the 3D Canvas");
+      proxyInstances = [];
+    }
+
+    this.instancesMap.clear();
+    const sortedInstances = this.sortInstances(proxyInstances);
+    // traverse all the geppetto instances
+    sortedInstances.forEach( instance => {
+      const geppettoInstance = Instances.getInstance(instance.instancePath);
+      if (geppettoInstance) {
+        this.traverseInstance(instance, geppettoInstance);
+      }
+    });
+
+    const toRemove = this.scene.children.filter(child => {
+      const mappedInstance = this.instancesMap.get(child.instancePath);
+      if (child.instancePath !== undefined) {
+        if (!mappedInstance || !mappedInstance.visibility) {
+          return true;
+        }
+        if (this.checkMaterial(child, mappedInstance) && mappedInstance) {
+          this.updateInstanceMaterial(child, mappedInstance);
+        }
+      }
+      return false;
+    });
+
+    toRemove.forEach( child => {
+      this.meshFactory.cleanWith3DObject(child);
+      this.scene.remove(child);
+    });
+    return sortedInstances;
+  }
+
+  traverseInstance (proxyInstance, geppettoInstance) {
+    try {
+      if (hasVisualValue(geppettoInstance)) {
+        this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
+      } else if (hasVisualType(geppettoInstance)) {
+        if (
+          geppettoInstance.getType().getMetaType()
+            !== Resources.ARRAY_TYPE_NODE
+            && geppettoInstance.getVisualType()
+        ) {
+          this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
+        }
+        if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
+          const children = geppettoInstance.getChildren();
+          for (let i = 0; i < children.length; i++) {
+            this.traverseInstance(proxyInstance, children[i]);
+          }
+        } else if (
+          geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
+        ) {
+          for (let i = 0; i < geppettoInstance.length; i++) {
+            this.traverseInstance(proxyInstance, geppettoInstance[i]);
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  /**
    * Returns intersected objects from mouse click
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
@@ -196,7 +454,7 @@ export default class ThreeDEngine {
   }
 
 
-  updatevisibleChildren () {
+  updateVisibleChildren () {
     this.visibleChildren = [];
     this.scene.traverse( child => {
       if (child.visible && !(child.clickThrough === true)) {
@@ -209,24 +467,12 @@ export default class ThreeDEngine {
       }
     });
   }
-
+  
 
   /**
-   * Adds instances to the ThreeJS Scene
-   * @param proxyInstances
-   */
-  async addInstancesToScene (proxyInstances) {
-    // const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
-    await this.meshFactory.start(proxyInstances, this.instancesMap);
-    this.updateGroupMeshes(proxyInstances);
-  }
-
-
-  /*
    * Check that the material for the already present instance did not change.
    * return true if the color changed, otherwise false.
    */
-
 
   checkMaterial (mesh, instance) {
     if (mesh.type === 'Mesh' || mesh.type === 'LineSegment') {
@@ -280,90 +526,6 @@ export default class ThreeDEngine {
   }
 
 
-  sortInstances (proxyInstances) {
-    let sortedInstances = [];
-    sortedInstances = proxyInstances.sort((a, b) => {
-      if (a.instancePath < b.instancePath) {
-        return -1;
-      }
-      if (a.instancePath > b.instancePath) {
-        return 1;
-      }
-      return 0;
-    });
-    return sortedInstances;
-  }
-
-
-  traverseInstance (proxyInstance, geppettoInstance) {
-    try {
-      if (hasVisualValue(geppettoInstance)) {
-        this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
-      } else if (hasVisualType(geppettoInstance)) {
-        if (
-          geppettoInstance.getType().getMetaType()
-            !== Resources.ARRAY_TYPE_NODE
-            && geppettoInstance.getVisualType()
-        ) {
-          this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
-        }
-        if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
-          const children = geppettoInstance.getChildren();
-          for (let i = 0; i < children.length; i++) {
-            this.traverseInstance(proxyInstance, children[i]);
-          }
-        } else if (
-          geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
-        ) {
-          for (let i = 0; i < geppettoInstance.length; i++) {
-            this.traverseInstance(proxyInstance, geppettoInstance[i]);
-          }
-        }
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-
-  async clearScene (proxyInstances) {
-    // safe check, if something different than an array is given we wipe the canvas.
-    if (!Array.isArray(proxyInstances) && proxyInstances === undefined) {
-      console.error("The Geppetto ThreeDEngine has been given an invalid object instead of a list of proxy instances, please check your usage of the 3D Canvas");
-      proxyInstances = [];
-    }
-
-    this.instancesMap.clear();
-    const sortedInstances = this.sortInstances(proxyInstances);
-    // traverse all the geppetto instances
-    sortedInstances.forEach( instance => {
-      const geppettoInstance = Instances.getInstance(instance.instancePath);
-      if (geppettoInstance) {
-        this.traverseInstance(instance, geppettoInstance);
-      }
-    });
-
-    const toRemove = this.scene.children.filter(child => {
-      const mappedInstance = this.instancesMap.get(child.instancePath);
-      if (child.instancePath !== undefined) {
-        if (!mappedInstance || !mappedInstance.visibility) {
-          return true;
-        }
-        if (this.checkMaterial(child, mappedInstance) && mappedInstance) {
-          this.updateInstanceMaterial(child, mappedInstance);
-        }
-      }
-      return false;
-    });
-
-    toRemove.forEach( child => {
-      this.meshFactory.cleanWith3DObject(child);
-      this.scene.remove(child);
-    });
-    return sortedInstances;
-  }
-
-
   updateInstancesColor (proxyInstances) {
     const sortedInstances = proxyInstances.sort((a, b) => {
       if (a.instancePath < b.instancePath) {
@@ -386,13 +548,6 @@ export default class ThreeDEngine {
         );
         this.setSplitGroupsColor(pInstance.instancePath, visualGroups);
       }
-    }
-  }
-
-  updateInstancesConnectionLines (proxyInstances) {
-    for (const pInstance of proxyInstances) {
-      const mode = pInstance.showConnectionLines ? pInstance.showConnectionLines : false
-      this.showConnectionLines(pInstance.instancePath, mode);
     }
   }
 
@@ -641,6 +796,13 @@ export default class ThreeDEngine {
     }
   }
 
+  updateInstancesConnectionLines (proxyInstances) {
+    for (const pInstance of proxyInstances) {
+      const mode = pInstance.showConnectionLines ? pInstance.showConnectionLines : false
+      this.showConnectionLines(pInstance.instancePath, mode);
+    }
+  }
+
   /**
    * Removes connection lines, all if nothing is passed in or just the ones passed in.
    *
@@ -671,160 +833,6 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseDownEventListener = event => {
-    this.clientX = event.clientX;
-    this.clientY = event.clientY;
-  }
-
-  mouseUpEventListener = event => {
-    if (event.target === this.renderer.domElement) {
-      const x = event.clientX;
-      const y = event.clientY;
-
-      // if the mouse moved since the mousedown then don't consider this a selection
-      if (
-        typeof this.clientX === 'undefined'
-        || typeof this.clientY === 'undefined'
-        || x !== this.clientX
-        || y !== this.clientY
-      ) {
-        return;
-      }
-
-      this.mouse.y
-      = -(
-          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
-          / this.renderer.domElement.height
-        ) * 2 + 1;
-
-      this.mouse.x
-      = (
-          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
-          / this.renderer.domElement.width
-        ) * 2 - 1;
-
-      if (event.button === 0) {
-        // only for left click
-        if (this.pickingEnabled) {
-          const intersects = this.getIntersectedObjects();
-
-          if (intersects.length > 0) {
-            // sort intersects
-            const compare = function (a, b) {
-              if (a.distance < b.distance) {
-                return -1;
-              }
-              if (a.distance > b.distance) {
-                return 1;
-              }
-              return 0;
-            }
-            intersects.sort(compare);
-          }
-
-          let selectedMap = {};
-          // Iterate and get the first visible item (they are now ordered by proximity)
-          for (let i = 0; i < intersects.length; i++) {
-            // figure out if the entity is visible
-            let instancePath = '';
-            let geometryIdentifier = '';
-            if (
-              Object.prototype.hasOwnProperty.call(
-                intersects[i].object,
-                'instancePath'
-              )
-            ) {
-              instancePath = intersects[i].object.instancePath;
-              geometryIdentifier
-              = intersects[i].object.geometryIdentifier;
-            } else {
-              instancePath = intersects[i].object.parent.instancePath;
-              geometryIdentifier
-              = intersects[i].object.parent.geometryIdentifier;
-            }
-
-            if (
-              (instancePath != null
-                && Object.prototype.hasOwnProperty.call(
-                  this.meshFactory.meshes,
-                  instancePath
-                ))
-              || Object.prototype.hasOwnProperty.call(
-                this.meshFactory.splitMeshes,
-                instancePath
-              )
-            ) {
-              if (!(instancePath in selectedMap)) {
-                selectedMap[instancePath] = {
-                  ...intersects[i],
-                  geometryIdentifier: geometryIdentifier,
-                  distanceIndex: i,
-                };
-              }
-            }
-          }
-          this.requestFrame();
-          this.onSelection(this.selectionStrategy(selectedMap))
-        }
-      }
-    }
-  }
-
-  mouseMoveEventListener = event => {
-    this.mouse.y
-    = -(((event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
-        / this.renderer.domElement.height
-      )
-    * 2 + 1;
-
-    this.mouse.x
-    = (((event.clientX
-      - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
-      / this.renderer.domElement.width)
-      * 2 - 1;
-
-    this.mouseContainer.x = event.clientX;
-    this.mouseContainer.y = event.clientY;
-
-
-    if (this.onHoverListeners && this.onHoverListeners.length > 0) {
-      const intersects = this.getIntersectedObjects();
-      for (const listener in this.onHoverListeners) {
-        if (intersects.length !== 0) {
-          this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
-        }
-      }
-    }
-  }
-  /**
-   * Set up the listeners use to detect mouse movement and window resizing
-   */
-  setupListeners = () => {
-    this.controls.addEventListener('start', this.requestFrame);
-    this.controls.addEventListener('change', this.requestFrame);
-    this.controls.addEventListener('stop', this.stop);
-    // when the mouse moves, call the given function
-    this.renderer.domElement.addEventListener(
-      'mousedown',
-      this.mouseDownEventListener,
-      false
-    );
-
-    // when the mouse moves, call the given function
-    this.renderer.domElement.addEventListener(
-      'mouseup',
-      this.mouseUpEventListener,
-      false
-    );
-
-    this.renderer.domElement.addEventListener(
-      'mousemove',
-      this.mouseMoveEventListener,
-      false
-    );
-  }
-
   /**
    * Sets whether to use wireframe for the materials of the meshes
    * @param wireframe
@@ -849,38 +857,6 @@ export default class ThreeDEngine {
     }
   }
 
-  async update (proxyInstances, cameraOptions, threeDObjects, toTraverse, newBackgroundColor) {
-    this.onUpdateStart(this.scene);
-    this.setBackgroundColor(newBackgroundColor);
-    proxyInstances = await this.clearScene(proxyInstances);
-    // Todo: resolve proxyInstances to populate child meshes
-    if (toTraverse) {
-      await this.addInstancesToScene(proxyInstances);
-      threeDObjects.forEach(element => {
-        this.addToScene(element);
-      });
-      this.updatevisibleChildren();
-      this.updateInstancesColor(proxyInstances);
-      this.updateInstancesConnectionLines(proxyInstances);
-      this.scene.updateMatrixWorld(true);
-    }
-    // TODO: only update camera when cameraOptions changes
-    this.cameraManager.update(cameraOptions);
-    this.onUpdateEnd(this.scene);
-  }
-
-  addToScene (instance) {
-    let found = false;
-    for (let child of this.scene.children) {
-      if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      this.scene.add(instance);
-    }
-  }
 
   resize () {
     if (this.width !== this.containerRef.clientWidth || this.height !== this.containerRef.clientHeight) {
@@ -895,14 +871,6 @@ export default class ThreeDEngine {
        * the resizing works but the image gets stretched.
        */
       this.cameraManager.engine.controls.updateOnResize();
-    }
-  }
-
-  start (proxyInstances, cameraOptions, toTraverse) {
-    this.resize();
-    this.update(proxyInstances, cameraOptions, [], toTraverse);
-    if (!this.frameId) {
-      this.frameId = window.requestAnimationFrame(this.animate);
     }
   }
 
@@ -927,9 +895,6 @@ export default class ThreeDEngine {
     this.renderer.render(this.scene, this.cameraManager.getCamera());
   }
 
-  stop () {
-    cancelAnimationFrame(this.frameId);
-  }
 
   /**
    * Returns the scene renderer
@@ -951,5 +916,9 @@ export default class ThreeDEngine {
    */
   getWireframe () {
     return this.wireframe;
+  }
+
+  setOnHoverListeners (onHoverListeners) {
+    this.onHoverListeners = onHoverListeners
   }
 }

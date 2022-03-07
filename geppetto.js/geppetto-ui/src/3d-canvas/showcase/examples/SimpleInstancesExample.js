@@ -170,7 +170,7 @@ class SimpleInstancesExample extends Component {
             backgroundColor={0x505050}
             onSelection={this.onSelection}
             onMount={this.onMount}
-            onHoverListeners={[this.hoverHandler]}
+            onHoverListeners={{ 'hoverId':this.hoverHandler }}
           />
         </>
       </div>
