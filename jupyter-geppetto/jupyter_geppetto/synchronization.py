@@ -133,12 +133,20 @@ class LoopTimer(threading.Thread):
             self.fun()
             time.sleep(self.interval)
 
+    def has_child_attr(self, name, obj):
+      path = name.split('.')
+      if len(path) > 0:
+        return hasattr(obj[path[0]], path[1]) #evaluating things like simConfig.checkErrors due to internal API changes
+      else:
+        return True 
+
     def process_events(self):
         try:
             for model, synched_component in list(synched_models.items()):
                 modelValue=None
                 if model != '':
                     try:
+                      if self.has_child_attr(model, self.scope):
                         modelValue = eval(model, globals(), self.scope)
                         #logging.debug("Evaluating "+model+" = ")
                         #logging.debug(modelValue)
