@@ -39,7 +39,7 @@ export default class DicomViewerExample extends Component {
           mode={'quad_view'}
           data={data}
           onShiftClick="goToPoint"
-          onCtrlClick="togglMode"
+          onCtrlClick="toggleMode"
           showDownloadButton={true}
           onLoaded={this.onLoaded}
         />

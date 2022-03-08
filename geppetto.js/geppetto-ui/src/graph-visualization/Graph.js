@@ -394,14 +394,52 @@ export default class GeppettoGraphVisualization extends Component {
   }
 }
 
+GeppettoGraphVisualization.defaultProps = {
+  d2: false,
+  nodeLabel: () => {
+  },
+  linkLabel: () => {
+  },
+  url: '',
+  wireframe: true,
+  wireframeColor: '0x6893DE',
+  xGap: 20,
+  yGap: 45,
+  font: '6px Source Sans Pro',
+  nodeRelSize: 20,
+  forceLinkDistance: 90,
+  forceLinkStrength: 0.7,
+  forceChargeStrength: -200,
+  timeToCenter2DCamera: 0,
+  forceRadial: 1,
+}
+
+
 GeppettoGraphVisualization.propTypes = {
   /**
-   * Object with arrays of nodes and links used to render the graph.
+   * Object with arrays of nodes and links used to render the graph
    */
   data: PropTypes.shape({
-    nodes : PropTypes.arrayOf(PropTypes.shape({ id : PropTypes.number.isRequired })).isRequired,
+    /**
+     * Nodes in the graph
+     */
+    nodes : PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Node identifier
+     */
+      id : PropTypes.number.isRequired 
+    })).isRequired,
+    /**
+   * Links between nodes in the graph
+   */
     links : PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Source node of the link
+     */
       source: PropTypes.number.isRequired,
+    /**
+     * Target node of the link
+     */
       target: PropTypes.number.isRequired
     })).isRequired
   }),
@@ -419,7 +457,7 @@ GeppettoGraphVisualization.propTypes = {
    */
   linkLabel : PropTypes.func,
   /**
-   *  Specify a obj file URL to add to the scene.
+   *  Specify an obj file URL to add to the scene.
    */
   url : PropTypes.string,
   /**
@@ -473,7 +511,7 @@ GeppettoGraphVisualization.propTypes = {
    */
   timeToCenter2DCamera : PropTypes.number,
   /**
-   * Creates a radial atractive force of radial circle equal to forceRadial. 
+   * Creates a radial attractive force of radial circle equal to forceRadial. 
    * Useful to avoid nodes scattering away when they have no links. 
    * (Default : 1)
    */

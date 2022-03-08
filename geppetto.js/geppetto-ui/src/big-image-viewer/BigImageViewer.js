@@ -146,6 +146,10 @@ class BigImageViewer extends Component {
   }
 }
 
+BigImageViewer.defaultProps = {
+  settings: [],
+}
+
 BigImageViewer.propTypes = {
   /**
    * Component identifier
