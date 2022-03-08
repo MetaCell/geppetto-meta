@@ -44,3 +44,24 @@ export class PythonConsole extends Component {
   }
 
 }
+
+PythonConsole.defaultProps = {
+  extensionLoaded: false,
+  iframeHeight: 400,
+}
+
+PythonConsole.propTypes = {
+  /**
+   * Path to jupyter notebook
+   */
+    pythonNotebookPath: PropTypes.string.isRequired,
+  /**
+    * Boolean indicating if the extension has been loaded
+   */
+  extensionLoaded: PropTypes.bool,
+   /**
+    * Height of the iframe in pixels
+   */
+   iframeHeight: PropTypes.number,
+
+}
