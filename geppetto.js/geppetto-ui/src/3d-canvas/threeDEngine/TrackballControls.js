@@ -15,7 +15,7 @@ const defaultRotationalSpeed = 1.0 ;
 class TrackballControls extends EventDispatcher {
 
   // @metacell change
-  constructor (object, domElement, handler) {
+  constructor (object, domElement, handler, {rotateSpeed, zoomSpeed, panSpeed}) {
     // end of @metacell changes
 
     super();
@@ -40,9 +40,11 @@ class TrackballControls extends EventDispatcher {
 
     this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-    this.rotateSpeed = 1.0;
-    this.zoomSpeed = 1.2;
-    this.panSpeed = 0.3;
+    // @metacell change
+    this.rotateSpeed = rotateSpeed;
+    this.zoomSpeed = zoomSpeed;
+    this.panSpeed = panSpeed;
+    // end of @metacell changes
 
     this.noRotate = false;
     this.noZoom = false;

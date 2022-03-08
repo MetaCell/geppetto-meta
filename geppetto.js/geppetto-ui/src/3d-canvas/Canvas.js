@@ -130,6 +130,16 @@ class Canvas extends Component {
 
   defaultCameraControlsHandler (action) {
     const defaultProps = {
+      incrementPan: {
+        x: 0.01,
+        y: 0.01
+      },
+      incrementRotation: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+      incrementZoom: 0.1,
       movieFilter: false,
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
@@ -260,6 +270,8 @@ Canvas.defaultProps = {
       incrementZoom: 0.1,
     },
     rotateSpeed: 0.5,
+    zoomSpeed: 1.2,
+    panSpeed: 0.3
   },
   captureOptions: undefined,
   backgroundColor: 0x000000,
