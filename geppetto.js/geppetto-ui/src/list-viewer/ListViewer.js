@@ -392,23 +392,86 @@ export default class ListViewer extends React.Component {
     );
   }
 }
+
+ListViewer.defaultProps = {
+  handler: {},
+}
+
 ListViewer.propTypes = {
   /**
    * Instances object
    */
   instances: PropTypes.array.isRequired,
   /**
-   * Specifies an handler context to which the callbacks specified are bound
+   * Specifies a handler context to which the callbacks specified are bound
    */
   handler: PropTypes.object,
   /**
-   * Bool that defines the presece or not of infiniteScroll
+   * Bool that defines the presence or not of infiniteScroll
    */
   infiniteScroll: PropTypes.bool,
   /**
    * Specifies custom column definitions
    */
-  columnConfiguration: PropTypes.array,
+  columnConfiguration: PropTypes.arrayOf(PropTypes.shape({
+    /**
+     * Column identifier
+     */
+    id: PropTypes.string,
+    /**
+     * Title of the column
+     */
+    title: PropTypes.string,
+    /**
+     * Source of the column
+     */
+    source: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.string,
+    ]),
+    /**
+     * Custom css classname
+     */
+    cssClassName: PropTypes.string,
+    /**
+     * Action associated with the column
+     */
+    action:  PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+      PropTypes.func,
+    ]),
+    /**
+     * Custom component
+     */
+    customComponent: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+      PropTypes.func,
+    ]),
+    /**
+     * Custom heading component
+     */
+    customHeadingComponent: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.element,
+    ]),
+    /**
+     * Display name of the column
+     */
+    displayName: PropTypes.string,
+    /**
+     * Boolean value for determining column visibility
+     */
+    visible: PropTypes.bool,
+    /**
+     * Configuration details of the column
+     */
+    configuration: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object),
+    ]),
+  })),
   /**
    * Function to filter data given a custom criterion
    */
@@ -416,9 +479,86 @@ ListViewer.propTypes = {
   /**
    * Components passed in with a matching name will override the default in Griddle
    */
-  customComponents: PropTypes.object,
+  customComponents: PropTypes.shape({
+    /**
+     * Custom components' cell type
+     */
+    Cell: PropTypes.elementType,
+    /**
+     * Filter for searching custom components
+     */
+    Filter: PropTypes.elementType,
+    /**
+     * Loading element
+     */
+    Loading: PropTypes.elementType,
+    /**
+     * ElementType for the next button in the custom components
+     */
+    NextButton: PropTypes.elementType,
+    /**
+     * ElementType for when there are no results returned from a search
+     */
+    NoResults: PropTypes.elementType,
+    /**
+     * Page dropdown for the custom components
+      */
+    PageDropdown: PropTypes.elementType,
+    /**
+     * Pagination for the custom components
+     */
+    Pagination: PropTypes.elementType,
+    /**
+     * ElementType for the previous button in the custom components
+     */
+    PreviousButton: PropTypes.elementType,
+    /**
+     * Row elementType for the custom components
+     */
+    Row: PropTypes.elementType,
+    /**
+     * Definition of rows in the custom components
+     */
+    RowDefinition: PropTypes.elementType,
+    /**
+     * Settings for the custom components
+     */
+    Settings: PropTypes.elementType,
+    /**
+     * Settings for the List Viewer's custom component's toggle
+     */
+    SettingsToggle: PropTypes.elementType,
+    /**
+     * Table for custom components
+     */
+    Table: PropTypes.elementType,
+    /**
+     * Table body for custom components
+     */
+    TableBody: PropTypes.elementType,
+    /**
+     * Table heading for custom components
+     */
+    TableHeading: PropTypes.elementType,
+    /**
+     * Table heading for cells for custom components
+     */
+    TableHeadingCell: PropTypes.elementType,
+    /**
+     * Table heading for cells in ascending order for custom components
+     */
+    TableHeadingCellAscending: PropTypes.elementType,
+    /**
+     * Table heading for cells in descending order for custom components
+     */
+    TableHeadingCellDescending: PropTypes.elementType,
+    /**
+     * Layout of the custom components
+     */
+    Layout: PropTypes.elementType,
+  }),
   /**
-   * Show Pagination button, used for changing pages
+   * Booleam to determine showing the Pagination button that is used for changing pages
    */
   showPagination:  PropTypes.bool
 };
