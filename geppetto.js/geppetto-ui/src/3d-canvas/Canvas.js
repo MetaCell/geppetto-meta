@@ -25,6 +25,7 @@ class Canvas extends Component {
     this.constructorFromProps(props);
     this.frameResizing = this.frameResizing.bind(this);
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
     this.keyboardEventHandler = this.keyboardEventHandler.bind(this)
   }
 
