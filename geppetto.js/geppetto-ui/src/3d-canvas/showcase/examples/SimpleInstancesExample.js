@@ -34,7 +34,7 @@ const instance2spec = {
   }
 }
 
-function loadInstances (){
+function loadInstances () {
   ModelFactory.cleanModel();
   const instance1 = new SimpleInstance(instance1spec)
   const instance2 = new SimpleInstance(instance2spec)
@@ -111,17 +111,17 @@ class SimpleInstancesExample extends Component {
 
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
+      if (event.offsetX <= event.target.clientWidth) {
         this.setState({ showModel: false })
       }
     }
   }
 
-  onMount (scene){
+  onMount (scene) {
     console.log(scene)
   }
 
-  onSelection (selectedInstances){
+  onSelection (selectedInstances) {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
@@ -136,15 +136,11 @@ class SimpleInstancesExample extends Component {
         props: {}
       },
       recorderOptions: {
-        mediaRecorderOptions: {
-          mimeType: 'video/webm',
-        },
-        blobOptions:{
-          type: 'video/webm'
-        }
+        mediaRecorderOptions: { mimeType: 'video/webm', },
+        blobOptions: { type: 'video/webm' }
       },
-      screenshotOptions:{
-        resolution:{
+      screenshotOptions: {
+        resolution: {
           width: 3840,
           height: 2160,
         },
@@ -155,27 +151,25 @@ class SimpleInstancesExample extends Component {
     }
 
     return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <>
-        <div>
-          <CanvasTooltip ref={this.tooltipRef} />
-        </div>
-        <Canvas
-          ref={this.canvasRef}
-          data={canvasData}
-          cameraOptions={cameraOptions}
-          captureOptions={captureOptions}
-          backgroundColor={0x505050}
-          onSelection={this.onSelection}
-          onMount={this.onMount}
-          hoverListeners={[this.hoverHandler]}
-        />
-      </>
+      <div>
+        <CanvasTooltip ref={this.tooltipRef}/>
+      </div>
+      <Canvas
+        ref={this.canvasRef}
+        data={canvasData}
+        cameraOptions={cameraOptions}
+        captureOptions={captureOptions}
+        backgroundColor={0x505050}
+        onSelection={this.onSelection}
+        onMount={this.onMount}
+        hoverListeners={[this.hoverHandler]}
+      />
     </div> : <Button
       variant="outlined"
       color="primary"
       onClick={this.handleToggle}
     >
-      Show Example
+            Show Example
     </Button>
   }
 }
