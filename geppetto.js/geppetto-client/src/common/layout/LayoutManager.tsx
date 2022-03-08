@@ -1,9 +1,9 @@
 import * as React from 'react';
-import * as FlexLayout from "@metacell/geppetto-meta-ui/flex-layout/src/index";
-import Actions from "@metacell/geppetto-meta-ui/flex-layout/src/model/Actions";
-import DockLocation from "@metacell/geppetto-meta-ui/flex-layout/src/DockLocation";
-import Model from "@metacell/geppetto-meta-ui/flex-layout/src/model/Model";
-import { WidgetStatus, Widget, ComponentMap } from "./model";
+import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
+import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
+import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import { WidgetStatus, Widget, ComponentMap, TabsetPosition } from './model';
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -90,7 +90,7 @@ class LayoutManager {
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      this.createTabSet(widgetConfiguration.panelName);
+      this.createTabSet(widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     this.model.doAction(
       Actions.addNode(
@@ -151,31 +151,46 @@ class LayoutManager {
    * @param {string} tabsetID the id of the tab set
    * @private
    */
-  private createTabSet(tabsetID) {
-    // In case the tabset doesn't exist
+  private createTabSet(tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
     const { model } = this;
     const rootNode = model.getNodeById("root");
 
-    let hrow = new FlexLayout.RowNode(model, {});
-    hrow._setWeight(100);
-
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
-    tabset._setWeight(80);
 
-    hrow._addChild(tabset);
+    switch (position) {
+      case TabsetPosition.RIGHT:
+        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
+        rootNode._addChild(tabset);
+        break;
+      case TabsetPosition.LEFT:
+        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
+        rootNode._addChild(tabset, 0);
+        break;
+      case TabsetPosition.BOTTOM:
+      case TabsetPosition.TOP: {
 
-    rootNode.getChildren().forEach(child => {
-      if (child['getWeight']) {
-        const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
-        child._setWeight(newWeight);
-        hrow._addChild(child);
+        tabset._setWeight(80);
+        let hrow = new FlexLayout.RowNode(model, {});
+        hrow._setWeight(100);
+
+        rootNode.getChildren().forEach(child => {
+          if (child['getWeight']) {
+            const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
+            child._setWeight(newWeight);
+            hrow._addChild(child);
+          }
+        });
+        if (position === TabsetPosition.BOTTOM) {
+          hrow._addChild(tabset)
+        } else {
+          hrow._addChild(tabset, 0);
+        }
+
+        rootNode._removeAll();
+        rootNode._addChild(hrow, 0);
       }
-    });
-
-    rootNode._removeAll();
-    rootNode._addChild(hrow, 0);
+    }
   }
-
   /**
    * Export a session.
    */
@@ -360,6 +375,7 @@ class LayoutManager {
       case Actions.SET_ACTIVE_TABSET:
         break;
       case Actions.SELECT_TAB:
+        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE }))
         break;
       case Actions.DELETE_TAB: {
         if (this.getWidget(action.data.node).hideOnClose) {
@@ -367,7 +383,7 @@ class LayoutManager {
           this.minimizeWidget(action.data.node);
           defaultAction = false;
         } else {
-          // remove widget from widgets list 
+          // remove widget from widgets list
           this.store.dispatch(removeWidgetFromStore(action.data.node))
         }
         break;
@@ -375,8 +391,8 @@ class LayoutManager {
       case Actions.MAXIMIZE_TOGGLE:
         break;
       case Actions.RENAME_TAB:
-        this.store.dispatch(updateWidget({...this.getWidget(action.data.node), name: action.data.text}))
-          break;
+        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.node), name: action.data.text }))
+        break;
       case Actions.ADJUST_SPLIT:
         break;
       case Actions.ADD_NODE: {
@@ -467,7 +483,7 @@ class LayoutManager {
     updatedWidget.status = WidgetStatus.MINIMIZED;
     updatedWidget.defaultPanel = updatedWidget.panelName;
     updatedWidget.panelName = MINIMIZED_PANEL;
-    this.updateWidget(updatedWidget);
+    this.store.dispatch(updateWidget(updatedWidget))
   }
 
   /**
@@ -539,7 +555,7 @@ class LayoutManager {
     const panelName = widget.panelName;
     let tabset = model.getNodeById(panelName);
     if (tabset === undefined) {
-      this.createTabSet(panelName);
+      this.createTabSet(panelName, widget.defaultPosition, widget.defaultWeight);
     }
     this.moveWidget(widget);
   }

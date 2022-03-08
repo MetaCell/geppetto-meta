@@ -4,12 +4,14 @@ export default {
     "tabSetHeaderHeight": 26,
     "tabSetTabStripHeight": 26,
     "enableEdgeDock": false,
-    "borderBarSize": 0
+    "borderBarSize": 1
   },
   "borders": [
     {
       "type":"border",
       "location": "bottom",
+      "size": 1,
+      "barSize": 1,
       "children": []
     }
   ],
@@ -20,3 +22,4 @@ export default {
     "children": []
   }
 }
+

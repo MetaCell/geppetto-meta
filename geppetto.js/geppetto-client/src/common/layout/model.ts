@@ -14,6 +14,13 @@ export enum WidgetStatus {
   MINIMIZED = "MINIMIZED",
 }
 
+export enum TabsetPosition {
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+  TOP = "TOP",
+  BOTTOM = "BOTTOM"
+}
+
 /**
  * Extended Node interface
  */
@@ -29,6 +36,8 @@ export interface Widget {
   status: WidgetStatus;
   panelName: string;
   defaultPanel?: any;
+  defaultPosition?: any;
+  defaultWeight?: any;
   hideOnClose?: boolean;
   name: string;
   enableClose?: boolean;
