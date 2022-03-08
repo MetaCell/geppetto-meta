@@ -8,7 +8,7 @@ import ReactResizeDetector from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
 import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
-import { hasDifferentProxyInstances } from "./threeDEngine/util";
+import { hasDifferentProxyInstances, hasDifferentThreeDObjects } from "./threeDEngine/util";
 
 const styles = () => ({
   container: {
@@ -69,7 +69,10 @@ class Canvas extends Component {
       hasCaptureOptions
     );
     onUpdateStart();
-    await this.threeDEngine.update(data, cameraOptions, threeDObjects, backgroundColor);
+    await this.threeDEngine.updateInstances(data);
+    this.threeDEngine.updateExternalThreeDObjects(threeDObjects)
+    this.threeDEngine.updateCamera(cameraOptions);
+    onUpdateEnd()
     onMount(this.threeDEngine.scene)
 
     if (hasCaptureOptions) {
@@ -104,7 +107,6 @@ class Canvas extends Component {
         onSelection,
         selectionStrategy,
         onHoverListeners,
-        onMount,
         onUpdateStart,
         onUpdateEnd,
       } = this.props;      
@@ -127,19 +129,40 @@ class Canvas extends Component {
       if (backgroundColor !== prevBackgroundColor){
         this.threeDEngine.setBackgroundColor(backgroundColor);
       }
-      if (!hasDifferentProxyInstances(data, prevData)) {
+      if (hasDifferentProxyInstances(data, prevData)) {
         await this.threeDEngine.updateInstances(data)
       }
       if (cameraOptions !== prevCameraOptions){
         this.threeDEngine.updateCamera(cameraOptions);
       }
-      if (onHoverListeners.keys().sort().toString() !== prevOnHoverListeners.keys().sort().toString()){
+      if (Object.keys(onHoverListeners).sort().toString() !== Object.keys(prevOnHoverListeners).sort().toString()){
         this.threeDEngine.setOnHoverListeners(onHoverListeners)
+      }
+      if (selectionStrategy !== prevSelectionStrategy){
+        this.threeDEngine.setSelectionStrategy(selectionStrategy)
+      }
+      if (onSelection !== prevOnSelection){
+        this.threeDEngine.setOnSelection(onSelection)
+      }
+      if (linesThreshold !== prevLinesThreshold){
+        this.threeDEngine.setLinesThreshold(linesThreshold)
+      }
+      if (pickingEnabled !== prevPickingEnabled){
+        this.threeDEngine.setPickingEnabled(pickingEnabled)
+      }
+      if (cameraHandler !== prevCameraHandler){
+        this.threeDEngine.seCameraHandler(cameraHandler)
+      }
+      if (setColorHandler !== prevSetColorHandler){
+        this.threeDEngine.setSetColorHandler(setColorHandler)
+      }
+      if (hasDifferentThreeDObjects(threeDObjects, prevThreeDObjects)){
+        this.threeDEngine.updateExternalThreeDObjects(threeDObjects)
       }
       this.threeDEngine.requestFrame()
       onUpdateEnd()
 
-      if (captureOptions !== prevProps.captureOptions) {
+      if (captureOptions !== prevCaptureOptions) {
         if (captureOptions !== undefined){
           this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
         } else {
@@ -331,7 +354,7 @@ Canvas.defaultProps = {
   setColorHandler: () => true,
   onSelection: () => {},
   selectionStrategy: selectionStrategies.nearest,
-  onHoverListeners: [],
+  onHoverListeners: {},
   onMount: () => {},
   onUpdateStart: () => {},
   onUpdateEnd: () => {},

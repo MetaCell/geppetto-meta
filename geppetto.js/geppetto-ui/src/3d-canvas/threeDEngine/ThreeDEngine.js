@@ -17,7 +17,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 
 import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
-import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
+import { rgbToHex, hasVisualType, hasVisualValue, sortInstances } from "./util";
 
 
 export default class ThreeDEngine {
@@ -56,9 +56,10 @@ export default class ThreeDEngine {
     this.lastRequestFrame = 0 ;
     this.lastRenderTimer = new Date();
     this.instancesMap = new Map();
+    this.externalThreeDObjectsUUIDs = new Set()
 
-    this.start = this.start.bind(this);
-    this.update = this.update.bind(this);
+    this.updateInstances = this.updateInstances.bind(this);
+    this.updateCamera = this.updateCamera.bind(this);
     this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -69,6 +70,7 @@ export default class ThreeDEngine {
     this.mouseMoveEventListener = this.mouseMoveEventListener.bind(this);
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
+    this.setOnHoverListeners = this.setOnHoverListeners.bind(this);
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -315,9 +317,9 @@ export default class ThreeDEngine {
     this.mouseContainer.y = event.clientY;
 
 
-    if (this.onHoverListeners && this.onHoverListeners.length > 0) {
+    if (this.onHoverListeners && Object.keys(this.onHoverListeners).length > 0) {
       const intersects = this.getIntersectedObjects();
-      for (const listener in this.onHoverListeners) {
+      for (const listener of Object.keys(this.onHoverListeners)) {
         if (intersects.length !== 0) {
           this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
         }
@@ -335,7 +337,20 @@ export default class ThreeDEngine {
     this.scene.updateMatrixWorld(true);
   }
 
-  updateCamera(cameraOptions){
+  updateExternalThreeDObjects (threeDObjects){
+    const nextObjsUUIDs = new Set(threeDObjects.map(obj => obj.uuid))
+    let toRemoveUUIDs = [...this.externalThreeDObjectsUUIDs].filter(x => !nextObjsUUIDs.has(x));
+    toRemoveUUIDs.forEach(uuid => {
+      this.scene.remove(this.scene.getObjectById(uuid));
+    })
+    threeDObjects.forEach(element => {
+      this.addToScene(element); // already checks if object is already in the scene
+      this.externalThreeDObjectsUUIDs.add(element.uuid)
+    });
+
+  }
+
+  updateCamera (cameraOptions){
     this.cameraManager.update(cameraOptions)
   }
 
@@ -353,16 +368,16 @@ export default class ThreeDEngine {
     this.updateGroupMeshes(proxyInstances);
   }
 
-  addToScene (instance) {
+  addToScene (obj) {
     let found = false;
     for (let child of this.scene.children) {
-      if (((instance.instancePath) && (instance.instancePath === child.instancePath)) || (child.uuid === instance.uuid)) {
+      if (((obj.instancePath) && (obj.instancePath === child.instancePath)) || (child.uuid === obj.uuid)) {
         found = true;
         break;
       }
     }
     if (!found) {
-      this.scene.add(instance);
+      this.scene.add(obj);
     }
   }
 
@@ -374,7 +389,7 @@ export default class ThreeDEngine {
     }
 
     this.instancesMap.clear();
-    const sortedInstances = this.sortInstances(proxyInstances);
+    const sortedInstances = sortInstances(proxyInstances);
     // traverse all the geppetto instances
     sortedInstances.forEach( instance => {
       const geppettoInstance = Instances.getInstance(instance.instancePath);
@@ -918,7 +933,46 @@ export default class ThreeDEngine {
     return this.wireframe;
   }
 
+  /**
+   * Sets onHoverListeners
+   */
   setOnHoverListeners (onHoverListeners) {
     this.onHoverListeners = onHoverListeners
+  }
+  /**
+   * Sets selectionStrategy
+   */
+  setSelectionStrategy (selectionStrategy) {
+    this.selectionStrategy = selectionStrategy
+  }
+  /**
+   * Sets onSelection
+   */
+  setOnSelection (onSelection) {
+    this.onSelection = onSelection
+  }
+  /**
+   * Sets linesThreshold
+   */
+  setLinesThreshold (linesThreshold) {
+    this.meshFactory.setLinesThreshold(linesThreshold)
+  }
+  /**
+   * Sets pickingEnabled
+   */
+  setPickingEnabled (pickingEnabled) {
+    this.pickingEnabled = pickingEnabled
+  }  
+  /**
+   * Sets cameraHandler
+   */
+  seCameraHandler (cameraHandler) {
+    this.cameraHandler = cameraHandler
+  }
+  /**
+   * Sets setColorHandler
+   */
+  setSetColorHandler (setColorHandler) {
+    this.setColorHandler = setColorHandler
   }
 }
