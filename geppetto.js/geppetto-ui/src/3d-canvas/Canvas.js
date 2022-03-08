@@ -76,6 +76,8 @@ class Canvas extends Component {
     this.setState({ modelReady: true })
     this.threeDEngine.requestFrame();
     this.threeDEngine.setBackgroundColor(backgroundColor);
+    this.sceneRef.current.addEventListener('keydown', this.keyboardEventHandler)
+    
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
@@ -87,7 +89,6 @@ class Canvas extends Component {
     } else {
       this.setState({ modelReady: false })
     }
-    this.sceneRef.current.addEventListener('keydown', this.keyboardEventHandler)
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
