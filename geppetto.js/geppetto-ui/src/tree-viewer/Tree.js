@@ -178,7 +178,7 @@ class Tree extends Component {
     } = this.props;
     return (
       <div className={classes.treeViewer} style={style}>
-        {controls ? controls : null}
+        {controls}
         <SortableTree
           style={style}
           treeData={this.state.treeData}
@@ -199,9 +199,20 @@ class Tree extends Component {
   }
 }
 
+Tree.defaultProps = {
+  toggleMode: false,
+  activateParentsNodeOnClick: true,
+  getNodesProps: () => {},
+  controls: null,
+  onChange: () => {},
+  searchMethod: () => {},
+  searchFocusOffset: 0,
+  searchFinishCallback: () => {},
+}
+
 Tree.propTypes = {
   /**
-   * Tree data with the following keys: title, subtitle, expanded, children
+   * Tree data with the following keys: title, subtitle, expanded, and children
    */
   treeData: PropTypes.array.isRequired,
   /**
@@ -235,7 +246,23 @@ Tree.propTypes = {
   /**
    * Controls
    */
-  controls: PropTypes.object,
+  controls: PropTypes.element,
+  /**
+   * Function to callback when change occurs
+   */
+  onChange: PropTypes.func,
+  /**
+   * Function to define search method
+   */
+  searchMethod: PropTypes.func,
+  /**
+   * Search focus offset. Defaults to zero
+   */
+  searchFocusOffset: PropTypes.number,
+  /**
+   * Function to callback when search results are ready
+   */
+  searchFinishCallback: PropTypes.func,
 };
 
 export default withStyles(styles)(Tree);

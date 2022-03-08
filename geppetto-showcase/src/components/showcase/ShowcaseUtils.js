@@ -94,7 +94,7 @@ function getExamples (dom) {
   ).filter(elem => elem.matches('h3'));
   let examples = [];
   while (examplesDom.length) {
-    examples.push(getExample(examplesDom.pop()));
+    examples.push(getExample(examplesDom.shift()));
   }
   return examples;
 }

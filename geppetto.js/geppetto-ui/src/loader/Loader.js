@@ -115,7 +115,7 @@ Loader.defaultProps = {
   messages: [],
   messagesInterval: 10000,
   elapsed: null,
-  backgroundStyle: {},
+  backgroundStyle: { backgroundColor: 'rgba(255,142,0,0.1)' },
   handleClose: () => {},
 };
 
@@ -137,17 +137,22 @@ Loader.propTypes = {
    */
   messages: PropTypes.array,
   /**
-   * Number of miliseconds between custom messages
+   * Number of milliseconds between custom messages
    */
   messagesInterval: PropTypes.number,
   /**
-   * Number of the progress value to show in linear deterimante (in percentage)
+   * Number of the progress value to show in linear determinate (in percentage)
    */
   elapsed: PropTypes.number,
   /**
    * Style to be applied to the Loader background
    */
-  backgroundStyle: PropTypes.object,
+  backgroundStyle: PropTypes.shape({
+    /**
+     * Loader's background color. Defaults to rgba(255,142,0,0.1)
+     */
+    backgroundColor: PropTypes.string,
+  }),
 };
 
 export default withStyles(styles)(Loader);
