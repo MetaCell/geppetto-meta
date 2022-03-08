@@ -340,7 +340,10 @@ Canvas.propTypes = {
       }),
       incrementZoom:PropTypes.number,
     }),
-    rotateSpeed:PropTypes.number
+    rotateSpeed:PropTypes.number,
+    zoomSpeed:PropTypes.number,
+    panSpeed:PropTypes.number
+    
   }),
   /**
    * Options to customize capture features
