@@ -177,6 +177,11 @@ class Menu extends React.Component {
   }
 }
 
+Menu.defaultProps = {
+  configuration: {},
+  menuHandler: () => {},
+}
+
 Menu.propTypes = {
   /**
    * All the required and optional configurations for instantiating a new instance of a Menu
@@ -197,7 +202,7 @@ Menu.propTypes = {
          * following choices: 'bottom-end', 'bottom-start', 'bottom', 'left-end', 'left-start', 'left', 'right-end',
          * 'right-start', 'right', 'top-end', 'top-start', 'top'.
          */
-        position: PropTypes.string,
+        position: PropTypes.oneOf(['bottom-end', 'bottom-start', 'bottom', 'left-end', 'left-start', 'left', 'right-end', 'right-start', 'right', 'top-end', 'top-start', 'top']),
         /**
          * Defines the list of objects that we need to use to populate the 1st level menu
          */
@@ -254,6 +259,10 @@ Menu.propTypes = {
       })
     ).isRequired,
   }),
+  /**
+   * Function to handle the menu
+   */
+  menuHandler: PropTypes.func,
 };
 
 export default Menu;

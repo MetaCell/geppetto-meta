@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
+import CameraControls from "../camera-controls/CameraControls";
 import { selectionStrategies } from "./threeDEngine/SelectionManager";
 import ReactResizeDetector from 'react-resize-detector';
 import { Recorder } from "./captureManager/Recorder";
@@ -337,15 +338,53 @@ Canvas.defaultProps = {
     reset: false,
     autorotate: false,
     wireframe: false,
+    zoomTo: [],
+    rotationSpeed: 0.5,
+    movieFilter: false,
     depthWrite: true,
-    zoomTo: undefined,
+    position: {
+      x: 319.7,
+      y: 153.12,
+      z: -494.2,
+    },
+    rotation: {
+      rx: -3.14,
+      ry: 0,
+      rz: -3.14,
+      radius: 559.83,
+    },
     cameraControls: {
+      instance: CameraControls,
+      props: {
+        wireframeButtonEnabled: false,
+      },
+      incrementsPan: {
+        x: 0.05,
+        y: 0.05,
+      },
+      incrementRotation: {
+        x: 0.05,
+        y: 0.05,
+        z:0.05,
+      },
+      incrementZoom: 0.5,
+      reset: false,
+    },
+  },
+  captureOptions: {
+    captureControls: {
       instance: null,
       props: {},
     },
-    rotateSpeed: 0.5,
+    recorderOptions: {
+      mediaRecorderOptions: {
+        mimeType: 'video/webm',
+      },
+      blobOptions: {
+        type: 'video/webm',
+      }
+    },
   },
-  captureOptions: undefined,
   backgroundColor: 0x000000,
   pickingEnabled: true,
   linesThreshold: 2000,
@@ -368,7 +407,103 @@ Canvas.propTypes = {
   /**
    * Options to customize camera
    */
-  cameraOptions: PropTypes.object,
+  cameraOptions: PropTypes.shape({
+    /**
+     * Camera angle in canvas
+     */
+    angle: PropTypes.number,
+    /**
+     * Near value
+     */
+    near: PropTypes.number,
+    /**
+     * Far value
+     */
+    far: PropTypes.number,
+    /**
+     * Base zoom value
+     */
+    baseZoom: PropTypes.number,
+    /**
+     * Boolean to enable/disable reset
+     */
+    reset: PropTypes.bool,
+    /**
+     * Boolean to enable/disable auto rotate
+     */
+    autorotate: PropTypes.bool,
+    /**
+     * Boolean to enable/disable wireframe
+     */
+    wireframe: PropTypes.bool,
+    /**
+     * Objects to zoom into
+     */
+    zoomTo: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Rotation speed
+     */
+    rotationSpeed: PropTypes.number,
+    /**
+     * Boolean to enable/disable movie filter
+     */
+    movieFilter: PropTypes.bool,
+    /**
+     * Position object to define x, y, and z values
+     */
+    position: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      z: PropTypes.number,
+    }),
+    /**
+     * Rotation object to define rx, ry, rz, and radius values
+     */
+    rotation: PropTypes.shape({
+      rx: PropTypes.number,
+      ry: PropTypes.number,
+      rz: PropTypes.number,
+      radius: PropTypes.number,
+    }),
+    /**
+     * Options to customize camera controls
+     */
+    cameraControls: PropTypes.shape({
+      /**
+       * Reference to cameraControls instance
+       */
+      instance: PropTypes.element,
+      /**
+       * CameraControls props
+       */
+      props: PropTypes.shape({
+        wireframeButtonEnabled: PropTypes.bool,
+      }),
+      /**
+       * Value for pan increment
+       */
+      incrementPan: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+      }),
+      /**
+       * Value for rotation increment
+       */
+      incrementRotation: PropTypes.shape({
+        x: PropTypes.number,
+        y: PropTypes.number,
+        z: PropTypes.number,
+      }),
+      /**
+       * Value for zoom increment
+       */
+      incrementZoom: PropTypes.number,
+      /**
+       * Boolean to enable/disable reset
+       */
+      reset: PropTypes.bool,
+    })
+  }),
   /**
    * Options to customize capture features
    */
@@ -401,7 +536,7 @@ Canvas.propTypes = {
      */
     screenshotOptions: PropTypes.shape({
       /**
-       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding it's children as well.
+       * A function taking DOM node as argument. Should return true if passed node should be included in the output. Excluding node means excluding its children as well.
        */
       filter: PropTypes.func,
       /**
