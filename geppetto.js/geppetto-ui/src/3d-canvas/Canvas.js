@@ -337,7 +337,7 @@ Canvas.defaultProps = {
     },
     rotateSpeed: 0.5,
     zoomSpeed: 1.2,
-    panSpeed: 0.3
+    panSpeed: 0.3,
     recorderOptions: {
       mediaRecorderOptions: {
         mimeType: 'video/webm',
@@ -474,19 +474,19 @@ Canvas.propTypes = {
        * Boolean to enable/disable reset
        */
       reset: PropTypes.bool,
-    })
+    }),
      /**
       * Value for the rotate speed triggered by the mouse
      */
-    rotateSpeed:PropTypes.number,
+    rotateSpeed: PropTypes.number,
      /**
       * Value for the zoom increment triggered by the mouse
      */
-    zoomSpeed:PropTypes.number,
+    zoomSpeed: PropTypes.number,
      /**
       * Value for the pan increment triggered by the mouse
      */
-    panSpeed:PropTypes.number
+    panSpeed: PropTypes.number
   }),
   /**
    * Options to customize capture features
