@@ -170,6 +170,7 @@ export default class ThreeDEngine {
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
+      this.cameraOptions
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
