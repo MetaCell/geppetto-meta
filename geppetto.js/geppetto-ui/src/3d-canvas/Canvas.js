@@ -26,7 +26,8 @@ class Canvas extends Component {
     this.constructorFromProps(props);
     this.frameResizing = this.frameResizing.bind(this);
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
-    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this);
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+    this.keyboardEventHandler = this.keyboardEventHandler.bind(this)
   }
 
   constructorFromProps (props) {
@@ -77,6 +78,8 @@ class Canvas extends Component {
     this.setState({ modelReady: true })
     this.threeDEngine.requestFrame();
     this.threeDEngine.setBackgroundColor(backgroundColor);
+    this.sceneRef.current.addEventListener('keydown', this.keyboardEventHandler)
+    
   }
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
@@ -110,6 +113,25 @@ class Canvas extends Component {
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
     );
+    this.sceneRef.current.removeEventListener('keydown', this.keyboardEventHandler)
+  }
+
+  keyboardEventHandler(event){
+    switch(event.code){
+      case 'ArrowRight':
+        this.defaultCameraControlsHandler(cameraControlsActions.PAN_RIGHT)
+        break;
+      case 'ArrowLeft':
+        this.defaultCameraControlsHandler(cameraControlsActions.PAN_LEFT)
+        break;
+      case 'ArrowDown':
+        this.defaultCameraControlsHandler(cameraControlsActions.PAN_DOWN)
+        break;
+      case 'ArrowUp':
+        this.defaultCameraControlsHandler(cameraControlsActions.PAN_UP)
+        break;
+
+    }
   }
 
   defaultCaptureControlsHandler (action) {
@@ -240,7 +262,7 @@ class Canvas extends Component {
     }
     return (
       <ReactResizeDetector skipOnMount='true' onResize={this.frameResizing}>
-        <div className={classes.container} ref={this.sceneRef}>
+        <div className={classes.container} ref={this.sceneRef} tabIndex={0}>
           {
             <cameraControls.instance
               ref={this.cameraControls}
