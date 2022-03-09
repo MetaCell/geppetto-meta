@@ -60,6 +60,7 @@ export default class ThreeDEngine {
     this.updateStarted = updateStarted;
     this.updateEnded = updateEnded;
     this.instancesMap = new Map();
+    this.captureOptions = captureOptions;
 
     // Setup Listeners
     this.start = this.start.bind(this);
@@ -170,7 +171,7 @@ export default class ThreeDEngine {
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
-      this.cameraOptions
+      this.captureOptions
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
