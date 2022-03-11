@@ -75,8 +75,8 @@ class VFBExample extends Component {
       selected: {},
       threeDObjects: [],
       cameraOptions: {
-        position: { x: 319.7, y: 153.12, z: -494.2 },
-        rotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
+        initialPosition: { x: 319.7, y: 153.12, z: -494.2 },
+        initialRotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
         cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: true, }

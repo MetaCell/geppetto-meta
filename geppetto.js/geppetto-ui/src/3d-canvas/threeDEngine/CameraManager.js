@@ -20,34 +20,34 @@ export default class CameraManager {
 
   update (cameraOptions) {
     const {
-      position,
-      rotation,
+      initialPosition,
+      initialRotation,
       autoRotate,
       movieFilter,
-      zoomTo,
+      initialZoomTo,
       reset,
       rotateSpeed
     } = cameraOptions;
 
-    if (reset || (this.isFirstRender && position === undefined && zoomTo === undefined)) {
-      this.resetCamera(position, rotation, zoomTo);
+    if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
+      this.resetCamera(initialPosition, initialRotation, initialZoomTo);
       if (this.isFirstRender) {
         this.isFirstRender = false;
       }
     } else {
-      if (position && this.isFirstRender) {
-        this.setCameraPosition(position.x, position.y, position.z);
+      if (initialPosition && this.isFirstRender) {
+        this.setCameraPosition(initialPosition.x, initialPosition.y, initialPosition.z);
       }
-      if (rotation && this.isFirstRender) {
+      if (initialRotation && this.isFirstRender) {
         this.setCameraRotation(
-          rotation.rx,
-          rotation.ry,
-          rotation.rz,
-          rotation.radius
+          initialRotation.rx,
+          initialRotation.ry,
+          initialRotation.rz,
+          initialRotation.radius
         );
       }
-      if (zoomTo && Array.isArray(zoomTo) && this.isFirstRender) {
-        const instances = zoomTo.map(element => Instances.getInstance(element));
+      if (initialZoomTo && Array.isArray(initialZoomTo) && this.isFirstRender) {
+        const instances = initialZoomTo.map(element => Instances.getInstance(element));
         if (instances.length > 0) {
           this.zoomTo(instances);
         }

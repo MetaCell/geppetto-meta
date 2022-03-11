@@ -241,7 +241,7 @@ class Canvas extends Component {
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
     const { incrementPan, incrementRotation, incrementZoom, movieFilter } = mergedProps
-    const { position, rotation, zoomTo } = this.props.cameraOptions;
+    const { initialPosition, initialRotation, initialZoomTo } = this.props.cameraOptions;
     if (this.threeDEngine) {
       switch (action) {
       case cameraControlsActions.PAN_LEFT:
@@ -284,7 +284,7 @@ class Canvas extends Component {
         this.threeDEngine.cameraManager.incrementCameraZoom(incrementZoom);
         break;
       case cameraControlsActions.PAN_HOME:
-        this.threeDEngine.cameraManager.resetCamera(position, rotation, zoomTo);
+        this.threeDEngine.cameraManager.resetCamera(initialPosition, initialRotation, initialZoomTo);
         break;
       case cameraControlsActions.WIREFRAME:
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
@@ -342,17 +342,6 @@ Canvas.defaultProps = {
     rotationSpeed: 0.5,
     movieFilter: false,
     depthWrite: true,
-    position: {
-      x: 319.7,
-      y: 153.12,
-      z: -494.2,
-    },
-    rotation: {
-      rx: -3.14,
-      ry: 0,
-      rz: -3.14,
-      radius: 559.83,
-    },
     cameraControls: {
       instance: CameraControls,
       props: { wireframeButtonEnabled: false, },
@@ -433,7 +422,7 @@ Canvas.propTypes = {
     /**
      * Objects to zoom into
      */
-    zoomTo: PropTypes.arrayOf(PropTypes.string),
+    initialZoomTo: PropTypes.arrayOf(PropTypes.string),
     /**
      * Rotation speed
      */
@@ -445,7 +434,7 @@ Canvas.propTypes = {
     /**
      * Position object to define x, y, and z values
      */
-    position: PropTypes.shape({
+    initialPosition: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,
       z: PropTypes.number,
@@ -453,7 +442,7 @@ Canvas.propTypes = {
     /**
      * Rotation object to define rx, ry, rz, and radius values
      */
-    rotation: PropTypes.shape({
+    initialRotation: PropTypes.shape({
       rx: PropTypes.number,
       ry: PropTypes.number,
       rz: PropTypes.number,
