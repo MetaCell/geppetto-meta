@@ -79,7 +79,6 @@ class SimpleInstancesExample extends Component {
       },
       showModel: false
     };
-    this.canvasIndex = 3
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);

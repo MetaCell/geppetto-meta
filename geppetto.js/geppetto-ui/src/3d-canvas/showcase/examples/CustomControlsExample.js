@@ -10,7 +10,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "../utils/CanvasTooltip";
-import { faFill, } from '@fortawesome/free-solid-svg-icons';
+import { faFill, faCamera } from '@fortawesome/free-solid-svg-icons';
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -57,7 +57,10 @@ const styles = () => ({
   },
 });
 
-const ACTIONS = { CHANGE_BACKGROUND_COLOR: 'change_background_color' }
+const ACTIONS = {
+  CHANGE_BACKGROUND_COLOR: 'change_background_color',
+  CHANGE_CAMERA: 'change_camera'
+}
 const BACKGROUND_COLORS = [0x505050, 0xe6e6e6, 0x000000]
 
 class CustomCameraControls extends Component {
@@ -74,6 +77,11 @@ class CustomCameraControls extends Component {
         tooltip: 'Change background color',
         icon: faFill,
       },
+      {
+        action: ACTIONS.CHANGE_CAMERA,
+        tooltip: 'Randomize camera',
+        icon: faCamera,
+      },
     ];
     return (
       <div className="position-toolbar">
@@ -85,6 +93,7 @@ class CustomCameraControls extends Component {
             className={`squareB`}
             tooltip={value.tooltip}
             icon={value.icon}
+            style={{ marginTop: `${index * 30}px` }}
           />
         ))}
       </div>
@@ -98,26 +107,27 @@ class CustomControlsExample extends Component {
     this.tooltipRef = React.createRef();
     loadInstances()
     this.customCameraHandler = this.customCameraHandler.bind(this)
+    this.defaultCameraOptions = {
+      angle: 50,
+      near: 0.01,
+      far: 1000,
+      baseZoom: 1,
+      cameraControls: {
+        instance: CustomCameraControls,
+        props: { cameraControlsHandler: this.customCameraHandler },
+      },
+      reset: false,
+      autorotate: false,
+      wireframe: false,
+    }
     this.state = {
       data: getProxyInstances(),
       showLoader: false,
-      cameraOptions: {
-        angle: 50,
-        near: 0.01,
-        far: 1000,
-        baseZoom: 1,
-        cameraControls: {
-          instance: CustomCameraControls,
-          props: { cameraControlsHandler: this.customCameraHandler },
-        },
-        reset: false,
-        autorotate: false,
-        wireframe: false,
-      },
+      cameraOptions: this.defaultCameraOptions,
       backgroundColorIndex: 0,
       showModel: false
     };
-    this.canvasIndex = 3
+    this.scene = null
     this.hoverHandlerOne = this.hoverHandlerOne.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -132,7 +142,6 @@ class CustomControlsExample extends Component {
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
-
 
   hoverHandlerOne (objs, canvasX, canvasY) {
     this.tooltipRef?.current?.updateIntersected({
@@ -169,16 +178,37 @@ class CustomControlsExample extends Component {
   }
 
   customCameraHandler (action) {
-    switch (action){
+    switch (action) {
     case ACTIONS.CHANGE_BACKGROUND_COLOR:
       this.setState({ backgroundColorIndex: this.nextBackgroundColor() })
       break
+    case ACTIONS.CHANGE_CAMERA:
+      // eslint-disable-next-line no-case-declarations
+      const nextCameraOptions = this.getCameraOptions()
+      this.setState({ cameraOptions: nextCameraOptions }, () => this.setState({
+        cameraOptions: {
+          ...nextCameraOptions,
+          reset: false
+        }
+      }))
     }
   }
 
-  nextBackgroundColor (){
+  nextBackgroundColor () {
     const { backgroundColorIndex } = this.state
     return backgroundColorIndex >= BACKGROUND_COLORS.length ? 0 : backgroundColorIndex + 1
+  }
+
+  getCameraOptions () {
+    const { x, y, z } = this.scene.children[0].position
+    function randomNumber (min, max) {
+      return Math.random() * (max - min) + min;
+    }
+    function random (){
+      return randomNumber(0.5, 1.5)
+    }
+    const initialPosition = this.scene ? { x: x * random(), y: y * random(), z: z * random() } : null
+    return { ...this.defaultCameraOptions, reset: true, initialPosition }
   }
 
   render () {
@@ -197,6 +227,7 @@ class CustomControlsExample extends Component {
             data={canvasData}
             cameraOptions={cameraOptions}
             backgroundColor={BACKGROUND_COLORS[backgroundColorIndex]}
+            onMount={scene => this.scene = scene }
             onSelection={this.onSelection}
             onHoverListeners={{ 'hoverId1': this.hoverHandler }}
           />
@@ -207,7 +238,7 @@ class CustomControlsExample extends Component {
       color="primary"
       onClick={this.handleToggle}
     >
-        Show Example
+            Show Example
     </Button>
   }
 }
