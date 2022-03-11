@@ -72,18 +72,41 @@ export default class MoviePlayer extends Component {
   }
 }
 
+MoviePlayer.defaultValues = {
+  controls: {
+    playAtStart: false,
+    loop: false,
+    volume: 10,
+    playbackRate: 1,
+  },
+  width: '800px',
+  height: '640px',
+}
+
 MoviePlayer.propTypes = {
   /**
-   * URL pointing to the video to be render in this component.
+   * URL pointing to the video to be rendered in this component.
    */
   videoURL: PropTypes.string.isRequired,
   /**
    * Javascript object with playback settings.
    */
   controls: PropTypes.shape({
+    /**
+   * Boolean value indicating if video should play at the start. Defaults to false.
+   */
     playAtStart : PropTypes.bool,
+    /**
+   * Boolean value indicating if the video should be played in a loop. Defaults to false.
+   */
     loop : PropTypes.bool,
+    /**
+   * Start volume of the video.
+   */
     volume : PropTypes.number,
+    /**
+   * Playback rate of the video.
+   */
     playbackRate : PropTypes.number,
   }),
   /**

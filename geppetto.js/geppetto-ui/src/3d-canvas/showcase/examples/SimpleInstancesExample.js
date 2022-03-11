@@ -63,6 +63,7 @@ class SimpleInstancesExample extends Component {
     loadInstances()
     this.state = {
       data: getProxyInstances(),
+      showLoader: false,
       cameraOptions: {
         angle: 50,
         near: 0.01,
@@ -105,8 +106,9 @@ class SimpleInstancesExample extends Component {
   }
 
   handleToggle () {
+    this.setState({ showLoader: true })
     loadInstances()
-    this.setState({ showModel: true, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+    this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   handleClickOutside (event) {
@@ -126,7 +128,7 @@ class SimpleInstancesExample extends Component {
   }
 
   render () {
-    const { data, cameraOptions, showModel } = this.state
+    const { data, cameraOptions, showModel, showLoader } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
 
@@ -154,23 +156,25 @@ class SimpleInstancesExample extends Component {
       },
     }
 
-    return showModel ? <div ref={node => this.node = node} className={classes.container}>
-      <>
-        <div>
-          <CanvasTooltip ref={this.tooltipRef} />
-        </div>
-        <Canvas
-          ref={this.canvasRef}
-          data={canvasData}
-          cameraOptions={cameraOptions}
-          captureOptions={captureOptions}
-          backgroundColor={0x505050}
-          onSelection={this.onSelection}
-          onMount={this.onMount}
-          hoverListeners={[this.hoverHandler]}
-        />
-      </>
-    </div> : <Button
+    return showLoader ? <Loader active={true} /> : showModel ? (
+      <div ref={node => this.node = node} className={classes.container}>
+        <>
+          <div>
+            <CanvasTooltip ref={this.tooltipRef} />
+          </div>
+          <Canvas
+            ref={this.canvasRef}
+            data={canvasData}
+            cameraOptions={cameraOptions}
+            captureOptions={captureOptions}
+            backgroundColor={0x505050}
+            onSelection={this.onSelection}
+            onMount={this.onMount}
+            hoverListeners={[this.hoverHandler]}
+          />
+        </>
+      </div>
+    ) : <Button
       variant="outlined"
       color="primary"
       onClick={this.handleToggle}
