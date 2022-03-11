@@ -56,6 +56,14 @@ Simple Instances Example
 3d-canvas/showcase/examples/SimpleInstancesExample
 ```
 
+### Custom Controls Example
+
+Custom Controls Example
+
+```
+3d-canvas/showcase/examples/CustomControlsExample
+```
+
 
 ## Libraries
 

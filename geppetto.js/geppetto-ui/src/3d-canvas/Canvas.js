@@ -355,9 +355,7 @@ Canvas.defaultProps = {
     },
     cameraControls: {
       instance: CameraControls,
-      props: {
-        wireframeButtonEnabled: false,
-      },
+      props: { wireframeButtonEnabled: false, },
       incrementsPan: {
         x: 0.05,
         y: 0.05,
@@ -377,12 +375,8 @@ Canvas.defaultProps = {
       props: {},
     },
     recorderOptions: {
-      mediaRecorderOptions: {
-        mimeType: 'video/webm',
-      },
-      blobOptions: {
-        type: 'video/webm',
-      }
+      mediaRecorderOptions: { mimeType: 'video/webm', },
+      blobOptions: { type: 'video/webm', }
     },
   },
   backgroundColor: 0x000000,
@@ -476,9 +470,7 @@ Canvas.propTypes = {
       /**
        * CameraControls props
        */
-      props: PropTypes.shape({
-        wireframeButtonEnabled: PropTypes.bool,
-      }),
+      props: PropTypes.shape({ wireframeButtonEnabled: PropTypes.bool, }),
       /**
        * Value for pan increment
        */
@@ -554,7 +546,7 @@ Canvas.propTypes = {
         height: PropTypes.number.isRequired,
         width: PropTypes.number.isRequired
       })
-    }).isRequired
+    })
   }),
   /**
    * Three JS objects to add to the scene
