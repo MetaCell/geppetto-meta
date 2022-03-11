@@ -455,7 +455,7 @@ Canvas.propTypes = {
       /**
        * Reference to cameraControls instance
        */
-      instance: PropTypes.element,
+      instance: PropTypes.elementType,
       /**
        * CameraControls props
        */
@@ -496,7 +496,7 @@ Canvas.propTypes = {
       /**
        * Component instance
        */
-      instance: PropTypes.any,
+      instance: PropTypes.elementType,
       /**
        * Component props
        */
