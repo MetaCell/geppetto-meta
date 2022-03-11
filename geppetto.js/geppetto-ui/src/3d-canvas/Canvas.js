@@ -291,6 +291,11 @@ Canvas.defaultProps = {
     rotationSpeed: 0.5,
     movieFilter: false,
     depthWrite: true,
+    spotlightPosition: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
     position: {
       x: 319.7,
       y: 153.12,
@@ -420,6 +425,14 @@ Canvas.propTypes = {
      * Boolean to enable/disable movie filter
      */
     movieFilter: PropTypes.bool,
+    /**
+     * Spotlight position object to define x, y, and z values
+     */
+    spotlightPosition: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      z: PropTypes.number,
+    }),
     /**
      * Position object to define x, y, and z values
      */
