@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import PropsTable from './PropsTable';
 import BottomNavigation from '../BottomNavigation';
+import ShowcaseExamplesComponentsMap from '../examples/ShowcaseExamplesComponentsMap';
 
 const styles = theme => ({
   root: {
@@ -127,7 +128,8 @@ class Showcase extends Component {
                         </span>
                         <Paper variant="outlined">
                           <div className={classes.centerComponent}>
-                            <obj.component ref={this.componentRef} />
+                            {/* <obj.component ref={this.componentRef} /> */}
+                            <ShowcaseExamplesComponentsMap exampleComponentName={obj.name} parentRef={this.componentRef} />
                           </div>
                         </Paper>
                         <Code file={file} element={configs.reactElement}></Code>
@@ -149,7 +151,8 @@ class Showcase extends Component {
                       </span>
                       <Paper variant="outlined">
                         <div className={classes.centerComponent}>
-                          <obj.component ref={this.componentRef} />
+                          <ShowcaseExamplesComponentsMap parentRef={this.componentRef} />
+                          {/* <obj.component ref={this.componentRef} /> */}
                         </div>
                       </Paper>
                       <Code file={file} element={configs.reactElement}></Code>
