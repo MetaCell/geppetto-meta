@@ -151,7 +151,7 @@ class Showcase extends Component {
                       </span>
                       <Paper variant="outlined">
                         <div className={classes.centerComponent}>
-                          <ShowcaseExamplesComponentsMap parentRef={this.componentRef} />
+                          <ShowcaseExamplesComponentsMap exampleComponentName={obj.name} parentRef={this.componentRef} />
                           {/* <obj.component ref={this.componentRef} /> */}
                         </div>
                       </Paper>
