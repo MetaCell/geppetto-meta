@@ -10,6 +10,10 @@ import MultipleInstancesExample from './3d-canvas/examples/MultipleInstancesExam
 // Big image viewer example
 import BigImageViewerExample from './big-image-viewer/examples/BigImageViewerExample';
 
+// Connectivity viewer examples
+import ConnectivityShowcaseForce from './connectivity-viewer/examples/ConnectivityShowcaseForce';
+import ConnectivityShowcaseMatrix from './connectivity-viewer/examples/ConnectivityShowcaseMatrix';
+
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -30,6 +34,10 @@ const ShowcaseExamplesComponentsMap = props => {
     return <MultipleInstancesExample ref={parentRef} />;
   case 'Big Image Viewer Example':
     return <BigImageViewerExample ref={parentRef} />;
+  case 'Connectivity Force':
+    return <ConnectivityShowcaseForce ref={parentRef} />;
+  case 'Connectivity Matrix':
+    return <ConnectivityShowcaseMatrix ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
