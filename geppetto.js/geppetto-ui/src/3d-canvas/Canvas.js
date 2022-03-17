@@ -338,7 +338,8 @@ Canvas.defaultProps = {
     reset: false,
     autorotate: false,
     wireframe: false,
-    zoomTo: [],
+    initialZoomTo: [],
+    initialFlip: [],
     rotationSpeed: 0.5,
     movieFilter: false,
     depthWrite: true,
@@ -439,6 +440,10 @@ Canvas.propTypes = {
       y: PropTypes.number,
       z: PropTypes.number,
     }),
+    /**
+     * Array of axis to flip
+     */
+    initialFlip: PropTypes.arrayOf(PropTypes.string),
     /**
      * Rotation object to define rx, ry, rz, and radius values
      */

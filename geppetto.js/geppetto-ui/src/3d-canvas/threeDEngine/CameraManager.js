@@ -25,6 +25,7 @@ export default class CameraManager {
       autoRotate,
       movieFilter,
       initialZoomTo,
+      initialFlip,
       reset,
       rotateSpeed
     } = cameraOptions;
@@ -62,6 +63,9 @@ export default class CameraManager {
         this.isFirstRender = false;
       }
     }
+    if (this.isFirstRender && initialFlip.length > 0){
+      this.flipCamera(initialFlip);
+    }
   }
 
   /**
@@ -71,6 +75,36 @@ export default class CameraManager {
   zoomTo (instances) {
     this.engine.controls.reset();
     this.zoomToParameters(this.zoomIterator(instances, {}));
+  }
+
+  /**
+   *
+   * @param initalFlip
+   */
+  flipCamera (initialFlip) {
+    for (const axis of initialFlip){
+      if (axis.toLowerCase() === 'y') {
+        this.flipCameraY();
+      } else if (axis.toLowerCase() === 'z') {
+        this.flipCameraZ();
+      }
+    }
+    this.engine.setupControls();
+    this.resetCamera()
+  }
+  
+  /**
+   * Reinitializes the camera with the Y axis flipped
+   */
+  flipCameraY () {
+    this.camera.up = new THREE.Vector3(0, -1, 0);
+  }
+
+  /**
+   * Reinitializes the camera with the Z axis flipped
+   */
+  flipCameraZ () {
+    this.camera.direction = new THREE.Vector3(0, 0, -1);
   }
 
   /**

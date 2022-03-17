@@ -77,6 +77,7 @@ class VFBExample extends Component {
       cameraOptions: {
         initialPosition: { x: 319.7, y: 153.12, z: -494.2 },
         initialRotation: { rx: -3.14, ry: 0, rz: -3.14, radius: 559.83 },
+        initialFlip: ['y', 'z'],
         cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: true, }
