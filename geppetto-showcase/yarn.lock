@@ -1272,11 +1272,11 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "1.0.0-rc8"
+  version "1.0.0-rc10"
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" "1.0.0-rc8"
-    "@metacell/geppetto-meta-ui" "1.0.0-rc8"
+    "@metacell/geppetto-meta-core" "1.0.0-rc10"
+    "@metacell/geppetto-meta-ui" "1.0.0-rc10"
     anchorme "^0.7.1"
     backbone "^1.3.3"
     backbone-associations "^0.6.2"
@@ -1317,23 +1317,23 @@
     underscore "~1.9.1"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc8.tgz#3ef8d92c833f49e0d2922b0bc4ef630e7e6873de"
-  integrity sha512-CjmONTGPVn4JznLFp8aNWKnJzngGsvRGj3/hpF8b3dRhQr3QZ/4nsRbnP0/zkDFO6ycF31OpNJ2vglCqzXq2lQ==
+"@metacell/geppetto-meta-core@1.0.0-rc10":
+  version "1.0.0-rc10"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc10.tgz#bb6da31893162131f0ccdf241e5b971d7cca05cb"
+  integrity sha512-9+eeAghol5LdSt8F/QeMVOHMuiuYtzofkh7ycCZoLA+uciuf/Dgf8cSA/M1UYeWKvTIj202ZWTMj7oRlS78eVQ==
 
 "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "1.0.0-rc8"
+  version "1.0.0-rc10"
 
-"@metacell/geppetto-meta-ui@1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc8.tgz#82daf9faa2905851daee412c5bd93347f46d602e"
-  integrity sha512-HaQcZNTEShhzoqjNt+RcyKssZiZJ1c+aOnH9kgP6IJU/qZE5b3xrgOqr02siVbMuURHObWSjTdOrep+AjQBKGw==
+"@metacell/geppetto-meta-ui@1.0.0-rc10":
+  version "1.0.0-rc10"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc10.tgz#6c002def23cc999e3ea22d6b8803d25f044b594c"
+  integrity sha512-kx5D8ae9gzHMbZ0dXtyiMh2brFKBW48eMJW9vhDAPU9+LnRimfO23QaqwZ+EeUt0SL/wYq7tsejgD3S+333yYg==
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
 "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "1.0.0-rc8"
+  version "1.0.0-rc10"
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
