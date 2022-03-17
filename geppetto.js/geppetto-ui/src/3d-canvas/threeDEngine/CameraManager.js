@@ -30,6 +30,10 @@ export default class CameraManager {
       rotateSpeed
     } = cameraOptions;
 
+    if (this.isFirstRender && initialFlip.length > 0){
+      this.flipCamera(initialFlip);
+    }
+
     if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
       this.resetCamera(initialPosition, initialRotation, initialZoomTo);
       if (this.isFirstRender) {
@@ -62,9 +66,6 @@ export default class CameraManager {
       if (this.isFirstRender) {
         this.isFirstRender = false;
       }
-    }
-    if (this.isFirstRender && initialFlip.length > 0){
-      this.flipCamera(initialFlip);
     }
   }
 
