@@ -47,6 +47,9 @@ import LoaderShowcase5 from './loader/examples/LoaderShowcase5';
 import LoaderShowcase6 from './loader/examples/LoaderShowcase6';
 import LoaderShowcase7 from './loader/examples/LoaderShowcase7';
 
+// Menu examples
+import MenuShowcase from './menu/examples/MenuShowcase';
+
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -105,6 +108,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <LoaderShowcase6 ref={parentRef} />;
   case 'Loader Example 7':
     return <LoaderShowcase7 ref={parentRef} />;
+  case 'Menu Example':
+    return <MenuShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
