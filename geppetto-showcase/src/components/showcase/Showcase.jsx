@@ -129,7 +129,7 @@ class Showcase extends Component {
                         <Paper variant="outlined">
                           <div className={classes.centerComponent}>
                             {/* <obj.component ref={this.componentRef} /> */}
-                            <ShowcaseExamplesComponentsMap exampleComponentName={obj.name} parentRef={this.componentRef} />
+                            <ShowcaseExamplesComponentsMap obj={obj} exampleComponentName={obj.name} parentRef={this.componentRef} />
                           </div>
                         </Paper>
                         <Code file={file} element={configs.reactElement}></Code>
@@ -151,7 +151,7 @@ class Showcase extends Component {
                       </span>
                       <Paper variant="outlined">
                         <div className={classes.centerComponent}>
-                          <ShowcaseExamplesComponentsMap exampleComponentName={obj.name} parentRef={this.componentRef} />
+                          <ShowcaseExamplesComponentsMap obj={obj} exampleComponentName={obj.name} parentRef={this.componentRef} />
                           {/* <obj.component ref={this.componentRef} /> */}
                         </div>
                       </Paper>

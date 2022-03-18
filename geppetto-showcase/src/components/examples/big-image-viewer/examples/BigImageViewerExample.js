@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import BigImageViewer from '../../BigImageViewer';
 import BigImageViewer from '@metacell/geppetto-meta-ui/big-image-viewer/BigImageViewer';
 import { withStyles } from '@material-ui/core';
 

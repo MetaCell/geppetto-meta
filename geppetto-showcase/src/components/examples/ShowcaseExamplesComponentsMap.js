@@ -60,7 +60,7 @@ import PythonConsoleShowcase from './python-console/PythonConsoleShowcase';
 
 const ShowcaseExamplesComponentsMap = props => {
 
-  const { exampleComponentName, parentRef } = props;
+  const { exampleComponentName, parentRef, obj } = props;
 
   switch (exampleComponentName) {
   case '3D Canvas Auditory Cortex Example 2':
@@ -124,7 +124,7 @@ const ShowcaseExamplesComponentsMap = props => {
   case 'Python Console Example':
     return <PythonConsoleShowcase ref={parentRef} />;
   default:
-    return <AuditoryCortexExample ref={parentRef} />;
+    return <obj.component ref={parentRef} />;
   }
 
 }
