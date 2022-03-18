@@ -54,6 +54,9 @@ import MenuShowcase from './menu/examples/MenuShowcase';
 import TreeShowcase from './tree-viewer/examples/TreeShowcase';
 import TreeShowcaseSearch from './tree-viewer/examples/TreeShowcaseSearch';
 
+// Python console example
+import PythonConsoleShowcase from './python-console/PythonConsoleShowcase';
+
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -118,6 +121,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <TreeShowcase ref={parentRef} />;
   case 'Tree Viewer Basic Example':
     return <TreeShowcaseSearch ref={parentRef} />;
+  case 'Python Console Example':
+    return <PythonConsoleShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
