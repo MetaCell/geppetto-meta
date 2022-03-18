@@ -81,7 +81,7 @@ class VFBExample extends Component {
           instance: CameraControls,
           props: { wireframeButtonEnabled: true, }
         },
-        rotateSpeed: 3,
+        rotationSpeed: 3,
       }
     };
     this.onSelection = this.onSelection.bind(this)

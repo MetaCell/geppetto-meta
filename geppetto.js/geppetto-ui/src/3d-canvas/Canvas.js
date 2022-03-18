@@ -27,7 +27,8 @@ class Canvas extends Component {
     this.constructorFromProps(props);
     this.onResize = this.onResize.bind(this);
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
-    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this);
+    this.defaultCaptureControlsHandler = this.defaultCaptureControlsHandler.bind(this)
+    this.keyboardEventHandler = this.keyboardEventHandler.bind(this)
   }
 
   constructorFromProps (props) {
@@ -82,18 +83,20 @@ class Canvas extends Component {
     }
 
     this.setState({ isCanvasReady: true })
+    this.sceneRef.current.addEventListener('keydown', this.keyboardEventHandler)
+
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
     return nextState.isCanvasReady || this.isResizeRequired() || nextProps !== this.props
   }
-  
+
   async componentDidUpdate (prevProps, prevState, snapshot) {
-    
+
     if (this.isResizeRequired()){
       this.threeDEngine.resize()
     }
-    
+
     if (prevProps !== this.props) {
       const {
         data,
@@ -110,7 +113,7 @@ class Canvas extends Component {
         onHoverListeners,
         onUpdateStart,
         onUpdateEnd,
-      } = this.props;      
+      } = this.props;
       const {
         data: prevData,
         cameraOptions: prevCameraOptions,
@@ -125,7 +128,7 @@ class Canvas extends Component {
         selectionStrategy: prevSelectionStrategy,
         onHoverListeners: prevOnHoverListeners,
       } = prevProps;
-      
+
       onUpdateStart();
       if (backgroundColor !== prevBackgroundColor){
         this.threeDEngine.setBackgroundColor(backgroundColor);
@@ -175,13 +178,32 @@ class Canvas extends Component {
       this.setState({ isCanvasReady: false })
     }
   }
-  
-  
+
+
   componentWillUnmount () {
     this.threeDEngine.stop();
     this.sceneRef.current.removeChild(
       this.threeDEngine.getRenderer().domElement
     );
+    this.sceneRef.current.removeEventListener('keydown', this.keyboardEventHandler)
+  }
+
+  keyboardEventHandler (event){
+    switch (event.code){
+    case 'ArrowRight':
+      this.defaultCameraControlsHandler(cameraControlsActions.PAN_RIGHT)
+      break;
+    case 'ArrowLeft':
+      this.defaultCameraControlsHandler(cameraControlsActions.PAN_LEFT)
+      break;
+    case 'ArrowDown':
+      this.defaultCameraControlsHandler(cameraControlsActions.PAN_DOWN)
+      break;
+    case 'ArrowUp':
+      this.defaultCameraControlsHandler(cameraControlsActions.PAN_UP)
+      break;
+
+    }
   }
 
   isResizeRequired () {
@@ -313,7 +335,7 @@ class Canvas extends Component {
     }
     return (
       <ReactResizeDetector skipOnMount='true' onResize={this.onResize}>
-        <div className={classes.container} ref={this.sceneRef}>
+        <div className={classes.container} ref={this.sceneRef} tabIndex={0}>
           {
             <cameraControls.instance
               ref={this.cameraControls}
@@ -339,9 +361,13 @@ Canvas.defaultProps = {
     autorotate: false,
     wireframe: false,
     zoomTo: [],
-    rotationSpeed: 0.5,
     movieFilter: false,
     depthWrite: true,
+    spotlightPosition: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
     cameraControls: {
       instance: CameraControls,
       props: { wireframeButtonEnabled: false, },
@@ -357,11 +383,26 @@ Canvas.defaultProps = {
       incrementZoom: 0.5,
       reset: false,
     },
+    trackballControls: {
+      rotationSpeed: 0.5,
+      zoomSpeed: 1.2,
+      panSpeed: 0.3,
+    }
   },
   captureOptions: {
     captureControls: {
       instance: null,
       props: {},
+      incrementPan: {
+        x: 0.01,
+        y: 0.01
+      },
+      incrementRotation: {
+        x: 0.01,
+        y: 0.01,
+        z: 0.01,
+      },
+      incrementZoom: 0.1,
     },
     recorderOptions: {
       mediaRecorderOptions: { mimeType: 'video/webm', },
@@ -432,6 +473,14 @@ Canvas.propTypes = {
      */
     movieFilter: PropTypes.bool,
     /**
+     * Spotlight position object to define x, y, and z values
+     */
+    spotlightPosition: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      z: PropTypes.number,
+    }),
+    /**
      * Position object to define x, y, and z values
      */
     initialPosition: PropTypes.shape({
@@ -483,7 +532,25 @@ Canvas.propTypes = {
        * Boolean to enable/disable reset
        */
       reset: PropTypes.bool,
-    })
+    }),
+    /**
+     * Options to customize camera controls
+     */
+    trackballControls: PropTypes.shape({
+      /**
+       * Value for the rotation speed triggered by the mouse
+       */
+      rotationSpeed: PropTypes.number,
+      /**
+       * Value for the zoom increment triggered by the mouse
+       */
+      zoomSpeed: PropTypes.number,
+      /**
+       * Value for the pan increment triggered by the mouse
+       */
+      panSpeed: PropTypes.number
+    }),
+
   }),
   /**
    * Options to customize capture features

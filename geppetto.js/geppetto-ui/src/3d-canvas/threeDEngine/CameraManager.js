@@ -26,7 +26,6 @@ export default class CameraManager {
       movieFilter,
       initialZoomTo,
       reset,
-      rotateSpeed
     } = cameraOptions;
 
     if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
@@ -54,9 +53,6 @@ export default class CameraManager {
       }
       if (autoRotate) {
         this.autoRotate(movieFilter);
-      }
-      if (rotateSpeed){
-        this.engine.controls.rotateSpeed = rotateSpeed
       }
       if (this.isFirstRender) {
         this.isFirstRender = false;
@@ -146,7 +142,7 @@ export default class CameraManager {
 
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
-  
+
   resetCamera (position, rotation, zoomTo) {
     const applyRotation = rotation => {
       if (rotation){
