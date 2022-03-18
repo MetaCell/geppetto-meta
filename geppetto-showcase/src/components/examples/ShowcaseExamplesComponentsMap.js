@@ -20,6 +20,9 @@ import DicomViewerExample from './dicom-viewer/examples/DicomViewerExample';
 // Graph visualizer example
 import GraphVisualizationShowcase from './graph-visualization/examples/GraphVisualizationShowcase';
 
+// HTML viewer example
+import HTMLViewerShowcase from './html-viewer/examples/HTMLViewerShowcase';
+
 const ShowcaseExamplesComponentsMap = props => {
 
   const { exampleComponentName, parentRef } = props;
@@ -47,6 +50,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <DicomViewerExample ref={parentRef} />;
   case 'Graph Visualization Example 1':
     return <GraphVisualizationShowcase ref={parentRef} />;
+  case 'HTMLViewer Example 1':
+    return <HTMLViewerShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
