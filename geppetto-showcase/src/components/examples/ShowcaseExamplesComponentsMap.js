@@ -23,6 +23,12 @@ import GraphVisualizationShowcase from './graph-visualization/examples/GraphVisu
 // HTML viewer example
 import HTMLViewerShowcase from './html-viewer/examples/HTMLViewerShowcase';
 
+// Movie player example
+import MoviePlayerShowcase from './movie-player/examples/MoviePlayerShowcase';
+
+// Plot component examples
+import PlotShowcase from './plot/examples/PlotShowcase';
+
 const ShowcaseExamplesComponentsMap = props => {
 
   const { exampleComponentName, parentRef } = props;
@@ -52,6 +58,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <GraphVisualizationShowcase ref={parentRef} />;
   case 'HTMLViewer Example 1':
     return <HTMLViewerShowcase ref={parentRef} />;
+  case 'Movie Player Example':
+    return <MoviePlayerShowcase rerf={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
