@@ -60,6 +60,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <HTMLViewerShowcase ref={parentRef} />;
   case 'Movie Player Example':
     return <MoviePlayerShowcase rerf={parentRef} />;
+  case 'Plot Component Example':
+    return <PlotShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
