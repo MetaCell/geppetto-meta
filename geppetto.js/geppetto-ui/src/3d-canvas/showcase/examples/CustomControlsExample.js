@@ -10,7 +10,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "../utils/CanvasTooltip";
-import { faFill, faCamera } from '@fortawesome/free-solid-svg-icons';
+import { faFill, faCamera, faHandPointDown } from '@fortawesome/free-solid-svg-icons';
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -23,6 +23,7 @@ const instance1spec = {
   }
 }
 import IconButtonWithTooltip from '../../../common/IconButtonWithTooltip';
+import { selectionStrategies } from "../../threeDEngine/SelectionManager";
 
 const instance2spec = {
   "eClass": "SimpleInstance",
@@ -59,7 +60,8 @@ const styles = () => ({
 
 const ACTIONS = {
   CHANGE_BACKGROUND_COLOR: 'change_background_color',
-  CHANGE_CAMERA: 'change_camera'
+  CHANGE_CAMERA: 'change_camera',
+  CHANGE_SELECTION_STRATEGY: 'change_selection_strategy',
 }
 const BACKGROUND_COLORS = [0x505050, 0xe6e6e6, 0x000000]
 
@@ -81,6 +83,11 @@ class CustomCameraControls extends Component {
         action: ACTIONS.CHANGE_CAMERA,
         tooltip: 'Randomize camera',
         icon: faCamera,
+      },
+      {
+        action: ACTIONS.CHANGE_SELECTION_STRATEGY,
+        tooltip: 'Change selection strategy',
+        icon: faHandPointDown,
       },
     ];
     return (
@@ -125,7 +132,8 @@ class CustomControlsExample extends Component {
       showLoader: false,
       cameraOptions: this.defaultCameraOptions,
       backgroundColorIndex: 0,
-      showModel: false
+      showModel: false,
+      selectionStrategyIndex: 0,
     };
     this.scene = null
     this.hoverHandlerOne = this.hoverHandlerOne.bind(this);
@@ -185,18 +193,27 @@ class CustomControlsExample extends Component {
     case ACTIONS.CHANGE_CAMERA:
       // eslint-disable-next-line no-case-declarations
       const nextCameraOptions = this.getCameraOptions()
+      // Fixme: This reset behaviour is a bit strange
       this.setState({ cameraOptions: nextCameraOptions }, () => this.setState({
         cameraOptions: {
           ...nextCameraOptions,
           reset: false
         }
       }))
+    case ACTIONS.CHANGE_SELECTION_STRATEGY:
+      this.setState({ selectionStrategyIndex: this.nextSelectionStrategy() })
+
     }
   }
 
   nextBackgroundColor () {
     const { backgroundColorIndex } = this.state
     return backgroundColorIndex >= BACKGROUND_COLORS.length ? 0 : backgroundColorIndex + 1
+  }
+
+  nextSelectionStrategy () {
+    const { selectionStrategyIndex } = this.state
+    return selectionStrategyIndex >= Object.keys(selectionStrategies).length ? 0 : selectionStrategyIndex + 1
   }
 
   getCameraOptions () {
@@ -212,7 +229,7 @@ class CustomControlsExample extends Component {
   }
 
   render () {
-    const { data, cameraOptions, showModel, showLoader, backgroundColorIndex } = this.state
+    const { data, cameraOptions, showModel, showLoader, backgroundColorIndex, selectionStrategyIndex } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
 
@@ -229,6 +246,7 @@ class CustomControlsExample extends Component {
             backgroundColor={BACKGROUND_COLORS[backgroundColorIndex]}
             onMount={scene => this.scene = scene }
             onSelection={this.onSelection}
+            selectionStrategy={selectionStrategies[Object.keys(selectionStrategies)[selectionStrategyIndex]]}
             onHoverListeners={{ 'hoverId1': this.hoverHandler }}
           />
         </>
