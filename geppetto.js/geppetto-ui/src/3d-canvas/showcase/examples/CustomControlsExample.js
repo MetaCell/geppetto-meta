@@ -10,7 +10,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "../utils/CanvasTooltip";
-import { faFill, faCamera, faHandPointDown } from '@fortawesome/free-solid-svg-icons';
+import { faFill, faCamera, faHandPointDown, faMousePointer } from '@fortawesome/free-solid-svg-icons';
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -62,6 +62,7 @@ const ACTIONS = {
   CHANGE_BACKGROUND_COLOR: 'change_background_color',
   CHANGE_CAMERA: 'change_camera',
   CHANGE_SELECTION_STRATEGY: 'change_selection_strategy',
+  CHANGE_HOVER_LISTENERS: 'change_hover_listeners',
 }
 const BACKGROUND_COLORS = [0x505050, 0xe6e6e6, 0x000000]
 
@@ -87,6 +88,11 @@ class CustomCameraControls extends Component {
       {
         action: ACTIONS.CHANGE_SELECTION_STRATEGY,
         tooltip: 'Change selection strategy',
+        icon: faMousePointer,
+      },
+      {
+        action: ACTIONS.CHANGE_HOVER_LISTENERS,
+        tooltip: 'Change hover listeners',
         icon: faHandPointDown,
       },
     ];
@@ -114,6 +120,10 @@ class CustomControlsExample extends Component {
     this.tooltipRef = React.createRef();
     loadInstances()
     this.customCameraHandler = this.customCameraHandler.bind(this)
+    this.hoverHandlerOne = this.hoverHandlerOne.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+    this.onSelection = this.onSelection.bind(this)
     this.defaultCameraOptions = {
       angle: 50,
       near: 0.01,
@@ -127,6 +137,7 @@ class CustomControlsExample extends Component {
       autorotate: false,
       wireframe: false,
     }
+    this.defaultHoverListeners = { 'hoverId1': this.hoverHandlerOne }
     this.state = {
       data: getProxyInstances(),
       showLoader: false,
@@ -134,12 +145,9 @@ class CustomControlsExample extends Component {
       backgroundColorIndex: 0,
       showModel: false,
       selectionStrategyIndex: 0,
+      hoverListeners: this.defaultHoverListeners
     };
     this.scene = null
-    this.hoverHandlerOne = this.hoverHandlerOne.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
-    this.onSelection = this.onSelection.bind(this)
     this.layoutRef = React.createRef();
   }
 
@@ -160,7 +168,8 @@ class CustomControlsExample extends Component {
   }
 
   hoverHandlerTwo (objs, canvasX, canvasY) {
-    console.log(objs)
+    console.log("Hello from the new hover listener, here's what I have for you:")
+    console.log(objs, canvasX, canvasY)
   }
 
   handleToggle () {
@@ -202,7 +211,10 @@ class CustomControlsExample extends Component {
       }))
     case ACTIONS.CHANGE_SELECTION_STRATEGY:
       this.setState({ selectionStrategyIndex: this.nextSelectionStrategy() })
-
+      break
+    case ACTIONS.CHANGE_HOVER_LISTENERS:
+      this.setState({ hoverListeners: this.getHoverListeners() })
+      break
     }
   }
 
@@ -216,20 +228,36 @@ class CustomControlsExample extends Component {
     return selectionStrategyIndex >= Object.keys(selectionStrategies).length ? 0 : selectionStrategyIndex + 1
   }
 
+  getHoverListeners () {
+    const { hoverListeners } = this.state
+    const nextHoverListeners = this.defaultHoverListeners
+
+    return Object.keys(hoverListeners).includes('hoverId2') ? nextHoverListeners : {
+      ...nextHoverListeners,
+      'hoverId2': this.hoverHandlerTwo
+    }
+  }
+
   getCameraOptions () {
     const { x, y, z } = this.scene.children[0].position
+
     function randomNumber (min, max) {
       return Math.random() * (max - min) + min;
     }
-    function random (){
+
+    function random () {
       return randomNumber(0.5, 1.5)
     }
+
     const initialPosition = this.scene ? { x: x * random(), y: y * random(), z: z * random() } : null
     return { ...this.defaultCameraOptions, reset: true, initialPosition }
   }
 
   render () {
-    const { data, cameraOptions, showModel, showLoader, backgroundColorIndex, selectionStrategyIndex } = this.state
+    const {
+      data, cameraOptions, showModel, showLoader, backgroundColorIndex, selectionStrategyIndex,
+      hoverListeners
+    } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
 
@@ -244,10 +272,10 @@ class CustomControlsExample extends Component {
             data={canvasData}
             cameraOptions={cameraOptions}
             backgroundColor={BACKGROUND_COLORS[backgroundColorIndex]}
-            onMount={scene => this.scene = scene }
+            onMount={scene => this.scene = scene}
             onSelection={this.onSelection}
             selectionStrategy={selectionStrategies[Object.keys(selectionStrategies)[selectionStrategyIndex]]}
-            onHoverListeners={{ 'hoverId1': this.hoverHandler }}
+            onHoverListeners={hoverListeners}
           />
         </>
       </div>

@@ -44,7 +44,7 @@ export function sortInstances (proxyInstances) {
 export function hasDifferentProxyInstances (data, prevData){
   data = sortInstances(data)
   prevData = sortInstances(prevData)
-  // FIXME: attribute order matters in the comparation below but it provably shouldn't:
+  // FIXME: attribute order matters in the check below but it probably shouldn't:
   return JSON.stringify(data) !== JSON.stringify(prevData)
 }
 
