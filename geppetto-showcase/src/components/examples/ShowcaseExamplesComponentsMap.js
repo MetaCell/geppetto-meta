@@ -14,8 +14,11 @@ import BigImageViewerExample from './big-image-viewer/examples/BigImageViewerExa
 import ConnectivityShowcaseForce from './connectivity-viewer/examples/ConnectivityShowcaseForce';
 import ConnectivityShowcaseMatrix from './connectivity-viewer/examples/ConnectivityShowcaseMatrix';
 
+// Dicom viewer example
 import DicomViewerExample from './dicom-viewer/examples/DicomViewerExample';
 
+// Graph visualizer example
+import GraphVisualizationShowcase from './graph-visualization/examples/GraphVisualizationShowcase';
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -42,6 +45,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <ConnectivityShowcaseMatrix ref={parentRef} />;
   case 'Dicom Viewer Example':
     return <DicomViewerExample ref={parentRef} />;
+  case 'Graph Visualization Example 1':
+    return <GraphVisualizationShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
