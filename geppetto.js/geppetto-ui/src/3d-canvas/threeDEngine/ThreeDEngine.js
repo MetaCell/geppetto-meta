@@ -341,7 +341,7 @@ export default class ThreeDEngine {
     const nextObjsUUIDs = new Set(threeDObjects.map(obj => obj.uuid))
     let toRemoveUUIDs = [...this.externalThreeDObjectsUUIDs].filter(x => !nextObjsUUIDs.has(x));
     toRemoveUUIDs.forEach(uuid => {
-      this.scene.remove(this.scene.getObjectById(uuid));
+      this.scene.remove(this.scene.getObjectByProperty('uuid', uuid));
     })
     threeDObjects.forEach(element => {
       this.addToScene(element); // already checks if object is already in the scene

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as THREE from 'three';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
@@ -10,7 +11,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "../utils/CanvasTooltip";
-import { faFill, faCamera, faHandPointDown, faMousePointer } from '@fortawesome/free-solid-svg-icons';
+import { faFill, faCamera, faHandPointDown, faMousePointer, faCubes } from '@fortawesome/free-solid-svg-icons';
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -63,8 +64,15 @@ const ACTIONS = {
   CHANGE_CAMERA: 'change_camera',
   CHANGE_SELECTION_STRATEGY: 'change_selection_strategy',
   CHANGE_HOVER_LISTENERS: 'change_hover_listeners',
+  CHANGE_THREE_D_OBJECTS: 'change_three_d_objects',
 }
+const geometry = new THREE.SphereGeometry( 500, 32, 16 );
+const material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+const sphere = new THREE.Mesh( geometry, material );
+const axis = new THREE.AxesHelper( 50000 )
+
 const BACKGROUND_COLORS = [0x505050, 0xe6e6e6, 0x000000]
+const THREE_D_OBJECTS = [[axis], [axis, sphere], [sphere]]
 
 class CustomCameraControls extends Component {
   constructor (props) {
@@ -94,6 +102,11 @@ class CustomCameraControls extends Component {
         action: ACTIONS.CHANGE_HOVER_LISTENERS,
         tooltip: 'Change hover listeners',
         icon: faHandPointDown,
+      },
+      {
+        action: ACTIONS.CHANGE_THREE_D_OBJECTS,
+        tooltip: 'Change 3D objects',
+        icon: faCubes,
       },
     ];
     return (
@@ -145,6 +158,7 @@ class CustomControlsExample extends Component {
       backgroundColorIndex: 0,
       showModel: false,
       selectionStrategyIndex: 0,
+      threeDObjectsIndex: 0,
       hoverListeners: this.defaultHoverListeners
     };
     this.scene = null
@@ -215,17 +229,21 @@ class CustomControlsExample extends Component {
     case ACTIONS.CHANGE_HOVER_LISTENERS:
       this.setState({ hoverListeners: this.getHoverListeners() })
       break
+    case ACTIONS.CHANGE_THREE_D_OBJECTS:
+      this.setState({ threeDObjectsIndex: this.nextThreeDObject() })
+      break
     }
+
   }
 
   nextBackgroundColor () {
     const { backgroundColorIndex } = this.state
-    return backgroundColorIndex >= BACKGROUND_COLORS.length ? 0 : backgroundColorIndex + 1
+    return backgroundColorIndex >= BACKGROUND_COLORS.length - 1 ? 0 : backgroundColorIndex + 1
   }
 
   nextSelectionStrategy () {
     const { selectionStrategyIndex } = this.state
-    return selectionStrategyIndex >= Object.keys(selectionStrategies).length ? 0 : selectionStrategyIndex + 1
+    return selectionStrategyIndex >= Object.keys(selectionStrategies).length - 1 ? 0 : selectionStrategyIndex + 1
   }
 
   getHoverListeners () {
@@ -236,6 +254,11 @@ class CustomControlsExample extends Component {
       ...nextHoverListeners,
       'hoverId2': this.hoverHandlerTwo
     }
+  }
+
+  nextThreeDObject () {
+    const { threeDObjectsIndex } = this.state
+    return threeDObjectsIndex >= THREE_D_OBJECTS.length - 1 ? 0 : threeDObjectsIndex + 1
   }
 
   getCameraOptions () {
@@ -256,7 +279,7 @@ class CustomControlsExample extends Component {
   render () {
     const {
       data, cameraOptions, showModel, showLoader, backgroundColorIndex, selectionStrategyIndex,
-      hoverListeners
+      hoverListeners, threeDObjectsIndex
     } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
@@ -276,6 +299,7 @@ class CustomControlsExample extends Component {
             onSelection={this.onSelection}
             selectionStrategy={selectionStrategies[Object.keys(selectionStrategies)[selectionStrategyIndex]]}
             onHoverListeners={hoverListeners}
+            threeDObjects={THREE_D_OBJECTS[threeDObjectsIndex]}
           />
         </>
       </div>
