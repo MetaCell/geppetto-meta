@@ -38,6 +38,16 @@ import ListViewerShowcaseFilter from './list-viewer/examples/ListViewerShowcaseF
 import ListViewerShowcaseScroll from './list-viewer/examples/ListViewerShowcaseScroll';
 import ListViewerShowcaseFull from './list-viewer/examples/ListViewerShowcaseFull';
 
+// Loader examples
+import LoaderShowcase1 from './loader/examples/LoaderShowcase1';
+import LoaderShowcase2 from './loader/examples/LoaderShowcase2';
+import LoaderShowcase3 from './loader/examples/LoaderShowcase3';
+import LoaderShowcase4 from './loader/examples/LoaderShowcase4';
+import LoaderShowcase5 from './loader/examples/LoaderShowcase5';
+import LoaderShowcase6 from './loader/examples/LoaderShowcase6';
+import LoaderShowcase7 from './loader/examples/LoaderShowcase7';
+
+
 const ShowcaseExamplesComponentsMap = props => {
 
   const { exampleComponentName, parentRef } = props;
@@ -81,6 +91,20 @@ const ShowcaseExamplesComponentsMap = props => {
     return <ListViewerShowcaseScroll ref={parentRef} />;
   case 'List Viewer Full':
     return <ListViewerShowcaseFull ref={parentRef} />;
+  case 'Loader Example 1':
+    return <LoaderShowcase1 ref={parentRef} />;
+  case 'Loader Example 2':
+    return <LoaderShowcase2 ref={parentRef} />;
+  case 'Loader Example 3':
+    return <LoaderShowcase3 ref={parentRef} />;
+  case 'Loader Example 4':
+    return <LoaderShowcase4 ref={parentRef} />;
+  case 'Loader Example 5':
+    return <LoaderShowcase5 ref={parentRef} />;
+  case 'Loader Example 6':
+    return <LoaderShowcase6 ref={parentRef} />;
+  case 'Loader Example 7':
+    return <LoaderShowcase7 ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
