@@ -50,6 +50,10 @@ import LoaderShowcase7 from './loader/examples/LoaderShowcase7';
 // Menu examples
 import MenuShowcase from './menu/examples/MenuShowcase';
 
+// Tree viewer examples
+import TreeShowcase from './tree-viewer/examples/TreeShowcase';
+import TreeShowcaseSearch from './tree-viewer/examples/TreeShowcaseSearch';
+
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -110,6 +114,10 @@ const ShowcaseExamplesComponentsMap = props => {
     return <LoaderShowcase7 ref={parentRef} />;
   case 'Menu Example':
     return <MenuShowcase ref={parentRef} />;
+  case 'Tree Viewer Search Example':
+    return <TreeShowcase ref={parentRef} />;
+  case 'Tree Viewer Basic Example':
+    return <TreeShowcaseSearch ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
