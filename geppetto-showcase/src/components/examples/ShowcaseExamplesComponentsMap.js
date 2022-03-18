@@ -26,8 +26,11 @@ import HTMLViewerShowcase from './html-viewer/examples/HTMLViewerShowcase';
 // Movie player example
 import MoviePlayerShowcase from './movie-player/examples/MoviePlayerShowcase';
 
-// Plot component examples
+// Plot component example
 import PlotShowcase from './plot/examples/PlotShowcase';
+
+// Flex layout example
+import FlexLayoutShowcase from './flex-layout/examples/FlexLayoutShowcase';
 
 const ShowcaseExamplesComponentsMap = props => {
 
@@ -62,6 +65,8 @@ const ShowcaseExamplesComponentsMap = props => {
     return <MoviePlayerShowcase rerf={parentRef} />;
   case 'Plot Component Example':
     return <PlotShowcase ref={parentRef} />;
+  case 'Flexible Layout Example':
+    return <FlexLayoutShowcase ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
