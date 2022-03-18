@@ -32,6 +32,12 @@ import PlotShowcase from './plot/examples/PlotShowcase';
 // Flex layout example
 import FlexLayoutShowcase from './flex-layout/examples/FlexLayoutShowcase';
 
+// List viewer examples
+import ListViewerShowcaseDefault from './list-viewer/examples/ListViewerShowcaseDefault';
+import ListViewerShowcaseFilter from './list-viewer/examples/ListViewerShowcaseFilter';
+import ListViewerShowcaseScroll from './list-viewer/examples/ListViewerShowcaseScroll';
+import ListViewerShowcaseFull from './list-viewer/examples/ListViewerShowcaseFull';
+
 const ShowcaseExamplesComponentsMap = props => {
 
   const { exampleComponentName, parentRef } = props;
@@ -67,6 +73,14 @@ const ShowcaseExamplesComponentsMap = props => {
     return <PlotShowcase ref={parentRef} />;
   case 'Flexible Layout Example':
     return <FlexLayoutShowcase ref={parentRef} />;
+  case 'List Viewer Default':
+    return <ListViewerShowcaseDefault ref={parentRef} />;
+  case 'List Viewer Data Filtering':
+    return <ListViewerShowcaseFilter ref={parentRef} />;
+  case 'List Viewer Scroll':
+    return <ListViewerShowcaseScroll ref={parentRef} />;
+  case 'List Viewer Full':
+    return <ListViewerShowcaseFull ref={parentRef} />;
   default:
     return <AuditoryCortexExample ref={parentRef} />;
   }
