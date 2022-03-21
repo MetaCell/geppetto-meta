@@ -26,7 +26,6 @@ export default class CameraManager {
       movieFilter,
       zoomTo,
       reset,
-      rotateSpeed
     } = cameraOptions;
 
     if (reset || (this.isFirstRender && position === undefined && zoomTo === undefined)) {

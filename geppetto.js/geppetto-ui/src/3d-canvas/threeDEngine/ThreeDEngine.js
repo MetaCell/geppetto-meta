@@ -159,17 +159,25 @@ export default class ThreeDEngine {
     const ambientLight = new THREE.AmbientLight(0x0c0c0c);
     this.scene.add(ambientLight);
     const spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-30, 60, 60);
+    if (this.cameraOptions?.spotlightPosition?.x && this.cameraOptions?.spotlightPosition?.y && this.cameraOptions?.spotlightPosition?.z) {
+      spotLight.position.set(this.cameraOptions.spotlightPosition.x, this.cameraOptions.spotlightPosition.y, this.cameraOptions.spotlightPosition.z);
+    } else {
+      spotLight.position.set(0, 0, 0);
+    }
     spotLight.castShadow = true;
     this.scene.add(spotLight);
     this.cameraManager.getCamera().add(new THREE.PointLight(0xffffff, 1));
   }
 
   setupControls () {
+    const defaultTrackballConfig = { rotationSpeed: 1.0, zoomSpeed:1.2, panSpeed: 0.3 }
+    const { trackballControls } = this.cameraOptions
+    const trackballConfig = trackballControls ? trackballControls : defaultTrackballConfig
     this.controls = new TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
+      trackballConfig
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
