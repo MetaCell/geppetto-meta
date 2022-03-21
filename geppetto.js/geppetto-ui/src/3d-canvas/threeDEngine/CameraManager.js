@@ -26,6 +26,7 @@ export default class CameraManager {
       movieFilter,
       initialZoomTo,
       reset,
+      trackballControls
     } = cameraOptions;
 
     if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
@@ -53,6 +54,9 @@ export default class CameraManager {
       }
       if (autoRotate) {
         this.autoRotate(movieFilter);
+      }
+      if (trackballControls) {
+        this.setTrackballControlsConfigs(trackballControls);
       }
       if (this.isFirstRender) {
         this.isFirstRender = false;
@@ -345,6 +349,14 @@ export default class CameraManager {
    */
   setCameraRotation (rx, ry, rz, radius) {
     this.engine.controls.setRotation(rx, ry, rz, radius);
+  }
+
+  setTrackballControlsConfigs (config){
+    let { rotationSpeed, zoomSpeed, panSpeed } = config
+
+    this.engine.controls.setRotationalSpeed(rotationSpeed)
+    this.engine.controls.setZoomSpeed(zoomSpeed)
+    this.engine.controls.setPanSpeed(panSpeed)
   }
 
   /**
