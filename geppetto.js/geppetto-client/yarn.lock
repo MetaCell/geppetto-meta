@@ -1415,15 +1415,15 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-core@1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc8.tgz#3ef8d92c833f49e0d2922b0bc4ef630e7e6873de"
-  integrity sha512-CjmONTGPVn4JznLFp8aNWKnJzngGsvRGj3/hpF8b3dRhQr3QZ/4nsRbnP0/zkDFO6ycF31OpNJ2vglCqzXq2lQ==
+"@metacell/geppetto-meta-core@v1.0.0-rc11":
+  version "1.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc11.tgz#8ff675abe25950081fc2cad019786bf9c7d4b3bc"
+  integrity sha512-rIR51uZDseaVTHdE8rKmcUGLlnIM3+IknBeOqT52E+bfJQHGCVkSaw3MMXg6tAPhgmFi5aPuWv5vmTXEa3rJMA==
 
-"@metacell/geppetto-meta-ui@1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc8.tgz#82daf9faa2905851daee412c5bd93347f46d602e"
-  integrity sha512-HaQcZNTEShhzoqjNt+RcyKssZiZJ1c+aOnH9kgP6IJU/qZE5b3xrgOqr02siVbMuURHObWSjTdOrep+AjQBKGw==
+"@metacell/geppetto-meta-ui@v1.0.0-rc11":
+  version "1.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc11.tgz#d71b53b8aee93c0a0b0d6a3250611582c9cd1805"
+  integrity sha512-mUVaFoVpvftPQDKlCHhePtHa/jbKzkM00x5L89A5nay8mAeSRqK/iS6U9Wv+g2ElN8wbmRxc9U+O2r7uakmGyA==
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
