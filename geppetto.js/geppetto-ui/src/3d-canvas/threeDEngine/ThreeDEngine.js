@@ -19,6 +19,7 @@ import CameraManager from './CameraManager';
 import { TrackballControls } from './TrackballControls';
 import { rgbToHex, hasVisualType, hasVisualValue } from "./util";
 
+
 export default class ThreeDEngine {
   constructor (
     containerRef,
@@ -58,6 +59,7 @@ export default class ThreeDEngine {
     this.lastRenderTimer = new Date();
     this.updateStarted = updateStarted;
     this.updateEnded = updateEnded;
+    this.instancesMap = new Map();
 
     // Setup Listeners
     this.start = this.start.bind(this);
@@ -157,17 +159,25 @@ export default class ThreeDEngine {
     const ambientLight = new THREE.AmbientLight(0x0c0c0c);
     this.scene.add(ambientLight);
     const spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-30, 60, 60);
+    if (this.cameraOptions?.spotlightPosition?.x && this.cameraOptions?.spotlightPosition?.y && this.cameraOptions?.spotlightPosition?.z) {
+      spotLight.position.set(this.cameraOptions.spotlightPosition.x, this.cameraOptions.spotlightPosition.y, this.cameraOptions.spotlightPosition.z);
+    } else {
+      spotLight.position.set(0, 0, 0);
+    }
     spotLight.castShadow = true;
     this.scene.add(spotLight);
     this.cameraManager.getCamera().add(new THREE.PointLight(0xffffff, 1));
   }
 
   setupControls () {
+    const defaultTrackballConfig = { rotationSpeed: 1.0, zoomSpeed:1.2, panSpeed: 0.3 }
+    const { trackballControls } = this.cameraOptions
+    const trackballConfig = trackballControls ? trackballControls : defaultTrackballConfig
     this.controls = new TrackballControls(
       this.cameraManager.getCamera(),
       this.renderer.domElement,
       this.cameraHandler,
+      trackballConfig
     );
     this.controls.noZoom = false;
     this.controls.noPan = false;
@@ -178,7 +188,7 @@ export default class ThreeDEngine {
    *
    * @returns {Array} a list of objects intersected by the current mouse coordinates
    */
-   getIntersectedObjects () {
+  getIntersectedObjects () {
     // create a Ray with origin at the mouse position and direction into th scene (camera direction)
     const vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 1);
     vector.unproject(this.cameraManager.getCamera());
@@ -193,9 +203,10 @@ export default class ThreeDEngine {
     return raycaster.intersectObjects(this.visibleChildren);
   }
 
-  updatevisibleChildren() {
+
+  updatevisibleChildren () {
     this.visibleChildren = [];
-    this.scene.traverse( (child) => {
+    this.scene.traverse( child => {
       if (child.visible && !(child.clickThrough === true)) {
         if (child.geometry != null) {
           if (child.type !== 'Points') {
@@ -213,8 +224,8 @@ export default class ThreeDEngine {
    * @param proxyInstances
    */
   async addInstancesToScene (proxyInstances) {
-    const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
-    await this.meshFactory.start(instances);
+    // const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
+    await this.meshFactory.start(proxyInstances, this.instancesMap);
     this.updateGroupMeshes(proxyInstances);
   }
 
@@ -226,7 +237,7 @@ export default class ThreeDEngine {
 
 
   checkMaterial (mesh, instance) {
-    if (mesh.type === 'Mesh') {
+    if (mesh.type === 'Mesh' || mesh.type === 'LineSegment') {
       if (mesh.material.color.r === instance?.color?.r
         && mesh.material.color.g === instance?.color?.g
         && mesh.material.color.b === instance?.color?.b
@@ -276,62 +287,45 @@ export default class ThreeDEngine {
     }
   }
 
-  /**
-   * Clears the scene
-   *
-   * we have the list of strings instances
-   * we have the global Instances from the model
-   * we have the obj instances in the threeJS scene
-   */
 
-  checkInstanceToRemove (geppettoInstance, proxyInstance, toRemove, pathsToRemove) {
+  sortInstances (proxyInstances) {
+    let sortedInstances = [];
+    sortedInstances = proxyInstances.sort((a, b) => {
+      if (a.instancePath < b.instancePath) {
+        return -1;
+      }
+      if (a.instancePath > b.instancePath) {
+        return 1;
+      }
+      return 0;
+    });
+    return sortedInstances;
+  }
+
+
+  traverseInstance (proxyInstance, geppettoInstance) {
     try {
       if (hasVisualValue(geppettoInstance)) {
-        var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
-        if (geppettoIndex > -1) {
-          if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
-            this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
-          }
-          toRemove.splice(geppettoIndex, 1);
-          pathsToRemove.splice(geppettoIndex, 1);
-          return true;
-        }
-        return false;
+        this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
       } else if (hasVisualType(geppettoInstance)) {
         if (
           geppettoInstance.getType().getMetaType()
             !== Resources.ARRAY_TYPE_NODE
             && geppettoInstance.getVisualType()
         ) {
-          var geppettoIndex = pathsToRemove.indexOf(geppettoInstance.getInstancePath());
-          if (geppettoIndex > -1) {
-            if (this.checkMaterial(toRemove[geppettoIndex], proxyInstance)) {
-              this.updateInstanceMaterial(toRemove[geppettoIndex], proxyInstance);
-            }
-            toRemove.splice(geppettoIndex, 1);
-            pathsToRemove.splice(geppettoIndex, 1);
-            return true;
-          }
-          return false;
+          this.instancesMap.set(geppettoInstance.getInstancePath(), proxyInstance);
         }
-        // this block keeps traversing the instances
         if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
-          var returnValue = false;
-          var children = geppettoInstance.getChildren();
+          const children = geppettoInstance.getChildren();
           for (let i = 0; i < children.length; i++) {
-            let instanceReturn = this.checkInstanceToRemove(children[i], proxyInstance, toRemove, pathsToRemove);
-            returnValue = returnValue || instanceReturn;
+            this.traverseInstance(proxyInstance, children[i]);
           }
-          return returnValue;
         } else if (
           geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
         ) {
-          var returnValue = false;
           for (let i = 0; i < geppettoInstance.length; i++) {
-            let instanceReturn = this.checkInstanceToRemove(geppettoInstance[i], proxyInstance, toRemove, pathsToRemove);
-            returnValue = returnValue || instanceReturn;
+            this.traverseInstance(proxyInstance, geppettoInstance[i]);
           }
-          return returnValue;
         }
       }
     } catch (e) {
@@ -341,51 +335,42 @@ export default class ThreeDEngine {
 
 
   async clearScene (proxyInstances) {
-    var pathsToRemove = [];
-    var sortedInstances = [];
-    var toRemove = this.scene.children.filter(child => {
-      if (child.type === 'Mesh' || child.type === 'Group') {
-        pathsToRemove.push(child.instancePath)
-        return true;
+    // safe check, if something different than an array is given we wipe the canvas.
+    if (!Array.isArray(proxyInstances) && proxyInstances === undefined) {
+      console.error("The Geppetto ThreeDEngine has been given an invalid object instead of a list of proxy instances, please check your usage of the 3D Canvas");
+      proxyInstances = [];
+    }
+
+    this.instancesMap.clear();
+    const sortedInstances = this.sortInstances(proxyInstances);
+    // traverse all the geppetto instances
+    sortedInstances.forEach( instance => {
+      const geppettoInstance = Instances.getInstance(instance.instancePath);
+      if (geppettoInstance) {
+        this.traverseInstance(instance, geppettoInstance);
+      }
+    });
+
+    const toRemove = this.scene.children.filter(child => {
+      const mappedInstance = this.instancesMap.get(child.instancePath);
+      if (child.instancePath !== undefined) {
+        if (!mappedInstance || !mappedInstance.visibility) {
+          return true;
+        }
+        if (this.checkMaterial(child, mappedInstance) && mappedInstance) {
+          this.updateInstanceMaterial(child, mappedInstance);
+        }
       }
       return false;
     });
 
-    if (proxyInstances) {
-      sortedInstances = proxyInstances.sort((a, b) => {
-        if (a.instancePath < b.instancePath) {
-          return -1;
-        }
-        if (a.instancePath > b.instancePath) {
-          return 1;
-        }
-        return 0;
-      });
-      if (toRemove.length === 0) {
-        return sortedInstances;
-      }
-      for (var i = sortedInstances.length - 1; i >= 0; i--) {
-        var geppettoInstance = Instances.getInstance(sortedInstances[i]?.instancePath);
-        if (geppettoInstance) {
-          let _check = await this.checkInstanceToRemove(geppettoInstance, sortedInstances[i], toRemove, pathsToRemove);
-          if (_check) {
-            sortedInstances.splice(i, 1);
-          }
-        } else {
-          sortedInstances.splice(i, 1);
-        }
-      }
-    } else {
-      console.error("Give me an empty list if you want to wipe all the instances from the 3d viewer.");
-      return [];
-    }
-
-    for (let child of toRemove) {
+    toRemove.forEach( child => {
       this.meshFactory.cleanWith3DObject(child);
       this.scene.remove(child);
-    }
+    });
     return sortedInstances;
   }
+
 
   updateInstancesColor (proxyInstances) {
     const sortedInstances = proxyInstances.sort((a, b) => {
@@ -694,12 +679,12 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseDownEventListener = (event) => {
+  mouseDownEventListener = event => {
     this.clientX = event.clientX;
     this.clientY = event.clientY;
   }
 
-  mouseUpEventListener = (event) => {
+  mouseUpEventListener = event => {
     if (event.target === this.renderer.domElement) {
       const x = event.clientX;
       const y = event.clientY;
@@ -708,7 +693,7 @@ export default class ThreeDEngine {
       if (
         typeof this.clientX === 'undefined'
         || typeof this.clientY === 'undefined'
-        ||  x !== this.clientX
+        || x !== this.clientX
         || y !== this.clientY
       ) {
         return;
@@ -716,15 +701,15 @@ export default class ThreeDEngine {
 
       this.mouse.y
       = -(
-        (event.clientY
-        - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
-        / this.renderer.domElement.getBoundingClientRect().height
-      ) *2 + 1;
+          ((event.clientY - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
+          / this.renderer.domElement.height
+        ) * 2 + 1;
 
       this.mouse.x
-      = ((event.clientX
-        - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
-        / this.renderer.domElement.getBoundingClientRect().width) * 2 - 1;
+      = (
+          ((event.clientX - this.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio)
+          / this.renderer.domElement.width
+        ) * 2 - 1;
 
       if (event.button === 0) {
         // only for left click
@@ -760,8 +745,7 @@ export default class ThreeDEngine {
               instancePath = intersects[i].object.instancePath;
               geometryIdentifier
               = intersects[i].object.geometryIdentifier;
-            }
-            else {
+            } else {
               instancePath = intersects[i].object.parent.instancePath;
               geometryIdentifier
               = intersects[i].object.parent.geometryIdentifier;
@@ -794,12 +778,12 @@ export default class ThreeDEngine {
     }
   }
 
-  mouseMoveEventListener = (event) => {
+  mouseMoveEventListener = event => {
     this.mouse.y
     = -(((event.clientY
         - this.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio)
         / this.renderer.domElement.height
-    )
+      )
     * 2 + 1;
 
     this.mouse.x
@@ -812,7 +796,7 @@ export default class ThreeDEngine {
     this.mouseContainer.y = event.clientY;
 
 
-    if (this.hoverListeners && this.hoverListeners.length  > 0) {
+    if (this.hoverListeners && this.hoverListeners.length > 0) {
       const intersects = this.getIntersectedObjects();
       for (const listener in this.hoverListeners) {
         if (intersects.length !== 0) {
@@ -914,8 +898,10 @@ export default class ThreeDEngine {
       this.cameraManager.camera.updateProjectionMatrix();
       this.renderer.setSize(this.width, this.height);
       this.composer.setSize(this.width, this.height);
-      // TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
-      // the resizing works but the image gets stretched.
+      /*
+       * TOFIX: this above is just an hack to trigger the ratio to be recalculated, without the line below
+       * the resizing works but the image gets stretched.
+       */
       this.cameraManager.engine.controls.updateOnResize();
     }
   }

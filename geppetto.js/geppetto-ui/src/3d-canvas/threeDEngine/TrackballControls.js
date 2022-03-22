@@ -15,7 +15,7 @@ const defaultRotationalSpeed = 1.0 ;
 class TrackballControls extends EventDispatcher {
 
   // @metacell change
-  constructor (object, domElement, handler) {
+  constructor (object, domElement, handler, config) {
     // end of @metacell changes
 
     super();
@@ -40,9 +40,12 @@ class TrackballControls extends EventDispatcher {
 
     this.screen = { left: 0, top: 0, width: 0, height: 0 };
 
-    this.rotateSpeed = 1.0;
-    this.zoomSpeed = 1.2;
-    this.panSpeed = 0.3;
+    // @metacell change
+    let { rotationSpeed, zoomSpeed, panSpeed } = config
+    this.rotationSpeed = rotationSpeed ? rotationSpeed : 0.5;
+    this.zoomSpeed = zoomSpeed ? zoomSpeed : 1.2;
+    this.panSpeed = panSpeed ? panSpeed : 0.3;
+    // end of @metacell changes
 
     this.noRotate = false;
     this.noZoom = false;
@@ -213,12 +216,12 @@ class TrackballControls extends EventDispatcher {
 
     // end of metacell changes
 
-    this.setRotationalSpeed = function(s) {
-      scope.rotateSpeed = s ;
+    this.setRotationalSpeed = function (s) {
+      scope.rotationSpeed = s ;
     };
     
-    this.resetRotationalSpeed = function() {
-      scope.rotateSpeed = defaultRotationalSpeed ;
+    this.resetRotationalSpeed = function () {
+      scope.rotationSpeed = defaultRotationalSpeed ;
     };
 
     this.rotateCamera = (function () {
@@ -250,7 +253,7 @@ class TrackballControls extends EventDispatcher {
 
           axis.crossVectors(moveDirection, _eye).normalize();
 
-          angle *= scope.rotateSpeed;
+          angle *= scope.rotationSpeed;
           quaternion.setFromAxisAngle(axis, angle);
 
           _eye.applyQuaternion(quaternion);

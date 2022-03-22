@@ -6,6 +6,7 @@
  */
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { CircularProgress } from '@material-ui/core'
 import './PythonConsole.less';
 
@@ -42,5 +43,26 @@ export class PythonConsole extends Component {
       </div>
     );
   }
+
+}
+
+PythonConsole.defaultProps = {
+  extensionLoaded: false,
+  iframeHeight: 400,
+}
+
+PythonConsole.propTypes = {
+  /**
+   * Path to jupyter notebook
+   */
+    pythonNotebookPath: PropTypes.string.isRequired,
+  /**
+    * Boolean indicating if the extension has been loaded
+   */
+  extensionLoaded: PropTypes.bool,
+   /**
+    * Height of the iframe in pixels
+   */
+   iframeHeight: PropTypes.number,
 
 }

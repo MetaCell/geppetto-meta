@@ -433,7 +433,7 @@ class DicomViewer extends Component {
       }
     }
 
-    function togglMode (event) {
+    function toggleMode (event) {
       if (_this.state.mode === 'single_view') {
         _this.changeMode();
       } else {
@@ -487,7 +487,7 @@ class DicomViewer extends Component {
       if (
         action === 'goToPoint'
         || action === 'goToSingleView'
-        || action === 'togglMode'
+        || action === 'toggleMode'
       ) {
         eval(action + '(event)');
       } else {
@@ -813,7 +813,16 @@ class DicomViewer extends Component {
   }
 }
 
-DicomViewer.defaultProps = { onLoaded: () => {}, };
+DicomViewer.defaultProps = { 
+  onLoaded: () => {},
+  mode: 'coronal',
+  orientation: 'goToPoint',
+  onClick: 'goToPoint',
+  onCtrlClick: 'goToPoint',
+  onShiftClick: 'goToPoint',
+  onDoubleClick: 'goToPoint',
+  showDownloadButton: false,
+};
 
 
 DicomViewer.propTypes = {
@@ -830,25 +839,37 @@ DicomViewer.propTypes = {
    */
   mode: PropTypes.string,
   /**
-   * Initial orientation view: 'coronal', 'axial' or 'sagital'
+   * Initial orientation view: 'coronal', 'axial' or 'sagittal'
    */
   orientation: PropTypes.string,
   /**
-   * Action to performe on click: 'goToPoint', 'goToSingleView', 'togglMode', or other
+   * Action to perform on click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
    */
-  onClick: PropTypes.any,
+  onClick: PropTypes.oneOfType([
+    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.func,
+  ]),
   /**
-   * Action to performe on Ctrl click: 'goToPoint', 'goToSingleView', 'togglMode', or other
+   * Action to performe on Ctrl click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
    */
-  onCtrlClick: PropTypes.any,
+  onCtrlClick: PropTypes.oneOfType([
+    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.func,
+  ]),
   /**
-   * Action to performe on Shift click: 'goToPoint', 'goToSingleView', 'togglMode', or other
+   * Action to performe on Shift click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
    */
-  onShiftClick: PropTypes.any,
+  onShiftClick: PropTypes.oneOfType([
+    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.func,
+  ]),
   /**
-   * Action to performe on double click: 'goToPoint', 'goToSingleView', 'togglMode', or other
+   * Action to performe on double click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
    */
-  onDoubleClick: PropTypes.any,
+  onDoubleClick: PropTypes.oneOfType([
+    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.func,
+  ]),
   /**
    * Bool that defines the showing or not of the download button
    */

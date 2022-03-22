@@ -26,7 +26,6 @@ export default class CameraManager {
       movieFilter,
       zoomTo,
       reset,
-      rotateSpeed
     } = cameraOptions;
 
     if (reset || (!this.firstLoad && position === undefined)) {
@@ -57,9 +56,6 @@ export default class CameraManager {
         if (instances.length > 0) {
           this.zoomTo(instances);
         }
-      }
-      if (rotateSpeed){
-        this.engine.controls.rotateSpeed = rotateSpeed
       }
     }
   }
