@@ -13,7 +13,7 @@ python-console/showcase/PythonConsole
 Example showing how we can interact programmatically with NWB files using Python.
 
 ```
-python-console/showcase/PythonConsoleShowcase
+python-console/PythonConsoleShowcase
 ```
 
 ## Libraries
