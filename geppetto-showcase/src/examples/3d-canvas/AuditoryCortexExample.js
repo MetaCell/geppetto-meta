@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
+import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas'; 
 import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraControls';
-import Button from "@material-ui/core/Button";
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
+import Button from "@material-ui/core/Button";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
-import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
-import CanvasTooltip from "../utils/CanvasTooltip";
+import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
+import CanvasTooltip from "./utils/CanvasTooltip";
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -15,7 +15,6 @@ const COLORS = [
   { r: 0, g: 0.8, b: 0, a: 1 },
   { r: 0, g: 0.8, b: 0, a: 0.5 },
 ];
-
 const styles = () => ({
   container: {
     height: '800px',
@@ -25,14 +24,14 @@ const styles = () => ({
   },
 });
 
-class AuditoryCortexExample2 extends Component {
+class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
     this.tooltipRef = React.createRef();
     this.state = {
-      showLoader: false,
       hasModelLoaded: false,
+      showLoader: false,
       data: [
         {
           instancePath: 'acnet2.baskets_12',
@@ -54,25 +53,15 @@ class AuditoryCortexExample2 extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        zoomTo: ['acnet2.baskets_12[7]'],
-        cameraControls: { 
+        cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false, },
-          incrementPan: {
-            x:0.05,
-            y:0.05
-          },
-          incrementRotation: {
-            x:0.05,
-            y:0.05,
-            z:0.05,
-          },
-          incrementZoom: 0.5,
-          reset: false,
         },
-        movieFilter: false,
-        autorotate:false,
-        wireframe:false
+        reset: false,
+        autorotate: false,
+        wireframe: false,
+        position: { x: 230.357, y: 256.435, z: 934.238 },
+        rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
       },
     };
 
@@ -80,6 +69,7 @@ class AuditoryCortexExample2 extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+
   }
 
   componentDidMount () {
@@ -91,21 +81,11 @@ class AuditoryCortexExample2 extends Component {
   }
 
   handleClickOutside (event) {
-
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){
         this.setState({ hasModelLoaded: false })
       }
     }
-  }
-
-
-  hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
   }
 
   async handleToggle () {
@@ -115,7 +95,15 @@ class AuditoryCortexExample2 extends Component {
     const model = await response.json();
     Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
-    this.setState({ hasModelLoaded: true, showLoader: false })
+    this.setState({ hasModelLoaded: true, showLoader: false });
+  }
+
+  hoverHandler (objs, canvasX, canvasY) {
+    this.tooltipRef?.current?.updateIntersected({
+      o: objs[objs.length - 1],
+      x: canvasX,
+      y: canvasY,
+    });
   }
 
   onSelection (selectedInstances){
@@ -126,6 +114,7 @@ class AuditoryCortexExample2 extends Component {
     const { classes } = this.props;
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
     const canvasData = mapToCanvasData(data)
+
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <>
@@ -143,15 +132,14 @@ class AuditoryCortexExample2 extends Component {
           />
         </div>
       </>
-    )
-      : <Button
-        variant="outlined"
-        color="primary"
-        onClick={this.handleToggle}
-      >
-          Show Example
-      </Button>
+    ) : <Button
+      variant="outlined"
+      color="primary"
+      onClick={this.handleToggle}
+    >
+      Show Example
+    </Button>
   }
 }
 
-export default withStyles(styles)(AuditoryCortexExample2);
+export default withStyles(styles)(AuditoryCortexExample);

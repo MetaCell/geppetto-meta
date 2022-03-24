@@ -71,7 +71,7 @@ function getReactElement (dom) {
 
 function getProps (dom) {
   const path = dom.getElementsByClassName('language-element')[0].innerHTML;
-  const src = require('!raw-loader!@metacell/geppetto-meta-ui/'
+  const src = require('!raw-loader!../../../../geppetto.js/geppetto-ui/src/'
       + path
       + '.js').default;
   const componentInfo = reactDocs.parse(src);
@@ -118,12 +118,12 @@ function getExample (start) {
       const path = elem.children[0].innerText.trim();
       example[
         'component'
-      ] = require('@metacell/geppetto-meta-ui/'
+      ] = require('../../examples/'
           + path
           + '.js').default;
       example[
         'file'
-      ] = require('!raw-loader!@metacell/geppetto-meta-ui/'
+      ] = require('!raw-loader!../../examples/'
           + path
           + '.js');
     } else {

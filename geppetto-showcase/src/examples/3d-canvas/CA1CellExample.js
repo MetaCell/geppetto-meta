@@ -5,8 +5,8 @@ import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraCon
 import Button from "@material-ui/core/Button";
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
-import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
-import CanvasTooltip from '../utils/CanvasTooltip';
+import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
+import CanvasTooltip from './utils/CanvasTooltip';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [

@@ -3,15 +3,14 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import neuron from '../assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
-import contact from '../assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
+import neuron from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
+import contact from './assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
-import CaptureControls from "@metacell/geppetto-meta-ui/capture-controls/CaptureControls";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
-import CanvasTooltip from "../utils/CanvasTooltip";
+import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
+import CanvasTooltip from "./utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -56,7 +55,7 @@ const styles = () => ({
   },
 });
 
-class SimpleInstancesExample extends Component {
+class MultipleInstancesExample extends Component {
   constructor (props) {
     super(props);
     this.tooltipRef = React.createRef();
@@ -64,6 +63,7 @@ class SimpleInstancesExample extends Component {
     this.state = {
       data: getProxyInstances(),
       showLoader: false,
+      numberOfInstances: 5,
       cameraOptions: {
         angle: 50,
         near: 0.01,
@@ -71,7 +71,7 @@ class SimpleInstancesExample extends Component {
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false },
+          props: { wireframeButtonEnabled: false, },
         },
         reset: false,
         autorotate: false,
@@ -80,12 +80,13 @@ class SimpleInstancesExample extends Component {
       showModel: false
     };
     this.canvasIndex = 3
-    this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
+    this.addInstance = this.addInstance.bind(this);
+    this.removeInstance = this.removeInstance.bind(this);
   }
 
   componentDidMount () {
@@ -95,7 +96,6 @@ class SimpleInstancesExample extends Component {
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
-
 
   hoverHandler (objs, canvasX, canvasY) {
     this.tooltipRef?.current?.updateIntersected({
@@ -108,7 +108,12 @@ class SimpleInstancesExample extends Component {
   handleToggle () {
     this.setState({ showLoader: true })
     loadInstances()
-    this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+    this.setState({
+      showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: {
+        ...this.state.cameraOptions,
+        reset: true,
+      } 
+    })
   }
 
   handleClickOutside (event) {
@@ -127,30 +132,33 @@ class SimpleInstancesExample extends Component {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
+  addInstance () {
+    const next = this.state.numberOfInstances + 1;
+    loadInstances()
+    this.setState({
+      showModel: true, data: getProxyInstances(), cameraOptions: {
+        ...this.state.cameraOptions,
+        reset: true, numberOfInstances: next
+      } 
+    })
+  }
+
+  removeInstance () {
+    const next = this.state.numberOfInstances - 1 ;
+    loadInstances()
+    this.setState({
+      showModel: true, data: getProxyInstances(), cameraOptions: {
+        ...this.state.cameraOptions,
+        reset: true, numberOfInstances: next
+      } 
+    })
+  }
+
+
   render () {
     const { data, cameraOptions, showModel, showLoader } = this.state
     const canvasData = mapToCanvasData(data)
     const { classes } = this.props
-
-    const captureOptions = {
-      captureControls: {
-        instance: CaptureControls,
-        props: {}
-      },
-      recorderOptions: {
-        mediaRecorderOptions: { mimeType: 'video/webm', },
-        blobOptions:{ type: 'video/webm' }
-      },
-      screenshotOptions:{
-        resolution:{
-          width: 3840,
-          height: 2160,
-        },
-        quality: 0.95,
-        pixelRatio: 1,
-        filter: () => true
-      },
-    }
 
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
@@ -158,16 +166,21 @@ class SimpleInstancesExample extends Component {
           <div>
             <CanvasTooltip ref={this.tooltipRef} />
           </div>
-          <Canvas
-            ref={this.canvasRef}
-            data={canvasData}
-            cameraOptions={cameraOptions}
-            captureOptions={captureOptions}
-            backgroundColor={0x505050}
-            onSelection={this.onSelection}
-            onMount={this.onMount}
-            hoverListeners={[this.hoverHandler]}
-          />
+          { 
+            [...Array(this.state.numberOfInstances)].map((e, i) =>
+              <Canvas
+                key={`canvas_${i}`}
+                ref={this.canvasRef}
+                data={canvasData}
+                cameraOptions={cameraOptions}
+                backgroundColor={0x505050}
+                onSelection={this.onSelection}
+                onMount={this.onMount}
+                hoverListeners={[this.hoverHandler]}
+              />
+
+            )
+          }
         </>
       </div>
     ) : <Button
@@ -180,4 +193,4 @@ class SimpleInstancesExample extends Component {
   }
 }
 
-export default withStyles(styles)(SimpleInstancesExample);
+export default withStyles(styles)(MultipleInstancesExample);  

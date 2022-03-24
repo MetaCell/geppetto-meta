@@ -13,7 +13,7 @@
 3D Canvas Auditory Cortex Example 2
 
 ```
-3d-canvas/showcase/examples/AuditoryCortexExample2
+3d-canvas/AuditoryCortexExample2
 ```
 
 ### 3D Canvas VFB Example
@@ -21,7 +21,7 @@
 3D Canvas VFB Example
 
 ```
-3d-canvas/showcase/examples/VFBExample
+3d-canvas/VFBExample
 ```
 
 ### 3D Canvas CA1 Pyramidal Cell Example
@@ -29,7 +29,7 @@
 3D Canvas CA1 Pyramidal Cell Example
 
 ```
-3d-canvas/showcase/examples/CA1CellExample
+3d-canvas/CA1CellExample
 ```
 
 ### 3D Canvas Auditory Cortex Example
@@ -37,7 +37,7 @@
 3D Canvas Auditory Cortex Example
 
 ```
-3d-canvas/showcase/examples/AuditoryCortexExample
+3d-canvas/AuditoryCortexExample
 ```
 
 ### Simple Instances Example
@@ -45,7 +45,7 @@
 Simple Instances Example
 
 ```
-3d-canvas/showcase/examples/SimpleInstancesExample
+3d-canvas/SimpleInstancesExample
 ```
 
 ### Multiple Instances Example
@@ -53,7 +53,7 @@ Simple Instances Example
 Multiple Instances Example
 
 ```
-3d-canvas/showcase/examples/MultipleInstancesExample
+3d-canvas/MultipleInstancesExample
 ```
 
 ## Libraries
