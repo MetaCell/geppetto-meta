@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import HTMLViewer from '@metacell/geppetto-meta-ui/html-viewer/HTMLViewer';
-require('../HTMLViewerShowcase.less');
+require('./HTMLViewerShowcase.less');
 
 export default class HTMLViewerShowcase extends Component {
   constructor (props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.htmlContent = require('../HTMLViewerShowcase.html');
+    this.htmlContent = require('./HTMLViewerShowcase.html');
   }
 
   handleClick (element, elementDataset) {
