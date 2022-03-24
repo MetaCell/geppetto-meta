@@ -1,6 +1,6 @@
 import React from 'react';
 import ListViewer from '@metacell/geppetto-meta-ui/list-viewer/ListViewer';
-import instances from '../instances-small';
+import instances from './instances-small';
 import {
   GroupComponent,
   IconComponent,
