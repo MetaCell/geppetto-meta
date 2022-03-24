@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ModelManager from '@metacell/geppetto-meta-core/ModelManager';
 
-import model from './../model';
+import model from './model';
 import PlotComponent from "@metacell/geppetto-meta-ui/plot/PlotComponent";
 
 export default class PlotShowcase extends Component {
