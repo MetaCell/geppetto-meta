@@ -4,7 +4,7 @@ import Menu from '@metacell/geppetto-meta-ui/menu/Menu';
 export default class MenuShowcase extends Component {
   constructor (props) {
     super(props);
-    this.menuConfiguration = require('../menuConfiguration').default;
+    this.menuConfiguration = require('./menuConfiguration').default;
     this.menuHandler = this.menuHandler.bind(this);
   }
 
