@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Tree from '@metacell/geppetto-meta-ui/tree-viewer/Tree';
-import '../TreeShowcase.less';
+import './TreeShowcase.less';
 
 export default class TreeShowcase extends Component {
   constructor (props) {
