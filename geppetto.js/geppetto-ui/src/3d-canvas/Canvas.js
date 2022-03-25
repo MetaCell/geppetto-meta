@@ -360,7 +360,8 @@ Canvas.defaultProps = {
     reset: false,
     autorotate: false,
     wireframe: false,
-    zoomTo: [],
+    initialZoomTo: [],
+    initialFlip: [],
     movieFilter: false,
     depthWrite: true,
     spotlightPosition: {
@@ -464,6 +465,10 @@ Canvas.propTypes = {
      * Objects to zoom into
      */
     initialZoomTo: PropTypes.arrayOf(PropTypes.string),
+    /**
+     * Array of axis to flip
+     */
+    initialFlip: PropTypes.arrayOf(PropTypes.string),
     /**
      * Rotation speed
      */

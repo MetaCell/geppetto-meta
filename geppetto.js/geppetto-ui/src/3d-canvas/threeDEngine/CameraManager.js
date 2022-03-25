@@ -25,9 +25,14 @@ export default class CameraManager {
       autoRotate,
       movieFilter,
       initialZoomTo,
+      initialFlip,
       reset,
       trackballControls
     } = cameraOptions;
+
+    if (this.isFirstRender && initialFlip && initialFlip.length > 0){
+      this.flipCamera(initialFlip);
+    }
 
     if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
       this.resetCamera(initialPosition, initialRotation, initialZoomTo);
@@ -73,6 +78,35 @@ export default class CameraManager {
     this.zoomToParameters(this.zoomIterator(instances, {}));
   }
 
+  /**
+   *
+   * @param initalFlip
+   */
+  flipCamera (initialFlip) {
+    for (const axis of initialFlip){
+      if (axis.toLowerCase() === 'y') {
+        this.flipCameraY();
+      } else if (axis.toLowerCase() === 'z') {
+        this.flipCameraZ();
+      }
+    }
+    this.engine.setupControls();
+    this.resetCamera()
+  }
+
+  /**
+   * Reinitializes the camera with the Y axis flipped
+   */
+  flipCameraY () {
+    this.camera.up = new THREE.Vector3(0, -1, 0);
+  }
+
+  /**
+   * Reinitializes the camera with the Z axis flipped
+   */
+  flipCameraZ () {
+    this.camera.direction = new THREE.Vector3(0, 0, -1);
+  }
   /**
    *
    * @param instances
