@@ -16,15 +16,17 @@ import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
 import CameraManager from './CameraManager';
-import { TrackballControls } from './TrackballControls';
 import { rgbToHex, hasVisualType, hasVisualValue, sortInstances } from "./util";
+import Controls from "./controls/Controls";
+import { ControlsStrategyEnum } from "./controls/ControlsStrategyEnum";
 
 
 export default class ThreeDEngine {
   constructor (
     containerRef,
     cameraOptions,
-    cameraHandler,
+    controlsOptions,
+    onCameraChanges,
     setColorHandler,
     backgroundColor,
     pickingEnabled,
@@ -38,6 +40,7 @@ export default class ThreeDEngine {
     this.scene.background = new THREE.Color(backgroundColor);
     this.cameraManager = null;
     this.cameraOptions = cameraOptions;
+    this.controlsOptions = controlsOptions;
     this.onSelection = onSelection;
     this.renderer = null;
     this.controls = null;
@@ -47,7 +50,7 @@ export default class ThreeDEngine {
     this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
-    this.cameraHandler = cameraHandler;
+    this.onCameraChanges = onCameraChanges;
     this.setColorHandler = setColorHandler;
     this.selectionStrategy = selectionStrategy
     this.containerRef = containerRef
@@ -167,17 +170,16 @@ export default class ThreeDEngine {
   }
 
   setupControls () {
-    const defaultTrackballConfig = { rotationSpeed: 1.0, zoomSpeed:1.2, panSpeed: 0.3 }
-    const { trackballControls } = this.cameraOptions
-    const trackballConfig = trackballControls ? trackballControls : defaultTrackballConfig
-    this.controls = new TrackballControls(
+    const strategy = this.controlsOptions.strategy ? this.controlsOptions.strategy : ControlsStrategyEnum.TRACKBALL_CONTROLS
+    const configs = this.controlsOptions.configs ? this.controlsOptions.configs : null
+    this.controls = new Controls(
+      strategy,
+      this.scene,
       this.cameraManager.getCamera(),
       this.renderer.domElement,
-      this.cameraHandler,
-      trackballConfig
+      this.onCameraChanges,
+      configs
     );
-    this.controls.noZoom = false;
-    this.controls.noPan = false;
   }
 
   /**
@@ -973,10 +975,10 @@ export default class ThreeDEngine {
     this.pickingEnabled = pickingEnabled
   }
   /**
-   * Sets cameraHandler
+   * Sets onCameraChanges
    */
-  seCameraHandler (cameraHandler) {
-    this.cameraHandler = cameraHandler
+  setOnCameraChanges (onCameraChanges) {
+    this.onCameraChanges = onCameraChanges
   }
   /**
    * Sets setColorHandler

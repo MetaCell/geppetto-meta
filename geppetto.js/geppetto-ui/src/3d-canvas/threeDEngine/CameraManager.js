@@ -280,7 +280,7 @@ export default class CameraManager {
 
     // Store camera position
 
-    this.camera.position.addVectors(dir, this.engine.controls.target);
+    this.camera.position.addVectors(dir, this.engine.controls.getTarget());
     this.camera.updateProjectionMatrix();
   }
 
@@ -296,13 +296,13 @@ export default class CameraManager {
       COG = this.shapeCenterOfGravity(node);
     }
     const v = new THREE.Vector3();
-    v.subVectors(COG, this.engine.controls.target);
+    v.subVectors(COG, this.engine.controls.getTarget());
     this.camera.position.addVectors(this.camera.position, v);
 
     // retrieve camera orientation
 
     this.camera.lookAt(COG);
-    this.engine.controls.target.set(COG.x, COG.y, COG.z);
+    this.engine.controls.setTarget(COG.x, COG.y, COG.z);
   }
 
   /**

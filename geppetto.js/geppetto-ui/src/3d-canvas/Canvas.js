@@ -10,6 +10,7 @@ import { Recorder } from "./captureManager/Recorder";
 import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
 import { hasDifferentProxyInstances, hasDifferentThreeDObjects } from "./threeDEngine/util";
+import { ControlsStrategyEnum } from "./threeDEngine/controls/ControlsStrategyEnum";
 
 const styles = () => ({
   container: {
@@ -41,8 +42,9 @@ class Canvas extends Component {
     const {
       data,
       cameraOptions,
+      controlsOptions,
       captureOptions,
-      cameraHandler,
+      onCameraChanges,
       setColorHandler,
       backgroundColor,
       threeDObjects,
@@ -60,7 +62,8 @@ class Canvas extends Component {
     this.threeDEngine = new ThreeDEngine(
       this.sceneRef.current,
       cameraOptions,
-      cameraHandler,
+      controlsOptions,
+      onCameraChanges,
       setColorHandler,
       backgroundColor,
       pickingEnabled,
@@ -93,7 +96,7 @@ class Canvas extends Component {
 
   async componentDidUpdate (prevProps, prevState, snapshot) {
 
-    if (this.isResizeRequired()){
+    if (this.isResizeRequired()) {
       this.threeDEngine.resize()
     }
 
@@ -102,7 +105,7 @@ class Canvas extends Component {
         data,
         cameraOptions,
         captureOptions,
-        cameraHandler,
+        onCameraChanges,
         setColorHandler,
         backgroundColor,
         threeDObjects,
@@ -118,7 +121,7 @@ class Canvas extends Component {
         data: prevData,
         cameraOptions: prevCameraOptions,
         captureOptions: prevCaptureOptions,
-        cameraHandler: prevCameraHandler,
+        onCameraChanges: prevOnCameraChanges,
         setColorHandler: prevSetColorHandler,
         backgroundColor: prevBackgroundColor,
         threeDObjects: prevThreeDObjects,
@@ -130,44 +133,44 @@ class Canvas extends Component {
       } = prevProps;
 
       onUpdateStart();
-      if (backgroundColor !== prevBackgroundColor){
+      if (backgroundColor !== prevBackgroundColor) {
         this.threeDEngine.setBackgroundColor(backgroundColor);
       }
       if (hasDifferentProxyInstances(data, prevData)) {
         await this.threeDEngine.updateInstances(data)
       }
-      if (cameraOptions !== prevCameraOptions){
+      if (cameraOptions !== prevCameraOptions) {
         this.threeDEngine.updateCamera(cameraOptions);
       }
-      if (Object.keys(onHoverListeners).sort().toString() !== Object.keys(prevOnHoverListeners).sort().toString()){
+      if (Object.keys(onHoverListeners).sort().toString() !== Object.keys(prevOnHoverListeners).sort().toString()) {
         this.threeDEngine.setOnHoverListeners(onHoverListeners)
       }
-      if (selectionStrategy !== prevSelectionStrategy){
+      if (selectionStrategy !== prevSelectionStrategy) {
         this.threeDEngine.setSelectionStrategy(selectionStrategy)
       }
-      if (onSelection !== prevOnSelection){
+      if (onSelection !== prevOnSelection) {
         this.threeDEngine.setOnSelection(onSelection)
       }
-      if (linesThreshold !== prevLinesThreshold){
+      if (linesThreshold !== prevLinesThreshold) {
         this.threeDEngine.setLinesThreshold(linesThreshold)
       }
-      if (pickingEnabled !== prevPickingEnabled){
+      if (pickingEnabled !== prevPickingEnabled) {
         this.threeDEngine.setPickingEnabled(pickingEnabled)
       }
-      if (cameraHandler !== prevCameraHandler){
-        this.threeDEngine.seCameraHandler(cameraHandler)
+      if (onCameraChanges !== prevOnCameraChanges) {
+        this.threeDEngine.setOnCameraChanges(onCameraChanges)
       }
-      if (setColorHandler !== prevSetColorHandler){
+      if (setColorHandler !== prevSetColorHandler) {
         this.threeDEngine.setSetColorHandler(setColorHandler)
       }
-      if (hasDifferentThreeDObjects(threeDObjects, prevThreeDObjects)){
+      if (hasDifferentThreeDObjects(threeDObjects, prevThreeDObjects)) {
         this.threeDEngine.updateExternalThreeDObjects(threeDObjects)
       }
       this.threeDEngine.requestFrame()
       onUpdateEnd()
 
       if (captureOptions !== prevCaptureOptions) {
-        if (captureOptions !== undefined){
+        if (captureOptions !== undefined) {
           this.recorder = new Recorder(this.getCanvasElement(), captureOptions.recorderOptions)
         } else {
           this.recorder = null
@@ -188,8 +191,8 @@ class Canvas extends Component {
     this.sceneRef.current.removeEventListener('keydown', this.keyboardEventHandler)
   }
 
-  keyboardEventHandler (event){
-    switch (event.code){
+  keyboardEventHandler (event) {
+    switch (event.code) {
     case 'ArrowRight':
       this.defaultCameraControlsHandler(cameraControlsActions.PAN_RIGHT)
       break;
@@ -379,13 +382,16 @@ Canvas.defaultProps = {
       incrementRotation: {
         x: 0.05,
         y: 0.05,
-        z:0.05,
+        z: 0.05,
       },
       incrementZoom: 0.5,
       reset: false,
     },
-    trackballControls: {
-      rotationSpeed: 0.5,
+  },
+  controlsOptions: {
+    strategy: ControlsStrategyEnum.TRACKBALL_CONTROLS,
+    configs: {
+      rotateSpeed: 0.5,
       zoomSpeed: 1.2,
       panSpeed: 0.3,
     }
@@ -414,14 +420,19 @@ Canvas.defaultProps = {
   pickingEnabled: true,
   linesThreshold: 2000,
   threeDObjects: [],
-  cameraHandler: () => {},
+  onCameraChanges: () => {
+  },
   setColorHandler: () => true,
-  onSelection: () => {},
+  onSelection: () => {
+  },
   selectionStrategy: selectionStrategies.nearest,
   onHoverListeners: {},
-  onMount: () => {},
-  onUpdateStart: () => {},
-  onUpdateEnd: () => {},
+  onMount: () => {
+  },
+  onUpdateStart: () => {
+  },
+  onUpdateEnd: () => {
+  },
 };
 
 Canvas.propTypes = {
@@ -472,7 +483,7 @@ Canvas.propTypes = {
     /**
      * Rotation speed
      */
-    rotationSpeed: PropTypes.number,
+    rotateSpeed: PropTypes.number,
     /**
      * Boolean to enable/disable movie filter
      */
@@ -538,14 +549,20 @@ Canvas.propTypes = {
        */
       reset: PropTypes.bool,
     }),
+  }),
+  /**
+   * Options to customize scene controls
+   */
+  controlsOptions: PropTypes.shape({
     /**
-     * Options to customize camera controls
+     * Controls strategy to use
      */
-    trackballControls: PropTypes.shape({
+    strategy: PropTypes.oneOf(Object.values(ControlsStrategyEnum)),
+    configs: PropTypes.shape({
       /**
        * Value for the rotation speed triggered by the mouse
        */
-      rotationSpeed: PropTypes.number,
+      rotateSpeed: PropTypes.number,
       /**
        * Value for the zoom increment triggered by the mouse
        */
@@ -554,8 +571,7 @@ Canvas.propTypes = {
        * Value for the pan increment triggered by the mouse
        */
       panSpeed: PropTypes.number
-    }),
-
+    })
   }),
   /**
    * Options to customize capture features
@@ -616,7 +632,7 @@ Canvas.propTypes = {
   /**
    * Function to callback on camera changes
    */
-  cameraHandler: PropTypes.func,
+  onCameraChanges: PropTypes.func,
   /**
    * Function to callback on set color changes. Return true to apply default behavior after or false otherwise
    */

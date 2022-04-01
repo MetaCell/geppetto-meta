@@ -34,6 +34,7 @@ module.exports = smp.wrap({
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
+        options: { allowTsInNodeModules: true }
       },
       {
         test: /\.html$/,
