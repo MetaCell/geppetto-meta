@@ -138,15 +138,14 @@ class LoopTimer(threading.Thread):
             for model, synched_component in list(synched_models.items()):
                 modelValue=None
                 if model != '':
-                    try:
-                      if self.has_child_attr(model, self.scope):
-                        modelValue = eval(model, globals(), self.scope)
-                        #logging.debug("Evaluating "+model+" = ")
-                        #logging.debug(modelValue)
-                        
-                    except:
-                        pass
-                        #logging.debug("Error evaluating "+model+", don't worry, most likely the attribute is not set in the current model")
+                  try:
+                      modelValue = eval(model, globals(), self.scope)
+                      #logging.debug("Evaluating "+model+" = ")
+                      #logging.debug(modelValue)
+                      
+                  except:
+                      pass
+                      #logging.debug("Error evaluating "+model+", don't worry, most likely the attribute is not set in the current model")
 
                 if modelValue==None:
                     modelValue=""
