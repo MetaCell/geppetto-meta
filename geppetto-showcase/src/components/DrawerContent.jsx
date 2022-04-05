@@ -68,12 +68,14 @@ class DrawerContent extends Component {
     this.setState(() => ({ programmaticInterfacesOpen: !this.state.programmaticInterfacesOpen, }));
   }
 
+
   isActivePage (page) {
     const { currentPage } = this.props;
-    if (window.location.href.split('/')[3] === "") {
+    if (`/${window.location.href.split('/').slice(3).join('/')}` !== page) {
       return false;
+    } else {
+      return true;
     }
-    return page === currentPage;
   }
 
   filterContent (searchFilter) {
