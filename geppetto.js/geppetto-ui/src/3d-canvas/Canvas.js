@@ -178,6 +178,7 @@ class Canvas extends Component {
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
     const { incrementPan, incrementRotation, incrementZoom, movieFilter } = mergedProps
+    const { position, rotation, zoomTo } = this.props.cameraOptions;
     if (this.threeDEngine) {
       switch (action) {
       case cameraControlsActions.PAN_LEFT:
@@ -220,7 +221,7 @@ class Canvas extends Component {
         this.threeDEngine.cameraManager.incrementCameraZoom(incrementZoom);
         break;
       case cameraControlsActions.PAN_HOME:
-        this.threeDEngine.cameraManager.resetCamera();
+        this.threeDEngine.cameraManager.resetCamera(position, rotation, zoomTo);
         break;
       case cameraControlsActions.WIREFRAME:
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());

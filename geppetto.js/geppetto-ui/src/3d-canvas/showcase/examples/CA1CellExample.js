@@ -22,6 +22,7 @@ const styles = () => ({
     alignItems: 'stretch',
   }
 });
+
 class CA1Example extends Component {
   constructor (props) {
     super(props);
@@ -54,7 +55,7 @@ class CA1Example extends Component {
         autoRotate: false,
         movieFilter: true,
         reset: false,
-        cameraControls: { 
+        cameraControls: {
           instance: CameraControls,
           props: {}
         },
@@ -70,12 +71,14 @@ class CA1Example extends Component {
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
   }
+
   componentWillUnmount () {
     document.removeEventListener('mousedown', this.handleClickOutside);
   }
+
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
+      if (event.offsetX <= event.target.clientWidth) {
         this.setState({ hasModelLoaded: false })
       }
     }
@@ -87,10 +90,10 @@ class CA1Example extends Component {
     const model = await response.json();
     Manager.loadModel(model);
     Instances.getInstance(INSTANCE_NAME);
-    this.setState({ hasModelLoaded: true, showLoader:false })
+    this.setState({ hasModelLoaded: true, showLoader: false })
   }
 
-  onSelection (selectedInstances){
+  onSelection (selectedInstances) {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
@@ -111,10 +114,8 @@ class CA1Example extends Component {
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
-          <div id={'canvas-tooltips-container'}>
-            <div>
-              <CanvasTooltip ref={this.tooltipRef} />
-            </div>
+          <div>
+            <CanvasTooltip ref={this.tooltipRef}/>
           </div>
           <Canvas
             ref={this.canvasRef}
@@ -131,7 +132,7 @@ class CA1Example extends Component {
         color="primary"
         onClick={this.handleToggle}
       >
-      Show Example
+                Show Example
       </Button>
   }
 }
