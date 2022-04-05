@@ -113,9 +113,9 @@ module.exports = smp.wrap({
     new CopyPlugin(
       {
         patterns: [
-          { from: path.resolve(__dirname, "../geppetto.js/geppetto-ui/src/3d-canvas/showcase/models"), to: "assets" }
+          { from: path.resolve(__dirname, "./src/examples/3d-canvas/models"), to: "assets" }
         ]
       },
-  ),
+    ),
   ],
 });

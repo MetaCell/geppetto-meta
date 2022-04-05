@@ -3,7 +3,7 @@
 Enables Geppetto users to interact with and making modification to the Geppetto model directly from the frontend.
 
 ```element
-python-console/showcase/PythonConsole
+python-console/PythonConsole
 ```
 
 ## Examples

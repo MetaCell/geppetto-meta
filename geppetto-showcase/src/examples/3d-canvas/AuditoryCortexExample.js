@@ -82,7 +82,7 @@ class AuditoryCortexExample extends Component {
 
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
+      if (event.offsetX <= event.target.clientWidth) {
         this.setState({ hasModelLoaded: false })
       }
     }
@@ -106,7 +106,7 @@ class AuditoryCortexExample extends Component {
     });
   }
 
-  onSelection (selectedInstances){
+  onSelection (selectedInstances) {
     this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
@@ -117,27 +117,25 @@ class AuditoryCortexExample extends Component {
 
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <>
+      <div ref={node => this.node = node} className={classes.container}>
         <div>
-          <CanvasTooltip ref={this.tooltipRef} />
+          <CanvasTooltip ref={this.tooltipRef}/>
         </div>
-        <div ref={node => this.node = node} className={classes.container}>
-          <Canvas
-            ref={this.canvasRef}
-            data={canvasData}
-            cameraOptions={cameraOptions}
-            onSelection={this.onSelection}
-            backgroundColor={0x505050}
-            hoverListeners={[this.hoverHandler]}
-          />
-        </div>
-      </>
+        <Canvas
+          ref={this.canvasRef}
+          data={canvasData}
+          cameraOptions={cameraOptions}
+          onSelection={this.onSelection}
+          backgroundColor={0x505050}
+          hoverListeners={[this.hoverHandler]}
+        />
+      </div>
     ) : <Button
       variant="outlined"
       color="primary"
       onClick={this.handleToggle}
     >
-      Show Example
+            Show Example
     </Button>
   }
 }
