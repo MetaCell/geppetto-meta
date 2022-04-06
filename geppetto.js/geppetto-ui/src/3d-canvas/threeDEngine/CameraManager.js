@@ -16,6 +16,10 @@ export default class CameraManager {
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
     this.isFirstRender = true;
+    const { initialFlip } = cameraOptions;
+    if (initialFlip && initialFlip.length > 0) {
+      this.flipCamera(initialFlip);
+    }
   }
 
   update (cameraOptions) {
@@ -25,14 +29,10 @@ export default class CameraManager {
       autoRotate,
       movieFilter,
       initialZoomTo,
-      initialFlip,
       reset,
       trackballControls
     } = cameraOptions;
 
-    if (this.isFirstRender && initialFlip && initialFlip.length > 0){
-      this.flipCamera(initialFlip);
-    }
 
     if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
       this.resetCamera(initialPosition, initialRotation, initialZoomTo);
@@ -83,15 +83,13 @@ export default class CameraManager {
    * @param initalFlip
    */
   flipCamera (initialFlip) {
-    for (const axis of initialFlip){
+    for (const axis of initialFlip) {
       if (axis.toLowerCase() === 'y') {
         this.flipCameraY();
       } else if (axis.toLowerCase() === 'z') {
         this.flipCameraZ();
       }
     }
-    this.engine.setupControls();
-    this.resetCamera()
   }
 
   /**
@@ -107,6 +105,7 @@ export default class CameraManager {
   flipCameraZ () {
     this.camera.direction = new THREE.Vector3(0, 0, -1);
   }
+
   /**
    *
    * @param instances
@@ -148,7 +147,7 @@ export default class CameraManager {
     // If min and max vectors are null, first values become default min and max
     if (
       zoomParameters.aabbMin == undefined
-      && zoomParameters.aabbMax == undefined
+            && zoomParameters.aabbMax == undefined
     ) {
       zoomParameters.aabbMin = bb.min;
       zoomParameters.aabbMax = bb.max;
@@ -172,18 +171,18 @@ export default class CameraManager {
   zoomToParameters (zoomParameters) {
     // Compute world AABB center
     this.sceneCenter.x
-      = (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
+            = (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
     this.sceneCenter.y
-      = (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
+            = (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
     this.sceneCenter.z
-      = (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
+            = (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
 
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
   resetCamera (position, rotation, zoomTo) {
     const applyRotation = rotation => {
-      if (rotation){
+      if (rotation) {
         this.setCameraRotation(
           rotation.rx,
           rotation.ry,
@@ -192,7 +191,7 @@ export default class CameraManager {
         );
       }
     }
-    if (zoomTo){
+    if (zoomTo) {
       const instances = zoomTo.map(element => Instances.getInstance(element));
       if (instances.length > 0) {
         this.zoomTo(instances);
@@ -214,7 +213,7 @@ export default class CameraManager {
     this.engine.scene.traverse(function (child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry')
-        && child.visible === true
+                && child.visible === true
       ) {
         child.geometry.computeBoundingBox();
 
@@ -271,9 +270,9 @@ export default class CameraManager {
 
     // Compute offset needed to move the camera back that much needed to center AABB
     const offset
-      = radius
-      / Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5)
-      / this.baseZoom;
+            = radius
+            / Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5)
+            / this.baseZoom;
 
     const dir = this.camera.direction.clone();
     dir.multiplyScalar(offset);
@@ -375,6 +374,7 @@ export default class CameraManager {
   setCameraPosition (x, y, z) {
     this.engine.controls.setPosition(x, y, z);
   }
+
   /**
    * @param rx
    * @param ry
@@ -385,7 +385,7 @@ export default class CameraManager {
     this.engine.controls.setRotation(rx, ry, rz, radius);
   }
 
-  setTrackballControlsConfigs (config){
+  setTrackballControlsConfigs (config) {
     let { rotationSpeed, zoomSpeed, panSpeed } = config
 
     this.engine.controls.setRotationalSpeed(rotationSpeed)
