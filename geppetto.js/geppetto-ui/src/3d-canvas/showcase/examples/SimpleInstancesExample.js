@@ -73,6 +73,7 @@ class SimpleInstancesExample extends Component {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false },
         },
+        initialFlip: ['y', 'z'],
         reset: false,
         autorotate: false,
         wireframe: false,
