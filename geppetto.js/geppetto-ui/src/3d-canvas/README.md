@@ -56,13 +56,14 @@ Simple Instances Example
 3d-canvas/SimpleInstancesExample
 ```
 
-### Multiple Instances Example
+### Custom Controls Example
 
-Multiple Instances Example
+Custom Controls Example
 
 ```
-3d-canvas/MultipleInstancesExample
+3d-canvas/CustomControlsExample
 ```
+
 
 ## Libraries
 

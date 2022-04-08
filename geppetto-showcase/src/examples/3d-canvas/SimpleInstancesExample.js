@@ -73,13 +73,13 @@ class SimpleInstancesExample extends Component {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false },
         },
+        initialFlip: ['y', 'z'],
         reset: false,
         autorotate: false,
         wireframe: false,
       },
       showModel: false
     };
-    this.canvasIndex = 3
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -166,7 +166,7 @@ class SimpleInstancesExample extends Component {
             backgroundColor={0x505050}
             onSelection={this.onSelection}
             onMount={this.onMount}
-            hoverListeners={[this.hoverHandler]}
+            onHoverListeners={{ 'hoverId':this.hoverHandler }}
           />
         </>
       </div>

@@ -60,8 +60,8 @@ class AuditoryCortexExample extends Component {
         reset: false,
         autorotate: false,
         wireframe: false,
-        position: { x: 230.357, y: 256.435, z: 934.238 },
-        rotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
+        initialPosition: { x: 230.357, y: 256.435, z: 934.238 },
+        initialRotation: { rx: -0.294, ry: -0.117, rz: -0.02, radius: 531.19 },
       },
     };
 
@@ -127,7 +127,7 @@ class AuditoryCortexExample extends Component {
           cameraOptions={cameraOptions}
           onSelection={this.onSelection}
           backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
+          onHoverListeners={{ 'hoverId':this.hoverHandler }}
         />
       </div>
     ) : <Button

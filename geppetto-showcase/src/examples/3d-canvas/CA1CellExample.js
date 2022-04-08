@@ -50,8 +50,8 @@ class CA1Example extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        position: { x: -97.349, y: 53.797, z: 387.82 },
-        rotation: { rx: 0.051, ry: -0.192, rz: -0.569, radius: 361.668 },
+        initialPosition: { x: -97.349, y: 53.797, z: 387.82 },
+        initialRotation: { rx: 0.051, ry: -0.192, rz: -0.569, radius: 361.668 },
         autoRotate: false,
         movieFilter: true,
         reset: false,
@@ -124,7 +124,7 @@ class CA1Example extends Component {
             onSelection={this.onSelection}
             linesThreshold={10000}
             backgroundColor={0x505050}
-            hoverListeners={[this.hoverListener]}
+            onHoverListeners={{ 'hoverId':this.hoverListener }}
           />
         </div>
       ) : <Button
