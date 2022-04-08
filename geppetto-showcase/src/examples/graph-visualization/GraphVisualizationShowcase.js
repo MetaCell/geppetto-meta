@@ -25,6 +25,7 @@ export default class GraphVisualizationShowcase extends Component {
           data={this.getData()}
           nodeLabel={node => node.name}
           linkLabel={link => link.name}
+          nodeRelSize={5}
         />
       </div>
     )
