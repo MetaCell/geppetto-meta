@@ -54,7 +54,7 @@ class AuditoryCortexExample2 extends Component {
         near: 10,
         far: 2000000,
         baseZoom: 1,
-        zoomTo: ['acnet2.baskets_12[7]'],
+        initialZoomTo: ['acnet2.baskets_12[7]'],
         cameraControls: {
           instance: CameraControls,
           props: { wireframeButtonEnabled: false, },
@@ -138,7 +138,7 @@ class AuditoryCortexExample2 extends Component {
           cameraOptions={cameraOptions}
           onSelection={this.onSelection}
           backgroundColor={0x505050}
-          hoverListeners={[this.hoverHandler]}
+          onHoverListeners={{ 'hoverId':this.hoverHandler }}
         />
       </div>
     )

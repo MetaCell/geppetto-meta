@@ -217,7 +217,19 @@ class TrackballControls extends EventDispatcher {
     // end of metacell changes
 
     this.setRotationalSpeed = function (s) {
-      scope.rotationSpeed = s ;
+      if (s){
+        scope.rotationSpeed = s ;
+      }
+    };
+    this.setZoomSpeed = function (s) {
+      if (s){
+        scope.zoomSpeed = s ;
+      }
+    };
+    this.setPanSpeed = function (s) {
+      if (s){
+        scope.panSpeed = s ;
+      }
     };
     
     this.resetRotationalSpeed = function () {

@@ -26,3 +26,43 @@ function componentToHex (c) {
 export function rgbToHex (r, g, b) {
   return '0X' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
+
+export function sortInstances (proxyInstances) {
+  let sortedInstances = [];
+  sortedInstances = proxyInstances.sort((a, b) => {
+    if (a.instancePath < b.instancePath) {
+      return -1;
+    }
+    if (a.instancePath > b.instancePath) {
+      return 1;
+    }
+    return 0;
+  });
+  return sortedInstances;
+}
+
+export function hasDifferentProxyInstances (data, prevData){
+  data = sortInstances(data)
+  prevData = sortInstances(prevData)
+  // FIXME: attribute order matters in the check below but it probably shouldn't:
+  return JSON.stringify(data) !== JSON.stringify(prevData)
+}
+
+export function hasDifferentThreeDObjects (threeDObjects, prevThreeDObjects){
+  const threeDObjectsUUIDs = new Set(threeDObjects.map(obj => obj.uuid))
+  const prevThreeDObjectsUUIDs = new Set(prevThreeDObjects.map(obj => obj.uuid))
+  return !eqSet(threeDObjectsUUIDs, prevThreeDObjectsUUIDs)
+}
+
+
+function eqSet (as, bs) {
+  if (as.size !== bs.size) {
+    return false;
+  }
+  for (const a of as) {
+    if (!bs.has(a)) {
+      return false;
+    }
+  }
+  return true;
+}
