@@ -13,7 +13,7 @@ Notable Features:
 * Tab renaming (double click tab text to rename)
 
 ```element
-flex-layout/showcase/FlexLayout.Layout
+flex-layout/FlexLayout.Layout
 ```
 
 ## Examples
