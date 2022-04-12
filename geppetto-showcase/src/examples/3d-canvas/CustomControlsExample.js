@@ -223,6 +223,7 @@ class CustomControlsExample extends Component {
           reset: false
         }
       }))
+      break
     case ACTIONS.CHANGE_SELECTION_STRATEGY:
       this.setState({ selectionStrategyIndex: this.nextSelectionStrategy() })
       break
