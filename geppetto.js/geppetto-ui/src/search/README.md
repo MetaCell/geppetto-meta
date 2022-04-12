@@ -39,7 +39,7 @@ search/showcase/Search
 Example of search component.
 
 ```
-search/showcase/examples/SearchShowcase
+search/SearchShowcase
 ``` 
 
 ## Libraries
@@ -112,7 +112,7 @@ search/showcase/Search
 Example of a simple search.
 
 ```
-search/showcase/examples/SearchShowcase
+search/SearchShowcase
 ```
 
 ## Libraries

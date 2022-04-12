@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Search from './../../Search';
+import Search from '@metacell/geppetto-meta-ui/search/Search';
 import { Button } from "@material-ui/core";
 
 export default class SearchShowcase extends Component {
   constructor (props) {
     super(props);
-    this.searchStyle = require('../searchConfiguration').searchStyle;
-    this.searchConfiguration = require('../searchConfiguration').searchConfiguration;
-    this.datasourceConfiguration = require('../searchConfiguration').datasourceConfiguration;
+    this.searchStyle = require('./searchConfiguration').searchStyle;
+    this.searchConfiguration = require('./searchConfiguration').searchConfiguration;
+    this.datasourceConfiguration = require('./searchConfiguration').datasourceConfiguration;
   }
 
   render () {
