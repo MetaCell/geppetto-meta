@@ -6,7 +6,6 @@ import Button from "@material-ui/core/Button";
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
-import CanvasTooltip from './utils/CanvasTooltip';
 
 const INSTANCE_NAME = 'network_CA1PyramidalCell';
 const COLORS = [
@@ -27,7 +26,6 @@ class CA1Example extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.tooltipRef = React.createRef();
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
@@ -98,11 +96,7 @@ class CA1Example extends Component {
   }
 
   hoverListener (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   render () {
@@ -114,9 +108,6 @@ class CA1Example extends Component {
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef}/>
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

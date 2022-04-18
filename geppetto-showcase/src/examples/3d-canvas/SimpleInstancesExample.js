@@ -11,7 +11,6 @@ import CaptureControls from "@metacell/geppetto-meta-ui/capture-controls/Capture
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
-import CanvasTooltip from "./utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -59,7 +58,6 @@ const styles = () => ({
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
-    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -98,11 +96,6 @@ class SimpleInstancesExample extends Component {
 
 
   hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
   }
 
   handleToggle () {
@@ -155,9 +148,6 @@ class SimpleInstancesExample extends Component {
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef} />
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

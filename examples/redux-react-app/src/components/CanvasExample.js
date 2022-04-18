@@ -92,6 +92,10 @@ function CanvasExample(props) {
         });
     }
 
+    const onEmptyHoverListener = () => {
+      tooltipRef?.current?.updateIntersected(null);
+    }
+
     const canvasData = mapToCanvasData(data);
     let camOptions = cameraOptions;
 

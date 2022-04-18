@@ -51,6 +51,7 @@ class Canvas extends Component {
       onSelection,
       selectionStrategy,
       onHoverListeners,
+      onEmptyHoverListener,
       onMount,
       onUpdateStart,
       onUpdateEnd,
@@ -68,6 +69,7 @@ class Canvas extends Component {
       onSelection,
       selectionStrategy,
       onHoverListeners,
+      onEmptyHoverListener,
       hasCaptureOptions
     );
     onUpdateStart();
