@@ -19,7 +19,7 @@ list-viewer/ListViewer
 Simple example with default parameters
 
 ```
-list-viewer/showcase/examples/ListViewerShowcaseDefault
+list-viewer/ListViewerShowcaseDefault
 ```
 
 ### List Viewer Data Filtering
@@ -27,7 +27,7 @@ list-viewer/showcase/examples/ListViewerShowcaseDefault
 Simple example with data filtering and pagination - here we are filtering all data to be of metaType "CompositeType"
 
 ```
-list-viewer/showcase/examples/ListViewerShowcaseFilter
+list-viewer/ListViewerShowcaseFilter
 ```
 
 ### List Viewer Scroll
@@ -35,7 +35,7 @@ list-viewer/showcase/examples/ListViewerShowcaseFilter
 Simple example with infinite scrolling on a dataset. 
 
 ```
-list-viewer/showcase/examples/ListViewerShowcaseScroll
+list-viewer/ListViewerShowcaseScroll
 ```
 
 ### List Viewer Full
@@ -43,7 +43,7 @@ list-viewer/showcase/examples/ListViewerShowcaseScroll
 Example showing custom controls for every row, such as link cells, image cells, color picker, custom action buttons and input fields. 
 
 ```
-list-viewer/showcase/examples/ListViewerShowcaseFull
+list-viewer/ListViewerShowcaseFull
 ```
 
 ## Libraries

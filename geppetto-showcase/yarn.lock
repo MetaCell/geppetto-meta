@@ -13860,7 +13860,7 @@ three@0.118.0, "three@>=0.118 <1", three@^0.87.0, three@latest:
   resolved "https://registry.yarnpkg.com/three/-/three-0.118.0.tgz#a471dd31f75b95e29ba73502f372d73191dda17b"
   integrity sha512-lCzCH6ZdOj4aO/qdp98vNyOY8NK5uGkVcd++vw2hTJMZwYLrEhAYirJ96C4j0/2bxaKRNyE+VF1G4nWeJP2l9g==
 
-three@>=0.111.0:
+three@^0.138.3:
   version "0.138.3"
   resolved "https://registry.yarnpkg.com/three/-/three-0.138.3.tgz#7be5153d79dcbf9e9baad82e7faf8c29edda4ed0"
   integrity sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg==

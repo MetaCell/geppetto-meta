@@ -22,7 +22,7 @@ movie-player/MoviePlayer
 Movie Player Example
 
 ```
-movie-player/showcase/examples/MoviePlayerShowcase
+movie-player/MoviePlayerShowcase
 ```
 
 ## Libraries

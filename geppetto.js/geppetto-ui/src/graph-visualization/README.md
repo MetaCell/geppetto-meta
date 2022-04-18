@@ -20,7 +20,7 @@ graph-visualization/Graph
 Example of basic usage of the Graph Viewer.
 
 ```
-graph-visualization/showcase/examples/GraphVisualizationShowcase
+graph-visualization/GraphVisualizationShowcase
 ```
 
 ## Libraries

@@ -3,17 +3,17 @@
 Enables Geppetto users to interact with and making modification to the Geppetto model directly from the frontend.
 
 ```element
-python-console/showcase/PythonConsole
+python-console/PythonConsole
 ```
 
 ## Examples
 
 ### Python Console Example
 
-Example showing how we can interacti programmatically with NWB files using Python.
+Example showing how we can interact programmatically with NWB files using Python.
 
 ```
-python-console/showcase/PythonConsoleShowcase
+python-console/PythonConsoleShowcase
 ```
 
 ## Libraries

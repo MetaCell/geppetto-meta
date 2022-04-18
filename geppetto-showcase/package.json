@@ -117,7 +117,7 @@
     "string-similarity": "^4.0.1",
     "styled-components": "^4.3.2",
     "text": "^0.1.0",
-    "three": ">=0.111.0",
+    "three": "^0.138.3",
     "three-render-objects": ">=1.13.3",
     "ts-loader": "^8.3.0",
     "typeahead.js": "^0.11.1",

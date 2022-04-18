@@ -13,7 +13,7 @@ vr-canvas/canvas/Canvas
 VR Canvas Example
 
 ```
-vr-canvas/showcase/examples/VRCanvasExample
+vr-canvas/VRCanvasExample
 ```
 
 ## Libraries
