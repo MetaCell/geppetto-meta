@@ -9,8 +9,8 @@ import Button from "@material-ui/core/Button";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
-import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
-import CanvasTooltip from "./utils/CanvasTooltip";
+import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
+import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasTooltip";
 
 const instance1spec = {
   "eClass": "SimpleInstance",
