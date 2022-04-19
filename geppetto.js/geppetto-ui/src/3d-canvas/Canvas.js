@@ -113,6 +113,7 @@ class Canvas extends Component {
         onSelection,
         selectionStrategy,
         onHoverListeners,
+        onEmptyHoverListener,
         onUpdateStart,
         onUpdateEnd,
       } = this.props;
@@ -129,6 +130,7 @@ class Canvas extends Component {
         onSelection: prevOnSelection,
         selectionStrategy: prevSelectionStrategy,
         onHoverListeners: prevOnHoverListeners,
+        onEmptyHoverListener: prevOnEmptyHoverListener
       } = prevProps;
 
       onUpdateStart();
@@ -149,6 +151,9 @@ class Canvas extends Component {
       }
       if (onSelection !== prevOnSelection){
         this.threeDEngine.setOnSelection(onSelection)
+      }
+      if (onEmptyHoverListener !== prevOnEmptyHoverListener){
+        this.threeDEngine.setOnEmptyHoverListener(onEmptyHoverListener)
       }
       if (linesThreshold !== prevLinesThreshold){
         this.threeDEngine.setLinesThreshold(linesThreshold)
