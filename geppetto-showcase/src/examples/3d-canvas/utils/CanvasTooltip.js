@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const CanvasToolTip = React.forwardRef((props, ref) => {
 
   const [intersected, setIntersected] = React.useState(null);
@@ -9,13 +10,14 @@ const CanvasToolTip = React.forwardRef((props, ref) => {
     ref,
     () => ({
       updateIntersected(updatedIntersection) {
-        setIntersected(updatedIntersection);
-
-        setTooltipVisible(true);
-
-        setTimeout(() => {
+        if (updatedIntersection)
+        {
+          setIntersected(updatedIntersection);
+          setTooltipVisible(true);
+        }
+        else {
           setTooltipVisible(false);
-        }, 1500);
+        }
       }
     })
   )

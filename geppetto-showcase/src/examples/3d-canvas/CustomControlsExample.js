@@ -10,7 +10,6 @@ import { applySelection, mapToCanvasData } from "./utils/SelectionUtils";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
-import CanvasTooltip from "./utils/CanvasTooltip";
 import { faFill, faCamera, faHandPointDown, faMousePointer, faCubes } from '@fortawesome/free-solid-svg-icons';
 
 const instance1spec = {
@@ -174,11 +173,7 @@ class CustomControlsExample extends Component {
   }
 
   hoverHandlerOne (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   hoverHandlerTwo (objs, canvasX, canvasY) {
@@ -288,9 +283,6 @@ class CustomControlsExample extends Component {
     return showLoader ? <Loader active={true}/> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef}/>
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
