@@ -265,7 +265,7 @@ class Canvas extends Component {
         y: 0.01,
         z: 0.01,
       },
-      incrementZoom: 0.1,
+      incrementZoom: 0.01,
       movieFilter: false,
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
@@ -319,7 +319,7 @@ class Canvas extends Component {
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
         break;
       }
-      this.threeDEngine.updateControls();
+      //this.threeDEngine.updateControls();
     }
   }
 
