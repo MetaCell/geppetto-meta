@@ -1,6 +1,6 @@
 import { MyComponent } from '../components/MyComponent';
-import BigImageViewerExample from '@metacell/geppetto-meta-ui/big-image-viewer/showcase/examples/BigImageViewerExample';
-import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/showcase/examples/DicomViewerExample';
+import BigImageViewerExample from '@metacell/geppetto-meta-ui/big-image-viewer/BigImageViewer';
+import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import CanvasExample from '../components/CanvasExample';
 
 /**

@@ -21,7 +21,7 @@ dicom-viewer/DicomViewer
 The following example shows a brain MRI in DICOM format acquired at The Brain Observatory.
 
 ```
-dicom-viewer/showcase/examples/DicomViewerExample
+dicom-viewer/DicomViewerExample
 ```
 
 ## Libraries

@@ -21,7 +21,7 @@ plot/PlotComponent
 Plotting a simple sinusoid function.
 
 ```
-plot/showcase/examples/PlotShowcase
+plot/PlotShowcase
 ```
 
 ## Libraries

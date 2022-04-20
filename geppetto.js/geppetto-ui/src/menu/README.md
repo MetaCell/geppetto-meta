@@ -13,7 +13,7 @@ menu/Menu
 Example of a simple menu.
 
 ```
-menu/showcase/examples/MenuShowcase
+menu/MenuShowcase
 ```
 
 ## Libraries

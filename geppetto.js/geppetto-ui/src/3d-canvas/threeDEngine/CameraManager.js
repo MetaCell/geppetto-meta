@@ -15,47 +15,56 @@ export default class CameraManager {
     this.camera.direction = new THREE.Vector3(0, 0, 1);
     this.camera.lookAt(this.sceneCenter);
     this.baseZoom = cameraOptions.baseZoom;
-    this.firstLoad = false;
+    this.isFirstRender = true;
+    const { initialFlip } = cameraOptions;
+    if (initialFlip && initialFlip.length > 0) {
+      this.flipCamera(initialFlip);
+    }
   }
 
   update (cameraOptions) {
     const {
-      position,
-      rotation,
+      initialPosition,
+      initialRotation,
       autoRotate,
       movieFilter,
-      zoomTo,
+      initialZoomTo,
       reset,
+      trackballControls
     } = cameraOptions;
 
-    if (reset || (!this.firstLoad && position === undefined)) {
-      this.resetCamera(position);
-      if (!this.firstLoad) {
-        this.firstLoad = true;
+
+    if (reset || (this.isFirstRender && initialPosition === undefined && initialZoomTo === undefined)) {
+      this.resetCamera(initialPosition, initialRotation, initialZoomTo);
+      if (this.isFirstRender) {
+        this.isFirstRender = false;
       }
     } else {
-      if (position && !this.firstLoad) {
-        this.setCameraPosition(position.x, position.y, position.z);
+      if (initialPosition && this.isFirstRender) {
+        this.setCameraPosition(initialPosition.x, initialPosition.y, initialPosition.z);
       }
-      if (rotation && !this.firstLoad) {
+      if (initialRotation && this.isFirstRender) {
         this.setCameraRotation(
-          rotation.rx,
-          rotation.ry,
-          rotation.rz,
-          rotation.radius
+          initialRotation.rx,
+          initialRotation.ry,
+          initialRotation.rz,
+          initialRotation.radius
         );
       }
-      if (!this.firstLoad) {
-        this.firstLoad = true;
+      if (initialZoomTo && Array.isArray(initialZoomTo) && this.isFirstRender) {
+        const instances = initialZoomTo.map(element => Instances.getInstance(element));
+        if (instances.length > 0) {
+          this.zoomTo(instances);
+        }
       }
       if (autoRotate) {
         this.autoRotate(movieFilter);
       }
-      if (zoomTo && Array.isArray(zoomTo)) {
-        const instances = zoomTo.map(element => Instances.getInstance(element));
-        if (instances.length > 0) {
-          this.zoomTo(instances);
-        }
+      if (trackballControls) {
+        this.setTrackballControlsConfigs(trackballControls);
+      }
+      if (this.isFirstRender) {
+        this.isFirstRender = false;
       }
     }
   }
@@ -67,6 +76,34 @@ export default class CameraManager {
   zoomTo (instances) {
     this.engine.controls.reset();
     this.zoomToParameters(this.zoomIterator(instances, {}));
+  }
+
+  /**
+   *
+   * @param initalFlip
+   */
+  flipCamera (initialFlip) {
+    for (const axis of initialFlip) {
+      if (axis.toLowerCase() === 'y') {
+        this.flipCameraY();
+      } else if (axis.toLowerCase() === 'z') {
+        this.flipCameraZ();
+      }
+    }
+  }
+
+  /**
+   * Reinitializes the camera with the Y axis flipped
+   */
+  flipCameraY () {
+    this.camera.up = new THREE.Vector3(0, -1, 0);
+  }
+
+  /**
+   * Reinitializes the camera with the Z axis flipped
+   */
+  flipCameraZ () {
+    this.camera.direction = new THREE.Vector3(0, 0, -1);
   }
 
   /**
@@ -110,7 +147,7 @@ export default class CameraManager {
     // If min and max vectors are null, first values become default min and max
     if (
       zoomParameters.aabbMin == undefined
-      && zoomParameters.aabbMax == undefined
+            && zoomParameters.aabbMax == undefined
     ) {
       zoomParameters.aabbMin = bb.min;
       zoomParameters.aabbMax = bb.max;
@@ -134,18 +171,37 @@ export default class CameraManager {
   zoomToParameters (zoomParameters) {
     // Compute world AABB center
     this.sceneCenter.x
-      = (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
+            = (zoomParameters.aabbMax.x + zoomParameters.aabbMin.x) * 0.5;
     this.sceneCenter.y
-      = (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
+            = (zoomParameters.aabbMax.y + zoomParameters.aabbMin.y) * 0.5;
     this.sceneCenter.z
-      = (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
+            = (zoomParameters.aabbMax.z + zoomParameters.aabbMin.z) * 0.5;
 
     this.updateCamera(zoomParameters.aabbMax, zoomParameters.aabbMin);
   }
 
-  resetCamera (position) {
+  resetCamera (position, rotation, zoomTo) {
+    const applyRotation = rotation => {
+      if (rotation) {
+        this.setCameraRotation(
+          rotation.rx,
+          rotation.ry,
+          rotation.rz,
+          rotation.radius
+        );
+      }
+    }
+    if (zoomTo) {
+      const instances = zoomTo.map(element => Instances.getInstance(element));
+      if (instances.length > 0) {
+        this.zoomTo(instances);
+      }
+      applyRotation(rotation)
+      return;
+    }
     if (position) {
       this.setCameraPosition(position.x, position.y, position.z);
+      applyRotation(rotation)
       return;
     }
 
@@ -157,7 +213,7 @@ export default class CameraManager {
     this.engine.scene.traverse(function (child) {
       if (
         Object.prototype.hasOwnProperty.call(child, 'geometry')
-        && child.visible === true
+                && child.visible === true
       ) {
         child.geometry.computeBoundingBox();
 
@@ -195,6 +251,8 @@ export default class CameraManager {
       this.camera.far = maxSize * 100;
       this.updateCamera(aabbMax, aabbMin);
     }
+
+    applyRotation(rotation)
   }
 
   /**
@@ -212,9 +270,9 @@ export default class CameraManager {
 
     // Compute offset needed to move the camera back that much needed to center AABB
     const offset
-      = radius
-      / Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5)
-      / this.baseZoom;
+            = radius
+            / Math.sin((Math.PI / 180.0) * this.camera.fov * 0.5)
+            / this.baseZoom;
 
     const dir = this.camera.direction.clone();
     dir.multiplyScalar(offset);
@@ -316,6 +374,7 @@ export default class CameraManager {
   setCameraPosition (x, y, z) {
     this.engine.controls.setPosition(x, y, z);
   }
+
   /**
    * @param rx
    * @param ry
@@ -324,6 +383,14 @@ export default class CameraManager {
    */
   setCameraRotation (rx, ry, rz, radius) {
     this.engine.controls.setRotation(rx, ry, rz, radius);
+  }
+
+  setTrackballControlsConfigs (config) {
+    let { rotationSpeed, zoomSpeed, panSpeed } = config
+
+    this.engine.controls.setRotationalSpeed(rotationSpeed)
+    this.engine.controls.setZoomSpeed(zoomSpeed)
+    this.engine.controls.setPanSpeed(panSpeed)
   }
 
   /**

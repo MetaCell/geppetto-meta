@@ -19,7 +19,7 @@ tree-viewer/Tree
 Tree viewer search example
 
 ```
-tree-viewer/showcase/examples/TreeShowcaseSearch
+tree-viewer/TreeShowcaseSearch
 ```
 
 ### Tree Viewer Basic Example
@@ -27,7 +27,7 @@ tree-viewer/showcase/examples/TreeShowcaseSearch
 Basic tree viewer example with some sample hierarchy displayed, showing custom icons for nodes.
 
 ```
-tree-viewer/showcase/examples/TreeShowcase
+tree-viewer/TreeShowcase
 ```
 
 

@@ -113,9 +113,14 @@ module.exports = smp.wrap({
     new CopyPlugin(
       {
         patterns: [
-          { from: path.resolve(__dirname, "../geppetto.js/geppetto-ui/src/3d-canvas/showcase/models"), to: "assets" }
+          { from: path.resolve(__dirname, "./src/examples/3d-canvas/models"), to: "assets" },
+          { from: path.resolve(__dirname, "./src/examples/list-viewer/instances-small.js"), to: "instances-small.js" },
+          { from: path.resolve(__dirname, "./src/examples/connectivity-viewer/model.js"), to: "model.js" },
+          { from: path.resolve(__dirname, "./src/examples/plot/model.js"), to: "model.js" },
+          { from: path.resolve(__dirname, "./src/examples/menu/model.json"), to: "model.json" },
+          { from: path.resolve(__dirname, "./src/examples/vr-canvas/auditory_cortex.json"), to: "auditory_cortex.json" },
         ]
       },
-  ),
+    ),
   ],
 });
