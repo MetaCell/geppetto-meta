@@ -1,10 +1,10 @@
 import React from 'react';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
-import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/showcase/utils/CanvasTooltip";
+import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasToolTip"
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import { makeStyles } from '@material-ui/core';
-import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/showcase/utils/SelectionUtils";
+import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
 import { connect } from 'react-redux';
 
 // @ts-ignore

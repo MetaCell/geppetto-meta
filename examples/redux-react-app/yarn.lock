@@ -1723,14 +1723,12 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@^1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-1.0.0-rc8.tgz#ab3a9ba787642069ae9463e8c918577b02a9b337"
-  integrity sha512-R3v4zRet+JmorteUIyMEFQdom3Vvl+JN4/6QOJ8uiZWAdVX52spMaSXkGBbSkhwaiBGZiFsQwi67j5KTA1p9UA==
+"@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
+  version "1.0.0-rc11"
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" "1.0.0-rc8"
-    "@metacell/geppetto-meta-ui" "1.0.0-rc8"
+    "@metacell/geppetto-meta-core" v1.0.0-rc11
+    "@metacell/geppetto-meta-ui" v1.0.0-rc11
     anchorme "^0.7.1"
     backbone "^1.3.3"
     backbone-associations "^0.6.2"
@@ -1771,15 +1769,23 @@
     underscore "~1.9.1"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@1.0.0-rc8", "@metacell/geppetto-meta-core@^1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc8.tgz#3ef8d92c833f49e0d2922b0bc4ef630e7e6873de"
-  integrity sha512-CjmONTGPVn4JznLFp8aNWKnJzngGsvRGj3/hpF8b3dRhQr3QZ/4nsRbnP0/zkDFO6ycF31OpNJ2vglCqzXq2lQ==
+"@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
+  version "1.0.0-rc11"
 
-"@metacell/geppetto-meta-ui@1.0.0-rc8", "@metacell/geppetto-meta-ui@^1.0.0-rc8":
-  version "1.0.0-rc8"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc8.tgz#82daf9faa2905851daee412c5bd93347f46d602e"
-  integrity sha512-HaQcZNTEShhzoqjNt+RcyKssZiZJ1c+aOnH9kgP6IJU/qZE5b3xrgOqr02siVbMuURHObWSjTdOrep+AjQBKGw==
+"@metacell/geppetto-meta-core@v1.0.0-rc11":
+  version "1.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc11.tgz#8ff675abe25950081fc2cad019786bf9c7d4b3bc"
+  integrity sha512-rIR51uZDseaVTHdE8rKmcUGLlnIM3+IknBeOqT52E+bfJQHGCVkSaw3MMXg6tAPhgmFi5aPuWv5vmTXEa3rJMA==
+
+"@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
+  version "1.0.0-rc11"
+  dependencies:
+    babel-plugin-import-less "^0.1.6"
+
+"@metacell/geppetto-meta-ui@v1.0.0-rc11":
+  version "1.0.0-rc11"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc11.tgz#d71b53b8aee93c0a0b0d6a3250611582c9cd1805"
+  integrity sha512-mUVaFoVpvftPQDKlCHhePtHa/jbKzkM00x5L89A5nay8mAeSRqK/iS6U9Wv+g2ElN8wbmRxc9U+O2r7uakmGyA==
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
@@ -8532,9 +8538,9 @@ grid-index@^1.1.0:
   resolved "https://registry.yarnpkg.com/grid-index/-/grid-index-1.1.0.tgz#97f8221edec1026c8377b86446a7c71e79522ea7"
   integrity sha512-HZRwumpOGUrHyxO5bqKZL0B0GlUpwtCAzZ42sgxUPniu33R1LSFH5yrIcBCHjkctCAh3mtWKcKd9J4vDDdeVHA==
 
-"griddle-0.6-fork@git+https://github.com/rodriguez-facundo/griddle.git":
+"griddle-0.6-fork@https://github.com/rodriguez-facundo/griddle.git":
   version "0.6.1"
-  resolved "git+https://github.com/rodriguez-facundo/griddle.git#218468b8c438295f8b3c6a8229491eb7972ed85e"
+  resolved "https://github.com/rodriguez-facundo/griddle.git#218468b8c438295f8b3c6a8229491eb7972ed85e"
   dependencies:
     lodash "^4.12.0"
     prop-types "^15.6.2"
