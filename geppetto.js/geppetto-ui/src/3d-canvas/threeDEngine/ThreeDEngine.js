@@ -32,6 +32,7 @@ export default class ThreeDEngine {
     onSelection,
     selectionStrategy,
     onHoverListeners,
+    onEmptyHoverListener,
     preserveDrawingBuffer
   ) {
     this.scene = new THREE.Scene();
@@ -47,6 +48,7 @@ export default class ThreeDEngine {
     this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
+    this.onEmptyHoverListener = onEmptyHoverListener ;
     this.cameraHandler = cameraHandler;
     this.setColorHandler = setColorHandler;
     this.selectionStrategy = selectionStrategy
@@ -71,6 +73,7 @@ export default class ThreeDEngine {
     this.setupRenderer = this.setupRenderer.bind(this);
     this.setupListeners = this.setupListeners.bind(this);
     this.setOnHoverListeners = this.setOnHoverListeners.bind(this);
+    this.setOnEmptyHoverListener = this.setOnEmptyHoverListener.bind(this);
 
     // Setup Camera
     this.setupCamera(cameraOptions, this.width / this.height);
@@ -332,6 +335,8 @@ export default class ThreeDEngine {
           this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
         }
       }
+      if (this.onEmptyHoverListener && intersects.length == 0)
+        this.onEmptyHoverListener();
     }
   }
 
@@ -947,6 +952,10 @@ export default class ThreeDEngine {
    */
   setOnHoverListeners (onHoverListeners) {
     this.onHoverListeners = onHoverListeners
+  }
+
+  setOnEmptyHoverListener (onEmptyHoverListener) {
+    this.onEmptyHoverListener = onEmptyHoverListener
   }
   /**
    * Sets selectionStrategy

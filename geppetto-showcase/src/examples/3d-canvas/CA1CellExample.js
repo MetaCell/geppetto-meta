@@ -27,7 +27,6 @@ class CA1Example extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.tooltipRef = React.createRef();
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
@@ -98,11 +97,7 @@ class CA1Example extends Component {
   }
 
   hoverListener (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   render () {
@@ -114,9 +109,6 @@ class CA1Example extends Component {
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
         <div ref={node => this.node = node} className={classes.container}>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef}/>
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

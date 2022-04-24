@@ -59,7 +59,6 @@ const styles = () => ({
 class SimpleInstancesExample extends Component {
   constructor (props) {
     super(props);
-    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -98,11 +97,6 @@ class SimpleInstancesExample extends Component {
 
 
   hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
   }
 
   handleToggle () {
@@ -155,9 +149,6 @@ class SimpleInstancesExample extends Component {
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef} />
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

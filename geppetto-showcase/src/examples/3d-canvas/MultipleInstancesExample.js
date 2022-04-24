@@ -58,7 +58,6 @@ const styles = () => ({
 class MultipleInstancesExample extends Component {
   constructor (props) {
     super(props);
-    this.tooltipRef = React.createRef();
     loadInstances()
     this.state = {
       data: getProxyInstances(),
@@ -98,11 +97,7 @@ class MultipleInstancesExample extends Component {
   }
 
   hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   handleToggle () {
@@ -163,9 +158,6 @@ class MultipleInstancesExample extends Component {
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef} />
-          </div>
           { 
             [...Array(this.state.numberOfInstances)].map((e, i) =>
               <Canvas

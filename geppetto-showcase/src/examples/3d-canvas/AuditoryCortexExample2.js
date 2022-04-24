@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
-import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasTooltip";
+import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasToolTip"
 
 const INSTANCE_NAME = 'acnet2';
 const COLORS = [
@@ -76,7 +76,8 @@ class AuditoryCortexExample2 extends Component {
       },
     };
 
-    this.onSelection = this.onSelection.bind(this)
+    this.onSelection = this.onSelection.bind(this);
+    this.onEmptyHoverListener = this.onEmptyHoverListener.bind(this)
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -106,6 +107,10 @@ class AuditoryCortexExample2 extends Component {
       x: canvasX,
       y: canvasY,
     });
+  }
+
+  onEmptyHoverListener () { 
+    this.tooltipRef?.current?.updateIntersected(null);
   }
 
   async handleToggle () {
@@ -139,6 +144,7 @@ class AuditoryCortexExample2 extends Component {
           onSelection={this.onSelection}
           backgroundColor={0x505050}
           onHoverListeners={{ 'hoverId':this.hoverHandler }}
+          onEmptyHoverListener={this.onEmptyHoverListener}
         />
       </div>
     )

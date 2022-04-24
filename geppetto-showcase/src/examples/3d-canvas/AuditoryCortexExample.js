@@ -28,7 +28,6 @@ class AuditoryCortexExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.tooltipRef = React.createRef();
     this.state = {
       hasModelLoaded: false,
       showLoader: false,
@@ -99,11 +98,7 @@ class AuditoryCortexExample extends Component {
   }
 
   hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   onSelection (selectedInstances) {
@@ -118,9 +113,6 @@ class AuditoryCortexExample extends Component {
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div ref={node => this.node = node} className={classes.container}>
-        <div>
-          <CanvasTooltip ref={this.tooltipRef}/>
-        </div>
         <Canvas
           ref={this.canvasRef}
           data={canvasData}

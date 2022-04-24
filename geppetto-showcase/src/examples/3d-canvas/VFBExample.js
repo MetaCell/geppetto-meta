@@ -41,7 +41,6 @@ class VFBExample extends Component {
   constructor (props) {
     super(props);
     this.canvasRef = React.createRef();
-    this.tooltipRef = React.createRef();
     this.state = {
       showLoader: false,
       hasModelLoaded: false,
@@ -190,11 +189,7 @@ class VFBExample extends Component {
   }
 
   hoverHandler (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   render () {
@@ -202,13 +197,9 @@ class VFBExample extends Component {
     const { data, threeDObjects, hasModelLoaded, showLoader, cameraOptions } = this.state;
     const canvasData = mapToCanvasData(data)
     
-
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef} />
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}

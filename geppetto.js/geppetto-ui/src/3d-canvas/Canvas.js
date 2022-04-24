@@ -51,6 +51,7 @@ class Canvas extends Component {
       onSelection,
       selectionStrategy,
       onHoverListeners,
+      onEmptyHoverListener,
       onMount,
       onUpdateStart,
       onUpdateEnd,
@@ -68,6 +69,7 @@ class Canvas extends Component {
       onSelection,
       selectionStrategy,
       onHoverListeners,
+      onEmptyHoverListener,
       hasCaptureOptions
     );
     onUpdateStart();
@@ -111,6 +113,7 @@ class Canvas extends Component {
         onSelection,
         selectionStrategy,
         onHoverListeners,
+        onEmptyHoverListener,
         onUpdateStart,
         onUpdateEnd,
       } = this.props;
@@ -127,6 +130,7 @@ class Canvas extends Component {
         onSelection: prevOnSelection,
         selectionStrategy: prevSelectionStrategy,
         onHoverListeners: prevOnHoverListeners,
+        onEmptyHoverListener: prevOnEmptyHoverListener
       } = prevProps;
 
       onUpdateStart();
@@ -147,6 +151,9 @@ class Canvas extends Component {
       }
       if (onSelection !== prevOnSelection){
         this.threeDEngine.setOnSelection(onSelection)
+      }
+      if (onEmptyHoverListener !== prevOnEmptyHoverListener){
+        this.threeDEngine.setOnEmptyHoverListener(onEmptyHoverListener)
       }
       if (linesThreshold !== prevLinesThreshold){
         this.threeDEngine.setLinesThreshold(linesThreshold)
@@ -258,7 +265,7 @@ class Canvas extends Component {
         y: 0.01,
         z: 0.01,
       },
-      incrementZoom: 0.1,
+      incrementZoom: 0.01,
       movieFilter: false,
     }
     const mergedProps = { ...defaultProps, ...this.props.cameraOptions.cameraControls }
@@ -312,7 +319,7 @@ class Canvas extends Component {
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
         break;
       }
-      this.threeDEngine.updateControls();
+      //this.threeDEngine.updateControls();
     }
   }
 

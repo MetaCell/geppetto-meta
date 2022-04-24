@@ -174,11 +174,7 @@ class CustomControlsExample extends Component {
   }
 
   hoverHandlerOne (objs, canvasX, canvasY) {
-    this.tooltipRef?.current?.updateIntersected({
-      o: objs[objs.length - 1],
-      x: canvasX,
-      y: canvasY,
-    });
+
   }
 
   hoverHandlerTwo (objs, canvasX, canvasY) {
@@ -288,9 +284,6 @@ class CustomControlsExample extends Component {
     return showLoader ? <Loader active={true}/> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef}/>
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
