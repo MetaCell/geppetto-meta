@@ -1,5 +1,5 @@
 import React from 'react';
-import GraphVisualizationShowcase from '@metacell/geppetto-meta-ui/graph-visualization/showcase/examples/GraphVisualizationShowcase';
+import GraphVisualizationShowcase from '../examples/GraphVisualizationShowcase';
 
 /**
  * Any custom component you can imagine.
