@@ -94,7 +94,7 @@ module.exports = smp.wrap({
         ],
       },
       {
-        test: /\.obj|\.drc|\.gltf/,
+        test: /\.obj|\.drc|\.gltf|\.nrrd/,
         loader: 'url-loader',
       },
       {

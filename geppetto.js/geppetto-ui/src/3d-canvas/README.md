@@ -56,6 +56,13 @@ Simple Instances Example
 3d-canvas/showcase/examples/SimpleInstancesExample
 ```
 
+### 3D Canvas NRRD Example
+
+3D Canvas NRRD Example
+
+```
+3d-canvas/showcase/examples/NRRDExample
+```
 
 ## Libraries
 

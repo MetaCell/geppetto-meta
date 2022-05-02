@@ -411,6 +411,7 @@ export default {
   IMAGE: "Image",
   SPHERE: "Sphere",
   COLLADA: "Collada",
+  NRRD: "NRRD",
   OBJ: "OBJ",
   GLTF: "GLTF",
   DRC: "DRC",

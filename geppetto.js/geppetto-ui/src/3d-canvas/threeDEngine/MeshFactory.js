@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "./OBJLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
+import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 
@@ -54,6 +55,7 @@ export default class MeshFactory {
       [Resources.DRC]: dracoLoader,
       [Resources.OBJ]: objLoader,
       [Resources.COLLADA]: new ColladaLoader(),
+      [Resources.NRRD]: new NRRDLoader(),
       'TextureLoader': new this.THREE.TextureLoader()
     }
   }
@@ -303,6 +305,10 @@ export default class MeshFactory {
       threeObject = this.loadThreeOBJModelFromNode(node);
       this.complexity++;
       break;
+    case Resources.NRRD:
+      threeObject = await this.loadNRRDModelFromNode(node);
+      this.complexity++;
+      break;
     case Resources.GLTF:
       threeObject = await this.loadThreeGLTFModelFromNode(node);
       this.complexity++;
@@ -531,6 +537,45 @@ export default class MeshFactory {
     });
 
     return scene;
+  }
+
+  async loadNRRDModelFromNode(node) {
+    const loader = this.loaders[Resources.NRRD];
+    const textureLoader = this.loaders['TextureLoader']
+    const particleTexture = this.particleTexture
+      ? this.particleTexture
+      : textureLoader.load(particle);
+
+    let that = this;
+    const volume = await new Promise((resolve, reject) => {
+      loader.load(node.nrrd, function (volume) {
+        let group = new that.THREE.Group();
+        
+        const geometry = new that.THREE.BoxGeometry(volume.xLength, volume.yLength, volume.zLength);
+        const material = new that.THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const cube = new that.THREE.Mesh(geometry, material);
+        cube.visible = false;
+        const box = new that.THREE.BoxHelper(cube);
+        group.add(box);
+        box.applyMatrix4(volume.matrix);
+        group.add(cube);
+
+
+        const sliceZ = volume.extractSlice( 'z', Math.floor( volume.RASDimensions[ 2 ] / 4 ) );
+				group.add( sliceZ.mesh );
+
+        //y plane
+				const sliceY = volume.extractSlice( 'y', Math.floor( volume.RASDimensions[ 1 ] / 2 ) );
+				group.add( sliceY.mesh );
+
+				//x plane
+				const sliceX = volume.extractSlice( 'x', Math.floor( volume.RASDimensions[ 0 ] / 2 ) );
+				group.add( sliceX.mesh );
+
+        return resolve(group);
+      });
+    });
+    return volume;
   }
 
   async loadThreeGLTFModelFromNode (node) {
