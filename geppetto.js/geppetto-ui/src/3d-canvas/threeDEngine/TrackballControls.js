@@ -316,7 +316,6 @@ class TrackballControls extends EventDispatcher {
         }
 
       } else {
-        console.log(`${_zoomEnd.y},${_zoomStart.y}`);
         factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * scope.zoomSpeed;
 
         if (factor !== 1.0 && factor > 0.0) {
