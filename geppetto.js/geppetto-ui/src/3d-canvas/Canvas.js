@@ -194,7 +194,7 @@ class Canvas extends Component {
         this.threeDEngine.cameraManager.incrementCameraPan(0, incrementPan.y);
         break;
       case cameraControlsActions.ROTATE_UP:
-        this.threeDEngine.cameraManager.incrementCameraRotate(0, incrementRotation.y, undefined);
+        this.threeDEngine.cameraManager.incrementCameraRotate(0, incremPerspectiveCameraentRotation.y, undefined);
         break;
       case cameraControlsActions.ROTATE_DOWN:
         this.threeDEngine.cameraManager.incrementCameraRotate(0, -incrementRotation.y, undefined);
@@ -210,8 +210,7 @@ class Canvas extends Component {
         break;
       case cameraControlsActions.ROTATE_MZ:
         this.threeDEngine.cameraManager.incrementCameraRotate(0, 0, -incrementRotation.z);
-        break;
-      case cameraControlsActions.ROTATE:
+        break;PerspectiveCamera
         this.threeDEngine.cameraManager.autoRotate(movieFilter); // movie filter
         break;
       case cameraControlsActions.ZOOM_IN:

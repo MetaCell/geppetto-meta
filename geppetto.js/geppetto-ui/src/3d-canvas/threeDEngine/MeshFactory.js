@@ -2,12 +2,14 @@ import particle from '../textures/particle.png';
 import { hasVisualType, hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "./OBJLoader";
+import ThreeDEngine from './ThreeDEngine';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
 import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
-
+import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader.js';
+var nj =require("numjs");
 
 export default class MeshFactory {
   constructor (
@@ -312,7 +314,20 @@ export default class MeshFactory {
     case Resources.GLTF:
       threeObject = await this.loadThreeGLTFModelFromNode(node);
       this.complexity++;
-      break;
+      break;        var center = new that.THREE.Vector3();
+
+      mesh.material.color = new that.THREE.Color(0xff0000);
+      mesh.material.needsUpdate = true;
+      mesh.material.opacity = 1;
+      mesh.material.transparent = false;
+
+      mesh.geometry.computeBoundingBox();
+      mesh.geometry.computeBoundingSphere();
+      mesh.geometry.boundingBox.getCenter(center);
+      mesh.geometry.center();
+      mesh.position.copy(center);
+      mesh.geometry.verticesNeedUpdate = true;
+      mesh.updateMatrix();
     case Resources.DRC:
       threeObject = await this.loadThreeDRCModelFromNode(node);
       this.complexity++;
@@ -547,35 +562,63 @@ export default class MeshFactory {
       : textureLoader.load(particle);
 
     let that = this;
-    const volume = await new Promise((resolve, reject) => {
+    const volconfig = { clim1: 1, clim2: 0, renderstyle: 'mip', isothreshold: .1, colormap: 'viridis' };
+
+    const volumeMesh = await new Promise((resolve, reject) => {
       loader.load(node.nrrd, function (volume) {
-        let group = new that.THREE.Group();
-        
-        const geometry = new that.THREE.BoxGeometry(volume.xLength, volume.yLength, volume.zLength);
-        const material = new that.THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new that.THREE.Mesh(geometry, material);
-        cube.visible = false;
-        const box = new that.THREE.BoxHelper(cube);
-        group.add(box);
-        box.applyMatrix4(volume.matrix);
-        group.add(cube);
+        const buf=nj.array(volume.data, 'float32');
 
+        console.log("Volume ", volume)
+        const volumeX = volume.xLength;
+        const volumeY = volume.yLength;
+        const volumeZ = volume.zLength;
+        const texture = new that.THREE.DataTexture3D( buf.selection.data, volumeX, volumeY, volumeZ );
+				texture.format = that.THREE.RedFormat;
+			  texture.type = that.THREE.FloatType;
+				texture.minFilter = texture.magFilter = that.THREE.LinearFilter;
+				texture.unpackAlignment = 1;
+				texture.needsUpdate = true;
 
-        const sliceZ = volume.extractSlice( 'z', Math.floor( volume.RASDimensions[ 2 ] / 4 ) );
-				group.add( sliceZ.mesh );
+        let cmtextures = {
+					viridis: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_viridis.png'),
+					gray: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_gray.png')
+				};
 
-        //y plane
-				const sliceY = volume.extractSlice( 'y', Math.floor( volume.RASDimensions[ 1 ] / 2 ) );
-				group.add( sliceY.mesh );
+				// Material
+				const shader = VolumeRenderShader1;
 
-				//x plane
-				const sliceX = volume.extractSlice( 'x', Math.floor( volume.RASDimensions[ 0 ] / 2 ) );
-				group.add( sliceX.mesh );
+				let uniforms = that.THREE.UniformsUtils.clone( shader.uniforms );
 
+				uniforms[ 'u_data' ].value = texture;
+				uniforms[ 'u_size' ].value.set( volumeX, volumeY, volumeZ  );
+				uniforms[ 'u_clim' ].value.set( volume.min, volume.max );
+				uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
+				uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
+        uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
+
+				const material2 = new that.THREE.ShaderMaterial( {
+					uniforms: uniforms,
+					vertexShader: shader.vertexShader,
+					fragmentShader: shader.fragmentShader,
+					side: that.THREE.BackSide, // The volume shader uses the backface as its "reference point"
+				} );
+
+				// THREE.Mesh
+				const geometry2 = new that.THREE.BoxGeometry( volumeX, volumeY, volumeZ  );
+				geometry2.translate( volumeX / 2 - 1, volumeY / 2 - 1, volumeZ / 2 - 1);
+
+				const mesh = new that.THREE.Mesh( geometry2, material2 );
+
+        const box = new that.THREE.BoxHelper( mesh, 0xffff00 );
+        const group = new that.THREE.Group();
+        group.add( box );
+        group.add( mesh );
         return resolve(group);
       });
     });
-    return volume;
+
+    console.log(" volumeMesh ", volumeMesh)
+    return volumeMesh;
   }
 
   async loadThreeGLTFModelFromNode (node) {

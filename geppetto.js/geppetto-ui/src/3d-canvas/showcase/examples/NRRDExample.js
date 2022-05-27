@@ -3,7 +3,12 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import VFBVolumeNRRD from '../assets/VFBVolume1.nrrd';
+import VFB_00000001 from '../assets/vfb/VFB_00000001.nrrd';
+import JRC2018UScaled2Microns from '../assets/vfb/JRC2018U-Scaled2Microns.nrrd';
+import JRC2018UScaled2MicronsThenHalfed from '../assets/vfb/JRC2018U-Scaled2MicronsThenHalfed.nrrd';
+import VFBVolumeAngio from '../assets/vfb/stent.nrrd';
+import VFBVolumeCT50 from '../assets/vfb/CTbrain50.nrrd';
+import VFBVolumeBrain50 from '../assets/vfb/MRI-brain50.nrrd';
 import Button from "@material-ui/core/Button";
 import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
 import CaptureControls from "../../../capture-controls/CaptureControls";
@@ -12,14 +17,17 @@ import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "../utils/CanvasTooltip";
 
-const instance1spec = {
+const volumes = [JRC2018UScaled2Microns, JRC2018UScaled2MicronsThenHalfed, VFBVolumeBrain50, VFBVolumeCT50, VFBVolumeAngio, VFB_00000001];
+let indexVolume = 0;
+
+let instance1spec = {
   "eClass": "SimpleInstance",
   "id": "NRRD",
   "name": "The first SimpleInstance to be render with Geppetto Canvas",
   "type": { "eClass": "SimpleType" },
   "visualValue": {
     "eClass": Resources.NRRD,
-    'nrrd': VFBVolumeNRRD
+    'nrrd': volumes[indexVolume]
   }
 }
 
@@ -42,6 +50,13 @@ const styles = () => ({
     display: 'flex',
     alignItems: 'stretch',
   },
+  button: {
+    height: '80px',
+    width: '120px',
+    display: 'flex',
+    alignItems: 'stretch',
+    margin : "0 auto"
+  }
 });
 
 class NRRDExample extends Component {
@@ -63,6 +78,7 @@ class NRRDExample extends Component {
         },
         reset: false,
         autorotate: false,
+        rotateSpeed : .2,
         wireframe: false,
       },
       showModel: false
@@ -71,6 +87,7 @@ class NRRDExample extends Component {
     this.hoverHandler = this.hoverHandler.bind(this);
     this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.toggleVolume = this.toggleVolume.bind(this);
     this.onSelection = this.onSelection.bind(this)
     this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
@@ -78,6 +95,7 @@ class NRRDExample extends Component {
 
   componentDidMount () {
     document.addEventListener('mousedown', this.handleClickOutside);
+    
   }
 
   componentWillUnmount () {
@@ -99,6 +117,13 @@ class NRRDExample extends Component {
     this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
+  toggleVolume () {
+    indexVolume < volumes.length ? indexVolume = indexVolume + 1 : indexVolume = 0;
+    instance1spec.visualValue.nrrd = volumes[indexVolume];
+    loadInstances();
+    this.setState({ data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+  }
+
   handleClickOutside (event) {
     if (this.node && !this.node.contains(event.target)) {
       if (event.offsetX <= event.target.clientWidth){
@@ -108,11 +133,9 @@ class NRRDExample extends Component {
   }
 
   onMount (scene){
-    console.log(scene)
   }
 
   onSelection (selectedInstances){
-    this.setState({ data: applySelection(this.state.data, selectedInstances) })
   }
 
   render () {
@@ -147,20 +170,27 @@ class NRRDExample extends Component {
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          <div>
-            <CanvasTooltip ref={this.tooltipRef} />
-          </div>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
             cameraOptions={cameraOptions}
             captureOptions={captureOptions}
-            backgroundColor={0x505050}
+            backgroundColor={0xFFFFFF}
             onSelection={this.onSelection}
             onMount={this.onMount}
+            id="canvas"
+            className="canvas"
             hoverListeners={[this.hoverHandler]}
           />
         </>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          onClick={this.toggleVolume}
+        >
+          Toggle Volume
+        </Button>
       </div>
     ) : <Button
       variant="outlined"
