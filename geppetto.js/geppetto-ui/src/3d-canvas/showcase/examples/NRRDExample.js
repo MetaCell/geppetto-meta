@@ -51,11 +51,13 @@ const styles = () => ({
     alignItems: 'stretch',
   },
   button: {
-    height: '80px',
-    width: '120px',
+    height: '30px',
+    maxHeight : '100px',
+    width: '1240px',
     display: 'flex',
-    alignItems: 'stretch',
-    margin : "0 auto"
+    backgroundColor: 'grey',
+    margin : "0 auto",
+    position : "absolute"
   }
 });
 
@@ -169,6 +171,14 @@ class NRRDExample extends Component {
 
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          onClick={this.toggleVolume}
+        >
+          Toggle Volume
+        </Button>
         <>
           <Canvas
             ref={this.canvasRef}
@@ -183,14 +193,6 @@ class NRRDExample extends Component {
             hoverListeners={[this.hoverHandler]}
           />
         </>
-        <Button
-          variant="outlined"
-          color="primary"
-          className={classes.button}
-          onClick={this.toggleVolume}
-        >
-          Toggle Volume
-        </Button>
       </div>
     ) : <Button
       variant="outlined"
