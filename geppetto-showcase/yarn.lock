@@ -1271,12 +1271,14 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "1.0.0-rc11"
+"@metacell/geppetto-meta-client@v1.0.0-final":
+  version "1.0.0-final"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-1.0.0-final.tgz#47de27339b6748555fa29bb4c19d0e842029d138"
+  integrity sha512-Z0XzhK6g/0fgRChel5lLhFKGNtP8O5rGln244UiCsrgWo6jnbQrFn5LvltzVs1O70oghOAifdVa4q9z8qAmJjA==
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" v1.0.0-rc11
-    "@metacell/geppetto-meta-ui" v1.0.0-rc11
+    "@metacell/geppetto-meta-core" v1.0.0-final
+    "@metacell/geppetto-meta-ui" v1.0.0-final
     anchorme "^0.7.1"
     backbone "^1.3.3"
     backbone-associations "^0.6.2"
@@ -1288,7 +1290,7 @@
     d3-plugins-dist "^3.2.0"
     detector-webgl "^2.0.0"
     file-saver "^1.3.3"
-    griddle-0.6-fork "https://github.com/rodriguez-facundo/griddle.git"
+    griddle-0.6-fork "git+https://github.com/rodriguez-facundo/griddle.git"
     handlebars "^4.0.5"
     jquery "^3.4.0"
     jquery-ui-bundle "^1.12.1"
@@ -1317,23 +1319,15 @@
     underscore "~1.9.1"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "1.0.0-rc11"
+"@metacell/geppetto-meta-core@v1.0.0-final":
+  version "1.0.0-final"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-final.tgz#9388c3b5f3d91e41de9ba5027b6714d3447fdbea"
+  integrity sha512-OQZ5tpWdE6S14UWLEEBh8PzIbMTYw260PWEDQjsM9D11Q3xngTNNSussZK7c885A4hHReuf7cTwA1JoL16U1bQ==
 
-"@metacell/geppetto-meta-core@v1.0.0-rc11":
-  version "1.0.0-rc11"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-rc11.tgz#8ff675abe25950081fc2cad019786bf9c7d4b3bc"
-  integrity sha512-rIR51uZDseaVTHdE8rKmcUGLlnIM3+IknBeOqT52E+bfJQHGCVkSaw3MMXg6tAPhgmFi5aPuWv5vmTXEa3rJMA==
-
-"@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "1.0.0-rc11"
-  dependencies:
-    babel-plugin-import-less "^0.1.6"
-
-"@metacell/geppetto-meta-ui@v1.0.0-rc11":
-  version "1.0.0-rc11"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-rc11.tgz#d71b53b8aee93c0a0b0d6a3250611582c9cd1805"
-  integrity sha512-mUVaFoVpvftPQDKlCHhePtHa/jbKzkM00x5L89A5nay8mAeSRqK/iS6U9Wv+g2ElN8wbmRxc9U+O2r7uakmGyA==
+"@metacell/geppetto-meta-ui@v1.0.0-final":
+  version "1.0.0-final"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-final.tgz#988df83e95f66be53e7751180a906b9c5982bc5b"
+  integrity sha512-ARj85Xkq1lhbJ+/W0sHcbqJ5YH5E7HpP8E960zS+MsDngejeE6va73bbjD54KVzRurGeschdyVdadyt9nMsAPQ==
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
@@ -6216,9 +6210,9 @@ events@^3.0.0, events@^3.2.0:
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
 eventsource@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-1.1.0.tgz#00e8ca7c92109e94b0ddf32dac677d841028cfaf"
-  integrity sha512-VSJjT5oCNrFvCS6igjzPAt5hBzQ2qPBFIbJ03zLI9SE0mxwZpMw6BfJrbFHm1a141AavMEB8JHmBhWAd66PfCg==
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-1.1.1.tgz#4544a35a57d7120fba4fa4c86cb4023b2c09df2f"
+  integrity sha512-qV5ZC0h7jYIAOhArFJgSfdyz6rALJyb270714o7ZtNnw2WSJ+eexhKtE0O8LYPRsHZHf2osHKZBxGPvm3kPkCA==
   dependencies:
     original "^1.0.0"
 
@@ -7589,9 +7583,10 @@ grid-index@^1.1.0:
   resolved "https://registry.yarnpkg.com/grid-index/-/grid-index-1.1.0.tgz#97f8221edec1026c8377b86446a7c71e79522ea7"
   integrity sha512-HZRwumpOGUrHyxO5bqKZL0B0GlUpwtCAzZ42sgxUPniu33R1LSFH5yrIcBCHjkctCAh3mtWKcKd9J4vDDdeVHA==
 
-"griddle-0.6-fork@https://github.com/rodriguez-facundo/griddle.git":
+"griddle-0.6-fork@git+https://github.com/rodriguez-facundo/griddle.git":
   version "0.6.1"
-  resolved "https://github.com/rodriguez-facundo/griddle.git#218468b8c438295f8b3c6a8229491eb7972ed85e"
+  uid "218468b8c438295f8b3c6a8229491eb7972ed85e"
+  resolved "git+https://github.com/rodriguez-facundo/griddle.git#218468b8c438295f8b3c6a8229491eb7972ed85e"
   dependencies:
     lodash "^4.12.0"
     prop-types "^15.6.2"
