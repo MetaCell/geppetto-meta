@@ -58,7 +58,7 @@
     "@material-ui/icons": "^4.11.2",
     "@metacell/geppetto-meta-client": "v1.0.0-final",
     "@metacell/geppetto-meta-core": "v1.0.0-final",
-    "@metacell/geppetto-meta-ui": "file:@metacell/geppetto-meta-ui",
+    "@metacell/geppetto-meta-ui": "v1.0.0-final",
     "@nosferatu500/react-sortable-tree": "3.0.5",
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",

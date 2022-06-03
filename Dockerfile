@@ -15,9 +15,15 @@ COPY geppetto.js geppetto.js
 
 # INSTALL PACKAGES
 WORKDIR /app/geppetto-showcase
-COPY geppetto.js/geppetto-ui/src @metacell/geppetto-meta-ui/
-RUN ls @metacell/geppetto-meta-ui/
 RUN yarn
+RUN ls && ls node_modules/@metacell/geppetto-meta-ui/
+RUN ls && ls node_modules/@metacell/geppetto-meta-core/
+COPY geppetto.js/geppetto-ui/src/3d-canvas/README.md node_modules/@metacell/geppetto-meta-ui/3d-canvas/
+COPY geppetto.js/geppetto-ui/src/3d-canvas/Canvas.js node_modules/@metacell/geppetto-meta-ui/3d-canvas/
+COPY geppetto.js/geppetto-core/src/Resources.js node_modules/@metacell/geppetto-meta-core
+COPY geppetto.js/geppetto-ui/src/3d-canvas/showcase/assets node_modules/@metacell/geppetto-meta-ui/showcase/assets/
+COPY geppetto.js/geppetto-ui/src/3d-canvas/showcase/examples/NRRDExample.js node_modules/@metacell/geppetto-meta-ui/3d-canvas/showcase/examples/
+COPY geppetto.js/geppetto-ui/src/3d-canvas/threeDEngine/MeshFactory.js node_modules/@metacell/geppetto-meta-ui/3d-canvas/threeDEngine/
 
 # COPY SOURCE CODE
 COPY geppetto-showcase .
