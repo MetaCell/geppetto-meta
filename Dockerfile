@@ -25,7 +25,7 @@ RUN npm run build
 
 ####################################################################
 
-FROM nginx:alpine
+FROM nginx:16-alpine
 COPY --from=build-stage /app/geppetto-showcase/dist/ /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf
