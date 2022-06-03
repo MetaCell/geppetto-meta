@@ -1,4 +1,4 @@
-FROM node:14-alpine AS build-stage
+FROM node:16-alpine AS build-stage
 
 # NGINX PORT
 EXPOSE 80
@@ -15,6 +15,8 @@ COPY geppetto.js geppetto.js
 
 # INSTALL PACKAGES
 WORKDIR /app/geppetto-showcase
+COPY geppetto.js/geppetto-ui/src @metacell/geppetto-meta-ui/
+RUN ls @metacell/geppetto-meta-ui/
 RUN yarn
 
 # COPY SOURCE CODE
