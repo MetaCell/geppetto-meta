@@ -3,19 +3,20 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import VFB_00000001 from '../assets/vfb/VFB_00000001.nrrd';
-import JRC2018UScaled2Microns from '../assets/vfb/JRC2018U-Scaled2Microns.nrrd';
-import JRC2018UScaled2MicronsThenHalfed from '../assets/vfb/JRC2018U-Scaled2MicronsThenHalfed.nrrd';
-import VFBVolumeAngio from '../assets/vfb/stent.nrrd';
-import VFBVolumeCT50 from '../assets/vfb/CTbrain50.nrrd';
-import VFBVolumeBrain50 from '../assets/vfb/MRI-brain50.nrrd';
+import VFB_00000001 from './assets/vfb/VFB_00000001.nrrd';
+import JRC2018UScaled2Microns from './assets/vfb/JRC2018U-Scaled2Microns.nrrd';
+import JRC2018UScaled2MicronsThenHalfed from './assets/vfb/JRC2018U-Scaled2MicronsThenHalfed.nrrd';
+import VFBVolumeAngio from './assets/vfb/stent.nrrd';
+import VFBVolumeCT50 from './assets/vfb/CTbrain50.nrrd';
+import VFBVolumeBrain50 from './assets/vfb/MRI-brain50.nrrd';
 import Button from "@material-ui/core/Button";
-import { applySelection, mapToCanvasData } from "../utils/SelectionUtils";
-import CaptureControls from "../../../capture-controls/CaptureControls";
+import { mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
+import CaptureControls from "@metacell/geppetto-meta-ui/capture-controls/CaptureControls";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
-import CanvasTooltip from "../utils/CanvasTooltip";
+import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasToolTip"
+
 
 const volumes = [JRC2018UScaled2Microns, JRC2018UScaled2MicronsThenHalfed, VFBVolumeBrain50, VFBVolumeCT50, VFBVolumeAngio, VFB_00000001];
 let indexVolume = 0;
