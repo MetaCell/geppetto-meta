@@ -51,7 +51,7 @@ class TrackballControls extends EventDispatcher {
     this.noZoom = false;
     this.noPan = false;
 
-    this.staticMoving = false;
+    this.staticMoving = true;
     this.dynamicDampingFactor = 0.2;
 
     this.minDistance = 0;
@@ -217,7 +217,19 @@ class TrackballControls extends EventDispatcher {
     // end of metacell changes
 
     this.setRotationalSpeed = function (s) {
-      scope.rotationSpeed = s ;
+      if (s){
+        scope.rotationSpeed = s ;
+      }
+    };
+    this.setZoomSpeed = function (s) {
+      if (s){
+        scope.zoomSpeed = s ;
+      }
+    };
+    this.setPanSpeed = function (s) {
+      if (s){
+        scope.panSpeed = s ;
+      }
     };
     
     this.resetRotationalSpeed = function () {
@@ -304,7 +316,6 @@ class TrackballControls extends EventDispatcher {
         }
 
       } else {
-
         factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * scope.zoomSpeed;
 
         if (factor !== 1.0 && factor > 0.0) {
@@ -828,6 +839,10 @@ class TrackballControls extends EventDispatcher {
       }
 
       event.preventDefault();
+
+      // _zoomEnd.x  = _zoomStart.x ;
+      // _zoomEnd.y  = _zoomStart.y ;
+      // _zoomEnd.z  = _zoomStart.z ;
 
       switch (event.deltaMode) {
 

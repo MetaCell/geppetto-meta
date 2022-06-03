@@ -13,7 +13,7 @@ html-viewer/HTMLViewer
 Basic example usage of the HTML Viewer. Actions specified in the attribute "data-action" of anchor elements are captured and handled by the handleClick prop.
 
 ```
-html-viewer/showcase/examples/HTMLViewerShowcase
+html-viewer/HTMLViewerShowcase
 ```
 
 ## Libraries

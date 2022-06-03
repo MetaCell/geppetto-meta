@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const styles = { lightTooltip: { fontSize: 12, }, };
 
-export default withStyles(styles)(({ onClick, tooltip, disabled, className, classes, icon }) => {
+export default withStyles(styles)(({ onClick, tooltip, disabled, className, classes, icon, style }) => {
   const faicon = icon ? <FontAwesomeIcon icon={icon} className={" fa-xs "} /> : <></>
   return (
     <Tooltip
@@ -21,6 +21,7 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
         onClick={event => onClick(event)}
         className={className}
         disableRipple
+        style={style}
       >
         {faicon}
       </IconButton>

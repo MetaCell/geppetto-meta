@@ -1072,4 +1072,11 @@ export default class MeshFactory {
   setParticleTexture (particleTexture) {
     this.particleTexture = particleTexture;
   }
+
+  /**
+   * Sets linesThreshold
+   */
+  setLinesThreshold (linesThreshold) {
+    this.linesThreshold = linesThreshold
+  }
 }
