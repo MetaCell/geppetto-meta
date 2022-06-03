@@ -64,7 +64,13 @@ Custom Controls Example
 3d-canvas/CustomControlsExample
 ```
 
+### 3D Canvas NRRD Example
 
+3D Canvas NRRD Example
+
+```
+3d-canvas/showcase/examples/NRRDExample
+```
 
 ## Libraries
 

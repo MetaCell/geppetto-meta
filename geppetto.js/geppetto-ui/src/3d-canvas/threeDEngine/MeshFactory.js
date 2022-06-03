@@ -9,7 +9,6 @@ import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader.js';
-var nj =require("numjs");
 
 export default class MeshFactory {
   constructor (
@@ -566,13 +565,13 @@ export default class MeshFactory {
 
     const volumeMesh = await new Promise((resolve, reject) => {
       loader.load(node.nrrd, function (volume) {
-        const buf=nj.array(volume.data, 'float32');
+        const buf = Float32Array.from(volume.data)
 
         console.log("Volume ", volume)
         const volumeX = volume.xLength;
         const volumeY = volume.yLength;
         const volumeZ = volume.zLength;
-        const texture = new that.THREE.DataTexture3D( buf.selection.data, volumeX, volumeY, volumeZ );
+        const texture = new that.THREE.DataTexture3D( buf.data, volumeX, volumeY, volumeZ );
 				texture.format = that.THREE.RedFormat;
 			  texture.type = that.THREE.FloatType;
 				texture.minFilter = texture.magFilter = that.THREE.LinearFilter;
