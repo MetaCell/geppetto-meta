@@ -1,4 +1,4 @@
-FROM node:16-alpine AS build-stage
+FROM node:14-alpine AS build-stage
 
 # NGINX PORT
 EXPOSE 80
@@ -25,7 +25,7 @@ RUN npm run build
 
 ####################################################################
 
-FROM nginx:16-alpine
+FROM nginx:alpine
 COPY --from=build-stage /app/geppetto-showcase/dist/ /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf
