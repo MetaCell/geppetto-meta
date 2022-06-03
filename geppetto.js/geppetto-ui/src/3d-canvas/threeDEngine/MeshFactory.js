@@ -9,7 +9,6 @@ import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader.js';
-import nj from "@d4c/numjs"; 
 
 export default class MeshFactory {
   constructor (
