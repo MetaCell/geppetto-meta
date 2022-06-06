@@ -19,22 +19,23 @@ import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasTool
 
 
 const volumes = [JRC2018UScaled2Microns, JRC2018UScaled2MicronsThenHalfed, VFBVolumeBrain50, VFBVolumeCT50, VFBVolumeAngio, VFB_00000001];
-let indexVolume = 0;
 
-let instance1spec = {
-  "eClass": "SimpleInstance",
-  "id": "NRRD",
-  "name": "The first SimpleInstance to be render with Geppetto Canvas",
-  "type": { "eClass": "SimpleType" },
-  "visualValue": {
-    "eClass": Resources.NRRD,
-    'nrrd': volumes[indexVolume]
+function getInstance (indexVolume) {
+  return {
+    "eClass": "SimpleInstance",
+    "id": "NRRD",
+    "name": "The first SimpleInstance to be render with Geppetto Canvas",
+    "type": { "eClass": "SimpleType" },
+    "visualValue": {
+      "eClass": Resources.NRRD,
+      'nrrd': volumes[indexVolume]
+    }
   }
 }
 
-function loadInstances (){
+function loadInstances (indexVolume){
   ModelFactory.cleanModel();
-  const instance1 = new SimpleInstance(instance1spec)
+  const instance1 = new SimpleInstance(getInstance(indexVolume))
   window.Instances = [instance1]
   augmentInstancesArray(window.Instances);
 }
@@ -66,7 +67,7 @@ class NRRDExample extends Component {
   constructor (props) {
     super(props);
     this.tooltipRef = React.createRef();
-    loadInstances()
+    loadInstances(0)
     this.state = {
       data: getProxyInstances(),
       showLoader: false,
@@ -84,7 +85,8 @@ class NRRDExample extends Component {
         rotateSpeed : .2,
         wireframe: false,
       },
-      showModel: false
+      showModel: false,
+      selectedVolume : 0
     };
     this.canvasIndex = 3
     this.hoverHandler = this.hoverHandler.bind(this);
@@ -116,15 +118,16 @@ class NRRDExample extends Component {
 
   handleToggle () {
     this.setState({ showLoader: true })
-    loadInstances()
+    loadInstances(this.state.selectedVolume)
     this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   toggleVolume () {
+    let indexVolume = this.state.selectedVolume;
     indexVolume < volumes.length ? indexVolume = indexVolume + 1 : indexVolume = 0;
-    instance1spec.visualValue.nrrd = volumes[indexVolume];
-    loadInstances();
-    this.setState({ data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+    getInstance(indexVolume).visualValue.nrrd = volumes[indexVolume];
+    loadInstances(indexVolume);
+    this.setState({ data: getProxyInstances(), selectedVolume : indexVolume, showModel: true, cameraOptions: { ...this.state.cameraOptions, } })
   }
 
   handleClickOutside (event) {
@@ -191,6 +194,7 @@ class NRRDExample extends Component {
             onMount={this.onMount}
             id="canvas"
             className="canvas"
+            key={this.state.selectedVolume}
             hoverListeners={[this.hoverHandler]}
           />
         </>
