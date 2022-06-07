@@ -24,6 +24,14 @@ Multiple Instances Example
 3d-canvas/AuditoryCortexExample2
 ```
 
+### 3D Canvas VFB Example
+
+3D Canvas VFB Example
+
+```
+3d-canvas/VFBExample
+```
+
 ### 3D Canvas CA1 Pyramidal Cell Example
 
 3D Canvas CA1 Pyramidal Cell Example
