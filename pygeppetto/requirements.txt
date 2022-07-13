@@ -3,3 +3,4 @@ Deprecated==1.2.10
 multimethod==1.1
 pyecore==0.11.6
 requests==2.23.0
+tornado==6.2

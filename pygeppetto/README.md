@@ -1,13 +1,13 @@
 # pygeppetto
 
-Home of the Geeppetto Python API.
+Home of the Geppetto Python API.
 The API allows to create a Geppetto Model from Python.
 
 ## Installation
 
-Until pygeppetto is still in development, it is highly recommended to use a
-virtualenv in order to deploy it. Once you have a dedicated virtualenv, you can
-simply install pygeppetto:
+It is highly recommended using a
+virtualenv in order to use pygeppetto. Once you have a dedicated virtualenv, you can
+simply install pygeppetto like so:
 
 ```bash
 $ python setup.py install
@@ -27,7 +27,7 @@ instances and handle them:
 ```Python
 # We create a new lib
 flib = pygeppetto.GeppettoLibrary(name='mylib')
-# We create a GeppettoModel instance and we set a name a assign a lib
+# We create a GeppettoModel instance, we set a name and assign a lib
 root = pygeppetto.GeppettoModel(name='MyGeppettoModel', libraries=[flib])
 ```
 
@@ -42,8 +42,8 @@ flib.name = 'mylib'
 root.libraries.append(flib)  # We add the new lib to the created root
 ```
 
-If you wan to open an existing XMI, you need to use a ``ResourceSet`` (not
-required, but prefered).
+If you want to open an existing XMI, we would recommend using a ``ResourceSet`` (not
+required, but preferred).
 
 ```Python
 # We import the class that will be used to read the XMI from PyEcore
@@ -152,7 +152,7 @@ additions). The generated version must be manually merged with the new generated
 
 An easy way to do that is by using git.
 
-1 - Generate the code in a in a directory reproducing the pygeppetto structure, say `pygeppetto_new/pygeppetto/model`
+1 - Generate the code in a directory reproducing the pygeppetto structure, say `pygeppetto_new/pygeppetto/model`
 
 2 - Initialize a new git local repo inside our new pygeppetto
 ```bash
