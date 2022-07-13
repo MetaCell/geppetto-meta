@@ -1,0 +1,9 @@
+harness:
+  dependencies:
+    build: [cloudharness-base, cloudharness-frontend-build, cloudharness-flask]
+  deployment: {auto: true, port: 8080}
+  livenessProbe: {path: /api/live}
+  readinessProbe: {path: /api/ready}
+  secured: false
+  service: {auto: true, port: 8080}
+  subdomain: backend-example

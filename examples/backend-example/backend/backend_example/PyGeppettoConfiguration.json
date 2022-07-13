@@ -1,0 +1,4 @@
+{
+  "webapp_directory" : "../../frontend/dist",
+  "template_path" : "geppetto.vm"
+}
