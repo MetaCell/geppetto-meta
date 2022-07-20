@@ -3,24 +3,22 @@ import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
-import VFB_00000001 from './assets/vfb/VFB_00000001.nrrd';
-import JRC2018UScaled2Microns from './assets/vfb/JRC2018U-Scaled2Microns.nrrd';
-import JRC2018UScaled2MicronsThenHalfed from './assets/vfb/JRC2018U-Scaled2MicronsThenHalfed.nrrd';
-import VFBVolumeAngio from './assets/vfb/stent.nrrd';
-import VFBVolumeCT50 from './assets/vfb/CTbrain50.nrrd';
-import VFBVolumeBrain50 from './assets/vfb/MRI-brain50.nrrd';
+let VFB_00101567 = "https://v2.virtualflybrain.org/data/VFB/i/0010/1567/VFB_00101567/volume.nrrd";
+let VFB_0010101b = "https://v2.virtualflybrain.org/data/VFB/i/0010/101b/VFB_00101567/volume.nrrd";
+let VFB_001012vj = "https://v2.virtualflybrain.org/data/VFB/i/0010/12vj/VFB_00101567/volume.nrrd";
 import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import { mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
 import CaptureControls from "@metacell/geppetto-meta-ui/capture-controls/CaptureControls";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import { augmentInstancesArray } from '@metacell/geppetto-meta-core/Instances';
 import CanvasTooltip from "@metacell/geppetto-meta-ui/3d-canvas/utils/CanvasToolTip"
+import axios from 'axios';
+import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 
-
-const volumes = [JRC2018UScaled2Microns, JRC2018UScaled2MicronsThenHalfed, VFBVolumeBrain50, VFBVolumeCT50, VFBVolumeAngio, VFB_00000001];
-
-function getInstance (indexVolume) {
+function getInstance (volume) {
   return {
     "eClass": "SimpleInstance",
     "id": "NRRD",
@@ -28,14 +26,14 @@ function getInstance (indexVolume) {
     "type": { "eClass": "SimpleType" },
     "visualValue": {
       "eClass": Resources.NRRD,
-      'nrrd': volumes[indexVolume]
+      'nrrd': volume
     }
   }
 }
 
-function loadInstances (indexVolume){
+function loadInstances (volume){
   ModelFactory.cleanModel();
-  const instance1 = new SimpleInstance(getInstance(indexVolume))
+  const instance1 = new SimpleInstance(getInstance(volume))
   window.Instances = [instance1]
   augmentInstancesArray(window.Instances);
 }
@@ -63,11 +61,12 @@ const styles = () => ({
   }
 });
 
+const defaultNRRDS = [VFB_0010101b, VFB_001012vj, VFB_00101567];
+
 class NRRDExample extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.tooltipRef = React.createRef();
-    loadInstances(0)
     this.state = {
       data: getProxyInstances(),
       showLoader: false,
@@ -82,33 +81,41 @@ class NRRDExample extends Component {
         },
         reset: false,
         autorotate: false,
-        rotateSpeed : .2,
+        rotateSpeed: 0.2,
         wireframe: false,
       },
       showModel: false,
-      selectedVolume : 0
+      selectedVolume: 0,
+      anchorEl : null
     };
-    this.canvasIndex = 3
+    this.canvasIndex = 3;
     this.hoverHandler = this.hoverHandler.bind(this);
-    this.handleClickOutside = this.handleClickOutside.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.toggleVolume = this.toggleVolume.bind(this);
-    this.onSelection = this.onSelection.bind(this)
+    this.onSelection = this.onSelection.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.onMount = this.onMount.bind(this);
     this.layoutRef = React.createRef();
+    this.volumes = defaultNRRDS;
+    loadInstances(this.volumes[0]);
+    this.setState({
+      showModel: true,
+      showLoader: false,
+      data: getProxyInstances(),
+      cameraOptions: { ...this.state.cameraOptions },
+      anchorEl : null
+    });
   }
 
-  componentDidMount () {
-    document.addEventListener('mousedown', this.handleClickOutside);
-    
+  handleClick (event) {
+    this.setState({ anchorEl : event.currentTarget });
+  }
+  handleClose () {
+    this.setState({ anchorEl : null });
   }
 
-  componentWillUnmount () {
-    document.removeEventListener('mousedown', this.handleClickOutside);
-  }
-
-
-  hoverHandler (objs, canvasX, canvasY) {
+  hoverHandler(objs, canvasX, canvasY) {
     this.tooltipRef?.current?.updateIntersected({
       o: objs[objs.length - 1],
       x: canvasX,
@@ -116,80 +123,108 @@ class NRRDExample extends Component {
     });
   }
 
-  handleToggle () {
-    this.setState({ showLoader: true })
-    loadInstances(this.state.selectedVolume)
-    this.setState({ showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: { ...this.state.cameraOptions, } })
+  handleToggle() {
+    this.setState({ showLoader: true });
+    loadInstances(this.volumes[this.state.selectedVolume]);
+    this.setState({
+      showModel: true,
+      showLoader: false,
+      data: getProxyInstances(),
+      cameraOptions: { ...this.state.cameraOptions },
+      anchorEl : null
+    });
   }
 
-  toggleVolume () {
-    let indexVolume = this.state.selectedVolume;
-    indexVolume < volumes.length ? indexVolume = indexVolume + 1 : indexVolume = 0;
-    getInstance(indexVolume).visualValue.nrrd = volumes[indexVolume];
-    loadInstances(indexVolume);
-    this.setState({ data: getProxyInstances(), selectedVolume : indexVolume, showModel: true, cameraOptions: { ...this.state.cameraOptions, } })
+  toggleVolume(event, indexVolume) {
+    this.setState({ showLoader: true });
+    getInstance(this.volumes[indexVolume]).visualValue.nrrd = this.volumes[indexVolume];
+    loadInstances(this.volumes[indexVolume]);
+    this.setState({
+      data: getProxyInstances(),
+      selectedVolume: indexVolume,
+      showModel: true,
+      showLoader: false,
+      cameraOptions: { ...this.state.cameraOptions },
+      anchorEl : null
+    });
   }
 
-  handleClickOutside (event) {
-    if (this.node && !this.node.contains(event.target)) {
-      if (event.offsetX <= event.target.clientWidth){
-        this.setState({ showModel: false })
-      }
-    }
-  }
+  onMount(scene) {}
 
-  onMount (scene){
-  }
+  onSelection(selectedInstances) {}
 
-  onSelection (selectedInstances){
-  }
-
-  render () {
-    const { data, cameraOptions, showModel, showLoader } = this.state
-    const canvasData = mapToCanvasData(data)
-    const { classes } = this.props
+  render() {
+    const { data, cameraOptions, showModel, showLoader } = this.state;
+    const canvasData = mapToCanvasData(data);
+    const { classes } = this.props;
+    const that = this;
 
     const captureOptions = {
       captureControls: {
         instance: CaptureControls,
-        props: {}
+        props: {},
       },
       recorderOptions: {
         mediaRecorderOptions: {
-          mimeType: 'video/webm',
+          mimeType: "video/webm",
         },
-        blobOptions:{
-          type: 'video/webm'
-        }
+        blobOptions: {
+          type: "video/webm",
+        },
       },
-      screenshotOptions:{
-        resolution:{
+      screenshotOptions: {
+        resolution: {
           width: 3840,
           height: 2160,
         },
         quality: 0.95,
         pixelRatio: 1,
-        filter: () => true
+        filter: () => true,
       },
-    }
+    };
 
-    return showLoader ? <Loader active={true} /> : showModel ? (
-      <div ref={node => this.node = node} className={classes.container}>
-        <Button
-          variant="outlined"
-          color="primary"
-          className={classes.button}
-          onClick={this.toggleVolume}
-        >
-          Toggle Volume
-        </Button>
+    return showLoader ? (
+      <Loader active={true} />
+    ) : showModel ? (
+      <div ref={(node) => (this.node = node)} className={classes.container}>
+        <div>
+          <Button
+            id="basic-button"
+            aria-controls={ this.state.anchorEl ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={this.state.anchorEl ? "true" : undefined}
+            onClick={this.handleClick}
+            className={classes.button}
+          >
+            Toggle Volume
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={this.state.anchorEl}
+            open={this.state.anchorEl != null && this.state.anchorEl != undefined }
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            {defaultNRRDS.map((option, index) => (
+              <MenuItem
+                key={option}
+                disabled={index === 0}
+                selected={index === this.state.selectedVolume}
+                onClick={ event => that.toggleVolume(event, index)}
+              >
+                {option}
+              </MenuItem>
+            ))}
+          </Menu>
+        </div>
         <>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
             cameraOptions={cameraOptions}
             captureOptions={captureOptions}
-            backgroundColor={0xFFFFFF}
+            backgroundColor={0xffffff}
             onSelection={this.onSelection}
             onMount={this.onMount}
             id="canvas"
@@ -199,13 +234,11 @@ class NRRDExample extends Component {
           />
         </>
       </div>
-    ) : <Button
-      variant="outlined"
-      color="primary"
-      onClick={this.handleToggle}
-    >
-      Show Example
-    </Button>
+    ) : (
+      <Button variant="outlined" color="primary" onClick={this.handleToggle}>
+        Show Example
+      </Button>
+    );
   }
 }
 
