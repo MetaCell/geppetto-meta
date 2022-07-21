@@ -136,7 +136,7 @@ class NRRDExample extends Component {
   }
 
   toggleVolume(event, indexVolume) {
-    this.setState({ showLoader: true });
+    this.setState({ showLoader: true, selectedVolume: indexVolume });
     getInstance(this.volumes[indexVolume]).visualValue.nrrd = this.volumes[indexVolume];
     loadInstances(this.volumes[indexVolume]);
     this.setState({
@@ -209,7 +209,7 @@ class NRRDExample extends Component {
             {defaultNRRDS.map((option, index) => (
               <MenuItem
                 key={option}
-                disabled={index === 0}
+                disabled={index === this.state.selectedVolume}
                 selected={index === this.state.selectedVolume}
                 onClick={ event => that.toggleVolume(event, index)}
               >
