@@ -4,7 +4,7 @@ import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraCon
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import { withStyles } from '@material-ui/core';
 let VFB_00101567 = "https://v2.virtualflybrain.org/data/VFB/i/0010/1567/VFB_00101567/volume.nrrd";
-let VFB_0010101b = "https://v2.virtualflybrain.org/data/VFB/i/0010/101b/VFB_00101567/volume.nrrd";
+let VFB_0010101b = "https://cdn.rawgit.com/FNNDSC/data/master/nifti/eun_brain/eun_uchar_8.nii.gz";
 let VFB_001012vj = "https://v2.virtualflybrain.org/data/VFB/i/0010/12vj/VFB_00101567/volume.nrrd";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -232,6 +232,7 @@ class NRRDExample extends Component {
             key={this.state.selectedVolume}
             hoverListeners={[this.hoverHandler]}
           />
+          <div id="r3d"></div>
         </>
       </div>
     ) : (

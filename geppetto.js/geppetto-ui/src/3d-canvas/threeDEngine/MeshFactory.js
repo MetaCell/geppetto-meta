@@ -9,6 +9,9 @@ import { NRRDLoader } from "three/examples/jsm/loaders/NRRDLoader";
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader.js';
+import { VolumeLoader, boundingBoxHelperFactory, VolumeRenderingHelperFactory, lutHelperFactory, LutHelper } from 'ami.js';
+import * as THREE from 'three';
+const HelpersBoundingBox = boundingBoxHelperFactory(THREE);
 
 export default class MeshFactory {
   constructor (
@@ -56,7 +59,7 @@ export default class MeshFactory {
       [Resources.DRC]: dracoLoader,
       [Resources.OBJ]: objLoader,
       [Resources.COLLADA]: new ColladaLoader(),
-      [Resources.NRRD]: new NRRDLoader(),
+      [Resources.NRRD]: new VolumeLoader(),
       'TextureLoader': new this.THREE.TextureLoader()
     }
   }
@@ -556,168 +559,36 @@ export default class MeshFactory {
 
   async loadNRRDModelFromNode(node) {
     const loader = this.loaders[Resources.NRRD];
-    const textureLoader = this.loaders['TextureLoader']
-    const particleTexture = this.particleTexture
-      ? this.particleTexture
-      : textureLoader.load(particle);
-
-    let that = this;
-    const volconfig = { clim1: 0, clim2: 1, renderstyle: 'mip', isothreshold: .15, colormap: 'viridis' };
-
     const volumeMesh = await new Promise((resolve, reject) => {
-      loader.load("https://v2.virtualflybrain.org/data/VFB/i/0010/1567/VFB_00101567/volume.nrrd", function (volume) {
-        let intArray = new Uint8Array()
-        let floatArray = Float32Array.from(volume.data)
+      loader.load(node.nrrd).then(function () {
+        let series = loader.data[0].mergeSeries(loader.data)[0];
+        loader.free();
+        console.log("Series ", series);
+        // get first stack from series
+        let stack = series.stack[0];
 
-        console.log("Volume mesh factory ", volume);
-        let volumeX = volume.xLength;
-        let volumeY = volume.yLength;
-        let volumeZ = volume.zLength;
-        let texture = new that.THREE.DataTexture3D( floatArray, volumeX, volumeY, volumeZ );
-				texture.format = that.THREE.RedFormat;
-			  texture.type = that.THREE.FloatType;
-				texture.minFilter = texture.magFilter = that.THREE.LinearFilter;
-				texture.unpackAlignment = 1;
-				texture.needsUpdate = true;
+        let stackHelper = new HelpersBoundingBox(stack);
 
-        let cmtextures = {
-					viridis: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_viridis.png'),
-					gray: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_gray.png')
-				};
+        stackHelper.bbox.color = 0xf9f9f9;
+        stackHelper.border.color = 0xf9f9f9;
 
-				// Material
-				let shader = VolumeRenderShader1;
+        // vrHelper.uniforms.uWindowCenterWidth.value =[stack.windowCenter, stack.windowWidth * 0.8];
 
-				let uniforms = that.THREE.UniformsUtils.clone( shader.uniforms );
+        // const LutHelper = lutHelperFactory(this.THREE)
+        // const lut = new LutHelper("my-tf")
+        // lut.luts = LutHelper.presetLuts();
+        // lut.lutsO = LutHelper.presetLutsO();
+        // console.log(lut);
 
-				uniforms[ 'u_data' ].value = texture;
-				uniforms[ 'u_size' ].value.set( volumeX, volumeY, volumeZ  );
-				uniforms[ 'u_clim' ].value.set( volume.min, volume.max );
-				uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-				uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-        uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
+        // // update related uniforms
+        // vrHelper.uniforms.uTextureLUT.value = lut.texture;
+        // vrHelper.uniforms.uLut.value = 1;
+        // console.log(vrHelper)
 
-				let material2 = new that.THREE.ShaderMaterial( {
-					uniforms: uniforms,
-					vertexShader: shader.vertexShader,
-					fragmentShader: shader.fragmentShader,
-					side: that.THREE.BackSide, // The volume shader uses the backface as its "reference point"
-				} );
-
-				// THREE.Mesh
-				let geometry2 = new that.THREE.BoxGeometry( volumeX, volumeY, volumeZ  );
-				geometry2.translate( volumeX / 2 - 1, volumeY / 2 - 1, volumeZ / 2 - 1);
-
-				let mesh = new that.THREE.Mesh( geometry2, material2 );
-
-        let box = new that.THREE.BoxHelper( mesh, 0xffff00 );
-        let group = new that.THREE.Group();
-        group.add( box );
-        group.add( mesh );
-        console.log("First mesh added ", group);
-        loader.load("https://v2.virtualflybrain.org/data/VFB/i/0010/101b/VFB_00101567/volume.nrrd", function (volume2) {
-          intArray = new Uint8Array()
-          floatArray = Float32Array.from(volume2.data)
-
-          console.log("Volume mesh factory ", volume2);
-          volumeX = volume2.xLength;
-          volumeY = volume2.yLength;
-          volumeZ = volume2.zLength;
-          texture = new that.THREE.DataTexture3D( floatArray, volumeX, volumeY, volumeZ );
-          texture.format = that.THREE.RedFormat;
-          texture.type = that.THREE.FloatType;
-          texture.minFilter = texture.magFilter = that.THREE.LinearFilter;
-          texture.unpackAlignment = 1;
-          texture.needsUpdate = true;
-
-          cmtextures = {
-            viridis: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_viridis.png'),
-            gray: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_gray.png')
-          };
-
-          // Material
-          shader = VolumeRenderShader1;
-          uniforms = that.THREE.UniformsUtils.clone( shader.uniforms );
-
-          uniforms[ 'u_data' ].value = texture;
-          uniforms[ 'u_size' ].value.set( volumeX, volumeY, volumeZ  );
-          uniforms[ 'u_clim' ].value.set( volume2.min, volume2.max );
-          uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-          uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-          uniforms[ 'u_cmdata' ].value = cmtextures[ 'gray' ];
-
-          material2 = new that.THREE.ShaderMaterial( {
-            uniforms: uniforms,
-            vertexShader: shader.vertexShader,
-            fragmentShader: shader.fragmentShader,
-            side: that.THREE.BackSide, // The volume shader uses the backface as its "reference point"
-          } );
-
-          // THREE.Mesh
-          geometry2 = new that.THREE.BoxGeometry( volumeX, volumeY, volumeZ  );
-          geometry2.translate( volumeX / 2 - 1, volumeY / 2 - 1, volumeZ / 2 - 1);
-
-          mesh = new that.THREE.Mesh( geometry2, material2 );
-          mesh.position.set(100, 100, 200);
-          mesh.material.transparent = true;
-          mesh.material.opacity = 0.5; 
-
-          box = new that.THREE.BoxHelper( mesh, 0xffff00 );
-          group.add( box );
-          group.add( mesh );
-          console.log("Second volume added ", group);
-      });
-      loader.load("https://v2.virtualflybrain.org/data/VFB/i/0010/12vj/VFB_00101567/volume.nrrd", function (volume2) {
-          intArray = new Uint8Array()
-          floatArray = Float32Array.from(volume2.data)
-
-          console.log("Volume mesh factory ", volume2);
-          volumeX = volume2.xLength;
-          volumeY = volume2.yLength;
-          volumeZ = volume2.zLength;
-          texture = new that.THREE.DataTexture3D( floatArray, volumeX, volumeY, volumeZ );
-          texture.format = that.THREE.RedFormat;
-          texture.type = that.THREE.FloatType;
-          texture.minFilter = texture.magFilter = that.THREE.LinearFilter;
-          texture.unpackAlignment = 1;
-          texture.needsUpdate = true;
-
-          cmtextures = {
-            viridis: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_viridis.png'),
-            gray: new that.THREE.TextureLoader().load( 'https://raw.githubusercontent.com/mrdoob/three.js/106528bdee752417285d53904e5d60eeef7fa427/examples/textures/cm_gray.png')
-          };
-
-          // Material
-          shader = VolumeRenderShader1;
-          uniforms = that.THREE.UniformsUtils.clone( shader.uniforms );
-
-          uniforms[ 'u_data' ].value = texture;
-          uniforms[ 'u_size' ].value.set( volumeX, volumeY, volumeZ  );
-          uniforms[ 'u_clim' ].value.set( volume2.min, volume2.max );
-          uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-          uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-          uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
-
-          material2 = new that.THREE.ShaderMaterial( {
-            uniforms: uniforms,
-            vertexShader: shader.vertexShader,
-            fragmentShader: shader.fragmentShader,
-            side: that.THREE.BackSide, // The volume shader uses the backface as its "reference point"
-          } );
-
-          // THREE.Mesh
-          geometry2 = new that.THREE.BoxGeometry( volumeX, volumeY, volumeZ  );
-          geometry2.translate( volumeX / 2 - 1, volumeY / 2 - 1, volumeZ / 2 - 1);
-
-          mesh = new that.THREE.Mesh( geometry2, material2 );
-          mesh.position.set(200, 200, 400);
-
-          box = new that.THREE.BoxHelper( mesh, 0xffff00 );
-          group.add( box );
-          group.add( mesh );
-          console.log("Third volume added ", group);
-          return resolve(group);
-      });
+        return resolve(stackHelper);
+      }).catch(function(error) {
+        console.log('oops... something went wrong...');
+        console.log(error);
       });
     });
 
