@@ -267,6 +267,7 @@ export default class ThreeDEngine {
           for (let i = 0; i < intersects.length; i++) {
             // figure out if the entity is visible
             let instancePath = '';
+            let externalMeshId = null;
             let geometryIdentifier = '';
             if (
               Object.prototype.hasOwnProperty.call(
@@ -277,10 +278,17 @@ export default class ThreeDEngine {
               instancePath = intersects[i].object.instancePath;
               geometryIdentifier
                   = intersects[i].object.geometryIdentifier;
-            } else {
+            } else if (Object.prototype.hasOwnProperty.call(
+                intersects[i].object.parent,
+                'instancePath'
+            )) {
               instancePath = intersects[i].object.parent.instancePath;
               geometryIdentifier
                   = intersects[i].object.parent.geometryIdentifier;
+            }
+            else {
+              externalMeshId = intersects[i].object.uuid
+              geometryIdentifier = null
             }
 
             if (
@@ -298,6 +306,14 @@ export default class ThreeDEngine {
                 selectedMap[instancePath] = {
                   ...intersects[i],
                   geometryIdentifier: geometryIdentifier,
+                  distanceIndex: i,
+                };
+              }
+            }
+            if (externalMeshId != null) {
+              if (!(externalMeshId in selectedMap)) {
+                selectedMap[externalMeshId] = {
+                  ...intersects[i],
                   distanceIndex: i,
                 };
               }
@@ -335,7 +351,7 @@ export default class ThreeDEngine {
           this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
         }
       }
-      if (this.onEmptyHoverListener && intersects.length == 0)
+      if (this.onEmptyHoverListener && intersects.length === 0)
         this.onEmptyHoverListener();
     }
   }
@@ -360,7 +376,7 @@ export default class ThreeDEngine {
       this.addToScene(element); // already checks if object is already in the scene
       this.externalThreeDObjectsUUIDs.add(element.uuid)
     });
-
+    this.updateVisibleChildren();
   }
 
   updateCamera (cameraOptions){
