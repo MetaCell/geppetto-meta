@@ -65,9 +65,9 @@ export const Tab = (props: ITabProps) => {
 
     return (
         <div className={className} onMouseDown={onMouseDown} onTouchStart={onMouseDown} style={style}>
-            <ErrorBoundary message={props.layout.i18nName(I18nLabel.Error_rendering_component)}>
+            {/* <ErrorBoundary message={props.layout.i18nName(I18nLabel.Error_rendering_component)}> */}
                 <Fragment>{child}</Fragment>
-            </ErrorBoundary>
+            {/* </ErrorBoundary> */}
         </div>
     );
 };

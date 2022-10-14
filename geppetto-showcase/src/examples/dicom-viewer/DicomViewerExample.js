@@ -20,7 +20,7 @@ export default class DicomViewerExample extends Component {
 
   render () {
     const data
-      = 'https://s3.amazonaws.com/patient-hm-august-2017/MRI/IN+SITU+2008+MPRAGE+1MM-ISO/IN-SITU-2008-MPRAGE-1MM-ISO-ALT2.nii.gz';
+      = '../assets/EX_SITU_2009_UCSD_T1_WEIGHTED.nii.gz';
 
     const { ready } = this.state
 

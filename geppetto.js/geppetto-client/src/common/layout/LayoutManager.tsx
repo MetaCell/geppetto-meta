@@ -496,9 +496,7 @@ class LayoutManager {
    */
   private updateWidget(widget: Widget) {
     const { model } = this;
-
     const previousWidget = this.getWidget(widget.id);
-
     const mergedWidget = { ...previousWidget, ...widget }
     // TODO: what if widget doesn't have a status here?
 

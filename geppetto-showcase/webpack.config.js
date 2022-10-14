@@ -114,6 +114,7 @@ module.exports = smp.wrap({
       {
         patterns: [
           { from: path.resolve(__dirname, "./src/examples/3d-canvas/models"), to: "assets" },
+          { from: path.resolve(__dirname, "./src/examples/3d-canvas/assets"), to: "assets" },
           { from: path.resolve(__dirname, "./src/examples/list-viewer/instances-small.js"), to: "instances-small.js" },
           { from: path.resolve(__dirname, "./src/examples/connectivity-viewer/model.js"), to: "model.js" },
           { from: path.resolve(__dirname, "./src/examples/plot/model.js"), to: "model.js" },
