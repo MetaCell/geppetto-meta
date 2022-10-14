@@ -1293,11 +1293,12 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "1.0.0-final"
+
+  version "1.0.2"
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" v1.0.0-final
-    "@metacell/geppetto-meta-ui" v1.0.0-final
+    "@metacell/geppetto-meta-core" v1.0.2
+    "@metacell/geppetto-meta-ui" v1.0.2
     anchorme "^0.7.1"
     backbone "^1.3.3"
     backbone-associations "^0.6.2"
@@ -1339,22 +1340,24 @@
     url-join "^4.0.0"
 
 "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "1.0.0-final"
 
-"@metacell/geppetto-meta-core@v1.0.0-final":
-  version "1.0.0-final"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.0-final.tgz#9388c3b5f3d91e41de9ba5027b6714d3447fdbea"
-  integrity sha512-OQZ5tpWdE6S14UWLEEBh8PzIbMTYw260PWEDQjsM9D11Q3xngTNNSussZK7c885A4hHReuf7cTwA1JoL16U1bQ==
+  version "1.0.2"
+
+"@metacell/geppetto-meta-core@v1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.2.tgz#7db17ae631861efb706532a590d447c14c8c8ada"
+  integrity sha512-BV4zs6RhojsT/2MFJlMWsW+Ijv+aMjFWVQ9y1IiyJXPluKfwiZXfEyyYcvi+D/43c0CdSqhpk5EHQ0wuWZvfcg==
 
 "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "1.0.0-final"
+  version "1.0.2"
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
-"@metacell/geppetto-meta-ui@v1.0.0-final":
-  version "1.0.0-final"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.0-final.tgz#988df83e95f66be53e7751180a906b9c5982bc5b"
-  integrity sha512-ARj85Xkq1lhbJ+/W0sHcbqJ5YH5E7HpP8E960zS+MsDngejeE6va73bbjD54KVzRurGeschdyVdadyt9nMsAPQ==
+"@metacell/geppetto-meta-ui@v1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.2.tgz#96f601c72169ff7f0bf3bca74cf4a3a732d11f60"
+  integrity sha512-DEZdi2hUbpu1Ue3MKXPGNEL3V8ABnErs/UaGUVFQn5THXU+taTOxgOeta0SqE0DbiqmbJAfdJANUZqlZ47Es0Q==
+
   dependencies:
     babel-plugin-import-less "^0.1.6"
 
