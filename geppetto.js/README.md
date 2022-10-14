@@ -28,35 +28,44 @@ And follow the steps for each package below.
 
 * first of all do a `npm login` (you will need 2FA enable on your account before proceeding)
 
-**geppetto-ui**
-
-* Increase version in `geppetto-ui/package.json` to new version.
-* Create build
-
-  ```bash
-  cd geppetto-ui
-  yarn && yarn build
-  ```
-* Publish build
-  
-  ```bash
-  cd build
-  npm publish --access public
-  ```
+Run **npm cache clear --force** first
 
 **geppetto-core**
 
-Equivalent to geppetto-ui.
+Start with this one as there are no other *geppetto-meta* dependencies needed
 
+Update version on package.json
+
+```
+rm -rf node_modules build package-lock.json yarn.lock 
+npm install
+npm run build
+cd build
+npm publish --access public
+```
+
+**geppetto-ui**
+
+Update version on package.json
+Update *geppetto-meta-core* reference on package.json *peerDependencies*
+
+```
+rm -rf node_modules build package-lock.json yarn.lock 
+npm install
+npm run build
+cd build
+npm publish --access public
+```
 
 **geppetto-client**
 
-geppetto-client defines `@metacell/geppetto-meta-ui` and `@metacell/geppetto-meta-core` as dependencies.
+Update version on package.json
+Update *geppetto-meta-core and geppetto-meta-core* reference on package.json *peerDependencies*
 
-Therefore, two additional steps are necessary:
-* First create releases for core and ui before creating release for client.
-* Further, update dependency version of core and ui in geppetto-client to new release version.
-
-Once completed, proceed with the usual steps.
-
-   
+```
+rm -rf node_modules build package-lock.json yarn.lock 
+npm install
+npm run build
+cd build
+npm publish --access public
+```
