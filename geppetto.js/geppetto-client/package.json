@@ -36,8 +36,6 @@
     "bootstrap": "^3.3.7",
     "codemirror": "^5.42.0",
     "create-react-class": "^15.6.3",
-    "d3": "^5.16.0",
-    "d3-plugins-dist": "^3.2.0",
     "detector-webgl": "^2.0.0",
     "file-saver": "^2.0.2",
     "handlebars": "^4.0.5",
