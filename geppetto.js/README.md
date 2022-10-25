@@ -60,7 +60,7 @@ npm publish --access public
 **geppetto-client**
 
 Update version on package.json
-Update *geppetto-meta-core and geppetto-meta-core* reference on package.json *peerDependencies*
+Update *geppetto-meta-core and geppetto-meta-ui* reference on package.json *peerDependencies*
 
 ```
 rm -rf node_modules build package-lock.json yarn.lock 
