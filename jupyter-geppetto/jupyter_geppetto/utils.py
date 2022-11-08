@@ -9,7 +9,7 @@ from zmq.utils import jsonapi
 def convertToJS(content):
     # return session.json_packer(content).decode("utf-8")
     # Old way: this needs to be deleted if the above line is enough
-    return jsonapi.dumps(json_clean(content)).decode("utf-8")
+    return jsonapi.dumps(json_clean(content), default=str).decode("utf-8")
 
 
 def convertToPython(content):
