@@ -3,3 +3,6 @@
 **/.yalc
 **/yalc.lock
 .vscode/
+jupyter_geppetto/build
+jupyter_geppetto/dist
+
