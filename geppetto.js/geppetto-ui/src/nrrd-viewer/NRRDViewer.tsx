@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { NRRDLoader } from 'three/examples/jsm/loaders/NRRDLoader';
-import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader';
-import { GUI } from 'dat.gui'
+// import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+// import { NRRDLoader } from 'three/examples/jsm/loaders/NRRDLoader';
+// import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader';
+// import { GUI } from 'dat.gui'
 import ReactResizeDetector from 'react-resize-detector';
 import T3, { InitRenderArgs } from './three';
 
