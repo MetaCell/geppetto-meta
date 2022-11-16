@@ -38,7 +38,6 @@
     "@babel/preset-typescript": "^7.13.0",
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
-    "@types/dat.gui": "^0.7.7",
     "@types/jest": "^26.0.23",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.0.2",
@@ -49,7 +48,6 @@
     "babel-jest": "^25.1.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^4.0.0",
-    "dat.gui": "^0.7.9",
     "eslint": "^6.0.1",
     "handlebars": "^4.0.5",
     "jest": "^24.9.0",
@@ -72,6 +70,7 @@
     "babel-plugin-import-less": "^0.1.6",
     "d3": "7.6.1",
     "d3-plugins-dist": "^3.2.0",
+    "dat.gui": "^0.7.9",
     "file-saver": "^2.0.2",
     "html-to-image": "^1.9.0",
     "jszip": "^3.2.1",
@@ -111,5 +110,10 @@
         "node_modules"
       ]
     }
+  },
+  "dependencies": {
+    "@types/dat.gui": "^0.7.7",
+    "@types/react-resize-detector": "^6.1.0",
+    "@types/three": "^0.146.0"
   }
 }

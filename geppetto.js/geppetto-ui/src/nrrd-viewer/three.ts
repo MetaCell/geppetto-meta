@@ -40,7 +40,7 @@ const uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 const material = new THREE.ShaderMaterial( {
 	uniforms: uniforms,
 	vertexShader: shader.vertexShader,
-	fragmentShader: shader.fragmentShade,
+	fragmentShader: shader.fragmentShader,
 	side: THREE.BackSide // The volume shader uses the backface as its "reference point"
 } );
 
