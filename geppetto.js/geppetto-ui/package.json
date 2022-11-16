@@ -43,6 +43,8 @@
     "@types/node": "^15.0.2",
     "@types/react": "^17.0.5",
     "@types/react-dom": "^17.0.4",
+    "@types/react-resize-detector": "^6.1.0",
+    "@types/three": "^0.146.0",
     "axios": "^0.21.1",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^25.1.0",
@@ -111,10 +113,5 @@
         "node_modules"
       ]
     }
-  },
-  "dependencies": {
-    "@types/dat.gui": "^0.7.7",
-    "@types/react-resize-detector": "^6.1.0",
-    "@types/three": "^0.146.0"
   }
 }
