@@ -7,6 +7,7 @@ const DicomViewer = lazy(() => import(/* webpackChunkName: "dicomviewer" */'./da
 const GraphVisualizer = lazy(() => import(/* webpackChunkName: "graphvisualizer" */'./dataviewers/graphvisualizer'));
 const HTMLViewer = lazy(() => import(/* webpackChunkName: "htmlviewer" */'./dataviewers/htmlviewer'));
 const MoviePlayer = lazy(() => import(/* webpackChunkName: "movieplayer" */'./dataviewers/movieplayer'));
+const NRRDViewer = lazy(() => import(/* webpackChunkName: "nrrdviewer" */'./dataviewers/nrrdviewer'));
 const Plot = lazy(() => import(/* webpackChunkName: "plot" */'./dataviewers/plot'));
 const VRCanvas = lazy(() => import(/* webpackChunkName: "vrcanvas" */'./dataviewers/vrcanvas'));
 const FlexLayout = lazy(() => import(/* webpackChunkName: "flexlayout" */'./navigation/flexlayout'));
@@ -24,7 +25,6 @@ const pages = [
     name: '3D Canvas',
     to: '/dataviewers/canvas',
   },
-  
   {
     component: BigImgViewer,
     parent: 'Data Viewers',
@@ -60,6 +60,12 @@ const pages = [
     parent: 'Data Viewers',
     name: 'Movie Player',
     to: '/dataviewers/movieplayer',
+  },
+  {
+    component: NRRDViewer,
+    parent: 'Data Viewers',
+    name: 'NRRD Viewer',
+    to: '/dataviewers/nrrdviewer',
   },
   {
     component: Plot,
