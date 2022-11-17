@@ -3,6 +3,6 @@
 *node_modules
 .history
 settings.json
-jupyter_geppetto/*.js
+# jupyter_geppetto/*.js
 jupyter_geppetto/*.js.map
 *.DS_Store
