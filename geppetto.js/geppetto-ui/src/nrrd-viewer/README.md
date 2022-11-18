@@ -16,6 +16,6 @@ Multiple Instances Example
 nrrd-viewer/nrrdViewerShowcase
 ```
 
-### Libraries
+## Libraries
 
 [three.js](https://www.npmjs.com/package/three)
