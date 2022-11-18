@@ -3,7 +3,7 @@ import Showcase from "../../components/showcase/Showcase";
 import NRRD3DMarkdown from '@metacell/geppetto-meta-ui/nrrd-viewer/README.md';
 
 
-export default class ThreeDCanvasPage extends Component {
+export default class NRRDViewer extends Component {
   render () {
     const { currentPageHandler } = this.props;
 

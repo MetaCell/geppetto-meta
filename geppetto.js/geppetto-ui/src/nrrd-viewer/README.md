@@ -13,7 +13,7 @@ nrrd-viewer/NRRDViewer
 Multiple Instances Example
 
 ```
-nrrd-viewer/nrrrdViewerShowcase
+nrrd-viewer/nrrdViewerShowcase
 ```
 
 ### Libraries
