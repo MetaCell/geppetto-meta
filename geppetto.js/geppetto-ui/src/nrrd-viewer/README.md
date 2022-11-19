@@ -1,6 +1,9 @@
 # NRRD Viewer
 
-NRRD Volumetric Viewer
+A component that can be used to embed nrrd files. The components loads  Volumetric NRRD files.
+
+Supported sources:
+* .nrrd
 
 ```element
 nrrd-viewer/NRRDViewer
@@ -8,12 +11,12 @@ nrrd-viewer/NRRDViewer
 
 ## Examples
 
-### Multiple Instances Example
+### NRRD Multiple Instances Example
 
 Multiple Instances Example
 
 ```
-nrrd-viewer/nrrdViewerShowcase
+nrrd-viewer/NRRDViewerShowcase
 ```
 
 ## Libraries

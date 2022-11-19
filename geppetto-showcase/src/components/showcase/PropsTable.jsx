@@ -11,16 +11,10 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import IconButton from '@material-ui/core/IconButton';
 
-const styles = (theme) => ({
-  tableName: {
-    color: '#adc285',
-  },
-  tableType: {
-    color: '#a7577f',
-  },
-  tableRequired: {
-    color: '#abaaab',
-  },
+const styles = theme => ({
+  tableName: { color: '#adc285', },
+  tableType: { color: '#a7577f', },
+  tableRequired: { color: '#abaaab', },
   expandText: {
     display: 'flex',
     alignItems: 'center',
@@ -28,30 +22,24 @@ const styles = (theme) => ({
 });
 
 class PropsTable extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
-    this.state = {
-      propsExpand: {},
-    };
+    this.state = { propsExpand: {}, };
 
     this.handleExpand = this.handleExpand.bind(this);
   }
-  handleExpand = (key) => {
+  handleExpand = key => {
     const { propsExpand } = this.state;
 
     if (key in propsExpand) {
-      this.setState({
-        propsExpand: { ...propsExpand, [key]: !propsExpand[key] },
-      });
+      this.setState({ propsExpand: { ...propsExpand, [key]: !propsExpand[key] }, });
     } else {
-      this.setState({
-        propsExpand: { ...propsExpand, [key]: true },
-      });
+      this.setState({ propsExpand: { ...propsExpand, [key]: true }, });
     }
   };
 
-  generateTable(props) {
+  generateTable (props) {
     const { classes } = this.props;
     const { propsExpand } = this.state;
 
@@ -62,7 +50,7 @@ class PropsTable extends Component {
             <TableRow>{this.genereateTableHead()}</TableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(props).map((key) => (
+            {Object.keys(props || {}).map(key => 
               <Fragment key={key}>
                 <TableRow key={key}>
                   <TableCell
@@ -70,7 +58,7 @@ class PropsTable extends Component {
                     component="th"
                     scope="row"
                   >
-                    {props[key].type.value ? (
+                    {props[key].type?.value ? (
                       <span>
                         {key}
                         <IconButton onClick={() => this.handleExpand(key)}>
@@ -93,7 +81,7 @@ class PropsTable extends Component {
                   ? this.generateInnerTable(props[key].type.value, 1)
                   : null}
               </Fragment>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -102,7 +90,7 @@ class PropsTable extends Component {
     return table;
   }
 
-  generateInnerTable(props, level = 1) {
+  generateInnerTable (props, level = 1) {
     const { classes } = this.props;
     const { propsExpand } = this.state;
     const indent = 40 * level;
@@ -111,7 +99,7 @@ class PropsTable extends Component {
       <Fragment>
         <TableRow>{this.genereateTableHead(indent)}</TableRow>
         <Fragment>
-          {Object.keys(props).map((key) => (
+          {Object.keys(props || {}).map(key => (
             <Fragment key={key}>
               <TableRow key={key}>
                 <TableCell
@@ -150,7 +138,7 @@ class PropsTable extends Component {
     return table;
   }
 
-  genereateTableHead(indent) {
+  genereateTableHead (indent) {
     const style = indent ? { paddingLeft: indent } : {};
     return (
       <Fragment>
@@ -170,7 +158,7 @@ class PropsTable extends Component {
     );
   }
 
-  render() {
+  render () {
     const { propsConfigs } = this.props;
     const table = this.generateTable(propsConfigs);
     return table;

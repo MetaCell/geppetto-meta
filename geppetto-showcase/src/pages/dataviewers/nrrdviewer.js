@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Showcase from "../../components/showcase/Showcase";
+import Showcase from "../../components/showcase/Showcase.jsx";
 import NRRD3DMarkdown from '@metacell/geppetto-meta-ui/nrrd-viewer/README.md';
 
 
