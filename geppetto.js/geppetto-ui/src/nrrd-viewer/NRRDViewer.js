@@ -1,12 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Component } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { NRRDLoader } from 'three/examples/jsm/loaders/NRRDLoader';
-import { VolumeRenderShader1 } from 'three/examples/jsm/shaders/VolumeShader';
-import { GUI } from 'dat.gui'
+import React, { useEffect, useRef } from 'react'
 import ReactResizeDetector from 'react-resize-detector';
-import T3 from './nrrdEngine/three';
 import { renderer, init3DObject } from './nrrdEngine/nrrdEngine';
 import PropTypes from 'prop-types';
 
@@ -15,10 +8,6 @@ const example2 = "https://v2.virtualflybrain.org/data/VFB/i/0010/1567/VFB_001015
 const example3 = "https://v2.virtualflybrain.org/data/VFB/i/0010/101b/VFB_00101567/volume.nrrd";
 
 let examples = [example1, example2, example3];
-// interface INRRDViewerProps extends InitRenderArgs {
-// 	skipOnMount: boolean
-// 	onResize?: (width?: number, height?: number) => void
-// }
 
 const NRRDViewer = ({nrrdUrls, onResize, skipOnMount = true}) => {
 	const mountRef = useRef(null);
@@ -29,10 +18,8 @@ const NRRDViewer = ({nrrdUrls, onResize, skipOnMount = true}) => {
 	}
 
 	useEffect(() => {
-		// T3.init(nrrdUrls, appendDomElement);
 		init3DObject(nrrdUrls, appendDomElement);
 		return () => {
-			// mountRef.current.removeChild(T3.renderer.domElement);
 			mountRef.current.removeChild(renderer.domElement);
 		}
 	}, [])
