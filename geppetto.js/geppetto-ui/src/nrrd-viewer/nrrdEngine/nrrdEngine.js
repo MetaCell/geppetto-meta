@@ -40,13 +40,14 @@ const material = new THREE.ShaderMaterial( {
 } );
 
 
+const loadingCount = {}
+
 function render() {
 	console.log("Renderer");
 	renderer.render( scene, camera );
 
 }
 
-console.log('uniforms1 ===', uniforms);
 
 export function updateUniforms() {
 	material.uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
@@ -75,10 +76,65 @@ export function onWindowResize() {
 }
 
 
-export function init3DObject(nrrdUrls, appendDOMElement) {
-	console.log("Test")
-	console.log('uniforms2 ===', uniforms);
+export function onLoad(volume) {
 
+	console.log("Load nrrd ", volume);
+	const texture = new THREE.Data3DTexture( volume.data, volume.xLength, volume.yLength, volume.zLength );
+	texture.format = THREE.RedFormat;
+	texture.minFilter = texture.magFilter = THREE.LinearFilter;
+	// texture.type = THREE.FloatType;
+	texture.unpackAlignment = 1;
+	texture.needsUpdate = true;
+
+	// Material
+	// const shader = VolumeRenderShader1;
+
+	// const uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+
+	uniforms[ 'u_data' ].value = texture;
+	uniforms[ 'u_size' ].value.set( volume.xLength, volume.yLength, volume.zLength );
+	uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
+	uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
+	uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
+	uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
+
+	// material = new THREE.ShaderMaterial( {
+	// 	uniforms: uniforms,
+	// 	vertexShader: shader.vertexShader,
+	// 	fragmentShader: shader.fragmentShader,
+	// 	side: THREE.BackSide // The volume shader uses the backface as its "reference point"
+	// } );
+
+	// THREE.Mesh
+	const geometry = new THREE.BoxGeometry( volume.xLength, volume.yLength, volume.zLength );
+	geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 );
+
+	const mesh = new THREE.Mesh( geometry, material );
+	
+	const box = new THREE.BoxHelper( mesh, 0xffff00 );
+	const group = new THREE.Group();
+	group.add( box );
+	group.add( mesh );
+	
+	scene.add( group );
+
+	console.log("Scene ", scene);
+	console.log("Mesh ", mesh);
+	render();
+
+}
+
+
+function loadNRRD(file, index) {
+	const {id, url} = file
+	loadingCount[id] = index
+	nrrdloader.load(url, onLoad);
+
+}
+
+
+export function init3DObject(files, appendDOMElement) {
+	console.log("Test")
 	// Set renderer values
 	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.setSize( window.innerWidth, window.innerHeight );
@@ -113,58 +169,13 @@ export function init3DObject(nrrdUrls, appendDOMElement) {
 	
 
 	
-	nrrdUrls.forEach( example => {
-	// Load the data ...
-	nrrdloader.load(example, function (volume) {
-
-		console.log("Load nrrd ", volume);
-		const texture = new THREE.Data3DTexture( volume.data, volume.xLength, volume.yLength, volume.zLength );
-		texture.format = THREE.RedFormat;
-		texture.minFilter = texture.magFilter = THREE.LinearFilter;
-		// texture.type = THREE.FloatType;
-		texture.unpackAlignment = 1;
-		texture.needsUpdate = true;
-
-		// Material
-		// const shader = VolumeRenderShader1;
-
-		// const uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-		console.log('uniforms2 ===', uniforms);
-
-		uniforms[ 'u_data' ].value = texture;
-		uniforms[ 'u_size' ].value.set( volume.xLength, volume.yLength, volume.zLength );
-		uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
-		uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-		uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-		uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
-
-		// material = new THREE.ShaderMaterial( {
-		// 	uniforms: uniforms,
-		// 	vertexShader: shader.vertexShader,
-		// 	fragmentShader: shader.fragmentShader,
-		// 	side: THREE.BackSide // The volume shader uses the backface as its "reference point"
-		// } );
-
-		// THREE.Mesh
-		const geometry = new THREE.BoxGeometry( volume.xLength, volume.yLength, volume.zLength );
-		geometry.translate( volume.xLength / 2 - 0.5, volume.yLength / 2 - 0.5, volume.zLength / 2 - 0.5 );
-
-		const mesh = new THREE.Mesh( geometry, material );
-		
-		const box = new THREE.BoxHelper( mesh, 0xffff00 );
-		const group = new THREE.Group();
-		group.add( box );
-		group.add( mesh );
-		
-		scene.add( group );
-
-		console.log("Scene ", scene);
-		console.log("Mesh ", mesh);
-		render();
-
-	} );
+	files.forEach((nrrd, index) => {
+		// Load the data ...
+		loadNRRD(nrrd, index)
 	});
 
 	window.addEventListener( 'resize', onWindowResize );
 
 }
+
+

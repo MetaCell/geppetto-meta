@@ -12,10 +12,14 @@ export default class NRRDViewerShowcase extends Component {
   }
 
   render () {
-    const examples = [example1, example2, example3];
+    const examples = [
+      { id: 'example1' , url: example1 },  
+      { id: 'example2', url: example2 }, 
+      { id: 'example3', url: example3 }
+    ];
 
     return (
-      <NRRDViewer nrrdUrls={examples} skipOnMount={true} />
+      <NRRDViewer files={examples} skipOnMount={true} />
     );
   }
 }
