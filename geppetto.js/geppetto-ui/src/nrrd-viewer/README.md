@@ -3,6 +3,7 @@
 A component that can be used to embed nrrd files. The components loads  Volumetric NRRD files.
 
 Supported sources:
+
 * .nrrd
 
 ```element
@@ -16,7 +17,7 @@ nrrd-viewer/NRRDViewer
 Multiple Instances Example
 
 ```
-nrrd-viewer/NRRDViewerShowcase
+nrrd-viewer/nrrdViewerShowcase
 ```
 
 ## Libraries
