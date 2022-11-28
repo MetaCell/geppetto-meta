@@ -1,66 +1,101 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
-import { renderer, init3DObject } from './nrrdEngine/nrrdEngine';
+import { makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import NRRDThreeDEngine from './nrrdEngine/nrrdThreeEngine';
+import { examples } from './mock.js';
 
-const example1 = "https://v2.virtualflybrain.org/data/VFB/i/0010/12vj/VFB_00101567/volume.nrrd";
-const example2 = "https://v2.virtualflybrain.org/data/VFB/i/0010/1567/VFB_00101567/volume.nrrd";
-const example3 = "https://v2.virtualflybrain.org/data/VFB/i/0010/101b/VFB_00101567/volume.nrrd";
+const useStyles = makeStyles(() => ({
+  container: {
+    position: 'relative',
+    width: '100%',
+    minWidth: 1144,
+    height: 500,
+  },
+  guiContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 20,
+    zIndex: 999,
+  },
+}));
 
-let examples = [
-	{id: 'example1' , url: example1},  
-	{id: 'example2', url: example2}, 
-	{id: 'example3', url: example3}
-];
+const NRRDViewer = ({
+  files,
+  onResize,
+  cameraOptions,
+  backgroundColor,
+  skipOnMount = true,
+}) => {
+  const sceneRef = useRef(null);
+  const guiRef = useRef(null);
 
-const NRRDViewer = ({ files, onResize, skipOnMount = true }) => {
-	const mountRef = useRef(null);
+  const styles = useStyles();
 
-	// append renderer to dom element ref (renderer.domElement)
-	function appendDomElement(element) {
-			mountRef.current.appendChild(element);
-	}
+  useEffect(() => {
+    // Initialize nrrd engine
+    const threeDEngine = new NRRDThreeDEngine(
+      files,
+      sceneRef.current,
+      guiRef.current,
+      cameraOptions,
+      backgroundColor
+    );
 
-	useEffect(() => {
-		init3DObject(files, appendDomElement);
-		return () => {
-			mountRef.current.removeChild(renderer.domElement);
-		}
-	}, [])
+    const renderer = threeDEngine.getRenderer();
+    const gui = threeDEngine.getGUI();
 
+    return () => {
+      // clean up dom rendering
+      sceneRef.current.removeChild(renderer.domElement);
+      guiRef.current.removeChild(gui.domElement);
+    };
+  }, []);
 
-
-	return (
-		<ReactResizeDetector skipOnMount={skipOnMount} onResize={onResize}>
-			<div ref={mountRef} />
-		</ReactResizeDetector>
-	);
-}
+  return (
+    <ReactResizeDetector skipOnMount={skipOnMount} onResize={onResize}>
+      <div className={styles.container} ref={sceneRef}>
+        <div ref={guiRef} className={styles.guiContainer} />
+      </div>
+    </ReactResizeDetector>
+  );
+};
 
 NRRDViewer.defaultValues = {
-	files: examples,
-	skipOnMount: true,
-	onResize: () => {}
-}
+  files: examples,
+  skipOnMount: true,
+  onResize: () => {},
+  cameraOptions: {},
+};
 
 NRRDViewer.propTypes = {
-	/**
+  /**
    * URLs pointing to the nrrd files to be rendered in this component.
    */
-	files: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string.isRequired,
-			url: PropTypes.string.isRequired
-	})).isRequired,
+  files: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 
-	/**
- * Boolean value indicating if the nnrd loader should skip on mount . Defaults to false.
- */
-	skipOnMount : PropTypes.bool,
-/**
- * Function to callback on model resize
- */
-onResize: PropTypes.func
+  /**
+   * Boolean value indicating if the nnrd loader should skip on mount . Defaults to false.
+   */
+  skipOnMount: PropTypes.bool,
+  /**
+   * Function to callback on model resize
+   */
+  onResize: PropTypes.func,
+  /**
+   * Object to set scene camera options
+   */
+  cameraOptions: PropTypes.object,
+  /**
+   * String to select scene background color
+   */
+  backgroundColor: PropTypes.string,
 };
 
 export default NRRDViewer;
