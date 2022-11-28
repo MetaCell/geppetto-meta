@@ -13,13 +13,13 @@ export default class NRRDViewerShowcase extends Component {
 
   render () {
     const examples = [
-      { id: 'example1' , url: example1 },  
-      { id: 'example2', url: example2 }, 
-      { id: 'example3', url: example3 }
-    ];
+      { id: 'example1', url: example1, name: 'First NRRD' },
+      { id: 'example2', url: example2, name: 'Particles' },
+      { id: 'example3', url: example3, name: 'Cerebrum' },
+    ];    
 
     return (
-      <NRRDViewer files={examples} skipOnMount={true} />
+      <NRRDViewer files={examples} skipOnMount={true} backgroundColoR="0xfafafa" />
     );
   }
 }
