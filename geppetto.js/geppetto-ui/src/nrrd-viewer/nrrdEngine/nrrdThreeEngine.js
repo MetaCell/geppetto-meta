@@ -8,10 +8,10 @@ function getSelectorObj(files) {
   return files.reduce((acc, cur) => {
     if (!acc) return;
     if (cur !== undefined) {
-      return acc[cur.name] = cur.id
+      acc[cur.name] = cur.id;
+      return acc;
     }
-
-  }, {})
+  }, {});
 }
 
 export default class NRRDThreeDEngine {
@@ -20,7 +20,6 @@ export default class NRRDThreeDEngine {
     this.scene.background = new THREE.Color(backgroundColor);
     this.camera = null;
     this.cameraOptions = cameraOptions;
-    // this.onSelection = onSelection;
     this.renderer = null;
     this.gui = null;
     this.controls = null;
@@ -37,6 +36,8 @@ export default class NRRDThreeDEngine {
       renderstyle: 'iso',
       isothreshold: 0.15,
       colormap: 'viridis',
+      // selectedInstance: Object.values(this.instances).length > 0 ? Object.values(this.instances)[0]?.id : ''
+      instance: null,
     };
     this.cmtextures = {
       viridis: new THREE.TextureLoader().load(
@@ -60,7 +61,7 @@ export default class NRRDThreeDEngine {
     this.setupCamera(this.width / this.height);
 
     // Setup GUI
-    this.setupGUI(this.defaultVolconfig, this.updateUniforms);
+    this.setupGUI();
 
     // Setup Renderer
     this.setupRenderer(this.containerRef, this.guiRef, {});
@@ -83,7 +84,6 @@ export default class NRRDThreeDEngine {
     this.camera = new THREE.PerspectiveCamera(45, aspect, 1, 1000);
     this.camera.position.set(-64, -64, 128);
     this.camera.up.set(0, 0, 1); // In our data, z is up
-    console.log('1');
   }
 
   /**
@@ -91,7 +91,6 @@ export default class NRRDThreeDEngine {
    * @param containerRef
    */
   setupRenderer(containerRef, guiRef, options) {
-    console.log('2', containerRef, guiRef);
     this.renderer = new THREE.WebGLRenderer(options);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -121,6 +120,7 @@ export default class NRRDThreeDEngine {
    */
   setupListeners = () => {
     // window.addEventListener('resize', this.onWindowResize);
+    console.log('instances', this.instances);
     this.containerRef.addEventListener('resize', this.onWindowResize);
   };
 
@@ -129,24 +129,8 @@ export default class NRRDThreeDEngine {
    * @param volconfig
    * @param updateUniforms
    */
-  setupGUI(volconfig, updateUniforms) {
+  setupGUI() {
     this.gui = new GUI({ autoPlace: false });
-
-    // The gui for interaction
-    // gui.add( volconfig, 'clim1', 0, 1, 0.01 ).onChange( updateUniforms );
-    this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'colormap', { gray: 'gray', viridis: 'viridis' })
-      .onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'renderstyle', { mip: 'mip', iso: 'iso' })
-      .onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'isothreshold', 0, 1, 0.01)
-      .onChange(updateUniforms);
   }
 
   /**
@@ -155,20 +139,27 @@ export default class NRRDThreeDEngine {
    * @param updateUniforms
    */
   updateGUI(volconfig, updateUniforms) {
-    // The gui for interaction
-    this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'colormap', { gray: 'gray', viridis: 'viridis' })
-      .onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'renderstyle', { mip: 'mip', iso: 'iso' })
-      .onChange(updateUniforms);
-    this.gui
-      .add(volconfig, 'isothreshold', 0, 1, 0.01)
-      .onChange(updateUniforms);
-    this.gui.updateDisplay();
+    // The gui for interaction when instance has loaded
+    if (Object.keys(this.instances).length > 0) {
+      const instanceValues = getSelectorObj(this.files);
+      console.log('instanceValues', instanceValues);
+
+      this.gui
+        .add(volconfig, 'instance', { ...instanceValues })
+        .onChange(updateUniforms);
+      this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
+      this.gui.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
+      this.gui
+        .add(volconfig, 'colormap', { gray: 'gray', viridis: 'viridis' })
+        .onChange(updateUniforms);
+      this.gui
+        .add(volconfig, 'renderstyle', { mip: 'mip', iso: 'iso' })
+        .onChange(updateUniforms);
+      this.gui
+        .add(volconfig, 'isothreshold', 0, 1, 0.01)
+        .onChange(updateUniforms);
+      this.gui.updateDisplay();
+    }
   }
 
   animate() {
@@ -244,7 +235,7 @@ export default class NRRDThreeDEngine {
    * @param volume
    */
   onLoad(volume, fileObj) {
-    console.log('Load nrrd ', volume);
+    console.log('Load nrrd ', volume, fileObj);
     const texture = new THREE.Data3DTexture(
       volume.data,
       volume.xLength,
@@ -298,10 +289,11 @@ export default class NRRDThreeDEngine {
 
     // Add nrrd obj to instance e.g material, uniform
     this.instances[fileObj.id] = {
-      id: fileObj.id,
-      url: fileObj.url,
+      ...fileObj,
       material,
       uniforms,
+      volconfig: this.defaultVolconfig,
+      cmtextures: this.cmtextures,
     };
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -324,9 +316,13 @@ export default class NRRDThreeDEngine {
    */
   async addInstancesToLoader(instances) {
     for (const nrrd of instances) {
-      await this.nrrdloader.load(nrrd.url, (volume) =>
-        this.onLoad(volume, nrrd)
-      );
+      this.nrrdloader.load(nrrd.url, async (volume) => {
+        await this.onLoad(volume, nrrd);
+        if (this.gui.__controllers <= 0) {
+          this.updateGUI(this.defaultVolconfig, this.updateUniforms);
+        }
+        this.gui.updateDisplay();
+      });
     }
   }
 
