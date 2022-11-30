@@ -1,11 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import { makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import NRRDThreeDEngine from './nrrdEngine/nrrdThreeEngine';
 import { examples } from './mock.js';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     position: 'relative',
     width: '100%',
@@ -18,7 +23,30 @@ const useStyles = makeStyles(() => ({
     right: 20,
     zIndex: 999,
   },
+  formContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 20,
+    zIndex: 999,
+    '& .formControl': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#1a1a1a',
+      margin: theme.spacing(1),
+
+      '& .MuiSelect-root': {
+        flex: 1,
+        backgroundColor: '#3c3c3c;',
+        borderRadius: '0.25rem',
+        paddingLeft: '0.25rem',
+        minWidth: 120,
+      },
+    },
+  },
 }));
+
+let threeDEngine;
 
 const NRRDViewer = ({
   files,
@@ -30,16 +58,30 @@ const NRRDViewer = ({
   const sceneRef = useRef(null);
   const guiRef = useRef(null);
 
-  const styles = useStyles();
+  const classes = useStyles();
+
+  const [selectedInstance, setSelectedInstance] = React.useState('');
+
+  const handleChange = (event) => {
+    console.log(selectedInstance, event.target.value, threeDEngine, 'val');
+    if (threeDEngine !== undefined) {
+      threeDEngine.updateSelectedInstanceId(
+        event.target.value,
+        selectedInstance ?? null
+      );
+    }
+    setSelectedInstance(event.target.value);
+  };
 
   useEffect(() => {
     // Initialize nrrd engine
-    const threeDEngine = new NRRDThreeDEngine(
+    threeDEngine = new NRRDThreeDEngine(
       files,
       sceneRef.current,
       guiRef.current,
       cameraOptions,
-      backgroundColor
+      backgroundColor,
+      selectedInstance
     );
 
     const renderer = threeDEngine.getRenderer();
@@ -54,8 +96,29 @@ const NRRDViewer = ({
 
   return (
     <ReactResizeDetector skipOnMount={skipOnMount} onResize={onResize}>
-      <div className={styles.container} ref={sceneRef}>
-        <div ref={guiRef} className={styles.guiContainer} />
+      <div className={classes.container} ref={sceneRef}>
+        <div ref={guiRef} className={classes.guiContainer} />
+        <div className={classes.formContainer}>
+          <div className={'formControl'}>
+            <InputLabel id="demo-simple-select-label" className={classes.text}>
+              Instance
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedInstance}
+              onChange={handleChange}
+              className={classes.select}
+            >
+              <MenuItem value="">None</MenuItem>
+              {files.map((nrrd) => (
+                <MenuItem value={nrrd.id} key={nrrd.id}>
+                  {nrrd.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+        </div>
       </div>
     </ReactResizeDetector>
   );

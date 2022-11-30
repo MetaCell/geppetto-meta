@@ -15,7 +15,14 @@ function getSelectorObj(files) {
 }
 
 export default class NRRDThreeDEngine {
-  constructor(files, containerRef, guiRef, cameraOptions, backgroundColor) {
+  constructor(
+    files,
+    containerRef,
+    guiRef,
+    cameraOptions,
+    backgroundColor,
+    selectedInstanceId
+  ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
     this.camera = null;
@@ -24,6 +31,7 @@ export default class NRRDThreeDEngine {
     this.gui = null;
     this.controls = null;
     this.instances = {};
+    this.selectedInstanceId = selectedInstanceId;
     this.nrrdloader = new NRRDLoader();
     this.files = files;
     this.guiRef = guiRef;
@@ -56,6 +64,7 @@ export default class NRRDThreeDEngine {
     this.setupListeners = this.setupListeners.bind(this);
     this.onWindowResize = this.onWindowResize.bind(this);
     this.updateUniforms = this.updateUniforms.bind(this);
+    this.updateSelectedInstanceId = this.updateSelectedInstanceId.bind(this);
 
     // Setup Camera
     this.setupCamera(this.width / this.height);
@@ -134,31 +143,59 @@ export default class NRRDThreeDEngine {
   }
 
   /**
+   * Update selected instance
+   * @param instanceId
+   */
+  updateSelectedInstanceId(instanceId, prevId) {
+    console.log(instanceId, prevId, 'instance');
+    this.selectedInstanceId = instanceId;
+
+    // update GUI
+    if (Object.keys(this.instances).length > 0 && this.instances[instanceId]) {
+      const currentInstance = this.instances[instanceId];
+
+      const prevInstance = this.instances[prevId];
+      console.log(
+        prevId ? prevInstance.name : null,
+        currentInstance.name,
+        'name'
+      );
+
+      this.updateGUI(
+        currentInstance.volconfig,
+        this.updateUniforms,
+        currentInstance.name,
+        prevId ? prevInstance.name : null
+      );
+    }
+  }
+
+  /**
    * Setups controls
    * @param volconfig
    * @param updateUniforms
    */
-  updateGUI(volconfig, updateUniforms) {
+  updateGUI(volconfig, updateUniforms, name, liveName) {
+    if (liveName && this.gui.__folders[liveName]) {
+      this.gui.removeFolder(this.gui.__folders[liveName]);
+    }
     // The gui for interaction when instance has loaded
-    if (Object.keys(this.instances).length > 0) {
-      const instanceValues = getSelectorObj(this.files);
-      console.log('instanceValues', instanceValues);
-
-      this.gui
-        .add(volconfig, 'instance', { ...instanceValues })
-        .onChange(updateUniforms);
-      this.gui.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
-      this.gui.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
-      this.gui
+    if (Object.keys(this.instances).length > 0 && name) {
+      const folder = this.gui.addFolder(name);
+      folder.open();
+      folder.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
+      folder.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
+      folder.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
+      folder
         .add(volconfig, 'colormap', { gray: 'gray', viridis: 'viridis' })
         .onChange(updateUniforms);
-      this.gui
+      folder
         .add(volconfig, 'renderstyle', { mip: 'mip', iso: 'iso' })
         .onChange(updateUniforms);
-      this.gui
+      folder
         .add(volconfig, 'isothreshold', 0, 1, 0.01)
         .onChange(updateUniforms);
-      this.gui.updateDisplay();
+      folder.updateDisplay();
     }
   }
 
@@ -217,7 +254,9 @@ export default class NRRDThreeDEngine {
     return this.scene;
   }
 
-  updateUniforms() {
+  updateUniforms(id, target, value) {
+    // console.log(log, 'log');
+    this.gui.remove(this.defaultVolconfig);
     // material.uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
     // material.uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
     // material.uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
@@ -318,9 +357,9 @@ export default class NRRDThreeDEngine {
     for (const nrrd of instances) {
       this.nrrdloader.load(nrrd.url, async (volume) => {
         await this.onLoad(volume, nrrd);
-        if (this.gui.__controllers <= 0) {
-          this.updateGUI(this.defaultVolconfig, this.updateUniforms);
-        }
+        // if (this.gui.__controllers <= 0) {
+        //   this.updateGUI(this.defaultVolconfig, this.updateUniforms);
+        // }
         this.gui.updateDisplay();
       });
     }
