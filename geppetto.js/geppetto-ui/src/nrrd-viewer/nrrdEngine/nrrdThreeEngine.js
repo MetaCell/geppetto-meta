@@ -44,8 +44,6 @@ export default class NRRDThreeDEngine {
       renderstyle: 'iso',
       isothreshold: 0.15,
       colormap: 'viridis',
-      // selectedInstance: Object.values(this.instances).length > 0 ? Object.values(this.instances)[0]?.id : ''
-      instance: null,
     };
     this.cmtextures = {
       viridis: new THREE.TextureLoader().load(
@@ -129,51 +127,48 @@ export default class NRRDThreeDEngine {
    */
   setupListeners = () => {
     // window.addEventListener('resize', this.onWindowResize);
-    console.log('instances', this.instances);
     this.containerRef.addEventListener('resize', this.onWindowResize);
   };
 
   /**
-   * Setups controls
-   * @param volconfig
-   * @param updateUniforms
+   * Setups GUI
    */
   setupGUI() {
     this.gui = new GUI({ autoPlace: false });
   }
 
-  /**
-   * Update selected instance
-   * @param instanceId
-   */
-  updateSelectedInstanceId(instanceId, prevId) {
-    console.log(instanceId, prevId, 'instance');
-    this.selectedInstanceId = instanceId;
+  updateUniforms() {
+    const currentInstance = this.instances[this.selectedInstanceId];
 
-    // update GUI
-    if (Object.keys(this.instances).length > 0 && this.instances[instanceId]) {
-      const currentInstance = this.instances[instanceId];
+    console.log(
+      this.instances,
+      this.selectedInstanceId,
+      this.defaultVolconfig,
+      'instances'
+    );
 
-      const prevInstance = this.instances[prevId];
-      console.log(
-        prevId ? prevInstance.name : null,
-        currentInstance.name,
-        'name'
+    if (currentInstance) {
+      currentInstance.material.uniforms['u_clim'].value.set(
+        currentInstance.volconfig.clim1,
+        currentInstance.volconfig.clim2
       );
-
-      this.updateGUI(
-        currentInstance.volconfig,
-        this.updateUniforms,
-        currentInstance.name,
-        prevId ? prevInstance.name : null
-      );
+      currentInstance.material.uniforms['u_renderstyle'].value =
+        currentInstance.volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
+      currentInstance.material.uniforms['u_renderthreshold'].value =
+        currentInstance.volconfig.isothreshold; // For ISO renderstyle
+      currentInstance.material.uniforms['u_cmdata'].value =
+        currentInstance.cmtextures[currentInstance.volconfig.colormap];
     }
+
+    this.renderScene();
   }
 
   /**
-   * Setups controls
+   * Updates GUI
    * @param volconfig
    * @param updateUniforms
+   * @param name
+   * @param liveName
    */
   updateGUI(volconfig, updateUniforms, name, liveName) {
     if (liveName && this.gui.__folders[liveName]) {
@@ -182,8 +177,8 @@ export default class NRRDThreeDEngine {
     // The gui for interaction when instance has loaded
     if (Object.keys(this.instances).length > 0 && name) {
       const folder = this.gui.addFolder(name);
+      // folder.folder.open();
       folder.open();
-      folder.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
       folder.add(volconfig, 'clim1', 0, 1, 0.01).onChange(updateUniforms);
       folder.add(volconfig, 'clim2', 0, 1, 0.01).onChange(updateUniforms);
       folder
@@ -195,7 +190,28 @@ export default class NRRDThreeDEngine {
       folder
         .add(volconfig, 'isothreshold', 0, 1, 0.01)
         .onChange(updateUniforms);
-      folder.updateDisplay();
+      // folder.updateDisplay();
+    }
+  }
+
+  /**
+   * Update selected instance
+   * @param instanceId
+   */
+  updateSelectedInstanceId(instanceId, prevId) {
+    this.selectedInstanceId = instanceId;
+
+    // update GUI
+    if (Object.keys(this.instances).length > 0 && this.instances[instanceId]) {
+      const currentInstance = this.instances[instanceId];
+      const prevInstance = this.instances[prevId];
+
+      this.updateGUI(
+        currentInstance.volconfig,
+        this.updateUniforms,
+        currentInstance.name,
+        prevId ? prevInstance.name : null
+      );
     }
   }
 
@@ -254,21 +270,6 @@ export default class NRRDThreeDEngine {
     return this.scene;
   }
 
-  updateUniforms(id, target, value) {
-    // console.log(log, 'log');
-    this.gui.remove(this.defaultVolconfig);
-    // material.uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
-    // material.uniforms[ 'u_clim' ].value.set( volconfig.clim1, volconfig.clim2 );
-    // material.uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-    // material.uniforms[ 'u_renderstyle' ].value = volconfig.renderstyle == 'mip' ? 0 : 1; // 0: MIP, 1: ISO
-    // material.uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-    // material.uniforms[ 'u_renderthreshold' ].value = volconfig.isothreshold; // For ISO renderstyle
-    // material.uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
-    // material.uniforms[ 'u_cmdata' ].value = cmtextures[ volconfig.colormap ];
-
-    this.renderScene();
-  }
-
   /**
    * Returns the scene
    * @param volume
@@ -325,14 +326,13 @@ export default class NRRDThreeDEngine {
       volume.yLength / 2 - 0.5,
       volume.zLength / 2 - 0.5
     );
-
     // Add nrrd obj to instance e.g material, uniform
     this.instances[fileObj.id] = {
       ...fileObj,
       material,
       uniforms,
-      volconfig: this.defaultVolconfig,
-      cmtextures: this.cmtextures,
+      volconfig: { ...this.defaultVolconfig },
+      cmtextures: { ...this.cmtextures },
     };
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -357,10 +357,7 @@ export default class NRRDThreeDEngine {
     for (const nrrd of instances) {
       this.nrrdloader.load(nrrd.url, async (volume) => {
         await this.onLoad(volume, nrrd);
-        // if (this.gui.__controllers <= 0) {
-        //   this.updateGUI(this.defaultVolconfig, this.updateUniforms);
-        // }
-        this.gui.updateDisplay();
+        // this.gui.updateDisplay();
       });
     }
   }
