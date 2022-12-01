@@ -140,13 +140,6 @@ export default class NRRDThreeDEngine {
   updateUniforms() {
     const currentInstance = this.instances[this.selectedInstanceId];
 
-    console.log(
-      this.instances,
-      this.selectedInstanceId,
-      this.defaultVolconfig,
-      'instances'
-    );
-
     if (currentInstance) {
       currentInstance.material.uniforms['u_clim'].value.set(
         currentInstance.volconfig.clim1,
