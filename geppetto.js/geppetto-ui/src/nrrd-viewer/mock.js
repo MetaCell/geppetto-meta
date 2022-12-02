@@ -7,6 +7,6 @@ const example3 =
 
 export const examples = [
   { id: 'example1', url: example1, name: 'First NRRD' },
-  { id: 'example2', url: example2, name: 'Particles' },
-  { id: 'example3', url: example3, name: 'Cerebrum' },
+  { id: 'example2', url: example3, name: 'Cerebrum' },
+  { id: 'example3', url: example2, name: 'Particles' },
 ];

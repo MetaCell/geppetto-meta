@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import { makeStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -6,8 +6,6 @@ import NRRDThreeDEngine from './nrrdEngine/nrrdThreeEngine';
 import { examples } from './mock.js';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles((theme) => ({
@@ -15,32 +13,40 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     width: '100%',
     minWidth: 1144,
+    maxWidth: '100%',
     height: 500,
   },
   guiContainer: {
     position: 'absolute',
-    top: 0,
+    top: 32,
     right: 20,
     zIndex: 999,
   },
   formContainer: {
     position: 'absolute',
     top: 0,
-    left: 20,
+    right: 20,
+    margin: 0,
     zIndex: 999,
+    width: '15.313rem',
+
     '& .formControl': {
       display: 'flex',
-      justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#1a1a1a',
-      margin: theme.spacing(1),
+      backgroundColor: '#010101',
 
       '& .MuiSelect-root': {
         flex: 1,
-        backgroundColor: '#3c3c3c;',
-        borderRadius: '0.25rem',
+        backgroundColor: '#3c3c3c',
         paddingLeft: '0.25rem',
-        minWidth: 120,
+        width: '9.82rem',
+        fontSize: '0.875rem',
+      },
+      '& .MuiFormLabel-root': {
+        color: '#eee',
+        textAlign: 'justify',
+        fontSize: '0.875rem',
+        padding: '0 0.25rem',
       },
     },
   },
