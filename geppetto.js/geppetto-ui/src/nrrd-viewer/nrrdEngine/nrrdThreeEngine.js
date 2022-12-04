@@ -88,7 +88,7 @@ export default class NRRDThreeDEngine {
    * @param aspect
    */
   setupCamera(aspect) {
-    this.camera = new THREE.PerspectiveCamera(45, aspect, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 1, 100000);
     this.camera.position.set(-64, -64, 128);
     this.camera.up.set(0, 0, 1); // In our data, z is up
   }
@@ -101,7 +101,7 @@ export default class NRRDThreeDEngine {
     this.renderer = new THREE.WebGLRenderer(options);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.autoClear = false;
+    this.renderer.autoClear = true;
     containerRef.appendChild(this.renderer.domElement);
     guiRef.appendChild(this.gui.domElement);
     // this.configureRenderer(false);
@@ -253,14 +253,6 @@ export default class NRRDThreeDEngine {
    */
   getGUI() {
     return this.gui;
-  }
-
-  /**
-   * Returns the scene
-   * @returns scene
-   */
-  getScene() {
-    return this.scene;
   }
 
   /**
