@@ -5,7 +5,7 @@ rm -rf yarn.lock
 rm -rf node_modules
 rm -rf dist
 
-cd ../../
+cd ../../yarn
 app=$(pwd)
 
 cd $app/geppetto.js/geppetto-core
