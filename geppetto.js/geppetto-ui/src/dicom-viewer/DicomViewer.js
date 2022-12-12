@@ -692,7 +692,7 @@ class DicomViewer extends Component {
   }
 
   render () {
-    const { classes } = this.props;
+    const { classes, toolbarOptions } = this.props;
     const { fullScreen } = this.state;
     const customButtons = this.getCustomButtons();
 
@@ -711,6 +711,16 @@ class DicomViewer extends Component {
         width: '100%',
       };
 
+    const toolbar = toolbarOptions && toolbarOptions.instance ? (
+      <toolbarOptions.instance
+        buttons={customButtons}
+        {...toolbarOptions.props}
+      />
+    ) : <CustomToolbar buttons={customButtons} containerStyles={toolbarOptions?.containerStyles}
+      toolBarClassName={toolbarOptions?.toolBarClassName}
+      innerDivStyles={toolbarOptions?.innerDivStyles}
+      buttonStyles={toolbarOptions?.buttonStyles}/>;
+
     return (
       <div
         ref={this.containerRef}
@@ -718,7 +728,7 @@ class DicomViewer extends Component {
         id={this.props.id + '_component'}
         style={containerStyle}
       >
-        <CustomToolbar buttons={customButtons} />
+        {toolbar}
         <div
           className={classes.dicomViewer}
           style={{ height: '90%', width: '100%' }}
@@ -822,6 +832,7 @@ DicomViewer.defaultProps = {
   onShiftClick: 'goToPoint',
   onDoubleClick: 'goToPoint',
   showDownloadButton: false,
+  toolbarOptions: null
 };
 
 
@@ -878,6 +889,35 @@ DicomViewer.propTypes = {
    * Callback function to be called after load is complete
    */
   onLoaded: PropTypes.func,
+  /**
+   * Options to customize the toolbar
+   */
+  toolbarOptions: PropTypes.shape({
+    /**
+     * Reference to toolbar component
+     */
+    instance: PropTypes.elementType,
+    /**
+     * Custom toolbar props
+     */
+    props: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the toolbar container
+     */
+    containerStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the toolbar
+     */
+    toolBarClassName: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the inner div
+     */
+    innerDivStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the buttons
+     */
+    buttonStyles: PropTypes.shape({}),
+  }),
 };
 
 export default withStyles(styles)(DicomViewer);
