@@ -1,3 +1,5 @@
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path');
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
@@ -6,22 +8,14 @@ module.exports = smp.wrap({
   entry: './src/index.js',
   mode: 'development',
   devtool: 'inline-source-map',
+  devServer: { historyApiFallback: true },
   node: { fs: 'empty', },
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'static/js/[name].[contenthash:8].js',
     publicPath: '/'
   },
-  
-  resolve: { 
-    extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'],
-    symlinks: false,
-    alias: {
-      '@metacell/geppetto-meta-client': path.resolve(__dirname, 'node_modules/@metacell/geppetto-meta-client/src'),
-      '@metacell/geppetto-meta-ui': path.resolve(__dirname, 'node_modules/@metacell/geppetto-meta-ui/src'),
-      '@metacell/geppetto-meta-core': path.resolve(__dirname, 'node_modules/@metacell/geppetto-meta-core/src'),
-    },
-  },
+  resolve: { extensions: ['*', '.js', '.json', '.ts', '.tsx', '.jsx'], },
   module: {
     rules: [
       {
@@ -106,6 +100,6 @@ module.exports = smp.wrap({
     ],
   },
   plugins: [
-   
+
   ],
 });
