@@ -11,7 +11,8 @@ const styles = {
   },
 };
 
-const data = 'https://s3.amazonaws.com/patient-hm-august-2017/Histology/HM_1243_FLIPPED_DZ_tif.dzi';
+// TODO: Update to a neuroscience example
+const data = 'https://raw.githubusercontent.com/openseadragon/openseadragon/a6792138814d1eff5ae4fca526b989fc917245be/test/data/wide.dzi';
 
 class BigImageViewerExample extends Component {
 
@@ -19,7 +20,8 @@ class BigImageViewerExample extends Component {
     const { classes } = this.props;
     return (
       <div style={{ position: 'relative' }} className={classes.bigImageViewer}>
-        <BigImageViewer id="BigImageViewerContainer" data={data} />
+        <BigImageViewer id="BigImageViewerContainer" data={data}
+          toolbarOptions={{ innerDivStyles: { backgroundColor: 'rgb(0,0,0,0);' } }}/>
       </div>
     );
   }
