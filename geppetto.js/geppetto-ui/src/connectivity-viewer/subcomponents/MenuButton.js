@@ -8,7 +8,7 @@ const styles = theme => ({
   button: {
     padding: theme.spacing(1),
     top: theme.spacing(0),
-    color: theme.palette.button.main
+    color: '#fc6320'
   },
 });
 

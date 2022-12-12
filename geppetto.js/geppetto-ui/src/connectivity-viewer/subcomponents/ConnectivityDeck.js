@@ -27,7 +27,7 @@ const styles = theme => ({
     fontSize:"40px",
     fontWeight: "300",
     marginTop: theme.spacing(10),
-    color: theme.palette.button.main,
+    color: '#fc6320',
     textAlign: "center"
   },
   cardDeck:{
@@ -49,7 +49,7 @@ const styles = theme => ({
     verticalAlign: "top",
     "&:hover":{
       border:"1px solid",
-      borderColor:theme.palette.button.main
+      borderColor:'#fc6320'
     }
   },
   img: {
@@ -58,7 +58,7 @@ const styles = theme => ({
     width: '100px',
   },
   cardText: { textAlign: 'center', color: "white" },
-  cardTitle: { marginTop: theme.spacing(1), color: theme.palette.button.main, marginBottom:"0.5em" },
+  cardTitle: { marginTop: theme.spacing(1), color: '#fc6320', marginBottom:"0.5em" },
   cardAction: { height: "100%" },
   cardImgTopCenterBlock:{
     display: "block",
@@ -70,7 +70,7 @@ const styles = theme => ({
   button: {
     padding: theme.spacing(1),
     top: theme.spacing(0),
-    color: theme.palette.button.main
+    color: '#fc6320'
   },
 });
 

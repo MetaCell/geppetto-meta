@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import IconButtonWithTooltip from '../common/IconButtonWithTooltip';
-import { withStyles } from '@material-ui/core';
 import { faCamera, faDotCircle, faDownload, faStop } from '@fortawesome/free-solid-svg-icons';
 
 import './CaptureControls.less';
@@ -29,8 +28,6 @@ export const captureControlsActionsDownloadScreenshot = (filename => ({
 }));
 
 
-const styles = theme => ({ button: { color: theme.palette.button.main, }, });
-
 class CaptureControls extends Component {
   constructor (props) {
     super(props);
@@ -49,14 +46,16 @@ class CaptureControls extends Component {
   }
 
   render () {
-    const { classes, captureControlsHandler } = this.props;
+    const { captureControlsHandler } = this.props;
     const { isRecording, hasRecorded } = this.state;
+    const buttonStyles = { color: '#fc6320', }
 
     const recordButton = !isRecording ? (
       <IconButtonWithTooltip
         disabled={false}
         onClick={this.handleClickRecord}
-        className={`${classes.button} start squareB`}
+        className={`start squareB`}
+        style={buttonStyles}
         tooltip={"Start Recording"}
         icon={faDotCircle}
       />
@@ -65,7 +64,8 @@ class CaptureControls extends Component {
         <IconButtonWithTooltip
           disabled={false}
           onClick={this.handleClickRecord}
-          className={`${classes.button} stop squareB`}
+          className={`stop squareB`}
+          style={buttonStyles}
           tooltip={"Stop recording"}
           icon={faStop}
         />
@@ -78,14 +78,16 @@ class CaptureControls extends Component {
         && <IconButtonWithTooltip
           disabled={false}
           onClick={() => captureControlsHandler(captureControlsActionsDownloadVideo())}
-          className={`${classes.button} download squareB`}
+          className={`download squareB`}
+          style={buttonStyles}
           tooltip={"Download"}
           icon={faDownload}/>
         }
         <IconButtonWithTooltip
           disabled={false}
           onClick={() => captureControlsHandler(captureControlsActionsDownloadScreenshot())}
-          className={`${classes.button} screenshot squareB`}
+          className={`screenshot squareB`}
+          style={buttonStyles}
           tooltip={"Screenshot"}
           icon={faCamera}/>
       </div>
@@ -103,4 +105,4 @@ CaptureControls.propTypes = {
 
 };
 
-export default withStyles(styles)(CaptureControls);
+export default CaptureControls;

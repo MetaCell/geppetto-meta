@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import IconButtonWithTooltip from '../common/IconButtonWithTooltip';
-import { withStyles } from '@material-ui/core';
 import {
   faChevronLeft,
   faChevronUp,
@@ -35,7 +34,6 @@ export const cameraControlsActions = {
   WIREFRAME: 'wireframe',
 };
 
-const styles = theme => ({ button: { color: theme.palette.button.main, }, });
 
 class CameraControls extends Component {
   constructor (props) {
@@ -44,7 +42,6 @@ class CameraControls extends Component {
 
   render () {
     const {
-      classes,
       cameraControlsHandler,
       wireframeButtonEnabled,
     } = this.props;
@@ -143,6 +140,9 @@ class CameraControls extends Component {
         icon: null,
       });
     }
+
+    const buttonStyles = { color: '#fc6320', }
+
     return (
       <div className="position-toolbar">
         {buttons.map((value, index) => (
@@ -150,7 +150,8 @@ class CameraControls extends Component {
             key={index}
             disabled={false}
             onClick={() => cameraControlsHandler(value.action)}
-            className={`${classes.button} ${value.className} squareB`}
+            className={`${value.className} squareB`}
+            style={buttonStyles}
             tooltip={value.tooltip}
             icon={value.icon}
           />
@@ -174,4 +175,4 @@ CameraControls.propTypes = {
   wireframeButtonEnabled: PropTypes.bool,
 };
 
-export default withStyles(styles)(CameraControls);
+export default CameraControls;
