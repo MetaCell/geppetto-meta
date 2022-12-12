@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import * as util from '../../utilities';
-import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import { withStyles } from '@material-ui/core';
 import IconText from './IconText';
 import Grid from '@material-ui/core/Grid';
@@ -28,7 +27,7 @@ class ConnectivityPlot extends Component {
 
     this.defaultOptions = {
       nodeType: function (node) {
-        if (node instanceof Instance) {
+        if (typeof node.getParent === 'function') {
           return node.getParent().getId();
         } else {
           return node.getPath().split('_')[0];
