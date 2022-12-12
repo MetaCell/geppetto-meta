@@ -18,6 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
 import { createZipFromRemoteFiles } from './util';
+import Loader from "../loader/Loader";
 
 const styles = {
   dicomViewer: {
@@ -55,6 +56,7 @@ class DicomViewer extends Component {
           ? 'coronal'
           : this.props.orientation,
       fullScreen: false,
+      ready: false
     };
 
     // 3d renderer
@@ -330,6 +332,7 @@ class DicomViewer extends Component {
           _this.configureEvents();
           _this.ready = true;
           _this.props.onLoaded(_this.r0.scene)
+          _this.setState({ ready: true })
         })
         .catch(function (error) {
           window.console.log('oops... something went wrong...');
@@ -692,7 +695,7 @@ class DicomViewer extends Component {
   }
 
   render () {
-    const { classes, toolbarOptions } = this.props;
+    const { classes, toolbarOptions, loaderOptions } = this.props;
     const { fullScreen } = this.state;
     const customButtons = this.getCustomButtons();
 
@@ -711,6 +714,20 @@ class DicomViewer extends Component {
         width: '100%',
       };
 
+    const showLoader = loaderOptions && loaderOptions.showLoader
+
+    const loader = loaderOptions && loaderOptions.instance ? (
+      <loaderOptions.instance
+        {...loaderOptions.props}
+      />
+    ) : <Loader fullscreen={this.state.fullScreen}
+      handleClose={toolbarOptions?.handleClose}
+      messages={toolbarOptions?.messages}
+      messagesInterval={toolbarOptions?.messagesInterval}
+      elapsed={toolbarOptions?.elapsed}
+      backgroundStyle={toolbarOptions?.backgroundStyle}
+    />
+
     const toolbar = toolbarOptions && toolbarOptions.instance ? (
       <toolbarOptions.instance
         buttons={customButtons}
@@ -728,6 +745,7 @@ class DicomViewer extends Component {
         id={this.props.id + '_component'}
         style={containerStyle}
       >
+        {!this.state.ready && showLoader && loader}
         {toolbar}
         <div
           className={classes.dicomViewer}
@@ -819,7 +837,7 @@ class DicomViewer extends Component {
           />
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -832,7 +850,8 @@ DicomViewer.defaultProps = {
   onShiftClick: 'goToPoint',
   onDoubleClick: 'goToPoint',
   showDownloadButton: false,
-  toolbarOptions: null
+  toolbarOptions: null,
+  loaderOptions: { showLoader: true }
 };
 
 
@@ -917,6 +936,49 @@ DicomViewer.propTypes = {
      * Styles to be applied to the buttons
      */
     buttonStyles: PropTypes.shape({}),
+  }),
+  /**
+   * Options to customize the loader
+   */
+  loaderOptions: PropTypes.shape({
+    /**
+     * Reference to toolbar component
+     */
+    instance: PropTypes.elementType,
+    /**
+     * Custom loader props
+     */
+    props: PropTypes.shape({}),
+    /**
+     * Bool to control the use of the loader
+     */
+    showLoader: PropTypes.bool,
+    /**
+     * Function to handle the close of the Loader
+     */
+    handleClose: PropTypes.func,
+    /**
+     * Array of Custom messages to display
+     */
+    messages: PropTypes.array,
+    /**
+     * Number of milliseconds between custom messages
+     */
+    messagesInterval: PropTypes.number,
+    /**
+     * Number of the progress value to show in linear determinate (in percentage)
+     */
+    elapsed: PropTypes.number,
+    /**
+     * Style to be applied to the Loader background
+     */
+    backgroundStyle: PropTypes.shape({
+      /**
+       * Loader's background color. Defaults to rgba(255,142,0,0.1)
+       */
+      backgroundColor: PropTypes.string,
+    }),
+
   }),
 };
 
