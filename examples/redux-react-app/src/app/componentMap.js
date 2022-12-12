@@ -2,6 +2,7 @@ import { MyComponent } from '../components/MyComponent';
 import BigImageViewerExample from '@metacell/geppetto-meta-ui/big-image-viewer/BigImageViewer';
 import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import CanvasExample from '../components/CanvasExample';
+import { SimpleText } from '../components/SimpleText';
 
 /**
  * Key of the component is the `component` attribute of the widgetConfiguration.
@@ -12,7 +13,8 @@ const componentMap = {
     'myComponent': MyComponent,
     'imageViewer': BigImageViewerExample,
     'dicomViewer': DicomViewerExample,
-    'canvas': CanvasExample
+    'canvas': CanvasExample,
+    'simpleComponent': SimpleText
 };
 
 export default componentMap

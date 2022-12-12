@@ -41,3 +41,13 @@ export const CanvasWidget = {
     enableClose: false,
     status: WidgetStatus.ACTIVE,
 };
+
+export const SimpleComponentWidget = {
+    id: 'simpleComponentWidget',
+    name: "Simple Component",
+    component: "simpleComponent",
+    panelName: "rightPanel",
+    enableClose: true,
+    hideOnClose: true,
+    status: WidgetStatus.ACTIVE,
+};

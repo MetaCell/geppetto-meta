@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Drawer, FormControl, InputLabel, MenuItem, Select,
 import { useDispatch, useSelector } from 'react-redux';
 import { activateWidget, addWidget, deleteWidget, maximizeWidget, minimizeWidget, setLayout, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { makeStyles } from '@material-ui/core/styles';
-import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget } from '../widgets';
+import { MyComponentWidget, ImageViewerWidget, DicomViewerWidget, CanvasWidget, SimpleComponentWidget } from '../widgets';
 import { layout } from '../app/layout';
 import * as Actions from '../redux/actions';
 import * as model from './resources/vfb_model';
@@ -192,6 +192,12 @@ const LeftSidebar = (props) => {
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="secondary" aria-label="outlined primary button group" orientation="vertical">
                         <Button onClick={onLoad}>Load</Button>
                         <Button onClick={onChangeLayout}>Change Layout</Button>
+                    </ButtonGroup>
+
+
+                    <ButtonGroup className={classes.buttonGroup} variant="contained" color="primary" aria-label="outlined primary button group" orientation="vertical">
+                        <Button color="secondary" onClick={() => onAddWidgetClick(SimpleComponentWidget)}>Add Simple Component</Button>
+                        <Button color="secondary" onClick={() => onRemove('simpleComponentWidget')}>Remove Component</Button>
                     </ButtonGroup>
                 </div>
             </Drawer>
