@@ -22,7 +22,7 @@ The UI components of Geppetto.js (work in progress)
 
 Ensure that you have an npm account associated with `metacell` organization and that you're logged in with `npm login`.
 
-Create a release branch `release/v.x.x.x`.
+Create a release branch `release/x.x.x`.
 
 And follow the steps for each package below.
 
