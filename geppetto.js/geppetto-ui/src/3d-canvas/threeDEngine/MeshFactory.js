@@ -38,7 +38,7 @@ export default class MeshFactory {
 
   setupLoaders (){
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/');
+    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/');
 
     const manager = new this.THREE.LoadingManager();
     manager.onProgress = function (item, loaded, total) {
