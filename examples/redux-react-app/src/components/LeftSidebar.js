@@ -196,7 +196,7 @@ const LeftSidebar = (props) => {
 
 
                     <ButtonGroup className={classes.buttonGroup} variant="contained" color="primary" aria-label="outlined primary button group" orientation="vertical">
-                        <Button color="secondary" onClick={() => onAddWidgetClick(SimpleComponentWidget)}>Add Simple Component</Button>
+                        <Button color="secondary" onClick={() => onAddWidgetClick(SimpleComponentWidget)}>Add Drop Component</Button>
                         <Button color="secondary" onClick={() => onRemove('simpleComponentWidget')}>Remove Component</Button>
                     </ButtonGroup>
                 </div>
