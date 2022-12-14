@@ -1,7 +1,10 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Box, Snackbar } from '@material-ui/core';
 import { useDrop } from 'react-dnd';
-import { updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
+import {
+  updateWidget,
+  getWidgetById,
+} from '@metacell/geppetto-meta-client/common/layout/actions';
 import { SimpleComponentWidget } from '../widgets';
 import { useDispatch } from 'react-redux';
 
@@ -19,12 +22,12 @@ const SimpleDroppable = ({ model, accept }) => {
           ...SimpleComponentWidget,
           props: {
             ...SimpleComponentWidget.props,
-            model: [...SimpleComponentWidget.props.model, item],
+            model: [...model, item],
           },
         })
       );
     },
-    [dispatch]
+    [model, dispatch]
   );
 
   const checkCanDrop = useCallback(
