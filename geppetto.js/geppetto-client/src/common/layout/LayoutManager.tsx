@@ -389,10 +389,7 @@ class LayoutManager {
         break;
       }
       case Actions.MAXIMIZE_TOGGLE:
-        // FIXME: See https://github.com/MetaCell/geppetto-meta/issues/108
-        // fixed within netpyne-ui, the state is mismanaged, the widgets are not maximised
-        // but rather the tabsets are, if we want to keep track of this we need to extend
-        // what the layout manager currently support (dario)
+	// reminder, widgets are not maximised but tabsets are
         break;
       case Actions.RENAME_TAB:
         this.store.dispatch(updateWidget({ ...this.getWidget(action.data.node), name: action.data.text }))
