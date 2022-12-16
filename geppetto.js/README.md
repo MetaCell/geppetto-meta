@@ -37,7 +37,7 @@ Start with this one as there are no other *geppetto-meta* dependencies needed
 Update version on package.json
 
 ```
-rm -rf node_modules build package-lock.json yarn.lock 
+rm -rf node_modules build 
 npm install
 npm run build
 cd build
@@ -50,7 +50,7 @@ Update version on package.json
 Update *geppetto-meta-core* reference on package.json *peerDependencies*
 
 ```
-rm -rf node_modules build package-lock.json yarn.lock 
+rm -rf node_modules build  
 npm install
 npm run build
 cd build
@@ -63,7 +63,7 @@ Update version on package.json
 Update *geppetto-meta-core and geppetto-meta-ui* reference on package.json *peerDependencies*
 
 ```
-rm -rf node_modules build package-lock.json yarn.lock 
+rm -rf node_modules build 
 npm install
 npm run build
 cd build
