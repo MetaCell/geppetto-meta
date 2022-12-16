@@ -329,7 +329,7 @@ class DicomViewer extends Component {
 
           _this.configureEvents();
           _this.ready = true;
-          _this.props.onLoaded()
+          _this.props.onLoaded(_this.r0.scene)
         })
         .catch(function (error) {
           window.console.log('oops... something went wrong...');
