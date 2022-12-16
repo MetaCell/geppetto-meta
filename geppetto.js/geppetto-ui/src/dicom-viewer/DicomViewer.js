@@ -331,7 +331,7 @@ class DicomViewer extends Component {
 
           _this.configureEvents();
           _this.ready = true;
-          _this.props.onLoaded()
+          _this.props.onLoaded(_this.r0.scene)
           _this.setState({ ready: true })
         })
         .catch(function (error) {
@@ -713,7 +713,7 @@ class DicomViewer extends Component {
         height: '100%',
         width: '100%',
       };
-    
+
     const loader = loaderOptions && loaderOptions.instance ? (
       <loaderOptions.instance
         {...loaderOptions.props}
