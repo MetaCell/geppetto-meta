@@ -1,0 +1,2 @@
+# Include also root files (basically the extension)
+include jupyter_geppetto/index.js

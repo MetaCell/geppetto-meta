@@ -1,0 +1,40 @@
+Metadata-Version: 2.1
+Name: jupyter_geppetto
+Version: 1.1.1
+Summary: Geppetto extension for Jupyter notebook
+Home-page: https://github.com/openworm/org.geppetto.frontend.jupyter
+Author: The Geppetto Development Team
+Author-email: info@geppetto.org
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.7
+License-File: LICENSE
+
+Geppetto Jupyter Notebook Extension
+===================================
+
+Experimental Jupyter notebook extension. This
+extension extends Jupyter Python server based on tornado that allows the
+client to establish a websocket connection and server static resources
+but there is no real functionality beyond that.
+
+Installation
+============
+
+.. code-block:: bash
+
+    pip install jupyter_geppetto
+    jupyter nbextension enable --py --sys-prefix jupyter_geppetto
+
+For further information please visit: https://github.com/openworm/org.geppetto.frontend.jupyter
+
+
+
+
