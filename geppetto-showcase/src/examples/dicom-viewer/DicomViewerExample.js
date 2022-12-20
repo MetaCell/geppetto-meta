@@ -42,6 +42,7 @@ export default class DicomViewerExample extends Component {
           onCtrlClick="toggleMode"
           showDownloadButton={true}
           onLoaded={this.onLoaded}
+          toolbarOptions={{ innerDivStyles: { backgroundColor: 'rgb(0,0,0,0);' } }}
         />
       </div>
     ) : <Loader/>

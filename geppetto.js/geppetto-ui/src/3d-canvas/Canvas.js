@@ -546,7 +546,7 @@ Canvas.propTypes = {
       reset: PropTypes.bool,
     }),
     /**
-     * Options to customize camera controls
+     * Options to customize trackball controls
      */
     trackballControls: PropTypes.shape({
       /**

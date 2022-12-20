@@ -131,12 +131,21 @@ class BigImageViewer extends Component {
   }
 
   render () {
-    const { classes } = this.props;
+    const { classes, toolbarOptions } = this.props;
     const customButtons = this.getCustomButtons();
+    const toolbar = toolbarOptions && toolbarOptions.instance ? (
+      <toolbarOptions.instance
+        buttons={customButtons}
+        {...toolbarOptions.props}
+      />
+    ) : <CustomToolbar buttons={customButtons} containerStyles={toolbarOptions?.containerStyles}
+      toolBarClassName={toolbarOptions?.toolBarClassName}
+      innerDivStyles={toolbarOptions?.innerDivStyles}
+      buttonStyles={toolbarOptions?.buttonStyles}/>;
 
     return (
       <div className={classes.bigImageViewerContainer}>
-        <CustomToolbar buttons={customButtons} />
+        {toolbar}
         <div
           id={this.props.id + '_component'}
           className={classes.bigImageViewerContent}
@@ -146,9 +155,7 @@ class BigImageViewer extends Component {
   }
 }
 
-BigImageViewer.defaultProps = {
-  settings: [],
-}
+BigImageViewer.defaultProps = { settings: [], toolbarOptions: null }
 
 BigImageViewer.propTypes = {
   /**
@@ -163,6 +170,35 @@ BigImageViewer.propTypes = {
    * All required and optional settings for instantiating a new instance of an OpenSeadragon image viewer
    */
   settings: PropTypes.array,
+  /**
+   * Options to customize the toolbar
+   */
+  toolbarOptions: PropTypes.shape({
+    /**
+     * Reference to toolbar component
+     */
+    instance: PropTypes.elementType,
+    /**
+     * Custom toolbar props
+     */
+    props: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the toolbar container
+     */
+    containerStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the toolbar
+     */
+    toolBarClassName: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the inner div
+     */
+    innerDivStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the buttons
+     */
+    buttonStyles: PropTypes.shape({}),
+  }),
 };
 
 export default withStyles(styles)(BigImageViewer);

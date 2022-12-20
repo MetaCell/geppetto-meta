@@ -7,13 +7,7 @@ const styles = theme => ({
   toolbar: {
     padding: theme.spacing(0),
     marginLeft: theme.spacing(1)
-  },
-  button: {
-    padding: theme.spacing(1),
-    top: theme.spacing(0),
-    color: theme.palette.button.main
-  },
-  toolbarBox: { backgroundColor: theme.palette.toolbarBackground.main },
+  }
 });
 
 
@@ -23,29 +17,38 @@ class CustomToolbar extends Component {
   }
 
   render () {
-    const { classes, buttons, elements } = this.props;
+    const { classes, theme, buttons, elements, containerStyles, toolBarClassName, innerDivStyles, buttonStyles } = this.props;
     const customButtons = buttons ? buttons : [];
     const customElements = elements ? elements : [];
+    const cStyles = containerStyles != null ? containerStyles : {}
+    const tbClassName = toolBarClassName != null ? toolBarClassName : classes.toolbar
+    const dStyles = innerDivStyles != null ? innerDivStyles : { backgroundColor: theme.palette.toolbarBackground.main }
+    const bStyles = buttonStyles != null ? buttonStyles : {
+      padding: theme.spacing(1),
+      top: theme.spacing(0),
+      color: theme.palette.button.main
+    }
     return (
-      <div>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.toolbarBox}>
-            {customButtons.map(customButton =>
-              <IconButtonWithTooltip
-                key={customButton.id}
-                disabled={false}
-                onClick={() => customButton.action()}
-                className={classes.button}
-                tooltip={customButton.tooltip}
-                icon={customButton.icon}
-              />
-            )}
-            {customElements.map(customElement =>
-              customElement
-            )}
-          </div>
-        </Toolbar>
-      </div>
+        <div style={cStyles}>
+          <Toolbar className={tbClassName}>
+            <div style={dStyles}>
+              {customButtons.map(customButton =>
+                  <IconButtonWithTooltip
+                      key={customButton.id}
+                      disabled={false}
+                      onClick={() => customButton.action()}
+                      className={classes.button}
+                      style={bStyles}
+                      tooltip={customButton.tooltip}
+                      icon={customButton.icon}
+                  />
+              )}
+              {customElements.map(customElement =>
+                  customElement
+              )}
+            </div>
+          </Toolbar>
+        </div>
     )
   }
 }
