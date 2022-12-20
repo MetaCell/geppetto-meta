@@ -1,5 +1,5 @@
 import particle from '../textures/particle.png';
-import { hasVisualType, hasVisualValue } from "./util";
+import { hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { ColladaLoader } from "three/examples/jsm/loaders/ColladaLoader";
@@ -34,7 +34,7 @@ export default class MeshFactory {
 
   setupLoaders (){
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/');
+    dracoLoader.setDecoderPath('../../../node_modules/three/examples/js/libs/draco/');
 
     const manager = new this.THREE.LoadingManager();
     manager.onProgress = function (item, loaded, total) {
