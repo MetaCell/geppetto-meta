@@ -33,6 +33,7 @@ export default class ThreeDEngine {
     selectionStrategy,
     updateStarted,
     updateEnded,
+    dracoDecoderPath
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -42,7 +43,8 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite);
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite, 300, 1,
+        null, dracoDecoderPath, null);
     this.pickingEnabled = pickingEnabled;
     this.hoverListeners = hoverListeners;
     this.cameraHandler = cameraHandler;

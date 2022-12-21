@@ -13,6 +13,7 @@ export default class MeshFactory {
     linePrecisionMinRadius = 300,
     minAllowedLinePrecision = 1,
     particleTexture,
+    dracoDecoderPath,
     THREE
   ) {
     this.scene = scene;
@@ -27,6 +28,7 @@ export default class MeshFactory {
     this.minAllowedLinePrecision = minAllowedLinePrecision;
     this.linesThreshold = linesThreshold;
     this.particleTexture = particleTexture;
+    this.dracoDecoderPath = dracoDecoderPath ? dracoDecoderPath : '../../../node_modules/three/examples/js/libs/draco/'
     this.THREE = THREE ? THREE : require('three');
     this.THREE.Cache.enabled = true
     this.setupLoaders()
@@ -34,7 +36,7 @@ export default class MeshFactory {
 
   setupLoaders (){
     const dracoLoader = new DRACOLoader()
-    dracoLoader.setDecoderPath('../../../node_modules/three/examples/js/libs/draco/');
+    dracoLoader.setDecoderPath(this.dracoDecoderPath);
 
     const manager = new this.THREE.LoadingManager();
     manager.onProgress = function (item, loaded, total) {

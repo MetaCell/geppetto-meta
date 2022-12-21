@@ -49,7 +49,8 @@ class Canvas extends Component {
       selectionStrategy,
       onSelection,
       updateStarted,
-      updateEnded
+      updateEnded,
+      dracoDecoderPath
     } = this.props;
 
     this.threeDEngine = new ThreeDEngine(
@@ -66,6 +67,7 @@ class Canvas extends Component {
       selectionStrategy,
       updateStarted,
       updateEnded,
+      dracoDecoderPath
     );
 
     if (captureOptions) {
@@ -280,6 +282,7 @@ Canvas.defaultProps = {
   },
   updateEnded: () => {
   },
+  dracoDecoderPath: '../../../node_modules/three/examples/js/libs/draco/'
 };
 
 Canvas.propTypes = {
@@ -399,6 +402,10 @@ Canvas.propTypes = {
    * Function to callback when the loading of elements of the canvas ends
    */
   updateEnded: PropTypes.func,
+  /**
+   * Path to the draco decoder
+   */
+  dracoDecoderPath: PropTypes.string
 };
 
 export default withStyles(styles)(Canvas);
