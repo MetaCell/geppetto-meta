@@ -431,7 +431,7 @@ Canvas.defaultProps = {
   onMount: () => {},
   onUpdateStart: () => {},
   onUpdateEnd: () => {},
-  dracoDecoderPath: '../../../node_modules/three/examples/js/libs/draco/'
+  dracoDecoderPath: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 };
 
 Canvas.propTypes = {
