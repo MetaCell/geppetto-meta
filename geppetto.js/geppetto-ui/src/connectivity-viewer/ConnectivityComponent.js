@@ -105,6 +105,7 @@ class ConnectivityComponent extends Component {
       linkWeight,
       linkType,
       library,
+      styles
     } = this.props;
     const {
       layout,
@@ -112,6 +113,8 @@ class ConnectivityComponent extends Component {
       legendsVisibility,
       dimensions,
     } = this.state;
+
+    const {toolbarStyles} = styles
 
     return (
       <Grid className={classes.container} container spacing={2}>
@@ -124,6 +127,7 @@ class ConnectivityComponent extends Component {
             legendHandler={this.legendHandler}
             deckHandler={this.deckHandler}
             sortOptionsHandler={this.sortOptionsHandler}
+            styles={toolbarStyles}
           />
         </Grid>
         <Grid item sm={12} xs>
@@ -237,6 +241,24 @@ ConnectivityComponent.propTypes = {
    * Geppetto library that supplies a network type
    */
   library: PropTypes.func,
+  /**
+   * Styles
+   */
+  styles: PropTypes.shape({
+    /**
+     * Styles to apply on the toolbar
+     */
+    toolbarStyles: PropTypes.shape({
+      /**
+       * Styles to apply on the menu button
+       */
+      menuButtonStyles: PropTypes.any,
+      /**
+       * Styles to apply on the connectivity deck
+       */
+      deckStyles: PropTypes.any
+    }),
+  }),
 };
 
 export default withStyles(styles)(ConnectivityComponent);

@@ -25,6 +25,9 @@ export default class ConnectivityToolbar extends Component {
   }
 
   getCustomElements () {
+    const { styles } = this.props;
+    const {menuButtonStyles, deckStyles} = styles
+
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
@@ -37,6 +40,7 @@ export default class ConnectivityToolbar extends Component {
         this.deck = deck
       } }
       handler={this.props.deckHandler}
+      styles={deckStyles}
     />)
     const customElements = [deck];
 
@@ -50,6 +54,7 @@ export default class ConnectivityToolbar extends Component {
           defaultOption = "id"
           tooltip={"Order by"}
           icon={faSort}
+          buttonStyles={menuButtonStyles}
         />));
     }
     return customElements;
