@@ -111,4 +111,4 @@ CaptureControls.propTypes = {
 
 };
 
-export default withStyles(styles)(CaptureControls);
+export default CaptureControls;

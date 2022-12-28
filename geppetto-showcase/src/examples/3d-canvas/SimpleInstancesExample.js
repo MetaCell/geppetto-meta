@@ -69,7 +69,7 @@ class SimpleInstancesExample extends Component {
         baseZoom: 1,
         cameraControls: {
           instance: CameraControls,
-          props: { wireframeButtonEnabled: false },
+          props: { wireframeButtonEnabled: false, buttonStyles: { color: '#ff0000', } },
         },
         initialFlip: ['y', 'z'],
         reset: false,
@@ -128,7 +128,7 @@ class SimpleInstancesExample extends Component {
     const captureOptions = {
       captureControls: {
         instance: CaptureControls,
-        props: {}
+        props: { buttonStyles: { color: '#0000ff', } }
       },
       recorderOptions: {
         mediaRecorderOptions: { mimeType: 'video/webm', },
