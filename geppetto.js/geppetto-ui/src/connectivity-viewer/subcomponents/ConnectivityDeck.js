@@ -17,8 +17,8 @@ import HiveImg from '../images/hive.svg';
 import ChordImg from '../images/chord.svg';
 
 
-const defaultButtonColor = '#fc6320'
-const getButtonColor = props => props?.styles?.buttonColor ? props?.styles?.buttonColor : defaultButtonColor
+const defaultColor = '#fc6320'
+const getColor = props => props?.styles?.color ? props?.styles?.color : defaultColor
 
 const styles = theme => ({
     cardDeckWrapper: {
@@ -31,7 +31,7 @@ const styles = theme => ({
         fontSize: "40px",
         fontWeight: "300",
         marginTop: theme.spacing(10),
-        color: getButtonColor(props),
+        color: getColor(props),
         textAlign: "center"
     }),
     cardDeck: {
@@ -53,7 +53,7 @@ const styles = theme => ({
         verticalAlign: "top",
         "&:hover": {
             border: "1px solid",
-            borderColor: getButtonColor(props),
+            borderColor: getColor(props),
         }
     }),
     img: {
@@ -64,7 +64,7 @@ const styles = theme => ({
     cardText: {textAlign: 'center', color: "white"},
     cardTitle: props => ({
         marginTop: theme.spacing(1),
-        color: getButtonColor(props),
+        color: getColor(props),
         marginBottom: "0.5em"
     }),
     cardAction: {height: "100%"},
@@ -78,7 +78,7 @@ const styles = theme => ({
     button: props => ({
         padding: theme.spacing(1),
         top: theme.spacing(0),
-        color: getButtonColor(props),
+        color: getColor(props),
     }),
 });
 
