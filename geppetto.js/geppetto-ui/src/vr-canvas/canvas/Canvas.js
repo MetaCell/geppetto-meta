@@ -1,5 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import React, { Component } from 'react';
+import Resources from '@metacell/geppetto-meta-core/Resources';
 import PropTypes from 'prop-types';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import ArrayInstance from '@metacell/geppetto-meta-core/model/ArrayInstance';
@@ -30,6 +31,7 @@ import {
 } from '../utilities/GeppettoSimulation';
 import ColorController from './ColorController';
 import particle from "@metacell/geppetto-meta-ui/3d-canvas/textures/particle.png";
+import { hasVisualType, hasVisualValue } from "../../3d-canvas/threeDEngine/util";
 
 const HOVER_COLOR = { r: 0.67, g: 0.84, b: 0.9 };
 const SELECTED_COLOR = { r: 1, g: 1, b: 0 };
@@ -37,6 +39,47 @@ const SHORTCUTS = {
   COLLAPSE_MENU: 109,
   BRING_CLOSER: 99,
 };
+
+function getProxyInstance (i) {
+  return { instancePath: i.getId(), color: { r: 0, g:1, b: 0, a:1 } }
+}
+
+function updateInstancesMap (geppettoInstance, instancesMap) {
+  try {
+    if (hasVisualValue(geppettoInstance)) {
+      instancesMap.set(geppettoInstance.getInstancePath(), getProxyInstance(geppettoInstance));
+    } else if (hasVisualType(geppettoInstance)) {
+      if (
+        geppettoInstance.getType().getMetaType() !== Resources.ARRAY_TYPE_NODE
+          && geppettoInstance.getVisualType()
+      ) {
+        instancesMap.set(geppettoInstance.getInstancePath(), getProxyInstance(geppettoInstance));
+      }
+      if (geppettoInstance.getMetaType() === Resources.INSTANCE_NODE) {
+        const children = geppettoInstance.getChildren();
+        for (let i = 0; i < children.length; i++) {
+          updateInstancesMap(children[i], instancesMap);
+        }
+      } else if (
+        geppettoInstance.getMetaType() === Resources.ARRAY_INSTANCE_NODE
+      ) {
+        for (let i = 0; i < geppettoInstance.length; i++) {
+          updateInstancesMap(geppettoInstance[i], instancesMap);
+        }
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+function getInstancesMap (instances) {
+  const instancesMap = new Map()
+  for (const instance of instances){
+    updateInstancesMap(instance, instancesMap)
+  }
+  return instancesMap
+}
 
 class Canvas extends Component {
   constructor (props) {
@@ -49,6 +92,7 @@ class Canvas extends Component {
       simulation: false,
       time: 0,
       simulationData: null,
+      isReady: false
     };
     this.canvasRef = React.createRef();
     this.sceneRef = React.createRef();
@@ -63,7 +107,6 @@ class Canvas extends Component {
     this.threeMeshes = {};
     this.selectedMeshes = {};
     this.hoveredMeshes = {};
-    this.isReady = false;
     this.menuHistory = [];
     this.timer = null;
     this.initTextures(this.handleLoadedTextures);
@@ -83,10 +126,11 @@ class Canvas extends Component {
     this.meshFactory = new MeshFactory(
       scene.object3D,
       threshold,
+      true,
       300,
       1,
       null,
-      THREE
+      THREE    
     );
     this.colorController = new ColorController(this.meshFactory);
 
@@ -124,15 +168,25 @@ class Canvas extends Component {
   shouldComponentUpdate (nextProps) {
     const { instances } = this.props;
     if (instances !== nextProps.instances) {
-      this.meshFactory.start(nextProps.instances);
+      this.meshFactory.start(getInstancesMap(nextProps.instances));
       this.setState({ visualGroups: false });
     }
     return true;
   }
 
   componentDidUpdate () {
-    const { colorMap } = this.props;
-    const { visualGroups, time, simulationData, simulation } = this.state;
+    const { colorMap, instances } = this.props;
+    const { visualGroups, time, simulationData, simulation, loadedTextures, isReady } = this.state;
+    if (!isReady) {
+      if (loadedTextures) {
+        this.meshFactory.setParticleTexture(this.particleTexture);
+        this.meshFactory.start(getInstancesMap(instances)).then(_ => {
+          this.threeMeshes = this.meshFactory.getMeshes();
+          this.setState({ isReady: true })
+        })
+      }
+    }
+
     if (!visualGroups) {
       if (colorMap !== {}) {
         for (const path in colorMap) {
@@ -152,6 +206,7 @@ class Canvas extends Component {
         clearInterval(this.timer);
       }
     }
+
   }
 
   setColor (path, color) {
@@ -454,14 +509,12 @@ class Canvas extends Component {
     const {
       sceneBackground,
       model,
-      instances,
       id,
       position,
       rotation,
       embedded,
     } = this.props;
     const {
-      loadedTextures,
       currentMenu,
       isMenuVisible,
       simulation,
@@ -471,15 +524,6 @@ class Canvas extends Component {
     const sceneID = `${id}_scene`;
     const cameraID = `${id}_camera`;
     const modelID = `${id}_model`;
-
-    if (loadedTextures) {
-      if (!this.isReady) {
-        this.meshFactory.setParticleTexture(this.particleTexture);
-        this.meshFactory.start(instances);
-        this.isReady = true;
-      }
-      this.threeMeshes = this.meshFactory.getMeshes();
-    }
 
     if (simulation) {
       const simulationTime = Object.keys(simulationData)[time];

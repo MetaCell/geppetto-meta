@@ -1,5 +1,5 @@
 import particle from '../textures/particle.png';
-import { hasVisualType, hasVisualValue } from "./util";
+import { hasVisualValue } from "./util";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OBJLoader } from "./OBJLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -59,7 +59,7 @@ export default class MeshFactory {
   }
 
 
-  async start (instances, instancesMap) {
+  async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
   }
