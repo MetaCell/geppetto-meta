@@ -17,7 +17,7 @@ class MenuButton extends Component {
 
 
   handleClose (option) {
-    if (option === ""){
+    if (option === "") {
       this.setState(() => ({ anchorEl: null }))
     } else {
       this.setState(() => ({ anchorEl: null }), () => this.props.handler(option))

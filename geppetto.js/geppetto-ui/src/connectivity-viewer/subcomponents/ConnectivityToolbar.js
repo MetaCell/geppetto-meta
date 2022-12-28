@@ -27,7 +27,7 @@ export default class ConnectivityToolbar extends Component {
   getCustomElements () {
     const { id, deckHandler, layout, sortOptionsHandler, options } = this.props;
 
-    const {menuButtonStyles, deckStyles} = options
+    const { menuButtonStyles, deckStyles } = options
 
     const sortOptions = {
       'id': 'By entity name',
@@ -70,15 +70,15 @@ export default class ConnectivityToolbar extends Component {
     const customButtons = this.getCustomButtons();
 
     const toolbar = options && options.instance ? (
-        <options.instance
-            buttons={customButtons}
-            {...options.props}
-        />
+      <options.instance
+        buttons={customButtons}
+        {...options.props}
+      />
     ) : <CustomToolbar buttons={customButtons} elements={customElements}
-                       containerStyles={options?.containerStyles}
-                       toolBarClassName={options?.toolBarClassName}
-                       innerDivStyles={options?.innerDivStyles}
-                       buttonStyles={options?.buttonStyles}/>;
+      containerStyles={options?.containerStyles}
+      toolBarClassName={options?.toolBarClassName}
+      innerDivStyles={options?.innerDivStyles}
+      buttonStyles={options?.buttonStyles}/>;
 
     return (
       <span style={{ visibility: visibility }}>
