@@ -1,10 +1,7 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Box, Snackbar } from '@material-ui/core';
 import { useDrop } from 'react-dnd';
-import {
-  updateWidget,
-  getWidgetById,
-} from '@metacell/geppetto-meta-client/common/layout/actions';
+import { updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { SimpleComponentWidget } from '../widgets';
 import { useDispatch } from 'react-redux';
 
