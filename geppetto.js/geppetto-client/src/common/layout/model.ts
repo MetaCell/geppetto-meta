@@ -1,4 +1,12 @@
-import Node from "@metacell/geppetto-meta-ui/flex-layout/src/model/Node";
+import {
+  BorderNode,
+  TabNode,
+  TabSetNode,
+} from '@metacell/geppetto-meta-ui/flex-layout/src';
+import Node from '@metacell/geppetto-meta-ui/flex-layout/src/model/Node';
+import { IIcons } from '@metacell/geppetto-meta-ui/flex-layout/src/view/Layout';
+import { TabButton } from '@metacell/geppetto-meta-ui/flex-layout/src/view/TabButton';
+import React from 'react';
 
 /*
  * status can be one of:
@@ -8,17 +16,17 @@ import Node from "@metacell/geppetto-meta-ui/flex-layout/src/model/Node";
  *  - MAXIMIZED:  the tab is maximized (only one tab can be maximized simultaneously)
  */
 export enum WidgetStatus {
-  HIDDEN = "HIDDEN",
-  ACTIVE = "ACTIVE",
-  MAXIMIZED = "MAXIMIZED",
-  MINIMIZED = "MINIMIZED",
+  HIDDEN = 'HIDDEN',
+  ACTIVE = 'ACTIVE',
+  MAXIMIZED = 'MAXIMIZED',
+  MINIMIZED = 'MINIMIZED',
 }
 
 export enum TabsetPosition {
-  LEFT = "LEFT",
-  RIGHT = "RIGHT",
-  TOP = "TOP",
-  BOTTOM = "BOTTOM"
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+  TOP = 'TOP',
+  BOTTOM = 'BOTTOM',
 }
 
 /**
@@ -59,7 +67,22 @@ export interface WidgetComponent extends React.ReactElement {
 }
 
 export interface WidgetMap {
-  [id: string]: Widget
+  [id: string]: Widget;
 }
 
-export interface ComponentMap { [name: string]: React.ReactElement<any, any> }
+export interface ComponentMap {
+  [name: string]: React.ReactElement<any, any>;
+}
+
+type TabButtonArgs = {
+  panel: TabNode;
+};
+
+type TabSetButtonArgs = {
+  panel: TabSetNode | BorderNode;
+};
+export interface IComponentConfig {
+  icons?: IIcons;
+  tabButtons?: Array<(props: TabButtonArgs) => React.ReactNode>;
+  tabSetButtons?: Array<(props: TabSetButtonArgs) => React.ReactNode>;
+}
