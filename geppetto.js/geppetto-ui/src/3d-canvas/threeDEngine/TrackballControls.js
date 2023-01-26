@@ -90,9 +90,9 @@ class TrackballControls extends EventDispatcher {
       _lastAngle = 0;
 
     const _eye = new Vector3(),
-
+      // @metacell changes
       _movePrev = new Vector3(),
-
+      // end of @metacell changes
       _lastAxis = new Vector3(),
 
       _zoomStart = new Vector2(),
@@ -104,8 +104,9 @@ class TrackballControls extends EventDispatcher {
       _pointerPositions = {};
 
     let _panEnd = new Vector2(),
+      // @metacell changes
       _moveCurr = new Vector3()
-
+      // end of @metacell changes
 
     // for reset
 
@@ -237,8 +238,9 @@ class TrackballControls extends EventDispatcher {
     };
 
     this.rotateCamera = (function () {
-
+      // @metacell changes
       let axis = new Vector3(),
+      // end of @metacell changes
         quaternion = new Quaternion(),
         eyeDirection = new Vector3(),
         objectUpDirection = new Vector3(),
@@ -247,12 +249,13 @@ class TrackballControls extends EventDispatcher {
 
       return function rotateCamera () {
 
+        // @metacell changes
         if (_moveCurr.z != undefined && _moveCurr.z != 0){
           moveDirection.set( 0, 0, _moveCurr.z - _movePrev.z);
         } else {
           moveDirection.set( _moveCurr.x - _movePrev.x, _moveCurr.y - _movePrev.y, 0 );
         }
-
+        // end of @metacell changes
         let angle = moveDirection.length();
 
         if (angle) {
@@ -268,6 +271,7 @@ class TrackballControls extends EventDispatcher {
 
           moveDirection.copy(objectUpDirection.add(objectSidewaysDirection));
 
+          // @metacell changes
           if (_moveCurr.z != undefined && _moveCurr.z != 0){
             if (_moveCurr.z - _movePrev.z >= 0){
               axis = new Vector3(0,0,1);
@@ -277,6 +281,7 @@ class TrackballControls extends EventDispatcher {
           } else {
             axis.crossVectors( moveDirection, _eye ).normalize();
           }
+          // end of @metacell changes
 
           angle *= scope.rotationSpeed;
           quaternion.setFromAxisAngle(axis, angle);
