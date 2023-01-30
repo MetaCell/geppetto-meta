@@ -3,6 +3,8 @@ import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useStore } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
+import { CloseIcon } from './icons';
 
 const useStyles = makeStyles({
     layoutContainer: {
@@ -24,24 +26,69 @@ const MainLayout = () => {
     const store = useStore();
     const [Component, setComponent] = useState(undefined);
 
-    useEffect(() => {
-        // Workaround because getLayoutManagerInstance 
-        // is undefined when calling it in global scope
-        // Need to wait until store is ready ...
-        // TODO: find better way to retrieve the LayoutManager component!
-        if (Component === undefined) {
-            const myManager = getLayoutManagerInstance();
-            if (myManager) {
-                setComponent(myManager.getComponent());
-            }
-        }
-    }, [store])
+  useEffect(() => {
+    // Workaround because getLayoutManagerInstance
+    // is undefined when calling it in global scope
+    // Need to wait until store is ready ...
+    // TODO: find better way to retrieve the LayoutManager component!
+    if (Component === undefined) {
+      const myManager = getLayoutManagerInstance();
+      if (myManager) {
+        setComponent(
+          myManager.getComponent(
+            {
+            icons: {
+              close: <CloseIcon />,
+            },
+            tabSetButtons: [
+              ({ panel }) => {
+                return (
+                  <Button
+                    key={panel.getId()}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      console.log('tab-set button')
+                    }}
+                  >
+                    Add
+                  </Button>
+                );
+              },
+            ],
+            tabButtons: [
+              ({ panel }) => {
+                return (
+                  <Button
+                    key={panel.getId()}
+                    variant="filled"
+                    color="secondary"
+                    onClick={() => {
+                      console.log('tab button')
+                    }}
+                  >
+                    Minimize
+                  </Button>
+                );
+              },
+            ],
+          })
+        );
+      }
+    }
+  }, [Component, store]);
+  console.log(Component, 'Component');
 
-    return (
-        <div className={classes.layoutContainer}>
-            {Component === undefined ? <CircularProgress /> : <Component />}
-        </div>
-    );
-}
+
+  return (
+    <div className={classes.layoutContainer}>
+      {Component === undefined ? (
+        <CircularProgress />
+      ) : (
+        <Component />
+      )}
+    </div>
+  );
+};
 
 export default MainLayout;

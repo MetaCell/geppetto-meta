@@ -157,6 +157,7 @@ class SimpleInstancesExample extends Component {
             onSelection={this.onSelection}
             onMount={this.onMount}
             onHoverListeners={{ 'hoverId':this.hoverHandler }}
+            dracoDecoderPath={'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/'}
           />
         </>
       </div>
