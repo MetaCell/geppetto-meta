@@ -473,7 +473,10 @@ class TrackballControls extends EventDispatcher {
 
         scope.object.lookAt(scope.target);
 
-        if (lastPosition.distanceToSquared(scope.object.position) > EPS) {
+        // @metacell changes
+        if (lastPosition.distanceToSquared(scope.object.position) > EPS
+          || scope.lastUp.z !== scope.object.up.z) {
+        // end of @metacell changes
 
           lastPosition.copy(scope.object.position);
           scope.dispatchEvent(_changeEvent);
