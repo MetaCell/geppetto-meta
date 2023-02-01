@@ -74,9 +74,9 @@ export default class ThreeDEngine {
     this.setupListeners(onSelection);
 
     this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
     this.animate = this.animate.bind(this);
     this.renderScene = this.renderScene.bind(this);
-    this.stop = this.stop.bind(this);
     this.resize = this.resize.bind(this);
   }
 
@@ -730,14 +730,14 @@ export default class ThreeDEngine {
           that.mouse.y
             = -(
               (event.clientY
-                - that.renderer.domElement.getBoundingClientRect().top)
+                - that.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
               / that.renderer.domElement.getBoundingClientRect().height
             )
               * 2
             + 1;
           that.mouse.x
             = ((event.clientX
-              - that.renderer.domElement.getBoundingClientRect().left)
+              - that.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
               / that.renderer.domElement.getBoundingClientRect().width)
               * 2
             - 1;
@@ -821,14 +821,14 @@ export default class ThreeDEngine {
         that.mouse.y
           = -(
             (event.clientY
-              - that.renderer.domElement.getBoundingClientRect().top)
+              - that.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
             / that.renderer.domElement.height
           )
             * 2
           + 1;
         that.mouse.x
           = ((event.clientX
-            - that.renderer.domElement.getBoundingClientRect().left)
+            - that.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
             / that.renderer.domElement.width)
             * 2
           - 1;
