@@ -61,7 +61,7 @@ export default class MeshFactory {
   }
 
 
-  async start (instances, instancesMap) {
+  async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
   }

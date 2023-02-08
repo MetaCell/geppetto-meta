@@ -395,7 +395,7 @@ export default class ThreeDEngine {
    */
   async addInstancesToScene (proxyInstances) {
     // const instances = proxyInstances.map(pInstance => Instances.getInstance(pInstance.instancePath));
-    await this.meshFactory.start(proxyInstances, this.instancesMap);
+    await this.meshFactory.start(this.instancesMap);
     this.updateGroupMeshes(proxyInstances);
   }
 
