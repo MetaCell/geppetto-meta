@@ -11,8 +11,7 @@ const styles = {
   },
 };
 
-// TODO: Update to a neuroscience example
-const data = 'https://raw.githubusercontent.com/openseadragon/openseadragon/a6792138814d1eff5ae4fca526b989fc917245be/test/data/wide.dzi';
+const data = `${window.location.origin}/assets/brain_mri.dzi`;
 
 class BigImageViewerExample extends Component {
 
