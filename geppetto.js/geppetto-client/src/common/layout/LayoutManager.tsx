@@ -3,7 +3,7 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import { WidgetStatus, Widget, ComponentMap, TabsetPosition } from './model';
+import { WidgetStatus, Widget, ComponentMap, TabsetPosition, IComponentConfig } from './model';
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -107,17 +107,52 @@ class LayoutManager {
    *
    * @param panel
    * @param renderValues
+   * @param tabSetButtons
    */
-  onRenderTabSet = (panel, renderValues) => {
-    if (panel.getType() === "tabset" && this.enableMinimize) {
-      if (panel.getChildren().length > 0) {
-        renderValues.buttons.push(<div key={panel.getId()} className="fa fa-window-minimize customIconFlexLayout"
-          onClick={() => {
-            this.minimizeWidget(panel.getActiveNode().getId())
-          }} />);
+  onRenderTabSet = (panel, renderValues, tabSetButtons) => {
+    if (panel.getType() === 'tabset') {
+      if (this.enableMinimize) {
+        if (panel.getChildren().length > 0) {
+          renderValues.buttons.push(
+            <div
+              key={panel.getId()}
+              className="fa fa-window-minimize customIconFlexLayout"
+              onClick={() => {
+                this.minimizeWidget(panel.getActiveNode().getId());
+              }}
+            />
+          );
+        }
+      }
+
+      if (Array.isArray(tabSetButtons) && tabSetButtons.length > 0) {
+        tabSetButtons.forEach(Button => {
+          renderValues.stickyButtons.push(
+            <Button key={panel.getId()} panel={panel} />
+          );
+        });
       }
     }
-  }
+  };
+
+  /**
+   * Handle rendering of tab set.
+   *
+   * @param panel
+   * @param renderValues
+   * @param tabButtons
+   */
+  onRenderTab = (panel, renderValues, tabButtons) => {
+    if (panel.getType() === 'tab') {
+      if (Array.isArray(tabButtons) && tabButtons.length > 0) {
+        tabButtons.forEach(Button => {
+          renderValues.buttons.push(
+            <Button key={panel.getId()} panel={panel} />
+          );
+        });
+      }
+    }
+  };
 
   /**
    * Layout wrapper component
@@ -125,15 +160,27 @@ class LayoutManager {
    * @memberof Component
    *
    */
-  Component = (layoutManager: LayoutManager) => ({ classes }) => (
+  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => ({
+    classes,
+  }) => (
     <div className={classes.container}>
       <div className={classes.flexlayout}>
         <FlexLayout.Layout
           model={this.model}
           factory={this.factory}
+          icons={config?.icons}
           // iconFactory={layoutManager.iconFactory.bind(this)}
           onAction={action => layoutManager.onAction(action)}
-          onRenderTab={(node, renderValues) => layoutManager.onRenderTabSet(node, renderValues)}
+          onRenderTab={(node, renderValues) =>
+            layoutManager.onRenderTab(node, renderValues, config?.tabButtons)
+          }
+          onRenderTabSet={(node, renderValues) => {
+            layoutManager.onRenderTabSet(
+              node,
+              renderValues,
+              config?.tabSetButtons
+            );
+          }}
         />
       </div>
     </div>
@@ -143,7 +190,7 @@ class LayoutManager {
    * Get the layout component.
    * @memberof Control
    */
-  getComponent = () => withStyles(styles)(this.Component(this));
+  getComponent = (config?: IComponentConfig) => withStyles(styles)(this.Component(this, config));
 
   /**
    * Create a new tab set.

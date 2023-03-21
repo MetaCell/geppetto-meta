@@ -8,14 +8,6 @@ connectivity-viewer/ConnectivityComponent
 
 ## Examples
 
-### Connectivity Matrix
-
-Draws an adjacency matrix where each row [column] correspond to a source [target] node. Therefore, squares at i,j denote a directed edge (or connection) from node i to node j. The rows/columns can be sorted by node name, number of incoming connections, and number of outgoing connections. Circles above each row/column indicate the type of nodes in that row/column. More info on adjacency matrix [here](https://en.wikipedia.org/wiki/Adjacency_matrix).
-
-```
-connectivity-viewer/ConnectivityShowcaseMatrix
-```
-
 ### Connectivity Force
 
 Draws circles for each node, connected by lines for each edge. Nodes repel each other (force directed) in order to reduce clutter, and can be interactively dragged. On hover the node names are revealed as tooltips. More info on force directed graph visualisation [here](https://en.wikipedia.org/wiki/Force-directed_graph_drawing).

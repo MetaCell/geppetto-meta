@@ -55,6 +55,7 @@ class Canvas extends Component {
       onMount,
       onUpdateStart,
       onUpdateEnd,
+      dracoDecoderPath
     } = this.props;
     const hasCaptureOptions = captureOptions !== undefined
 
@@ -70,7 +71,8 @@ class Canvas extends Component {
       selectionStrategy,
       onHoverListeners,
       onEmptyHoverListener,
-      hasCaptureOptions
+      hasCaptureOptions,
+      dracoDecoderPath
     );
     onUpdateStart();
     await this.threeDEngine.updateInstances(data);
@@ -429,6 +431,7 @@ Canvas.defaultProps = {
   onMount: () => {},
   onUpdateStart: () => {},
   onUpdateEnd: () => {},
+  dracoDecoderPath: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 };
 
 Canvas.propTypes = {
@@ -546,7 +549,7 @@ Canvas.propTypes = {
       reset: PropTypes.bool,
     }),
     /**
-     * Options to customize camera controls
+     * Options to customize trackball controls
      */
     trackballControls: PropTypes.shape({
       /**
@@ -664,6 +667,10 @@ Canvas.propTypes = {
    * Function to callback when the loading of elements of the canvas ends
    */
   onUpdateEnd: PropTypes.func,
+  /**
+   * Path to the draco decoder
+   */
+  dracoDecoderPath: PropTypes.string
 };
 
 export default withStyles(styles)(Canvas);
