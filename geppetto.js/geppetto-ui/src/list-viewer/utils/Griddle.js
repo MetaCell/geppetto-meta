@@ -5,7 +5,10 @@ import {
   compose
 } from 'redux';
 
+import Griddle, { plugins } from 'griddle-react';
+
 const { CorePlugin: corePlugin } = plugins
+
 
 class GriddleNoReduxBrowserExtension extends Griddle {
 
