@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-free": "^6.4.0",
     "@metacell/geppetto-meta-client": "file:.yalc/@metacell/geppetto-meta-client",
     "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
     "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
@@ -21,9 +22,9 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "yalc": "^1.0.0-pre.53",
+    "sass": "^1.32.12",
     "typescript": "^5.0.0",
-    "sass": "^1.32.12"
+    "yalc": "^1.0.0-pre.53"
   },
   "scripts": {
     "start": "react-scripts start",

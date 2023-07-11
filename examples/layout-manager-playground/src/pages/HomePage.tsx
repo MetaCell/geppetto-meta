@@ -18,16 +18,11 @@ const HomePage = () => {
         if (LayoutComponent === undefined) {
             const myManager = getLayoutManagerInstance();
             if (myManager) {
+                myManager.enableMinimize = true
                 setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
             }
         }
     }, [store])
-
-
-    useEffect(() => {
-        dispatch(addWidget(component1Widget()))
-    }, [LayoutComponent])
-
 
     const addComponent1 = () => {
         dispatch(addWidget(component1Widget()));

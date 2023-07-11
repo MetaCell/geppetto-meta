@@ -548,3 +548,13 @@
         font-family: $font-family;
     }
 }
+
+.customIconFlexLayout {
+    color: $color_text;
+    font-size: $font-size;
+}
+
+.customIconFlexLayout:hover {
+    cursor: pointer;
+    color: $color_text
+}
