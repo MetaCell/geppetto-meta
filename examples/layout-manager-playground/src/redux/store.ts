@@ -7,11 +7,12 @@ function configureStore() {
   const middlewares: never[] = [];
   const reducers = {};
   const INIT_STATE = {};
+  const isMinimizeEnabled = true;
   return createStore(
       reducers,
       INIT_STATE,
       middlewares,
-      { baseLayout, componentMap },
+      { baseLayout, componentMap, isMinimizeEnabled },
   );
 }
 

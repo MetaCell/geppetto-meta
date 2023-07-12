@@ -1,3 +1,4 @@
+
 export default {
   global: {
     sideBorders: 8,
@@ -8,8 +9,11 @@ export default {
   borders: [
     {
       type: 'border',
-      location: 'bottom',
+      location: 'top',
       children: [],
+      config: {
+        isMinimizedPanel: true
+      }
     },
   ],
   layout: {

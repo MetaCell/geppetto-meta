@@ -35,13 +35,13 @@ const staticReducers = {
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || redux.compose;
 
 
-export function createStore ( 
-  reducers: redux.ReducersMapObject, 
-  state: any, 
-  enhancers: redux.Middleware[], 
-  layout: {iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap}={componentMap: {}}): redux.Store<any, GeppettoAction> {
+export function createStore (
+  reducers: redux.ReducersMapObject,
+  state: any,
+  enhancers: redux.Middleware[],
+  layout: {iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap, isMinimizeEnabled?: boolean}={componentMap: {}}): redux.Store<any, GeppettoAction> {
 
-  const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory)
+  const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory, layout.isMinimizeEnabled || false);
   const allMiddlewares = [...enhancers, callbacksMiddleware, layoutManager.middleware];
 
   const store = redux.createStore(
