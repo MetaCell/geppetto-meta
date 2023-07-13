@@ -14,6 +14,7 @@ export const component1Widget = () : Widget => ({
   panelName: "panel1",
   enableClose: true,
   status: WidgetStatus.ACTIVE,
+  defaultWeight: 50
 });
 
 export const component2Widget = () : Widget => ({
@@ -23,4 +24,5 @@ export const component2Widget = () : Widget => ({
   panelName: "panel2",
   enableClose: true,
   status: WidgetStatus.ACTIVE,
+  defaultWeight: 50
 });

@@ -3,7 +3,7 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import { WidgetStatus, Widget, ComponentMap, TabsetPosition, IComponentConfig } from './model';
+import { WidgetStatus, Widget, ComponentMap, IComponentConfig } from './model';
 import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -91,6 +91,9 @@ class LayoutManager {
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
       createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+    }
+    else{
+      tabset._setWeight(widgetConfiguration.defaultWeight)
     }
     this.model.doAction(
       Actions.addNode(
