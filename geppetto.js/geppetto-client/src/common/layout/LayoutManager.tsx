@@ -303,7 +303,8 @@ class LayoutManager {
         break;
       }
       case layoutActions.UPDATE_WIDGET: {
-        this.updateWidget(action.data);
+        let updatedWidget = this.updateWidget(action.data);
+        action = { ...action, data: updatedWidget };
         break;
       }
       case layoutActions.DESTROY_WIDGET: {
@@ -525,6 +526,8 @@ class LayoutManager {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
     }
+
+    return mergedWidget
   }
 
   /**

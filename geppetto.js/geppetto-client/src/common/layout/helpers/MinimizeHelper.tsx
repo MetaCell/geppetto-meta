@@ -54,6 +54,5 @@ export class MinimizeHelper {
         }else{
             console.warn("Unable to minimize widget");
         }
-
     }
 }
