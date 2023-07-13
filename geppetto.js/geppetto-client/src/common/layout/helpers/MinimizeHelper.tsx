@@ -5,6 +5,7 @@ import {Widget, WidgetStatus} from "../model";
 import {updateWidget} from "../actions";
 // @ts-ignore
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import {MINIMIZED_PANEL} from '../../layout';
 import {createTabSet, moveWidget} from "./FlexLayoutHelper";
 
 
@@ -19,7 +20,7 @@ export class MinimizeHelper {
         const borderToMinimizeTo = findBorderToMinimizeTo(borders)
         this.isMinimizeEnabled = isMinimizeEnabled;
         this.model = model
-        this.minimizeBorderID = borderToMinimizeTo?.getId();
+        this.minimizeBorderID = borderToMinimizeTo?.getId() || MINIMIZED_PANEL;
         this.store = null;
     }
 
