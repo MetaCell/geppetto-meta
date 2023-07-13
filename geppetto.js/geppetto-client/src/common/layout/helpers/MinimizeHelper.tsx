@@ -1,19 +1,24 @@
 import * as React from 'react';
 import {findBorderToMinimizeTo, getWidget} from "../utils";
 import {Store} from "redux";
-import {WidgetStatus} from "../model";
+import {Widget, WidgetStatus} from "../model";
 import {updateWidget} from "../actions";
+// @ts-ignore
+import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import {createTabSet, moveWidget} from "./FlexLayoutHelper";
 
 
 export class MinimizeHelper {
     private readonly isMinimizeEnabled: boolean;
-    private minimizeBorderID: string;
+    private readonly minimizeBorderID: string;
     private store: Store;
+    private model: Model;
 
     constructor(isMinimizeEnabled, model) {
         const borders = model.getBorderSet().getBorders()
         const borderToMinimizeTo = findBorderToMinimizeTo(borders)
         this.isMinimizeEnabled = isMinimizeEnabled;
+        this.model = model
         this.minimizeBorderID = borderToMinimizeTo?.getId();
         this.store = null;
     }
@@ -54,5 +59,30 @@ export class MinimizeHelper {
         }else{
             console.warn("Unable to minimize widget");
         }
+    }
+
+    restoreWidgetIfNecessary(previousWidget: Widget, mergedWidget: Widget): boolean {
+        if (previousWidget.status != mergedWidget.status && previousWidget.status == WidgetStatus.MINIMIZED) {
+            this.restoreWidget(mergedWidget);
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Restore widget.
+     *
+     * @param widget
+     * @private
+     */
+    private restoreWidget(widget: Widget) {
+        const { model } = this;
+        widget.panelName = widget.defaultPanel;
+        const panelName = widget.panelName;
+        let tabset = model.getNodeById(panelName);
+        if (tabset === undefined) {
+            createTabSet(model, panelName, widget.defaultPosition, widget.defaultWeight);
+        }
+        moveWidget(model, widget);
     }
 }

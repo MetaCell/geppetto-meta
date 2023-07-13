@@ -19,6 +19,7 @@ import {
 } from "./actions";
 
 import {MinimizeHelper} from "./helpers/MinimizeHelper";
+import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
 
 
 const styles = (theme) => createStyles({
@@ -89,7 +90,7 @@ class LayoutManager {
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      this.createTabSet(widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+      createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     this.model.doAction(
       Actions.addNode(
@@ -180,52 +181,7 @@ class LayoutManager {
    */
   getComponent = (config?: IComponentConfig) => withStyles(styles)(this.Component(this, config));
 
-  /**
-   * Create a new tab set.
-   *
-   * @param {string} tabsetID the id of the tab set
-   * @private
-   */
-  private createTabSet(tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
-    const { model } = this;
-    const rootNode = model.getNodeById("root");
 
-    const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
-
-    switch (position) {
-      case TabsetPosition.RIGHT:
-        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-        rootNode._addChild(tabset);
-        break;
-      case TabsetPosition.LEFT:
-        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-        rootNode._addChild(tabset, 0);
-        break;
-      case TabsetPosition.BOTTOM:
-      case TabsetPosition.TOP: {
-
-        tabset._setWeight(80);
-        let hrow = new FlexLayout.RowNode(model, {});
-        hrow._setWeight(100);
-
-        rootNode.getChildren().forEach(child => {
-          if (child['getWeight']) {
-            const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
-            child._setWeight(newWeight);
-            hrow._addChild(child);
-          }
-        });
-        if (position === TabsetPosition.BOTTOM) {
-          hrow._addChild(tabset)
-        } else {
-          hrow._addChild(tabset, 0);
-        }
-
-        rootNode._removeAll();
-        rootNode._addChild(hrow, 0);
-      }
-    }
-  }
   /**
    * Export a session.
    */
@@ -508,14 +464,10 @@ class LayoutManager {
     const { model } = this;
     const previousWidget = getWidget(this.store, widget.id);
     const mergedWidget = { ...previousWidget, ...widget }
-    // TODO: what if widget doesn't have a status here?
 
-    if (previousWidget.status != mergedWidget.status) {
-      if (previousWidget.status == WidgetStatus.MINIMIZED) {
-        this.restoreWidget(mergedWidget);
-      } else {
-        this.moveWidget(mergedWidget);
-      }
+    const widgetRestored = this.minimizeHelper.restoreWidgetIfNecessary(previousWidget, mergedWidget);
+    if(!widgetRestored){
+      moveWidget(model, mergedWidget);
     }
 
     this.widgetFactory.updateWidget(mergedWidget);
@@ -549,34 +501,7 @@ class LayoutManager {
     return this.tabsetIconFactory.factory(node.getConfig());
   }
 
-  /**
-   * Restore widget.
-   *
-   * @param widget
-   * @private
-   */
-  private restoreWidget(widget: Widget) {
-    const { model } = this;
-    widget.panelName = widget.defaultPanel;
-    const panelName = widget.panelName;
-    let tabset = model.getNodeById(panelName);
-    if (tabset === undefined) {
-      this.createTabSet(panelName, widget.defaultPosition, widget.defaultWeight);
-    }
-    this.moveWidget(widget);
-  }
 
-  private moveWidget(widget) {
-    const { model } = this;
-    model.doAction(
-      FlexLayout.Actions.moveNode(
-        widget.id,
-        widget.panelName,
-        FlexLayout.DockLocation.CENTER,
-        widget.pos
-      )
-    );
-  }
 }
 
 export function initLayoutManager(model, componentMap: ComponentMap, iconFactory: TabsetIconFactory, isMinimizeEnabled: boolean) {
