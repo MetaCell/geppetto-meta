@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-core",
-  "version": "0.0.7-rc3",
+  "version": "0.0.7-hotfix2",
   "description": "The core functionality of geppetto-meta to build and simulate neuroscience data and models.",
   "keywords": [
     "geppetto",
@@ -40,7 +40,7 @@
     "jest": "^24.9.0"
   },
   "peerDependencies": {
-    "@metacell/geppetto-meta-client": "0.0.2"
+    "@metacell/geppetto-meta-client": "0.0.7-hotfix2"
   },
   "buildOptions": {
     "emitEntryPoint": true,
