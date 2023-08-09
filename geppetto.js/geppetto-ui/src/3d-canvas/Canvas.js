@@ -224,7 +224,7 @@ class Canvas extends Component {
   }
 
   getCanvasElement () {
-    return this.sceneRef && this.sceneRef.current.getElementsByTagName('canvas')[0]
+    return this.sceneRef.current && this.sceneRef.current.getElementsByTagName('canvas')[0]
   }
 
   defaultCaptureControlsHandler (action) {
