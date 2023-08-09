@@ -961,7 +961,7 @@
     core-js "^2.6.12"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.8", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.8", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.19.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.19.4.tgz#a42f814502ee467d55b38dd1c256f53a7b885c78"
   integrity sha512-EXpLCrk55f+cYqmHsSR+yD/0gAIMxxA9QK9lnQWzhMCvt+YmoBN7Zx94s++Kv0+unHk39vxNO8t+CMA2WSS3wA==
@@ -1307,11 +1307,9 @@
     react-is "^16.8.0 || ^17.0.0"
 
 "@metacell/geppetto-meta-client@file:.yalc/@metacell/geppetto-meta-client":
-  version "1.0.9"
+  version "1.2.1"
   dependencies:
     "@material-ui/core" "^4.1.3"
-    "@metacell/geppetto-meta-core" "1.0.9"
-    "@metacell/geppetto-meta-ui" "1.0.9"
     pako "^1.0.3"
     react "^17.0.2"
     react-redux "^7.2.3"
@@ -1319,23 +1317,11 @@
     redux "^4.1.0"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-1.0.9.tgz#e45d981bc532474bb5297d81f406e51ec2f1da91"
-  integrity sha512-h4GunNPwgNVYbXBRgt2AkgcBz/AnXKqSyoIhHze5Ihuo0sE4rysW7ouH6Gog1/NoDx7P9s9bgYwe5vpuzsxRFQ==
-
 "@metacell/geppetto-meta-core@file:.yalc/@metacell/geppetto-meta-core":
-  version "1.0.9"
-
-"@metacell/geppetto-meta-ui@1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-1.0.9.tgz#e3f1f8e554349b556cf13602b05b1e1209f7caa8"
-  integrity sha512-bXdi318RTXLHnrSCTUSU7SxxYl/PBCwhd96uUlPuVU6s+OYNzm2LyVf36blpdUjTTEkD8JFNHGr86rckXo9cnA==
-  dependencies:
-    babel-plugin-import-less "^0.1.6"
+  version "1.2.1"
 
 "@metacell/geppetto-meta-ui@file:.yalc/@metacell/geppetto-meta-ui":
-  version "1.0.9"
+  version "1.2.1"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -2619,14 +2605,6 @@ babel-plugin-dynamic-import-node@^2.3.3:
   integrity sha512-jZVI+s9Zg3IqA/kdi0i6UDCybUI3aSBLnglhYbSSjKlV7yF1F/5LWv8MakQmvYpnbJDS6fcBL2KzHSxNCMtWSQ==
   dependencies:
     object.assign "^4.1.0"
-
-babel-plugin-import-less@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/babel-plugin-import-less/-/babel-plugin-import-less-0.1.6.tgz#3e7fc439798c917f8e91dde5d6eed4fa9e90ae81"
-  integrity sha512-WflzVhiAj+vuwur5veOQVh2PEitdmK9z+qUnJ7L1NOOnFrHWKqGWe1LKSNqnK0qwMR9nlLQ8eRCxRoorE8JzsA==
-  dependencies:
-    "@babel/helper-module-imports" "^7.0.0"
-    "@babel/runtime" "^7.0.0"
 
 babel-plugin-polyfill-corejs2@^0.3.3:
   version "0.3.3"
