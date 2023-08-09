@@ -8,7 +8,7 @@ import { withStyles, createStyles } from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
-import { widget2Node, isEqual } from "./utils";
+import {widget2Node, isEqual, getWidget} from "./utils";
 import * as GeppettoActions from '../actions';
 
 import {
@@ -18,7 +18,8 @@ import {
   setLayout
 } from "./actions";
 
-import { MINIMIZED_PANEL } from '.';
+import {MinimizeHelper} from "./helpers/MinimizeHelper";
+import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
 
 
 const styles = (theme) => createStyles({
@@ -49,21 +50,20 @@ class LayoutManager {
   tabsetIconFactory: TabsetIconFactory;
   store;
   layoutManager = this;
-  enableMinimize = false;
+  private minimizeHelper: MinimizeHelper;
 
   /**
    * @constructor
    * @param model
-   * @param widgetFactory
-   * @param widgets
+   * @param componentMap
    * @param tabsetIconFactory
-   * @param enableMinimize
+   * @param isMinimizeEnabled
    */
   constructor(
     model,
     componentMap: ComponentMap,
     tabsetIconFactory: TabsetIconFactory = null,
-    enableMinimize = false
+    isMinimizeEnabled = false
   ) {
     this.model = FlexLayout.Model.fromJson(
       model ? model : defaultLayoutConfiguration
@@ -75,7 +75,7 @@ class LayoutManager {
       : new TabsetIconFactory();
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
-    this.enableMinimize = enableMinimize;
+    this.minimizeHelper= new MinimizeHelper(isMinimizeEnabled, this.model)
   }
 
   /**
@@ -84,13 +84,13 @@ class LayoutManager {
    * @param {Widget} widgetConfiguration widget to add
    */
   addWidget(widgetConfiguration: Widget) {
-    if (this.getWidget(widgetConfiguration.id) && this.model.getNodeById(widgetConfiguration.id)) {
+    if (getWidget(this.store, widgetConfiguration.id) && this.model.getNodeById(widgetConfiguration.id)) {
       return this.updateWidget(widgetConfiguration);
     }
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      this.createTabSet(widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+      createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     this.model.doAction(
       Actions.addNode(
@@ -111,20 +111,7 @@ class LayoutManager {
    */
   onRenderTabSet = (panel, renderValues, tabSetButtons) => {
     if (panel.getType() === 'tabset') {
-      if (this.enableMinimize) {
-        if (panel.getChildren().length > 0) {
-          renderValues.buttons.push(
-            <div
-              key={panel.getId()}
-              className="fa fa-window-minimize customIconFlexLayout"
-              onClick={() => {
-                this.minimizeWidget(panel.getActiveNode().getId());
-              }}
-            />
-          );
-        }
-      }
-
+      this.minimizeHelper.addMinimizeButtonToTabset(panel, renderValues);
       if (Array.isArray(tabSetButtons) && tabSetButtons.length > 0) {
         tabSetButtons.forEach(Button => {
           renderValues.stickyButtons.push(
@@ -134,6 +121,8 @@ class LayoutManager {
       }
     }
   };
+
+
 
   /**
    * Handle rendering of tab set.
@@ -192,52 +181,7 @@ class LayoutManager {
    */
   getComponent = (config?: IComponentConfig) => withStyles(styles)(this.Component(this, config));
 
-  /**
-   * Create a new tab set.
-   *
-   * @param {string} tabsetID the id of the tab set
-   * @private
-   */
-  private createTabSet(tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
-    const { model } = this;
-    const rootNode = model.getNodeById("root");
 
-    const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
-
-    switch (position) {
-      case TabsetPosition.RIGHT:
-        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-        rootNode._addChild(tabset);
-        break;
-      case TabsetPosition.LEFT:
-        rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-        rootNode._addChild(tabset, 0);
-        break;
-      case TabsetPosition.BOTTOM:
-      case TabsetPosition.TOP: {
-
-        tabset._setWeight(80);
-        let hrow = new FlexLayout.RowNode(model, {});
-        hrow._setWeight(100);
-
-        rootNode.getChildren().forEach(child => {
-          if (child['getWeight']) {
-            const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
-            child._setWeight(newWeight);
-            hrow._addChild(child);
-          }
-        });
-        if (position === TabsetPosition.BOTTOM) {
-          hrow._addChild(tabset)
-        } else {
-          hrow._addChild(tabset, 0);
-        }
-
-        rootNode._removeAll();
-        rootNode._addChild(hrow, 0);
-      }
-    }
-  }
   /**
    * Export a session.
    */
@@ -300,6 +244,7 @@ class LayoutManager {
   middleware = (store) => (next) => (action) => {
     this.store = store;
     this.widgetFactory.setStore(store)
+    this.minimizeHelper.setStore(store);
 
     let nextAction = true;
     let nextSetLayout = true;
@@ -314,7 +259,8 @@ class LayoutManager {
         break;
       }
       case layoutActions.UPDATE_WIDGET: {
-        this.updateWidget(action.data);
+        let updatedWidget = this.updateWidget(action.data);
+        action = { ...action, data: updatedWidget };
         break;
       }
       case layoutActions.DESTROY_WIDGET: {
@@ -327,7 +273,7 @@ class LayoutManager {
       }
       case layoutActions.ACTIVATE_WIDGET: {
         action.data.status = WidgetStatus.ACTIVE;
-        const widget = this.getWidget(action.data.id)
+        const widget = getWidget(this.store, action.data.id)
         widget.status = WidgetStatus.ACTIVE;
         this.updateWidget(widget);
         break;
@@ -422,12 +368,12 @@ class LayoutManager {
       case Actions.SET_ACTIVE_TABSET:
         break;
       case Actions.SELECT_TAB:
-        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.tabNode), status: WidgetStatus.ACTIVE }))
+        this.store.dispatch(updateWidget({ ...getWidget(this.store, action.data.tabNode), status: WidgetStatus.ACTIVE }))
         break;
       case Actions.DELETE_TAB: {
-        if (this.getWidget(action.data.node).hideOnClose) {
+        if (getWidget(this.store, action.data.node).hideOnClose) {
           // widget only minimized, won't be removed from layout nor widgets list
-          this.minimizeWidget(action.data.node);
+          this.minimizeHelper.minimizeWidget(action.data.node);
           defaultAction = false;
         } else {
           // remove widget from widgets list
@@ -439,7 +385,7 @@ class LayoutManager {
 	// reminder, widgets are not maximised but tabsets are
         break;
       case Actions.RENAME_TAB:
-        this.store.dispatch(updateWidget({ ...this.getWidget(action.data.node), name: action.data.text }))
+        this.store.dispatch(updateWidget({ ...getWidget(this.store, action.data.node), name: action.data.text }))
         break;
       case Actions.ADJUST_SPLIT:
         break;
@@ -488,15 +434,6 @@ class LayoutManager {
     );
   }
 
-  /**
-   * Get specific widget.
-   *
-   * @param id
-   * @private
-   */
-  private getWidget(id): Widget {
-    return this.store.getState().widgets[id]
-  }
 
   /**
    * Update maximized widget based on action.
@@ -518,23 +455,6 @@ class LayoutManager {
   }
 
   /**
-   * Minimize a widget.
-   *
-   * @param widgetId
-   * @private
-   */
-  private minimizeWidget(widgetId) {
-    var updatedWidget = { ...this.getWidget(widgetId) };
-    if (updatedWidget === undefined) {
-      return;
-    }
-    updatedWidget.status = WidgetStatus.MINIMIZED;
-    updatedWidget.defaultPanel = updatedWidget.panelName;
-    updatedWidget.panelName = MINIMIZED_PANEL;
-    this.store.dispatch(updateWidget(updatedWidget))
-  }
-
-  /**
    * Update a widget.
    *
    * @param widget
@@ -542,16 +462,12 @@ class LayoutManager {
    */
   private updateWidget(widget: Widget) {
     const { model } = this;
-    const previousWidget = this.getWidget(widget.id);
+    const previousWidget = getWidget(this.store, widget.id);
     const mergedWidget = { ...previousWidget, ...widget }
-    // TODO: what if widget doesn't have a status here?
 
-    if (previousWidget.status != mergedWidget.status) {
-      if (previousWidget.status == WidgetStatus.MINIMIZED) {
-        this.restoreWidget(mergedWidget);
-      } else {
-        this.moveWidget(mergedWidget);
-      }
+    const widgetRestored = this.minimizeHelper.restoreWidgetIfNecessary(previousWidget, mergedWidget);
+    if(!widgetRestored){
+      moveWidget(model, mergedWidget);
     }
 
     this.widgetFactory.updateWidget(mergedWidget);
@@ -562,6 +478,8 @@ class LayoutManager {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
     }
+
+    return mergedWidget
   }
 
   /**
@@ -583,38 +501,11 @@ class LayoutManager {
     return this.tabsetIconFactory.factory(node.getConfig());
   }
 
-  /**
-   * Restore widget.
-   *
-   * @param widget
-   * @private
-   */
-  private restoreWidget(widget: Widget) {
-    const { model } = this;
-    widget.panelName = widget.defaultPanel;
-    const panelName = widget.panelName;
-    let tabset = model.getNodeById(panelName);
-    if (tabset === undefined) {
-      this.createTabSet(panelName, widget.defaultPosition, widget.defaultWeight);
-    }
-    this.moveWidget(widget);
-  }
 
-  private moveWidget(widget) {
-    const { model } = this;
-    model.doAction(
-      FlexLayout.Actions.moveNode(
-        widget.id,
-        widget.panelName,
-        FlexLayout.DockLocation.CENTER,
-        widget.pos
-      )
-    );
-  }
 }
 
-export function initLayoutManager(model, componentMap: ComponentMap, iconFactory: TabsetIconFactory) {
-  instance = new LayoutManager(model, componentMap, iconFactory);
+export function initLayoutManager(model, componentMap: ComponentMap, iconFactory: TabsetIconFactory, isMinimizeEnabled: boolean) {
+  instance = new LayoutManager(model, componentMap, iconFactory, isMinimizeEnabled);
   return instance;
 }
 

@@ -1,4 +1,5 @@
 import { Widget } from './model';
+import {BorderNode} from "./types";
 
 /**
  * Transforms a widget configuration into a flexlayout node descriptor
@@ -46,4 +47,18 @@ export function isEqual (a: any, b: any): boolean {
     return false;
   }
   return keys.every(k => isEqual(a[k], b[k]));
+}
+
+
+export function findBorderToMinimizeTo(borderNodes: BorderNode[]): BorderNode | null {
+  for (let borderNode of borderNodes) {
+    if (borderNode.getConfig()?.isMinimizedPanel) {
+      return borderNode;
+    }
+  }
+  return null;
+}
+
+export function getWidget(store, id){
+  return store.getState().widgets[id];
 }
