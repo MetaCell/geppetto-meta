@@ -21,7 +21,6 @@ export function callbacksMiddleware ({ getState, dispatch }) {
         console.log(geppettoVersion);
       }
 
-      console.debug(action);
       var actionTriggered = false;
       if (callbacksList[action.type] !== undefined && callbacksList[action.type].size > 0) {
         callbacksList[action.type].forEach(item => {
