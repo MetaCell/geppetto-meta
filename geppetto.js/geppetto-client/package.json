@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-client",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Geppetto web frontend. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "keywords": [
     "geppetto",
@@ -48,8 +48,8 @@
     "less": "^3.9.0"
   },
   "peerDepedencies": {
-    "@metacell/geppetto-meta-core": "1.2.1",
-    "@metacell/geppetto-meta-ui": "1.2.1"
+    "@metacell/geppetto-meta-core": "1.2.2",
+    "@metacell/geppetto-meta-ui": "1.2.2"
   },
   "buildOptions": {
     "emitEntryPoint": true,
