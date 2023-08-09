@@ -71,6 +71,7 @@
     "d3": "7.6.1",
     "d3-plugins-dist": "^3.2.0",
     "file-saver": "^2.0.2",
+    "griddle-react": "^1.13.1",
     "html-to-image": "^1.9.0",
     "jszip": "^3.2.1",
     "mathjs": "^3.5.3",
