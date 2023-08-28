@@ -242,6 +242,13 @@ class LayoutManager {
    * @memberof Control
    */
   middleware = (store) => (next) => (action) => {
+    if(!this.store) {
+      next(setLayout(this.model.toJson()));
+    }
+
+    // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
+    this.model.doAction(Actions.UPDATE_MODEL_ATTRIBUTES, {});
+    
     this.store = store;
     this.widgetFactory.setStore(store)
     this.minimizeHelper.setStore(store);
