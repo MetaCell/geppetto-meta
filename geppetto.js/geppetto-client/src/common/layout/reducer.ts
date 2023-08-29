@@ -1,8 +1,9 @@
+import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import { layoutActions } from './actions';
 import * as General from '../actions';
 import { WidgetStatus, WidgetMap, ExtendedNode } from './model'
 import layoutInitialState from './defaultLayout';
-export {layoutInitialState};
+export { layoutInitialState };
 
 export interface LayoutState {
   global: {
@@ -37,7 +38,7 @@ export const layout = (state = layoutInitialState, action) => {
   switch (action.type) {
 
   case layoutActions.SET_LAYOUT: {
-    return { ...state, ...action.data }
+    return { ...state, ...action.data.toJson() }
   }
 
   case General.IMPORT_APPLICATION_STATE: {
@@ -54,7 +55,7 @@ export const layout = (state = layoutInitialState, action) => {
  * @param {*} widgets 
  * @param {*} param1 
  */
-function updateWidgetStatus(widgets: WidgetMap, { status, panelName }) {
+function updateWidgetStatus (widgets: WidgetMap, { status, panelName }) {
   if (status != WidgetStatus.ACTIVE) {
     return widgets;
   }
@@ -67,11 +68,11 @@ function updateWidgetStatus(widgets: WidgetMap, { status, panelName }) {
   ]));
 }
 
-function removeUndefined(obj) {
+function removeUndefined (obj) {
   return Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : '');
 }
 
-function extractPanelName(action) {
+function extractPanelName (action) {
   return action.data.component == "Plot" ? "bottomPanel" : "leftPanel";
 }
 
@@ -104,6 +105,18 @@ export const widgets = (state: WidgetMap = {}, action) => {
     const newWidgets = { ...state };
     delete newWidgets[action.data.id];
     return newWidgets;
+  }
+  case layoutActions.SET_LAYOUT: {
+    const model: FlexLayout.Model = action.data;
+    const newWidgets = { ...state };
+    for (const widgetId in newWidgets) {
+      const node = model.getNodeById(widgetId);
+      if (node) {
+        newWidgets[widgetId] = { ...widgets[widgetId], ...node.getConfig() };
+      }
+      
+    }
+    return newWidgets
   }
   default:
     return state;

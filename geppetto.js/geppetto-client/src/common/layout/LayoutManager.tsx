@@ -261,7 +261,7 @@ class LayoutManager {
    */
   middleware = (store) => (next) => (action) => {
     if(!this.store) {
-      next(setLayout(this.model.toJson()));
+      next(setLayout(this.model));
     }
 
     // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
@@ -317,9 +317,11 @@ class LayoutManager {
         break;
       }
       case layoutActions.SET_LAYOUT: {
-        if (!isEqual(this.model.toJson(), action.data)) {
+        if (this.model.toJson() === action.data) {
           this.setLayout(action.data)
         }
+        nextAction = false;
+        nextSetLayout = true;
         break;
       }
       case GeppettoActions.IMPORT_APPLICATION_STATE: {
@@ -340,7 +342,7 @@ class LayoutManager {
     if (nextSetLayout) {
 
       this.fixRowRecursive(this.model._root)
-      next(setLayout(this.model.toJson()));
+      next(setLayout(this.model));
     }
 
   };
@@ -435,7 +437,6 @@ class LayoutManager {
       case Actions.SET_ACTIVE_TABSET:
         break;
       case Actions.SELECT_TAB:
-        this.store.dispatch(updateWidget({ ...getWidget(this.store, action.data.tabNode), status: WidgetStatus.ACTIVE }))
         break;
       case Actions.DELETE_TAB: {
         if (getWidget(this.store, action.data.node).hideOnClose) {
@@ -452,7 +453,6 @@ class LayoutManager {
 	// reminder, widgets are not maximised but tabsets are
         break;
       case Actions.RENAME_TAB:
-        this.store.dispatch(updateWidget({ ...getWidget(this.store, action.data.node), name: action.data.text }))
         break;
       case Actions.ADJUST_SPLIT:
         break;
@@ -471,7 +471,7 @@ class LayoutManager {
     }
 
     const newModel = this.model.toJson();
-    if (!isEqual(oldModel, newModel)) {
+    if (oldModel !== newModel) {
       this.store.dispatch(setLayout(newModel));
     }
   }
