@@ -109,12 +109,13 @@ class LayoutManager {
     if (tabset === undefined) {
         createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
+    widgetConfiguration.pos = widgetConfiguration.pos ?? tabset.getChildren().length
     this.model.doAction(
       Actions.addNode(
         widget2Node(widgetConfiguration),
         widgetConfiguration.panelName,
         DockLocation.CENTER,
-        widgetConfiguration.pos ? widgetConfiguration.pos : -1
+        widgetConfiguration.pos 
       )
     );
   }
