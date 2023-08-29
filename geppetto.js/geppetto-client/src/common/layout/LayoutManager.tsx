@@ -44,8 +44,14 @@ let instance: LayoutManager = null;
  *
  * @memberof Control
  */
+
 class LayoutManager {
+  
   model: Model;
+  /**
+   * Used to restore weights from the default layout
+   */
+  defaultWeights: {[id: string]: number} = {};
   widgetFactory: WidgetFactory;
   tabsetIconFactory: TabsetIconFactory;
   store;
@@ -60,15 +66,13 @@ class LayoutManager {
    * @param isMinimizeEnabled
    */
   constructor(
-    model,
+    model: FlexLayout.IJsonModel,
     componentMap: ComponentMap,
     tabsetIconFactory: TabsetIconFactory = null,
     isMinimizeEnabled = false
   ) {
-    this.model = FlexLayout.Model.fromJson(
-      model ? model : defaultLayoutConfiguration
-    );
-
+   
+    this.setLayout(model);
     this.widgetFactory = new WidgetFactory(componentMap);
     this.tabsetIconFactory = tabsetIconFactory
       ? tabsetIconFactory
@@ -76,6 +80,19 @@ class LayoutManager {
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
     this.minimizeHelper= new MinimizeHelper(isMinimizeEnabled, this.model)
+  }
+
+
+
+  setLayout(model: any) {
+    this.model = FlexLayout.Model.fromJson(
+       model || defaultLayoutConfiguration
+    );
+    const allNodes: FlexLayout.Node[] = Object.values(this.model._idMap);
+    for(const node of allNodes) {
+        this.defaultWeights[node.getId()] = node._getAttr("weight");
+    }
+    this.fixRowRecursive(this.model._root)
   }
 
   /**
@@ -90,7 +107,7 @@ class LayoutManager {
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+        createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     this.model.doAction(
       Actions.addNode(
@@ -297,7 +314,7 @@ class LayoutManager {
       }
       case layoutActions.SET_LAYOUT: {
         if (!isEqual(this.model.toJson(), action.data)) {
-          this.model = FlexLayout.Model.fromJson(action.data);
+          this.setLayout(action.data)
         }
         break;
       }
@@ -317,10 +334,49 @@ class LayoutManager {
       next(action);
     }
     if (nextSetLayout) {
+
+      this.fixRowRecursive(this.model._root)
       next(setLayout(this.model.toJson()));
     }
 
   };
+
+  restoreWeight(node: FlexLayout.Node) {
+    
+    if(node._getAttr("weight") == 0) {
+      node._setWeight(this.defaultWeights[node.getId()] ?? 50);
+    }
+    
+    if(node.getParent()) {
+      this.restoreWeight(node.getParent());
+    }
+  }
+
+  fixRowRecursive(node: FlexLayout.Node) {
+    if(node.getType() === "row" || node.getType() === "tabset") {
+      if(node.getChildren().length === 0) {
+        node._setWeight(0);
+        return true;
+      } else {
+        
+        
+        let empty = true;
+        for(let child of node.getChildren()) {
+          empty =  this.fixRowRecursive(child) && empty;
+        }
+
+        if(!empty) {
+          this.restoreWeight(node);
+        } else {
+          node._setWeight(0);
+        }
+        
+        return empty;
+      }
+    }
+    return false;
+
+  }
 
   /**
    * Add a list of widgets.
