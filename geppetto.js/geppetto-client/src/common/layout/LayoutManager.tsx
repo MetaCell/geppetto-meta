@@ -317,12 +317,8 @@ class LayoutManager {
         break;
       }
       case layoutActions.SET_LAYOUT: {
-        if (this.model.toJson() === action.data) {
-          this.setLayout(action.data)
-        }
-        nextAction = false;
-        nextSetLayout = true;
-        break;
+        next(setLayout(action.data));
+        return;
       }
       case GeppettoActions.IMPORT_APPLICATION_STATE: {
         const incomingState = action.data.redux.layout;
@@ -472,7 +468,7 @@ class LayoutManager {
 
     const newModel = this.model.toJson();
     if (oldModel !== newModel) {
-      this.store.dispatch(setLayout(newModel));
+      this.store.dispatch(setLayout(this.model));
     }
   }
 
