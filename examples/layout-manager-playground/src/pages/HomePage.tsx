@@ -81,11 +81,11 @@ const HomePage = () => {
         </Button>
 
       </Stack>
-      <Box sx={{
+      <Box p={2} sx={{
         display: 'flex',
         position: 'relative',
         width: '100%',
-        height: '96vh',
+        height: '90vh',
       }}>
         {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
       </Box>

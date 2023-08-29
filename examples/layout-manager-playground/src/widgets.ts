@@ -3,7 +3,7 @@ import { WidgetStatus, Widget } from "@metacell/geppetto-meta-client/common/layo
 
 
 
-export const componentWidget = (name: string, color: string, panelName: string="panel1") : Widget => ({
+export const componentWidget = (name: string, color: string, panelName="panel1") : Widget => ({
   id: name + Math.random(),
   name: name,
   component: "MyComponent",
