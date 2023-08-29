@@ -284,8 +284,10 @@ class LayoutManager {
         break;
       }
       case layoutActions.UPDATE_WIDGET: {
+        
         let updatedWidget = this.updateWidget(action.data);
         action = { ...action, data: updatedWidget };
+        
         break;
       }
       case layoutActions.DESTROY_WIDGET: {
@@ -303,6 +305,7 @@ class LayoutManager {
         this.updateWidget(widget);
         break;
       }
+
       case layoutActions.SET_WIDGETS: {
         const newWidgets: Map<string, Widget> = action.data;
         for (let widget of this.getWidgets()) {
@@ -474,51 +477,6 @@ class LayoutManager {
   }
 
   /**
-   * Return the id of a tabset based on passed action.
-   *
-   * @param action
-   * @private
-   */
-  private getTabsetId(action) {
-    const widgetId = action.data.fromNode;
-    return this.model
-      .getNodeById(widgetId)
-      .getParent()
-      .getId();
-  }
-
-  /**
-   * Find a maximized widget.
-   *
-   * @private
-   */
-  private findMaximizedWidget() {
-    return this.getWidgets().find(
-      (widget) => widget && widget.status == WidgetStatus.MAXIMIZED
-    );
-  }
-
-
-  /**
-   * Update maximized widget based on action.
-   *
-   * @param action
-   * @private
-   */
-  private updateMaximizedWidget(action) {
-    const { model } = this;
-    const maximizedWidget = this.findMaximizedWidget();
-    // check if the current maximized widget is the same than in the action dispatched
-    if (maximizedWidget && maximizedWidget.id == action.data.node) {
-      // find if there exists another widget in the maximized panel that could take its place
-      const panelChildren = model.getActiveTabset().getChildren();
-      const index = panelChildren.findIndex(
-        (child) => child.getId() == action.data.node
-      );
-    }
-  }
-
-  /**
    * Update a widget.
    *
    * @param widget
@@ -536,10 +494,20 @@ class LayoutManager {
 
     this.widgetFactory.updateWidget(mergedWidget);
 
-    if (this.model.getNodeById(widget.id)) {
+    const node = this.model.getNodeById(widget.id);
+        
+
+    if (node) {
       model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
       if (mergedWidget.status == WidgetStatus.ACTIVE) {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
+      } 
+      if((widget.status == WidgetStatus.MAXIMIZED && !node.getParent().isMaximized()) || 
+          (widget.status == WidgetStatus.ACTIVE && node.getParent().isMaximized())) {
+        this.model.doAction(FlexLayout.Actions.maximizeToggle(node.getParent().getId()));
+      } 
+      else if(widget.status == WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
+        this.minimizeHelper.minimizeWidget(node.getId());
       }
     }
 
