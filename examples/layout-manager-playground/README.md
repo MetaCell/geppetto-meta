@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+To start develop, you need to setup yalc to link geppetto libraries to the current project.
+
+To do so, run
+
+```
+bash setup.sh
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
