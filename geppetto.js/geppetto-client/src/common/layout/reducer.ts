@@ -38,6 +38,9 @@ export const layout = (state = layoutInitialState, action) => {
   switch (action.type) {
 
   case layoutActions.SET_LAYOUT: {
+    return { ...state, ...action.data }
+  }
+  case layoutActions.UPDATE_LAYOUT: {
     return { ...state, ...action.data.toJson() }
   }
 
@@ -106,18 +109,39 @@ export const widgets = (state: WidgetMap = {}, action) => {
     delete newWidgets[action.data.id];
     return newWidgets;
   }
-  case layoutActions.SET_LAYOUT: {
+  case layoutActions.UPDATE_LAYOUT: {
     const model: FlexLayout.Model = action.data;
-    const newWidgets = { ...state };
-    for (const widgetId in newWidgets) {
-      const node = model.getNodeById(widgetId);
-      if (node) {
-        newWidgets[widgetId] = { ...widgets[widgetId], ...node.getConfig() };
-      }
-      
+    const updatedWidgets = { ...state };
+    const parents = new Set(Object.keys(updatedWidgets).map(widgetId => model.getNodeById(widgetId)).filter(n => n).map(n => n?.getParent()));
+    for (const parent of parents) {
+      for (const i in parent.getChildren()) {
+        const node = parent.getChildren()[i];
+        if (!updatedWidgets[node.getId()]) {
+          continue;
+        }
+        updatedWidgets[node.getId()] = { ... updatedWidgets[node.getId()] };
+        updatedWidgets[node.getId()].name = node.getName()
+        if (parent.getType() !== 'border') {
+          // want to restore previous position when activated
+          updatedWidgets[node.getId()].pos = parseInt(i)
+        }
+        
+        updatedWidgets[node.getId()].panelName = parent.getId(); 
+        if (parent.isMaximized() && node.isVisible()) {
+          updatedWidgets[node.getId()].status = WidgetStatus.MAXIMIZED;
+        } else if (parent.getType() === 'border') {
+          updatedWidgets[node.getId()].status = WidgetStatus.MINIMIZED;
+        } else if (node.isVisible()) {
+          updatedWidgets[node.getId()].status = WidgetStatus.ACTIVE;
+        } else {
+          updatedWidgets[node.getId()].status = WidgetStatus.HIDDEN;
+        }
+      }    
     }
-    return newWidgets
+    
+    return updatedWidgets
   }
+
   default:
     return state;
   }

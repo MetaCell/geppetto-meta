@@ -81,7 +81,7 @@ export class MinimizeHelper {
      * @param widget
      * @private
      */
-    private restoreWidget(widget: Widget) {
+    restoreWidget(widget: Widget) {
         const { model } = this;
         widget.panelName = widget.defaultPanel;
         const panelName = widget.panelName;

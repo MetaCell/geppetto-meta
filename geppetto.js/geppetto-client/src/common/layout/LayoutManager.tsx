@@ -15,7 +15,8 @@ import {
   layoutActions,
   removeWidgetFromStore,
   updateWidget,
-  setLayout
+  setLayout,
+  updateLayout,
 } from "./actions";
 
 import {MinimizeHelper} from "./helpers/MinimizeHelper";
@@ -261,7 +262,7 @@ class LayoutManager {
    */
   middleware = (store) => (next) => (action) => {
     if(!this.store) {
-      next(setLayout(this.model));
+      next(setLayout(this.model.toJson()));
     }
 
     // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
@@ -338,7 +339,7 @@ class LayoutManager {
     if (nextSetLayout) {
 
       this.fixRowRecursive(this.model._root)
-      next(setLayout(this.model));
+      next(updateLayout(this.model));
     }
 
   };
@@ -433,6 +434,11 @@ class LayoutManager {
       case Actions.SET_ACTIVE_TABSET:
         break;
       case Actions.SELECT_TAB:
+        const widget = getWidget(this.store, action.data.tabNode);
+        if (widget && widget.status === WidgetStatus.MINIMIZED) {
+          this.minimizeHelper.restoreWidget(widget);
+        }
+        
         break;
       case Actions.DELETE_TAB: {
         if (getWidget(this.store, action.data.node).hideOnClose) {
@@ -465,10 +471,12 @@ class LayoutManager {
     if (defaultAction) {
       this.model.doAction(action);
     }
+    this.fixRowRecursive(this.model._root)
 
     const newModel = this.model.toJson();
     if (oldModel !== newModel) {
-      this.store.dispatch(setLayout(this.model));
+      
+      this.store.dispatch(updateLayout(this.model));
     }
   }
 
