@@ -1,3 +1,5 @@
+import React from 'react';
+
 const toolbarMenu = {
   global: {
     buttonsStyle: {
@@ -122,7 +124,14 @@ const toolbarMenu = {
           },
         },
         {
-          label: 'Feedback',
+          label: (
+              <>
+                Feedback
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M7.32911 13.2291L3.85411 9.75414L2.67078 10.9291L7.32911 15.5875L17.3291 5.58748L16.1541 4.41248L7.32911 13.2291Z" fill="#5A48E6"/>
+                </svg>
+              </>
+          ),
           icon: '',
           action: {
             handlerAction: 'clickFeedback',
