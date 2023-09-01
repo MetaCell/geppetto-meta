@@ -1,10 +1,8 @@
-import Component1 from '../components/Component1'
-import Component2 from '../components/Component2'
-import {widgetIds} from "../widgets";
+import MyComponent from '../components/MyComponent'
+
 
 const componentMap = {
-  [widgetIds.component1]: Component1,
-  [widgetIds.component2]: Component2
+  MyComponent
 }
 
 export default componentMap

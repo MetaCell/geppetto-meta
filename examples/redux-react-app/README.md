@@ -30,16 +30,25 @@ Run this script every time you change code in the local geppetto packages and wa
 **Install dependencies**
 
 ```bash
-yarn
+npm install --legacy-peer-deps
 ```
+Notice that we are preferring npm over yarn because geppetto libraries code 
+is not linked with yarn.
 
 **Start development server**
 
 ```bash
-yarn start
+npm run start
+```
+
+While developing on the geppetto-client, modifications can be hot loaded by running
+
+```
+bash update_geppetto.sh
 ```
 
 See [Available Scripts](https://create-react-app.dev/docs/available-scripts) for more information.
+
 
 ## Geppetto LayoutManager Integration
 

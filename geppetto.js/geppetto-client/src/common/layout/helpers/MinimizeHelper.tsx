@@ -28,13 +28,17 @@ export class MinimizeHelper {
         this.store = store;
     }
 
+    isMinimized(widget: Widget): boolean {
+        return widget.panelName == this.minimizeBorderID;
+    }
+
     addMinimizeButtonToTabset(panel, renderValues) {
         if (this.isMinimizeEnabled && this.minimizeBorderID) {
             if (panel.getChildren().length > 0) {
                 renderValues.buttons.push(
                     <div
                         key={panel.getId()}
-                        className="fa fa-window-minimize customIconFlexLayout"
+                        className="fa fa-window-minimize customIconFlexLayout minimizeButton"
                         onClick={() => {
                             this.minimizeWidget(panel.getSelectedNode().getId());
                         }}
@@ -51,13 +55,14 @@ export class MinimizeHelper {
      * @private
      */
     minimizeWidget(widgetId) {
-        if(this.store && this.minimizeBorderID){
+        if(this.store && this.minimizeBorderID) {
+            
             let updatedWidget = { ...getWidget(this.store, widgetId) };
             updatedWidget.status = WidgetStatus.MINIMIZED;
             updatedWidget.defaultPanel = updatedWidget.panelName;
             updatedWidget.panelName = this.minimizeBorderID;
             this.store.dispatch(updateWidget(updatedWidget))
-        }else{
+        } else{
             console.warn("Unable to minimize widget");
         }
     }
@@ -76,7 +81,7 @@ export class MinimizeHelper {
      * @param widget
      * @private
      */
-    private restoreWidget(widget: Widget) {
+    restoreWidget(widget: Widget) {
         const { model } = this;
         widget.panelName = widget.defaultPanel;
         const panelName = widget.panelName;

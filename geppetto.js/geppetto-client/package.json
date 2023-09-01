@@ -22,7 +22,7 @@
     "build:style": "cp -r src/style build",
     "build:package": "cp package.json README.md LICENSE build",
     "dist": "cd build && yarn publish",
-    "publish:yalc": "cd build && yalc publish --push",
+    "publish:yalc": "yalc push --sig && cd build && yalc publish --push",
     "watch": "nodemon -e js,ts --ignore build --exec \"babel src -d build --extensions '.js,.jsx,.ts,.tsx' && yalc push --changed\""
   },
   "dependencies": {

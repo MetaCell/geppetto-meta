@@ -9,10 +9,10 @@ function configureStore() {
   const INIT_STATE = {};
   const isMinimizeEnabled = true;
   return createStore(
-      reducers,
-      INIT_STATE,
-      middlewares,
-      { baseLayout, componentMap, isMinimizeEnabled },
+    reducers,
+    INIT_STATE,
+    middlewares,
+    { baseLayout, componentMap, isMinimizeEnabled },
   );
 }
 
