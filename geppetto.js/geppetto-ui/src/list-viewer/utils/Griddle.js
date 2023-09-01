@@ -6,6 +6,7 @@ import {
 } from 'redux';
 
 import Griddle, { plugins } from 'griddle-react';
+import init from 'griddle-react/dist/module/utils/initializer';
 
 const { CorePlugin: corePlugin } = plugins
 
