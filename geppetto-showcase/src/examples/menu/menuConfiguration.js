@@ -131,7 +131,7 @@ const toolbarMenu = {
         },
         {
           label: 'Social media',
-          icon: '',
+          icon: 'my-svg-icon',
           position: 'right-start',
           action: {
             handlerAction: 'submenu',
