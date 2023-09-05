@@ -5,7 +5,9 @@ import { useStore } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { CloseIcon } from './icons';
-
+import IconButton from '@material-ui/core/IconButton';
+import Mood from '@material-ui/icons/Mood';
+import DriveEta from '@material-ui/icons/DriveEta';
 const useStyles = makeStyles({
     layoutContainer: {
         position: 'relative',
@@ -43,7 +45,7 @@ const MainLayout = () => {
             tabSetButtons: [
               ({ panel }) => {
                 return (
-                  <Button
+                  <IconButton
                     key={panel.getId()}
                     variant="outlined"
                     color="primary"
@@ -51,24 +53,26 @@ const MainLayout = () => {
                       console.log('tab-set button')
                     }}
                   >
-                    Add
-                  </Button>
+                    <Mood />
+                  </IconButton>
                 );
               },
             ],
             tabButtons: [
               ({ panel }) => {
                 return (
-                  <Button
+                  <IconButton
                     key={panel.getId()}
                     variant="filled"
                     color="secondary"
-                    onClick={() => {
-                      console.log('tab button')
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('tab button clicked')
                     }}
                   >
-                    Minimize
-                  </Button>
+                    <DriveEta />
+                  </IconButton>
                 );
               },
             ],
