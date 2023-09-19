@@ -742,8 +742,6 @@ export default class ThreeDEngine {
               * 2
             - 1;
 
-          if (event.button === 0) {
-            // only for left click
             if (that.pickingEnabled) {
               const intersects = that.getIntersectedObjects();
 
@@ -806,11 +804,10 @@ export default class ThreeDEngine {
                   }
                 }
                 that.requestFrame();
-                onSelection(that.selectionStrategy(selectedMap))
+                onSelection(that.selectionStrategy(selectedMap), that.mouse.x, that.mouse.y, event)
               }
             }
           }
-        }
       },
       false
     );
