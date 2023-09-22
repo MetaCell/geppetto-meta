@@ -728,22 +728,20 @@ export default class ThreeDEngine {
           }
 
           that.mouse.y
-            = -(
-              (event.clientY
-                - that.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
-              / that.renderer.domElement.getBoundingClientRect().height
-            )
+              = -(
+                  (event.clientY
+                      - that.renderer.domElement.getBoundingClientRect().top) * window.devicePixelRatio
+                  / that.renderer.domElement.height
+              )
               * 2
-            + 1;
+              + 1;
           that.mouse.x
-            = ((event.clientX
-              - that.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
-              / that.renderer.domElement.getBoundingClientRect().width)
+              = ((event.clientX
+                      - that.renderer.domElement.getBoundingClientRect().left) * window.devicePixelRatio
+                  / that.renderer.domElement.width)
               * 2
-            - 1;
+              - 1;
 
-          if (event.button === 0) {
-            // only for left click
             if (that.pickingEnabled) {
               const intersects = that.getIntersectedObjects();
 
@@ -806,11 +804,10 @@ export default class ThreeDEngine {
                   }
                 }
                 that.requestFrame();
-                onSelection(that.selectionStrategy(selectedMap))
+                onSelection(that.selectionStrategy(selectedMap), event)
               }
             }
           }
-        }
       },
       false
     );
