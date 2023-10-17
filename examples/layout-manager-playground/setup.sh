@@ -18,4 +18,4 @@ yalc add @metacell/geppetto-meta-client
 yalc add @metacell/geppetto-meta-core
 yalc add @metacell/geppetto-meta-ui
 
-yarn
+npm install --legacy-peer-deps # yarn does not create links!

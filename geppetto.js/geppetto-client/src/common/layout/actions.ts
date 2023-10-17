@@ -1,4 +1,5 @@
 import { WidgetStatus, Widget, WidgetMap } from './model';
+import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 
 export const layoutActions = {
   SET_LAYOUT: 'SET_LAYOUT',
@@ -9,7 +10,8 @@ export const layoutActions = {
   ADD_WIDGETS: 'ADD_WIDGETS',
   RESET_LAYOUT: 'RESET_LAYOUT',
   DESTROY_WIDGET: 'DESTROY_WIDGET',
-  REMOVE_WIDGET: 'REMOVE_WIDGET'
+  REMOVE_WIDGET: 'REMOVE_WIDGET',
+  UPDATE_LAYOUT: 'UPDATE_LAYOUT',
 };
 
 export const newWidget = ({ path, component, panelName, ...others }) => ({
@@ -50,10 +52,15 @@ export const updateWidget = (newConf: Widget) => ({
  * Support action: do not consider as part of the api
  * @param id 
  */
-export const setLayout = (newLayout => ({
+export const setLayout = ((newLayout: string) => ({
   type: layoutActions.SET_LAYOUT,
   data: newLayout
 }))
+
+export const updateLayout = ((layout: FlexLayout.Model) => ({
+  type: layoutActions.UPDATE_LAYOUT,
+  data: layout 
+}));
 
 export const minimizeWidget = id => ({
   type: layoutActions.UPDATE_WIDGET,
