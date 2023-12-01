@@ -5,6 +5,9 @@ import {
   compose
 } from 'redux';
 
+import Griddle, { plugins } from 'griddle-react';
+import init from 'griddle-react/dist/module/utils/initializer';
+
 const { CorePlugin: corePlugin } = plugins
 
 class GriddleNoReduxBrowserExtension extends Griddle {
