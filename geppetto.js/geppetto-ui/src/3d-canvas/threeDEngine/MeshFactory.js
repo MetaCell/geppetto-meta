@@ -12,6 +12,7 @@ export default class MeshFactory {
   constructor (
     scene,
     linesThreshold = 2000,
+    renderingTheshold = 500,
     depthWrite = true,
     linePrecisionMinRadius = 300,
     minAllowedLinePrecision = 1,
@@ -115,6 +116,10 @@ export default class MeshFactory {
       mesh: this.getMeshPhongMaterial(),
       line: this.getLineMaterial(),
     };
+
+    this.calculateSceneComplexity();
+    if (this.complexity > this.renderingTheshold)
+      throw(`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
 
     const instanceObjects = [];
     const threeDeeObjList = await this.walkVisTreeGen3DObjs(instance, materials);
@@ -266,7 +271,6 @@ export default class MeshFactory {
     return threeDeeObjList
   }
 
-
   async create3DObjectFromInstance (instance, node, id, materials) {
     let threeObject = null;
 
@@ -286,7 +290,6 @@ export default class MeshFactory {
       } else {
         threeObject = this.create3DCylinderFromNode(node, material);
       }
-      this.complexity++;
       break;
 
     case Resources.SPHERE:
@@ -295,23 +298,18 @@ export default class MeshFactory {
       } else {
         threeObject = this.create3DSphereFromNode(node, material);
       }
-      this.complexity++;
       break;
     case Resources.COLLADA:
       threeObject = this.loadColladaModelFromNode(node);
-      this.complexity++;
       break;
     case Resources.OBJ:
       threeObject = this.loadThreeOBJModelFromNode(node);
-      this.complexity++;
       break;
     case Resources.GLTF:
       threeObject = await this.loadThreeGLTFModelFromNode(node);
-      this.complexity++;
       break;
     case Resources.DRC:
       threeObject = await this.loadThreeDRCModelFromNode(node);
-      this.complexity++;
       break;
     default:
       console.error(`Invalid node.eClass on node ${node}`)
@@ -927,6 +925,28 @@ export default class MeshFactory {
   hasMesh (instance) {
     const instancePath = typeof instance == 'string' ? instance : instance.getInstancePath();
     return this.meshes[instancePath] !== undefined;
+  }
+
+  /**
+   * Traverse through THREE object to calculate that complexity (ammount of 3d objects)
+   * with this and calculateSceneMaxRadius, we can estimate how dense the scene is to implement any wanted optimization behavior
+   * @param object
+   */
+
+  calculateSceneComplexity (object) {
+    let currentComplexity = 0;
+    if (object.children.length > 0) {
+      for (let i = 0; i < object.children.length; i++) {
+        if (object.children[i] !== undefined) {
+          this.calculateSceneComplexity(object.children[i]);
+        }
+      }
+    } else {
+      if (Object.prototype.hasOwnProperty.call(object, 'geometry')) {
+        currentComplexity ++;
+      }
+    }
+    this.complexity += currentComplexity;
   }
 
   /**
