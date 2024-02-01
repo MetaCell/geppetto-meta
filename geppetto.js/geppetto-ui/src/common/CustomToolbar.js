@@ -18,15 +18,17 @@ class CustomToolbar extends Component {
 
   render () {
     const { classes, theme, buttons, elements, containerStyles, toolBarClassName, innerDivStyles, buttonStyles } = this.props;
+    const defaultButtonColor = '#fc6320'
+    const defaultBackgroundColor = 'rgb(0,0,0,0.5)'
     const customButtons = buttons ? buttons : [];
     const customElements = elements ? elements : [];
     const cStyles = containerStyles != null ? containerStyles : {}
     const tbClassName = toolBarClassName != null ? toolBarClassName : classes.toolbar
-    const dStyles = innerDivStyles != null ? innerDivStyles : { backgroundColor: theme.palette.toolbarBackground.main }
+    const dStyles = innerDivStyles != null ? innerDivStyles : { backgroundColor: defaultBackgroundColor }
     const bStyles = buttonStyles != null ? buttonStyles : {
       padding: theme.spacing(1),
       top: theme.spacing(0),
-      color: theme.palette.button.main
+      color: defaultButtonColor
     }
     return (
         <div style={cStyles}>

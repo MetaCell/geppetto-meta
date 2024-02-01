@@ -4,13 +4,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 
-const styles = theme => ({
-  button: {
-    padding: theme.spacing(1),
-    top: theme.spacing(0),
-    color: theme.palette.button.main
-  },
-});
+const styles = theme => ({});
 
 class MenuButton extends Component {
 
@@ -23,7 +17,7 @@ class MenuButton extends Component {
 
 
   handleClose (option) {
-    if (option === ""){
+    if (option === "") {
       this.setState(() => ({ anchorEl: null }))
     } else {
       this.setState(() => ({ anchorEl: null }), () => this.props.handler(option))
@@ -36,15 +30,17 @@ class MenuButton extends Component {
   }
 
   render () {
-    const { id, options, classes, defaultOption, tooltip, icon } = this.props;
+    const { id, options, theme, defaultOption, tooltip, icon, buttonStyles } = this.props;
     const { anchorEl } = this.state;
     const ITEM_HEIGHT = 48;
+    const defaultButtonStyles = { color: '#fc6320', padding: theme.spacing(1), top: theme.spacing(0), }
+    const iconButtonStyles = buttonStyles ? buttonStyles : defaultButtonStyles
     return (
       <span>
         <IconButtonWithTooltip
           disabled={false}
           onClick={this.handleClick}
-          className={classes.button}
+          style={iconButtonStyles}
           tooltip={tooltip}
           icon={icon}
         />
@@ -73,4 +69,4 @@ class MenuButton extends Component {
   }
 }
 
-export default withStyles(styles)(MenuButton);
+export default withStyles(styles, { withTheme: true })(MenuButton);

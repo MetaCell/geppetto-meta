@@ -30,37 +30,48 @@ class ConnectivityShowcaseForce extends Component {
     )[0].getId();
   }
 
-  matrixHandler = () => {
-    console.warn('Mock call to SceneController')
-    console.trace()
-  }
+    matrixHandler = () => {
+      console.warn('Mock call to SceneController')
+      console.trace()
+    }
 
-  render () {
-    const data = Instances[0];
-    const layout = new Force();
-    const colors = ['#cb0000', '#003398'];
-    const names = ['pyramidals_48', 'baskets_12'];
-    const { classes } = this.props;
+    render () {
+      const data = Instances[0];
+      const layout = new Force();
+      const colors = ['#cb0000', '#003398'];
+      const themeColor = '#145365'
+      const names = ['pyramidals_48', 'baskets_12'];
+      const { classes } = this.props;
 
-    return (
-      <div className={classes.connectivity}>
-        <ConnectivityComponent
-          id="ConnectivityContainerForce"
-          data={data}
-          colors={colors}
-          names={names}
-          layout={layout}
-          modelFactory={ModelFactory}
-          resources={Resources}
-          matrixOnClickHandler={this.matrixHandler}
-          nodeType={null}
-          linkWeight={null}
-          linkType={this.linkType}
-          library={null}
-        />
-      </div>
-    );
-  }
+      return (
+        <div className={classes.connectivity}>
+          <ConnectivityComponent
+            id="ConnectivityContainerForce"
+            data={data}
+            colors={colors}
+            names={names}
+            layout={layout}
+            modelFactory={ModelFactory}
+            resources={Resources}
+            matrixOnClickHandler={this.matrixHandler}
+            nodeType={null}
+            linkWeight={null}
+            linkType={this.linkType}
+            library={null}
+            toolbarOptions={{
+              menuButtonStyles: { color: themeColor, },
+              deckStyles: { color: themeColor },
+              innerDivStyles: { backgroundColor: 'rgb(0,0,0,0);' },
+              buttonStyles: {
+                padding: 8,
+                top: 0,
+                color: themeColor
+              }
+            }}
+          />
+        </div>
+      );
+    }
 }
 
 export default withStyles(styles)(ConnectivityShowcaseForce);
