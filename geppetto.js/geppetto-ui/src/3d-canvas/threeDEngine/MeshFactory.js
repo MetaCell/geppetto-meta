@@ -31,6 +31,7 @@ export default class MeshFactory {
     this.linePrecisionMinRadius = linePrecisionMinRadius;
     this.minAllowedLinePrecision = minAllowedLinePrecision;
     this.linesThreshold = linesThreshold;
+    this.renderingTheshold = renderingTheshold;
     this.particleTexture = particleTexture;
     this.dracoDecoderPath = dracoDecoderPath ? dracoDecoderPath : 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
     this.THREE = THREE ? THREE : require('three');
@@ -65,6 +66,8 @@ export default class MeshFactory {
   async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
+    if (this.complexity > this.renderingTheshold)
+      throw(`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
   }
 
 
@@ -116,10 +119,6 @@ export default class MeshFactory {
       mesh: this.getMeshPhongMaterial(),
       line: this.getLineMaterial(),
     };
-
-    this.calculateSceneComplexity();
-    if (this.complexity > this.renderingTheshold)
-      throw(`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
 
     const instanceObjects = [];
     const threeDeeObjList = await this.walkVisTreeGen3DObjs(instance, materials);
@@ -625,6 +624,7 @@ export default class MeshFactory {
         }
       }
       this.calculateSceneMaxRadius(mesh);
+      this.calculateSceneComplexity(mesh);
     }
   }
 
