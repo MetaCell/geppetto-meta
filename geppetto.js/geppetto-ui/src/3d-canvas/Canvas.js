@@ -23,7 +23,10 @@ class Canvas extends Component {
     super(props);
     this.sceneRef = React.createRef();
     this.cameraControls = React.createRef();
-    this.state = { isCanvasReady: false }
+    this.state = {
+      isCanvasReady: false,
+      error: null  
+    }
     this.constructorFromProps(props);
     this.onResize = this.onResize.bind(this);
     this.defaultCameraControlsHandler = this.defaultCameraControlsHandler.bind(this);
@@ -48,6 +51,7 @@ class Canvas extends Component {
       threeDObjects,
       pickingEnabled,
       linesThreshold,
+      renderingThreshold,
       onSelection,
       selectionStrategy,
       onHoverListeners,
@@ -67,6 +71,7 @@ class Canvas extends Component {
       backgroundColor,
       pickingEnabled,
       linesThreshold,
+      renderingThreshold,
       onSelection,
       selectionStrategy,
       onHoverListeners,
@@ -75,7 +80,9 @@ class Canvas extends Component {
       dracoDecoderPath
     );
     onUpdateStart();
-    await this.threeDEngine.updateInstances(data);
+    
+    await this.handleEngineUpdate(data);
+
     this.threeDEngine.updateExternalThreeDObjects(threeDObjects)
     this.threeDEngine.updateCamera(cameraOptions);
     onUpdateEnd()
@@ -89,6 +96,16 @@ class Canvas extends Component {
     this.setState({ isCanvasReady: true })
     this.sceneRef.current.addEventListener('keydown', this.keyboardEventHandler)
 
+  }
+
+  async handleEngineUpdate(data) {
+    try {
+      const updateResult = await this.threeDEngine.updateInstances(data);
+      return updateResult;
+    } catch (error) {
+      console.log(error);
+      this.setState({ error: error });
+    }
   }
 
   shouldComponentUpdate (nextProps, nextState, nextContext) {
@@ -140,7 +157,7 @@ class Canvas extends Component {
         this.threeDEngine.setBackgroundColor(backgroundColor);
       }
       if (hasDifferentProxyInstances(data, prevData)) {
-        await this.threeDEngine.updateInstances(data)
+        await this.handleEngineUpdate(data)
       }
       if (cameraOptions !== prevCameraOptions){
         this.threeDEngine.updateCamera(cameraOptions);
@@ -330,6 +347,14 @@ class Canvas extends Component {
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     let captureInstance = null
+    const { error } = this.state;
+    if (error) {
+      return (
+        <div className={classes.container}>
+          <p>Error: {error}</p>
+        </div>
+      );
+    }
     if (captureOptions) {
       const { captureControls } = captureOptions
       const captureControlsHandler = captureControls && captureControls.captureControlsHandler ? captureControls.captureControlsHandler : this.defaultCaptureControlsHandler

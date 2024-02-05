@@ -29,12 +29,14 @@ export default class ThreeDEngine {
     backgroundColor,
     pickingEnabled,
     linesThreshold,
+    renderingThreshold,
     onSelection,
     selectionStrategy,
     onHoverListeners,
     onEmptyHoverListener,
     preserveDrawingBuffer,
-    dracoDecoderPath
+    dracoDecoderPath,
+    renderingTheshold
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -46,7 +48,7 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite, 300, 1,
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, renderingThreshold, cameraOptions.depthWrite, 300, 1,
         null, dracoDecoderPath, null);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
