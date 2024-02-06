@@ -429,7 +429,7 @@ export default class ThreeDEngine {
     const toRemove = this.scene.children.filter(child => {
       const mappedInstance = this.instancesMap.get(child.instancePath);
       if (child.instancePath !== undefined) {
-        if (!mappedInstance || !mappedInstance.visibility) {
+        if (!mappedInstance || mappedInstance.visibility === false) {
           return true;
         }
         if (this.checkMaterial(child, mappedInstance) && mappedInstance) {
