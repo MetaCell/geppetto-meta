@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material';
 import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 
 const styles = () => ({
   container: {

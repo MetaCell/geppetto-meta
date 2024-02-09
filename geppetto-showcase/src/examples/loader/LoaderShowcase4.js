@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material';
 
 export default class LoaderShowcase4 extends Component {
   constructor (props) {

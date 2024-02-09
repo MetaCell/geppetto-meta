@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 import neuron from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from './assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
-import Button from "@material-ui/core/Button";
+import Button from "@material-ui/core";
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils"
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
-import { fade, withStyles } from '@material-ui/core/styles';
+import InputBase from '@mui/material/InputBase';
+import { fade, withStyles } from '@mui/material/styles';
 
 const styles = (theme) => ({
   search: {

@@ -1,11 +1,11 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
+import { withStyles } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Drawer from '@mui/material/Drawer';
 import DrawerContent from './DrawerContent';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material';
 import Search from './Search';
 import pages from '../pages/index'
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader'

@@ -3,10 +3,10 @@ import {
   createMuiTheme,
   responsiveFontSizes,
   MuiThemeProvider,
-} from '@material-ui/core/styles';
-import { blue, orange } from '@material-ui/core/colors';
+} from '@mui/material/styles';
+import { blue, orange } from '@mui/material/colors';
 import Main from './components/Main';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import CssBaseline from '@mui/material/CssBaseline';
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 

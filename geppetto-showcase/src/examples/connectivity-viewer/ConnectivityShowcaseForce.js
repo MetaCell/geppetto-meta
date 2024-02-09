@@ -5,7 +5,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import model from './model';
 import { Force } from '@metacell/geppetto-meta-ui/connectivity-viewer/layouts/Force';
 import ConnectivityComponent from '@metacell/geppetto-meta-ui/connectivity-viewer/ConnectivityComponent';
-import { withStyles } from '@material-ui/core';
+import { withStyles } from '@mui/material';
 
 const styles = {
   connectivity: {
