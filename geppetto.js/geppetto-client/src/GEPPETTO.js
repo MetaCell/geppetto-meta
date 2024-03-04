@@ -129,7 +129,7 @@ const EventsMapping = {
   [Events.Jupyter_geppetto_extension_ready]: EventManager.clientActions.JUPYTER_GEPPETTO_EXTENSION_READY,
 };
 
-export function initGeppetto(useWebsocket = true, loadStyle = true) {
+export function initGeppetto (useWebsocket = true, loadStyle = true) {
   if (!window.GEPPETTO_CONFIGURATION) {
     window.GEPPETTO_CONFIGURATION = {}
   }
