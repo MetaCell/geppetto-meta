@@ -131,7 +131,7 @@ export const widgets = (state: WidgetMap = {}, action) => {
           updatedWidgets[node.getId()].status = WidgetStatus.MAXIMIZED;
         } else if (parent.getType() === 'border') {
           updatedWidgets[node.getId()].status = WidgetStatus.MINIMIZED;
-        } else if (node.isVisible()) {
+        } else if (parent.getSelectedNode().getId() == node.getId()) {
           updatedWidgets[node.getId()].status = WidgetStatus.ACTIVE;
         } else {
           updatedWidgets[node.getId()].status = WidgetStatus.HIDDEN;
