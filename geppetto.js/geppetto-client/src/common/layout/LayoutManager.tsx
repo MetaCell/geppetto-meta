@@ -3,21 +3,15 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import { WidgetStatus, Widget, ComponentMap, TabsetPosition, IComponentConfig } from './model';
-import { withStyles, createStyles } from '@material-ui/core/styles'
+import {ComponentMap, IComponentConfig, Widget, WidgetStatus} from './model';
+import {createStyles, withStyles} from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
-import {widget2Node, isEqual, getWidget} from "./utils";
+import {getWidget, widget2Node} from "./utils";
 import * as GeppettoActions from '../actions';
 
-import {
-  layoutActions,
-  removeWidgetFromStore,
-  updateWidget,
-  setLayout,
-  updateLayout,
-} from "./actions";
+import {layoutActions, removeWidgetFromStore, setLayout, updateLayout,} from "./actions";
 
 import {MinimizeHelper} from "./helpers/MinimizeHelper";
 import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
@@ -116,7 +110,8 @@ class LayoutManager {
         widget2Node(widgetConfiguration),
         widgetConfiguration.panelName,
         DockLocation.CENTER,
-        widgetConfiguration.pos
+        widgetConfiguration.pos,
+        widgetConfiguration.status == WidgetStatus.ACTIVE
       )
     );
   }

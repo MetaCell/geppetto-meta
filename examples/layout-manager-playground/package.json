@@ -10,6 +10,7 @@
     "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
     "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
     "@mui/material": "^5.14.0",
+    "@mui/icons-material": "^5.14.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.38",
     "@types/react": "17.0.52",
