@@ -8,7 +8,7 @@ const ComponentFactory = {
     return this.componentsMap;
   },
 
-  addExistingComponent(componentType, component, override) {
+  addExistingComponent (componentType, component, override) {
     if (!(componentType in this.componentsMap)) {
       this.componentsMap[componentType] = [];
     }
@@ -26,7 +26,7 @@ const ComponentFactory = {
     this.componentsMap[componentType].push(component);
   },
 
-  removeExistingComponent(componentType, component) {
+  removeExistingComponent (componentType, component) {
     if (componentType in this.componentsMap) {
       var index = this.componentsMap[componentType].indexOf(component);
       if (index > -1) {
@@ -35,7 +35,7 @@ const ComponentFactory = {
     }
   },
 
-  getComponentById(componentType, componentId) {
+  getComponentById (componentType, componentId) {
     var componentsMap = this.componentsMap[componentType];
     for (var c in componentsMap) {
       if (componentId === componentsMap[c].id) {
@@ -45,7 +45,7 @@ const ComponentFactory = {
     return undefined;
   },
 
-  camelize(str) {
+  camelize (str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
       if (+match === 0) {
         return "";
@@ -62,7 +62,7 @@ const ComponentFactory = {
    * @param {Array} widgetsList
    * @returns {String} id - Available id for a widget
    */
-  getAvailableComponentId(componentType) {
+  getAvailableComponentId (componentType) {
     var index = 0;
     var id = "";
     var available;

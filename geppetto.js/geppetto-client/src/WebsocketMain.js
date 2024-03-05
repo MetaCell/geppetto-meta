@@ -12,7 +12,7 @@ import Events from './Events';
 /**
  *
  */
-function createChannel() {
+function createChannel () {
   // Change link from blank to self for GEPPETTO_CONFIGURATION.embedded environments
   if (GEPPETTO_CONFIGURATION.embedded && GEPPETTO_CONFIGURATION.embedderURL !== "/" && typeof handleRequest == 'undefined') {
     if ($.isArray(GEPPETTO_CONFIGURATION.embedderURL)) {
@@ -26,7 +26,7 @@ function createChannel() {
 /**
  * Initialize web socket communication
  */
-export function init() {
+export function init () {
   if (GEPPETTO_CONFIGURATION.contextPath == "/") {
     var host = urljoin(MessageSocket.protocol + window.location.host.replace("8081", "8080"), '/GeppettoServlet');
   } else {

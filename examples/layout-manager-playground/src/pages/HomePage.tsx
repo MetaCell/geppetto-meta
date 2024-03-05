@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useStore } from 'react-redux';
-import { Box, Button, CircularProgress, Stack, TextField } from "@mui/material"
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
+import { useDispatch, useStore, useSelector } from 'react-redux';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Stack,
+  TextField,
+  Tooltip,
+  InputLabel,
+  MenuItem,
+  FormControl
+} from "@mui/material"
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 // @ts-ignore
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 // @ts-ignore
-import { addWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
+import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
+// @ts-ignore
+import { Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 
 import { componentWidget } from "../widgets";
@@ -16,10 +28,13 @@ import { componentWidget } from "../widgets";
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
+  // @ts-ignore
+  const widgets = useSelector(state => state.widgets);
   const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
+    
   useEffect(() => {
     if (LayoutComponent === undefined) {
       const myManager = getLayoutManagerInstance();
@@ -27,10 +42,18 @@ const HomePage = () => {
         setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
       }
     }
-  }, [store])
+  }, [store, LayoutComponent])
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel)));
+  };
+
+
+  const activateWidget = (widget: Widget) => {
+    const updatedWidget = { ...widget };
+    updatedWidget.status = WidgetStatus.ACTIVE;
+    updatedWidget.panelName = panel;
+    dispatch(updateWidget(updatedWidget));
   };
 
 
@@ -41,16 +64,16 @@ const HomePage = () => {
         display: 'flex',
         padding: 2
       }}>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={name}  onChange={(event: any) => 
+        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event: any) =>
           setName(event.target.value as string)
-        } />
+        }/>
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select
             labelId="panel"
             value={panel}
             label="Panel"
-            onChange={(event: SelectChangeEvent) => 
+            onChange={(event: SelectChangeEvent) =>
               setPanel(event.target.value as string)
             }
           >
@@ -65,7 +88,7 @@ const HomePage = () => {
             labelId="color"
             value={color}
             label="Color"
-            onChange={(event: SelectChangeEvent) => 
+            onChange={(event: SelectChangeEvent) =>
               setColor(event.target.value as string)
             }
           >
@@ -78,6 +101,14 @@ const HomePage = () => {
         <Button variant="contained" onClick={addComponent}>
                     Add Component
         </Button>
+
+        {Object.values(widgets).map((widget: Widget, index: number) => (
+          <Tooltip key={index} title={widget.name}>
+            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status == WidgetStatus.ACTIVE}>
+              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
+            </IconButton>
+          </Tooltip>
+        ))}
 
       </Stack>
       <Box p={2} sx={{
