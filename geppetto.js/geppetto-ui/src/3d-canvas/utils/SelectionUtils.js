@@ -7,7 +7,8 @@ export function mapToCanvasData (data){
   return data.map(item => (
     {
       color: item.selected ? SELECTION_COLOR : item.color,
-      instancePath: item.instancePath
+      instancePath: item.instancePath,
+      visibility: item.visibility ? item.visibility : true
     }
   ))
 }
