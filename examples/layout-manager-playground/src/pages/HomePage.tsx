@@ -24,7 +24,6 @@ const HomePage = () => {
     if (LayoutComponent === undefined) {
       const myManager = getLayoutManagerInstance();
       if (myManager) {
-        myManager.enableMinimize = true
         setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
       }
     }
