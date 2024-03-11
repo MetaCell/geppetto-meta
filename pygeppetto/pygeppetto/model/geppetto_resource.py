@@ -18,7 +18,8 @@ class GeppettoResource(JsonResource):
                 variables.eClassifiers]
     chain = ChainMap(*packages)
 
-    def serialize_eclass(self, eclass):
+    @staticmethod
+    def serialize_eclass(eclass):
         return eclass.name
 
     @lru_cache()

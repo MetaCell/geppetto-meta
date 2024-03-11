@@ -46,7 +46,9 @@ def serialize(geppetto_model, onlySerialiseDelta=False):
     # we now create a resource to save the geppetto model and serialize it to a JSON string
     rset = ResourceSet()
     uri = BytesURI('geppetto_model.json')
-    rset.resource_factory['*'] = lambda uri: GeppettoResource(uri, indent=2)
+    JsonGeppettoResource = lambda uri: GeppettoResource(uri, indent=2)
+    rset.resource_factory['json'] = JsonGeppettoResource
+    rset.resource_factory['*'] = JsonGeppettoResource
     resource = rset.create_resource(uri)
     resource.append(geppetto_model)
     if onlySerialiseDelta:
@@ -61,5 +63,7 @@ def serialize(geppetto_model, onlySerialiseDelta=False):
 def load(json):
     rset = ResourceSet()
     uri = BytesURI('geppetto_model.json')
-    rset.resource_factory['*'] = lambda uri: GeppettoResource(uri, indent=2)
+    JsonGeppettoResource = lambda uri: GeppettoResource(uri, indent=2)
+    rset.resource_factory['json'] = JsonGeppettoResource
+    rset.resource_factory['*'] = JsonGeppettoResource
     resource = rset.create_resource(uri)
