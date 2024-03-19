@@ -1,5 +1,5 @@
-airspeed==0.5.16
-Deprecated==1.2.10
-multimethod==1.1
-pyecore==0.11.6
-requests==2.23.0
+airspeed==0.6.0
+Deprecated==1.2.14
+multimethod==1.11.2
+pyecore==0.15.1
+requests==2.31.0

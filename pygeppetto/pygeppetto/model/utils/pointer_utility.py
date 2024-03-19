@@ -2,7 +2,7 @@
 https://github.com/openworm/org.geppetto.model/blob/master/src/main/java/org/geppetto/model/util/java"""
 import sys
 
-from multimethod import multidispatch
+from multimethod import multimethod
 
 from ..exceptions import GeppettoModelException
 from ..model import GeppettoLibrary, GeppettoModel
@@ -14,8 +14,8 @@ from ..variables import Variable
 PointerUtility = sys.modules[__name__]
 
 
-@multidispatch
-def get_pointer(variable: Variable, type_, index):
+@multimethod
+def get_pointer(variable: Variable, type_: Type, index: int):
     pointerElement = PointerElement()
     pointerElement.index = index
     pointerElement.variable = variable
@@ -25,8 +25,8 @@ def get_pointer(variable: Variable, type_, index):
     return pointer
 
 
-@get_pointer.register(GeppettoModel, str)
-def get_pointer_model(model: GeppettoModel, instance_path):
+@get_pointer.register
+def get_pointer_model(model: GeppettoModel, instance_path: str):
     pointer = Pointer(path=instance_path)
 
     st = iter(instance_path.split("."))
@@ -68,7 +68,7 @@ def get_pointer_model(model: GeppettoModel, instance_path):
     return pointer
 
 
-@multidispatch
+@multimethod
 def get_type(model, path):
     st = iter(path.split('.'))
     lastType = None
@@ -100,7 +100,7 @@ def get_type(model, path):
         raise GeppettoModelException("Couldn't find a type for the path " + path)
 
 
-@get_type.register(str)
+@get_type.register
 def get_type_str(token: str):
     if "(" in token:
         return token[token.find("(") + 1: token.find(")")]
@@ -108,7 +108,7 @@ def get_type_str(token: str):
         return None
 
 
-@get_type.register(Pointer)
+@get_type.register
 def get_type_pointer(pointer: Pointer):
     return pointer.elements[-1].type
 
@@ -169,7 +169,7 @@ def find_library(model, libraryId):
 # 	 * @param pointer2
 # 	 * @return true if the two pointers point to the same variables and types
 #
-@multidispatch
+@multimethod
 def equals(pointer: Pointer, pointer2: Pointer):
     if not pointer == pointer2:
         if len(pointer.elements) != len(pointer2.elements):
@@ -190,7 +190,7 @@ def equals(pointer: Pointer, pointer2: Pointer):
 # 	 * @param pointer2
 # 	 * @return
 #
-@equals.register(PointerElement, PointerElement)
+@equals.register
 def equals_pointer(pointer: PointerElement, pointer2: PointerElement):
     sameType = pointer.type == pointer2.type or pointer.type == pointer2.type
     sameVar = pointer.variable == pointer2.variable or pointer.variable == pointer2.variable
@@ -202,12 +202,12 @@ def equals_pointer(pointer: PointerElement, pointer2: PointerElement):
 # 	 * @param pointer
 # 	 * @return
 #
-@multidispatch
+@multimethod
 def get_variable(pointer: Pointer):
     return pointer.elements[-1].variable
 
 
-@get_variable.register(str)
+@get_variable.register
 def get_variable_str(token: str) -> str:
     if "(" in token:
         return token[0: token.find("(")]
@@ -233,7 +233,7 @@ def get_instance_path(variable, type_):
     return variable.id + "(" + type_.id + ")"
 
 
-@multidispatch
+@multimethod
 def find_type(type_, variable: Variable) -> Type:
     if type_ is None:
         types = []
@@ -257,8 +257,8 @@ def find_type(type_, variable: Variable) -> Type:
         raise GeppettoModelException("The type {} was not found in the variable {}".format(type_, variable.id))
 
 
-@find_type.register(str, GeppettoLibrary)
-def find_type_library(typeId, library: GeppettoLibrary):
+@find_type.register
+def find_type_library(typeId: str, library: GeppettoLibrary):
     return next((type_ for type_ in library.types if type_.id == typeId), None)
 
 

@@ -1,15 +1,15 @@
 """ generated source for class URLReader """
 SERVER_ROOT_TOKEN = "SERVER_ROOT"
-from multimethod import multidispatch
+from multimethod import multimethod
 
 
-# 
+#
 # 	 * @param urlString
 # 	 * @param baseURL
 # 	 * @return
 #
-@multidispatch
-def getURL(urlString, baseURL):
+@multimethod
+def getURL(urlString: str, baseURL: str | None):
     """ generated source for method getURL """
     url = urlString
 
@@ -22,12 +22,12 @@ def getURL(urlString, baseURL):
     return getURL(url)
 
 
-# 
+#
 # 	 * @param urlString
 # 	 * @return
 #
-@getURL.register(object, str)
-def getURL_0(urlString):
+@getURL.register
+def getURL_0(urlString: str, baseURL: str | None=None):
     """ generated source for method getURL_0 """
     url = None
     if urlString.startsWith("https://") or urlString.startsWith("http://"):
