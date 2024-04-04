@@ -1,0 +1,82 @@
+openapi: 3.0.2
+info:
+    title: volumetric_viewer
+    version: 1.0.0
+    description: A simple rest api for a volumetric viewer
+    termsOfService: 'http://swagger.io/terms/'
+    contact:
+        name: Swagger API Team
+        url: 'http://swagger.io'
+        email: apiteam@swagger.io
+    license:
+        name: Apache 2.0
+        url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+    -
+        url: 'http://volumetric_viewer.swagger.io/api'
+paths:
+    /data:
+        get:
+            parameters:
+                -
+                    name: volume_name
+                    description: 'get a volume'
+                    schema:
+                        type: string
+                    in: query
+                    required: true
+            responses:
+                200:
+                    description: Return the volume name.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    file:
+                                        type: string
+            operationId: get_volume
+            summary: Get the obj file
+        post:
+            summary: send nrrd and nifti
+            operationId: generate_volume
+            responses:
+                200:
+                    description: Return the file requested.
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    path:
+                                        type: string
+                500:
+                    description: Internal server error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                file:
+                                    type: string
+                                    format: binary
+components:
+    schemas:
+        Error:
+            required:
+                - code
+                - message
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                message:
+                    type: string

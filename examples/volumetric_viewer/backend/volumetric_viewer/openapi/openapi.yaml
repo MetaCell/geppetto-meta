@@ -1,0 +1,104 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: apiteam@swagger.io
+    name: Swagger API Team
+    url: http://swagger.io
+  description: A simple rest api for a volumetric viewer
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: volumetric_viewer
+  version: 1.0.0
+servers:
+- url: http://volumetric_viewer.swagger.io/api
+paths:
+  /data:
+    get:
+      operationId: get_volume
+      parameters:
+      - description: get a volume
+        explode: true
+        in: query
+        name: volume_name
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+          description: Return the volume name.
+      summary: Get the obj file
+      x-openapi-router-controller: volumetric_viewer.controllers.default_controller
+    post:
+      operationId: generate_volume
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                file:
+                  format: binary
+                  type: string
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+          description: Return the file requested.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal server error
+      summary: send nrrd and nifti
+      x-openapi-router-controller: volumetric_viewer.controllers.default_controller
+components:
+  requestBodies:
+    inline_object:
+      content:
+        multipart/form-data:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+  schemas:
+    Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          type: string
+      required:
+      - code
+      - message
+    inline_response_200:
+      example:
+        file: file
+      properties:
+        file:
+          type: string
+    inline_object:
+      properties:
+        file:
+          format: binary
+          type: string
+      type: object
+    inline_response_200_1:
+      example:
+        path: path
+      properties:
+        path:
+          type: string
+    inline_response_500:
+      properties:
+        error:
+          type: string
