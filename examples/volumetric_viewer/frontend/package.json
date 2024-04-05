@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@metacell/geppetto-meta-client": "^1.2.8",
+    "@metacell/geppetto-meta-core": "^1.2.8",
+    "@metacell/geppetto-meta-ui": "^1.2.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
