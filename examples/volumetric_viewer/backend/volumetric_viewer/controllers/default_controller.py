@@ -3,6 +3,9 @@ import six
 import nrrd
 import nibabel as nib
 import numpy as np
+import uuid
+from flask import send_file
+from skimage import measure
 
 from volumetric_viewer.models.inline_response200 import InlineResponse200  # noqa: E501
 from volumetric_viewer.models.inline_response2001 import InlineResponse2001  # noqa: E501
@@ -22,9 +25,10 @@ def generate_volume(file=None):  # noqa: E501
     """
     
     volumetric_data = import_data(file)
-    write_obj(volumetric_data, 'nifti_test.obj', 3, 50)
+    new_file = str(uuid.uuid1())
+    write_obj(volumetric_data, './static/converted_files/' + new_file + '.obj', 3, 50)
     
-    return 'obj generated'
+    return './static/converted_files/' + new_file + '.obj'
 
 
 def get_volume(volume_name):  # noqa: E501
@@ -37,7 +41,8 @@ def get_volume(volume_name):  # noqa: E501
 
     :rtype: InlineResponse200
     """
-    return 'do some magic!'
+    
+    return send_file('../static/converted_files/' + volume_name, mimetype='multipart/form-data')
 
 def import_data(file):
 	'''import_data:
@@ -47,14 +52,14 @@ def import_data(file):
 		    -data : A 3d array containing volumetric data exported from nifti or nrrd file
 		This function checks wether the input is a nifti or a nrrd file and builds a 3D array out of it
 	'''
-	print(file.filename)
+	file.save("./static/original_files/" + file.filename)
 	if '.nii' in file.filename:
 		print('nifti')
-		nifti_file = nib.load(file.filename)
+		nifti_file = nib.load("./static/original_files/" + file.filename)
 		data = nifti_file.get_fdata()
 	if '.nrrd' in file.filename:
 		print('nrrd')
-		data, _ = nrrd.read(file.filename)
+		data, _ = nrrd.read("./static/original_files/" + file.filename)
 	return data
     
 def write_obj(volumetric_data, output_obj_path='output.obj', step_size=1, threshold=0):
