@@ -25,8 +25,7 @@ function loadInstances (){
   augmentInstancesArray(window.Instances);
 }
 
-function Page2(){
-
+function Viewer(){
 	return (
 	<>
 	<h1>Page 2</h1>
@@ -34,4 +33,4 @@ function Page2(){
 	)
 }
 
-export default Page2
+export default Viewer
