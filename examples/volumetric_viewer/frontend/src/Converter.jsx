@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
@@ -7,12 +7,14 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import DefaultApi from './rest/src/api/DefaultApi.js';
 import './App.css'
 
+	
 function Converter() {
-  var DefApi = new DefaultApi();
-  var nrrd;
-  var file_url;
-  var uuid = "undefined";
   const reader = new FileReader();
+  const DefApi = new DefaultApi();
+  const navigate = useNavigate();
+  let nrrd;
+  let file_url;
+  let uuid = "undefined";
   return (
     <>
       <div>
@@ -38,15 +40,17 @@ function Converter() {
       </div>
       <div className="getter">
         <input type="text" placeholder="uuid" onChange={(evt) => { nrrd = evt.target.files[0];}}/>
-        <button onClick={() => console.log('load obj')}>
+        <button onClick={() => sendFileToViewer(null, navigate)}>
         	Load OBJ
         </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
+}
+
+function sendFileToViewer(file_to_send, navigate){
+	console.log("load obj");
+	navigate("/Viewer");	
 }
 
 export default Converter
