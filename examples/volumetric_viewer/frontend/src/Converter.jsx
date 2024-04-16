@@ -33,8 +33,12 @@ function Converter() {
         </p>
       </div>
       <div className="card">
-      	<input type="text" placeholder="file url" onChange={(evt) => { file_url = evt.target.value;}}/>
-        <button onClick={() => uuid = DefApi.generateVolume(null)}>
+
+        <input type="file" placeholder="file url" onChange={
+          (evt) => {
+            file_url = evt.target.files[0];
+        }}/>
+        <button onClick={() => uuid = DefApi.generateVolume({'file': file_url})}>
           Convert
         </button>
       </div>
