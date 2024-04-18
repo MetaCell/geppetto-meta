@@ -273,7 +273,7 @@ class Canvas extends Component {
     }
   }
 
-  defaultCameraControlsHandler (action) {
+  defaultCameraControlsHandler (action, params) {
     const defaultProps = {
       incrementPan: {
         x: 0.01,
@@ -336,6 +336,14 @@ class Canvas extends Component {
         break;
       case cameraControlsActions.WIREFRAME:
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
+        break;
+      case cameraControlsActions.ADD_SLICE_DISPLAY:
+        this.threeDEngine.add3DPlane(params);
+        this.threeDEngine.updateControls();
+        break
+      case cameraControlsActions.MODIFY_SLICE_DISPLAY:
+        this.threeDEngine.modify3DPlane(params)
+        this.threeDEngine.updateControls();
         break;
       }
       //this.threeDEngine.updateControls();

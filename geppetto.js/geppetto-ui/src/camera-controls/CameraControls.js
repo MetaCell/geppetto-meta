@@ -14,6 +14,7 @@ import {
   faSearchPlus,
   faSearchMinus
 } from '@fortawesome/free-solid-svg-icons';
+import slice from './assets/slice.svg';
 
 import './CameraControls.less';
 
@@ -33,6 +34,8 @@ export const cameraControlsActions = {
   ZOOM_IN: 'zoomIn',
   ZOOM_OUT: 'zoomOut',
   WIREFRAME: 'wireframe',
+  ADD_SLICE_DISPLAY : 'addSliceDisplay',
+  MODIFY_SLICE_DISPLAY : 'modifySliceDisplay'
 };
 
 const styles = theme => ({ button: { color: theme.palette.button.main, }, });
@@ -133,6 +136,18 @@ class CameraControls extends Component {
         tooltip: 'Zoom out',
         icon: faSearchMinus,
       },
+      {
+        action: cameraControlsActions.ADD_SLICE_DISPLAY,
+        className: 'slice-display',
+        tooltip: 'Add slice display',
+        icon: slice,
+      },
+      {
+        action: cameraControlsActions.MODIFY_SLICE_DISPLAY,
+        className: 'slice-display',
+        tooltip: 'Modify slice display',
+        icon: slice,
+      }
     ];
 
     if (wireframeButtonEnabled) {
