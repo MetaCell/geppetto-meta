@@ -1,33 +1,33 @@
 import * as redux from "redux";
-import { callbacksMiddleware } from './middleware/geppettoMiddleware';
+import {callbacksMiddleware} from './middleware/geppettoMiddleware';
 
-import { initLayoutManager } from './layout/LayoutManager';
+import {initLayoutManager} from './layout/LayoutManager';
 import EventManager from './EventManager';
-import { layoutInitialState, LayoutState, layout, widgets } from './reducer/geppettoLayout';
-import geppettoClientReducer, { clientInitialState, ClientState } from './reducer/geppettoClient';
-import { WidgetMap, ComponentMap } from "./layout/model";
+import {layoutInitialState, LayoutState, layout, widgets} from './reducer/geppettoLayout';
+import geppettoClientReducer, {clientInitialState, ClientState} from './reducer/geppettoClient';
+import {WidgetMap, ComponentMap} from "./layout/model";
 import TabsetIconFactory from "./layout/TabsetIconFactory";
-import { reducerDecorator } from "./reducer/reducerDecorator"
-import { GeppettoAction } from "../common/actions";
+import {reducerDecorator} from "./reducer/reducerDecorator"
+import {GeppettoAction} from "../common/actions";
 
 declare var window: any;
 
-interface GeppettoState{
-  client: ClientState,
-  layout: LayoutState,
-  widgets: WidgetMap
+interface GeppettoState {
+    client: ClientState,
+    layout: LayoutState,
+    widgets: WidgetMap
 }
 
 const initialState: GeppettoState = {
-  client: clientInitialState,
-  layout: layoutInitialState,
-  widgets: {}
+    client: clientInitialState,
+    layout: layoutInitialState,
+    widgets: {}
 };
 
 const staticReducers = {
-  client: geppettoClientReducer,
-  layout,
-  widgets
+    client: geppettoClientReducer,
+    layout,
+    widgets
 }
 
 // Use the below for redux debugging with stack trace
@@ -35,23 +35,22 @@ const staticReducers = {
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || redux.compose;
 
 
-export function createStore (
+export function createLayoutAndStore(
   reducers: redux.ReducersMapObject,
   state: any,
   enhancers: redux.Middleware[],
-  layout: {iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap, isMinimizeEnabled?: boolean}={componentMap: {}}): redux.Store<any, GeppettoAction> {
-
+  layout: { iconFactory?: TabsetIconFactory, baseLayout?: LayoutState, componentMap: ComponentMap, isMinimizeEnabled?: boolean } = {componentMap: {}}): { store: redux.Store<any, GeppettoAction>, layoutManager: ReturnType<typeof initLayoutManager> } {
   const layoutManager = initLayoutManager(layout.baseLayout || layoutInitialState, layout.componentMap, layout.iconFactory, layout.isMinimizeEnabled || false);
   const allMiddlewares = [...enhancers, callbacksMiddleware, layoutManager.middleware];
 
   const store = redux.createStore(
     reducerDecorator(redux.combineReducers({...staticReducers, ...reducers})),
-    {...initialState, ...state },
+    {...initialState, ...state},
     storeEnhancers(redux.applyMiddleware(...allMiddlewares))
   );
   EventManager.setStore(store);
 
-  return store;
+    return {store: store, layoutManager: layoutManager};
 }
 
-export default createStore;
+export default createLayoutAndStore;

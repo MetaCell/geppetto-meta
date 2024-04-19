@@ -1,2 +1,2 @@
-export { createStore } from './store';
+export { createLayoutAndStore } from './store';
 export * from './layout';
