@@ -27,8 +27,8 @@ def generate_volume(file=None):  # noqa: E501
     volumetric_data = import_data(file)
     new_file = str(uuid.uuid1())
     write_obj(volumetric_data, './static/converted_files/' + new_file + '.obj', 3, 50)
-    
-    return './static/converted_files/' + new_file + '.obj'
+    print(new_file + '.obj')
+    return { 'path' : './static/converted_files/' + new_file + '.obj'}
 
 
 def get_volume(volume_name):  # noqa: E501

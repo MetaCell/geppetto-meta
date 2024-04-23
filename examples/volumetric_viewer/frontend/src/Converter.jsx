@@ -14,7 +14,15 @@ function Converter() {
   const navigate = useNavigate();
   let nrrd;
   let file_url;
-  let uuid = "undefined";
+  let value = "undefined";
+  const [uuid, setUuid] = useState(value);
+  
+ function convertVolume(){
+  	const myPromise = new Promise(() => {
+  		value = (DefApi.generateVolume({'file': file_url}));
+  	});
+  	myPromise.then(setUuid(value.path));
+  }
   return (
     <>
       <div>
@@ -38,13 +46,13 @@ function Converter() {
           (evt) => {
             file_url = evt.target.files[0];
         }}/>
-        <button onClick={() => uuid = DefApi.generateVolume({'file': file_url})}>
+        <button onClick={convertVolume}>
           Convert
         </button>
       </div>
       <div className="getter">
-        <input type="text" placeholder="uuid" onChange={(evt) => { nrrd = evt.target.files[0];}}/>
-        <button onClick={() => sendFileToViewer(null, navigate)}>
+        <input type="text" placeholder="uuid" onChange={(evt) => { nrrd = evt.target.value;}}/>
+        <button onClick={() => sendFileToViewer(nrrd, DefApi, navigate)}>
         	Load OBJ
         </button>
       </div>
@@ -52,8 +60,9 @@ function Converter() {
   )
 }
 
-function sendFileToViewer(file_to_send, navigate){
+function sendFileToViewer(file_to_send, DefApi, navigate){
 	console.log("load obj");
+	DefApi.getVolume(file_to_send);
 	navigate("/Viewer");	
 }
 

@@ -12,7 +12,11 @@ import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import DefaultApi from './rest/src/api/DefaultApi.js';
 import './App.css'
+import ca1_model_json from './ca1_model.json';
+import { connect } from 'react-redux';
 
+
+//const ca1_model_json = require('./resources/ca1_model.json');
 
 const instance1spec = {
   "eClass": "SimpleInstance",
@@ -24,6 +28,10 @@ const instance1spec = {
     'gltf': null
   }
 }
+//const ca1_model_json = require('./resources/ca1_model.json');
+
+const INSTANCE_NAME = 'network_CA1PyramidalCell';
+
 const useStyles = makeStyles(() => ({
     canvasContainer: {
         height: '100%',
@@ -43,17 +51,7 @@ const COLORS = [
     { r: 1, g: 0.41, b: 0.71, a: 1 },
 ];
 
-
-
-function loadInstances (){
-  ModelFactory.cleanModel();
-  const instance1 = new SimpleInstance(instance1spec)
-  window.Instances = [instance1]
-  augmentInstancesArray(window.Instances);
-}
-
-function Viewer(){
-
+function Viewer() {
     const style = useStyles();
     const [data, setData] = React.useState([
         {
@@ -87,6 +85,17 @@ function Viewer(){
     const tooltipRef = React.useRef(null);
 
 
+    /*React.useEffect(() => {
+        setShowLoader(true); //temporary
+
+        const model = ca1_model_json;
+        //window.GEPPETTO.Manager.loadModel(model);
+        setHasModelLoaded(true);
+        setShowLoader(false);
+        //window.Instances.getInstance(INSTANCE_NAME);
+
+    }, []);*/
+
     const onMount = (scene) => {
         console.log('scene', scene);
     }
@@ -109,15 +118,35 @@ function Viewer(){
 
     const canvasData = mapToCanvasData(data);
     let camOptions = cameraOptions;
-	const navigate = useNavigate();
-	return (
-	<>
-	      <h1>Page 2</h1>
-		<button onClick={() => navigate("/")}>
-			Back
-		</button>
-    	</>
+
+
+    return (
+        showLoader ? <Loader active={true} /> :
+        hasModelLoaded ? (
+            <div className={style.canvasContainer}>
+                <div id={'canvas-tooltips-container'}>
+                    <div>
+                        <CanvasTooltip
+                            ref={tooltipRef}
+                        />
+                        
+                    </div>
+                </div>
+            
+                <div className={style.canvasContainer}>
+                    <Canvas
+                        ref={ref}
+                        data={canvasData}
+                        cameraOptions={camOptions}
+                        backgroundColor={0x505050}
+                        onSelection={onSelection}
+                        hoverListeners={[hoverListener]}
+                        onMount={onMount}
+                    />
+                </div>
+            </div>
+        ) : null
     )
 }
 
-export default Viewer
+export default Viewer;
