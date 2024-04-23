@@ -4,6 +4,8 @@ import nrrd
 import nibabel as nib
 import numpy as np
 import uuid
+import pathlib
+import platform
 from flask import send_file
 from skimage import measure
 
@@ -19,7 +21,11 @@ def generate_volume_logic(file=None):  # noqa: E501
 
     :rtype: InlineResponse2001
     """
-    
+    print(platform.system())
+    #if platform.system() == 'Linux':
+    origin_path = './static/converted_files/'
+    if platform.system() == 'Darwin':
+    	origin_path = '../../static/converted_files/'
     volumetric_data = import_data(file)
     new_file = str(uuid.uuid1())
     write_obj(volumetric_data, './static/converted_files/' + new_file + '.obj', 3, 50)
