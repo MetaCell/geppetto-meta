@@ -1,3 +1,4 @@
+import os
 import connexion
 import six
 import nrrd
@@ -21,17 +22,15 @@ def generate_volume_logic(file=None):  # noqa: E501
 
     :rtype: InlineResponse2001
     """
-    print(platform.system())
-    #if platform.system() == 'Linux':
-    origin_path = './static/converted_files/'
-    if platform.system() == 'Darwin':
-    	origin_path = '../../static/converted_files/'
-    volumetric_data = import_data(file)
+    abs_path = os.path.dirname(os.path.realpath(__file__))
+    static_path = os.path.join(abs_path, '../static');
+    converted_path = os.path.join(static_path, 'converted_files');
+    originals_path = os.path.join(static_path, 'original_files');
+    volumetric_data = import_data(file, originals_path)
     new_file = str(uuid.uuid1())
-    write_obj(volumetric_data, './static/converted_files/' + new_file + '.obj', 3, 50)
+    write_obj(volumetric_data, converted_path, new_file + '.obj', 3, 50)
     print(new_file + '.obj')
-    path = './static/converted_files/' + new_file + '.obj'
-    return { 'path' : path}
+    return { 'path' : new_file}
 
 
 def get_volume_logic(volume_name):  # noqa: E501
@@ -47,7 +46,7 @@ def get_volume_logic(volume_name):  # noqa: E501
     
     return send_file('../static/converted_files/' + volume_name, mimetype='multipart/form-data')
 
-def import_data(file):
+def import_data(file, original_folder=None):
 	'''import_data:
 		Input:
 		    -filename : Path to the file and name of the file to import (/path/to/the/file/filename)
@@ -55,20 +54,22 @@ def import_data(file):
 		    -data : A 3d array containing volumetric data exported from nifti or nrrd file
 		This function checks wether the input is a nifti or a nrrd file and builds a 3D array out of it
 	'''
-	file.save("./static/original_files/" + file.filename)
+	file.save(os.path.join(original_folder, file.filename))
 	if '.nii' in file.filename:
 		print('nifti')
-		nifti_file = nib.load("./static/original_files/" + file.filename)
+		nifti_file = nib.load(os.path.join(original_folder, file.filename))
 		data = nifti_file.get_fdata()
 	if '.nrrd' in file.filename:
 		print('nrrd')
-		data, _ = nrrd.read("./static/original_files/" + file.filename)
+		data, _ = nrrd.read(os.path.join(original_folder, file.filename))
 	return data
-    
-def write_obj(volumetric_data, output_obj_path='output.obj', step_size=1, threshold=0):
+
+
+def write_obj(volumetric_data, converted_path=None, output_obj_path='output.obj', step_size=3, threshold=50):
 	'''write_obj:
 		Input:
 			-volumetric_data : a 3D array extracted from nifti or nrrd file
+			-converted_path : the path to the folder where the OBJ file will be written
 			-output_obj_path : the path the OBJ file to create
 			-step_size : the step_size used by the marching cube algorithm, single step can cause performance issues, big steps can decrease the
 			resolution significantly
@@ -80,10 +81,10 @@ def write_obj(volumetric_data, output_obj_path='output.obj', step_size=1, thresh
 	vertices, faces, normals, values = measure.marching_cubes(volumetric_copy, 0, step_size=step_size)
 
 	point_str, mesh_str = vertex_face_value_to_str(vertices, faces, values)
-	write_vertices_meshes(point_str, mesh_str, output_obj_path)
+	write_vertices_meshes(point_str, mesh_str, os.path.join(converted_path, output_obj_path))
 
 
-def vertex_face_value_to_str(vertices, faces, values):    
+def vertex_face_value_to_str(vertices, faces, values):
 	'''vertex_face_value_to_str:
 		Input:
 			-vertices : list of vertices extracted from marching cube algorithm
@@ -101,8 +102,9 @@ def vertex_face_value_to_str(vertices, faces, values):
 		point_str = point_str + 'v ' + str(vertex[0]) + ' ' + str(vertex[1]) + ' ' + str(vertex[2]) + ' ' + str(value) + '\n'
 		#face start with index 0, OBJ reads from 1
 		mesh_str = mesh_str + 'f ' + str(face[0]+1) + ' ' + str(face[1]+1) + ' ' + str(face[2]+1) + '\n'
-	return point_str, mesh_str  
-    
+	return point_str, mesh_str
+
+
 def write_vertices_meshes(vertices, meshes, file):
 	'''write_vertices_meshes:
 		Input:
@@ -115,4 +117,3 @@ def write_vertices_meshes(vertices, meshes, file):
 		obj_file.write(vertices)
 		obj_file.write(meshes)
 	print('done writing')
-

@@ -2,14 +2,14 @@ import { useState } from 'react'
 import {useNavigate} from "react-router-dom";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import Resources from '@metacell/geppetto-meta-core/Resources';
+// import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
+// import Resources from '@metacell/geppetto-meta-core/Resources';
 import DefaultApi from './rest/src/api/DefaultApi.js';
 import './App.css'
 
 	
 function Converter() {
-  const reader = new FileReader();
+  // const reader = new FileReader();
   const DefApi = new DefaultApi();
   const navigate = useNavigate();
   let nrrd;
@@ -18,11 +18,14 @@ function Converter() {
   const [uuid, setUuid] = useState(value);
   
  function convertVolume(){
-  	const myPromise = new Promise(() => {
-  		value = (DefApi.generateVolume({'file': file_url}));
-  	});
-  	myPromise.then(setUuid(value.path));
+  DefApi.generateVolume({'file': file_url}).then((response) => {
+    console.log(response);
+    setUuid(response.data);
+  }).catch((error) => {
+    console.error(error);
+  });
   }
+
   return (
     <>
       <div>
@@ -53,7 +56,7 @@ function Converter() {
       <div className="getter">
         <input type="text" placeholder="uuid" onChange={(evt) => { nrrd = evt.target.value;}}/>
         <button onClick={() => sendFileToViewer(nrrd, DefApi, navigate)}>
-        	Load OBJ
+          Load OBJ
         </button>
       </div>
     </>
@@ -63,7 +66,7 @@ function Converter() {
 function sendFileToViewer(file_to_send, DefApi, navigate){
 	console.log("load obj");
 	DefApi.getVolume(file_to_send);
-	navigate("/Viewer");	
+	navigate("/Viewer");
 }
 
 export default Converter
