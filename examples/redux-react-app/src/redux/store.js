@@ -23,7 +23,7 @@ const store = createStore(
   reducers,
   INIT_STATE,
   [exampleMiddleware],
-  { baseLayout, componentMap }
+  { baseLayout, componentMap, isMinimizeEnabled: true }
 )
 
 export default store;

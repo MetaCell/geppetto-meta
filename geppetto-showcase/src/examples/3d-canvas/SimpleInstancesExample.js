@@ -43,7 +43,7 @@ function loadInstances (){
 
 function getProxyInstances () {
   return window.Instances.map(i => (
-    { instancePath: i.getId(), color: { r: 0, g:1, b: 0, a:1 } }))
+    { instancePath: i.getId(), color: { r: 0, g:1, b: 0, a:1 }, visibility: true }))
 }
 
 const styles = () => ({

@@ -29,12 +29,14 @@ export default class ThreeDEngine {
     backgroundColor,
     pickingEnabled,
     linesThreshold,
+    renderingThreshold,
     onSelection,
     selectionStrategy,
     onHoverListeners,
     onEmptyHoverListener,
     preserveDrawingBuffer,
-    dracoDecoderPath
+    dracoDecoderPath,
+    renderingTheshold
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
@@ -46,7 +48,7 @@ export default class ThreeDEngine {
     this.mouse = { x: 0, y: 0 };
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
-    this.meshFactory = new MeshFactory(this.scene, linesThreshold, cameraOptions.depthWrite, 300, 1,
+    this.meshFactory = new MeshFactory(this.scene, linesThreshold, renderingThreshold, cameraOptions.depthWrite, 300, 1,
         null, dracoDecoderPath, null);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
@@ -245,85 +247,82 @@ export default class ThreeDEngine {
           / this.renderer.domElement.width
         ) * 2 - 1;
 
-      if (event.button === 0) {
-        // only for left click
-        if (this.pickingEnabled) {
-          const intersects = this.getIntersectedObjects();
+      if (this.pickingEnabled) {
+        const intersects = this.getIntersectedObjects();
 
-          if (intersects.length > 0) {
-            // sort intersects
-            const compare = function (a, b) {
-              if (a.distance < b.distance) {
-                return -1;
-              }
-              if (a.distance > b.distance) {
-                return 1;
-              }
-              return 0;
+        if (intersects.length > 0) {
+          // sort intersects
+          const compare = function (a, b) {
+            if (a.distance < b.distance) {
+              return -1;
             }
-            intersects.sort(compare);
+            if (a.distance > b.distance) {
+              return 1;
+            }
+            return 0;
           }
-
-          let selectedMap = {};
-          // Iterate and get the first visible item (they are now ordered by proximity)
-          for (let i = 0; i < intersects.length; i++) {
-            // figure out if the entity is visible
-            let instancePath = '';
-            let externalMeshId = null;
-            let geometryIdentifier = '';
-            if (
-              Object.prototype.hasOwnProperty.call(
-                intersects[i].object,
-                'instancePath'
-              )
-            ) {
-              instancePath = intersects[i].object.instancePath;
-              geometryIdentifier
-                  = intersects[i].object.geometryIdentifier;
-            } else if (Object.prototype.hasOwnProperty.call(
-                intersects[i].object.parent,
-                'instancePath'
-            )) {
-              instancePath = intersects[i].object.parent.instancePath;
-              geometryIdentifier
-                  = intersects[i].object.parent.geometryIdentifier;
-            }
-            else {
-              externalMeshId = intersects[i].object.uuid
-              geometryIdentifier = null
-            }
-
-            if (
-              (instancePath != null
-                    && Object.prototype.hasOwnProperty.call(
-                      this.meshFactory.meshes,
-                      instancePath
-                    ))
-                || Object.prototype.hasOwnProperty.call(
-                  this.meshFactory.splitMeshes,
-                  instancePath
-                )
-            ) {
-              if (!(instancePath in selectedMap)) {
-                selectedMap[instancePath] = {
-                  ...intersects[i],
-                  geometryIdentifier: geometryIdentifier,
-                  distanceIndex: i,
-                };
-              }
-            }
-            if (externalMeshId != null) {
-              if (!(externalMeshId in selectedMap)) {
-                selectedMap[externalMeshId] = {
-                  ...intersects[i],
-                  distanceIndex: i,
-                };
-              }
-            }
-          }
-          this.requestFrame();
-          this.onSelection(this.selectionStrategy(selectedMap))
+          intersects.sort(compare);
         }
+
+        let selectedMap = {};
+        // Iterate and get the first visible item (they are now ordered by proximity)
+        for (let i = 0; i < intersects.length; i++) {
+          // figure out if the entity is visible
+          let instancePath = '';
+          let externalMeshId = null;
+          let geometryIdentifier = '';
+          if (
+            Object.prototype.hasOwnProperty.call(
+              intersects[i].object,
+              'instancePath'
+            )
+          ) {
+            instancePath = intersects[i].object.instancePath;
+            geometryIdentifier
+                = intersects[i].object.geometryIdentifier;
+          } else if (Object.prototype.hasOwnProperty.call(
+              intersects[i].object.parent,
+              'instancePath'
+          )) {
+            instancePath = intersects[i].object.parent.instancePath;
+            geometryIdentifier
+                = intersects[i].object.parent.geometryIdentifier;
+          }
+          else {
+            externalMeshId = intersects[i].object.uuid
+            geometryIdentifier = null
+          }
+
+          if (
+            (instancePath != null
+                  && Object.prototype.hasOwnProperty.call(
+                    this.meshFactory.meshes,
+                    instancePath
+                  ))
+              || Object.prototype.hasOwnProperty.call(
+                this.meshFactory.splitMeshes,
+                instancePath
+              )
+          ) {
+            if (!(instancePath in selectedMap)) {
+              selectedMap[instancePath] = {
+                ...intersects[i],
+                geometryIdentifier: geometryIdentifier,
+                distanceIndex: i,
+              };
+            }
+          }
+          if (externalMeshId != null) {
+            if (!(externalMeshId in selectedMap)) {
+              selectedMap[externalMeshId] = {
+                ...intersects[i],
+                distanceIndex: i,
+              };
+            }
+          }
+        }
+        this.requestFrame();
+        this.onSelection(this.selectionStrategy(selectedMap), event)
       }
     }
   }
@@ -432,7 +431,7 @@ export default class ThreeDEngine {
     const toRemove = this.scene.children.filter(child => {
       const mappedInstance = this.instancesMap.get(child.instancePath);
       if (child.instancePath !== undefined) {
-        if (!mappedInstance || !mappedInstance.visibility) {
+        if (!mappedInstance || mappedInstance.visibility === false) {
           return true;
         }
         if (this.checkMaterial(child, mappedInstance) && mappedInstance) {

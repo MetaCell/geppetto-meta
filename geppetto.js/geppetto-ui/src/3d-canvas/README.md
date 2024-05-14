@@ -48,6 +48,14 @@ Multiple Instances Example
 3d-canvas/AuditoryCortexExample
 ```
 
+### Limited 3D Canvas Auditory Cortex Example
+
+Limited 3D Canvas
+
+```
+3d-canvas/LimitedAuditoryCortexExample
+```
+
 ### Simple Instances Example
 
 Simple Instances Example

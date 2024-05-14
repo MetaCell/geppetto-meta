@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-ui",
-  "version": "1.1.0",
+  "version": "1.2.8",
   "description": "React components from geppetto-meta to create neuroscience applications and visualize data.",
   "repository": {
     "type": "git",
@@ -60,9 +60,10 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
+    "@fortawesome/fontawesome-free": "^6.4.0",
     "@material-ui/core": "4.11.4",
     "@material-ui/icons": "^4.11.2",
-    "@metacell/geppetto-meta-core": "1.1.0",
+    "@metacell/geppetto-meta-core": "1.2.8",
     "aframe": "<1.1.0",
     "aframe-slice9-component": ">=1.0.0",
     "ami.js": ">=0.32.0",
@@ -71,6 +72,7 @@
     "d3": "7.6.1",
     "d3-plugins-dist": "^3.2.0",
     "file-saver": "^2.0.2",
+    "griddle-react": "^1.13.1",
     "html-to-image": "^1.9.0",
     "jszip": "^3.2.1",
     "mathjs": "^3.5.3",

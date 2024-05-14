@@ -41,7 +41,7 @@ export const MyComponent = (props) => {
             <h1>Robert Frost</h1>
             <p>{text}</p>
             <div style={{ display: 'flex', justifyContent: 'center'}}>
-                <GraphVisualizationShowcase />
+               
             </div>
         </div>
     )
