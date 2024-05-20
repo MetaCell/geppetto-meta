@@ -125,7 +125,7 @@ export const widgets = (state: WidgetMap = {}, action) => {
           // want to restore previous position when activated
           updatedWidgets[node.getId()].pos = parseInt(i)
         }
-        
+
         updatedWidgets[node.getId()].panelName = parent.getId(); 
         if (parent.isMaximized() && node.isVisible()) {
           updatedWidgets[node.getId()].status = WidgetStatus.MAXIMIZED;
@@ -136,9 +136,9 @@ export const widgets = (state: WidgetMap = {}, action) => {
         } else {
           updatedWidgets[node.getId()].status = WidgetStatus.HIDDEN;
         }
-      }    
+      }
     }
-    
+
     return updatedWidgets
   }
 
