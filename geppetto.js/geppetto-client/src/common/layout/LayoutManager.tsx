@@ -319,8 +319,8 @@ class LayoutManager {
       case GeppettoActions.IMPORT_APPLICATION_STATE: {
         const incomingState = action.data.redux.layout;
         this.model = FlexLayout.Model.fromJson(incomingState);
+        this.minimizeHelper = new MinimizeHelper(this.minimizeHelper.getIsMinimizeEnabled(), this.model)
         this.importSession(action.data.sessions);
-
         nextSetLayout = false;
       }
       default: {
@@ -332,7 +332,6 @@ class LayoutManager {
       next(action);
     }
     if (nextSetLayout) {
-
       this.fixRowRecursive(this.model._root)
       next(updateLayout(this.model));
     }
