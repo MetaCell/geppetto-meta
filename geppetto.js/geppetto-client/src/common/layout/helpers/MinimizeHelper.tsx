@@ -24,6 +24,10 @@ export class MinimizeHelper {
         this.store = null;
     }
 
+    getIsMinimizeEnabled() {
+        return this.isMinimizeEnabled;
+    }
+
     setStore(store: Store<any>) {
         this.store = store;
     }

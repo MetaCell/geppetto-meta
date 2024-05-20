@@ -25,46 +25,64 @@ export default class ConnectivityToolbar extends Component {
   }
 
   getCustomElements () {
+    const { id, deckHandler, layout, sortOptionsHandler, options } = this.props;
+
+    const { menuButtonStyles, deckStyles } = options
+
     const sortOptions = {
       'id': 'By entity name',
       'pre_count': 'By # pre',
       'post_count': 'By # post'
     };
+
     const deck = (<ConnectivityDeck
-      key={this.props.id + '_deck'}
-      id={this.props.id + '_deck'}
+      key={id + '_deck'}
+      id={id + '_deck'}
       ref={ deck => {
         this.deck = deck
       } }
-      handler={this.props.deckHandler}
+      handler={deckHandler}
+      styles={deckStyles}
     />)
     const customElements = [deck];
 
-    if (this.props.layout.hasSelect()) {
+    if (layout.hasSelect()) {
       customElements.push((
         <MenuButton
-          key={this.props.id + '_select'}
-          id={this.props.id + '_select'}
+          key={id + '_select'}
+          id={id + '_select'}
           options={sortOptions}
-          handler = {this.props.sortOptionsHandler}
+          handler = {sortOptionsHandler}
           defaultOption = "id"
           tooltip={"Order by"}
           icon={faSort}
+          buttonStyles={menuButtonStyles}
         />));
     }
     return customElements;
   }
 
   render () {
-    const { toolbarVisibility } = this.props;
+    const { toolbarVisibility, options } = this.props;
     const visibility = toolbarVisibility ? "visible" : "hidden";
 
     const customElements = this.getCustomElements();
     const customButtons = this.getCustomButtons();
 
+    const toolbar = options && options.instance ? (
+      <options.instance
+        buttons={customButtons}
+        {...options.props}
+      />
+    ) : <CustomToolbar buttons={customButtons} elements={customElements}
+      containerStyles={options?.containerStyles}
+      toolBarClassName={options?.toolBarClassName}
+      innerDivStyles={options?.innerDivStyles}
+      buttonStyles={options?.buttonStyles}/>;
+
     return (
       <span style={{ visibility: visibility }}>
-        <CustomToolbar buttons={customButtons} elements={customElements}/>
+        {toolbar}
       </span>
     )
   }

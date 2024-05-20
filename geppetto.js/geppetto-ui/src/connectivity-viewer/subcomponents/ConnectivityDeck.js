@@ -16,21 +16,25 @@ import ForceImg from '../images/force.svg';
 import HiveImg from '../images/hive.svg';
 import ChordImg from '../images/chord.svg';
 
+
+const defaultColor = '#fc6320'
+const getColor = props => props?.styles?.color ? props?.styles?.color : defaultColor
+
 const styles = theme => ({
-  cardDeckWrapper: { 
-    border:0,
+  cardDeckWrapper: {
+    border: 0,
     outline: 0,
     marginRight: theme.spacing(-2),
     marginLeft: theme.spacing(-2)
   },
-  cardWrapperTitle: {
-    fontSize:"40px",
+  cardWrapperTitle: props => ({
+    fontSize: "40px",
     fontWeight: "300",
     marginTop: theme.spacing(10),
-    color: theme.palette.button.main,
+    color: getColor(props),
     textAlign: "center"
-  },
-  cardDeck:{
+  }),
+  cardDeck: {
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(10),
     marginLeft: theme.spacing(10),
@@ -38,40 +42,44 @@ const styles = theme => ({
     tableLayout: "fixed",
     borderSpacing: "15px 0"
   },
-  card: {
+  card: props => ({
     borderRadius: 0,
-    border:0,
-    cursor:"pointer",
-    padding:theme.spacing(2),
+    border: 0,
+    cursor: "pointer",
+    padding: theme.spacing(2),
     background: theme.palette.background.default,
     display: "table-cell",
     width: "1%",
     verticalAlign: "top",
-    "&:hover":{
-      border:"1px solid",
-      borderColor:theme.palette.button.main
+    "&:hover": {
+      border: "1px solid",
+      borderColor: getColor(props),
     }
-  },
+  }),
   img: {
     display: 'block',
     margin: 'auto',
     width: '100px',
   },
   cardText: { textAlign: 'center', color: "white" },
-  cardTitle: { marginTop: theme.spacing(1), color: theme.palette.button.main, marginBottom:"0.5em" },
+  cardTitle: props => ({
+    marginTop: theme.spacing(1),
+    color: getColor(props),
+    marginBottom: "0.5em"
+  }),
   cardAction: { height: "100%" },
-  cardImgTopCenterBlock:{
+  cardImgTopCenterBlock: {
     display: "block",
     marginLeft: "auto",
     marginRight: "auto",
     borderRadius: "4px 4px 0 0"
   },
   cardActionDisabled: { height: "100%", opacity: "0.2" },
-  button: {
+  button: props => ({
     padding: theme.spacing(1),
     top: theme.spacing(0),
-    color: theme.palette.button.main
-  },
+    color: getColor(props),
+  }),
 });
 
 class ConnectivityDeck extends Component {
@@ -97,8 +105,8 @@ class ConnectivityDeck extends Component {
       {
         title: "Hive plot",
         subtitle: "Axes correspond to node categories, arcs to connections."
-            + "The position of each node along an axis is determined by "
-            + "the total number of connections it makes.",
+                    + "The position of each node along an axis is determined by "
+                    + "the total number of connections it makes.",
         handler: this.props.handler.bind(this, new Hive(true)),
         disabled: false,
         img: HiveImg
@@ -106,9 +114,9 @@ class ConnectivityDeck extends Component {
       {
         title: "Chord diagram",
         subtitle: "Circular slices correspond to node categories, chords to "
-            + "connections. A gap between slice and chord indicate an "
-            + "incoming connection. Use ctrl(shift) + mouse hover to "
-            + "hide incoming(outgoing) connections from a population.",
+                    + "connections. A gap between slice and chord indicate an "
+                    + "incoming connection. Use ctrl(shift) + mouse hover to "
+                    + "hide incoming(outgoing) connections from a population.",
         handler: this.props.handler.bind(this, new Chord(false)),
         disabled: false,
         img: ChordImg
@@ -143,12 +151,12 @@ class ConnectivityDeck extends Component {
                     className={disabled ? classes.cardActionDisabled : classes.cardAction}
                     onClick={() => {
                       handler();
-                      this.setState({ open:false })
+                      this.setState({ open: false })
                     }}
                     disabled={disabled}
                   >
                     <CardContent className={classes.cardText}>
-                      <img className={classes.cardImgTopCenterBlock} src={img} />
+                      <img className={classes.cardImgTopCenterBlock} src={img}/>
                       <Typography className={classes.cardTitle} variant="h5">
                         {title}
                       </Typography>
@@ -166,4 +174,5 @@ class ConnectivityDeck extends Component {
     )
   }
 }
+
 export default withStyles(styles)(ConnectivityDeck);

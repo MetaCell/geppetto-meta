@@ -361,8 +361,8 @@ class Canvas extends Component {
       captureInstance = captureControls && captureControls.instance ? (
         <captureControls.instance
           ref={this.captureControlsRef}
-          captureControlsHandler={captureControlsHandler}
           {...captureControls.props}
+          captureControlsHandler={captureControlsHandler}
         />
       )
         : null;
@@ -373,8 +373,8 @@ class Canvas extends Component {
           {
             <cameraControls.instance
               ref={this.cameraControls}
-              cameraControlsHandler={cameraControlsHandler}
               {...cameraControls.props}
+              cameraControlsHandler={cameraControlsHandler}
             />
           }
           {captureInstance}
@@ -405,7 +405,7 @@ Canvas.defaultProps = {
     },
     cameraControls: {
       instance: CameraControls,
-      props: { wireframeButtonEnabled: false, },
+      props: { wireframeButtonEnabled: false, cameraControlsHandler: null, buttonStyles: { color: '#fc6320', }},
       incrementsPan: {
         x: 0.05,
         y: 0.05,
@@ -427,7 +427,7 @@ Canvas.defaultProps = {
   captureOptions: {
     captureControls: {
       instance: null,
-      props: {},
+      props: { captureControlsHandler: null, buttonStyles: { color: '#fc6320', }},
       incrementPan: {
         x: 0.01,
         y: 0.01
@@ -548,7 +548,20 @@ Canvas.propTypes = {
       /**
        * CameraControls props
        */
-      props: PropTypes.shape({ wireframeButtonEnabled: PropTypes.bool, }),
+      props: PropTypes.shape({
+          /**
+           * Boolean to enable/disable wireframe button
+           */
+          wireframeButtonEnabled: PropTypes.bool,
+          /**
+           * Function to callback on camera controls changes
+           */
+          cameraControlsHandler: PropTypes.func,
+          /**
+           * Styles to apply on the icon button elements
+           */
+          buttonStyles: PropTypes.any
+      }),
       /**
        * Value for pan increment
        */
@@ -607,7 +620,16 @@ Canvas.propTypes = {
       /**
        * Component props
        */
-      props: PropTypes.shape({})
+      props: PropTypes.shape({
+          /**
+           * Styles to apply on the icon button elements
+           */
+          buttonStyles: PropTypes.any,
+          /**
+           * Function to callback on capture controls changes
+           */
+          captureControlsHandler: PropTypes.func,
+      })
     }),
     /**
      * Recorder Options

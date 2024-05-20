@@ -8,6 +8,7 @@ import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
+import CustomToolbar from "../common/CustomToolbar";
 
 const styles = theme => ({
   container: {
@@ -105,6 +106,7 @@ class ConnectivityComponent extends Component {
       linkWeight,
       linkType,
       library,
+      toolbarOptions
     } = this.props;
     const {
       layout,
@@ -124,6 +126,7 @@ class ConnectivityComponent extends Component {
             legendHandler={this.legendHandler}
             deckHandler={this.deckHandler}
             sortOptionsHandler={this.sortOptionsHandler}
+            options={toolbarOptions}
           />
         </Grid>
         <Grid item sm={12} xs>
@@ -171,12 +174,18 @@ class ConnectivityComponent extends Component {
 
 ConnectivityComponent.defaultProps = {
   names: [],
-  colorMap: () => {},
-  linkType: () => {},
+  colorMap: () => {
+  },
+  linkType: () => {
+  },
   layout: new Matrix(),
-  linkWeight: () => {},
-  nodeType: () => {},
-  library: () => {},
+  linkWeight: () => {
+  },
+  nodeType: () => {
+  },
+  library: () => {
+  },
+  toolbarOptions: {}
 }
 
 ConnectivityComponent.propTypes = {
@@ -237,6 +246,44 @@ ConnectivityComponent.propTypes = {
    * Geppetto library that supplies a network type
    */
   library: PropTypes.func,
+  /**
+   * Options to customize the toolbar
+   */
+  toolbarOptions: PropTypes.shape({
+    /**
+     * Reference to toolbar component
+     */
+    instance: PropTypes.elementType,
+    /**
+     * Custom toolbar props
+     */
+    props: PropTypes.shape({}),
+
+    /**
+     * Styles to be applied to the toolbar container
+     */
+    containerStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the toolbar
+     */
+    toolBarClassName: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the inner div
+     */
+    innerDivStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the buttons
+     */
+    buttonStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the menu button
+     */
+    menuButtonStyles: PropTypes.shape({}),
+    /**
+     * Styles to be applied to the deck
+     */
+    deckStyles: PropTypes.shape({}),
+  }),
 };
 
 export default withStyles(styles)(ConnectivityComponent);
