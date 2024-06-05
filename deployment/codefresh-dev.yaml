@@ -47,7 +47,7 @@ steps:
     type: "build"
     stage: "qa"
     image_name: "gep-e2e"
-    tag:'${{CF_BUILD_ID}}'
+    tag: "${{CF_BUILD_ID}}"
     working_directory: .geppetto-showcase/tests/e2e
     disable_push: True
   e2e_tests:
