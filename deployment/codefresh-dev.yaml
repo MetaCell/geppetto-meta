@@ -48,7 +48,7 @@ steps:
     stage: "qa"
     image_name: "gep-e2e"
     tag:'${{CF_BUILD_ID}}'
-    working_directory: ./tests/e2e
+    working_directory: .geppetto-showcase/tests/e2e
     disable_push: True
   e2e_tests:
     title: "End to End tests"
