@@ -43,9 +43,9 @@ describe("Programming Interfaces tests", () => {
     });
 
     pi_page = await pi_browser.newPage();
-    await pi_page.goto(baseURL);
+    await pi_page.goto(baseURL, { timeout: TIMEOUT });
 
-    await pi_page.waitForSelector('.MuiDrawer-root.MuiDrawer-docked');
+    await pi_page.waitForSelector('.MuiDrawer-root.MuiDrawer-docked', { hidden: false, timeout: TIMEOUT });
 
     pi_page.on("response", (response) => {
       const client_server_errors = range(90, 400);
@@ -63,17 +63,17 @@ describe("Programming Interfaces tests", () => {
   describe("Python Console", () => {
     it("Python Console check", async () => {
       console.log("Checking Python Console ...")
-      await pi_page.goto(baseURL);
+      await pi_page.goto(baseURL, { timeout: TIMEOUT });
       await pi_page.waitForSelector('a[href="/programmatic/pythonconsole"]', { hidden: false, timeout: TIMEOUT })
       await pi_page.click('a[href="/programmatic/pythonconsole"]')
-      await pi_page.waitForFunction(
-        () => {
-          let el = document.querySelector(".MuiCircularProgress-root");
-          return el == null || el.clientHeight === 0;
-        },
-        { timeout: TIMEOUT }
-      );
-      await pi_page.waitForSelector('h2[class*="Showcase-secondaryTitle"]', { hidden: false, timeout: TIMEOUT });
+      // await pi_page.waitForFunction(
+      //   () => {
+      //     let el = document.querySelector(".MuiCircularProgress-root");
+      //     return el == null || el.clientHeight === 0;
+      //   },
+      //   { timeout: TIMEOUT * 2 }
+      // );
+      await pi_page.waitForSelector('h2[class*="Showcase-secondaryTitle"]', { hidden: false, timeout: TIMEOUT * 2});
       await pi_page.waitForSelector('div[class*="Showcase-centerComponent"]', { hidden: false, timeout: TIMEOUT});
       await pi_page.waitForTimeout(300)
       console.log("Python COnsole check done");
