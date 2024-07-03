@@ -162,26 +162,6 @@ describe("Data Viewer tests", () => {
     it("Simple Instances check", async () => {
       console.log("Checking Simple Instances ...");
       await dv_page.goto(baseURL + "dataviewers/canvas", { timeout: TIMEOUT });
-      await dv_page.waitForSelector('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-5', { hidden: false, timeout: TIMEOUT });
-      await dv_page.click('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-5');
-      // await dv_page.waitForFunction(
-      //   () => {
-      //     let el = document.querySelector(".MuiCircularProgress-root");
-      //     return el == null || el.clientHeight === 0;
-      //   },
-      //   { timeout: TIMEOUT * 2 }
-      // );
-      await dv_page.waitForSelector('h2[class*="Showcase-secondaryTitle"]', { hidden: false, timeout: TIMEOUT * 2});
-      await dv_page.waitForSelector('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary', { hidden: false, timeout: TIMEOUT });
-      await dv_page.click('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary');
-      await dv_page.waitForSelector('[class*="SimpleInstancesExample-container"] [class*="Canvas-container"]', { hidden: false, timeout: TIMEOUT });
-      await dv_page.waitForTimeout(300)
-      console.log("Simple Instances check done");
-    })
-
-    it("Custom Controls check", async () => {
-      console.log("Checking Custom Controls ...");
-      await dv_page.goto(baseURL + "dataviewers/canvas", { timeout: TIMEOUT });
       await dv_page.waitForSelector('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-6', { hidden: false, timeout: TIMEOUT });
       await dv_page.click('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-6');
       // await dv_page.waitForFunction(
@@ -194,7 +174,27 @@ describe("Data Viewer tests", () => {
       await dv_page.waitForSelector('h2[class*="Showcase-secondaryTitle"]', { hidden: false, timeout: TIMEOUT * 2});
       await dv_page.waitForSelector('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary', { hidden: false, timeout: TIMEOUT });
       await dv_page.click('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary');
-      await dv_page.waitForSelector('[class*="CustomControlsExample-container"] [class*="Canvas-container"]', { hidden: false, timeout: TIMEOUT });
+      await dv_page.waitForSelector('[class*="SimpleInstancesExample-container"]', { timeout: TIMEOUT });
+      await dv_page.waitForTimeout(300)
+      console.log("Simple Instances check done");
+    })
+
+    it("Custom Controls check", async () => {
+      console.log("Checking Custom Controls ...");
+      await dv_page.goto(baseURL + "dataviewers/canvas", { timeout: TIMEOUT });
+      await dv_page.waitForSelector('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-7', { hidden: false, timeout: TIMEOUT });
+      await dv_page.click('.MuiTabs-scroller.MuiTabs-scrollable #simple-tab-7');
+      // await dv_page.waitForFunction(
+      //   () => {
+      //     let el = document.querySelector(".MuiCircularProgress-root");
+      //     return el == null || el.clientHeight === 0;
+      //   },
+      //   { timeout: TIMEOUT * 2 }
+      // );
+      await dv_page.waitForSelector('h2[class*="Showcase-secondaryTitle"]', { hidden: false, timeout: TIMEOUT * 2});
+      await dv_page.waitForSelector('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary', { hidden: false, timeout: TIMEOUT });
+      await dv_page.click('.MuiButtonBase-root.MuiButton-root.MuiButton-outlined.MuiButton-outlinedPrimary');
+      await dv_page.waitForSelector('[class*="CustomControlsExample-container"]', {  timeout: TIMEOUT });
       await dv_page.waitForTimeout(300)
       console.log("Custom Controls check done");
     })
