@@ -3,6 +3,7 @@ stages:
 - prepare
 - build
 - deploy
+- qa
 steps:
   main_clone:
     title: Clone main repository
@@ -41,3 +42,20 @@ steps:
     - CUSTOM_tag=${{CF_BUILD_ID}}
     - CUSTOM_apps_showcase_harness_deployment_image=${{REGISTRY}}/geppetto-showcase:${{CF_BUILD_ID}}
     - CUSTOM_namespace=${{NAMESPACE}}
+  test_image:
+    title: "Building Integration Image"
+    type: "build"
+    stage: "qa"
+    image_name: "gep-e2e"
+    tag: "${{CF_BUILD_ID}}"
+    working_directory: geppetto-showcase/tests/e2e
+    disable_push: True
+  e2e_tests:
+    title: "End to End tests"
+    stage: "qa"
+    image: '${{test_image}}'
+    fail_fast: false
+    commands:
+      - bash -c "rm -rf /codefresh/volume/geppetto-meta/geppetto-showcase/tests"
+      - echo $url
+      - bash -c "cd / && npm run puppeteer_test"      
