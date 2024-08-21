@@ -1,0 +1,156 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "formatWithErrors": false,
+    "lineWidth": 120
+  },
+  "json": {
+    "formatter": {
+      "trailingCommas": "none"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "complexity": {
+        "noExtraBooleanCast": "error",
+        "noMultipleSpacesInRegularExpressionLiterals": "error",
+        "noUselessCatch": "error",
+        "noUselessTernary": "error",
+        "noWith": "error"
+      },
+      "correctness": {
+        "noConstAssign": "error",
+        "noConstantCondition": "off",
+        "noEmptyCharacterClassInRegex": "error",
+        "noEmptyPattern": "error",
+        "noGlobalObjectCalls": "error",
+        "noInnerDeclarations": "off",
+        "noInvalidConstructorSuper": "error",
+        "noInvalidNewBuiltin": "error",
+        "noNonoctalDecimalEscape": "error",
+        "noPrecisionLoss": "error",
+        "noSelfAssign": "error",
+        "noSetterReturn": "error",
+        "noSwitchDeclarations": "error",
+        "noUndeclaredVariables": "error",
+        "noUnreachable": "error",
+        "noUnreachableSuper": "error",
+        "noUnsafeFinally": "error",
+        "noUnsafeOptionalChaining": "error",
+        "noUnusedLabels": "error",
+        "noUnusedPrivateClassMembers": "error",
+        "noUnusedVariables": "off",
+        "useIsNan": "error",
+        "useValidForDirection": "error",
+        "useYield": "error"
+      },
+      "style": {
+        "useBlockStatements": "error"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "error",
+        "noAsyncPromiseExecutor": "error",
+        "noCatchAssign": "error",
+        "noClassAssign": "error",
+        "noCompareNegZero": "error",
+        "noConsoleLog": "off",
+        "noControlCharactersInRegex": "off",
+        "noDebugger": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateObjectKeys": "error",
+        "noDuplicateParameters": "error",
+        "noEmptyBlockStatements": "error",
+        "noFallthroughSwitchClause": "error",
+        "noFunctionAssign": "error",
+        "noGlobalAssign": "off",
+        "noImportAssign": "error",
+        "noMisleadingCharacterClass": "error",
+        "noPrototypeBuiltins": "error",
+        "noRedeclare": "off",
+        "noShadowRestrictedNames": "error",
+        "noUnsafeNegation": "error",
+        "useGetterReturn": "error",
+        "useValidTypeof": "error"
+      }
+    },
+    "ignore": [
+      "**/*min.js",
+      "geppetto-ui/node_modules/*",
+      "geppetto-core/node_modules/*",
+      "geppetto-client/node_modules/*"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "always",
+      "bracketSameLine": false,
+      "bracketSpacing": true,
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    },
+    "globals": [
+      "geometry",
+      "root",
+      "registeredEvents",
+      "THREE",
+      "TestCase",
+      "Backbone",
+      "MozWebSocket",
+      "google",
+      "CodeMirror",
+      "τ",
+      "halfπ",
+      "Connectivity",
+      "EMBEDDED",
+      "Project",
+      "Stats",
+      "Plot1",
+      "gepetto-client",
+      "IPython",
+      "jstestdriver",
+      "EMBEDDERURL",
+      "_gaq",
+      "clientY",
+      "Instances",
+      "message",
+      "GEPPETTO",
+      "panelComponent",
+      "aabbMin",
+      "π",
+      "endpoint",
+      "Model",
+      "Handlebars",
+      "Canvas1",
+      "clientX",
+      "casper",
+      "aabbMax",
+      "path",
+      "Detector",
+      "VARS",
+      "olark",
+      "dr",
+      "ActiveXObject",
+      "GEPPETTO_CONFIGURATION",
+      "bb",
+      "PIXI",
+      "labelsInTV",
+      "stackViewerRequest",
+      "_",
+      "handleRequest",
+      "G",
+      "ClipboardModal",
+      "Store"
+    ]
+  }
+}

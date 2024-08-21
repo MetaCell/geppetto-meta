@@ -14,7 +14,9 @@
   "license": "MIT",
   "scripts": {
     "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui",
-    "lint": "eslint . --fix",
+    "format": "biome format --fix",
+    "lint-fix": "biome lint --fix",
+    "lint": "biome lint",
     "test": "jest",
     "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:dev": "yarn build:js-dev && yarn build:package && yarn build:style",
@@ -42,11 +44,9 @@
     "@babel/preset-env": "^7.25.3",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
-    "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.9.0",
+    "@biomejs/biome": "1.8.3",
     "babel-jest": "^29.7.0",
     "babel-plugin-module-resolver": "^5.0.2",
-    "eslint": "^9.9.0",
     "globals": "^15.9.0",
     "jest": "^29.7.0",
     "less": "^3.9.0"
