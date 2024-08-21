@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to augment a model with state variable capabilities
  *
@@ -8,7 +6,7 @@
  */
 
 export default {
-  capabilityId: 'StateVariableCapability',
+  capabilityId: "StateVariableCapability",
   watched: false,
   timeSeries: null,
   unit: null,
@@ -26,8 +24,8 @@ export default {
 
       if (initialValues != undefined) {
         for (var i = 0; i < initialValues.length; i++) {
-          if (initialValues[i].value.eClass === 'TimeSeries') {
-            timeSeries = initialValues[i].value.value
+          if (initialValues[i].value.eClass === "TimeSeries") {
+            timeSeries = initialValues[i].value.value;
           }
         }
       }
@@ -36,7 +34,6 @@ export default {
     }
     return this.timeSeries;
   },
-
 
   /**
    * Set the time series for the state variable
@@ -56,7 +53,6 @@ export default {
    * @returns {Object} The initial value of the state variable
    */
   getInitialValue: function () {
-
     return this.getVariable().getWrappedObj().initialValues;
   },
 
@@ -76,7 +72,7 @@ export default {
    * @returns {String} Unit for quantity
    */
   getUnit: function () {
-    return (this.unit == null) ? this.extractUnit() : this.unit;
+    return this.unit == null ? this.extractUnit() : this.unit;
   },
 
   extractUnit: function () {
@@ -84,8 +80,8 @@ export default {
     var initialValues = this.getVariable().getWrappedObj().initialValues;
 
     for (var i = 0; i < initialValues.length; i++) {
-      if (initialValues[i].value.eClass === 'PhysicalQuantity' || initialValues[i].value.eClass === 'TimeSeries') {
-        unit = initialValues[i].value.unit.unit
+      if (initialValues[i].value.eClass === "PhysicalQuantity" || initialValues[i].value.eClass === "TimeSeries") {
+        unit = initialValues[i].value.unit.unit;
       }
     }
     return unit;
@@ -114,6 +110,5 @@ export default {
     }
     this.watched = isWatched;
     return this;
-  }
-}
-
+  },
+};

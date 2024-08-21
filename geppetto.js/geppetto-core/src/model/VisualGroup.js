@@ -7,20 +7,19 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-import ModelFactory from '../ModelFactory';
-import Resources from '../Resources';
+import ModelFactory from "../ModelFactory";
+import Resources from "../Resources";
 
-var ObjectWrapper = require('./ObjectWrapper').default;
+var ObjectWrapper = require("./ObjectWrapper").default;
 
-function VisualGroup (options) {
+function VisualGroup(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.visualGroupElements = (options.visualGroupElements != undefined) ? options.visualGroupElements : [];
-  this.tags = (options.tags != undefined) ? options.tags : [];
+  this.visualGroupElements = options.visualGroupElements != undefined ? options.visualGroupElements : [];
+  this.tags = options.tags != undefined ? options.tags : [];
 }
 
 VisualGroup.prototype = Object.create(ObjectWrapper.prototype);
 VisualGroup.prototype.constructor = VisualGroup;
-
 
 /**
  * Get low spectrum color
@@ -66,7 +65,6 @@ VisualGroup.prototype.getChildren = function () {
   return this.visualGroupElements;
 };
 
-
 VisualGroup.prototype.show = function (mode, instances) {
   var message;
   var elements = this.getVisualGroupElements();
@@ -96,7 +94,6 @@ VisualGroup.prototype.showAllVisualGroupElements = function (elements, mode, ins
 };
 
 VisualGroup.prototype.getMinDensity = function () {
-
   var allElements = [];
 
   var elements = this.getVisualGroupElements();
@@ -108,7 +105,7 @@ VisualGroup.prototype.getMinDensity = function () {
     }
   }
 
-  return (allElements.length == 0) ? null : Math.min.apply(null, allElements);
+  return allElements.length == 0 ? null : Math.min.apply(null, allElements);
 };
 
 VisualGroup.prototype.getMaxDensity = function () {
@@ -123,17 +120,30 @@ VisualGroup.prototype.getMaxDensity = function () {
     }
   }
 
-  return (allElements.length == 0) ? null : Math.max.apply(null, allElements);
+  return allElements.length == 0 ? null : Math.max.apply(null, allElements);
 };
 
 /**
  * Print out formatted node
  */
 VisualGroup.prototype.print = function () {
-  return "Name : " + this.getName() + "\n" + "    Id: " + this.getId() + "\n"
-            + "    Type : " + this.getType() + "\n"
-            + "    HighSpectrumColor : " + this.getHighSpectrumColor() + "\n"
-            + "    LowSpectrumColor : " + this.getLowSpectrumColor() + "\n";
+  return (
+    "Name : " +
+    this.getName() +
+    "\n" +
+    "    Id: " +
+    this.getId() +
+    "\n" +
+    "    Type : " +
+    this.getType() +
+    "\n" +
+    "    HighSpectrumColor : " +
+    this.getHighSpectrumColor() +
+    "\n" +
+    "    LowSpectrumColor : " +
+    this.getLowSpectrumColor() +
+    "\n"
+  );
 };
 
 // Compatibility with new imports and old require syntax

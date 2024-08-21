@@ -1,10 +1,9 @@
-import ASimpleInstance from './ASimpleInstance';
+import ASimpleInstance from "./ASimpleInstance";
 
-export default class SimpleConnectionInstance extends ASimpleInstance{
-  constructor (node) {
+export default class SimpleConnectionInstance extends ASimpleInstance {
+  constructor(node) {
     super(node);
     this.a = node.a;
-    this.b = node.b
+    this.b = node.b;
   }
-  
 }

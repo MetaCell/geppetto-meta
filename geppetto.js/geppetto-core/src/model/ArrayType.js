@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent an array type.
  *
@@ -8,9 +6,9 @@
  * @author Matteo Cantarelli
  */
 
-var Type = require('./Type').default;
+var Type = require("./Type").default;
 
-function ArrayType (options) {
+function ArrayType(options) {
   Type.prototype.constructor.call(this, options);
   this.type = options.type;
   this.size = options.elements;

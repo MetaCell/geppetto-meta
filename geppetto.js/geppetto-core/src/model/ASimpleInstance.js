@@ -1,9 +1,8 @@
-import ObjectWrapper from './ObjectWrapper';
-import { extend } from '../common/Utils';
+import ObjectWrapper from "./ObjectWrapper";
+import { extend } from "../common/Utils";
 
-export default class ASimpleInstance extends ObjectWrapper{
-
-  constructor (node) {
+export default class ASimpleInstance extends ObjectWrapper {
+  constructor(node) {
     super({ wrappedObj: node });
 
     // Value and type can be wrapped so let's keep separate from the visual value
@@ -13,92 +12,92 @@ export default class ASimpleInstance extends ObjectWrapper{
     this.connections = new Set();
   }
 
-  getTypes () {
+  getTypes() {
     return [this.getType()];
   }
 
-  getValues () {
+  getValues() {
     return [this.getValue()];
   }
 
-  getType () {
+  getType() {
     return this.type;
   }
 
-  getValue () {
+  getValue() {
     return this.value;
   }
 
-  getVisualValue () {
+  getVisualValue() {
     return this.wrappedObj.visualValue;
   }
 
-  hasVisualValue () {
+  hasVisualValue() {
     return this.wrappedObj.visualValue;
   }
 
-  getPosition () {
+  getPosition() {
     return this.wrappedObj.position;
   }
 
-  hasVisualType () {
+  hasVisualType() {
     throw "Simple instances don't support visual type: use hasVisualValue instead";
   }
 
-  getVisualType () {
+  getVisualType() {
     throw "Simple instances don't support visual type: use getVisualValue instead";
   }
 
-  getVariable () {
+  getVariable() {
     throw "Simple instances don't support variables";
   }
 
-  getChildren () {
+  getChildren() {
     return [];
   }
 
-  getInstancePath () {
+  getInstancePath() {
     return this.wrappedObj.id;
   }
 
-  getPath () {
+  getPath() {
     return this.getInstancePath();
   }
 
-  getRawInstancePath () {
+  getRawInstancePath() {
     return this.getInstancePath();
   }
 
-  getParent () {
+  getParent() {
     return null;
   }
 
-  addChild () {
+  addChild() {
     throw "Simple instances don't have children";
   }
 
-  extendApi (extensionObj) {
+  extendApi(extensionObj) {
     extend(this, extensionObj);
     this.capabilities.push(extensionObj.capabilityId);
   }
 
-  hasCapability (capabilityId) {
-    return this.capabilities.findIndex(capability => capability === capabilityId) != -1;
+  hasCapability(capabilityId) {
+    return this.capabilities.findIndex((capability) => capability === capabilityId) != -1;
   }
 
-  getCapabilities () {
+  getCapabilities() {
     return this.capabilities;
   }
 
-  getConnections (direction) {
+  getConnections(direction) {
     if (direction) {
-      console.error('getConnections with param `direction` is not yet implemented for simple instances');
+      console.error("getConnections with param `direction` is not yet implemented for simple instances");
     }
 
     return Array.from(this.connections);
   }
 
-  addConnection (connection) {
+  addConnection(connection) {
     this.connections.add(connection);
   }
 }

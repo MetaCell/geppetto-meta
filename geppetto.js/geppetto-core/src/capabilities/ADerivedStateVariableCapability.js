@@ -4,10 +4,10 @@
  * @module model/ADerivedStateVariableCapability
  * @author Adrian Quintana
  */
-import ModelFactory from '../ModelFactory';
+import ModelFactory from "../ModelFactory";
 
 export default {
-  capabilityId: 'DerivedStateVariableCapability',
+  capabilityId: "DerivedStateVariableCapability",
   watched: false,
   timeSeries: null,
   inputs: null,
@@ -19,41 +19,40 @@ export default {
    * @returns {String} Value of quantity
    */
   getTimeSeries: function (step) {
-    if (this.getVariable().getWrappedObj().normalizationFunction == 'SPACEPLOT'){
+    const wrappedObj = this.getVariable().getWrappedObj();
+    if (wrappedObj.normalizationFunction === "SPACEPLOT") {
       return this.getTimeSeriesFromInput(step);
     }
-    if (this.getVariable().getWrappedObj().normalizationFunction == 'CONSTANT'){
-      return this.getVariable().getWrappedObj().timeSeries;
+    if (wrappedObj.normalizationFunction === "CONSTANT") {
+      return wrappedObj.timeSeries;
     }
   },
 
   getTimeSeriesFromInput: function (step) {
-    var timeSeries = []
+    const timeSeries = [];
     // FIXME: Remove this once we pass pointers instead of ids
-    if (!this.inputs){
-      this.inputs = []
-      for (var inputIndex in this.getVariable().getWrappedObj().inputs){
-        var inputId = this.getVariable().getWrappedObj().inputs[inputIndex]
-        this.inputs.push(ModelFactory.findMatchingInstanceByID(inputId, window.Instances[0].getChildren()))
+    if (!this.inputs) {
+      this.inputs = [];
+      for (const inputIndex in this.getVariable().getWrappedObj().inputs) {
+        const inputId = this.getVariable().getWrappedObj().inputs[inputIndex];
+        this.inputs.push(ModelFactory.findMatchingInstanceByID(inputId, window.Instances[0].getChildren()));
       }
-                
     }
-            
-    for (var inputIndex in this.inputs){
-      var inputTimeSeries = this.inputs[inputIndex].getTimeSeries();
-      if (inputTimeSeries != undefined){
-        var sampleIndex = step
-        if (step == undefined){
-          sampleIndex = inputTimeSeries.length - 1
+
+    for (const inputIndex in this.inputs) {
+      const inputTimeSeries = this.inputs[inputIndex].getTimeSeries();
+      if (inputTimeSeries !== undefined) {
+        let sampleIndex = step;
+        if (step === undefined) {
+          sampleIndex = inputTimeSeries.length - 1;
         }
         timeSeries.push(inputTimeSeries[sampleIndex]);
       } else {
-        timeSeries.push([])
+        timeSeries.push([]);
       }
     }
     return timeSeries;
   },
-
 
   /**
    * Set the time series for the state variable
@@ -85,27 +84,26 @@ export default {
   getUnit: function () {
     if (!this.timeSeries) {
       return this.extractUnit();
-    } else {
-      if (this.timeSeries.unit == null || this.timeSeries.unit == undefined){
-        if (this.getVariable() != undefined || this.getVariable() != null){
-          return this.extractUnit();
-        }
-      } else {
-        return this.timeSeries.unit;
+    }
+    if (this.timeSeries.unit == null || this.timeSeries.unit === undefined) {
+      if (this.getVariable() !== undefined || this.getVariable() != null) {
+        return this.extractUnit();
       }
+    } else {
+      return this.timeSeries.unit;
     }
   },
-        
-  extractUnit : function (){
-    var unit = undefined;
-    var initialValues = this.getVariable().getWrappedObj().initialValues;
 
-    for (var i = 0; i < initialValues.length; i++) {
-      if (initialValues[i].value.eClass === 'PhysicalQuantity' || initialValues[i].value.eClass === 'TimeSeries') {
-        unit = initialValues[i].value.unit.unit
+  extractUnit: function () {
+    const initialValues = this.getVariable().getWrappedObj().initialValues;
+
+    for (const initialValue of initialValues) {
+      const value = initialValue.value;
+      if (value.eClass === "PhysicalQuantity" || value.eClass === "TimeSeries") {
+        return unit;
       }
     }
-    return unit;
+    return undefined;
   },
 
   /**
@@ -118,5 +116,4 @@ export default {
     // NOTE: this.watched is a flag added by this API / Capability
     return this.watched;
   },
-}
-
+};

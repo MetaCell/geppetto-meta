@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to augment a model with connection capabilities
  *
@@ -7,38 +5,36 @@
  * @author Matteo Cantarelli
  */
 
-
 export default {
-  capabilityId: 'ConnectionCapability',
+  capabilityId: "ConnectionCapability",
   A: null,
   B: null,
 
   /**
    * Get A
    */
-  getA: function (){
+  getA: function () {
     return this.A;
   },
 
   /**
    * Get B
    */
-  getB: function (){
+  getB: function () {
     return this.B;
   },
 
   /**
    * Set A
    */
-  setA: function (a){
+  setA: function (a) {
     this.A = a;
   },
 
   /**
    * Set B
    */
-  setB: function (b){
+  setB: function (b) {
     this.B = b;
-  }
-}
-
+  },
+};

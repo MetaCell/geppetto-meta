@@ -1,5 +1,3 @@
-
-
 /**
  * Client class for Simulator Configurator; stores time step, simualtor id
  * and parameters.
@@ -8,8 +6,7 @@
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
 define(function (require) {
-
-  var Node = require('./Node');
+  var Node = require("./Node");
 
   return Node.Model.extend({
     simulatorId: "",
@@ -66,7 +63,7 @@ define(function (require) {
       var properties = {};
       properties["aspectInstancePath"] = this.aspectInstancePath;
       properties["SP$" + parameter] = value;
-      return this.parameters[parameter] = value;
+      return (this.parameters[parameter] = value);
     },
 
     /**
@@ -76,7 +73,7 @@ define(function (require) {
      * @command SimulatorConfig.setParameters(parameters)
      */
     setParameters: function (parameters) {
-      return this.parameters = parameters;
+      return (this.parameters = parameters);
     },
 
     /**
@@ -108,7 +105,7 @@ define(function (require) {
       var properties = {};
       properties["conversionServiceId"] = conversionServiceId;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      return this.conversionId = conversionServiceId;
+      return (this.conversionId = conversionServiceId);
     },
 
     /**
@@ -120,7 +117,7 @@ define(function (require) {
       var properties = {};
       properties["simulatorId"] = simulatorId;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      return this.simulatorId = simulatorId;
+      return (this.simulatorId = simulatorId);
     },
 
     /**
@@ -140,12 +137,12 @@ define(function (require) {
      */
     setTimeStep: function (timeStep) {
       var properties = {};
-      if (typeof timeStep === 'string') {
+      if (typeof timeStep === "string") {
         timeStep = parseFloat(timeStep);
       }
       properties["timeStep"] = timeStep;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      return this.timeStep = timeStep;
+      return (this.timeStep = timeStep);
     },
 
     /**
@@ -165,21 +162,32 @@ define(function (require) {
      */
     setLength: function (length) {
       var properties = {};
-      if (typeof length === 'string') {
+      if (typeof length === "string") {
         length = parseFloat(length);
       }
       properties["length"] = length;
       properties["aspectInstancePath"] = this.aspectInstancePath;
-      return this.length = length;
+      return (this.length = length);
     },
 
     /**
      * Print out formatted node
      */
     print: function () {
-      return "Name : " + this.name + "\n" + "    Id: " + this.id + "\n"
-                + "    InstancePath : " + this.instancePath + "\n"
-                + "    simulatorId : " + this.simulatorId + "\n";
-    }
+      return (
+        "Name : " +
+        this.name +
+        "\n" +
+        "    Id: " +
+        this.id +
+        "\n" +
+        "    InstancePath : " +
+        this.instancePath +
+        "\n" +
+        "    simulatorId : " +
+        this.simulatorId +
+        "\n"
+      );
+    },
   });
 });

@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a pointer element.
  *
@@ -8,9 +6,7 @@
  * @author Matteo Cantarelli
  */
 
-
-function PointerElement (options) {
-
+function PointerElement(options) {
   this.wrappedObj = options.wrappedObj;
   this.variable = options.variable;
   this.type = options.type;
@@ -18,7 +14,6 @@ function PointerElement (options) {
 }
 
 PointerElement.prototype = {
-
   constructor: PointerElement,
 
   /**
@@ -31,9 +26,7 @@ PointerElement.prototype = {
    */
   getVariable: function () {
     return this.variable;
-  }
-
-  ,
+  },
 
   /**
    * Gets the type
@@ -45,8 +38,7 @@ PointerElement.prototype = {
    */
   getType: function () {
     return this.type;
-  }
-  ,
+  },
 
   /**
    * Get the wrapped obj
@@ -56,8 +48,7 @@ PointerElement.prototype = {
    */
   getWrappedObj: function () {
     return this.wrappedObj;
-  }
-  ,
+  },
 
   /**
    * Gets the index if it's pointing to an array element
@@ -69,8 +60,7 @@ PointerElement.prototype = {
    */
   getIndex: function () {
     return this.index;
-  }
-  ,
+  },
 
   /**
    * Get the path for this pointer element
@@ -84,7 +74,7 @@ PointerElement.prototype = {
       types = false;
     }
 
-    var path = '';
+    var path = "";
 
     var element = this;
     var resolvedVar = element.getVariable();
@@ -98,7 +88,7 @@ PointerElement.prototype = {
     }
 
     return path;
-  }
+  },
 };
 
 // Compatibility with new imports and old require syntax

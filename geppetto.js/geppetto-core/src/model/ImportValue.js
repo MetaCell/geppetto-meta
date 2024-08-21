@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent an array type.
  *
@@ -7,22 +5,20 @@
  * @author nitesh thali
  */
 
-var Value = require('./Value').default;
-    
+var Value = require("./Value").default;
 
-function ImportValue (options) {
+function ImportValue(options) {
   Value.prototype.constructor.call(this, options);
 }
-    
+
 ImportValue.prototype = Object.create(Value.prototype);
 ImportValue.prototype.constructor = ImportValue;
-    
+
 ImportValue.prototype.resolve = function (callback) {
   console.warn("Deprecated api call: use the GeppettoManager api");
   console.trace();
 };
-    
-    
+
 /**
  * Get path
  *
@@ -37,7 +33,6 @@ ImportValue.prototype.getPath = function () {
   } else {
     throw "A value should always have a parent!";
   }
-
 };
 
 // Compatibility with new imports and old require syntax

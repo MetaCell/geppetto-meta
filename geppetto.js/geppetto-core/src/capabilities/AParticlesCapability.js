@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to augment a model with particles capabilities
  *
@@ -8,7 +6,7 @@
  */
 
 export default {
-  capabilityId: 'ParticlesCapability',
+  capabilityId: "ParticlesCapability",
   watched: false,
   timeSeries: null,
 
@@ -24,15 +22,14 @@ export default {
       var initialValues = this.getVariable().getWrappedObj().initialValues;
 
       for (var i = 0; i < initialValues.length; i++) {
-        if (initialValues[i].value.eClass === 'TimeSeries') {
-          timeSeries = initialValues[i].value.value
+        if (initialValues[i].value.eClass === "TimeSeries") {
+          timeSeries = initialValues[i].value.value;
         }
       }
       return timeSeries;
     }
     return this.timeSeries;
   },
-
 
   /**
    * Set the time series for the state variable
@@ -52,10 +49,8 @@ export default {
    * @returns {Object} The initial value of the state variable
    */
   getInitialValue: function () {
-
     return this.getVariable().getWrappedObj().initialValues;
   },
-
 
   /**
    * Get watched
@@ -80,6 +75,5 @@ export default {
     }
     this.watched = isWatched;
     return this;
-  }
-}
-
+  },
+};

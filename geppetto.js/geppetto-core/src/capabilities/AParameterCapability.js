@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to augment a model with parameter capabilities
  *
@@ -8,12 +6,11 @@
  * @author Giovanni Idili
  */
 
-
-var Instance = require('../model/Instance').default;
-var Variable = require('../model/Variable').default;
+var Instance = require("../model/Instance").default;
+var Variable = require("../model/Variable").default;
 
 export default {
-  capabilityId: 'ParameterCapability',
+  capabilityId: "ParameterCapability",
   value: null,
 
   /**
@@ -28,13 +25,13 @@ export default {
 
     if (this instanceof Instance) {
       initialValues = this.getVariable().getWrappedObj().initialValues;
-    } else if (this instanceof Variable){
+    } else if (this instanceof Variable) {
       initialValues = this.getWrappedObj().initialValues;
     }
 
     for (var i = 0; i < initialValues.length; i++) {
-      if (initialValues[i].value.eClass === 'PhysicalQuantity') {
-        unit = initialValues[i].value.unit.unit
+      if (initialValues[i].value.eClass === "PhysicalQuantity") {
+        unit = initialValues[i].value.unit.unit;
       }
     }
 
@@ -53,12 +50,12 @@ export default {
 
     if (this instanceof Instance) {
       initialValues = this.getVariable().getWrappedObj().initialValues;
-    } else if (this instanceof Variable){
+    } else if (this instanceof Variable) {
       initialValues = this.getWrappedObj().initialValues;
     }
 
     for (var i = 0; i < initialValues.length; i++) {
-      if (initialValues[i].value.eClass === 'PhysicalQuantity') {
+      if (initialValues[i].value.eClass === "PhysicalQuantity") {
         // this is ugly
         initVal = initialValues[i].value.value;
       }
@@ -76,7 +73,7 @@ export default {
   getValue: function () {
     var value = null;
 
-    if ((this instanceof Instance) && this.getVariable().isStatic()){
+    if (this instanceof Instance && this.getVariable().isStatic()) {
       value = this.getVariable().getValue();
     } else {
       value = this.value;
@@ -102,12 +99,12 @@ export default {
 
     if (this instanceof Instance) {
       initialValues = this.getVariable().getWrappedObj().initialValues;
-    } else if (this instanceof Variable){
+    } else if (this instanceof Variable) {
       initialValues = this.getWrappedObj().initialValues;
     }
 
     for (var i = 0; i < initialValues.length; i++) {
-      if (initialValues[i].value.eClass === 'PhysicalQuantity') {
+      if (initialValues[i].value.eClass === "PhysicalQuantity") {
         scalingFactor = initialValues[i].value.scalingFactor;
       }
     }
@@ -124,7 +121,7 @@ export default {
     }
 
     // always set this regardless of variable vs instance (so the value will be in the call below)
-    this.value = value;         
+    this.value = value;
     return this;
-  }
-}
+  },
+};

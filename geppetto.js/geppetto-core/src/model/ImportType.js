@@ -6,20 +6,18 @@
  * @author Matteo Cantarelli
  */
 
-var Type = require('./Type').default;
+var Type = require("./Type").default;
 
-
-function ImportType (options) {
+function ImportType(options) {
   Type.prototype.constructor.call(this, options);
   this.visualType = options.visualType;
-  this.superType = (options.superType != 'undefined') ? options.superType : [];
+  this.superType = options.superType != "undefined" ? options.superType : [];
   this.capabilities = [];
   this.variableReferences = [];
 }
 
 ImportType.prototype = Object.create(Type.prototype);
 ImportType.prototype.constructor = ImportType;
-
 
 /**
  * Get type for array type

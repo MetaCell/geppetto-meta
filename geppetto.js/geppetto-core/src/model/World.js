@@ -1,22 +1,21 @@
-import ObjectWrapper from './ObjectWrapper';
+import ObjectWrapper from "./ObjectWrapper";
 
-export default class World extends ObjectWrapper{
-  constructor (world, instances, variables) {
+export default class World extends ObjectWrapper {
+  constructor(world, instances, variables) {
     super({ wrappedObj: world });
     this.instances = instances;
     this.variables = variables;
   }
 
-  getInstances () {
+  getInstances() {
     return this.instances;
   }
 
-  getVariables () {
+  getVariables() {
     return this.variables;
   }
 
-  getChildren () {
+  getChildren() {
     return this.instances.concat(this.variables);
   }
-
 }

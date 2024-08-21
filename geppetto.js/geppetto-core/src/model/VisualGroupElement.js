@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a VisualGroupElement Node, used for visualization tree
  * properties.
@@ -9,9 +7,9 @@
  * @author Giovanni Idili
  */
 
-import ObjectWrapper from './ObjectWrapper';
+import ObjectWrapper from "./ObjectWrapper";
 
-function VisualGroupElement (options) {
+function VisualGroupElement(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
 }
 
@@ -49,7 +47,7 @@ VisualGroupElement.prototype.getUnit = function () {
 
   return param.unit.unit;
 };
-    
+
 /**
  * Get color of element
  *
@@ -60,7 +58,6 @@ VisualGroupElement.prototype.getColor = function () {
   return this.wrappedObj.defaultColor;
 };
 
-
 /**
  * Print out formatted node
  */
@@ -69,7 +66,6 @@ VisualGroupElement.prototype.print = function () {
 };
 
 VisualGroupElement.prototype.show = function (mode, instances) {
-
   console.warn("Deprecated api call");
   console.trace();
 };

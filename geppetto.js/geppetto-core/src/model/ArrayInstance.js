@@ -1,4 +1,4 @@
-const Instance = require('./Instance').default;
+const Instance = require("./Instance").default;
 /**
  * Client class use to represent an array of instances.
  *
@@ -8,20 +8,18 @@ const Instance = require('./Instance').default;
  */
 
 class ArrayInstance extends Instance {
-
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.size = options.size;
     this.length = options.size;
   }
 
-
-  getConnections () {
+  getConnections() {
     // We don't currently support connections for arrays
     return [];
   }
 
-  getChildren () {
+  getChildren() {
     var children = [];
     for (var i = 0; i < this.getSize(); i++) {
       children.push(this[i]);
@@ -37,10 +35,9 @@ class ArrayInstance extends Instance {
    * @returns {Integer} - size of the array
    *
    */
-  getSize () {
+  getSize() {
     return this.size;
   }
-
 }
 
 // Compatibility with new imports and old require syntax

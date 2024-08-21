@@ -1,6 +1,3 @@
-import ASimpleInstance from './ASimpleInstance';
+import ASimpleInstance from "./ASimpleInstance";
 
-export default class SimpleInstance extends ASimpleInstance{
-
-
-}
+export default class SimpleInstance extends ASimpleInstance {}

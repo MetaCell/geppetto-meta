@@ -1,6 +1,6 @@
-import { extend } from '../common/Utils';
-import ModelFactory from '../ModelFactory';
-import Resources from '../Resources';
+import { extend } from "../common/Utils";
+import ModelFactory from "../ModelFactory";
+import Resources from "../Resources";
 
 /**
  * Client class use to represent an instance object (instantiation of a variable).
@@ -11,18 +11,16 @@ import Resources from '../Resources';
  */
 
 class Instance {
-
-  constructor (options) {
+  constructor(options) {
     this.id = options.id;
     this.name = options.name;
     this._metaType = options._metaType;
     this.variable = options.variable;
     this.parent = options.parent;
-    this.children = (options.children != undefined) ? options.children : [];
+    this.children = options.children != undefined ? options.children : [];
     this.capabilities = [];
     this.connections = [];
   }
-
 
   /**
    * Get id
@@ -32,7 +30,7 @@ class Instance {
    * @returns {String} - Id
    *
    */
-  getId () {
+  getId() {
     return this.id;
   }
 
@@ -44,7 +42,7 @@ class Instance {
    * @returns {String} - Name
    *
    */
-  getName () {
+  getName() {
     return this.name;
   }
 
@@ -56,7 +54,7 @@ class Instance {
    * @returns {String} - meta type
    *
    */
-  getMetaType () {
+  getMetaType() {
     return this._metaType;
   }
 
@@ -68,11 +66,11 @@ class Instance {
    * @returns {List<Type>} - array of types
    *
    */
-  getTypes () {
+  getTypes() {
     return this.getVariable().getTypes();
   }
 
-  getValues () {
+  getValues() {
     return this.getVariable().getValues();
   }
   /**
@@ -83,7 +81,7 @@ class Instance {
    * @returns List<Type>} - array of types
    *
    */
-  getType () {
+  getType() {
     var types = this.variable.getTypes();
     if (types.length == 1) {
       return types[0];
@@ -92,14 +90,14 @@ class Instance {
     }
   }
 
-  getValue () {
+  getValue() {
     return this.getVariable().getValue();
   }
   /**
    *
    * @returns {*|Object}
    */
-  getPosition () {
+  getPosition() {
     return this.getVariable().getPosition();
   }
 
@@ -111,7 +109,7 @@ class Instance {
    * @returns {Boolean}
    *
    */
-  hasVisualType () {
+  hasVisualType() {
     var hasVisual = false;
     var types = this.getTypes();
 
@@ -120,15 +118,19 @@ class Instance {
       // could be pointing to an array variable if it's an exploded instance
       if (types[i].getMetaType() == Resources.ARRAY_TYPE_NODE) {
         // check it if is a visual type or has a visual type
-        if (types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE
-                        || types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
-                        || (types[i].getType().getVisualType() != null)) {
+        if (
+          types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE ||
+          types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE ||
+          types[i].getType().getVisualType() != null
+        ) {
           hasVisual = true;
           break;
         }
-      } else if (types[i].getMetaType() == Resources.VISUAL_TYPE_NODE
-                    || types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
-                    || types[i].getVisualType() != null) {
+      } else if (
+        types[i].getMetaType() == Resources.VISUAL_TYPE_NODE ||
+        types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE ||
+        types[i].getVisualType() != null
+      ) {
         hasVisual = true;
         break;
       }
@@ -144,7 +146,7 @@ class Instance {
    *
    * @returns {*} - Type or list of Types if more than one is found
    */
-  getVisualType () {
+  getVisualType() {
     var visualTypes = [];
 
     var types = this.getTypes();
@@ -153,14 +155,20 @@ class Instance {
       // could be pointing to an array variable if it's an exploded instance
       if (types[i].getMetaType() == Resources.ARRAY_TYPE_NODE) {
         // check it if is a visual type or has a visual type
-        if (types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE || types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE) {
+        if (
+          types[i].getType().getMetaType() == Resources.VISUAL_TYPE_NODE ||
+          types[i].getType().getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
+        ) {
           visualTypes.push(types[i].getType());
         } else if (types[i].getType().getVisualType() != null) {
           visualTypes.push(types[i].getType().getVisualType());
         }
       } else {
         // check it if is a visual type or has a visual type
-        if (types[i].getMetaType() == Resources.VISUAL_TYPE_NODE || types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE) {
+        if (
+          types[i].getMetaType() == Resources.VISUAL_TYPE_NODE ||
+          types[i].getMetaType() == Resources.COMPOSITE_VISUAL_TYPE_NODE
+        ) {
           visualTypes.push(types[i]);
         } else if (types[i].getVisualType() != null) {
           visualTypes.push(types[i].getVisualType());
@@ -177,7 +185,6 @@ class Instance {
     }
   }
 
-
   /**
    * Get the variable for this instance
    *
@@ -186,7 +193,7 @@ class Instance {
    * @returns {Variable} - Variable object for this instance
    *
    */
-  getVariable () {
+  getVariable() {
     return this.variable;
   }
 
@@ -198,7 +205,7 @@ class Instance {
    * @returns {List<Instance>} - List of instances
    *
    */
-  getChildren () {
+  getChildren() {
     return this.children;
   }
 
@@ -210,8 +217,8 @@ class Instance {
    * @returns {String} - Instance path
    *
    */
-  getInstancePath (useType) {
-    if (useType == undefined){
+  getInstancePath(useType) {
+    if (useType == undefined) {
       useType = false;
     }
 
@@ -223,11 +230,11 @@ class Instance {
     }
     var path = parentPath + "." + this.getId();
 
-    if (useType){
+    if (useType) {
       path += "(" + this.getType().getId() + ")";
     }
 
-    return (parentPath != "") ? path : path.replace('.','');
+    return parentPath != "" ? path : path.replace(".", "");
   }
 
   /**
@@ -238,7 +245,7 @@ class Instance {
    * @returns {String} - Instance path
    *
    */
-  getPath () {
+  getPath() {
     return this.getInstancePath();
   }
 
@@ -250,7 +257,7 @@ class Instance {
    * @returns {String} - Instance path
    *
    */
-  getRawInstancePath () {
+  getRawInstancePath() {
     var parent = this.parent;
     var parentPath = "";
 
@@ -258,9 +265,8 @@ class Instance {
       parentPath = parent.getInstancePath();
     }
 
-    return (parentPath != "") ? (parentPath + "." + this.getId()) : this.getId();
+    return parentPath != "" ? parentPath + "." + this.getId() : this.getId();
   }
-
 
   /**
    * Get parent
@@ -270,7 +276,7 @@ class Instance {
    * @returns {Instance} - Parent instance
    *
    */
-  getParent () {
+  getParent() {
     return this.parent;
   }
 
@@ -279,7 +285,7 @@ class Instance {
    *
    * @command Instance.addChild()
    */
-  addChild (child) {
+  addChild(child) {
     this.children.push(child);
   }
 
@@ -288,7 +294,7 @@ class Instance {
    *
    * @command Instance.extendApi(extensionObj)
    */
-  extendApi (extensionObj) {
+  extendApi(extensionObj) {
     extend(this, extensionObj);
     this.capabilities.push(extensionObj.capabilityId);
   }
@@ -300,7 +306,7 @@ class Instance {
    *
    * @returns {Boolean}
    */
-  hasCapability (capabilityId) {
+  hasCapability(capabilityId) {
     var hasCapability = false;
     var capabilities = this.capabilities;
 
@@ -318,7 +324,7 @@ class Instance {
    *
    * @returns {Array}
    */
-  getCapabilities () {
+  getCapabilities() {
     return this.capabilities;
   }
 
@@ -330,8 +336,7 @@ class Instance {
    * @returns {List<Instance>}
    *
    */
-  getConnections (direction) {
-
+  getConnections(direction) {
     ModelFactory.updateConnectionInstances(this);
 
     var connections = this.connections;
@@ -369,14 +374,14 @@ class Instance {
    *
    * @command Instance.addConnection()
    */
-  addConnection (connection) {
+  addConnection(connection) {
     this.connections.push(connection);
   }
 
   /**
    * Deletes instance
    */
-  delete () {
+  delete() {
     var children = [].concat(this.getChildren());
     for (var c = 0; c < children.length; c++) {
       children[c].delete();
@@ -384,7 +389,6 @@ class Instance {
 
     ModelFactory.deleteInstance(this);
   }
-
 }
 
 export default Instance;

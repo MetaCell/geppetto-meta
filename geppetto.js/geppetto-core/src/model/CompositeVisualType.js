@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a composite type.
  *
@@ -7,11 +5,11 @@
  * @author Giovanni Idili
  */
 
-var CompositeType = require('./CompositeType').default;
+var CompositeType = require("./CompositeType").default;
 
-function CompositeVisualType (options) {
+function CompositeVisualType(options) {
   CompositeType.prototype.constructor.call(this, options);
-  this.visualGroups = (options.visualGroups != 'undefined') ? options.visualGroups : [];
+  this.visualGroups = options.visualGroups != "undefined" ? options.visualGroups : [];
 }
 
 CompositeVisualType.prototype = Object.create(CompositeType.prototype);
@@ -44,7 +42,6 @@ CompositeVisualType.prototype.getChildren = function () {
   } else {
     return this.variables;
   }
-
 };
 
 // Compatibility with new imports and old require syntax

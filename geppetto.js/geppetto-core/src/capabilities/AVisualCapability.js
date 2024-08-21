@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent an instance object (instantiation of a variable).
  *
@@ -7,9 +5,8 @@
  * @author Giovanni Idili
  */
 
-
 export default {
-  capabilityId: 'VisualCapability',
+  capabilityId: "VisualCapability",
   visible: true,
   selected: false,
 
@@ -66,7 +63,6 @@ export default {
     console.trace();
   },
 
-
   /**
    *
    * @returns {*}
@@ -83,10 +79,8 @@ export default {
    *
    */
   setColor: function (color) {
-
     console.warn("Deprecated api call");
     console.trace();
-
 
     return this;
   },
@@ -141,5 +135,5 @@ export default {
   showConnectionLines: function (mode) {
     console.warn("Deprecated api call");
     console.trace();
-  }
-}
+  },
+};

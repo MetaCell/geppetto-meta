@@ -5,14 +5,12 @@
  * @author Matteo Cantarelli
  */
 
-
-import ModelFactory from './ModelFactory';
-
+import ModelFactory from "./ModelFactory";
 
 /**
  * Augments the instances array with some utilities methods for ease of access
  */
-export function augmentInstancesArray (instances) {
+export function augmentInstancesArray(instances) {
   // create global shortcuts to top level instances
   for (var i = 0; i < instances.length; i++) {
     // NOTE: tampering with the window object like this is probably a horrible idea
@@ -46,9 +44,9 @@ export function augmentInstancesArray (instances) {
 
     // check if we have any [*] for array notation and replace with exploded paths
     for (var j = 0; j < instancePath.length; j++) {
-      if (instancePath[j].indexOf('[*]') > -1) {
-        var arrayPath = instancePath[j].substring(0, instancePath[j].indexOf('['));
-        var subArrayPath = instancePath[j].substring(instancePath[j].indexOf(']') + 1, instancePath[j].length);
+      if (instancePath[j].indexOf("[*]") > -1) {
+        var arrayPath = instancePath[j].substring(0, instancePath[j].indexOf("["));
+        var subArrayPath = instancePath[j].substring(instancePath[j].indexOf("]") + 1, instancePath[j].length);
         var arrayInstance = Instances.getInstance(arrayPath);
         var arraySize = arrayInstance.getSize();
 
@@ -56,11 +54,10 @@ export function augmentInstancesArray (instances) {
         instancePath.splice(j, 1);
         // add exploded elements
         for (var x = 0; x < arraySize; x++) {
-          instancePath.push(arrayPath + '[' + x + ']' + subArrayPath);
+          instancePath.push(arrayPath + "[" + x + "]" + subArrayPath);
         }
       }
     }
-
 
     for (var i = 0; i < instancePath.length; i++) {
       try {
@@ -82,11 +79,10 @@ export function augmentInstancesArray (instances) {
       } catch (e) {
         if (create) {
           try {
-
             Instances.addInstances(instancePath[i]);
             instances[i] = eval(InstanceVarName + instancePath[i]);
           } catch (e) {
-            throw ("The instance " + instancePath[i] + " does not exist in the current model");
+            throw "The instance " + instancePath[i] + " does not exist in the current model";
           }
         }
       }
@@ -98,8 +94,7 @@ export function augmentInstancesArray (instances) {
     } else {
       return instances;
     }
-  }
-      
+  };
 }
 
-export default { augmentInstancesArray }
+export default { augmentInstancesArray };

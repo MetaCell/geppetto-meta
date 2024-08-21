@@ -1,23 +1,20 @@
-
-
 /**
  * Client class use to represent a composite type.
  *
  * @module model/CompositeType
  * @author Giovanni Idili
  */
-import Resources from '../Resources';
+import Resources from "../Resources";
 
-var Type = require('./Type').default;
+var Type = require("./Type").default;
 
-function CompositeType (options) {
+function CompositeType(options) {
   Type.prototype.constructor.call(this, options);
-  this.variables = (options.variables != 'undefined') ? options.variables : [];
+  this.variables = options.variables != "undefined" ? options.variables : [];
 }
 
 CompositeType.prototype = Object.create(Type.prototype);
 CompositeType.prototype.constructor = CompositeType;
-
 
 /**
  * Get variables

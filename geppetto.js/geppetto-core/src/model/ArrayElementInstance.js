@@ -1,5 +1,5 @@
-import ModelFactory from '../ModelFactory';
-const Instance = require('./Instance').default;
+import ModelFactory from "../ModelFactory";
+const Instance = require("./Instance").default;
 
 /**
  * Client class use to represent an array element instance.
@@ -8,18 +8,16 @@ const Instance = require('./Instance').default;
  * @author Giovanni Idili
  */
 class ArrayElementInstance extends Instance {
-  
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.index = options.index;
   }
 
-
-  getIndex () {
+  getIndex() {
     return this.index;
   }
 
-  delete () {
+  delete() {
     var children = [].concat(this.getChildren());
     for (var c = 0; c < children.length; c++) {
       children[c].delete();
@@ -28,8 +26,7 @@ class ArrayElementInstance extends Instance {
     ModelFactory.deleteInstance(this);
   }
 
-
-  getInstancePath () {
+  getInstancePath() {
     var parent = this.getParent();
     var parentPath = "";
     var parentId = "";
@@ -41,23 +38,23 @@ class ArrayElementInstance extends Instance {
 
     var path = parentPath.replace(parentId, this.getId());
 
-    return (parentPath != "") ? path : this.getId();
+    return parentPath != "" ? path : this.getId();
   }
 
-  getPosition () {
-
-    if ((this.getVariable().getType().getDefaultValue().elements != undefined)
-            && (this.getVariable().getType().getDefaultValue().elements[this.getIndex()] != undefined)) {
+  getPosition() {
+    if (
+      this.getVariable().getType().getDefaultValue().elements != undefined &&
+      this.getVariable().getType().getDefaultValue().elements[this.getIndex()] != undefined
+    ) {
       return this.getVariable().getType().getDefaultValue().elements[this.getIndex()].position;
     }
-
   }
 
-  getTypes () {
+  getTypes() {
     return [this.getVariable().getType().getType()];
   }
 
-  getType () {
+  getType() {
     var types = this.getTypes();
     if (types.length == 1) {
       return types[0];
@@ -65,7 +62,6 @@ class ArrayElementInstance extends Instance {
       return types;
     }
   }
-
 }
 
 ArrayElementInstance.default = ArrayElementInstance;

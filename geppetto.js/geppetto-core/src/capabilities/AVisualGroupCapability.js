@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to augment a model with visual group capabilities
  *
@@ -8,7 +6,7 @@
  */
 
 export default {
-  capabilityId: 'VisualGroupCapability',
+  capabilityId: "VisualGroupCapability",
   visualGroups: [],
 
   /**
@@ -17,7 +15,6 @@ export default {
   getVisualGroups: function () {
     return this.visualGroups;
   },
-
 
   applyVisualGroup: function (visualGroup, mode) {
     visualGroup.show(mode, [this]);
@@ -29,5 +26,4 @@ export default {
   setVisualGroups: function (visualGroups) {
     this.visualGroups = visualGroups;
   },
-}
-
+};

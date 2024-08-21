@@ -1,15 +1,14 @@
-const Instance = require('./Instance').default;
+const Instance = require("./Instance").default;
 
 /**
  * Client class use to represent an instance object (instantiation of a variable)
- * 
+ *
  * @module model/Instance
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
 class ExternalInstance extends Instance {
-
-  constructor (options) {
+  constructor(options) {
     super(options);
     this.path = options.path;
     this.projectId = options.projectId;
@@ -23,11 +22,11 @@ class ExternalInstance extends Instance {
    * @returns {List<Type>} - array of types
    *
    */
-  getTypes () {
+  getTypes() {
     throw "Invalid operation with ExternalInstance";
   }
 
-  getValues () {
+  getValues() {
     throw "Invalid operation with ExternalInstance";
   }
   /**
@@ -38,11 +37,11 @@ class ExternalInstance extends Instance {
    * @returns List<Type>} - array of types
    *
    */
-  getType () {
+  getType() {
     throw "Invalid operation with ExternalInstance";
   }
 
-  getValue () {
+  getValue() {
     throw "Invalid operation with ExternalInstance";
   }
 
@@ -50,7 +49,7 @@ class ExternalInstance extends Instance {
    *
    * @returns {*|Object}
    */
-  getPosition () {
+  getPosition() {
     throw "Invalid operation with ExternalInstance";
   }
 
@@ -62,7 +61,7 @@ class ExternalInstance extends Instance {
    * @returns {Boolean}
    *
    */
-  hasVisualType () {
+  hasVisualType() {
     return false;
   }
 
@@ -73,7 +72,7 @@ class ExternalInstance extends Instance {
    *
    * @returns {*} - Type or list of Types if more than one is found
    */
-  getVisualType () {
+  getVisualType() {
     return undefined;
   }
 
@@ -85,7 +84,7 @@ class ExternalInstance extends Instance {
    * @returns {Variable} - Variable object for this instance
    *
    */
-  getVariable () {
+  getVariable() {
     return this.variable;
   }
 
@@ -97,7 +96,7 @@ class ExternalInstance extends Instance {
    * @returns {List<Instance>} - List of instances
    *
    */
-  getChildren () {
+  getChildren() {
     return this.children;
   }
 
@@ -109,7 +108,7 @@ class ExternalInstance extends Instance {
    * @returns {String} - Instance path
    *
    */
-  getInstancePath () {
+  getInstancePath() {
     return this.path;
   }
 
@@ -121,7 +120,7 @@ class ExternalInstance extends Instance {
    * @returns {String} - Instance path
    *
    */
-  getRawInstancePath () {
+  getRawInstancePath() {
     throw "Invalid operation with ExternalInstance";
   }
 
@@ -133,7 +132,7 @@ class ExternalInstance extends Instance {
    * @returns {Instance} - Parent instance
    *
    */
-  getParent () {
+  getParent() {
     throw "Invalid operation with ExternalInstance";
   }
 
@@ -142,7 +141,7 @@ class ExternalInstance extends Instance {
    *
    * @command Instance.addChild()
    */
-  addChild (child) {
+  addChild(child) {
     throw "Invalid operation with ExternalInstance";
   }
 
@@ -155,18 +154,16 @@ class ExternalInstance extends Instance {
    * @returns {List<Instance>}
    *
    */
-  getConnections (direction) {
+  getConnections(direction) {
     return this.connections;
   }
 
   /**
    * Deletes instance
    */
-  delete () {
+  delete() {
     throw "Invalid operation with ExternalInstance";
   }
-
- 
 }
 
 // Compatibility with new imports and old require syntax

@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a pointer.
  *
@@ -7,17 +5,15 @@
  * @author Giovanni Idili
  */
 
-  
-var ObjectWrapper = require('./ObjectWrapper').default;
+var ObjectWrapper = require("./ObjectWrapper").default;
 
-function Pointer (options) {
+function Pointer(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.elements = (options.elements != undefined) ? options.elements : [];
+  this.elements = options.elements != undefined ? options.elements : [];
 }
 
 Pointer.prototype = Object.create(ObjectWrapper.prototype);
 Pointer.prototype.constructor = Pointer;
-
 
 /**
  * Gets the full path for this pointer
@@ -47,7 +43,6 @@ Pointer.prototype.getPath = function (types) {
 
   return path;
 };
-    
 
 /**
  * Get PointerElements
@@ -59,7 +54,7 @@ Pointer.prototype.getPath = function (types) {
 Pointer.prototype.getElements = function () {
   return this.elements;
 };
-    
+
 /**
  * Get the optional point attribute to refer to a point in space.
  *
@@ -67,13 +62,10 @@ Pointer.prototype.getElements = function () {
  *
  * @returns {Point} - 3d point
  */
-Pointer.prototype.getPoint = function (){
+Pointer.prototype.getPoint = function () {
   return this.getWrappedObj().point;
-}
-    
+};
 
 // Compatibility with new imports and old require syntax
 Pointer.default = Pointer;
 module.exports = Pointer;
-
-

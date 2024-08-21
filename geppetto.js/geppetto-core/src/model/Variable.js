@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a variable.
  *
@@ -7,21 +5,20 @@
  * @author Giovanni Idili
  */
 
-const extend = require('../common/Utils').extend;
-const ObjectWrapper = require('./ObjectWrapper');
+const extend = require("../common/Utils").extend;
+const ObjectWrapper = require("./ObjectWrapper");
 
-function Variable (options) {
+function Variable(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.anonymousTypes = (options.anonymousTypes != undefined) ? options.anonymousTypes : [];
-  this.types = (options.types != undefined) ? options.types : [];
+  this.anonymousTypes = options.anonymousTypes != undefined ? options.anonymousTypes : [];
+  this.types = options.types != undefined ? options.types : [];
   this.pointerValue = options.pointerValue;
   this.capabilities = [];
-  this.values = (options.values != undefined) ? options.values : [];
+  this.values = options.values != undefined ? options.values : [];
 }
 
 Variable.prototype = Object.create(ObjectWrapper.prototype);
 Variable.prototype.constructor = Variable;
-
 
 /**
  * Get the list of types for this variable
@@ -32,8 +29,8 @@ Variable.prototype.constructor = Variable;
  *
  */
 Variable.prototype.getTypes = function () {
-  var types = (this.types != undefined) ? this.types : [];
-  var anonTypes = (this.anonymousTypes != undefined) ? this.anonymousTypes : [];
+  var types = this.types != undefined ? this.types : [];
+  var anonTypes = this.anonymousTypes != undefined ? this.anonymousTypes : [];
   var allTypes = types.concat(anonTypes);
   return allTypes;
 };
@@ -49,7 +46,6 @@ Variable.prototype.getTypes = function () {
 Variable.prototype.getAnonymousTypes = function () {
   return this.anonymousTypes;
 };
-
 
 /**
  * Get the type of this variable, return a list if it has more than one
@@ -222,8 +218,6 @@ Variable.prototype.setTypes = function (types) {
   return this;
 };
 
-
 // Compatibility with new imports and old require syntax
 Variable.default = Variable;
 module.exports = Variable;
-

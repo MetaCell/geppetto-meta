@@ -12,27 +12,26 @@
  */
 
 export default {
-
   Icon: {
-    "ParameterType": "fa-sliders",
-    "TextType": "fa-file-text-o",
-    "CompositeType": "fa-align-justify",
-    "ArrayType": "fa-list",
-    "PointerType": "fa-link",
-    "HTMLType": "fa-code",
-    "StateVariableType": "fa-superscript",
-    "DynamicsType": "fa-bolt",
+    ParameterType: "fa-sliders",
+    TextType: "fa-file-text-o",
+    CompositeType: "fa-align-justify",
+    ArrayType: "fa-list",
+    PointerType: "fa-link",
+    HTMLType: "fa-code",
+    StateVariableType: "fa-superscript",
+    DynamicsType: "fa-bolt",
   },
 
   Colour: {
-    "ParameterType": "#0066cc",
-    "TextType": "#10b7bd",
-    "CompositeType": "#2e2a2a",
-    "ArrayType": "#ff5a02",
-    "PointerType": "#10b7bd",
-    "HTMLType": "0xdddddd",
-    "StateVariableType": "#42b6ff",
-    "DynamicsType": "#00cc66",
+    ParameterType: "#0066cc",
+    TextType: "#10b7bd",
+    CompositeType: "#2e2a2a",
+    ArrayType: "#ff5a02",
+    PointerType: "#10b7bd",
+    HTMLType: "0xdddddd",
+    StateVariableType: "#42b6ff",
+    DynamicsType: "#00cc66",
   },
 
   COLORS: {
@@ -62,12 +61,12 @@ export default {
   GeometryTypes: {
     LINES: "lines",
     TUBES: "tubes",
-    CYLINDERS: "cylinders"
+    CYLINDERS: "cylinders",
   },
 
   OPACITY: {
     DEFAULT: 1,
-    GHOST: .3,
+    GHOST: 0.3,
   },
 
   SocketStatus: {
@@ -102,7 +101,8 @@ export default {
 
   ADDING_VARIABLE: "Adding variable",
 
-  LOADING_SIMULATION_SLOW: "Still loading, but things are taking longer than expected. Do you have a low bandwidth connection?",
+  LOADING_SIMULATION_SLOW:
+    "Still loading, but things are taking longer than expected. Do you have a low bandwidth connection?",
 
   SIMULATION_NOT_RUNNING: "Unable to stop simulation, loaded but not running",
 
@@ -116,33 +116,33 @@ export default {
 
   LOADING_FROM_CONTENT: "Outbound Message Sent: Load Simulation from editing console",
 
-  MESSAGE_OUTBOUND_LOAD: 'Outbound Message Sent: Loading Simulation',
+  MESSAGE_OUTBOUND_LOAD: "Outbound Message Sent: Loading Simulation",
 
-  MESSAGE_OUTBOUND_STOP: 'Outbound Message Sent: Simulation Stopped',
+  MESSAGE_OUTBOUND_STOP: "Outbound Message Sent: Simulation Stopped",
 
-  MESSAGE_OUTBOUND_PAUSE: 'Outbound Message Sent: Simulation Paused',
+  MESSAGE_OUTBOUND_PAUSE: "Outbound Message Sent: Simulation Paused",
 
-  MESSAGE_OUTBOUND_START: 'Outbound Message Sent: Simulation Started',
+  MESSAGE_OUTBOUND_START: "Outbound Message Sent: Simulation Started",
 
-  MESSAGE_OUTBOUND_SET_WATCHED_VARIABLES: 'Outbound Message Sent: add variables to watch',
+  MESSAGE_OUTBOUND_SET_WATCHED_VARIABLES: "Outbound Message Sent: add variables to watch",
 
-  MESSAGE_OUTBOUND_CLEAR_WATCH: 'Outbund Message Sent: clear watch lists',
+  MESSAGE_OUTBOUND_CLEAR_WATCH: "Outbund Message Sent: clear watch lists",
 
   SIMULATION_NOT_LOADED_ERROR: "Unable to perform operation, the simulation hasn't been loaded",
 
   SIMULATION_SET_WATCHED_VARIABLES: "Watch variables requested",
 
-  SIMULATION_CLEAR_WATCH: 'Clear watched variables requested',
+  SIMULATION_CLEAR_WATCH: "Clear watched variables requested",
 
-  NO_WATCHED_VARIABLES : "No Recorded Variables",
+  NO_WATCHED_VARIABLES: "No Recorded Variables",
 
   NO_FEATURE: "The feature is not avaialble for the current service",
 
-  TIME_VARIABLE_NOT_DEFINED : "Time Variable not defined, can't show time",
+  TIME_VARIABLE_NOT_DEFINED: "Time Variable not defined, can't show time",
 
-  DISABLED_COLOR_PLOTTING : "Color Plotting Disabled",
+  DISABLED_COLOR_PLOTTING: "Color Plotting Disabled",
 
-  ENABLED_COLOR_PLOTTING : "Color Plotting Enabled",
+  ENABLED_COLOR_PLOTTING: "Color Plotting Enabled",
 
   /**
    * Object G resources
@@ -211,41 +211,41 @@ export default {
    * Node resources
    */
 
-  RETRIEVING_MODEL_TREE: 'Model tree requested',
+  RETRIEVING_MODEL_TREE: "Model tree requested",
 
-  RETRIEVING_SIMULATION_TREE: 'Simulation tree requested',
+  RETRIEVING_SIMULATION_TREE: "Simulation tree requested",
 
-  EMPTY_MODEL_TREE: 'Model is empty, nothing to see here.',
+  EMPTY_MODEL_TREE: "Model is empty, nothing to see here.",
 
-  EMPTY_SIMULATION_TREE: 'No variables to simulate.',
+  EMPTY_SIMULATION_TREE: "No variables to simulate.",
 
-  SIMULATION_TREE_POPULATED: 'Simulation tree populated.',
+  SIMULATION_TREE_POPULATED: "Simulation tree populated.",
 
-  SIMULATION_TREE_RECEIVED: 'Requested simulation tree received.',
+  SIMULATION_TREE_RECEIVED: "Requested simulation tree received.",
 
-  NO_SIMULATION_TREE: 'Simulation tree is not available.',
+  NO_SIMULATION_TREE: "Simulation tree is not available.",
 
-  NO_VISUALIZATION_TREE: 'Visualization tree is not available.',
+  NO_VISUALIZATION_TREE: "Visualization tree is not available.",
 
-  RETRIEVING_VISUALIZATION_TREE: 'Visualization tree: ',
+  RETRIEVING_VISUALIZATION_TREE: "Visualization tree: ",
 
-  DOWNLOADING_MODEL: 'Downloading model as ',
+  DOWNLOADING_MODEL: "Downloading model as ",
 
-  DOWNLOADING_PROJECT: 'Downloading Project',
+  DOWNLOADING_PROJECT: "Downloading Project",
 
   ERROR_DOWNLOADING_MODEL: "Error downloading model",
 
   ERROR_LOADING_PROJECT: "Error loading project",
 
-  RETRIEVING_SUPPORTED_OUTPUTS: 'Supported outputs requested',
+  RETRIEVING_SUPPORTED_OUTPUTS: "Supported outputs requested",
 
-  GEPPETTO_INITIALIZED: 'Geppetto Initialised',
+  GEPPETTO_INITIALIZED: "Geppetto Initialised",
 
-  SIMULATION_OBSERVED: 'Sent: Simulation being observed',
+  SIMULATION_OBSERVED: "Sent: Simulation being observed",
 
-  WEBSOCKET_NOT_SUPPORTED: 'Error: WebSocket is not supported by this browser.',
+  WEBSOCKET_NOT_SUPPORTED: "Error: WebSocket is not supported by this browser.",
 
-  WEBSOCKET_OPENED: 'Info: WebSocket connection opened',
+  WEBSOCKET_OPENED: "Info: WebSocket connection opened",
 
   WEBSOCKET_CLOSED: "Info: WebSocket connection closed",
 
@@ -271,12 +271,13 @@ export default {
 
   WEBGL_FAILED: "Initialization Error: Unable to initialize WebGL",
 
-  WEBGL_MESSAGE: "Unable to detect WebGl in your browser. \n"
-            + "Try updating your browser and video card drivers to resolve issue",
+  WEBGL_MESSAGE:
+    "Unable to detect WebGl in your browser. \n" + "Try updating your browser and video card drivers to resolve issue",
 
   WORKERS_NOT_SUPPORTED: "Initialization Error: WebWorkers not suported",
 
-  WORKERS_NOT_SUPPORTED_MESSAGE: "Unable to detect WebWorkers support in your browser. Try any browser that is not from the stone age.",
+  WORKERS_NOT_SUPPORTED_MESSAGE:
+    "Unable to detect WebWorkers support in your browser. Try any browser that is not from the stone age.",
 
   ALL_COMMANDS_AVAILABLE_MESSAGE: "The following commands are available in the Geppetto console.",
 
@@ -290,8 +291,8 @@ export default {
 
   STOP_SIMULATION_TUTORIAL: "Tutorial Starting",
 
-  STOP_SIMULATION_TUTORIAL_MSG: "Current Simulation will be stopping in order to start tutorial, press"
-            + " Okay and enjoy the show!",
+  STOP_SIMULATION_TUTORIAL_MSG:
+    "Current Simulation will be stopping in order to start tutorial, press" + " Okay and enjoy the show!",
 
   SELECTING_ENTITY: "Selecting entity ",
   DESELECTING_ENTITY: "Deselecting entity ",
@@ -323,21 +324,20 @@ export default {
   BATCH_HIGHLIGHT_CONNECTIONS: "Batch highlight connections performed",
   BATCH_SHOW_CONNECTIONS_LINES: "Batch show/hide connection lines performed",
   OPERATION_NOT_SUPPORTED: "Operation not supported: ",
-  PROJECT_NOT_PERSISTED : "Project not persisted, run command Project.persist() or use Save button on top right corner.",
-  USER_NOT_LOGIN : "No user logged in.",
-  INSTANTIATING_MODEL : "Instantiating model",
-  RUNNING_SIMULATION : "Running Simulation",
-  IMPORTING_MODEL : "Importing Model",
-  EXPORTING_MODEL : "Exporting Model",
-
+  PROJECT_NOT_PERSISTED: "Project not persisted, run command Project.persist() or use Save button on top right corner.",
+  USER_NOT_LOGIN: "No user logged in.",
+  INSTANTIATING_MODEL: "Instantiating model",
+  RUNNING_SIMULATION: "Running Simulation",
+  IMPORTING_MODEL: "Importing Model",
+  EXPORTING_MODEL: "Exporting Model",
 
   /**
    * Error Modal Message
    */
-  ERROR_MODAL_TITLE : "There was an error",
-  ERROR_MODAL_TWITTER_MESSAGE : "Whoops, I broke Geppetto! @metacell help!",
-  ERROR_MODAL_TWITTER_URL : "http://geppetto.org",
-  ERROR_MODAL_NEW_ISSUE_URL : "https://github.com/MetaCell/geppetto-meta/issues/new",
+  ERROR_MODAL_TITLE: "There was an error",
+  ERROR_MODAL_TWITTER_MESSAGE: "Whoops, I broke Geppetto! @metacell help!",
+  ERROR_MODAL_TWITTER_URL: "http://geppetto.org",
+  ERROR_MODAL_NEW_ISSUE_URL: "https://github.com/MetaCell/geppetto-meta/issues/new",
 
   /**
    * GEPPETTO resources
@@ -371,7 +371,8 @@ export default {
    */
   IDLE_MESSAGE: "Are you still there?",
 
-  DISCONNECT_MESSAGE: "Prolonged inactivity has been detected and you have been disconnected from Geppetto. Please refresh your browser if you wish to continue",
+  DISCONNECT_MESSAGE:
+    "Prolonged inactivity has been detected and you have been disconnected from Geppetto. Please refresh your browser if you wish to continue",
 
   /**
    * Socket Messages
@@ -435,33 +436,31 @@ export default {
   SKELETON_ANIMATION_NODE: "SkeletonAnimation",
   PARTICLES_TYPE: "particles",
   // CAPABILITIES
-  VISUAL_CAPABILITY: 'VisualCapability',
-  STATE_VARIABLE_CAPABILITY: 'StateVariableCapability',
-  DERIVED_STATE_VARIABLE_CAPABILITY: 'DerivedStateVariableCapability',
-  PARAMETER_CAPABILITY: 'ParameterCapability',
-  CONNECTION_CAPABILITY: 'ConnectionCapability',
-  VISUAL_GROUP_CAPABILITY: 'VisualGroupCapability',
+  VISUAL_CAPABILITY: "VisualCapability",
+  STATE_VARIABLE_CAPABILITY: "StateVariableCapability",
+  DERIVED_STATE_VARIABLE_CAPABILITY: "DerivedStateVariableCapability",
+  PARAMETER_CAPABILITY: "ParameterCapability",
+  CONNECTION_CAPABILITY: "ConnectionCapability",
+  VISUAL_GROUP_CAPABILITY: "VisualGroupCapability",
   // CONNECTION DIRECTION
-  INPUT: 'input',
-  OUTPUT: 'output',
-  INPUT_OUTPUT: 'input_output',
-  DIRECTIONAL: 'DIRECTIONAL',
-  BIDIRECTIONAL: 'BIDIRECTIONAL',
+  INPUT: "input",
+  OUTPUT: "output",
+  INPUT_OUTPUT: "input_output",
+  DIRECTIONAL: "DIRECTIONAL",
+  BIDIRECTIONAL: "BIDIRECTIONAL",
   // FLOWS
-  SEARCH_FLOW: 'SearchFlow',
-  PLAY_FLOW: 'PlayFlow',
-  RUN_FLOW: 'RunFlow',
+  SEARCH_FLOW: "SearchFlow",
+  PLAY_FLOW: "PlayFlow",
+  RUN_FLOW: "RunFlow",
   // COMMMON TYPE PATHS
-  STATE_VARIABLE_TYPE_PATH: 'Model.common.StateVariable',
-  PARAMETER_TYPE_PATH: 'Model.common.Parameter',
-  MODEL_PREFIX_CLIENT: 'Model', // DO NOT ADD A DOT HERE THANKS
+  STATE_VARIABLE_TYPE_PATH: "Model.common.StateVariable",
+  PARAMETER_TYPE_PATH: "Model.common.Parameter",
+  MODEL_PREFIX_CLIENT: "Model", // DO NOT ADD A DOT HERE THANKS
   // CONTROL PANEL
-  CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT: 'Control Panel - error running source script:',
+  CONTROL_PANEL_ERROR_RUNNING_SOURCE_SCRIPT: "Control Panel - error running source script:",
 
   // USER PRIVILEGES
-  WRITE_PROJECT : "WRITE_PROJECT",
-  READ_PROJECT : "READ_PROJECT",
-  DOWNLOAD : "DOWNLOAD",
-}
-
-
+  WRITE_PROJECT: "WRITE_PROJECT",
+  READ_PROJECT: "READ_PROJECT",
+  DOWNLOAD: "DOWNLOAD",
+};

@@ -5,17 +5,13 @@
  * @author Giovanni Idili
  */
 
-
-function ObjectWrapper (options) {
-
+function ObjectWrapper(options) {
   this.wrappedObj = options.wrappedObj;
   this.parent = options.parent;
 }
 
 ObjectWrapper.prototype = {
-
   constructor: ObjectWrapper,
-
 
   /**
    * Gets the name of the node
@@ -99,8 +95,7 @@ ObjectWrapper.prototype = {
     } else {
       return this.getId();
     }
-
-  }
+  },
 };
 
 // Compatibility with new imports and old require syntax

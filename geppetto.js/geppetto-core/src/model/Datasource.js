@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a library that contains a set of types.
  *
@@ -7,16 +5,15 @@
  * @author Giovanni Idili
  */
 
-var ObjectWrapper = require('./ObjectWrapper').default;
+var ObjectWrapper = require("./ObjectWrapper").default;
 
-function Datasource (options) {
+function Datasource(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.queries = (options.queries != undefined) ? options.queries : [];
+  this.queries = options.queries != undefined ? options.queries : [];
 }
 
 Datasource.prototype = Object.create(ObjectWrapper.prototype);
 Datasource.prototype.constructor = Datasource;
-
 
 /**
  * Get url for this datasource

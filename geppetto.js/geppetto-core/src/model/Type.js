@@ -1,5 +1,3 @@
-
-
 /**
  * Client class use to represent a simple type.
  *
@@ -7,14 +5,14 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('../common/Utils').extend;
-const Variable = require('./Variable').default;
+const ObjectWrapper = require("./ObjectWrapper");
+const extend = require("../common/Utils").extend;
+const Variable = require("./Variable").default;
 
-function Type (options) {
+function Type(options) {
   ObjectWrapper.prototype.constructor.call(this, options);
   this.visualType = options.visualType;
-  this.superType = (options.superType != undefined) ? options.superType : [];
+  this.superType = options.superType != undefined ? options.superType : [];
   this.capabilities = [];
   this.variableReferences = [];
 }
@@ -76,7 +74,6 @@ Type.prototype.getVisualType = function () {
   return this.visualType;
 };
 
-
 /**
  * Extends with methods from another object
  *
@@ -124,7 +121,7 @@ Type.prototype.getVariableReferences = function () {
 };
 
 Type.prototype.getPath = function () {
-  if (this.parent != undefined & this.parent instanceof Variable) {
+  if ((this.parent != undefined) & (this.parent instanceof Variable)) {
     // if this is an anonymous type it doesn't have an id, hence we skip it
     return this.parent.getPath();
   } else {
@@ -132,10 +129,10 @@ Type.prototype.getPath = function () {
   }
 };
 
-Type.prototype.typeOf = function (type){
+Type.prototype.typeOf = function (type) {
   var match = false;
 
-  if (type.getPath() == this.getPath()){
+  if (type.getPath() == this.getPath()) {
     // check if it's the same type
     match = true;
   } else {
@@ -144,7 +141,7 @@ Type.prototype.typeOf = function (type){
 
     for (var i = 0; i < superTypes.length; i++) {
       match = this.typeOf(superTypes[i]);
-      if (match){
+      if (match) {
         break;
       }
     }
@@ -156,4 +153,3 @@ Type.prototype.typeOf = function (type){
 // Compatibility with new imports and old require syntax
 Type.default = Type;
 module.exports = Type;
-
