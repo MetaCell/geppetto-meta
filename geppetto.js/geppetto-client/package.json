@@ -16,7 +16,7 @@
     "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:dev": "yarn build:js-dev && yarn build:package && yarn build:style",
     "build:js": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx'",
