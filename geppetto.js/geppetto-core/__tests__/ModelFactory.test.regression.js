@@ -5,7 +5,6 @@ const Manager = require('../src/ModelManager').default;
 const ModelFactory = require('../src/ModelFactory').default;
 
 
-
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 
 
