@@ -14,7 +14,8 @@
   "license": "MIT",
   "scripts": {
     "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui",
-    "lint": "eslint . --fix",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
     "test": "jest",
     "build": "yarn build:js && yarn build:package && yarn build:style",
     "build:dev": "yarn build:js-dev && yarn build:package && yarn build:style",
