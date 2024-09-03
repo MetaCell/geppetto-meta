@@ -14,7 +14,7 @@ export const captureControlsActions = {
 };
 
 export const captureControlsActionsStart = (() => ({ type: captureControlsActions.START, }));
-export const captureControlsActionsStop = ((options) => ({
+export const captureControlsActionsStop = (options => ({
   type: captureControlsActions.STOP,
   data: { options:options },
 }))

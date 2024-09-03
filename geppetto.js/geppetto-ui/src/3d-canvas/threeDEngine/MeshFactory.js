@@ -66,8 +66,9 @@ export default class MeshFactory {
   async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
-    if (this.complexity > this.renderingTheshold)
-      throw(`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
+    if (this.complexity > this.renderingTheshold) {
+      throw (`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
+    }
   }
 
 
@@ -164,9 +165,7 @@ export default class MeshFactory {
     if (color === undefined) {
       color = Resources.COLORS.DEFAULT;
     }
-    const material = new this.THREE.LineBasicMaterial({
-      depthWrite: this.depthWrite,
-    });
+    const material = new this.THREE.LineBasicMaterial({ depthWrite: this.depthWrite, });
     this.setThreeColor(material.color, color);
     material.defaultColor = color;
     material.defaultOpacity = Resources.OPACITY.DEFAULT;
@@ -174,7 +173,7 @@ export default class MeshFactory {
   }
 
   setThreeColor (threeColor, color) {
-    // eslint-disable-next-line no-restricted-globals
+     
     if (!isNaN(color % 1)) {
       // we have an integer (hex) value
       threeColor.setHex(color);
@@ -277,7 +276,7 @@ export default class MeshFactory {
 
     const material = lines ? materials.line : materials.mesh;
 
-    // eslint-disable-next-line default-case
+     
     switch (node.eClass) {
     case Resources.PARTICLES:
       threeObject = this.createParticles(node);
@@ -483,7 +482,7 @@ export default class MeshFactory {
     let scene = null;
     const that = this;
     loader.parse(node.collada, function (collada) {
-      // eslint-disable-next-line prefer-destructuring
+       
       scene = collada.scene;
       scene.traverse(function (child) {
         if (child instanceof that.THREE.Mesh) {
@@ -579,9 +578,7 @@ export default class MeshFactory {
 
   async modelParser (loader, data) {
     let results = await new Promise((resolve, reject) => {
-      loader.parse(data, null, data => {
-        return resolve(data);
-      }, reject);
+      loader.parse(data, null, data => resolve(data), reject);
     });
     return results;
   }
@@ -594,8 +591,8 @@ export default class MeshFactory {
 
       mesh.instancePath = instancePath;
       /*
-      * if the model file is specifying a position for the loaded meshes then we translate them here
-      */
+       * if the model file is specifying a position for the loaded meshes then we translate them here
+       */
       if (position != null) {
         mesh.position.set(position.x, position.y, position.z);
       }
@@ -734,7 +731,7 @@ export default class MeshFactory {
       if (v !== undefined) {
         const m = this.visualModelMap[map[v]];
 
-        // eslint-disable-next-line no-eval
+         
         Instances.getInstance(map[v].substring(0, map[v].lastIndexOf('.')));
         const object = instance.getVisualType()[
           map[v].replace(`${instancePath}.`, '')
@@ -820,7 +817,7 @@ export default class MeshFactory {
       // merged mesh into corresponding geometry
       geometry.merge(m.geometry, m.matrix);
     }
-    // eslint-disable-next-line consistent-return
+     
     return true;
   }
 
@@ -987,7 +984,7 @@ export default class MeshFactory {
     return this.rayCasterLinePrecision;
   }
 
-  cleanWith3DObject(instance) {
+  cleanWith3DObject (instance) {
     for (let meshKey of Object.keys(this.meshes)) {
       if (this.meshes[meshKey].uuid === instance.uuid) {
         delete this.meshes[meshKey];

@@ -9,13 +9,11 @@ const CanvasToolTip = React.forwardRef((props, ref) => {
   React.useImperativeHandle(
     ref,
     () => ({
-      updateIntersected(updatedIntersection) {
-        if (updatedIntersection)
-        {
+      updateIntersected (updatedIntersection) {
+        if (updatedIntersection) {
           setIntersected(updatedIntersection);
           setTooltipVisible(true);
-        }
-        else {
+        } else {
           setTooltipVisible(false);
         }
       }

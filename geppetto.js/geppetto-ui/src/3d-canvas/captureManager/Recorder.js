@@ -3,7 +3,7 @@ import { formatDate } from "./utils";
 export class Recorder {
   constructor (canvas, recorderOptions) {
     this.stream = canvas.captureStream();
-    const {mediaRecorderOptions, blobOptions} = recorderOptions
+    const { mediaRecorderOptions, blobOptions } = recorderOptions
     this.setupMediaRecorder(mediaRecorderOptions)
     this.recordedBlobs = []
     this.blobOptions = blobOptions
@@ -18,7 +18,7 @@ export class Recorder {
   }
 
   setupMediaRecorder (options){
-    if(options == null){
+    if (options == null){
       options = { mimeType: 'video/webm' };
     }
     let mediaRecorder;
@@ -48,9 +48,9 @@ export class Recorder {
 
     this.mediaRecorder = mediaRecorder
     this.options = options
-    if(!this.blobOptions){
-      const {mimeType} = options
-      this.blobOptions = {type: mimeType}
+    if (!this.blobOptions){
+      const { mimeType } = options
+      this.blobOptions = { type: mimeType }
     }
   }
 
@@ -84,13 +84,13 @@ export class Recorder {
   }
 
   getRecordingBlob (options){
-    if(!options){
+    if (!options){
       options = this.blobOptions
     }
     return new Blob(this.recordedBlobs, options);
   }
 
-  animationLoop() {
+  animationLoop () {
     // draw nothing, but still draw
     this.ctx.drawArrays(this.ctx.POINTS, 0, 0)
     if (this.mediaRecorder.state !== "inactive") {

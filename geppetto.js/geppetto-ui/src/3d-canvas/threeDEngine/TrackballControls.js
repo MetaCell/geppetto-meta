@@ -240,7 +240,7 @@ class TrackballControls extends EventDispatcher {
     this.rotateCamera = (function () {
       // @metacell changes
       let axis = new Vector3(),
-      // end of @metacell changes
+        // end of @metacell changes
         quaternion = new Quaternion(),
         eyeDirection = new Vector3(),
         objectUpDirection = new Vector3(),
@@ -863,9 +863,11 @@ class TrackballControls extends EventDispatcher {
 
       event.preventDefault();
 
-      // _zoomEnd.x  = _zoomStart.x ;
-      // _zoomEnd.y  = _zoomStart.y ;
-      // _zoomEnd.z  = _zoomStart.z ;
+      /*
+       * _zoomEnd.x  = _zoomStart.x ;
+       * _zoomEnd.y  = _zoomStart.y ;
+       * _zoomEnd.z  = _zoomStart.z ;
+       */
 
       switch (event.deltaMode) {
 

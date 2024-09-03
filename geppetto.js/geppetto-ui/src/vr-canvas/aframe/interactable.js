@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+ 
 import { object } from 'prop-types';
 import { BRING_CLOSER } from '../Events';
 
@@ -152,10 +152,10 @@ AFRAME.registerComponent('interactable', {
         this.previousHandRotation.rhand = { ...this.rhand.object3D.rotation };
       } else if (this.lhand) {
         let rotate = {
-          // eslint-disable-next-line no-underscore-dangle
+           
           x:
             this.lhand.object3D.rotation.x - this.previousHandRotation.lhand._x,
-          // eslint-disable-next-line no-underscore-dangle
+           
           y:
             this.lhand.object3D.rotation.y - this.previousHandRotation.lhand._y,
           // z: this.rhand.object3D.rotation.z - this.previousHandRotation._z,

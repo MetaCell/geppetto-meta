@@ -3,51 +3,67 @@ class Tree extends Component {
   constructor (props) {
     super(props);
   }
-  render() { return null }
+  render () {
+    return null 
+  }
 }
 export default withStyles(styles)(Tree);
-// import SortableTree from '@nosferatu500/react-sortable-tree';
-// import {
-//   toggleExpandedForAll,
-//   changeNodeAtPath,
-//   walk,
-// } from '@nosferatu500/react-sortable-tree';
-// import { withStyles } from '@material-ui/core';
-// import '@nosferatu500/react-sortable-tree/style.css';
-// import PropTypes from 'prop-types';
+/*
+ * import SortableTree from '@nosferatu500/react-sortable-tree';
+ * import {
+ *   toggleExpandedForAll,
+ *   changeNodeAtPath,
+ *   walk,
+ * } from '@nosferatu500/react-sortable-tree';
+ * import { withStyles } from '@material-ui/core';
+ * import '@nosferatu500/react-sortable-tree/style.css';
+ * import PropTypes from 'prop-types';
+ */
 
 // const styles = () => ({ treeViewer: { height: '100%' } });
 
-// class Tree extends Component {
-//   constructor (props) {
-//     super(props);
+/*
+ * class Tree extends Component {
+ *   constructor (props) {
+ *     super(props);
+ */
 
-//     this.updateTreeData = this.updateTreeData.bind(this);
-//     this.expandAll = this.expandAll.bind(this);
-//     this.collapseAll = this.collapseAll.bind(this);
-//     this.state = { treeData: this.props.treeData };
-//   }
+/*
+ *     this.updateTreeData = this.updateTreeData.bind(this);
+ *     this.expandAll = this.expandAll.bind(this);
+ *     this.collapseAll = this.collapseAll.bind(this);
+ *     this.state = { treeData: this.props.treeData };
+ *   }
+ */
 
-//   updateTreeData (treeData) {
-//     this.setState({ treeData });
-//   }
+/*
+ *   updateTreeData (treeData) {
+ *     this.setState({ treeData });
+ *   }
+ */
 
-//   expand (expanded) {
-//     this.setState({
-//       treeData: toggleExpandedForAll({
-//         treeData: this.state.treeData,
-//         expanded,
-//       }),
-//     });
-//   }
+/*
+ *   expand (expanded) {
+ *     this.setState({
+ *       treeData: toggleExpandedForAll({
+ *         treeData: this.state.treeData,
+ *         expanded,
+ *       }),
+ *     });
+ *   }
+ */
 
-//   expandAll () {
-//     this.expand(true);
-//   }
+/*
+ *   expandAll () {
+ *     this.expand(true);
+ *   }
+ */
 
-//   collapseAll () {
-//     this.expand(false);
-//   }
+/*
+ *   collapseAll () {
+ *     this.expand(false);
+ *   }
+ */
 
 //   handleClick (event, rowInfo) {
 //     const toggleMode = this.props.toggleMode;
@@ -146,76 +162,88 @@ export default withStyles(styles)(Tree);
 //       });
 //     }
 
-//     // Update tree with latest changes
-//     this.updateTreeData(currentTreeData);
+/*
+ *     // Update tree with latest changes
+ *     this.updateTreeData(currentTreeData);
+ */
 
-//     // If there is a callback, we use it
-//     if (this.props.handleClick != undefined) {
-//       this.props.handleClick(event, rowInfo);
-//     }
-//   }
+/*
+ *     // If there is a callback, we use it
+ *     if (this.props.handleClick != undefined) {
+ *       this.props.handleClick(event, rowInfo);
+ *     }
+ *   }
+ */
 
-//   getNodeProps (rowInfo) {
-//     let nodeProps = {};
-//     nodeProps['onClick'] = event => this.handleClick(event, rowInfo);
+/*
+ *   getNodeProps (rowInfo) {
+ *     let nodeProps = {};
+ *     nodeProps['onClick'] = event => this.handleClick(event, rowInfo);
+ */
 
-//     if (this.props.getButtons !== undefined) {
-//       nodeProps['buttons'] = this.props.getButtons(rowInfo);
-//     }
-//     if (rowInfo.node.instance !== undefined) {
-//       nodeProps['style'] = { cursor: 'pointer' };
-//     }
-//     if (rowInfo.node.active) {
-//       nodeProps['className'] = 'activeNode';
-//     }
-//     if (this.props.getNodesProps !== undefined) {
-//       nodeProps['title'] = this.props.getNodesProps(rowInfo);
-//     }
-//     return nodeProps;
-//   }
+/*
+ *     if (this.props.getButtons !== undefined) {
+ *       nodeProps['buttons'] = this.props.getButtons(rowInfo);
+ *     }
+ *     if (rowInfo.node.instance !== undefined) {
+ *       nodeProps['style'] = { cursor: 'pointer' };
+ *     }
+ *     if (rowInfo.node.active) {
+ *       nodeProps['className'] = 'activeNode';
+ *     }
+ *     if (this.props.getNodesProps !== undefined) {
+ *       nodeProps['title'] = this.props.getNodesProps(rowInfo);
+ *     }
+ *     return nodeProps;
+ *   }
+ */
 
-//   render () {
-//     const {
-//       classes,
-//       style,
-//       searchQuery,
-//       onlyExpandSearchedNodes,
-//       controls,
-//       ...others
-//     } = this.props;
-//     return (
-//       <div className={classes.treeViewer} style={style}>
-//         {controls}
-//         <SortableTree
-//           style={style}
-//           treeData={this.state.treeData}
-//           canDrag={false}
-//           scaffoldBlockPxWidth={22}
-//           generateNodeProps={rowInfo => this.getNodeProps(rowInfo)}
-//           onChange={treeData => this.updateTreeData(treeData)}
-//           searchQuery={searchQuery !== undefined ? searchQuery : null}
-//           onlyExpandSearchedNodes={
-//             onlyExpandSearchedNodes !== undefined
-//               ? onlyExpandSearchedNodes
-//               : false
-//           }
-//           {...others}
-//         />
-//       </div>
-//     );
-//   }
-// }
+/*
+ *   render () {
+ *     const {
+ *       classes,
+ *       style,
+ *       searchQuery,
+ *       onlyExpandSearchedNodes,
+ *       controls,
+ *       ...others
+ *     } = this.props;
+ *     return (
+ *       <div className={classes.treeViewer} style={style}>
+ *         {controls}
+ *         <SortableTree
+ *           style={style}
+ *           treeData={this.state.treeData}
+ *           canDrag={false}
+ *           scaffoldBlockPxWidth={22}
+ *           generateNodeProps={rowInfo => this.getNodeProps(rowInfo)}
+ *           onChange={treeData => this.updateTreeData(treeData)}
+ *           searchQuery={searchQuery !== undefined ? searchQuery : null}
+ *           onlyExpandSearchedNodes={
+ *             onlyExpandSearchedNodes !== undefined
+ *               ? onlyExpandSearchedNodes
+ *               : false
+ *           }
+ *           {...others}
+ *         />
+ *       </div>
+ *     );
+ *   }
+ * }
+ */
 
-// Tree.defaultProps = {
-//   toggleMode: false,
-//   activateParentsNodeOnClick: true,
-//   getNodesProps: () => {},
-//   controls: null,
-//   onChange: () => {},
-//   searchMethod: () => {},
-//   searchFocusOffset: 0,
-//   searchFinishCallback: () => {},
-// }
+/*
+ * Tree.defaultProps = {
+ *   toggleMode: false,
+ *   activateParentsNodeOnClick: true,
+ *   getNodesProps: () => {},
+ *   controls: null,
+ *   onChange: () => {},
+ *   searchMethod: () => {},
+ *   searchFocusOffset: 0,
+ *   searchFinishCallback: () => {},
+ * }
+ */
 
 // Tree.propTypes = {
 //   /**

@@ -430,16 +430,16 @@ GeppettoGraphVisualization.propTypes = {
       id : PropTypes.number.isRequired 
     })).isRequired,
     /**
-   * Links between nodes in the graph
-   */
+     * Links between nodes in the graph
+     */
     links : PropTypes.arrayOf(PropTypes.shape({
     /**
      * Source node of the link
      */
       source: PropTypes.number.isRequired,
-    /**
-     * Target node of the link
-     */
+      /**
+       * Target node of the link
+       */
       target: PropTypes.number.isRequired
     })).isRequired
   }),
