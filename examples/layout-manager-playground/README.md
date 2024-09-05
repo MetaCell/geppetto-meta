@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Vite](https://vitejs.dev/guide/) using React template.
 
 To start develop, you need to setup yalc to link geppetto libraries to the current project.
 
@@ -12,51 +12,37 @@ bash setup.sh
 
 ## Available Scripts
 
-In the project directory, you can run:
+You can run the project in dev or preview mode using `yarn dev` and `yarn preview`.
+To build the project, use `yarn build`.
 
-### `npm run start`
+Here is a description of what each command is doing.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### `yarn dev`
 
-The page will reload if you make edits.\
+Runs the app in the development mode.
+Open [http://localhost:5143](http://localhost:5143) to view it in the browser (the port might be different on your machine, check the logs displayed by vite to be sure you are targeting the right address).
+
+The page will reload if you make edits.
 You will also see any lint errors in the console.
 
-While developing on the geppetto-client, modifications can be hot loaded by running
+If you are developping at the same time on any of the geppetto.js lib (core, ui, client), you can run:
 
 ```
-bash update_geppetto.sh
+bash watch-geppettojs-updates.sh
 ```
 
+This command will launch a `watch` on all the geppetto.js libraries and hot-reload the application if any of the source code of those dependencies changes.
 
 
-### `npm run test`
+### `yarn preview`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs the app in preview mode.
+This means that a local webserver is launched to serve the app, but hot-reloading is not avaiable and the application is served from the `dist` directory where the application have been compiled/built.
 
-### `npm run  build`
 
-Builds the app for production to the `build` folder.\
+### `yarn build`
+
+Builds the app for production to the `dist` folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

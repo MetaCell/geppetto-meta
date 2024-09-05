@@ -18,7 +18,7 @@
     "lint-fix": "eslint . --fix",
     "test": "jest --passWithNoTests",
     "build": "yarn build:js && yarn build:package && yarn build:style",
-    "build:dev": "yarn build:js-dev && yarn build:package && yarn build:style",
+    "build:dev": "yarn build:ts && yarn build:types && yarn build:package && yarn build:style",
     "build:js": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx'",
     "build:js-dev": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx' --source-maps",
     "build:style": "cp -r src/style build",
@@ -27,7 +27,7 @@
     "build:ts": "tsc",
     "dist": "cd build && yarn publish",
     "publish:yalc": "yalc push --sig && cd build && yalc publish --push",
-    "watch": "nodemon -e js,ts,jsx,tsx --ignore build --exec \"yarn build:ts && yarn build:types && cd build && yalc push --changed\""
+    "watch": "nodemon -e js,ts,jsx,tsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",

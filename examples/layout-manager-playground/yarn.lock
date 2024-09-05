@@ -572,7 +572,7 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@^3.0.0":
+"@metacell/geppetto-meta-client@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-2.0.0.tgz#4568b7208b3e069d576c11c3a129ed9ebe3937f0"
   integrity sha512-R0dYojiM6EyvCjphlNnMeOXUbPW47filu/5JmQNJHGIK3tQA66YaZJJ6DnxIvpLS4hsSe27EO2vIdkAQv0NbSQ==
@@ -585,12 +585,12 @@
     redux "^4.1.0"
     url-join "^4.0.0"
 
-"@metacell/geppetto-meta-core@^3.0.0":
+"@metacell/geppetto-meta-core@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-2.0.0.tgz#040d0c16adc5f535c824d4638b7a2eb7a8729d2a"
   integrity sha512-pweZ4i32NraIRf9W0Q5Kh6xVy1eyJmCOGOh/Sh1yARLts7cdNocHp5yj4V6TX9BLfHXL59bK8sRxEpo78tsnvQ==
 
-"@metacell/geppetto-meta-ui@^3.0.0":
+"@metacell/geppetto-meta-ui@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-2.0.0.tgz#1537bd072e8e74e69f9d444164044297e5ddb41a"
   integrity sha512-0C1F1VwMq/kjPJSGqoD/AyJqBKlMqINkcS0cvsq5HNBgXKuVqnffdnVTWvZo+adIXaA33bS/pXmBKi/l+LmMIQ==
