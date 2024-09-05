@@ -1,6 +1,6 @@
- 
+
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import MeshFactory from '@metacell/geppetto-meta-ui/3d-canvas/threeDEngine/MeshFactory';
 import 'aframe';
@@ -98,7 +98,7 @@ class Canvas extends Component {
       300,
       1,
       null,
-      THREE    
+      THREE
     );
 
     this.sceneRef.current.addEventListener('mesh_hover', this.handleHover);
@@ -108,7 +108,7 @@ class Canvas extends Component {
     );
     this.sceneRef.current.addEventListener('mesh_click', this.handleClick);
     document.addEventListener('keypress', this.handleKeyboardPress);
-    
+
     this.setEntityMeshes();
   }
 
@@ -197,7 +197,7 @@ class Canvas extends Component {
   }
 
   handleKeyboardPress (evt) {
-     
+
     if (evt.keyCode === SHORTCUTS.COLLAPSE_MENU) {
       const { isMenuVisible } = this.state;
       this.setState({ isMenuVisible: !isMenuVisible });
@@ -226,7 +226,7 @@ class Canvas extends Component {
     const preventDefault = handleClick(evt);
     if (!preventDefault && evt.detail.getObject3D('mesh') !== undefined) {
       if (Object.keys(this.selectedMeshes).includes(evt.detail.id)) {
-         
+
         evt.detail.selected = false;
         const color = this.selectedMeshes[evt.detail.id];
         if (
@@ -243,7 +243,7 @@ class Canvas extends Component {
         delete this.selectedMeshes[evt.detail.id];
         this.hoveredMeshes = { ...evt.detail.getObject3D('mesh').material.color, };
       } else {
-         
+
         evt.detail.selected = true;
         const meshCopy = evt.detail.getObject3D('mesh').material.defaultColor;
         this.selectedMeshes[evt.detail.id] = meshCopy;

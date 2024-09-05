@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import * as d3 from 'd3-force-3d'
 import * as THREE from 'three'
 import ForceGraph2D from 'react-force-graph-2d';
@@ -22,7 +22,7 @@ export default class GeppettoGraphVisualization extends Component {
   // Gap to leave between lines in text inside nodes in 2D graphs
   doubleGap = Math.floor((this.props.nodeRelSize || 20) * 0.25)
   tripleGap = Math.floor((this.props.nodeRelSize || 20) * 0.35)
-  
+
   timeToCenter2DCamera = this.props.timeToCenter2DCamera || 0
 
   getNodeLabel = this.props.nodeLabel ? this.fnOrField(this.props.nodeLabel) : node => node.name
@@ -67,8 +67,8 @@ export default class GeppettoGraphVisualization extends Component {
   }
 
   /**
-   * 
-   * @param {*} fnOrString 
+   *
+   * @param {*} fnOrString
    */
   fnOrField (fnOrString) {
     if (typeof fnOrString === 'string' || fnOrString instanceof String) {
@@ -103,8 +103,8 @@ export default class GeppettoGraphVisualization extends Component {
       }
     );
   }
-  
-  // wireframe the loaded obj file 
+
+  // wireframe the loaded obj file
   wireframeAnObject = object => {
     const { wireframeColor = 0x6893DE } = this.props
     object.traverse( child => {
@@ -155,11 +155,11 @@ export default class GeppettoGraphVisualization extends Component {
 
     const minVector = new THREE.Vector3( minX, minY, minZ );
     const maxVector = new THREE.Vector3( maxX, maxY, maxZ );
-    
+
     return [minVector, maxVector, maxX || minY || maxY || minY || maxZ || minZ]
   }
 
-  // cameraSizeRatioToNodeSize controls how big nodes look compared to 
+  // cameraSizeRatioToNodeSize controls how big nodes look compared to
   zoomCameraToFitScene (object = undefined, cameraSizeRatioToNodeSize = 400) {
     var offset = this.props.offset ? this.props.offset : 1.25
     const size = new THREE.Vector3();
@@ -172,20 +172,20 @@ export default class GeppettoGraphVisualization extends Component {
     } else {
       // if we maunally set the position of nodes in the graph, we need to adjust the camera in order to see those fixed nodes.
       const [ minV, maxV, containsFixedPoints ] = this.getMaxAndMinVectors()
-      if (!containsFixedPoints) { 
+      if (!containsFixedPoints) {
         this.setState({ nodeSize: 1 })
-        return 
+        return
       }
       boundingBox.set(minV, maxV);
     }
-    
+
     boundingBox.getCenter(center);
     boundingBox.getSize(size);
 
     const maxDim = Math.max( size.x, size.y, size.z );
-    
+
     const fov = this.ggv.current.camera().fov * ( Math.PI / 180 );
-    
+
     let cameraZ = Math.abs( maxDim / 4 * Math.tan( fov * 2 ) )
     cameraZ *= offset;
 
@@ -267,7 +267,7 @@ export default class GeppettoGraphVisualization extends Component {
       const textLength = ctx.measureText(linkText).width
       const subX = Math.cos(angle2) * textLength / 2
       const subY = Math.sin(angle2) * textLength / 2
-      
+
       // Draw line from source node to link label
       ctx.beginPath();
       ctx.moveTo(xs, ys);
@@ -280,7 +280,7 @@ export default class GeppettoGraphVisualization extends Component {
       ctx.lineTo(xt, yt);
       ctx.stroke()
     }
-    
+
     // Draw text for link label
     ctx.save();
     ctx.translate(cx, cy);
@@ -294,7 +294,7 @@ export default class GeppettoGraphVisualization extends Component {
     if ( link.target.width && link.target.height ){
       nodeBorderDistance = Math.sqrt((link.target.width / 2 ) * (link.target.width / 2 ) + (link.target.height / 2 ) * (link.target.height / 2 ));
     }
-    
+
     // Draw arrow to indicate link direction
     var dist = (linkLength / 2 - nodeBorderDistance) - arrowSize
     ctx.fillStyle = color;
@@ -307,9 +307,9 @@ export default class GeppettoGraphVisualization extends Component {
     ctx.lineTo(dist, 2.5);
     ctx.lineTo(dist, -2.5);
     ctx.fill()
-    
+
     ctx.restore();
-    
+
 
   }
 
@@ -326,27 +326,27 @@ export default class GeppettoGraphVisualization extends Component {
     const labelColor = this.getNodeLabelColor(node)
 
     ctx.font = this.font
-    
+
     var label = this.getNodeLabel(node);
-    
+
     ctx.fillStyle = color
-    ctx.beginPath(); 
+    ctx.beginPath();
     ctx.arc(node.x, node.y, this.size, 0, 2 * Math.PI, false)
     ctx.fill();
 
     ctx.fillStyle = getDarkerColor(color)
-    ctx.beginPath(); 
+    ctx.beginPath();
     ctx.arc(node.x, node.y, this.size - this.borderSize, 0, 2 * Math.PI, false)
     ctx.fill();
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = labelColor;
-    
+
     const maxCharsPerLine = Math.floor(this.size * 1.75 / ctx.measureText("a").width)
-      
+
     const nodeLabel = splitter(label, maxCharsPerLine)
-    
+
     // Use single, double or triple lines to put text inside node
     if (nodeLabel.length == 1) {
       ctx.fillText(nodeLabel[0], node.x, node.y);
@@ -367,9 +367,9 @@ export default class GeppettoGraphVisualization extends Component {
 
   render () {
     const { data, d2 = false, xGap = 20, yGap = 40, ...others } = this.props;
-    
+
     this.addFixedPositionToNodes(data)
-     
+
     const commonProps = {
       ref: this.ggv,
       graphData: data,
@@ -381,15 +381,15 @@ export default class GeppettoGraphVisualization extends Component {
 
     if (d2) {
       return <div id={this.props.id ? this.props.id : "graph-2d"} style={this.props.containerStyle ? this.props.containerStyle : null} >
-        { this.props.controls ? this.props.controls : null } 
-        <ForceGraph2D 
+        { this.props.controls ? this.props.controls : null }
+        <ForceGraph2D
           linkCanvasObjectMode={() => "replace"}
-          linkCanvasObject={this.linkCanvasObject.bind(this)} 
-          nodeCanvasObject={this.nodeWithName.bind(this)} 
-          nodeRelSize={this.size} 
+          linkCanvasObject={this.linkCanvasObject.bind(this)}
+          nodeCanvasObject={this.nodeWithName.bind(this)}
+          nodeRelSize={this.size}
           {...commonProps}/>
       </div>
-    } 
+    }
     return <ForceGraph3D {...commonProps} />
   }
 }
@@ -427,7 +427,7 @@ GeppettoGraphVisualization.propTypes = {
     /**
      * Node identifier
      */
-      id : PropTypes.number.isRequired 
+      id : PropTypes.number.isRequired
     })).isRequired,
     /**
      * Links between nodes in the graph
@@ -506,13 +506,13 @@ GeppettoGraphVisualization.propTypes = {
    */
   forceChargeStrength : PropTypes.number,
   /**
-   * Transition time in ms when centering camera in 2D Graph after window resize event. 
+   * Transition time in ms when centering camera in 2D Graph after window resize event.
    * (Default : 0)
    */
   timeToCenter2DCamera : PropTypes.number,
   /**
-   * Creates a radial attractive force of radial circle equal to forceRadial. 
-   * Useful to avoid nodes scattering away when they have no links. 
+   * Creates a radial attractive force of radial circle equal to forceRadial.
+   * Useful to avoid nodes scattering away when they have no links.
    * (Default : 1)
    */
   forceRadial : PropTypes.number

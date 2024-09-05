@@ -2,7 +2,7 @@ import React from 'react';
 import { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
 import Griddle from './utils/Griddle';
 import BaseIconComponent from './BaseIconComponent';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 
 import PopupColorPicker from './PopupColorPicker';
 import './listviewer.less';

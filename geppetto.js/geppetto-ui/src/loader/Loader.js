@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -35,7 +35,7 @@ class Loader extends Component {
       className,
       messagesInterval
     } = this.props;
-    
+
     if (messagesInterval && messages.length) {
       setTimeout(() => {
         const { messageIndex } = this.state;
@@ -43,7 +43,7 @@ class Loader extends Component {
         if (messages.length && active) {
           this.setState({ messageIndex: (messageIndex + 1) % messages.length });
         }
-        
+
       }, messagesInterval);
     }
 
@@ -98,7 +98,7 @@ class Loader extends Component {
           onClick={handleClose}
           style={backgroundStyle}
           className={classes.backdrop}
-          classes={{ root: classes.root, }} // class name, e.g. `classes-nesting-root-x` 
+          classes={{ root: classes.root, }} // class name, e.g. `classes-nesting-root-x`
         >
           {content}
         </Backdrop>

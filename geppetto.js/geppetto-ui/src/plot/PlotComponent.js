@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
@@ -257,7 +257,7 @@ class PlotComponent extends Component {
     const { data } = this;
     const { plots, id } = this.props
 
-    // instancePaths 
+    // instancePaths
     let text = plots.map(plot => this.removeLastPath(plot.y))
     text.unshift(plots[0].x);
     text = text.join(' ')
@@ -388,7 +388,7 @@ PlotComponent.propTypes = {
    */
   id: PropTypes.string.isRequired,
   /**
-   * Array of objects, each one containing the x,y position of a point in the line/scatter plot. A third property named 
+   * Array of objects, each one containing the x,y position of a point in the line/scatter plot. A third property named
    * 'lineOptions' can be given, this will be used for modifying the visualization of the line plots.
    */
   plots: PropTypes.arrayOf(PropTypes.shape({

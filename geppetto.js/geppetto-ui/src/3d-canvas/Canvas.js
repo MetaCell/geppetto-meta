@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import CameraControls from "../camera-controls/CameraControls";
@@ -25,7 +25,7 @@ class Canvas extends Component {
     this.cameraControls = React.createRef();
     this.state = {
       isCanvasReady: false,
-      error: null  
+      error: null
     }
     this.constructorFromProps(props);
     this.onResize = this.onResize.bind(this);
@@ -80,7 +80,7 @@ class Canvas extends Component {
       dracoDecoderPath
     );
     onUpdateStart();
-    
+
     await this.handleEngineUpdate(data);
 
     this.threeDEngine.updateExternalThreeDObjects(threeDObjects)

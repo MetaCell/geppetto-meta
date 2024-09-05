@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import { CircularProgress } from '@material-ui/core'
 import './PythonConsole.less';
 
