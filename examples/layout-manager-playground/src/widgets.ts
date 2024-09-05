@@ -1,4 +1,3 @@
-// @ts-ignore
 import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common/layout/model";
 
 

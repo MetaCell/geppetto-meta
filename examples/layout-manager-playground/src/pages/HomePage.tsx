@@ -16,11 +16,8 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
-// @ts-ignore
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
-// @ts-ignore
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
-// @ts-ignore
 import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 
@@ -29,8 +26,9 @@ import { componentWidget } from "../widgets";
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
-  // @ts-ignore
+  // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
   const widgets = useSelector(state => state.widgets);
+  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
   const [name, setName] = useState("Component 1");
@@ -40,6 +38,7 @@ const HomePage = () => {
     if (LayoutComponent === undefined) {
       const myManager = getLayoutManagerInstance();
       if (myManager) {
+      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
       }
     }
@@ -65,7 +64,7 @@ const HomePage = () => {
         display: 'flex',
         padding: 2
       }}>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event: any) =>
+        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
           setName(event.target.value as string)
         }/>
         <FormControl>
