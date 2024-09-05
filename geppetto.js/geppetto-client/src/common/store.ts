@@ -3,14 +3,14 @@ import { callbacksMiddleware } from './middleware/geppettoMiddleware';
 
 import { initLayoutManager } from './layout/LayoutManager';
 import EventManager from './EventManager';
-import { layoutInitialState, LayoutState, layout, widgets } from './reducer/geppettoLayout';
-import geppettoClientReducer, { clientInitialState, ClientState } from './reducer/geppettoClient';
-import { WidgetMap, ComponentMap } from "./layout/model";
-import TabsetIconFactory from "./layout/TabsetIconFactory";
+import { layoutInitialState, type LayoutState, layout, widgets } from './reducer/geppettoLayout';
+import geppettoClientReducer, { clientInitialState, type ClientState } from './reducer/geppettoClient';
+import type { WidgetMap, ComponentMap } from "./layout/model";
+import type TabsetIconFactory from "./layout/TabsetIconFactory";
 import { reducerDecorator } from "./reducer/reducerDecorator"
-import { GeppettoAction } from "../common/actions";
+import type { GeppettoAction } from "../common/actions";
 
-declare var window: any;
+declare let window: any;
 
 interface GeppettoState{
   client: ClientState,
