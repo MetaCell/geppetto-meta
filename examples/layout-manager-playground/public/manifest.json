@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Layout Manager Playground",
+  "name": "Simple App Playground for Layout Manager",
   "icons": [],
   "start_url": ".",
   "display": "standalone",

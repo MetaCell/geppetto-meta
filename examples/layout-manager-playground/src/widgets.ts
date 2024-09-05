@@ -1,5 +1,5 @@
 // @ts-ignore
-import { WidgetStatus, Widget } from "@metacell/geppetto-meta-client/common/layout/model";
+import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common/layout/model";
 
 
 
@@ -13,6 +13,7 @@ export const componentWidget = (name: string, color: string, panelName="panel1")
   props: {
     name,
     color
-  }
+  },
+  session: undefined,
+  config: undefined
 });
-
