@@ -82,7 +82,6 @@ class TabSetNode extends Node implements IDraggable, IDropTarget {
     /** @hidden @internal */
     private calculatedHeaderBarHeight: number;
 
-    /** @hidden @internal */
     constructor(model: Model, json: any) {
         super(model);
 

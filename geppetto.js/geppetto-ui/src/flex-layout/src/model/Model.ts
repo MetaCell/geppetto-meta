@@ -102,14 +102,12 @@ class Model {
 
     /** @hidden @internal */
     private _attributes: Record<string, any>;
-    /** @hidden @internal */
-    private _idMap: Record<string, Node>;
+    public _idMap: Record<string, Node>;
     /** @hidden @internal */
     private _nextId: number;
     /** @hidden @internal */
     private _changeListener?: () => void;
-    /** @hidden @internal */
-    private _root?: RowNode;
+    public _root?: RowNode;
     /** @hidden @internal */
     private _borders: BorderSet;
     /** @hidden @internal */
@@ -490,7 +488,7 @@ class Model {
      * set callback called when a new TabSet is created.
      * The tabNode can be undefined if it's the auto created first tabset in the root row (when the last
      * tab is deleted, the root tabset can be recreated)
-     * @param onCreateTabSet 
+     * @param onCreateTabSet
      */
     setOnCreateTabSet(onCreateTabSet: (tabNode?: TabNode) => ITabSetAttributes) {
         this._onCreateTabSet = onCreateTabSet;
