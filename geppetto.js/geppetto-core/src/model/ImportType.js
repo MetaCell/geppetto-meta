@@ -62,7 +62,7 @@ ImportType.prototype.getModelInterpreterId = function () {
  *
  * @command ImportType.resolve()
  */
-ImportType.prototype.resolve = (callback) => {
+ImportType.prototype.resolve = callback => {
   console.warn("Deprecated api call: use the GeppettoManager api");
   console.trace();
 };

@@ -17,7 +17,7 @@ function ImportValue (options) {
 ImportValue.prototype = Object.create(Value.prototype);
 ImportValue.prototype.constructor = ImportValue;
 
-ImportValue.prototype.resolve = (callback) => {
+ImportValue.prototype.resolve = callback => {
   console.warn("Deprecated api call: use the GeppettoManager api");
   console.trace();
 };
