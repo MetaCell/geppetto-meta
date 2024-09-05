@@ -12,6 +12,7 @@ function configureStore() {
     reducers,
     INIT_STATE,
     middlewares,
+    // @ts-ignore
     { baseLayout, componentMap, isMinimizeEnabled },
   );
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import HomePage from "./pages/HomePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';

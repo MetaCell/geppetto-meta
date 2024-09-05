@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import {
   Box,
@@ -14,13 +15,13 @@ import {
 } from "@mui/material"
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOnIcon from '@mui/icons-material/Visibility';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select, { type SelectChangeEvent } from '@mui/material/Select';
 // @ts-ignore
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 // @ts-ignore
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 // @ts-ignore
-import { Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
+import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 
 import { componentWidget } from "../widgets";
@@ -34,7 +35,7 @@ const HomePage = () => {
   const [panel, setPanel] = useState("topLeft");
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
-    
+
   useEffect(() => {
     if (LayoutComponent === undefined) {
       const myManager = getLayoutManagerInstance();
@@ -104,7 +105,7 @@ const HomePage = () => {
 
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
-            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status == WidgetStatus.ACTIVE}>
+            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
               {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
             </IconButton>
           </Tooltip>
