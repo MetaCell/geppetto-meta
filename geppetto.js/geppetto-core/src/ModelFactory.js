@@ -7,36 +7,36 @@
  * @author Matteo Cantarelli
  */
 
-const GeppettoModel = require('./model/GeppettoModel').default;
-const Library = require('./model/Library').default;
-const Type = require('./model/Type').default;
-const Variable = require('./model/Variable').default;
-const Value = require('./model/Value').default;
-const Datasource = require('./model/Datasource').default;
-const Query = require('./model/Query').default;
-const CompositeType = require('./model/CompositeType').default;
-const CompositeVisualType = require('./model/CompositeVisualType').default;
-const ArrayType = require('./model/ArrayType').default;
-const ImportType = require('./model/ImportType').default;
-const ImportValue = require('./model/ImportValue').default;
-const Instance = require('./model/Instance').default;
-const ExternalInstance = require('./model/ExternalInstance').default;
-const ArrayInstance = require('./model/ArrayInstance').default;
-const ArrayElementInstance = require('./model/ArrayElementInstance').default;
-const VisualGroup = require('./model/VisualGroup').default;
-const VisualGroupElement = require('./model/VisualGroupElement').default;
-const Pointer = require('./model/Pointer').default;
-const PointerElement = require('./model/PointerElement').default;
-const SimpleInstance = require('./model/SimpleInstance').default;
-const SimpleConnectionInstance = require('./model/SimpleConnectionInstance').default;
-const World = require('./model/World').default;
-const AVisualCapability = require('./capabilities/AVisualCapability').default;
-const AVisualGroupCapability = require('./capabilities/AVisualGroupCapability').default;
-const AConnectionCapability = require('./capabilities/AConnectionCapability').default;
-const AParameterCapability = require('./capabilities/AParameterCapability').default;
-const AParticlesCapability = require('./capabilities/AParticlesCapability').default;
-const AStateVariableCapability = require('./capabilities/AStateVariableCapability').default;
-const ADerivedStateVariableCapability = require('./capabilities/ADerivedStateVariableCapability').default;
+import GeppettoModel from './model/GeppettoModel';
+import Library from './model/Library';
+import Type from './model/Type';
+import Variable from './model/Variable';
+import Value from './model/Value';
+import Datasource from './model/Datasource';
+import Query from './model/Query';
+import CompositeType from './model/CompositeType';
+import CompositeVisualType from './model/CompositeVisualType';
+import ArrayType from './model/ArrayType';
+import ImportType from './model/ImportType';
+import ImportValue from './model/ImportValue';
+import Instance from './model/Instance';
+import ExternalInstance from './model/ExternalInstance';
+import ArrayInstance from './model/ArrayInstance';
+import ArrayElementInstance from './model/ArrayElementInstance';
+import VisualGroup from './model/VisualGroup';
+import VisualGroupElement from './model/VisualGroupElement';
+import Pointer from './model/Pointer';
+import PointerElement from './model/PointerElement';
+import SimpleInstance from './model/SimpleInstance';
+import SimpleConnectionInstance from './model/SimpleConnectionInstance';
+import World from './model/World';
+import AVisualCapability from './capabilities/AVisualCapability';
+import AVisualGroupCapability from './capabilities/AVisualGroupCapability';
+import AConnectionCapability from './capabilities/AConnectionCapability';
+import AParameterCapability from './capabilities/AParameterCapability';
+import AParticlesCapability from './capabilities/AParticlesCapability';
+import AStateVariableCapability from './capabilities/AStateVariableCapability';
+import ADerivedStateVariableCapability from './capabilities/ADerivedStateVariableCapability';
 
 
 import Resources from './Resources';
@@ -76,18 +76,18 @@ export const ModelFactory = {
    */
   createGeppettoModel: function (jsonModel, storeModel, populateRefs) {
     // set defaults for optional flags
-    if (storeModel == undefined) {
+    if (storeModel === undefined) {
       // default behaviour store model
       storeModel = true;
     }
-    if (populateRefs == undefined) {
+    if (populateRefs === undefined) {
       // default behaviour populate type references
       populateRefs = true;
     }
 
-    var geppettoModel = null;
+    let geppettoModel = null;
 
-    if (jsonModel.eClass == 'GeppettoModel') {
+    if (jsonModel.eClass === 'GeppettoModel') {
       if (storeModel) {
         // store raw model for easy access during model building operations
         this.rawGeppetoModel = jsonModel;
@@ -142,14 +142,14 @@ export const ModelFactory = {
         if (geppettoModel.getCurrentWorld()) {
           this.populateInstanceReferences(geppettoModel);
           // Add instances from the default world to allPaths
-          let staticInstancesPaths = this._getStaticInstancePaths(geppettoModel);
+          const staticInstancesPaths = this._getStaticInstancePaths(geppettoModel);
           this.allPaths = this.allPaths.concat(staticInstancesPaths);
           this.allPathsIndexing = this.allPathsIndexing.concat(staticInstancesPaths);
         }
       }
-        
+
     }
-          
+
     return geppettoModel;
   },
 
@@ -180,7 +180,7 @@ export const ModelFactory = {
     if (instance.value) {
       instance.value = this.createValue(rawInstance, { wrappedObj: rawInstance.value });
     }
-          
+
     return instance;
   },
 
@@ -198,12 +198,12 @@ export const ModelFactory = {
           if (node instanceof Variable && children[i] instanceof Type){
             // it's an anonymous type we don't want it to be in the path
             this.populateChildrenShortcuts(children[i]);
-                            
+
             var grandChildren = children[i].getChildren();
             for (var j = 0; j < grandChildren.length; j++) {
               node[grandChildren[j].getId()] = grandChildren[j];
             }
-                            
+
             continue;
           }
           if (node.getMetaType() != Resources.ARRAY_INSTANCE_NODE) {
@@ -217,8 +217,8 @@ export const ModelFactory = {
   },
 
   populateInstanceReferences: function (geppettoModel) {
-    if (!geppettoModel.getWorlds().length) { 
-      return; 
+    if (!geppettoModel.getWorlds().length) {
+      return;
     }
 
     for (let world of geppettoModel.getWorlds()) {
@@ -622,7 +622,7 @@ export const ModelFactory = {
   populateConnections: function (instance) {
     // check if it's a connection
     if (instance.getMetaType() === Resources.SIMPLE_CONNECTION_INSTANCE_NODE){
-          
+
       if (!instance.a) {
         console.error(`Error while adding connection ${instance.getId()}: cannot find first connection`, instance)
       }
@@ -634,12 +634,12 @@ export const ModelFactory = {
         } else {
           console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
         }
-      } 
-          
+      }
+
       if (!instance.b) {
         console.error(`Error while adding connection ${instance.getId()}: cannot find second connection`, instance)
       }
-          
+
       if (instance.b?.$ref !== undefined) {
         const ref = instance.b.$ref;
         instance.b = this.resolve(ref);
@@ -648,8 +648,8 @@ export const ModelFactory = {
         } else {
           console.error(`Error resolving reference ${ref}  while adding connection ${instance.getId()} `)
         }
-      } 
-          
+      }
+
       return;
     }
 
@@ -841,7 +841,7 @@ export const ModelFactory = {
     }
 
     // STEP 3: add variables if any new ones are found (both to object model and json model)
-        
+
     // STEP 3a: merge old geppettoModel.variables
     let diffVars = diffModel.variables;
     diffReport.variables = this._mergeVariables(diffVars, this.geppettoModel);
@@ -851,7 +851,7 @@ export const ModelFactory = {
     if (currentWorld) {
       diffVars = diffModel.getCurrentWorld().getVariables();
       diffReport.worlds = rawModel.worlds.map(world => ({ ...world, variables: [], instances: [] }))
-          
+
       // TODO handle multiple worlds
       diffReport.worlds[0].variables = diffReport.worlds[0].variables.concat(
         this._mergeVariables(diffVars, currentWorld)
@@ -859,11 +859,11 @@ export const ModelFactory = {
 
       // TODO handle multiple worlds
       diffReport.worlds[0].instances = this._mergeInstances(
-        diffModel.getCurrentWorld().getInstances(), 
+        diffModel.getCurrentWorld().getInstances(),
         currentWorld);
       this.populateInstanceReferences(diffModel);
     }
-        
+
     return diffReport;
   },
 
@@ -882,7 +882,7 @@ export const ModelFactory = {
 
       // if no match, add it, it's actually new
       if (!match) {
-            
+
         if (wrappedObj.variables == undefined) {
           wrappedObj.variables = [];
         }
@@ -912,7 +912,7 @@ export const ModelFactory = {
   },
 
   /**
-   * Merge simple instances 
+   * Merge simple instances
    * @param {*} diffInst wrapped instance objects to be added
    * @param {*} diffReportInst diff report list to be filled
    * @param {World} parent - parent container: the world in which the instances are defined
@@ -933,9 +933,9 @@ export const ModelFactory = {
       }
 
       diffInst[x].parent = this.geppettoModel;
-          
+
       this.populateTypeReferences(diffInst[x]);
-          
+
       const match = currentModelInst[diffInst[x].getId()];
       if (match) {
         const matchIdx = currentModelInst.findIndex(currModelVar => diffInst[x].getPath() == currModelVar.getPath());
@@ -949,9 +949,9 @@ export const ModelFactory = {
         wrappedObj.instances.push(diffInst[x].getWrappedObj());
 
         // add variable to geppetto object model
-            
+
         currentModelInst.push(diffInst[x]);
-            
+
 
         // find new potential instance paths and add to the list
         const newInstancePath = createInstancePathObj(diffInst[x]);
@@ -959,16 +959,16 @@ export const ModelFactory = {
         this.allPathsIndexing.push(newInstancePath);
 
         // let's populate the shortcut in the parent of the variable, this might not exist if it was a fetch
-            
+
         // window.Instances.push(diffInst[x]);
-          
+
         this.geppettoModel[diffInst[x].getId()] = diffInst[x];
       }
 
     }
     return diffReportInst;
   },
-            
+
   mergeValue: function (rawModel, overrideTypes) {
     if (overrideTypes == undefined) {
       overrideTypes = false;
@@ -993,7 +993,7 @@ export const ModelFactory = {
         }
       }
     }
-        
+
 
     // STEP 2: add libraries/types if any are different (both to object model and json model)
     var diffLibs = diffModel.getLibraries();
@@ -1013,7 +1013,7 @@ export const ModelFactory = {
       if (libMatch) {
         break;
       }
-    }   
+    }
     // diffReport.libraries.push(diffLibs[i]);
     var diffTypes = diffLibs[i].getTypes();
     var existingTypes = libs[j].getTypes();
@@ -1053,10 +1053,10 @@ export const ModelFactory = {
       if (varMatch) {
         break;
       }
-    }            
+    }
     return diffReport;
   },
-             
+
   /**
    * Updates capabilities of variables and their instances if any
    *
@@ -1112,7 +1112,7 @@ export const ModelFactory = {
             instances[j].extendApi(ADerivedStateVariableCapability);
           }
         }
-                        
+
         if (instances[j].getType().getMetaType() == Resources.PARAMETER_TYPE) {
           if (!instances[j].hasCapability(Resources.PARAMETER_CAPABILITY)) {
             instances[j].extendApi(AParameterCapability);
@@ -1442,8 +1442,8 @@ export const ModelFactory = {
           parent: parentInstance
         };
         var arrayInstance = this.createArrayInstance(arrayOptions);
-                        
-                   
+
+
         for (var i = 0; i < size; i++) {
           // create simple instance for this variable
           var options = {
@@ -2112,11 +2112,11 @@ export const ModelFactory = {
       }
     }
     return values;
-  }, 
-            
+  },
+
   createValue: function (valueNode, options){
     if (options == null || options == undefined) {
-      options = { wrappedObj: valueNode };   
+      options = { wrappedObj: valueNode };
     }
     var value;
     if (valueNode.value.eClass == "ImportValue"){
@@ -2128,10 +2128,10 @@ export const ModelFactory = {
     } else {
       value = new Value(options);
     }
-               
+
     return value;
   },
-            
+
   /** Creates a datasource */
   createDatasource: function (node, options) {
     if (options == null || options == undefined) {
@@ -2187,13 +2187,13 @@ export const ModelFactory = {
           // resolve type ref
           var ref = typeRefs[j].$ref;
           var type = this.resolve(ref);
-  
+
           // push to q.matchingCriteria
           if (type instanceof Type) {
             typesCriteria.push(type);
           }
         }
-  
+
         q.matchingCriteria.push(typesCriteria);
       }
     }
@@ -2311,10 +2311,10 @@ export const ModelFactory = {
       path: path,
       projectId: projectId,
     };
-          
+
     return new ExternalInstance(options);
   },
-            
+
   /** Creates an instance */
   createInstance: function (options) {
     if (options == null || options == undefined) {
@@ -2804,7 +2804,7 @@ export const ModelFactory = {
 
     return matchingQueries;
   },
-            
+
   getHTMLVariable: function (typesToSearch, metaType, identifier){
     var variables = this.getAllVariablesOfMetaType(typesToSearch, metaType);
     for (var i in variables){
@@ -2814,7 +2814,7 @@ export const ModelFactory = {
         }
       }
     }
-              
+
     return null;
   },
 
@@ -2884,7 +2884,7 @@ export const ModelFactory = {
     if (deleteCallback) {
       deleteCallback(instancePath);
     }
-    
+
   },
 
   /**
@@ -2978,9 +2978,9 @@ export const ModelFactory = {
         reference = reference.getVisualGroupElements()[index];
       } else if (raw[i].indexOf('worlds') > -1) {
         reference = this.geppettoModel.getWorlds()[index];
-      } else if (raw[i].indexOf('instances') > -1) {           
+      } else if (raw[i].indexOf('instances') > -1) {
         reference = reference.getInstances()[index];
-      } 
+      }
     }
     if (!reference) {
       console.error(`Error resolving reference ${refStr}`);

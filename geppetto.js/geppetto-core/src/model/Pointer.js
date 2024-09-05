@@ -7,8 +7,8 @@
  * @author Giovanni Idili
  */
 
-  
-var ObjectWrapper = require('./ObjectWrapper').default;
+
+import ObjectWrapper from './ObjectWrapper';
 
 function Pointer (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -47,7 +47,7 @@ Pointer.prototype.getPath = function (types) {
 
   return path;
 };
-    
+
 
 /**
  * Get PointerElements
@@ -59,7 +59,7 @@ Pointer.prototype.getPath = function (types) {
 Pointer.prototype.getElements = function () {
   return this.elements;
 };
-    
+
 /**
  * Get the optional point attribute to refer to a point in space.
  *
@@ -70,10 +70,6 @@ Pointer.prototype.getElements = function () {
 Pointer.prototype.getPoint = function (){
   return this.getWrappedObj().point;
 }
-    
-
-// Compatibility with new imports and old require syntax
-Pointer.default = Pointer;
-module.exports = Pointer;
 
 
+export default Pointer

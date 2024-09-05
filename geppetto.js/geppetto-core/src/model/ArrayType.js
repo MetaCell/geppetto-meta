@@ -8,7 +8,7 @@
  * @author Matteo Cantarelli
  */
 
-var Type = require('./Type').default;
+import Type from './Type';
 
 function ArrayType (options) {
   Type.prototype.constructor.call(this, options);
@@ -43,6 +43,4 @@ ArrayType.prototype.getSize = function () {
   return this.size;
 };
 
-// Compatibility with new imports and old require syntax
-ArrayType.default = ArrayType;
-module.exports = ArrayType;
+export default ArrayType

@@ -101,6 +101,4 @@ PointerElement.prototype = {
   }
 };
 
-// Compatibility with new imports and old require syntax
-PointerElement.default = PointerElement;
-module.exports = PointerElement;
+export default PointerElement

@@ -7,9 +7,8 @@
  * @author Giovanni Idili
  */
 
-var ObjectWrapper = require('./ObjectWrapper').default;
-var ImportType = require('./ImportType').default;
-
+import ImportType from './ImportType';
+import ObjectWrapper from './ObjectWrapper';
 
 function Library (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -52,7 +51,7 @@ Library.prototype.addImportType = function (importType) {
 Library.prototype.removeImportType = function (importType) {
   this.importTypes.remove(importType);
 };
-    
+
 Library.prototype.resolveAllImportTypes = function (callback) {
   console.warn("Deprecated api call");
   console.trace();
@@ -63,31 +62,29 @@ Library.prototype.resolveAllImportTypes = function (callback) {
 Library.prototype.setTypes = function (types) {
 
   this.types = types;
-      
+
   for (var i = 0; i < types.length; i++) {
     if (types[i] instanceof ImportType) {
       this.addImportType(types[i]);
     }
   }
-        
+
   return this;
 }
-    
+
 // Overriding set
 Library.prototype.addType = function (type) {
 
   type.setParent(this);
-      
+
   // add to library in geppetto object model
   this.types.push(type);
-      
+
   if (type instanceof ImportType) {
     this.addImportType(type);
   }
-        
+
   return this;
 }
 
-// Compatibility with new imports and old require syntax
-Library.default = Library;
-module.exports = Library;
+export default Library

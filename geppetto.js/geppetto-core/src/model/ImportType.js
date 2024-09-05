@@ -6,13 +6,13 @@
  * @author Matteo Cantarelli
  */
 
-var Type = require('./Type').default;
+import Type from './Type';
 
 
 function ImportType (options) {
   Type.prototype.constructor.call(this, options);
   this.visualType = options.visualType;
-  this.superType = (options.superType != 'undefined') ? options.superType : [];
+  this.superType = (options.superType !== 'undefined') ? options.superType : [];
   this.capabilities = [];
   this.variableReferences = [];
 }
@@ -62,11 +62,9 @@ ImportType.prototype.getModelInterpreterId = function () {
  *
  * @command ImportType.resolve()
  */
-ImportType.prototype.resolve = function (callback) {
+ImportType.prototype.resolve = (callback) => {
   console.warn("Deprecated api call: use the GeppettoManager api");
   console.trace();
 };
 
-// Compatibility with new imports and old require syntax
-ImportType.default = ImportType;
-module.exports = ImportType;
+export default ImportType

@@ -7,12 +7,11 @@
  * @author Giovanni Idili
  */
 import Resources from '../Resources';
-
-var Type = require('./Type').default;
+import Type from './Type';
 
 function CompositeType (options) {
   Type.prototype.constructor.call(this, options);
-  this.variables = (options.variables != 'undefined') ? options.variables : [];
+  this.variables = (options.variables !== 'undefined') ? options.variables : [];
 }
 
 CompositeType.prototype = Object.create(Type.prototype);
@@ -38,11 +37,11 @@ CompositeType.prototype.getVariables = function () {
  * @returns {boolean}
  */
 CompositeType.prototype.hasVariable = function (varId) {
-  var vars = this.getVariables();
+  const vars = this.getVariables();
 
-  var match = false;
-  for (var i = 0; i < vars.length; i++) {
-    if (vars[i].getId() == varId) {
+  let match = false;
+  for (let i = 0; i < vars.length; i++) {
+    if (vars[i].getId() === varId) {
       match = true;
     }
   }
@@ -71,10 +70,10 @@ CompositeType.prototype.getChildren = function () {
  *
  */
 CompositeType.prototype.getConnections = function () {
-  var connectionVariables = [];
+  const connectionVariables = [];
 
-  for (var v in this.getVariables()) {
-    var variable = this.getVariables()[v];
+  for (const v in this.getVariables()) {
+    const variable = this.getVariables()[v];
     if (variable.getType().getMetaType() == Resources.CONNECTION_TYPE) {
       connectionVariables.push(variable);
     }
@@ -83,6 +82,4 @@ CompositeType.prototype.getConnections = function () {
   return connectionVariables;
 };
 
-// Compatibility with new imports and old require syntax
-CompositeType.default = CompositeType;
-module.exports = CompositeType;
+export default CompositeType

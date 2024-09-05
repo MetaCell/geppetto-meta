@@ -7,7 +7,7 @@
  * @module model/SimulatorConfiguration
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
-define(function (require) {
+define((require) => {
 
   var Node = require('./Node');
 

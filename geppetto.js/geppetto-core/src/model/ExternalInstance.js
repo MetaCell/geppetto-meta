@@ -1,8 +1,8 @@
-const Instance = require('./Instance').default;
+import Instance from './Instance';
 
 /**
  * Client class use to represent an instance object (instantiation of a variable)
- * 
+ *
  * @module model/Instance
  * @author Giovanni Idili
  * @author Matteo Cantarelli
@@ -166,9 +166,7 @@ class ExternalInstance extends Instance {
     throw "Invalid operation with ExternalInstance";
   }
 
- 
+
 }
 
-// Compatibility with new imports and old require syntax
-ExternalInstance.default = ExternalInstance;
-module.exports = ExternalInstance;
+export default ExternalInstance

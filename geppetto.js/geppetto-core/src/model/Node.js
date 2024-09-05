@@ -8,8 +8,7 @@ define(['jquery', 'underscore', 'backbone',
 
   // Add requirement for Backbone-associations module
 
-], function (require) {
-  return {
+], (require) => ({
     Model: Backbone.Model.extend({
       name: "",
       instancePath: "",
@@ -129,5 +128,4 @@ define(['jquery', 'underscore', 'backbone',
         });
       }
     })
-  };
-});
+  }));

@@ -1,5 +1,5 @@
 import ModelFactory from '../ModelFactory';
-const Instance = require('./Instance').default;
+import Instance from './Instance'
 
 /**
  * Client class use to represent an array element instance.
@@ -8,7 +8,7 @@ const Instance = require('./Instance').default;
  * @author Giovanni Idili
  */
 class ArrayElementInstance extends Instance {
-  
+
   constructor (options) {
     super(options);
     this.index = options.index;
@@ -68,5 +68,4 @@ class ArrayElementInstance extends Instance {
 
 }
 
-ArrayElementInstance.default = ArrayElementInstance;
-module.exports = ArrayElementInstance;
+export default ArrayElementInstance

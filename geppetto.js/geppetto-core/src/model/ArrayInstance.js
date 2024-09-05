@@ -1,4 +1,5 @@
-const Instance = require('./Instance').default;
+import Instance from './Instance'
+
 /**
  * Client class use to represent an array of instances.
  *
@@ -22,8 +23,8 @@ class ArrayInstance extends Instance {
   }
 
   getChildren () {
-    var children = [];
-    for (var i = 0; i < this.getSize(); i++) {
+    const children = [];
+    for (let i = 0; i < this.getSize(); i++) {
       children.push(this[i]);
     }
     return children;
@@ -43,6 +44,4 @@ class ArrayInstance extends Instance {
 
 }
 
-// Compatibility with new imports and old require syntax
-ArrayInstance.default = ArrayInstance;
-module.exports = ArrayInstance;
+export default ArrayInstance
