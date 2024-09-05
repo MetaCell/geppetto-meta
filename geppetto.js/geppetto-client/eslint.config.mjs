@@ -128,6 +128,7 @@ export default [
   {
     ignores: ["**/*min.js",
               "build/*",
+              ".yalc/*",
               "geppetto-ui/node_modules/*",
               "geppetto-core/node_modules/*",
               "geppetto-client/node_modules/*"],

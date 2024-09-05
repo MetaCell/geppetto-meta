@@ -1,5 +1,3 @@
 const sharedConfig = require("../jest.config.js");
 
-module.exports = {
-	...sharedConfig
-};
+module.exports = { ...sharedConfig };
