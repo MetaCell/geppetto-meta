@@ -1,10 +1,9 @@
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 
-const Manager = require('../src/ModelManager').default;
-const ModelFactory = require('../src/ModelFactory').default;
-const testModel = require('./resources/test_model.json');
-
+import Manager from '../src/ModelManager'
+import testModel from './resources/test_model.json'
+import ModelFactory from '../src/ModelFactory';
 
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 
@@ -39,7 +38,7 @@ test('Merge models', () => {
   expect(ModelFactory.allPaths.length).toBe(11);
   expect(geppettoModel.getCurrentWorld().getInstances().length).toBe(7);
   expect(Instances.length).toBe(7);
-  
+
   let diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0);
 
@@ -47,7 +46,7 @@ test('Merge models', () => {
   testModel.worlds[0].instances[0].value.json = "{\"l\": [\"xx\", \"y\"]}";
   diffReport = ModelFactory.mergeModel(testModel);
   expect(diffReport.variables.length).toBe(0); // The diffReport is only about new items
-  
+
   expect(geppettoModel.getCurrentWorld().getInstances()[0].getName()).toBe('aa');
   expect(geppettoModel.getCurrentWorld().getInstances()[0].getValue().l[0]).toBe('xx');
   expect(Instances.a.getName()).toBe('aa');
@@ -74,7 +73,7 @@ test('Merge models', () => {
   expect(diffReport.variables.length).toBe(1);
   expect(ModelFactory.allPaths.length).toBe(13);
   Manager.addVariableToModel(testModel);
-  
+
   expect(Instances.length).toBe(7);
   Instances.getInstance('v2');
   expect(Instances.length).toBe(8);
