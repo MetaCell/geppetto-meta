@@ -262,6 +262,8 @@ class LayoutManager {
     }
 
     // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
+    // @ts-ignore
+    // On the last version it looks like the n
     // this.model.doAction(Actions.UPDATE_MODEL_ATTRIBUTES, {});
 
     this.store = store;
