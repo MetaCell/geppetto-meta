@@ -51,7 +51,7 @@ export default tseslint.config(
       "react-hooks/exhaustive-deps": "warn", // Hooks dependency array, sometimes it's better to ignore
     },
   },
-  {
+  { // Linting for tsconfig.json files allows comments
     files: ["tsconfig*.json"],
     plugins: { json },
     processor: "json/json",
@@ -59,7 +59,7 @@ export default tseslint.config(
       ...json.configs["recommended-with-comments"].rules,
     }
   },
-  {
+  { // Linting for *.json files do now allow comments
     files: ["**/*.json"],
     ignores: ["tsconfig*.json"],
     plugins: { json },
