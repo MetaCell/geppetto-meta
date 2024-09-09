@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "link:yalc": "yarn build:dev && yarn publish:yalc",
+    "link:yalc": "echo 'Nothing to do here, we keep the target to be consistent with the other geppetto-meta projects'",
     "lint-fix": "eslint . --fix",
     "lint": "eslint .",
     "test": "jest",

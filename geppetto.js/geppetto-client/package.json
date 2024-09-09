@@ -26,7 +26,7 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:ts": "tsc",
     "dist": "cd build && yarn publish",
-    "publish:yalc": "yalc push --sig && cd build && yalc publish --push",
+    "publish:yalc": "cd build && yalc publish --push",
     "watch": "nodemon -e js,ts,jsx,tsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
   "dependencies": {
