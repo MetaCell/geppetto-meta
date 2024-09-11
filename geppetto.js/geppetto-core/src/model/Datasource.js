@@ -7,11 +7,11 @@
  * @author Giovanni Idili
  */
 
-var ObjectWrapper = require('./ObjectWrapper').default;
+import ObjectWrapper from './ObjectWrapper';
 
 function Datasource (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.queries = (options.queries != undefined) ? options.queries : [];
+  this.queries = (options.queries !== undefined) ? options.queries : [];
 }
 
 Datasource.prototype = Object.create(ObjectWrapper.prototype);
@@ -110,7 +110,7 @@ Datasource.prototype.getFetchVariableQuery = function () {
  * @returns {List<Object>} - List of children
  *
  */
-Datasource.prototype.getChildren = function () {
+Datasource.prototype.getChildren = () => {
   /*
    * TODO: return contained children once they are model objects (lib config / queries)
    * return this.getWrappedObj().libraryConfigurations.concat(this.getWrappedObj().queries.concat([this.getWrappedObj().fetchVariableQuery]));
@@ -122,11 +122,9 @@ Datasource.prototype.getChildren = function () {
  *
  * @param variableId
  */
-Datasource.prototype.fetchVariable = function (variableIds, callback) {
+Datasource.prototype.fetchVariable = (variableIds, callback) => {
   console.warn("Deprecated api call. Use Manager.fetchVariables(");
   console.trace();
 };
 
-// Compatibility with new imports and old require syntax
-Datasource.default = Datasource;
-module.exports = Datasource;
+export default Datasource

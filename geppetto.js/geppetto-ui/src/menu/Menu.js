@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import MenuSection from './MenuSection';
 
 // TODO: these styles are not in line with the new styling principles, currently needed for vfb as 05/20/2020

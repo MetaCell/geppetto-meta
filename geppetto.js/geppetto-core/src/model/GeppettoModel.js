@@ -12,12 +12,12 @@ import ObjectWrapper from './ObjectWrapper';
 
 export function GeppettoModel (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
-  this.variables = (options.variables != undefined) ? options.variables : [];
-  this.libraries = (options.libraries != undefined) ? options.libraries : [];
-  this.datasources = (options.datasources != undefined) ? options.datasources : [];
-  this.queries = (options.queries != undefined) ? options.queries : [];
-  this.worlds = options.worlds != undefined ? options.worlds : [];
-  this.currentWorldIdx = this.wrappedObj.worlds && this.wrappedObj.worlds.length ? 0 : -1;
+  this.variables = (options.variables !== undefined) ? options.variables : [];
+  this.libraries = (options.libraries !== undefined) ? options.libraries : [];
+  this.datasources = (options.datasources !== undefined) ? options.datasources : [];
+  this.queries = (options.queries !== undefined) ? options.queries : [];
+  this.worlds = options.worlds !== undefined ? options.worlds : [];
+  this.currentWorldIdx = this.wrappedObj.worlds?.length ? 0 : -1;
 }
 
 GeppettoModel.prototype = Object.create(ObjectWrapper.prototype);
@@ -58,7 +58,7 @@ GeppettoModel.prototype.getAllVariables = function () {
   return this.variables;
 };
 
-    
+
 /**
  * Get the id
  *
@@ -67,9 +67,7 @@ GeppettoModel.prototype.getAllVariables = function () {
  * @returns {String} - The id of the model, a constant
  *
  */
-GeppettoModel.prototype.getId = function () {
-  return Resources.MODEL_PREFIX_CLIENT;
-};
+GeppettoModel.prototype.getId = () => Resources.MODEL_PREFIX_CLIENT;
 
 /**
  * Get libraries
@@ -141,12 +139,12 @@ GeppettoModel.prototype.getWorlds = function () {
  *
  */
 GeppettoModel.prototype.activateWorld = function (worldOrIndex) {
-  if (typeof worldOrIndex == 'number') {
+  if (typeof worldOrIndex === 'number') {
     this.currentWorldIdx = worldOrIndex;
-  } else if (typeof worldOrIndex == 'string'){
-    this.currentWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex);
+  } else if (typeof worldOrIndex === 'string'){
+    this.currentWorldIdx = this.worlds.findIndex(world => world.id === worldOrIndex);
   }
-  this.currentWorldIdx = this.worlds.findIndex(world => world.id == worldOrIndex.id);
+  this.currentWorldIdx = this.worlds.findIndex(world => world.id === worldOrIndex.id);
   if (this.worlds[this.currentWorldIdx] === undefined) {
     console.error(worldOrIndex, "world not found in model");
     throw "World not found in model";

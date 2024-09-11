@@ -1,10 +1,9 @@
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
 
-const Manager = require('../src/ModelManager').default;
-const ModelFactory = require('../src/ModelFactory').default;
-const testModel = require('./resources/test_model.json');
-
+import Manager from '../src/ModelManager';
+import ModelFactory from '../src/ModelFactory';
+import testModel from './resources/test_model.json'
 
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
 

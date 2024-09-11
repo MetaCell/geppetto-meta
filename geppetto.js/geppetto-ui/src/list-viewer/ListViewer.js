@@ -2,7 +2,7 @@ import React from 'react';
 import { plugins, ColumnDefinition, RowDefinition } from 'griddle-react';
 import Griddle from './utils/Griddle';
 import BaseIconComponent from './BaseIconComponent';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 
 import PopupColorPicker from './PopupColorPicker';
 import './listviewer.less';
@@ -393,9 +393,7 @@ export default class ListViewer extends React.Component {
   }
 }
 
-ListViewer.defaultProps = {
-  handler: {},
-}
+ListViewer.defaultProps = { handler: {}, }
 
 ListViewer.propTypes = {
   /**
@@ -502,7 +500,7 @@ ListViewer.propTypes = {
     NoResults: PropTypes.elementType,
     /**
      * Page dropdown for the custom components
-      */
+     */
     PageDropdown: PropTypes.elementType,
     /**
      * Pagination for the custom components

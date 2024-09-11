@@ -95,14 +95,10 @@ ObjectWrapper.prototype = {
    */
   getPath: function () {
     if (this.parent) {
-      return this.parent.getPath() + "." + this.getId();
-    } else {
-      return this.getId();
+      return `${this.parent.getPath()}.${this.getId()}`;
     }
-
+    return this.getId();
   }
 };
 
-// Compatibility with new imports and old require syntax
-ObjectWrapper.default = ObjectWrapper;
-module.exports = ObjectWrapper;
+export default ObjectWrapper

@@ -31,26 +31,26 @@ class CustomToolbar extends Component {
       color: defaultButtonColor
     }
     return (
-        <div style={cStyles}>
-          <Toolbar className={tbClassName}>
-            <div style={dStyles}>
-              {customButtons.map(customButton =>
-                  <IconButtonWithTooltip
-                      key={customButton.id}
-                      disabled={false}
-                      onClick={() => customButton.action()}
-                      className={classes.button}
-                      style={bStyles}
-                      tooltip={customButton.tooltip}
-                      icon={customButton.icon}
-                  />
-              )}
-              {customElements.map(customElement =>
-                  customElement
-              )}
-            </div>
-          </Toolbar>
-        </div>
+      <div style={cStyles}>
+        <Toolbar className={tbClassName}>
+          <div style={dStyles}>
+            {customButtons.map(customButton =>
+              <IconButtonWithTooltip
+                key={customButton.id}
+                disabled={false}
+                onClick={() => customButton.action()}
+                className={classes.button}
+                style={bStyles}
+                tooltip={customButton.tooltip}
+                icon={customButton.icon}
+              />
+            )}
+            {customElements.map(customElement =>
+              customElement
+            )}
+          </div>
+        </Toolbar>
+      </div>
     )
   }
 }

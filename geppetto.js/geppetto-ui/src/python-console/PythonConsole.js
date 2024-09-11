@@ -6,25 +6,25 @@
  */
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import { CircularProgress } from '@material-ui/core'
 import './PythonConsole.less';
 
 
 export class PythonConsole extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
-    this.state =
-      { loading: true };
+    this.state
+      = { loading: true };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.extensionLoaded && nextProps.extensionLoaded !== this.props.extensionLoaded) {
       this.setState({ loading: false });
     }
   }
 
-  render() {
+  render () {
 
     return (
       <div className="col-lg-6 panel-body" id="pythonConsoleOutput">
@@ -55,14 +55,14 @@ PythonConsole.propTypes = {
   /**
    * Path to jupyter notebook
    */
-    pythonNotebookPath: PropTypes.string.isRequired,
+  pythonNotebookPath: PropTypes.string.isRequired,
   /**
-    * Boolean indicating if the extension has been loaded
+   * Boolean indicating if the extension has been loaded
    */
   extensionLoaded: PropTypes.bool,
-   /**
-    * Height of the iframe in pixels
+  /**
+   * Height of the iframe in pixels
    */
-   iframeHeight: PropTypes.number,
+  iframeHeight: PropTypes.number,
 
 }

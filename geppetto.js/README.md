@@ -10,15 +10,32 @@ This is the client library of Geppetto which includes all the frontend component
 
 For information about how this fits into [Geppetto](http://www.geppetto.org/) refer to the umbrella project [org.geppetto](https://github.com/openworm/org.geppetto) on GitHub.
 
-# Geppetto Core
+## Geppetto Core
 
 The Core components of Geppetto.js (work in progress)
 
-# Geppetto UI
+## Geppetto UI
 
 The UI components of Geppetto.js (work in progress)
 
-# Release
+## Setup dev env for Geppetto Client, Core, UI
+
+To develop for one of the libraries, they need to be installed and "linked" together.
+The linking of the libraries between each other is done using `yalc`, be sure you have it installed.
+
+To bootstrapped all the projects, you can run the `dev-install.sh` script.
+
+```bash
+sh dev-install.sh
+```
+
+### Working on multiple dependent components at the same time
+
+If you need to work on different dependent components at the same time (__e.g__: Client and Core), you can run the different projects you need to work on with the `yarn watch` command.
+This command will listen for modifications on the files of the library and automatically transpile/push them in your local yalc repository.
+
+
+## Release
 
 Ensure that you have an npm account associated with `metacell` organization and that you're logged in with `npm login`.
 
@@ -37,11 +54,11 @@ Start with this one as there are no other *geppetto-meta* dependencies needed
 Update version on package.json
 
 ```
-rm -rf node_modules build 
-npm install
-npm run build
+rm -rf node_modules build
+yarn install
+yarn build
 cd build
-npm publish --access public
+yarn publish --access public
 ```
 
 **geppetto-ui**
@@ -50,11 +67,11 @@ Update version on package.json
 Update *geppetto-meta-core* reference on package.json *peerDependencies*
 
 ```
-rm -rf node_modules build  
-npm install
-npm run build
+rm -rf node_modules build
+yarn install
+yarn build
 cd build
-npm publish --access public
+yarn publish --access public
 ```
 
 **geppetto-client**
@@ -63,9 +80,9 @@ Update version on package.json
 Update *geppetto-meta-core and geppetto-meta-ui* reference on package.json *peerDependencies*
 
 ```
-rm -rf node_modules build 
-npm install
-npm run build
+rm -rf node_modules build
+yarn install
+yarn build
 cd build
-npm publish --access public
+yarn publish --access public
 ```

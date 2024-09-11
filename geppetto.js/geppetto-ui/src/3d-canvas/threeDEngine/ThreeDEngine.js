@@ -49,7 +49,7 @@ export default class ThreeDEngine {
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold, renderingThreshold, cameraOptions.depthWrite, 300, 1,
-        null, dracoDecoderPath, null);
+      null, dracoDecoderPath, null);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
     this.onEmptyHoverListener = onEmptyHoverListener ;
@@ -281,14 +281,13 @@ export default class ThreeDEngine {
             geometryIdentifier
                 = intersects[i].object.geometryIdentifier;
           } else if (Object.prototype.hasOwnProperty.call(
-              intersects[i].object.parent,
-              'instancePath'
+            intersects[i].object.parent,
+            'instancePath'
           )) {
             instancePath = intersects[i].object.parent.instancePath;
             geometryIdentifier
                 = intersects[i].object.parent.geometryIdentifier;
-          }
-          else {
+          } else {
             externalMeshId = intersects[i].object.uuid
             geometryIdentifier = null
           }
@@ -352,8 +351,9 @@ export default class ThreeDEngine {
           this.onHoverListeners[listener](intersects, this.mouseContainer.x, this.mouseContainer.y);
         }
       }
-      if (this.onEmptyHoverListener && intersects.length === 0)
+      if (this.onEmptyHoverListener && intersects.length === 0) {
         this.onEmptyHoverListener();
+      }
     }
   }
 

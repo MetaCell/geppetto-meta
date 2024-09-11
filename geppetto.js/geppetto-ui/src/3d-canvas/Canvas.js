@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
 import CameraControls from "../camera-controls/CameraControls";
@@ -25,7 +25,7 @@ class Canvas extends Component {
     this.cameraControls = React.createRef();
     this.state = {
       isCanvasReady: false,
-      error: null  
+      error: null
     }
     this.constructorFromProps(props);
     this.onResize = this.onResize.bind(this);
@@ -80,7 +80,7 @@ class Canvas extends Component {
       dracoDecoderPath
     );
     onUpdateStart();
-    
+
     await this.handleEngineUpdate(data);
 
     this.threeDEngine.updateExternalThreeDObjects(threeDObjects)
@@ -98,7 +98,7 @@ class Canvas extends Component {
 
   }
 
-  async handleEngineUpdate(data) {
+  async handleEngineUpdate (data) {
     try {
       const updateResult = await this.threeDEngine.updateInstances(data);
       return updateResult;
@@ -338,7 +338,7 @@ class Canvas extends Component {
         this.threeDEngine.setWireframe(!this.threeDEngine.getWireframe());
         break;
       }
-      //this.threeDEngine.updateControls();
+      // this.threeDEngine.updateControls();
     }
   }
 
@@ -405,7 +405,7 @@ Canvas.defaultProps = {
     },
     cameraControls: {
       instance: CameraControls,
-      props: { wireframeButtonEnabled: false, cameraControlsHandler: null, buttonStyles: { color: '#fc6320', }},
+      props: { wireframeButtonEnabled: false, cameraControlsHandler: null, buttonStyles: { color: '#fc6320', } },
       incrementsPan: {
         x: 0.05,
         y: 0.05,
@@ -427,7 +427,7 @@ Canvas.defaultProps = {
   captureOptions: {
     captureControls: {
       instance: null,
-      props: { captureControlsHandler: null, buttonStyles: { color: '#fc6320', }},
+      props: { captureControlsHandler: null, buttonStyles: { color: '#fc6320', } },
       incrementPan: {
         x: 0.01,
         y: 0.01
@@ -549,18 +549,18 @@ Canvas.propTypes = {
        * CameraControls props
        */
       props: PropTypes.shape({
-          /**
-           * Boolean to enable/disable wireframe button
-           */
-          wireframeButtonEnabled: PropTypes.bool,
-          /**
-           * Function to callback on camera controls changes
-           */
-          cameraControlsHandler: PropTypes.func,
-          /**
-           * Styles to apply on the icon button elements
-           */
-          buttonStyles: PropTypes.any
+        /**
+         * Boolean to enable/disable wireframe button
+         */
+        wireframeButtonEnabled: PropTypes.bool,
+        /**
+         * Function to callback on camera controls changes
+         */
+        cameraControlsHandler: PropTypes.func,
+        /**
+         * Styles to apply on the icon button elements
+         */
+        buttonStyles: PropTypes.any
       }),
       /**
        * Value for pan increment
@@ -621,14 +621,14 @@ Canvas.propTypes = {
        * Component props
        */
       props: PropTypes.shape({
-          /**
-           * Styles to apply on the icon button elements
-           */
-          buttonStyles: PropTypes.any,
-          /**
-           * Function to callback on capture controls changes
-           */
-          captureControlsHandler: PropTypes.func,
+        /**
+         * Styles to apply on the icon button elements
+         */
+        buttonStyles: PropTypes.any,
+        /**
+         * Function to callback on capture controls changes
+         */
+        captureControlsHandler: PropTypes.func,
       })
     }),
     /**

@@ -1,5 +1,6 @@
-const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('../common/Utils').extend;
+import { extend } from '../common/Utils';
+import ObjectWrapper from './ObjectWrapper';
+
 /**
  * Client class use to represent a variable.
  *
@@ -56,6 +57,4 @@ class Value extends ObjectWrapper{
 
 }
 
-// Compatibility with new imports and old require syntax
-Value.default = Value;
-module.exports = Value;
+export default Value

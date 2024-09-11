@@ -7,9 +7,9 @@
  * @author Giovanni Idili
  * @author Matteo Cantarelli
  */
-const ObjectWrapper = require('./ObjectWrapper');
-const extend = require('../common/Utils').extend;
-const Variable = require('./Variable').default;
+import ObjectWrapper from './ObjectWrapper';
+import { extend } from '../common/Utils';
+import Variable from './Variable';
 
 function Type (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -153,7 +153,4 @@ Type.prototype.typeOf = function (type){
   return match;
 };
 
-// Compatibility with new imports and old require syntax
-Type.default = Type;
-module.exports = Type;
-
+export default Type

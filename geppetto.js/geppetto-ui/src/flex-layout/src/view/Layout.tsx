@@ -1,15 +1,16 @@
 import * as React from "react";
 import DockLocation from "../DockLocation";
 import DragDrop from "../DragDrop";
-import { I18nLabel } from "../I18nLabel";
-import Action from "../model/Action";
+import type { I18nLabel } from "../I18nLabel";
+import type Action from "../model/Action";
 import Actions from "../model/Actions";
-import BorderNode from "../model/BorderNode";
-import BorderSet from "../model/BorderSet";
-import IDraggable from "../model/IDraggable";
-import Model, { ILayoutMetrics } from "../model/Model";
-import Node from "../model/Node";
-import RowNode from "../model/RowNode";
+import type BorderNode from "../model/BorderNode";
+import type BorderSet from "../model/BorderSet";
+import type IDraggable from "../model/IDraggable";
+import type Model from "../model/Model";
+import type { ILayoutMetrics } from "../model/Model";
+import type Node from "../model/Node";
+import type RowNode from "../model/RowNode";
 import SplitterNode from "../model/SplitterNode";
 import TabNode from "../model/TabNode";
 import TabSetNode from "../model/TabSetNode";
@@ -22,7 +23,7 @@ import { TabSet } from "./TabSet";
 import { FloatingWindow } from "./FloatingWindow";
 import { FloatingWindowTab } from "./FloatingWindowTab";
 import { TabFloating } from "./TabFloating";
-import { IJsonTabNode } from "../model/IJsonModel";
+import type { IJsonTabNode } from "../model/IJsonModel";
 
 export interface ILayoutProps {
     model: Model;
@@ -219,9 +220,9 @@ export class Layout extends React.Component<ILayoutProps, ILayoutState> {
         this.icons = props.closeIcon ? Object.assign({ close: props.closeIcon }, props.icons) : props.icons;
         this.firstRender = true;
 
-        this.state = { rect: new Rect(0, 0, 0, 0), 
-            calculatedHeaderBarSize: 25, 
-            calculatedTabBarSize: 26, 
+        this.state = { rect: new Rect(0, 0, 0, 0),
+            calculatedHeaderBarSize: 25,
+            calculatedTabBarSize: 26,
             calculatedBorderBarSize: 30,
             editingTab: undefined,
         };
@@ -264,9 +265,8 @@ export class Layout extends React.Component<ILayoutProps, ILayoutState> {
                 return this.props.model.doAction(outcome);
             }
             return undefined;
-        } else {
-            return this.props.model.doAction(action);
         }
+        return this.props.model.doAction(action);
     }
 
     /** @hidden @internal */

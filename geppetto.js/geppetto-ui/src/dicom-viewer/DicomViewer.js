@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 
 import * as THREE from 'three';
 import DicomViewerUtils from './DicomViewerUtils';
@@ -841,7 +841,7 @@ class DicomViewer extends Component {
   }
 }
 
-DicomViewer.defaultProps = { 
+DicomViewer.defaultProps = {
   onLoaded: () => {},
   mode: 'coronal',
   orientation: 'goToPoint',

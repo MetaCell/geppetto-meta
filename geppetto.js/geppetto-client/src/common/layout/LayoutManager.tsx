@@ -3,7 +3,7 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import {ComponentMap, IComponentConfig, Widget, WidgetStatus} from './model';
+import {type ComponentMap, type IComponentConfig, type Widget, WidgetStatus} from './model';
 import {createStyles, withStyles} from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -15,6 +15,7 @@ import {layoutActions, removeWidgetFromStore, setLayout, updateLayout,} from "./
 
 import {MinimizeHelper} from "./helpers/MinimizeHelper";
 import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
+import type { IJsonModel } from '@metacell/geppetto-meta-ui/flex-layout/src/model/IJsonModel';
 
 
 const styles = (theme) => createStyles({
@@ -61,7 +62,7 @@ class LayoutManager {
    * @param isMinimizeEnabled
    */
   constructor(
-    model: FlexLayout.IJsonModel,
+    model: IJsonModel,
     componentMap: ComponentMap,
     tabsetIconFactory: TabsetIconFactory = null,
     isMinimizeEnabled = false
@@ -111,7 +112,7 @@ class LayoutManager {
         widgetConfiguration.panelName,
         DockLocation.CENTER,
         widgetConfiguration.pos,
-        widgetConfiguration.status == WidgetStatus.ACTIVE
+        widgetConfiguration.status === WidgetStatus.ACTIVE
       )
     );
   }
@@ -257,11 +258,13 @@ class LayoutManager {
    */
   middleware = (store) => (next) => (action) => {
     if(!this.store) {
-      next(setLayout(this.model.toJson()));
+      next(setLayout(JSON.stringify(this.model.toJson())));
     }
 
     // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
-    this.model.doAction(Actions.UPDATE_MODEL_ATTRIBUTES, {});
+    // @ts-ignore
+    // On the last version it looks like the n
+    // this.model.doAction(Actions.UPDATE_MODEL_ATTRIBUTES, {});
 
     this.store = store;
     this.widgetFactory.setStore(store)
@@ -384,7 +387,7 @@ class LayoutManager {
   private addWidgets(newWidgets: Array<Widget>) {
     let actives = [];
     for (let widget of newWidgets) {
-      if (widget.status == WidgetStatus.ACTIVE) {
+      if (widget.status === WidgetStatus.ACTIVE) {
         actives.push(widget.id);
       }
       this.addWidget(widget);
@@ -482,6 +485,7 @@ class LayoutManager {
 
       this.store.dispatch(updateLayout(this.model));
     }
+    return undefined
   }
 
   /**
@@ -507,14 +511,14 @@ class LayoutManager {
 
     if (node) {
       model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
-      if (mergedWidget.status == WidgetStatus.ACTIVE) {
+      if (mergedWidget.status === WidgetStatus.ACTIVE) {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
-      if((widget.status == WidgetStatus.MAXIMIZED && !node.getParent().isMaximized()) ||
-          (widget.status == WidgetStatus.ACTIVE && node.getParent().isMaximized())) {
+      if((widget.status === WidgetStatus.MAXIMIZED && !node.getParent().isMaximized()) ||
+          (widget.status === WidgetStatus.ACTIVE && node.getParent().isMaximized())) {
         this.model.doAction(FlexLayout.Actions.maximizeToggle(node.getParent().getId()));
       }
-      else if(widget.status == WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
+      else if(widget.status === WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
         this.minimizeHelper.minimizeWidget(node.getId());
       }
     }

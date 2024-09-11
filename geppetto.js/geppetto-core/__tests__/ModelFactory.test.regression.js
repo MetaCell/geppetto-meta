@@ -1,9 +1,8 @@
 const GEPPETTO = {};
 window.GEPPETTO = GEPPETTO;
-const Resources = require('../src/Resources').default;
-const Manager = require('../src/ModelManager').default;
-const ModelFactory = require('../src/ModelFactory').default;
-
+import Resources from '../src/Resources';
+import Manager from '../src/ModelManager';
+import ModelFactory from '../src/ModelFactory';
 
 
 GEPPETTO.trigger = evt => console.log(evt, 'triggered');
@@ -107,5 +106,3 @@ test('load demo model 5: Primary auditory cortex network', () => {
     .toBeTruthy()
   ModelFactory.allPaths = [];
 });
-
-

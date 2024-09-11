@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import React from 'react';
 
 class FlexLayoutPropTypes extends React.Component {
@@ -13,7 +13,7 @@ class FlexLayoutPropTypes extends React.Component {
 FlexLayoutPropTypes.propTypes = {
   /**
    * Test proptypes for FlexLayout
-   * 
+   *
    */
   test: PropTypes.bool,
 };

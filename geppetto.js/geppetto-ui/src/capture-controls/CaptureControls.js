@@ -3,7 +3,7 @@ import IconButtonWithTooltip from '../common/IconButtonWithTooltip';
 import { faCamera, faDotCircle, faDownload, faStop } from '@fortawesome/free-solid-svg-icons';
 
 import './CaptureControls.less';
-import PropTypes from "prop-types";
+import { PropTypes } from "prop-types";
 
 
 export const captureControlsActions = {
@@ -14,7 +14,7 @@ export const captureControlsActions = {
 };
 
 export const captureControlsActionsStart = (() => ({ type: captureControlsActions.START, }));
-export const captureControlsActionsStop = ((options) => ({
+export const captureControlsActionsStop = (options => ({
   type: captureControlsActions.STOP,
   data: { options:options },
 }))
@@ -61,7 +61,7 @@ class CaptureControls extends Component {
         tooltip={"Start Recording"}
         icon={faDotCircle}
       />
-    ) 
+    )
       : (
         <IconButtonWithTooltip
           disabled={false}
@@ -72,7 +72,7 @@ class CaptureControls extends Component {
           icon={faStop}
         />
       )
-    
+
     return (
       <div className="position-toolbar">
         {recordButton}

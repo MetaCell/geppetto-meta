@@ -7,8 +7,8 @@
  * @author Giovanni Idili
  */
 
-const extend = require('../common/Utils').extend;
-const ObjectWrapper = require('./ObjectWrapper');
+import { extend } from '../common/Utils';
+import ObjectWrapper from './ObjectWrapper';
 
 function Variable (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -223,7 +223,4 @@ Variable.prototype.setTypes = function (types) {
 };
 
 
-// Compatibility with new imports and old require syntax
-Variable.default = Variable;
-module.exports = Variable;
-
+export default Variable

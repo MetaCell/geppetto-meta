@@ -17,7 +17,7 @@ export interface ITabSetProps {
     iconFactory?: (node: TabNode) => React.ReactNode | undefined;
     titleFactory?: (node: TabNode) => React.ReactNode | undefined;
     icons?: IIcons;
-    editingTab?: TabNode; 
+    editingTab?: TabNode;
 }
 
 /** @hidden @internal */

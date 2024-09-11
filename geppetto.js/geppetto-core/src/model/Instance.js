@@ -18,7 +18,7 @@ class Instance {
     this._metaType = options._metaType;
     this.variable = options.variable;
     this.parent = options.parent;
-    this.children = (options.children != undefined) ? options.children : [];
+    this.children = (options.children !== undefined) ? options.children : [];
     this.capabilities = [];
     this.connections = [];
   }
@@ -168,13 +168,13 @@ class Instance {
       }
     }
 
-    if (visualTypes.length == 0) {
+    if (visualTypes.length === 0) {
       return undefined;
-    } else if (visualTypes.length == 1) {
-      return visualTypes[0];
-    } else {
-      return visualTypes;
     }
+    if (visualTypes.length === 1) {
+      return visualTypes[0];
+    }
+    return visualTypes;
   }
 
 

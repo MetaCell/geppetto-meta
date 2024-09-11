@@ -9,8 +9,8 @@
  */
 
 
-var Instance = require('../model/Instance').default;
-var Variable = require('../model/Variable').default;
+import Instance from '../model/Instance';
+import Variable from '../model/Variable';
 
 export default {
   capabilityId: 'ParameterCapability',
@@ -124,7 +124,7 @@ export default {
     }
 
     // always set this regardless of variable vs instance (so the value will be in the call below)
-    this.value = value;         
+    this.value = value;
     return this;
   }
 }

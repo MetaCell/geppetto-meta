@@ -54,7 +54,6 @@ class RowNode extends Node implements IDropTarget {
     private minHeight: number;
     private minWidth: number;
 
-    /** @hidden @internal */
     constructor(model: Model, json: any) {
         super(model);
 

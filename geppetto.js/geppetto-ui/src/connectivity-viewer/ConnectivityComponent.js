@@ -7,7 +7,7 @@ import { Hive } from './layouts/Hive';
 import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
 import Grid from '@material-ui/core/Grid';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import CustomToolbar from "../common/CustomToolbar";
 
 const styles = theme => ({

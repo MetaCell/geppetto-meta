@@ -105,7 +105,6 @@ abstract class Node {
         }
     }
 
-    /** @hidden @internal */
     _getAttr(name: string) {
         let val = this._attributes[name];
 
@@ -152,7 +151,6 @@ abstract class Node {
         this._rect = rect;
     }
 
-    /** @hidden @internal */
     _setWeight(weight: number) {
         this._attributes.weight = weight;
     }
@@ -231,7 +229,6 @@ abstract class Node {
         return pos;
     }
 
-    /** @hidden @internal */
     _addChild(childNode: Node, pos?: number) {
         if (pos != null) {
             this._children.splice(pos, 0, childNode);
@@ -297,6 +294,15 @@ abstract class Node {
     abstract _getAttributeDefinitions(): AttributeDefinitions;
     /** @hidden @internal */
     abstract _toJson(): any;
+    isMaximized(): boolean {
+        return false
+    }
+    getName(): string {
+        return undefined
+    }
+    getSelectedNode(): Node {
+        throw new Error("Not implemented")
+    }
 }
 
 export default Node;

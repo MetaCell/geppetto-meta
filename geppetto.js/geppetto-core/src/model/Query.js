@@ -8,7 +8,7 @@
  * @author Matteo Cantarelli
  */
 
-var ObjectWrapper = require('./ObjectWrapper').default;
+import ObjectWrapper from './ObjectWrapper';
 
 function Query (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -96,6 +96,4 @@ Query.prototype.matchesCriteria = function (type) {
   return match;
 };
 
-// Compatibility with new imports and old require syntax
-Query.default = Query;
-module.exports = Query;
+export default Query

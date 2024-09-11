@@ -25,9 +25,9 @@ VisualGroupElement.prototype.constructor = VisualGroupElement;
  * @returns {String} Value of quantity
  */
 VisualGroupElement.prototype.getValue = function () {
-  var param = this.wrappedObj.parameter;
+  const param = this.wrappedObj.parameter;
 
-  if (param == "" || param == undefined) {
+  if (param === "" || param === undefined) {
     return null;
   }
 
@@ -41,15 +41,15 @@ VisualGroupElement.prototype.getValue = function () {
  * @returns {String} Unit of quantity
  */
 VisualGroupElement.prototype.getUnit = function () {
-  var param = this.wrappedObj.parameter;
+  const param = this.wrappedObj.parameter;
 
-  if (param == "" || param == undefined) {
+  if (param === "" || param === undefined) {
     return null;
   }
 
   return param.unit.unit;
 };
-    
+
 /**
  * Get color of element
  *
@@ -65,15 +65,12 @@ VisualGroupElement.prototype.getColor = function () {
  * Print out formatted node
  */
 VisualGroupElement.prototype.print = function () {
-  return "Name : " + this.getName() + "\n" + "    Id: " + this.getId() + "\n";
+  return `Name : ${this.getName()}\n    Id: ${this.getId()}\n`;
 };
 
-VisualGroupElement.prototype.show = function (mode, instances) {
-
+VisualGroupElement.prototype.show = (mode, instances) => {
   console.warn("Deprecated api call");
   console.trace();
 };
 
-// Compatibility with new imports and old require syntax
-VisualGroupElement.default = VisualGroupElement;
-module.exports = VisualGroupElement;
+export default VisualGroupElement

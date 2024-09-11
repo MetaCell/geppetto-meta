@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 
 class HTMLViewer extends Component {
   constructor (props) {

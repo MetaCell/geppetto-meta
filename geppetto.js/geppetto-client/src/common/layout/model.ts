@@ -5,8 +5,7 @@ import {
 } from '@metacell/geppetto-meta-ui/flex-layout/src';
 import Node from '@metacell/geppetto-meta-ui/flex-layout/src/model/Node';
 import { IIcons } from '@metacell/geppetto-meta-ui/flex-layout/src/view/Layout';
-import { TabButton } from '@metacell/geppetto-meta-ui/flex-layout/src/view/TabButton';
-import React from 'react';
+import type React from 'react';
 
 /*
  * status can be one of:
@@ -15,7 +14,7 @@ import React from 'react';
  *  - HIDDEN:  other tab in the node is currently selected
  *  - MAXIMIZED:  the tab is maximized (only one tab can be maximized simultaneously)
  */
-export enum WidgetStatus {
+export enum WidgetStatus  {
   HIDDEN = 'HIDDEN',
   ACTIVE = 'ACTIVE',
   MAXIMIZED = 'MAXIMIZED',
@@ -33,7 +32,7 @@ export enum TabsetPosition {
  * Extended Node interface
  */
 export interface ExtendedNode extends Node {
-  config: Widget;
+  config?: Widget;
 }
 
 /**

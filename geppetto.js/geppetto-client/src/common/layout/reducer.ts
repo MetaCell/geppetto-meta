@@ -1,7 +1,7 @@
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import type * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import { layoutActions } from './actions';
 import * as General from '../actions';
-import { WidgetStatus, WidgetMap, ExtendedNode } from './model'
+import { WidgetStatus, type WidgetMap, type ExtendedNode } from './model'
 import layoutInitialState from './defaultLayout';
 export { layoutInitialState };
 
@@ -10,8 +10,8 @@ export interface LayoutState {
     sideBorders: number,
     tabSetHeaderHeight: number,
     tabSetTabStripHeight: number,
-    enableEdgeDock: Boolean,
-    borderBarSize: number
+    enableEdgeDock: boolean,
+    borderBarSize?: number
   },
   borders: {
     type: string,
@@ -29,7 +29,7 @@ export interface LayoutState {
 /**
  * Layout state update handling.
  * Logic comes from the layout manager.
- * 
+ *
  * @alias layoutReducer
  * @memberof Control
  */
@@ -55,18 +55,18 @@ export const layout = (state = layoutInitialState, action) => {
 
 /**
  * Ensure there is one only active widget in the same panel
- * @param {*} widgets 
- * @param {*} param1 
+ * @param {*} widgets
+ * @param {*} param1
  */
 function updateWidgetStatus (widgets: WidgetMap, { status, panelName }) {
-  if (status != WidgetStatus.ACTIVE) {
+  if (status !== WidgetStatus.ACTIVE) {
     return widgets;
   }
   return Object.fromEntries(Object.values(widgets).filter(widget => widget).map(widget => [
     widget.id,
     {
       ...widget,
-      status: widget.panelName == panelName ? WidgetStatus.HIDDEN : widget.status
+      status: widget.panelName === panelName ? WidgetStatus.HIDDEN : widget.status
     }
   ]));
 }
@@ -76,7 +76,7 @@ function removeUndefined (obj) {
 }
 
 function extractPanelName (action) {
-  return action.data.component == "Plot" ? "bottomPanel" : "leftPanel";
+  return action.data.component === "Plot" ? "bottomPanel" : "leftPanel";
 }
 
 export const widgets = (state: WidgetMap = {}, action) => {
@@ -123,10 +123,10 @@ export const widgets = (state: WidgetMap = {}, action) => {
         updatedWidgets[node.getId()].name = node.getName()
         if (parent.getType() !== 'border') {
           // want to restore previous position when activated
-          updatedWidgets[node.getId()].pos = parseInt(i)
+          updatedWidgets[node.getId()].pos = Number.parseInt(i)
         }
 
-        updatedWidgets[node.getId()].panelName = parent.getId(); 
+        updatedWidgets[node.getId()].panelName = parent.getId();
         if (parent.isMaximized() && node.isVisible()) {
           updatedWidgets[node.getId()].status = WidgetStatus.MAXIMIZED;
         } else if (parent.getType() === 'border') {
@@ -146,4 +146,3 @@ export const widgets = (state: WidgetMap = {}, action) => {
     return state;
   }
 }
-

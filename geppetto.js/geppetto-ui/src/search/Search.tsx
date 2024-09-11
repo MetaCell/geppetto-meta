@@ -3,7 +3,6 @@
  */
 
 import * as React from "react";
-import PropTypes from 'prop-types';
 import { getResultsSOLR } from "./datasources/SOLRclient";
 import { DatasourceTypes } from './datasources/datasources';
 import { Component, FC, useState, useRef, useEffect } from "react";

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import ReactPlayer from 'react-player';
 
 export default class MoviePlayer extends Component {
@@ -93,20 +93,20 @@ MoviePlayer.propTypes = {
    */
   controls: PropTypes.shape({
     /**
-   * Boolean value indicating if video should play at the start. Defaults to false.
-   */
+     * Boolean value indicating if video should play at the start. Defaults to false.
+     */
     playAtStart : PropTypes.bool,
     /**
-   * Boolean value indicating if the video should be played in a loop. Defaults to false.
-   */
+     * Boolean value indicating if the video should be played in a loop. Defaults to false.
+     */
     loop : PropTypes.bool,
     /**
-   * Start volume of the video.
-   */
+     * Start volume of the video.
+     */
     volume : PropTypes.number,
     /**
-   * Playback rate of the video.
-   */
+     * Playback rate of the video.
+     */
     playbackRate : PropTypes.number,
   }),
   /**

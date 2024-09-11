@@ -8,8 +8,8 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import EventManager from '@metacell/geppetto-meta-client/common/EventManager';
 
 const connectionInterval = 300;
-const pako = require("pako");
-const FileSaver = require('file-saver');
+import pako from 'pako';
+import FileSaver from 'file-saver'
 
 const callbackHandler = {};
 
@@ -258,7 +258,7 @@ export class MessageSocket {
 
   /**
    * Dispatches through Redux actions all messages received from the socket
-   * @param {*} messageData 
+   * @param {*} messageData
    */
   parseAndNotify (messageData) {
     var parsedServerMessage = JSON.parse(messageData);

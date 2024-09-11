@@ -7,7 +7,7 @@
  * @author Giovanni Idili
  */
 
-var CompositeType = require('./CompositeType').default;
+import CompositeType from './CompositeType';
 
 function CompositeVisualType (options) {
   CompositeType.prototype.constructor.call(this, options);
@@ -47,6 +47,4 @@ CompositeVisualType.prototype.getChildren = function () {
 
 };
 
-// Compatibility with new imports and old require syntax
-CompositeVisualType.default = CompositeVisualType;
-module.exports = CompositeVisualType;
+export default CompositeVisualType

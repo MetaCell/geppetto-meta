@@ -9,8 +9,7 @@
  */
 import ModelFactory from '../ModelFactory';
 import Resources from '../Resources';
-
-var ObjectWrapper = require('./ObjectWrapper').default;
+import ObjectWrapper from './ObjectWrapper';
 
 function VisualGroup (options) {
   ObjectWrapper.prototype.constructor.call(this, options);
@@ -136,6 +135,4 @@ VisualGroup.prototype.print = function () {
             + "    LowSpectrumColor : " + this.getLowSpectrumColor() + "\n";
 };
 
-// Compatibility with new imports and old require syntax
-VisualGroup.default = VisualGroup;
-module.exports = VisualGroup;
+export default VisualGroup

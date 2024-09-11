@@ -1,43 +1,49 @@
 {
   "name": "layout-manager-playground",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui && yalc link @metacell/geppetto-meta-client",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "preview": "vite preview"
+  },
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fortawesome/fontawesome-free": "^6.4.0",
-    "@metacell/geppetto-meta-client": "file:.yalc/@metacell/geppetto-meta-client",
-    "@metacell/geppetto-meta-core": "file:.yalc/@metacell/geppetto-meta-core",
-    "@metacell/geppetto-meta-ui": "file:.yalc/@metacell/geppetto-meta-ui",
-    "@mui/material": "^5.14.0",
+    "@material-ui/core": "^4.11.4",
+    "@metacell/geppetto-meta-client": "^2.0.0",
+    "@metacell/geppetto-meta-core": "^2.0.0",
+    "@metacell/geppetto-meta-ui": "^2.0.0",
     "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.14.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.38",
-    "@types/react": "17.0.52",
-    "@types/react-dom": "^17.0.20",
     "file-saver": "^2.0.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-redux": "^7.2.0",
-    "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-json": "^4.0.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
     "sass": "^1.32.12",
-    "typescript": "^5.0.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.4.0",
+    "vite": "^5.4.3",
     "yalc": "^1.0.0-pre.53"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

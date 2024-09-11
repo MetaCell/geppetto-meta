@@ -55,7 +55,7 @@ AFRAME.registerComponent('thumbstick-controls', {
     }
 
     // Update velocity.
-    // eslint-disable-next-line no-param-reassign
+     
     delta /= 1000;
     this.updateVelocity(delta);
 
