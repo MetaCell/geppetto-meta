@@ -104,9 +104,11 @@ const HomePage = () => {
 
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
-            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
-            </IconButton>
+            <span>
+              <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
+                {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
+              </IconButton>
+            </span>
           </Tooltip>
         ))}
 

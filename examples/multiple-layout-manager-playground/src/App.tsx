@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import HomePage from "./pages/HomePage";
 import { useState } from 'react';
 import { Workspace } from './workspace';
+import { Box } from '@mui/material';
 
 const darkTheme = createTheme({
   palette: {
@@ -23,7 +24,6 @@ function App() {
   };
 
   const createWorkspace = (id: string, name: string) => {
-    // Create a new workspace using the activeDatasets record
     const newWorkspace = new Workspace(id, name, updateWorkspace);
     setWorkspaces((prev) => ({ ...prev, [id]: newWorkspace }));
   };
@@ -33,28 +33,34 @@ function App() {
     const workspaceName = `Workspace ${Object.keys(workspaces).length + 1}`;
 
     createWorkspace(workspaceId, workspaceName);
-    setSelectedWorkspacesIds(new Set<string>([workspaceId]));
+    setSelectedWorkspacesIds(prevSelectedIds => {
+      const updatedSet = new Set(prevSelectedIds);
+      updatedSet.add(workspaceId); // Add the new workspace ID
+      return updatedSet;
+    });  
   };
 
-  console.log("workspaces: ", workspaces)
+  const renderCompareMode = (workspaceIds: string[]) => (
+    <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" }}>
+      {workspaceIds.map((id) => (
+        <Provider key={id} store={workspaces[id].store}>
+          <HomePage />
+        </Provider>
+      ))}
+    </Box>
+  );
+
+  const renderWorkspaces = () => {
+    return renderCompareMode(Array.from(selectedWorkspacesIds));
+  };
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div className="App">
         <header className="App-header">
-          {/* <Provider store={store}>
-            <HomePage/>
-          </Provider>
-          <Provider store={anotherStore}>
-            <HomePage/>
-          </Provider> */}
-          <button onClick={handleCreateClick}>Create workspace</button>
-          {Array.from(selectedWorkspacesIds)?.map((id: any) => (
-            <Provider key={id} store={workspaces[id].store}>
-              <HomePage/>
-            </Provider>
-          ))}
+            <button onClick={handleCreateClick} style={{ margin: "10px" }}>Create workspace</button>
+            {renderWorkspaces()}
         </header>
       </div>
     </ThemeProvider>
