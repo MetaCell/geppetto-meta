@@ -7,9 +7,9 @@ import { reducerDecorator } from "@metacell/geppetto-meta-client/common/reducer/
 import { type Action, type Reducer, combineReducers, configureStore } from "@reduxjs/toolkit";
 import { SET_WORKSPACE_ID } from "./actionsTypes.ts";
 
-// import componentMap from "./componentMap.ts";
-import baseLayout from "./layout.ts";
-import componentMap from "./componentMap.ts";
+
+import baseLayout from '../layout/defaultLayout'
+import componentMap from "../layout/componentsMap.tsx";
 
 export interface RootState {
     client: ClientState;
