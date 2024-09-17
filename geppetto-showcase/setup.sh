@@ -1,20 +1,12 @@
-yarn global add yalc
+#!/usr/bin/env bash
 
-cd ../
-app=$(pwd)
+# Trick to have folder relative to the script, not CWD
+PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "${PARENT_PATH}"
 
-cd $app/geppetto.js/geppetto-core
-yarn && yarn build && yarn publish:yalc
+# Install the libraries (if not already installed)
+GEPPETTO_JS="../geppetto.js"
 
-cd $app/geppetto.js/geppetto-ui
-yarn && yarn build:src && yarn publish:yalc
+(bash "${GEPPETTO_JS}/dev-install.sh")
 
-cd $app/geppetto.js/geppetto-client
-yarn && yarn build && yarn publish:yalc
-
-cd $app/geppetto-showcase
-yalc add @metacell/geppetto-meta-client
-yalc add @metacell/geppetto-meta-core
-yalc add @metacell/geppetto-meta-ui
-
-yarn
+yarn install && yarn link:yalc
