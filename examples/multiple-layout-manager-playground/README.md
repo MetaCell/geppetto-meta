@@ -9,6 +9,9 @@ To do so, run
 ```
 yarn install && yarn link:yalc
 ```
+# Project Description
+
+The Multiple Layout Manager Playground enables the creation of one or more workspaces, providing a flexible environment for managing various layouts.
 
 ## Available Scripts
 
