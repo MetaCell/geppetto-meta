@@ -91,7 +91,7 @@ module.exports = smp.wrap({
       },
       {
         test: /\.(obj|drc|gltf)$/,
-        type: 'asset/resource', // Webpack 5 built-in asset handling for 3D models
+        type: 'asset/source',
       },
       {
         test: /\.mjs$/,
