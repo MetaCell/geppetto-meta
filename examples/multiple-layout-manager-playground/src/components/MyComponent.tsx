@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from 'react';
+import { FC } from 'react';
 
 // Define the props type for MyComponent
 type MyComponentProps = {
@@ -8,7 +8,7 @@ type MyComponentProps = {
 
 // Define MyComponent as a functional component
 const MyComponent: FC<MyComponentProps> = ({ name, color }) => {
-    return <h1 style={{ width: "100%", backgroundColor: color }}>{name}</h1>;
+  return <h1 style={{ width: "100%", backgroundColor: color }}>{name}</h1>;
 };
 
 export default MyComponent;

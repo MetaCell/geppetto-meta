@@ -59,8 +59,8 @@ function App() {
       <CssBaseline />
       <div className="App">
         <header className="App-header">
-            <button onClick={handleCreateClick} style={{ margin: "10px" }}>Create workspace</button>
-            {renderWorkspaces()}
+          <button onClick={handleCreateClick} style={{ margin: "10px" }}>Create workspace</button>
+          {renderWorkspaces()}
         </header>
       </div>
     </ThemeProvider>

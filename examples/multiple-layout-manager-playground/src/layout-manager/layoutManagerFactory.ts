@@ -18,52 +18,52 @@ export interface RootState {
     workspaceId: string;
 }
 
-const workspaceReducer = (state = "", action: any) => {
-    switch (action.type) {
-        case SET_WORKSPACE_ID:
-            return action.payload;
-        default:
-            return state;
-    }
+const workspaceReducer = (state = "", action) => {
+  switch (action.type) {
+    case SET_WORKSPACE_ID:
+      return action.payload;
+    default:
+      return state;
+  }
 };
 
 const initialState = {
-    client: clientInitialState,
-    layout: layoutInitialState,
-    widgets: {},
-    workspaceId: "",
+  client: clientInitialState,
+  layout: layoutInitialState,
+  widgets: {},
+  workspaceId: "",
 };
 
 const rootReducer: Reducer<RootState> = reducerDecorator(
-    combineReducers<RootState>({
-        client: geppettoClientReducer,
-        layout,
-        widgets,
-        workspaceId: workspaceReducer,
-    }),
+  combineReducers<RootState>({
+    client: geppettoClientReducer,
+    layout,
+    widgets,
+    workspaceId: workspaceReducer,
+  }),
 );
 
 const getLayoutManagerAndStore = (workspaceId: string) => {
-    const layoutManager = initLayoutManager(baseLayout, componentMap, undefined, false);
-    const middlewareEnhancer = (getDefaultMiddleware: any) => getDefaultMiddleware().concat(callbacksMiddleware, layoutManager.middleware);
+  const layoutManager = initLayoutManager(baseLayout, componentMap, undefined, false);
+  const middlewareEnhancer = (getDefaultMiddleware) => getDefaultMiddleware().concat(callbacksMiddleware, layoutManager.middleware);
 
-    const storeOptions: {
+  const storeOptions: {
         preloadedState: Partial<RootState>;
         reducer: (state: RootState | undefined, action: Action) => RootState;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         middleware: (getDefaultMiddleware: ReturnType<ReturnType<any>>) => any;
     } = {
-        reducer: rootReducer,
-        middleware: middlewareEnhancer,
-        preloadedState: { ...initialState, workspaceId: workspaceId } as Partial<RootState>,
+      reducer: rootReducer,
+      middleware: middlewareEnhancer,
+      preloadedState: { ...initialState, workspaceId: workspaceId } as Partial<RootState>,
     };
 
-    const store = configureStore(storeOptions);
+  const store = configureStore(storeOptions);
 
-    return {
-        layoutManager,
-        store,
-    };
+  return {
+    layoutManager,
+    store,
+  };
 };
 
 export default getLayoutManagerAndStore;
