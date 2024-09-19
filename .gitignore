@@ -5,4 +5,8 @@
 .vscode/
 jupyter_geppetto/build
 jupyter_geppetto/dist
-
+.envrc
+__pycache__
+*.pot
+*.pyc
+__pycache__

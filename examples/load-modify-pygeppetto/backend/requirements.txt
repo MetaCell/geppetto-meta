@@ -1,0 +1,2 @@
+pygeppetto==0.8.1
+fastapi[standard]==0.115.0
