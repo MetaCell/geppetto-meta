@@ -66,9 +66,11 @@ export default class MeshFactory {
   async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
-    // if (this.complexity > this.renderingThreshold) {
-    //   throw (`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingThreshold}`);
-    // }
+    /*
+     * if (this.complexity > this.renderingThreshold) {
+     *   throw (`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingThreshold}`);
+     * }
+     */
   }
 
 
