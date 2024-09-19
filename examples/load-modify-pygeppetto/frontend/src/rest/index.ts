@@ -7,6 +7,17 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Add } from './models/Add';
+export type { AnyCommand } from './models/AnyCommand';
 export type { CommandExecution } from './models/CommandExecution';
+export type { Compound } from './models/Compound';
+export type { Delete } from './models/Delete';
+export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { JsonEObject } from './models/JsonEObject';
+export type { Move } from './models/Move';
+export type { Remove } from './models/Remove';
+export type { Set } from './models/Set';
+export type { ValidationError } from './models/ValidationError';
 
-export { DefaultService } from './services/DefaultService';
+export { CommandsService } from './services/CommandsService';
+export { ModelService } from './services/ModelService';

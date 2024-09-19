@@ -2,20 +2,28 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { CommandExecution } from '../models/CommandExecution';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class DefaultService {
+export class ModelService {
     /**
-     * Command
-     * @returns CommandExecution Successful Response
+     * Load Model
+     * @param modelName
+     * @returns any Successful Response
      * @throws ApiError
      */
-    public static commandCommandGet(): CancelablePromise<CommandExecution> {
+    public static loadModel(
+        modelName: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/command/',
+            url: '/api/model/{model_name}',
+            path: {
+                'model_name': modelName,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
 }

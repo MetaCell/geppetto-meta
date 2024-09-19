@@ -5,10 +5,34 @@
     "version": "0.1.0"
   },
   "paths": {
-    "/command/": {
-      "get": {
-        "summary": "Command",
-        "operationId": "command_command__get",
+    "/api/model/{model_name}/commands/execute": {
+      "post": {
+        "tags": [
+          "commands"
+        ],
+        "summary": "Execute Command",
+        "operationId": "executeCommand",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Name"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnyCommand"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -19,6 +43,153 @@
                 }
               }
             }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model/{model_name}/commands": {
+      "get": {
+        "tags": [
+          "commands"
+        ],
+        "summary": "List Commands",
+        "operationId": "listCommands",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AnyCommand"
+                  },
+                  "title": "Response Listcommands"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model/{model_name}/commands/{command_id}": {
+      "get": {
+        "tags": [
+          "commands"
+        ],
+        "summary": "Detail Command",
+        "operationId": "detailCommand",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Name"
+            }
+          },
+          {
+            "name": "command_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Command Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnyCommand"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/model/{model_name}": {
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Load Model",
+        "operationId": "loadModel",
+        "parameters": [
+          {
+            "name": "model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Model Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
           }
         }
       }
@@ -26,6 +197,100 @@
   },
   "components": {
     "schemas": {
+      "Add": {
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "add"
+            ],
+            "const": "add",
+            "title": "Command Type",
+            "default": "add"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner",
+          "feature"
+        ],
+        "title": "Add"
+      },
+      "AnyCommand": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Compound"
+          },
+          {
+            "$ref": "#/components/schemas/Delete"
+          },
+          {
+            "$ref": "#/components/schemas/Move"
+          },
+          {
+            "$ref": "#/components/schemas/Remove"
+          },
+          {
+            "$ref": "#/components/schemas/Add"
+          },
+          {
+            "$ref": "#/components/schemas/Set"
+          }
+        ],
+        "title": "AnyCommand",
+        "discriminator": {
+          "propertyName": "command_type",
+          "mapping": {
+            "add": "#/components/schemas/Add",
+            "compound": "#/components/schemas/Compound",
+            "delete": "#/components/schemas/Delete",
+            "move": "#/components/schemas/Move",
+            "remove": "#/components/schemas/Remove",
+            "set": "#/components/schemas/Set"
+          }
+        }
+      },
       "CommandExecution": {
         "properties": {
           "status": {
@@ -38,6 +303,304 @@
           "status"
         ],
         "title": "CommandExecution"
+      },
+      "Compound": {
+        "properties": {
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "compound"
+            ],
+            "const": "compound",
+            "title": "Command Type",
+            "default": "compound"
+          },
+          "commands": {
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Compound"
+                },
+                {
+                  "$ref": "#/components/schemas/Delete"
+                },
+                {
+                  "$ref": "#/components/schemas/Move"
+                },
+                {
+                  "$ref": "#/components/schemas/Remove"
+                },
+                {
+                  "$ref": "#/components/schemas/Add"
+                },
+                {
+                  "$ref": "#/components/schemas/Set"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Commands"
+          }
+        },
+        "type": "object",
+        "required": [
+          "commands"
+        ],
+        "title": "Compound"
+      },
+      "Delete": {
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "delete"
+            ],
+            "const": "delete",
+            "title": "Command Type",
+            "default": "delete"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner"
+        ],
+        "title": "Delete"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JsonEObject": {
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "title": "Uuid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uuid"
+        ],
+        "title": "JsonEObject"
+      },
+      "Move": {
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "move"
+            ],
+            "const": "move",
+            "title": "Command Type",
+            "default": "move"
+          },
+          "from_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "From Index"
+          },
+          "to_index": {
+            "type": "integer",
+            "title": "To Index"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner",
+          "feature",
+          "to_index"
+        ],
+        "title": "Move"
+      },
+      "Remove": {
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "remove"
+            ],
+            "const": "remove",
+            "title": "Command Type",
+            "default": "remove"
+          },
+          "index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Index"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner",
+          "feature"
+        ],
+        "title": "Remove"
+      },
+      "Set": {
+        "properties": {
+          "owner": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "command_type": {
+            "type": "string",
+            "enum": [
+              "set"
+            ],
+            "const": "set",
+            "title": "Command Type",
+            "default": "set"
+          }
+        },
+        "type": "object",
+        "required": [
+          "owner",
+          "feature"
+        ],
+        "title": "Set"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       }
     }
   }
