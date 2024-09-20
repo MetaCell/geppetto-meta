@@ -70,10 +70,11 @@ export const patch2commands = (patches: Patch[], model: any): (AnyCommand | null
 export const notification2patches = (notifications: Notification[]): Patch[] => {
   const patches = []
   for (const notif of notifications) {
+    const fragment = notif.notifier.path?.replace(/[/@]/g, '').split('.') || []
     if (notif.kind === 'set') {
       patches.push({
         op: 'replace',
-        path: [...notif.notifier.path?.replace(/[/@]/g, '').split('.'), notif.feature],
+        path: [...fragment, notif.feature],
         value: notif.new
       } as Patch)
     }
@@ -82,7 +83,7 @@ export const notification2patches = (notifications: Notification[]): Patch[] => 
 }
 
 export const applyModification = async (model: any, custom: (draft: any) => void) => {
-  const [_updated, _patches, _inversePath] = produceWithPatches(model, custom)
+  const [_, _patches, _inversePatches] = produceWithPatches(model, custom)
 
   // Translate the command
   const command = patch2commands(_patches, model)

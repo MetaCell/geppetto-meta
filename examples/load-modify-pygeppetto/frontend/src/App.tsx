@@ -16,7 +16,9 @@ function App() {
 
   const createDummyCommand = async (model: any) => {
     const updated = await applyModification(model, (draft: any) => {
-      draft.variables[0].name = draft.variables[0].name + 'Bar'
+      const variable = draft.variables[0]
+      variable.name = variable.name + 'Bar'
+      variable.id = "PP" + variable.id
     })
     setModel(updated)
     setCommands(await CommandsService.listCommands("instances"))

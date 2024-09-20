@@ -53,13 +53,13 @@ export class CommandsService {
         });
     }
     /**
-     * Detail Command
+     * Detail Commands
      * @param modelName
      * @param commandId
      * @returns AnyCommand Successful Response
      * @throws ApiError
      */
-    public static detailCommand(
+    public static detailCommands(
         modelName: string,
         commandId: number,
     ): CancelablePromise<AnyCommand> {

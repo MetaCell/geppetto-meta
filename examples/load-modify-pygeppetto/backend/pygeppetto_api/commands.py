@@ -122,7 +122,6 @@ class CommandRecorder(EObserver):
         self.records = []
 
     def notifyChanged(self, notification):
-        print("CHANGES", notification)
         if self.recording:
             self.records.append(notification)
             return
@@ -136,6 +135,11 @@ class CommandRecorder(EObserver):
         self.recording = False
         if clean:
             self.records = []
+
+    def flush(self):
+        records = self.records
+        self.records = []
+        return records
 
 
 def ultra_shallow_copy(o: EObject):

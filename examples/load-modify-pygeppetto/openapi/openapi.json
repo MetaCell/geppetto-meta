@@ -112,8 +112,8 @@
         "tags": [
           "commands"
         ],
-        "summary": "Detail Command",
-        "operationId": "detailCommand",
+        "summary": "Detail Commands",
+        "operationId": "detailCommands",
         "parameters": [
           {
             "name": "model_name",

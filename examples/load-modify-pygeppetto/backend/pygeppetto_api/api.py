@@ -1,9 +1,7 @@
-from copy import copy
 import json
 from pathlib import Path
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, HTTPException
 from fastapi.routing import APIRoute
-from pydantic import BaseModel
 from .commands import (
     AnyCommand,
     CommandRecorder,
@@ -21,16 +19,16 @@ from pygeppetto.model.model_serializer import serialize as serialize_pygeppetto_
 rset = ResourceSet()
 sessions = {}
 
-# We enable the uuids by default for json and xmi
+# We enable the uuids by default for json
 json_serializer = ResourceSet.resource_factory["json"]
-xmi_serializer = ResourceSet.resource_factory["xmi"]
 ResourceSet.resource_factory["json"] = lambda uri: json_serializer(uri, use_uuid=True)
-ResourceSet.resource_factory["xmi"] = lambda uri: xmi_serializer(uri, use_uuid=True)
 
 
 def snake2camel(route: APIRoute):
-    name = route.name.split("_")
-    camel_name = "".join((name[0], *(n.capitalize() for n in name[1:])))
+    name = route.endpoint.__name__
+    route.name = name
+    names = name.split("_")
+    camel_name = "".join((names[0], *(n.capitalize() for n in names[1:])))
     return camel_name
 
 
@@ -40,60 +38,49 @@ app = FastAPI(
 api_router = APIRouter(prefix="/api")
 
 
-class Command(BaseModel): ...
-
-
-class CommandExecution(BaseModel):
-    status: str
-
-
 @api_router.post(
     "/model/{model_name}/commands/execute",
     response_model=list[Notification],
     tags=["commands"],
-    name="execute_command",
 )
-async def command_execution(model_name: str, command: AnyCommand):
+async def execute_command(model_name: str, command: AnyCommand):
     if model_name not in sessions:
-        ...  # TODO
-        return
+        raise HTTPException(
+            status_code=404, detail=f"There is no session for {model_name}"
+        )
     model, stack, recorder = sessions[model_name]
     command = deserialize_command(command.root, model)  # type: ignore
     recorder.start_recording()
     stack.execute(command)
-    records = recorder.records
-    recorder.stop_recording(clean=True)
+    recorder.stop_recording()
 
-    return [serialize_notification(n) for n in records]
+    return [serialize_notification(n) for n in recorder.flush()]
 
 
 @api_router.get(
     "/model/{model_name}/commands",
     response_model=dict[int, AnyCommand],
     tags=["commands"],
-    name="list_commands",
 )
 async def list_commands(model_name: str):
     if model_name not in sessions:
-        ...  # TODO
-        return
+        raise HTTPException(
+            status_code=404, detail=f"There is no session for {model_name}"
+        )
     _, stack, _ = sessions[model_name]
-    cmds = {}
-    for i, cmd in enumerate(stack.stack):
-        cmds[i] = serialize(cmd)
-    return cmds
+    return {i: serialize(cmd) for i, cmd in enumerate(stack.stack)}
 
 
 @api_router.get(
     "/model/{model_name}/commands/{command_id}",
     response_model=AnyCommand,
     tags=["commands"],
-    name="detail_command",
 )
 async def detail_commands(model_name: str, command_id: int):
     if model_name not in sessions:
-        ...  # TODO
-        return
+        raise HTTPException(
+            status_code=404, detail=f"There is no session for {model_name}"
+        )
     _, stack, _ = sessions[model_name]
     return serialize(stack.stack[command_id])
 
@@ -101,7 +88,6 @@ async def detail_commands(model_name: str, command_id: int):
 @api_router.get(
     "/model/{model_name}",
     tags=["model"],
-    name="load_model",
 )
 async def load_model(model_name: str):
     if model_name in sessions:
@@ -111,7 +97,7 @@ async def load_model(model_name: str):
         )
 
     path = Path(__file__).resolve().parent.parent / "models" / f"{model_name}.xmi"
-    resource = rset.get_resource(f"{path}")
+    resource = rset.get_resource(f"{path}", use_uuid=True)
 
     sessions[model_name] = (
         resource,
