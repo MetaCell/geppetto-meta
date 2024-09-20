@@ -39,6 +39,7 @@ export default tseslint.config(
       "no-console": ["warn", {
         allow: ["warn", "error", "debug"],
       }],
+      "@typescript-eslint/no-explicit-any": "off",
       "consistent-return": "warn", // https://eslint.org/docs/latest/rules/consistent-return
       "prefer-arrow-callback": ["warn"],
       "object-curly-spacing": ["warn", "always"], // enforce consistent spacing inside braces

@@ -39,7 +39,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CommandExecution"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notification"
+                  },
+                  "title": "Response Executecommand"
                 }
               }
             }
@@ -81,8 +85,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
+                  "type": "object",
+                  "additionalProperties": {
                     "$ref": "#/components/schemas/AnyCommand"
                   },
                   "title": "Response Listcommands"
@@ -291,19 +295,6 @@
           }
         }
       },
-      "CommandExecution": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "title": "Status"
-          }
-        },
-        "type": "object",
-        "required": [
-          "status"
-        ],
-        "title": "CommandExecution"
-      },
       "Compound": {
         "properties": {
           "command_type": {
@@ -385,14 +376,29 @@
       "JsonEObject": {
         "properties": {
           "uuid": {
-            "type": "string",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "title": "Uuid"
+          },
+          "path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Path"
           }
         },
         "type": "object",
-        "required": [
-          "uuid"
-        ],
         "title": "JsonEObject"
       },
       "Move": {
@@ -459,6 +465,124 @@
           "to_index"
         ],
         "title": "Move"
+      },
+      "Notification": {
+        "properties": {
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "add"
+                ],
+                "const": "add"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "add_many"
+                ],
+                "const": "add_many"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "move"
+                ],
+                "const": "move"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "remove"
+                ],
+                "const": "remove"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "remove_many"
+                ],
+                "const": "remove_many"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "set"
+                ],
+                "const": "set"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "unset"
+                ],
+                "const": "unset"
+              }
+            ],
+            "title": "Kind"
+          },
+          "notifier": {
+            "$ref": "#/components/schemas/JsonEObject"
+          },
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "old": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Old"
+          },
+          "new": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JsonEObject"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "notifier",
+          "feature"
+        ],
+        "title": "Notification"
       },
       "Remove": {
         "properties": {

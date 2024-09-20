@@ -2,9 +2,9 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { CommandsService, ModelService, Set, type Compound } from './rest'
+import { AnyCommand, CommandsService, ModelService, Set, type Compound } from './rest'
 import { add, compound, remove, set } from './commands'
-import { produceWithPatches } from 'immer'
+import { applyPatches, Patch, produceWithPatches } from 'immer'
 
 
 const resolve = (path: string[], model: Record<string, any>) => {
@@ -15,48 +15,64 @@ const resolve = (path: string[], model: Record<string, any>) => {
   return [obj.uuid, ...path.slice(-1)]
 }
 
-const createDummyCommand = async (model) => {
-  const [updated, patch, inversePath] = produceWithPatches(model, draft => {
-    draft.variables[0].name = 'FOO'
-  });
 
-  // Translate the command
-  for (const p of patch) {
-    if (p.op == "replace") {
-      const [ownerUUID, feature] = resolve(p.path, model)
-      const cmd: Set = set({ owner: {
-        uuid: ownerUUID
-      },
-      feature: feature,
-      value: p.value
-      })
-      CommandsService.executeCommand("instances", cmd)
-    }
-  }
-  console.log(model)
-  console.log(updated)
-  console.log(patch)
-  // const cmd: Compound = compound(
-  //   [add({
-  //     owner: { uuid: 'ABC' },
-  //     feature: "featu",
-  //     value: 44
-  //   }), remove({
-  //     owner: { uuid: 'ABC' },
-  //     feature: "featu",
-  //     value: 44
-  //   })])
-
-  // CommandsService.executeCommand(cmd)
-}
 
 
 function App() {
   const [model, setModel] = useState(null)
+  const [commands, setCommands] = useState<Record<string, AnyCommand>>({})
 
   const loadModel = async () => {
     const loadedModel = await ModelService.loadModel("instances")
     setModel(loadedModel)
+  }
+
+  const createDummyCommand = async (model: any) => {
+    const [_updated, patch, _inversePath] = produceWithPatches(model, (draft: any) => {
+      draft.variables[0].name = draft.variables[0].name + 'Bar'
+      draft.variables.push({element: "new"})
+      draft.variables[1].name = 'FOO'
+    });
+
+    console.log("Patch", patch)
+
+    // Translate the command
+    const commands = []
+    for (const p of patch) {
+      if (p.op == "replace") {
+        const [ownerUUID, feature] = resolve(p.path, model)
+        const cmd: Set = set({ owner: {
+          uuid: ownerUUID
+        },
+        feature: feature,
+        value: p.value
+        })
+        commands.push(cmd)
+      }
+      console.log("P", p)
+    }
+    if (commands.length === 0) {
+      console.log("No modification")
+      return
+    }
+    const command = commands.length > 1 ? compound(commands) : commands[0]
+    const notifications = await CommandsService.executeCommand("instances", command)
+
+    // Translate the command back to a immer patch
+    const patches = []
+    for (const notif of notifications) {
+      if (notif.kind === 'set') {
+        patches.push({
+          op: 'replace',
+          path: [...notif.notifier.path?.replace(/[/@]/g, '').split('.'), notif.feature],
+          value: notif.new
+        } as Patch)
+      }
+    }
+
+    const updated = applyPatches(model, patches)
+    setModel(updated)
+    setCommands(await CommandsService.listCommands("instances"))
   }
 
 
@@ -78,6 +94,9 @@ function App() {
         <button onClick={() => createDummyCommand(model)}>
           change variable name
         </button>
+        {Object.entries(commands).map(([k, c]) =>
+          <li>{`${k}: ${JSON.stringify(c)}`}</li>
+        )}
         <p>
           {JSON.stringify(model)}
         </p>

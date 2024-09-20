@@ -1,9 +1,18 @@
+from copy import copy
 import json
 from pathlib import Path
 from fastapi import APIRouter, FastAPI
 from fastapi.routing import APIRoute
 from pydantic import BaseModel
-from .commands import AnyCommand, deserialize, serialize
+from .commands import (
+    AnyCommand,
+    CommandRecorder,
+    Notification,
+    deserialize_command,
+    serialize,
+    serialize_notification,
+    ultra_shallow_copy,
+)
 from pyecore.resources import ResourceSet
 from pyecore.commands import CommandStack
 from pygeppetto.model.model_serializer import serialize as serialize_pygeppetto_model
@@ -40,7 +49,7 @@ class CommandExecution(BaseModel):
 
 @api_router.post(
     "/model/{model_name}/commands/execute",
-    response_model=CommandExecution,
+    response_model=list[Notification],
     tags=["commands"],
     name="execute_command",
 )
@@ -48,10 +57,14 @@ async def command_execution(model_name: str, command: AnyCommand):
     if model_name not in sessions:
         ...  # TODO
         return
-    model, stack = sessions[model_name]
-    command = deserialize(command.root, model)  # type: ignore
+    model, stack, recorder = sessions[model_name]
+    command = deserialize_command(command.root, model)  # type: ignore
+    recorder.start_recording()
     stack.execute(command)
-    return CommandExecution(status="OK")
+    records = recorder.records
+    recorder.stop_recording(clean=True)
+
+    return [serialize_notification(n) for n in records]
 
 
 @api_router.get(
@@ -64,7 +77,7 @@ async def list_commands(model_name: str):
     if model_name not in sessions:
         ...  # TODO
         return
-    _, stack = sessions[model_name]
+    _, stack, _ = sessions[model_name]
     cmds = {}
     for i, cmd in enumerate(stack.stack):
         cmds[i] = serialize(cmd)
@@ -81,7 +94,7 @@ async def detail_commands(model_name: str, command_id: int):
     if model_name not in sessions:
         ...  # TODO
         return
-    _, stack = sessions[model_name]
+    _, stack, _ = sessions[model_name]
     return serialize(stack.stack[command_id])
 
 
@@ -92,13 +105,22 @@ async def detail_commands(model_name: str, command_id: int):
 )
 async def load_model(model_name: str):
     if model_name in sessions:
-        (resource, _) = sessions[model_name]
-        return json.loads(serialize_pygeppetto_model(resource.contents[0]))
-    path = Path(__file__).resolve().parent.parent / "models" / f"{model_name}.xmi"
+        (resource, _, _) = sessions[model_name]
+        return json.loads(
+            serialize_pygeppetto_model(ultra_shallow_copy(resource.contents[0]))
+        )
 
+    path = Path(__file__).resolve().parent.parent / "models" / f"{model_name}.xmi"
     resource = rset.get_resource(f"{path}")
-    sessions[model_name] = (resource, CommandStack())
-    return json.loads(serialize_pygeppetto_model(resource.contents[0]))
+
+    sessions[model_name] = (
+        resource,
+        CommandStack(),
+        CommandRecorder(notifier=resource),
+    )
+    return json.loads(
+        serialize_pygeppetto_model(ultra_shallow_copy(resource.contents[0]))
+    )
 
 
 app.include_router(api_router)

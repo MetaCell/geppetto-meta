@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { AnyCommand } from '../models/AnyCommand';
-import type { CommandExecution } from '../models/CommandExecution';
+import type { Notification } from '../models/Notification';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -12,13 +12,13 @@ export class CommandsService {
      * Execute Command
      * @param modelName
      * @param requestBody
-     * @returns CommandExecution Successful Response
+     * @returns Notification Successful Response
      * @throws ApiError
      */
     public static executeCommand(
         modelName: string,
         requestBody: AnyCommand,
-    ): CancelablePromise<CommandExecution> {
+    ): CancelablePromise<Array<Notification>> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/model/{model_name}/commands/execute',
@@ -40,7 +40,7 @@ export class CommandsService {
      */
     public static listCommands(
         modelName: string,
-    ): CancelablePromise<Array<AnyCommand>> {
+    ): CancelablePromise<Record<string, AnyCommand>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/model/{model_name}/commands',

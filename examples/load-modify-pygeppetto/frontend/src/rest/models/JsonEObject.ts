@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type JsonEObject = {
-    uuid: string;
+    uuid?: (string | null);
+    path?: (string | null);
 };
 
