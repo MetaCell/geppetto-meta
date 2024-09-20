@@ -1,0 +1,4 @@
+run-backend.bash
+run-frontend.bash
+watch.bash
+generate-binding.bash
