@@ -7,8 +7,15 @@ To start develop, you need to setup yalc to link geppetto libraries to the curre
 To do so, run
 
 ```
+bash setup.bash
+```
+
+or you can also run manually
+
+```
 yarn install && yarn link:yalc
 ```
+
 # Project Description
 
 The Multiple Layout Manager Playground enables the creation of one or more workspaces, providing a flexible environment for managing various layouts.
