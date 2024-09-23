@@ -7,7 +7,7 @@ To start develop, you need to setup yalc to link geppetto libraries to the curre
 To do so, run
 
 ```
-bash setup.sh
+bash setup.bash
 ```
 
 ## Available Scripts
