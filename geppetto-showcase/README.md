@@ -12,10 +12,10 @@ The geppetto-showcase depends on three local packages: geppetto-client, geppetto
 
 We use [yalc](https://github.com/wclr/yalc) as a local repository to manage these dependencies.
 
-The `./setup.sh` script will build and add the local geppetto packages to the showcase:
+The `./setup.bash` script will build and add the local geppetto packages to the showcase:
 
 ```bash
-bash ./setup.sh
+bash ./setup.bash
 ```
 
 Install dependencies
