@@ -23,10 +23,10 @@ The UI components of Geppetto.js (work in progress)
 To develop for one of the libraries, they need to be installed and "linked" together.
 The linking of the libraries between each other is done using `yalc`, be sure you have it installed.
 
-To bootstrapped all the projects, you can run the `dev-install.sh` script.
+To bootstrapped all the projects, you can run the `dev-install.bash` script.
 
 ```bash
-sh dev-install.sh
+bash dev-install.bash
 ```
 
 ### Working on multiple dependent components at the same time

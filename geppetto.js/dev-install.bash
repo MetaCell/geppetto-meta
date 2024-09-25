@@ -7,10 +7,10 @@ cd "${PARENT_PATH}"
 # Install and init the projects first in reverse order (the most dependent first)
 # each "init" script is linking the projects using yalc
 echo "[*] Install geppetto-core"
-(cd geppetto-core && yarn install && yarn link:yalc && yarn build:dev && yarn publish:yalc)
+(cd geppetto-core && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
 
 echo "[*] Install geppetto-ui"
-(cd geppetto-ui && yarn install && yarn link:yalc && yarn build:dev && yarn publish:yalc)
+(cd geppetto-ui && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
 
 echo "[*] Install geppetto-client"
-(cd geppetto-client && yarn install && yarn link:yalc && yarn build:dev && yarn publish:yalc)
+(cd geppetto-client && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
