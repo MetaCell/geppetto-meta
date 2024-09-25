@@ -1,7 +1,7 @@
 {
-  "name": "layout-manager-playground",
-  "version": "0.2.0",
+  "name": "multiple-layout-manager-playground",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "prepare": "yarn link:yalc",
@@ -22,6 +22,7 @@
     "@metacell/geppetto-meta-ui": "^2.0.0",
     "@mui/icons-material": "^5.14.0",
     "@mui/material": "^5.14.0",
+    "@reduxjs/toolkit": "^2.2.7",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.38",
     "file-saver": "^2.0.5",

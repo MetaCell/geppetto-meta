@@ -39,7 +39,7 @@ let instance: LayoutManager = null;
  * @memberof Control
  */
 
-class LayoutManager {
+export class LayoutManager {
 
   model: Model;
   /**

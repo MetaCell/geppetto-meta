@@ -10,6 +10,16 @@ To do so, run
 bash setup.bash
 ```
 
+or you can also run manually
+
+```
+yarn install && yarn link:yalc
+```
+
+# Project Description
+
+The Multiple Layout Manager Playground enables the creation of one or more workspaces, providing a flexible environment for managing various layouts.
+
 ## Available Scripts
 
 You can run the project in dev or preview mode using `yarn dev` and `yarn preview`.
