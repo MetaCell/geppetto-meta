@@ -12,7 +12,7 @@ export default class MeshFactory {
   constructor (
     scene,
     linesThreshold = 2000,
-    renderingTheshold = 500,
+    renderingThreshold = 500,
     depthWrite = true,
     linePrecisionMinRadius = 300,
     minAllowedLinePrecision = 1,
@@ -31,7 +31,7 @@ export default class MeshFactory {
     this.linePrecisionMinRadius = linePrecisionMinRadius;
     this.minAllowedLinePrecision = minAllowedLinePrecision;
     this.linesThreshold = linesThreshold;
-    this.renderingTheshold = renderingTheshold;
+    this.renderingThreshold = renderingThreshold;
     this.particleTexture = particleTexture;
     this.dracoDecoderPath = dracoDecoderPath ? dracoDecoderPath : 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
     this.THREE = THREE ? THREE : require('three');
@@ -66,9 +66,11 @@ export default class MeshFactory {
   async start (instancesMap) {
     this.instancesMap = instancesMap;
     await this.traverseInstances(this.instancesMap);
-    if (this.complexity > this.renderingTheshold) {
-      throw (`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingTheshold}`);
-    }
+    /*
+     * if (this.complexity > this.renderingThreshold) {
+     *   throw (`Fatal Error while attemping to render: Scene complextiy ${this.complexity} exceeds pre-defined completity theshold ${this.renderingThreshold}`);
+     * }
+     */
   }
 
 
@@ -173,7 +175,7 @@ export default class MeshFactory {
   }
 
   setThreeColor (threeColor, color) {
-     
+
     if (!isNaN(color % 1)) {
       // we have an integer (hex) value
       threeColor.setHex(color);
@@ -276,7 +278,7 @@ export default class MeshFactory {
 
     const material = lines ? materials.line : materials.mesh;
 
-     
+
     switch (node.eClass) {
     case Resources.PARTICLES:
       threeObject = this.createParticles(node);
@@ -482,7 +484,7 @@ export default class MeshFactory {
     let scene = null;
     const that = this;
     loader.parse(node.collada, function (collada) {
-       
+
       scene = collada.scene;
       scene.traverse(function (child) {
         if (child instanceof that.THREE.Mesh) {
@@ -731,7 +733,7 @@ export default class MeshFactory {
       if (v !== undefined) {
         const m = this.visualModelMap[map[v]];
 
-         
+
         Instances.getInstance(map[v].substring(0, map[v].lastIndexOf('.')));
         const object = instance.getVisualType()[
           map[v].replace(`${instancePath}.`, '')
@@ -817,7 +819,7 @@ export default class MeshFactory {
       // merged mesh into corresponding geometry
       geometry.merge(m.geometry, m.matrix);
     }
-     
+
     return true;
   }
 

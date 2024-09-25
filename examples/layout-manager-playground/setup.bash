@@ -8,8 +8,5 @@ cd "${PARENT_PATH}"
 GEPPETTO_JS="../../geppetto.js"
 
 (bash "${GEPPETTO_JS}/dev-install.sh")
-(cd "${GEPPETTO_JS}/geppetto-core" && yarn build:dev)
-(cd "${GEPPETTO_JS}/geppetto-ui" && yarn build:dev)
-(cd "${GEPPETTO_JS}/geppetto-client" && yarn build:dev)
 
-yarn install && yarn link:yalc
+yarn install

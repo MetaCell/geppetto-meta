@@ -24,7 +24,7 @@ export default class TreeShowcase extends Component {
       {
         title: 'San Diego, APRIL 25-26, 2009',
         subtitle:
-            '1.5 T General Electric (GE) Signa Excite. 8-channel, transmit-receive head coil',
+            '1.5 T General Electric (GE) Signa Excite. 8-channel, transmit-receive head coil',
         expanded: true,
         children: [
           {
