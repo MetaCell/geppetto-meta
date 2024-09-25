@@ -15,7 +15,7 @@ We use [yalc](https://github.com/wclr/yalc) as a local repository to manage thes
 The `./setup.sh` script will build and add the local geppetto packages to the showcase:
 
 ```bash
-sh ./setup.sh
+bash ./setup.sh
 ```
 
 Install dependencies
@@ -33,9 +33,7 @@ yarn start
 (optional for hot reloading)
 
 ```bash
-yarn global add nodemon
-cd ../geppetto.js/geppetto-ui
-nodemon -w ./src -x 'yarn build:src && yalc push build'
+bash watch-geppettojs-updates.sh
 ```
 
 ## Deployment
@@ -49,5 +47,5 @@ docker build -t geppetto-showcase .
 Start container with:
 
 ````bash
-docker run -p 8080:80 geppetto-showcase 
+docker run -p 8080:80 geppetto-showcase
 ````

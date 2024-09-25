@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "yarn link:yalc",
     "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui && yalc link @metacell/geppetto-meta-client",
     "dev": "vite",
     "build": "tsc -b && vite build",
