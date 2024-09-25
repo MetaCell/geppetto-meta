@@ -1,10 +1,10 @@
 import React from 'react';
 import MenuSingleItem from './MenuSingleItem';
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Fade from '@mui/material/Fade';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuList from '@mui/material/MenuList';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 class MenuPopper extends React.Component {
   constructor (props) {

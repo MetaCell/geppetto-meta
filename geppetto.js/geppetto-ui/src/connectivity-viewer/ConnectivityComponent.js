@@ -5,7 +5,7 @@ import { Matrix } from './layouts/Matrix';
 import { Hive } from './layouts/Hive';
 import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { PropTypes } from 'prop-types';
 
 const styles = {

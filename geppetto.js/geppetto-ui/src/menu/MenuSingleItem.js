@@ -1,7 +1,7 @@
 import React from 'react';
 import MenuPopper from './MenuPopper';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 class MenuSingleItem extends React.Component {
   constructor (props) {

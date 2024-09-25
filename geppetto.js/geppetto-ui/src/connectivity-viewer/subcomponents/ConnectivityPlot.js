@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as util from '../../utilities';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
 import IconText from './IconText';
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import ConnectivityTooltip from './ConnectivityTooltip';
 const d3 = require('d3');
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
-import Toolbar from "@material-ui/core/Toolbar";
+import Toolbar from "@mui/material/Toolbar";
 
 const defaultButtonColor = '#fc6320'
 const defaultBackgroundColor = 'rgb(0,0,0,0.5)'

@@ -65,6 +65,9 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@metacell/geppetto-meta-core": "3.0.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.1.1",
     "aframe": "<1.1.0",
     "aframe-slice9-component": ">=1.0.0",
     "ami.js": ">=0.32.0",
@@ -112,5 +115,8 @@
         "node_modules"
       ]
     }
+  },
+  "dependencies": {
+
   }
 }

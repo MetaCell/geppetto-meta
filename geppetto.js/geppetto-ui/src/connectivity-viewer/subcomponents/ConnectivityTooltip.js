@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 
 
 const classes = { matrixTooltip: "connectivity-tooltip-matrix" };

@@ -188,7 +188,7 @@ class PlotComponent extends Component {
 
 
   updateLayoutConf (labelX, labelY) {
-    this.layout = { ...defaultLayout(), ...this.props.layout ? this.props.layout : {}, title: this.props.title };
+    this.layout = { ...defaultLayout(), ...(this.props.layout ? this.props.layout : {}), title: this.props.title };
     const layoutConf = this.getAxisLayoutConfiguration(labelX, labelY);
     this.layout.xaxis = { ...this.layout.xaxis, ...layoutConf.xaxis };
     this.layout.yaxis = { ...this.layout.yaxis, ...layoutConf.yaxis };

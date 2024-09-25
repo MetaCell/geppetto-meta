@@ -8,8 +8,8 @@ import { DatasourceTypes } from './datasources/datasources';
 import { Component, FC, useState, useRef, useEffect } from "react";
 
 
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { Button, Grid, Input, InputAdornment, MenuList, MenuItem, Paper } from "@material-ui/core";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { Button, Grid, Input, InputAdornment, MenuList, MenuItem, Paper } from "@mui/material";
 
 import { SearchProps, SearchState, ResultsProps, FiltersProps } from './SearchInterfaces';
 

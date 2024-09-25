@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import Card from '@material-ui/core/Card';
-import Modal from '@material-ui/core/Modal';
-import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
-import CardActionArea from '@material-ui/core/CardActionArea';
+import Card from '@mui/material/Card';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";

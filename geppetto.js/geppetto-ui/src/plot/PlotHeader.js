@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import Icon from '@material-ui/core/Icon';
-import Tooltip from '@material-ui/core/Tooltip';
-import Popover from '@material-ui/core/Popover';
-import MenuItem from '@material-ui/core/MenuItem';
+import Icon from '@mui/material/Icon';
+import Tooltip from '@mui/material/Tooltip';
+import Popover from '@mui/material/Popover';
+import MenuItem from '@mui/material/MenuItem';
 
 
 const anchor = {

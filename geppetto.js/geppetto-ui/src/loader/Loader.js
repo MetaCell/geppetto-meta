@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { PropTypes } from 'prop-types';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 const styles = { backdrop: theme => ({ zIndex: theme.zIndex.drawer + 1, }), };
 
@@ -53,10 +53,10 @@ class Loader extends Component {
       children
     ) : (
       <Grid container spacing={1}>
-        <Grid container item spacing={3} justify="center">
+        <Grid container item spacing={3} justifyContent="center">
           <Grid item>{progress}</Grid>
         </Grid>
-        <Grid container item spacing={3} justify="center">
+        <Grid container item spacing={3} justifyContent="center">
           <Grid item>
             <Typography
               className={className}

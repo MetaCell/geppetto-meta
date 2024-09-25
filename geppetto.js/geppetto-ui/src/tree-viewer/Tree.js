@@ -15,7 +15,7 @@ export default Tree;
  *   changeNodeAtPath,
  *   walk,
  * } from '@nosferatu500/react-sortable-tree';
- * import { withStyles } from '@material-ui/core';
+ * import { withStyles } from '@mui/material';
  * import '@nosferatu500/react-sortable-tree/style.css';
  * import PropTypes from 'prop-types';
  */
