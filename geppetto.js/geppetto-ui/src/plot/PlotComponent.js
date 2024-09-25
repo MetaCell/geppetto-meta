@@ -4,14 +4,13 @@ import JSZip from "jszip";
 import FileSaver from "file-saver";
 import Plotly from 'plotly.js/lib/core';
 import createPlotlyComponent from 'react-plotly.js/factory';
-Plotly.register([require('plotly.js/lib/scatter')]);
-const ScatterPlot = createPlotlyComponent(Plotly);
 import { unit } from 'mathjs';
 import PlotHeader from './PlotHeader';
 import { defaultLayout, defaultTrace, defaultConfig } from './configuration/plotConfiguration';
-import ExternalInstance from '@metacell/geppetto-meta-core/model/ExternalInstance';
-import { withStyles } from '@material-ui/core';
 import { Units } from './units';
+
+Plotly.register([require('plotly.js/lib/scatter')]);
+const ScatterPlot = createPlotlyComponent(Plotly);
 
 const style = {
   container: {
@@ -353,9 +352,9 @@ class PlotComponent extends Component {
     const config = { ...defaultConfig(), ...plotConfig }
 
     return (
-      <div className={classes.container}>
+      <div style={style.container}>
         {data.length > 0 && (
-          <div className={classes.container}>
+          <div style={style.container}>
 
             <PlotHeader headerIcons={this.headerIconList} />
 
@@ -368,7 +367,7 @@ class PlotComponent extends Component {
               onDoubleClick={() => { }}
               layout={layout}
               useResizeHandler
-              className={classes.plot}
+              style={style.plot}
             />
           </div>
         )}
@@ -416,4 +415,4 @@ PlotComponent.propTypes = {
   extractLegendName: PropTypes.func
 };
 
-export default withStyles(style)(PlotComponent)
+export default PlotComponent;

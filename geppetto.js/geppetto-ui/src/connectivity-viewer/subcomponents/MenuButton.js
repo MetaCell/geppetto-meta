@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 
-const styles = theme => ({});
 
 class MenuButton extends Component {
 
@@ -69,4 +67,4 @@ class MenuButton extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(MenuButton);
+export default MenuButton;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+
 import OpenSeaDragon from 'openseadragon';
 import { PropTypes } from 'prop-types';
 import * as util from '../utilities';
@@ -10,20 +10,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
 
-const styles = theme => ({
+const styles = {
   bigImageViewerContainer: {
     display: 'flex',
-    padding: theme.spacing(5),
+    padding: "2rem",
     alignItems: 'stretch',
     flex: 1,
   },
   bigImageViewerContent: {
     display: 'flex',
     alignItems: 'stretch',
-    paddingLeft: theme.spacing(2),
+    paddingLeft: "0.5rem",
     flex: 1,
-  },
-});
+  }
+};
 
 const ZOOM_OUT_TOOLTIP = 'Zoom Out';
 const ZOOM_IN_TOOLTIP = 'Zoom In';
@@ -131,7 +131,7 @@ class BigImageViewer extends Component {
   }
 
   render () {
-    const { classes, toolbarOptions } = this.props;
+    const { toolbarOptions } = this.props;
     const customButtons = this.getCustomButtons();
     const toolbar = toolbarOptions && toolbarOptions.instance ? (
       <toolbarOptions.instance
@@ -144,11 +144,11 @@ class BigImageViewer extends Component {
       buttonStyles={toolbarOptions?.buttonStyles}/>;
 
     return (
-      <div className={classes.bigImageViewerContainer}>
+      <div className="big-image-viewer-wrapper" style={{...style.bigImageViewerContainer, ...(this.props?.styles?.bigImageViewerContainer ?? {})}}>
         {toolbar}
         <div
           id={this.props.id + '_component'}
-          className={classes.bigImageViewerContent}
+          className="big-image-viewer" style={styles.bigImageViewerContent}
         />
       </div>
     );
@@ -201,4 +201,4 @@ BigImageViewer.propTypes = {
   }),
 };
 
-export default withStyles(styles)(BigImageViewer);
+export default BigImageViewer;

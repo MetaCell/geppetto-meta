@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+
 import { PropTypes } from 'prop-types';
 
 import * as THREE from 'three';
@@ -20,28 +20,12 @@ import CustomToolbar from '../common/CustomToolbar';
 import { createZipFromRemoteFiles } from './util';
 import Loader from "../loader/Loader";
 
-const styles = {
-  dicomViewer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    backgroundColor: '#353535',
-  },
-  renderer: {
-    backgroundColor: '#000',
-    float: 'left',
-    width: '50%',
-    height: '50%',
-  },
-  toolbar: {
-    padding: '0',
-    marginLeft: '5px',
-  },
-  toolbarBox: { backgroundColor: 'rgb(0,0,0,0.5);' },
-  button: {
-    padding: '8px',
-    top: '0',
-    color: '#fc6320',
-  },
+const classes = {
+  dicomViewer: "dicom-viewer",
+  renderer: "dicom-viewer-renderer",
+  toolbar: "dicom-viewer-toolbar",
+  toolbarBox: "dicom-viewer-toolbar-box",
+  button: "dicom-viewer-button",
 };
 
 class DicomViewer extends Component {
@@ -695,7 +679,7 @@ class DicomViewer extends Component {
   }
 
   render () {
-    const { classes, toolbarOptions, loaderOptions } = this.props;
+    const { toolbarOptions, loaderOptions } = this.props;
     const { fullScreen } = this.state;
     const customButtons = this.getCustomButtons();
 
@@ -982,4 +966,4 @@ DicomViewer.propTypes = {
   }),
 };
 
-export default withStyles(styles)(DicomViewer);
+export default DicomViewer;

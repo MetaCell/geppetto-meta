@@ -7,7 +7,7 @@ class Tree extends Component {
     return null 
   }
 }
-export default withStyles(styles)(Tree);
+export default Tree;
 /*
  * import SortableTree from '@nosferatu500/react-sortable-tree';
  * import {

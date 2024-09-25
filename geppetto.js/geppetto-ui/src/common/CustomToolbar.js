@@ -1,46 +1,47 @@
 import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
 import Toolbar from "@material-ui/core/Toolbar";
 
-const styles = theme => ({
+const defaultButtonColor = '#fc6320'
+const defaultBackgroundColor = 'rgb(0,0,0,0.5)'
+
+const defaultStyles = {
   toolbar: {
-    padding: theme.spacing(0),
-    marginLeft: theme.spacing(1)
+    padding: 0,
+    marginLeft: "0.25rem"
+  },
+  button: {
+    padding: "0.25rem",
+    top: 0,
+    color: defaultButtonColor
   }
-});
+};
 
 
 class CustomToolbar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
   }
 
-  render () {
-    const { classes, theme, buttons, elements, containerStyles, toolBarClassName, innerDivStyles, buttonStyles } = this.props;
-    const defaultButtonColor = '#fc6320'
-    const defaultBackgroundColor = 'rgb(0,0,0,0.5)'
+  render() {
+    const { buttons, elements, containerStyles, toolbarClassName, toolbarStyles, innerDivStyles } = this.props;
+
     const customButtons = buttons ? buttons : [];
     const customElements = elements ? elements : [];
     const cStyles = containerStyles != null ? containerStyles : {}
-    const tbClassName = toolBarClassName != null ? toolBarClassName : classes.toolbar
+    const tbStyles = toolbarStyles != null ? toolbarStyles : defaultStyles.toolbar
     const dStyles = innerDivStyles != null ? innerDivStyles : { backgroundColor: defaultBackgroundColor }
-    const bStyles = buttonStyles != null ? buttonStyles : {
-      padding: theme.spacing(1),
-      top: theme.spacing(0),
-      color: defaultButtonColor
-    }
+    
     return (
       <div style={cStyles}>
-        <Toolbar className={tbClassName}>
+        <Toolbar styles={tbStyles} className={toolbarClassName}>
           <div style={dStyles}>
             {customButtons.map(customButton =>
-              <IconButtonWithTooltip
+              <ButtonComponent
                 key={customButton.id}
                 disabled={false}
                 onClick={() => customButton.action()}
                 className={classes.button}
-                style={bStyles}
                 tooltip={customButton.tooltip}
                 icon={customButton.icon}
               />
@@ -55,4 +56,4 @@ class CustomToolbar extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(CustomToolbar);
+export default CustomToolbar;

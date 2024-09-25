@@ -4,7 +4,6 @@ import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
 import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
 import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
 import {type ComponentMap, type IComponentConfig, type Widget, WidgetStatus} from './model';
-import {createStyles, withStyles} from '@material-ui/core/styles'
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
@@ -18,17 +17,16 @@ import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
 import type { IJsonModel } from '@metacell/geppetto-meta-ui/flex-layout/src/model/IJsonModel';
 
 
-const styles = (theme) => createStyles({
+const styles = {
   container: {
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'stretch',
-    position: 'relative'
-  },
-  spacer: { width: theme.spacing(1) },
-  flexlayout: { flexGrow: 1, position: 'relative' }
-});
+    position: 'relative',
+  } as const,
+  flexlayout: { flexGrow: 1, position: 'relative' } as const
+};
 
 let instance: LayoutManager = null;
 
@@ -167,8 +165,8 @@ class LayoutManager {
   Component = (layoutManager: LayoutManager, config?: IComponentConfig) => ({
     classes,
   }) => (
-    <div className={classes.container}>
-      <div className={classes.flexlayout}>
+    <div className="layout-outer-wrapper" style={styles.container}>
+      <div className="layout-wrapper" style={styles.flexlayout}>
         <FlexLayout.Layout
           model={this.model}
           factory={this.factory}
@@ -194,7 +192,7 @@ class LayoutManager {
    * Get the layout component.
    * @memberof Control
    */
-  getComponent = (config?: IComponentConfig) => withStyles(styles)(this.Component(this, config));
+  getComponent = (config?: IComponentConfig) => this.Component(this, config);
 
 
   /**

@@ -1,23 +1,15 @@
 import React, { Component } from 'react';
 import * as util from '../../utilities';
 import Instance from '@metacell/geppetto-meta-core/model/Instance';
-import { withStyles } from '@material-ui/core';
 import IconText from './IconText';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ConnectivityTooltip from './ConnectivityTooltip';
 const d3 = require('d3');
 
-const styles = theme => ({
-  legends: {
-    marginTop: theme.spacing(4),
-    marginLeft: theme.spacing(1),
-  },
-  legendTitle: {
-    fontSize: '14px',
-    color: 'white',
-  },
-});
+const classes = {
+  legends: "connectivity-plot-legends",
+  legendTitle: "connectivity-plot-legend-title",
+};
 
 class ConnectivityPlot extends Component {
   constructor (props) {
@@ -324,7 +316,7 @@ class ConnectivityPlot extends Component {
   }
 
   render () {
-    const { id, classes, legendsVisibility, layout } = this.props;
+    const { id, legendsVisibility, layout } = this.props;
 
     let legends = [];
     if (layout && this.nodeColormap && this.dataset) {
@@ -358,29 +350,29 @@ class ConnectivityPlot extends Component {
       }
     }
     let plot = (
-      <Grid item sm={9} xs={12}>
+      <div className="connecticity-plot-plot">
         <ConnectivityTooltip ref={this.tooltipRef} layout={layout} />
         <div id={id} />
-      </Grid>
+      </div>
     );
 
     let show;
     if (legends.length === 0 || !legendsVisibility) {
-      show = <Grid container>{plot}</Grid>;
+      show = <div className="plot-container">{plot}</div>;
     } else {
       show = (
-        <Grid container>
-          <Grid item sm xs>
+        <div className="grid-container connectivity-plot-container">
+          <div className="connectivity-plot-legends">
             <div ref={this.subRef}>
               {legendsVisibility ? legends.map(entry => entry) : ''}
             </div>
-          </Grid>
+          </div>
           {plot}
-        </Grid>
+        </div>
       );
     }
     return show;
   }
 }
 
-export default withStyles(styles)(ConnectivityPlot);
+export default ConnectivityPlot;

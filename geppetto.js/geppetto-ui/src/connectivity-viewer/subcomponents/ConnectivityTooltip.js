@@ -1,17 +1,8 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core";
 
-const styles = {
-  matrixTooltip: {
-    fontSize: "16px",
-    fontWeight: "100",
-    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif;",
-    color: "white",
-    stroke: "none",
-    textRendering: "optimizeLegibility",
-  },
-};
+
+const classes = { matrixTooltip: "connectivity-tooltip-matrix" };
 
 const LAYOUT_TOOLTIP = "Hover the squares to see the connections."
 
@@ -21,7 +12,7 @@ class ConnectivityTooltip extends Component {
   }
 
   render () {
-    const { classes, layout, } = this.props;
+    const { layout, } = this.props;
     const hasTooltip = layout.hasTooltip();
 
     return (
@@ -35,4 +26,4 @@ class ConnectivityTooltip extends Component {
   }
 }
 
-export default withStyles(styles)(ConnectivityTooltip);
+export default ConnectivityTooltip;

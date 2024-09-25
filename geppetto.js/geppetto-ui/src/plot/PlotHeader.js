@@ -3,7 +3,7 @@ import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core';
+
 
 const anchor = {
   origin: {
@@ -18,7 +18,7 @@ const anchor = {
 
 }
 
-const style = { 
+const styles = { 
   dropDownItem: {
     paddingTop: "2px",
     paddingBottom: "2px"
@@ -42,9 +42,9 @@ class PlotHeader extends Component {
     const headerIcon = headerIcons.find(iconElement => className.includes(iconElement.icon))
 
     return (
-      <div className={classes.headerContainer}>
+      <div className="plot-header-container" style={styles.headerContainer}>
         {headerIcons.map(({ icon, action, options, tooltip }) => (
-          <Tooltip key={tooltip} title={tooltip} placement="bottom" enterDelay={300} classes={{ tooltip: classes.tooltip }}>
+          <Tooltip key={tooltip} title={tooltip} placement="bottom" enterDelay={300} sx={{ tooltip: styles.tooltip }}>
             <Icon 
               className={'widget-title-bar-button ' + icon}
               style={{ cursor: "pointer", fontSize: "15px", width: "16px" }}
@@ -63,7 +63,7 @@ class PlotHeader extends Component {
           {headerIcon && headerIcon.options.map(headerIconOption => 
             <MenuItem
               key={headerIconOption}
-              className={classes.dropDownItem}
+              sx={styles.dropDownItem}
               onClick={() => {
                 headerIcon.action(headerIconOption)
                 this.setState({ openHeaderIconOptions: null })
@@ -78,4 +78,4 @@ class PlotHeader extends Component {
   }
 }
 
-export default withStyles(style)(PlotHeader)
+export default PlotHeader;

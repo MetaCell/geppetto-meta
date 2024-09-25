@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from './subcomponents/ConnectivityToolbar';
 import ConnectivityPlot from './subcomponents/ConnectivityPlot';
 import { Matrix } from './layouts/Matrix';
@@ -8,15 +7,14 @@ import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
 import Grid from '@material-ui/core/Grid';
 import { PropTypes } from 'prop-types';
-import CustomToolbar from "../common/CustomToolbar";
 
-const styles = theme => ({
+const styles = {
   container: {
     display: 'flex',
     alignItems: 'stretch',
     flex: 1,
   },
-});
+};
 
 class ConnectivityComponent extends Component {
   constructor (props) {
@@ -155,14 +153,13 @@ class ConnectivityComponent extends Component {
   }
 
   render () {
-    const { classes } = this.props;
     const { dimensions } = this.state;
 
     const content = dimensions != null ? this.renderContent() : '';
     return (
       <div
         ref={this.containerRef}
-        className={classes.container}
+        style={styles.container}
         onMouseEnter={() => this.toolbarHandler(true)}
         onMouseLeave={() => this.toolbarHandler(false)}
       >
@@ -286,4 +283,4 @@ ConnectivityComponent.propTypes = {
   }),
 };
 
-export default withStyles(styles)(ConnectivityComponent);
+export default ConnectivityComponent;
