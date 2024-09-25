@@ -6,7 +6,7 @@ cd "${PARENT_PATH}"
 
 
 # Install the libraries (if not already installed)
-GEPPETTO_JS="../../geppetto.js"
+GEPPETTO_JS="./geppetto.js"
 
 (bash "${GEPPETTO_JS}/dev-install.bash")
 
