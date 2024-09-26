@@ -1,50 +1,48 @@
-# React + TypeScript + Vite
+# Getting Started with Create React App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was bootstrapped with [Vite](https://vitejs.dev/guide/) using React template.
 
-Currently, two official plugins are available:
+To start develop, you need to setup yalc to link geppetto libraries to the current project.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To do so, run
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+bash setup.sh
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Available Scripts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+You can run the project in dev or preview mode using `yarn dev` and `yarn preview`.
+To build the project, use `yarn build`.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+Here is a description of what each command is doing.
+
+### `yarn dev`
+
+Runs the app in the development mode.
+Open [http://localhost:5143](http://localhost:5143) to view it in the browser (the port might be different on your machine, check the logs displayed by vite to be sure you are targeting the right address).
+
+The page will reload if you make edits.
+You will also see any lint errors in the console.
+
+If you are developping at the same time on any of the geppetto.js lib (core, ui, client), you can run:
+
 ```
+bash watch-geppettojs-updates.sh
+```
+
+This command will launch a `watch` on all the geppetto.js libraries and hot-reload the application if any of the source code of those dependencies changes.
+
+
+### `yarn preview`
+
+Runs the app in preview mode.
+This means that a local webserver is launched to serve the app, but hot-reloading is not avaiable and the application is served from the `dist` directory where the application have been compiled/built.
+
+
+### `yarn build`
+
+Builds the app for production to the `dist` folder.
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+Your app is ready to be deployed!
