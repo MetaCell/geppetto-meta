@@ -36,7 +36,6 @@ export default class ThreeDEngine {
     onEmptyHoverListener,
     preserveDrawingBuffer,
     dracoDecoderPath,
-    renderingTheshold
   ) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(backgroundColor);
