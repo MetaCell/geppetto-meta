@@ -57,8 +57,10 @@ async def execute_command(model_name: str, command: AnyCommand):
     command = deserialize_command(command.root, model)  # type: ignore
     recorder.start_recording()
     stack.execute(command)
+    print("Execute", command)
     recorder.stop_recording()
-
+    from pprint import pprint
+    pprint(recorder.records)
     return [serialize_notification(n) for n in recorder.flush()]
 
 
@@ -116,6 +118,14 @@ async def load_model(model_name: str):
 
 app.include_router(api_router)
 
+from pyecore.resources.json import DefaultObjectMapper
+
+class PathMapper(DefaultObjectMapper):
+    def to_dict_from_obj(self, obj, options, use_uuid, resource):
+        d = super().to_dict_from_obj(obj, options, use_uuid, resource)
+        d["$ref2"] = obj.eURIFragment()
+        return d
+
 
 # This is a fix version of geppetto_serialize
 def serialize_pygeppetto_model(
@@ -125,8 +135,16 @@ def serialize_pygeppetto_model(
     rset = resource_set if resource_set else ResourceSet()
     uri = BytesURI("geppetto_model.json")
     rset.resource_factory["*"] = lambda uri: GeppettoResource(uri, indent=2)
-    resource = rset.create_resource(uri)
+    resource = rset.create_resource(uri, use_uuid=True)
     resource.append(geppetto_model)
+    resource.default_mapper = PathMapper()
+    def _to_ref_from_obj(self, obj, opts=None, use_uuid=None, resource=None, **kwargs):
+        uri = self.serialize_eclass(obj.eClass)
+        ref = {'eClass': uri}
+        ref[self.ref_tag] = self.object_uri(obj)
+        ref["$ref2"] = obj.eURIFragment()
+        return ref
+    GeppettoResource._to_ref_from_obj = _to_ref_from_obj
     if onlySerialiseDelta:
         resource.register_mapper(ISynchable, SynchableMapper())
     else:

@@ -4,14 +4,17 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { AnyCommand, CommandsService, ModelService } from './rest'
 import { applyModification } from './commands'
+import { wrapRoot } from './model'
 
 function App() {
-  const [model, setModel] = useState(null)
+  const [model, setModel] = useState<any>(null)
   const [commands, setCommands] = useState<Record<string, AnyCommand>>({})
 
   const loadModel = async () => {
     const loadedModel = await ModelService.loadModel("instances")
-    setModel(loadedModel)
+    const lazyModel = wrapRoot(loadedModel)
+    setModel(lazyModel)
+    // console.log(lazyModel.variables[0].types)
   }
 
   const createDummyCommand = async (model: any) => {
@@ -19,8 +22,10 @@ function App() {
       const variable = draft.variables[0]
       variable.name = variable.name + 'Bar'
       variable.id = "PP" + variable.id
+      variable.types[0].name = 'FFOOO'
     })
     setModel(updated)
+    console.log("updated", updated)
     setCommands(await CommandsService.listCommands("instances"))
   }
 
@@ -46,7 +51,9 @@ function App() {
           <li key={k}>{`${k}: ${JSON.stringify(c)}`}</li>
         )}
         <p>
-          {JSON.stringify(model)}
+          {/* {JSON.stringify(model)} */}
+          name: {model?.variables?.[0]?.name} <br />
+          type name: {model?.variables?.[0]?.types?.[0].toString()}
         </p>
       </div>
       <p className="read-the-docs">
