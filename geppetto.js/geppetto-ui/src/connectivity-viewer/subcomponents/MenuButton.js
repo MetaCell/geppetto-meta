@@ -28,13 +28,12 @@ class MenuButton extends Component {
   }
 
   render () {
-    const { id, options, theme, defaultOption, tooltip, icon, buttonStyles } = this.props;
+    const { id, options, defaultOption, tooltip, icon, buttonStyles } = this.props;
     const { anchorEl } = this.state;
     const ITEM_HEIGHT = 48;
-    const defaultButtonStyles = { color: '#fc6320', padding: theme.spacing(1), top: theme.spacing(0), }
-    const iconButtonStyles = buttonStyles ? buttonStyles : defaultButtonStyles
+    const iconButtonStyles = buttonStyles ? buttonStyles : {}
     return (
-      <span>
+      <div>
         <IconButtonWithTooltip
           disabled={false}
           onClick={this.handleClick}
@@ -48,11 +47,13 @@ class MenuButton extends Component {
           keepMounted
           open={Boolean(anchorEl)}
           onClose={() => this.handleClose("")}
-          PaperProps={{
-            style: {
-              maxHeight: ITEM_HEIGHT * 4.5,
-              width: 200,
-            },
+          slotProps={{
+            paper: {
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: 200,
+              },
+            }
           }}
         >
           {Object.keys(options).map(option => (
@@ -61,7 +62,7 @@ class MenuButton extends Component {
             </MenuItem>
           ))}
         </Menu>
-      </span>
+      </div>
     )
 
   }

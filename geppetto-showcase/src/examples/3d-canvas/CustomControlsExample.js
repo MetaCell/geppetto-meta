@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { withStyles } from '@material-ui/core';
 import neuron from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from './assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils"
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
@@ -49,14 +49,14 @@ function getProxyInstances () {
     { instancePath: i.getId(), }))
 }
 
-const styles = () => ({
+const styles = {
   container: {
     height: '800px',
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },
-});
+};
 
 const ACTIONS = {
   CHANGE_BACKGROUND_COLOR: 'change_background_color',
@@ -278,10 +278,9 @@ class CustomControlsExample extends Component {
       hoverListeners, threeDObjectsIndex
     } = this.state
     const canvasData = mapToCanvasData(data)
-    const { classes } = this.props
 
     return showLoader ? <Loader active={true}/> : showModel ? (
-      <div ref={node => this.node = node} className={classes.container}>
+      <Box ref={node => this.node = node} sx={styles.container}>
         <>
           <Canvas
             ref={this.canvasRef}
@@ -295,7 +294,7 @@ class CustomControlsExample extends Component {
             threeDObjects={THREE_D_OBJECTS[threeDObjectsIndex]}
           />
         </>
-      </div>
+      </Box>
     ) : <Button
       variant="outlined"
       color="primary"
@@ -306,4 +305,4 @@ class CustomControlsExample extends Component {
   }
 }
 
-export default withStyles(styles)(CustomControlsExample);
+export default CustomControlsExample;

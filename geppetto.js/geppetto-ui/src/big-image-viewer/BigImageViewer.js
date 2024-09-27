@@ -144,7 +144,7 @@ class BigImageViewer extends Component {
       buttonStyles={toolbarOptions?.buttonStyles}/>;
 
     return (
-      <div className="big-image-viewer-wrapper" style={{...style.bigImageViewerContainer, ...(this.props?.styles?.bigImageViewerContainer ?? {})}}>
+      <div className="big-image-viewer-wrapper" style={{ ...styles.bigImageViewerContainer, ...(this.props?.styles?.bigImageViewerContainer ?? {}) }}>
         {toolbar}
         <div
           id={this.props.id + '_component'}

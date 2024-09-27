@@ -110,7 +110,6 @@ cardDeckWrapper: {
     border: 0;
     cursor: pointer;
     padding: 0.5rem;
-    background: #fff;
     display: table-cell;
     width: 1%;
     vertical-align: top;

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import ListItemText from '@material-ui/core/ListItemText';
-import List from '@material-ui/core/List';
-import Collapse from '@material-ui/core/Collapse';
-import { withStyles } from '@material-ui/core/styles';
+import ListItem from '@mui/material/ListItem';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import ListItemText from '@mui/material/ListItemText';
+import List from '@mui/material/List';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
 import pages from '../pages/index';
 import stringSimilarity from 'string-similarity';
 
-const styles = theme => ({
+const styles = {
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: 4,
     textDecoration: 'none',
     outline: 'none',
     color: 'inherit',
@@ -27,10 +27,10 @@ const styles = theme => ({
     },
   },
 
-  lists: {
+  lists: theme => ({
     backgroundColor: theme.palette.background.paper,
-    marginTop: theme.spacing(1),
-  },
+    marginTop: 1,
+  }),
   listText: {
     fontWeight: 400,
     letterSpacing: 0,
@@ -38,7 +38,7 @@ const styles = theme => ({
     fontSize: '0.875rem',
     textAlign: 'left',
   },
-});
+};
 
 class DrawerContent extends Component {
   constructor (props) {
@@ -139,11 +139,11 @@ class DrawerContent extends Component {
   }
 
   render () {
-    const { classes, theme, searchFilter, currentPageHandler } = this.props;
+    const { searchFilter, currentPageHandler } = this.props;
     const content = this.filterContent(searchFilter);
 
     return (
-      <nav className={classes.lists} aria-label="mailbox folders">
+      <Box component="nav" sx={styles.lists} aria-label="mailbox folders">
         {Object.keys(content).map(key => {
           const open = content[key].open;
           const handler = content[key].handler;
@@ -151,7 +151,7 @@ class DrawerContent extends Component {
           return (
             <List key={key}>
               <ListItem key={key} button onClick={handler}>
-                <ListItemText className={classes.listText} primary={key} />
+                <ListItemText sx={styles.listText} primary={key} />
                 {open != null ? open ? <ExpandLess /> : <ExpandMore /> : null}
               </ListItem>
               <Collapse component="li" in={open} timeout="auto" unmountOnExit>
@@ -164,15 +164,14 @@ class DrawerContent extends Component {
                       <ListItem
                         key={value.name}
                         button
-                        {...(this.isActivePage(to) && { style: { color: theme.palette.primary.main }, })}
-                        className={classes.nested}
+                        sx={theme => ({ ...styles.nested, color: this.isActivePage(to) ? theme.palette.text.primary : "inherit", })}
                         component={Link}
                         to={to}
                         disabled={disabled}
                         onClick={() => currentPageHandler(to)}
                       >
                         <ListItemText
-                          className={classes.listText}
+                          sx={styles.listText}
                           primary={name}
                         />
                       </ListItem>
@@ -183,9 +182,9 @@ class DrawerContent extends Component {
             </List>
           );
         })}
-      </nav>
+      </Box>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(DrawerContent);
+export default DrawerContent;

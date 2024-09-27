@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Canvas from "@metacell/geppetto-meta-ui/3d-canvas/Canvas";
 import CameraControls from "@metacell/geppetto-meta-ui/camera-controls/CameraControls";
 import SimpleInstance from "@metacell/geppetto-meta-core/model/SimpleInstance";
-import { withStyles } from '@material-ui/core';
 import neuron from './assets/SketchVolumeViewer_SAAVR_SAAVR_1_1_0000_draco.gltf';
 import contact from './assets/Sketch_Volume_Viewer_AIB_Rby_AIAR_AIB_Rby_AIAR_1_1_0000_green_0_24947b6670.gltf';
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils"
 import CaptureControls from "@metacell/geppetto-meta-ui/capture-controls/CaptureControls";
 import Resources from '@metacell/geppetto-meta-core/Resources';
@@ -123,7 +123,6 @@ class SimpleInstancesExample extends Component {
   render () {
     const { data, cameraOptions, showModel, showLoader } = this.state
     const canvasData = mapToCanvasData(data)
-    const { classes } = this.props
 
     const captureOptions = {
       captureControls: {
@@ -146,7 +145,7 @@ class SimpleInstancesExample extends Component {
     }
 
     return showLoader ? <Loader active={true} /> : showModel ? (
-      <div ref={node => this.node = node} className={classes.container}>
+      <Box ref={node => this.node = node} sx={styles.container}>
         <>
           <Canvas
             ref={this.canvasRef}
@@ -160,7 +159,7 @@ class SimpleInstancesExample extends Component {
             dracoDecoderPath={'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/'}
           />
         </>
-      </div>
+      </Box>
     ) : <Button
       variant="outlined"
       color="primary"
@@ -171,4 +170,4 @@ class SimpleInstancesExample extends Component {
   }
 }
 
-export default withStyles(styles)(SimpleInstancesExample);
+export default SimpleInstancesExample;

@@ -1,57 +1,37 @@
 import React, { Component } from "react";
 import IconButtonWithTooltip from "./IconButtonWithTooltip";
-import Toolbar from "@mui/material/Toolbar";
 
-const defaultButtonColor = '#fc6320'
-const defaultBackgroundColor = 'rgb(0,0,0,0.5)'
-
-const defaultStyles = {
-  toolbar: {
-    padding: 0,
-    marginLeft: "0.25rem"
-  },
-  button: {
-    padding: "0.25rem",
-    top: 0,
-    color: defaultButtonColor
-  }
-};
-
+import "./style.css";
 
 class CustomToolbar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
   }
 
-  render() {
-    const { buttons, elements, containerStyles, toolbarClassName, toolbarStyles, innerDivStyles } = this.props;
+  render () {
+    const { buttons, elements } = this.props;
 
     const customButtons = buttons ? buttons : [];
     const customElements = elements ? elements : [];
-    const cStyles = containerStyles != null ? containerStyles : {}
-    const tbStyles = toolbarStyles != null ? toolbarStyles : defaultStyles.toolbar
-    const dStyles = innerDivStyles != null ? innerDivStyles : { backgroundColor: defaultBackgroundColor }
-    
+
     return (
-      <div style={cStyles}>
-        <Toolbar styles={tbStyles} className={toolbarClassName}>
-          <div style={dStyles}>
-            {customButtons.map(customButton =>
-              <ButtonComponent
-                key={customButton.id}
-                disabled={false}
-                onClick={() => customButton.action()}
-                className={classes.button}
-                tooltip={customButton.tooltip}
-                icon={customButton.icon}
-              />
-            )}
-            {customElements.map(customElement =>
-              customElement
-            )}
+      <nav className="geppetto-toolbar">
+        {customButtons.map(customButton =>
+          <IconButtonWithTooltip
+            key={customButton.id}
+            disabled={false}
+            onClick={() => customButton.action()}
+            className="geppetto-toolbar-button"
+            tooltip={customButton.tooltip}
+            icon={customButton.icon}
+          />
+        )}
+        {customElements.map(customElement =>
+          <div key={customElement.key} className="geppetto-toolbar-button">
+            {customElement}
           </div>
-        </Toolbar>
-      </div>
+        )}
+      </nav>
     )
   }
 }

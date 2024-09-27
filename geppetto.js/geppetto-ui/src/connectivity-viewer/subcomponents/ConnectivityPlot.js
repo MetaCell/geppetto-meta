@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import ConnectivityTooltip from './ConnectivityTooltip';
 const d3 = require('d3');
 
+
 const classes = {
   legends: "connectivity-plot-legends",
   legendTitle: "connectivity-plot-legend-title",

@@ -1,32 +1,35 @@
 import React, { Component, Fragment } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+
 import IconButtonWithTooltip from '../utilities/IconButtonWithTooltip';
 import { faCode, faEdit, faCopy } from '@fortawesome/free-solid-svg-icons';
-import Toolbar from '@material-ui/core/Toolbar';
+import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { darcula } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@mui/material/Snackbar';
 
-const styles = theme => ({
+const styles = {
   toolbar: {
-    padding: theme.spacing(0),
-    marginLeft: theme.spacing(1),
+    padding: 0,
+    marginLeft: 1,
   },
-  button: {
-    padding: theme.spacing(1),
-    top: theme.spacing(0),
+  button: theme => ({
+    padding: 1,
+    top: 0,
     color: theme.palette.primary,
-  },
-  code: {
-    paddingTop: theme.spacing(0),
-    marginTop: theme.spacing(-1) + 'px!important',
-  },
+  }),
+  code: theme => ({
+    '& pre': {
+      paddingTop: 0,
+      marginTop: theme.spacing(-1) + 'px!important',
+    }
+  }),
   pushRight: {
     flex: 1,
     visibility: 'hidden',
     opacity: 0,
   },
-});
+};
 
 const SHOW_SOURCE_TOOLTIP = 'Show the full source code';
 const HIDE_SOURCE_TOOLTIP = 'Hide the full source code';
@@ -87,13 +90,12 @@ class Code extends Component {
 
   getToolbarButtons () {
     const { sourceTooltip, snackbarOpen } = this.state;
-    const { classes } = this.props;
 
     const sourceButton = (
       <IconButtonWithTooltip
         disabled={false}
         onClick={this.handleSourceClick}
-        className={classes.button}
+        sx={styles.button}
         icon={faCode}
         tooltip={sourceTooltip}
       />
@@ -102,7 +104,7 @@ class Code extends Component {
       <IconButtonWithTooltip
         disabled={true}
         onClick={this.handleEditClick}
-        className={classes.button}
+        sx={styles.button}
         icon={faEdit}
         tooltip={EDIT_TOOLTIP}
       />
@@ -111,7 +113,7 @@ class Code extends Component {
       <Fragment>
         <IconButtonWithTooltip
           onClick={this.handleCopySourceClick}
-          className={classes.button}
+          sx={styles.button}
           icon={faCopy}
           tooltip={COPY_SOUCE_TOOLTIP}
         />
@@ -137,7 +139,7 @@ class Code extends Component {
   }
 
   render () {
-    const { classes, file } = this.props;
+    const { file } = this.props;
     const { source } = this.state;
 
     const content = source ? file : this.snippet;
@@ -145,20 +147,21 @@ class Code extends Component {
 
     return (
       <div>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.pushRight} />
+        <Toolbar sx={styles.toolbar}>
+          <Box sx={styles.pushRight} />
           {toolbarButtons}
         </Toolbar>
-        <SyntaxHighlighter
-          className={classes.code}
-          language="jsx"
-          style={darcula}
-        >
-          {content}
-        </SyntaxHighlighter>
+        <Box sx={styles.code}>
+          <SyntaxHighlighter
+            language="jsx"
+            style={darcula}
+          >
+            {content}
+          </SyntaxHighlighter>
+        </Box>
       </div>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Code);
+export default Code;

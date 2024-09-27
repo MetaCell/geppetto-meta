@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import BigImageViewer from '@metacell/geppetto-meta-ui/big-image-viewer/BigImageViewer';
-import { withStyles } from '@material-ui/core';
 
 const styles = {
   bigImageViewer: {
@@ -16,9 +15,8 @@ const data = `${window.location.origin}/assets/brain_mri.dzi`;
 class BigImageViewerExample extends Component {
 
   render () {
-    const { classes } = this.props;
     return (
-      <div style={{ position: 'relative' }} className={classes.bigImageViewer}>
+      <div style={{ position: 'relative' }} sx={styles.bigImageViewer}>
         <BigImageViewer id="BigImageViewerContainer" data={data}
           toolbarOptions={{ innerDivStyles: { backgroundColor: 'rgb(0,0,0,0);' } }}/>
       </div>
@@ -26,4 +24,4 @@ class BigImageViewerExample extends Component {
   }
 }
 
-export default withStyles(styles)(BigImageViewerExample);
+export default BigImageViewerExample;

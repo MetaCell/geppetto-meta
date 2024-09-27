@@ -5,8 +5,9 @@ import { Matrix } from './layouts/Matrix';
 import { Hive } from './layouts/Hive';
 import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
-import Grid from '@mui/material/Grid';
 import { PropTypes } from 'prop-types';
+
+import './styles.css';
 
 const styles = {
   container: {
@@ -91,7 +92,6 @@ class ConnectivityComponent extends Component {
 
   renderContent () {
     const {
-      classes,
       id,
       data,
       colorMap,
@@ -114,8 +114,8 @@ class ConnectivityComponent extends Component {
     } = this.state;
 
     return (
-      <Grid className={classes.container} container spacing={2}>
-        <Grid item sm={12} xs={12}>
+      <div styles={styles.container}>
+        <div >
           <ConnectivityToolbar
             id={id}
             layout={layout}
@@ -126,8 +126,8 @@ class ConnectivityComponent extends Component {
             sortOptionsHandler={this.sortOptionsHandler}
             options={toolbarOptions}
           />
-        </Grid>
-        <Grid item sm={12} xs>
+        </div>
+        <div>
           <ConnectivityPlot
             ref={this.plotRef}
             id={id}
@@ -147,8 +147,8 @@ class ConnectivityComponent extends Component {
             linkType={linkType}
             library={library}
           />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     );
   }
 
