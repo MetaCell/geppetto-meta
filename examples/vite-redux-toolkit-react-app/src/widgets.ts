@@ -1,18 +1,34 @@
-import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common/layout/model";
+import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 
-
-
-export const componentWidget = (name: string, color: string, panelName="panel1") : Widget => ({
-  id: name + Math.random(),
-  name: name,
-  component: "MyComponent",
-  panelName,
-  enableClose: true,
+// Define your widgets here with unique IDs
+export const MyComponentWidget = {
+  id: 'myComponent',
+  name: "My Component",
+  component: "myComponent",
+  panelName: "rightPanel",
   status: WidgetStatus.ACTIVE,
-  props: {
-    name,
-    color
-  },
-  session: undefined,
-  config: undefined
-});
+};
+
+export const ImageViewerWidget = {
+  id: 'imageViewer',
+  name: "Image Viewer",
+  component: "imageViewer",
+  panelName: "leftPanel",
+  status: WidgetStatus.ACTIVE,
+};
+
+export const DicomViewerWidget = {
+  id: 'dicomViewer',
+  name: "DICOM Viewer",
+  component: "dicomViewer",
+  panelName: "leftPanel",
+  status: WidgetStatus.ACTIVE,
+};
+
+export const CanvasWidget = {
+  id: 'canvasWidget',
+  name: "3D Canvas",
+  component: "canvas",
+  panelName: "rightPanel",
+  status: WidgetStatus.ACTIVE,
+};

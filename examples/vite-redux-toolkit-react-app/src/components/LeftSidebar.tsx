@@ -1,3 +1,4 @@
+import React from 'react';
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -8,9 +9,26 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
+import { useDispatch } from "react-redux";
+import { addWidget } from "@metacell/geppetto-meta-client/common/layout/actions";
+import { MyComponentWidget } from '../widgets';
+import { Theme } from '@mui/material/styles';
 
 const drawerWidth = 240;
-const LeftSidebar = ({handleDrawerClose, theme, open}) => {
+
+interface LeftSidebarProps {
+  handleDrawerClose: () => void;
+  theme: Theme;
+  open: boolean;
+}
+
+const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, open }) => {
+  const dispatch = useDispatch();
+  
+  const onCustomWidgetClick = () => {
+    // @ts-ignore
+    dispatch(addWidget(MyComponentWidget));
+  };
   
   return (
     <Drawer
@@ -43,7 +61,7 @@ const LeftSidebar = ({handleDrawerClose, theme, open}) => {
       <List>
         {['Add Widget', 'Remove Widget', 'Maximize Widget', 'Minimize Widget', 'Activate Widget', 'Update Widget'].map((text) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={onCustomWidgetClick}>
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>
@@ -90,7 +108,7 @@ const LeftSidebar = ({handleDrawerClose, theme, open}) => {
         ))}
       </List>
     </Drawer>
-  )
-}
+  );
+};
 
-export default LeftSidebar
+export default LeftSidebar;

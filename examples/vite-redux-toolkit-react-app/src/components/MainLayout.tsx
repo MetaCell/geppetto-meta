@@ -23,7 +23,7 @@ const MainLayout = ({ children }) => {
   };
   
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
       <MuiAppBar
         position="fixed"
         sx={{
@@ -59,7 +59,7 @@ const MainLayout = ({ children }) => {
           </Typography>
         </Toolbar>
       </MuiAppBar>
-     <LeftSidebar open={open} handleDrawerClose={handleDrawerClose} theme={theme} />
+      <LeftSidebar open={open} handleDrawerClose={handleDrawerClose} theme={theme} />
       <Box
         component="main"
         sx={{
