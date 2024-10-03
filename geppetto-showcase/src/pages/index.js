@@ -17,14 +17,14 @@ const Menu = lazy(() => import(/* webpackChunkName: "menu" */'./navigation/menu'
 const TreeViewer = lazy(() => import(/* webpackChunkName: "treeviewer" */'./navigation/treeviewer'));
 const PythonConsole = lazy(() => import(/* webpackChunkName: "pythonconsole" */'./programmatic/pythonconsole'));
 const pages = [
-  
+
   {
     component: Canvas,
     parent: 'Data Viewers',
     name: '3D Canvas',
     to: '/dataviewers/canvas',
   },
-  
+
   {
     component: BigImgViewer,
     parent: 'Data Viewers',
@@ -73,14 +73,15 @@ const pages = [
     name: 'Stack Viewer',
     to: '/dataviewers/stackviewer',
   },
-  
+
   {
-    component: VRCanvas,
+    // component: VRCanvas,
+    component: null,
     parent: 'Data Viewers',
     name: 'VR Canvas',
     to: '/dataviewers/vrcanvas',
   },
-   
+
   {
     component: FlexLayout,
     parent: 'Navigation/Layout',

@@ -17,6 +17,7 @@
     "lint": "eslint .",
     "test": "jest",
     "build": "yarn build:js && yarn build:package",
+    "build:clean": "rm -rf build",
     "build:dev": "yarn build:js-dev && yarn build:package",
     "build:js": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx'",
     "build:js-dev": "babel src -d build --copy-files --extensions '.js,.jsx,.ts,.tsx' --source-maps",
