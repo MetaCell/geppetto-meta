@@ -1,29 +1,31 @@
 export default {
   global: {
-    sideBorders: 8,
-    tabSetHeaderHeight: 28,
-    tabSetTabStripHeight: 28,
+    tabEnableClose: true,
+    tabSetHeaderHeight: 26,
+    tabSetTabStripHeight: 26,
     enableEdgeDock: false,
   },
   borders: [
     {
       type: 'border',
-      location: 'top',
+      location: 'bottom',
+      size: 100,
       children: [],
+      barSize: 35,
       config: {
         isMinimizedPanel: true
       }
     },
   ],
   layout: {
-    type: "row",
+    type: "tabset",
     id: "root",
     weight: 100,
     children: [
       {
         type: "row",
         enableDeleteWhenEmpty: true,
-        weight:60,
+        weight:31,
         children:[
           { type: "row",
             id: "top",

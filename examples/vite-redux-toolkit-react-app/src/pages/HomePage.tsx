@@ -26,8 +26,9 @@ const HomePage = () => {
       display: 'flex',
       position: 'relative',
       width: '100%',
-      height: '100%',
+      minHeight: '93vh',
       padding: 0,
+      marginTop: 8
     }}>
       {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
     </Box>
