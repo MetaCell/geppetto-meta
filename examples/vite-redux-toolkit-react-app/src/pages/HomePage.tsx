@@ -17,17 +17,17 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
+import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 
 import { componentWidget } from "../widgets";
-import {addWidget, updateWidget} from "../redux/widgetsReducer.ts";
-import {RootState} from "../redux/store.ts";
 
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
-  const widgets = useSelector((state: RootState) => state.widgets);
+  // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
+  const widgets = useSelector(state => state.widgets);
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
@@ -42,7 +42,7 @@ const HomePage = () => {
         setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
       }
     }
-  }, [store, LayoutComponent, widgets])
+  }, [store, LayoutComponent])
   
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel)));
@@ -102,15 +102,14 @@ const HomePage = () => {
           Add Component
         </Button>
         
-        
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
             <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-              {widget.status === WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
+              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
             </IconButton>
           </Tooltip>
         ))}
-        
+      
       </Stack>
       <Box p={2} sx={{
         display: 'flex',

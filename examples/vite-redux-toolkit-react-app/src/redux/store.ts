@@ -1,18 +1,20 @@
-import { configureStore } from '@reduxjs/toolkit';
-import widgetsReducer from './widgetsReducer.ts';
+import { createStore } from '@metacell/geppetto-meta-client/common';
+import baseLayout from '../layout/defaultLayout';
+import componentMap from '../layout/componentsMap';
 
-const store = configureStore({
-  reducer: {
-    widgets: widgetsReducer,
-  },
-  // Use the default middleware
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
-// @ts-ignore
-  devTools: process.env.NODE_ENV !== 'production',
-});
+function configureStore() {
+  const middlewares: never[] = [];
+  const reducers = {};
+  const INIT_STATE = {};
+  const isMinimizeEnabled = true;
+  return createStore(
+    reducers,
+    INIT_STATE,
+    middlewares,
+    // @ts-expect-error The two objects misses some fields to be type-coherent with the signature, but those fields are not really required
+    { baseLayout, componentMap, isMinimizeEnabled },
+  );
+}
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+const store = configureStore()
 export default store;
