@@ -5,4 +5,4 @@ const componentMap = {
   MyComponent
 }
 
-export default componentMap;
+export default componentMap

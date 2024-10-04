@@ -9,9 +9,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
-import { useDispatch } from "react-redux";
-import { addWidget } from "@metacell/geppetto-meta-client/common/layout/actions";
-import { MyComponentWidget } from '../widgets';
 import { Theme } from '@mui/material/styles';
 
 const drawerWidth = 240;
@@ -23,13 +20,6 @@ interface LeftSidebarProps {
 }
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, open }) => {
-  const dispatch = useDispatch();
-  
-  const onCustomWidgetClick = () => {
-    // @ts-ignore
-    dispatch(addWidget(MyComponentWidget));
-  };
-  
   return (
     <Drawer
       sx={{
@@ -61,7 +51,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, ope
       <List>
         {['Add Widget', 'Remove Widget', 'Maximize Widget', 'Minimize Widget', 'Activate Widget', 'Update Widget'].map((text) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton onClick={onCustomWidgetClick}>
+            <ListItemButton>
               <ListItemText primary={text} />
             </ListItemButton>
           </ListItem>

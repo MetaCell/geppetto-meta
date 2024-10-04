@@ -1,4 +1,3 @@
-
 export default {
   global: {
     sideBorders: 8,

@@ -9,8 +9,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LeftSidebar from './LeftSidebar';
 
 const drawerWidth = 240;
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children } : MainLayoutProps ) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   
