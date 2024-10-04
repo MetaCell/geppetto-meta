@@ -67,7 +67,6 @@ const MainLayout = ({ children } : MainLayoutProps ) => {
         component="main"
         sx={{
           flexGrow: 1,
-          padding: theme.spacing(3),
           transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -86,7 +85,6 @@ const MainLayout = ({ children } : MainLayoutProps ) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            padding: theme.spacing(0, 1),
             ...theme.mixins.toolbar,
             justifyContent: 'flex-end',
           }}
