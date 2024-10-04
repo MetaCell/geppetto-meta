@@ -22,16 +22,14 @@ const HomePage = () => {
   }, [store, LayoutComponent])
   
   return (
-    <Box>
-      <Box p={2} sx={{
-        display: 'flex',
-        position: 'relative',
-        width: '100%',
-        height: '90vh',
-        padding: 0
-      }}>
-        {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
-      </Box>
+    <Box sx={{
+      display: 'flex',
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      padding: 0,
+    }}>
+      {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
     </Box>
   );
 }

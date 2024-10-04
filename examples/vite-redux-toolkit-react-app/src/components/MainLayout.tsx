@@ -81,14 +81,6 @@ const MainLayout = ({ children } : MainLayoutProps ) => {
           }),
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            ...theme.mixins.toolbar,
-            justifyContent: 'flex-end',
-          }}
-        />
         {children}
       </Box>
     </Box>

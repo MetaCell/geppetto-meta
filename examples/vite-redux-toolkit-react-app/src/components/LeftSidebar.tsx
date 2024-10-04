@@ -11,7 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
 import { Theme } from '@mui/material/styles';
 import {addWidget} from "@metacell/geppetto-meta-client/common";
-import {componentWidget} from "../widgets.ts";
+import {componentWidget} from "../layoutManager/widgets.ts";
 import {useDispatch} from "react-redux";
 
 const drawerWidth = 240;
@@ -95,7 +95,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, ope
       </List>
       <Divider />
       <List>
-        {['Load', 'Change layout'].map((text) => (
+        {['Load', 'Change layoutManager'].map((text) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemText primary={text} />
