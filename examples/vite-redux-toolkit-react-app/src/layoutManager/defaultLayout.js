@@ -1,56 +1,42 @@
 export default {
   global: {
-    tabEnableClose: true,
+    sideBorders: 8,
     tabSetHeaderHeight: 26,
     tabSetTabStripHeight: 26,
     enableEdgeDock: false,
+    borderBarSize: 0,
+    tabEnableDrag: true
   },
-  borders: [
-    {
-      type: 'border',
-      location: 'bottom',
-      size: 100,
-      children: [],
-      barSize: 35,
-      config: {
-        isMinimizedPanel: true
-      }
-    },
-  ],
   layout: {
-    type: "tabset",
+    type: "row",
     id: "root",
-    weight: 100,
     children: [
       {
         type: "row",
-        enableDeleteWhenEmpty: true,
-        weight:31,
-        children:[
-          { type: "row",
-            id: "top",
-            
-            children: [{ type: "tabset",
-              id: "topLeft",
-              enableDeleteWhenEmpty: false,
-              children: [] ,
-              weight: 30,
-            },{ type: "tabset",
-              id: "topRight",
-              enableDeleteWhenEmpty: false,
-              children: [] ,
-              weight: 70,
-            }] ,
-            weight: 30,
-          },
-          { type: "tabset",
-            id: "bottom",
+        weight: 60,
+        children: [
+          {
+            type: "tabset",
+            id: "leftPanel",
+            weight: 100,
             enableDeleteWhenEmpty: false,
-            weight: 70,
-            children: [] }
+            children: []
+          }
         ]
       },
-    
+      {
+        type: "row",
+        weight: 40,
+        children: [
+          {
+            type: "tabset",
+            weight: 100,
+            id: "rightPanel",
+            enableDeleteWhenEmpty: false,
+            children: []
+          }
+        ]
+      }
     ]
   }
 };

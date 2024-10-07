@@ -1,9 +1,7 @@
 import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common/layout/model";
 
-
-
 export const componentWidget = (name: string, color: string, panelName="panel1") : Widget => ({
-  id: name + Math.random(),
+  id: name,
   name: name,
   component: "MyComponent",
   panelName,
@@ -15,4 +13,13 @@ export const componentWidget = (name: string, color: string, panelName="panel1")
   },
   session: undefined,
   config: undefined
+});
+
+export const threeDViewerWidget = () => ({
+  id: 'ThreeDViewer',
+  name: "3D Viewer",
+  component: 'ThreeDViewer',
+  panelName: "leftPanel",
+  enableClose: false,
+  status: WidgetStatus.ACTIVE,
 });

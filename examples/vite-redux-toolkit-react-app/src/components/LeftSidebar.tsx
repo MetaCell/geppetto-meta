@@ -10,9 +10,10 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
 import { Theme } from '@mui/material/styles';
-import {addWidget} from "@metacell/geppetto-meta-client/common";
-import {componentWidget} from "../layoutManager/widgets.ts";
+import {addWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {componentWidget, threeDViewerWidget} from "../layoutManager/widgets.ts";
 import {useDispatch} from "react-redux";
+import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss';
 
 const drawerWidth = 240;
 
@@ -24,7 +25,7 @@ interface LeftSidebarProps {
 
 const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, open }) => {
   const dispatch = useDispatch();
-  const handleClick = () => dispatch(addWidget(componentWidget('Component 1', '#000000', 'topLeft')));
+  const handleClick = () =>  dispatch(addWidget(threeDViewerWidget()));
   
   return (
     <Drawer
