@@ -41,7 +41,6 @@ const getLayoutManagerAndStore = () => {
     preloadedState: Partial<RootState>;
     reducer: (state: RootState | undefined, action: Action) => RootState;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    middleware: (getDefaultMiddleware: ReturnType<ReturnType<any>>) => any;
   } = {
     reducer: rootReducer,
     middleware: middlewareEnhancer,

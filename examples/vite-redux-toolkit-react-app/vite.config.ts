@@ -7,4 +7,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@metacell/geppetto-meta-core', '@metacell/geppetto-meta-client', '@metacell/geppetto-meta-ui']
   },
+  assetsInclude: ['**/*.nii.gz']
 })
