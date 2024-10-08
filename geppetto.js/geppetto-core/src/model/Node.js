@@ -4,128 +4,135 @@
  * @module model/Node
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
-define(['jquery', 'underscore', 'backbone',
 
-  // Add requirement for Backbone-associations module
+import _ from 'underscore';
+import Backbone from 'backbone';
 
-], require => ({
-  Model: Backbone.Model.extend({
-    name: "",
-    instancePath: "",
-    id: "",
-    domainType: "",
-    _metaType: "",
-    aspectNode: null,
-    parent: null,
-    tags: null,
+const Model = Backbone.Model.extend({
+  name: "",
+  instancePath: "",
+  id: "",
+  domainType: "",
+  _metaType: "",
+  aspectNode: null,
+  parent: null,
+  tags: null,
 
-    /**
-     * Gets the instance path of the node
-     *
-     * @command Node.getInstancePath()
-     * @returns {String} Instance path of this node
-     *
-     */
-    getInstancePath: function () {
-      return this.instancePath;
-    },
+  /**
+   * Gets the instance path of the node
+   *
+   * @command Node.getInstancePath()
+   * @returns {String} Instance path of this node
+   *
+   */
 
-    /**
-     * Gets the name of the node
-     *
-     * @command Node.getName()
-     * @returns {String} Name of the node
-     *
-     */
-    getName: function () {
-      return this.name;
-    },
+  getInstancePath () {
+    return this.instancePath;
+  },
 
-    getAspectNode: function () {
-      return this.aspectNode;
-    },
+  /**
+   * Gets the name of the node
+   *
+   * @command Node.getName()
+   * @returns {String} Name of the node
+   *
+   */
+  getName () {
+    return this.name;
+  },
 
-    /**
-     * Sets the name of the node
-     *
-     * @command Node.setName()
-     *
-     */
-    setName: function (newname) {
-      this.name = newname;
-    },
+  getAspectNode () {
+    return this.aspectNode;
+  },
 
-    /**
-     * Get the id associated with node
-     *
-     * @command Node.getId()
-     * @returns {String} ID of node
-     */
-    getId: function () {
-      return this.id;
-    },
+  /**
+   * Sets the name of the node
+   *
+   * @command Node.setName()
+   *
+   */
 
-    getDomainType: function () {
-      return this.domainType;
-    },
+  setName (newname) {
+    this.name = newname;
+  },
 
-    setDomainType: function (newDomainType) {
-      this.domainType = newDomainType;
-    },
+  /**
+   * Get the id associated with node
+   *
+   * @command Node.getId()
+   * @returns {String} ID of node
+   */
 
-    setParent: function (parent) {
-      this.parent = parent;
-    },
+  getId () {
+    return this.id;
+  },
 
-    getParent: function () {
-      return this.parent;
-    },
+  getDomainType () {
+    return this.domainType;
+  },
 
-    _all: function (predicate, matches) {
-      if (typeof matches === 'undefined') {
-        var matches = [];
-      }
+  setDomainType (newDomainType) {
+    this.domainType = newDomainType;
+  },
 
-      if (predicate(this)) {
-        matches.push(this);
-      }
+  setParent (parent) {
+    this.parent = parent;
+  },
 
-      if (typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var ci in children) {
-          this._all.call(children[ci], predicate, matches);
-        }
-      }
+  getParent () {
+    return this.parent;
+  },
 
-      return matches;
-    },
-
-    /**
-     * Search inside a node for all the nodes of a specific domain type.
-     *
-     * @param {String}
-     *            domainType - Domain type
-     * @returns {Array} List of Nodes
-     *
-     */
-    getSubNodesOfDomainType: function (domainType) {
-      return this._all(function (n) {
-        return n.domainType === domainType;
-      });
-    },
-
-    /**
-     * Search inside a node for all the nodes of a specific meta type.
-     *
-     * @param {String}
-     *            metaType - Meta Type
-     * @returns {Array} List of Nodes
-     *
-     */
-    getSubNodesOfMetaType: function (metaType) {
-      return this._all(function (n) {
-        return n._metaType === metaType;
-      });
+  _all (predicate, matches) {
+    if (typeof matches === 'undefined') {
+      var matches = [];
     }
-  })
-}));
+
+    if (predicate(this)) {
+      matches.push(this);
+    }
+
+    if (typeof this.getChildren === "function") {
+      var children = this.getChildren();
+      for (var ci in children) {
+        this._all.call(children[ci], predicate, matches);
+      }
+    }
+
+    return matches;
+  },
+
+  /**
+   * Search inside a node for all the nodes of a specific domain type.
+   *
+   * @param {String}
+   *            domainType - Domain type
+   * @returns {Array} List of Nodes
+   *
+   */
+
+  getSubNodesOfDomainType (domainType) {
+    return this._all(function (n) {
+      return n.domainType === domainType;
+    });
+  },
+
+  /**
+   * Search inside a node for all the nodes of a specific meta type.
+   *
+   * @param {String}
+   *            metaType - Meta Type
+   * @returns {Array} List of Nodes
+   *
+   */
+
+  getSubNodesOfMetaType (metaType) {
+    return this._all(function (n) {
+      return n._metaType === metaType;
+    });
+  }
+})
+
+export default {
+  Model,
+};
