@@ -5,7 +5,6 @@
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
 
-import _ from 'underscore';
 import Backbone from 'backbone';
 
 const Model = Backbone.Model.extend({
@@ -23,10 +22,8 @@ const Model = Backbone.Model.extend({
    *
    * @command Node.getInstancePath()
    * @returns {String} Instance path of this node
-   *
    */
-
-  getInstancePath () {
+  getInstancePath() {
     return this.instancePath;
   },
 
@@ -35,13 +32,12 @@ const Model = Backbone.Model.extend({
    *
    * @command Node.getName()
    * @returns {String} Name of the node
-   *
    */
-  getName () {
+  getName() {
     return this.name;
   },
 
-  getAspectNode () {
+  getAspectNode() {
     return this.aspectNode;
   },
 
@@ -49,10 +45,8 @@ const Model = Backbone.Model.extend({
    * Sets the name of the node
    *
    * @command Node.setName()
-   *
    */
-
-  setName (newname) {
+  setName(newname) {
     this.name = newname;
   },
 
@@ -62,41 +56,40 @@ const Model = Backbone.Model.extend({
    * @command Node.getId()
    * @returns {String} ID of node
    */
-
-  getId () {
+  getId() {
     return this.id;
   },
 
-  getDomainType () {
+  getDomainType() {
     return this.domainType;
   },
 
-  setDomainType (newDomainType) {
+  setDomainType(newDomainType) {
     this.domainType = newDomainType;
   },
 
-  setParent (parent) {
+  setParent(parent) {
     this.parent = parent;
   },
 
-  getParent () {
+  getParent() {
     return this.parent;
   },
 
-  _all (predicate, matches) {
-    if (typeof matches === 'undefined') {
-      var matches = [];
-    }
-
+  /**
+   * Recursively collects all nodes matching the given predicate.
+   * @param {Function} predicate - Function to test each node.
+   * @param {Array} matches - Array to collect matched nodes.
+   * @returns {Array} List of matched nodes.
+   */
+  _all(predicate, matches = []) {
     if (predicate(this)) {
       matches.push(this);
     }
 
     if (typeof this.getChildren === "function") {
-      var children = this.getChildren();
-      for (var ci in children) {
-        this._all.call(children[ci], predicate, matches);
-      }
+      const children = this.getChildren();
+      children.forEach((child) => child._all(predicate, matches));
     }
 
     return matches;
@@ -105,33 +98,23 @@ const Model = Backbone.Model.extend({
   /**
    * Search inside a node for all the nodes of a specific domain type.
    *
-   * @param {String}
-   *            domainType - Domain type
+   * @param {String} domainType - Domain type
    * @returns {Array} List of Nodes
-   *
    */
-
-  getSubNodesOfDomainType (domainType) {
-    return this._all(function (n) {
-      return n.domainType === domainType;
-    });
+  getSubNodesOfDomainType(domainType) {
+    return this._all((n) => n.domainType === domainType);
   },
 
   /**
    * Search inside a node for all the nodes of a specific meta type.
    *
-   * @param {String}
-   *            metaType - Meta Type
+   * @param {String} metaType - Meta Type
    * @returns {Array} List of Nodes
-   *
    */
-
-  getSubNodesOfMetaType (metaType) {
-    return this._all(function (n) {
-      return n._metaType === metaType;
-    });
-  }
-})
+  getSubNodesOfMetaType(metaType) {
+    return this._all((n) => n._metaType === metaType);
+  },
+});
 
 export default {
   Model,
