@@ -30,6 +30,10 @@ const MainLayout = ({ children } : MainLayoutProps ) => {
       <MuiAppBar
         position="fixed"
         sx={{
+          backgroundColor: '#fff',
+          color: '#63625F',
+          borderBottom: '1px solid #ECECE9',
+          boxShadow: 'none',
           transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,

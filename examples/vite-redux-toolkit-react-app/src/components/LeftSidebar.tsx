@@ -1,21 +1,31 @@
-import React from 'react';
+import React from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 import Drawer from "@mui/material/Drawer";
-import { Theme } from '@mui/material/styles';
-import {addWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
-import {componentWidget, threeDViewerWidget} from "../layoutManager/widgets.ts";
-import {useDispatch} from "react-redux";
-import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss';
+import { Theme } from "@mui/material/styles";
+import {addWidget, deleteWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {
+  componentWidget,
+  threeDViewerWidget,
+} from "../layoutManager/widgets.ts";
+import { useDispatch } from "react-redux";
+import "@metacell/geppetto-meta-ui/flex-layout/style/dark.scss";
+import { FormControlLabel, FormGroup } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import CustomSwitch from "./CustomSwitch.tsx";
+import { vars } from "../theme/variables.ts";
+import { ViewerType } from "../models";
+const { gray600, gray900A } = vars;
 
 const drawerWidth = 240;
+
+const viewers = {
+  [ViewerType.default]: componentWidget(),
+  [ViewerType.ThreeD]: threeDViewerWidget(),
+};
 
 interface LeftSidebarProps {
   handleDrawerClose: () => void;
@@ -23,18 +33,28 @@ interface LeftSidebarProps {
   open: boolean;
 }
 
-const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, open }) => {
+const LeftSidebar: React.FC<LeftSidebarProps> = ({
+  handleDrawerClose,
+  theme,
+  open,
+}) => {
   const dispatch = useDispatch();
-  const handleClick = () =>  dispatch(addWidget(threeDViewerWidget()));
-  
+  const handleToggle = (e, viewer) => {
+    if (e.target.checked) {
+      dispatch(addWidget(viewers[viewer]))
+    } else {
+      dispatch(deleteWidget(viewer))
+    }
+  };
+
   return (
     <Drawer
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
           width: drawerWidth,
-          boxSizing: 'border-box',
+          boxSizing: "border-box",
         },
       }}
       variant="persistent"
@@ -43,67 +63,69 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({ handleDrawerClose, theme, ope
     >
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           padding: theme.spacing(0, 1),
           ...theme.mixins.toolbar,
-          justifyContent: 'flex-end',
+          justifyContent: "flex-end",
         }}
       >
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          {theme.direction === "ltr" ? (
+            <ChevronLeftIcon />
+          ) : (
+            <ChevronRightIcon />
+          )}
         </IconButton>
       </Box>
       <Divider />
-      <List>
-        {['Add Widget', 'Remove Widget', 'Maximize Widget', 'Minimize Widget', 'Activate Widget', 'Update Widget'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={handleClick}>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Add Image Viewer', 'Remove Image Viewer'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Add DICOM Viewer', 'Remove DICOM Viewer'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Add Canvas', 'Remove Canvas'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Load', 'Change layoutManager'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <Box px="1.5rem">
+        <Box py="1.5rem">
+          <Typography
+            sx={{
+              fontSize: "1rem",
+              lineHeight: "142.857%",
+              fontWeight: 400,
+              color: gray900A,
+              marginBottom: "0.75rem",
+            }}
+          >
+            Show/hide viewers
+          </Typography>
+          <FormGroup
+            sx={{
+              gap: "0.25rem",
+              "& .MuiFormControlLabel-root": {
+                margin: 0,
+                py: "0.5rem",
+              },
+              "& .MuiTypography-root": {
+                color: gray600,
+              },
+            }}
+          >
+            {Object.keys(viewers).map((viewer) => (
+              <FormControlLabel
+                control={
+                  <CustomSwitch
+                    width={28.8}
+                    height={16}
+                    thumbDimension={12.8}
+                    checkedPosition="translateX(0.8125rem)"
+                    onChange={(e) => handleToggle(e, viewer)}
+                  />
+                }
+                key={viewer}
+                label={
+                  <Typography color={gray600} variant="subtitle1">
+                    {viewer}
+                  </Typography>
+                }
+              />
+            ))}
+          </FormGroup>
+        </Box>
+      </Box>
     </Drawer>
   );
 };

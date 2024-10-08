@@ -1,25 +1,19 @@
-import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common/layout/model";
+import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 
-export const componentWidget = (name: string, color: string, panelName="panel1") : Widget => ({
-  id: name,
-  name: name,
+export const componentWidget = () => ({
+  id: 'Default',
+  name: 'panel1',
   component: "MyComponent",
-  panelName,
+  panelName: 'leftPanel',
   enableClose: true,
-  status: WidgetStatus.ACTIVE,
-  props: {
-    name,
-    color
-  },
-  session: undefined,
-  config: undefined
+  status: WidgetStatus.ACTIVE
 });
 
 export const threeDViewerWidget = () => ({
-  id: 'ThreeDViewer',
+  id: '3D',
   name: "3D Viewer",
   component: 'ThreeDViewer',
   panelName: "leftPanel",
   enableClose: false,
-  status: WidgetStatus.ACTIVE,
+  status: WidgetStatus.ACTIVE
 });
