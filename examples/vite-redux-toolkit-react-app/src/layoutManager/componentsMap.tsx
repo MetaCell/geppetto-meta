@@ -3,7 +3,7 @@ import ThreeDViewer from "../components/viewers/ThreeD/ThreeDViewer.tsx";
 
 const componentMap = {
   MyComponent,
-  ThreeDViewer
+  ThreeDViewer,
 }
 
 export default componentMap

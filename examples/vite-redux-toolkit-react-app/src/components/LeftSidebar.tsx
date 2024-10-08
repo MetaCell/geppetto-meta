@@ -12,7 +12,6 @@ import {
   threeDViewerWidget,
 } from "../layoutManager/widgets.ts";
 import { useDispatch } from "react-redux";
-import "@metacell/geppetto-meta-ui/flex-layout/style/dark.scss";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import CustomSwitch from "./CustomSwitch.tsx";

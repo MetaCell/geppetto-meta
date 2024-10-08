@@ -13,6 +13,8 @@ import Loader from "./Loader.tsx";
 import Gizmo from "./Gizmo.tsx";
 import { CameraControls, PerspectiveCamera } from "@react-three/drei";
 import SceneControls from "./SceneControls.tsx";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../redux/store.ts";
 export interface Instance {
   id: string;
   url: string;
@@ -22,36 +24,10 @@ export interface Instance {
 
 
 function ThreeDViewer() {
-  // @ts-expect-error 'setShowNeurons' is declared but its value is never read.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showNeurons, setShowNeurons] = useState<boolean>(true);
-  // @ts-expect-error 'setShowSynapses' is declared but its value is never read.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showSynapses, setShowSynapses] = useState<boolean>(true);
-  const [instances, setInstances] = useState<Instance[]>([])
   const [isWireframe, setIsWireframe] = useState<boolean>(false)
-  
+  const instances = useSelector((state: RootState) => state.instances.instances);
   const cameraControlRef = useRef<CameraControls | null>(null);
-  
-  useEffect(() => {
-    if (showNeurons) {
-      setInstances([
-        {
-          id: 'nerve_ring',
-          url: 'nervering-SEM_adult.stl',
-          color: 'white',
-          opacity: 0.5
-        },
-        {
-          id: 'adal_sem',
-          url: 'ADAL-SEM_adult.stl',
-          color: 'blue',
-          opacity: 1
-        }
-      ])
-    }
-  }, [showNeurons, showSynapses]);
-  
+
   return (
     <>
       <Canvas
@@ -84,6 +60,7 @@ function ThreeDViewer() {
         cameraControlRef={cameraControlRef}
         isWireframe={isWireframe}
         setIsWireframe={setIsWireframe}
+        instances={instances}
       />
     </>
   );
