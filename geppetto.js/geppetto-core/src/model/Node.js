@@ -88,8 +88,9 @@ const Model = Backbone.Model.extend({
     }
 
     if (typeof this.getChildren === "function") {
-      const children = this.getChildren();
-      children.forEach((child) => child._all(predicate, matches));
+      for (const child of Object.values(this.getChildren())) {
+        this._all.call(child, predicate, matches)
+      }
     }
 
     return matches;
