@@ -5,17 +5,19 @@
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
 
-import Backbone from 'backbone';
 
-const Model = Backbone.Model.extend({
-  name: "",
-  instancePath: "",
-  id: "",
-  domainType: "",
-  _metaType: "",
-  aspectNode: null,
-  parent: null,
-  tags: null,
+class Model {
+  
+  constructor() {
+    this.name = "";
+    this.instancePath = "";
+    this.id = "";
+    this.domainType = "";
+    this._metaType = "";
+    this.aspectNode = null;
+    this.parent = null;
+    this.tags = null;
+  }
 
   /**
    * Gets the instance path of the node
@@ -25,7 +27,7 @@ const Model = Backbone.Model.extend({
    */
   getInstancePath() {
     return this.instancePath;
-  },
+  }
 
   /**
    * Gets the name of the node
@@ -35,11 +37,11 @@ const Model = Backbone.Model.extend({
    */
   getName() {
     return this.name;
-  },
+  }
 
   getAspectNode() {
     return this.aspectNode;
-  },
+  }
 
   /**
    * Sets the name of the node
@@ -48,7 +50,7 @@ const Model = Backbone.Model.extend({
    */
   setName(newname) {
     this.name = newname;
-  },
+  }
 
   /**
    * Get the id associated with node
@@ -58,23 +60,23 @@ const Model = Backbone.Model.extend({
    */
   getId() {
     return this.id;
-  },
+  }
 
   getDomainType() {
     return this.domainType;
-  },
+  }
 
   setDomainType(newDomainType) {
     this.domainType = newDomainType;
-  },
+  }
 
   setParent(parent) {
     this.parent = parent;
-  },
+  }
 
   getParent() {
     return this.parent;
-  },
+  }
 
   /**
    * Recursively collects all nodes matching the given predicate.
@@ -94,7 +96,7 @@ const Model = Backbone.Model.extend({
     }
 
     return matches;
-  },
+  }
 
   /**
    * Search inside a node for all the nodes of a specific domain type.
@@ -104,7 +106,7 @@ const Model = Backbone.Model.extend({
    */
   getSubNodesOfDomainType(domainType) {
     return this._all((n) => n.domainType === domainType);
-  },
+  }
 
   /**
    * Search inside a node for all the nodes of a specific meta type.
@@ -114,9 +116,7 @@ const Model = Backbone.Model.extend({
    */
   getSubNodesOfMetaType(metaType) {
     return this._all((n) => n._metaType === metaType);
-  },
-});
-
-export default {
-  Model,
+  }
 };
+
+export default Model;

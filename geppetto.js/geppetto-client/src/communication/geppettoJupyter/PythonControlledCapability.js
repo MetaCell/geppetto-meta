@@ -8,7 +8,7 @@
 import React from 'react';
 import Utils from './GeppettoJupyterUtils';
 
-export function createPythonControlledComponent(WrappedComponent) {
+export default function createPythonControlledComponent(WrappedComponent) {
   if (typeof WrappedComponent !== 'function') {
     class Wrapper extends React.Component {
       render() {
@@ -73,7 +73,7 @@ export function createPythonControlledComponent(WrappedComponent) {
   return PythonControlledComponent;
 }
 
-export function createPythonControlledControl(WrappedComponent) {
+export default function createPythonControlledControl(WrappedComponent) {
   var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
   class PythonControlledControl extends PythonControlledComponent {
 
@@ -316,7 +316,7 @@ export function createPythonControlledControl(WrappedComponent) {
   return PythonControlledControl;
 }
 
-export function createPythonControlledControlWithPythonDataFetch(WrappedComponent) {
+export default function createPythonControlledControlWithPythonDataFetch(WrappedComponent) {
   var PythonControlledComponent = this.createPythonControlledComponent(WrappedComponent);
   class PythonControlledControlWithPythonDataFetch extends PythonControlledComponent {
 
@@ -457,12 +457,6 @@ export function createPythonControlledControlWithPythonDataFetch(WrappedComponen
 
   return PythonControlledControlWithPythonDataFetch;
 }
-
-export default {
-  createPythonControlledComponent,
-  createPythonControlledControl,
-  createPythonControlledControlWithPythonDataFetch
-};
 
 function getNameFromWrappedComponent(WrappedComponent) {
   return WrappedComponent.name || WrappedComponent.displayName || WrappedComponent.Naked.render.name;
