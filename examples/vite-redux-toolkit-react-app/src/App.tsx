@@ -1,7 +1,7 @@
 import HomePage from "./pages/HomePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import MainLayout from "./components/MainLayout.tsx";
+import MainLayout from "./components/MainLayout";
 import '@metacell/geppetto-meta-ui/flex-layout/style/light.scss'
 
 const darkTheme = createTheme({

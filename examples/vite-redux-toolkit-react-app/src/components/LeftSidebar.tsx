@@ -8,7 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import { Theme } from "@mui/material/styles";
 import {addWidget, deleteWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
 import {
-  componentWidget, DicomViewerWidget,
+  componentWidget, GraphVisualizationWidget
 } from "../layoutManager/widgets.ts";
 import { useDispatch } from "react-redux";
 import { FormControlLabel, FormGroup } from "@mui/material";
@@ -22,7 +22,7 @@ const drawerWidth = 240;
 
 const viewers = {
   [ViewerType.default]: componentWidget(),
-  [ViewerType.dicomViewer]: DicomViewerWidget(),
+  [ViewerType.GraphVisualization]: GraphVisualizationWidget(),
 };
 
 interface LeftSidebarProps {

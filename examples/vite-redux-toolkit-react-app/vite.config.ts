@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 const gzipFixPlugin = () => {
   const fixHeader = (server) => {
@@ -11,7 +11,7 @@ const gzipFixPlugin = () => {
       next();
     });
   };
-
+  
   return {
     name: "gzip-fix-plugin",
     configureServer: fixHeader,
@@ -20,11 +20,19 @@ const gzipFixPlugin = () => {
   };
 };
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), gzipFixPlugin()],
+  plugins: [
+    react(),
+    gzipFixPlugin()
+  ],
   optimizeDeps: {
-    exclude: ['@metacell/geppetto-meta-core', '@metacell/geppetto-meta-client', '@metacell/geppetto-meta-ui']
+    include: ['three'],
+    exclude: ['@metacell/geppetto-meta-core', '@metacell/geppetto-meta-client', '@metacell/geppetto-meta-ui'],
   },
   assetsInclude: ['**/*.nii.gz'],
-})
+  server: {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  },
+});

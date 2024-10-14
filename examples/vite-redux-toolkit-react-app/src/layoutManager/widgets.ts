@@ -8,12 +8,11 @@ export const componentWidget = () => ({
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });
-
-export const DicomViewerWidget = () => ({
-  id: 'Dicom Viewer',
-  name: "DicomViewer Viewer",
-  component: 'Dicom Viewer',
-  panelName: "leftPanel",
+export const GraphVisualizationWidget = () => ({
+  id: 'Graph Visualization',
+  name: "Graph Visualization",
+  component: 'Graph Visualization',
+  panelName: "rightPanel",
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });

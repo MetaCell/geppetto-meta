@@ -6,7 +6,6 @@ import {
   CircularProgress,
 } from "@mui/material"
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
-import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 const HomePage = () => {
   const store = useStore();
   const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);

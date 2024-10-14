@@ -1,5 +1,5 @@
 import createTheme from "@mui/material/styles/createTheme";
-import { vars } from "./variables.ts";
+import { vars } from "./variables";
 const {
   primaryFont,
   primary500,

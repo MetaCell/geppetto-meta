@@ -1,10 +1,9 @@
 import MyComponent from '../components/MyComponent'
-import DicomViewer from "../components/viewers/Dicom/DicomViewer.tsx";
-import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
+import GraphVisualization from "../components/viewers/GraphVisualizer/GraphVisualizer.tsx";
 
 const componentMap = {
   'MyComponent': MyComponent,
-  'Dicom Viewer': DicomViewer
+  'Graph Visualization': GraphVisualization,
 }
 
 export default componentMap
