@@ -26,9 +26,9 @@ export function createZipFromRemoteFiles (files, zipName) {
 
   // Add an entry to zip per file
   var zip = new JSZip();
-  $.each(files, function (i, filePath) {
+  for (const filePath of files){
     zip.file(filePath.split('/').pop(), urlToPromise(filePath), { binary: true });
-  });
+  }
 
   // Send File
   zip.generateAsync({ type: "blob" })
