@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 
 import * as THREE from 'three';
@@ -8,56 +7,26 @@ import { offset } from '../utilities';
 import { boundingBoxHelperFactory, VolumeLoader, StackModel } from 'ami.js';
 const HelpersBoundingBox = boundingBoxHelperFactory(THREE);
 
-import {
-  faThLarge,
-  faSquare,
-  faExchangeAlt,
-  faDownload,
-  faExpandAlt,
-  faCompressAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import CustomToolbar from '../common/CustomToolbar';
 import { createZipFromRemoteFiles } from './util';
 import Loader from "../loader/Loader";
 
-const styles = {
-  dicomViewer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    backgroundColor: '#353535',
-  },
-  renderer: {
-    backgroundColor: '#000',
-    float: 'left',
-    width: '50%',
-    height: '50%',
-  },
-  toolbar: {
-    padding: '0',
-    marginLeft: '5px',
-  },
-  toolbarBox: { backgroundColor: 'rgb(0,0,0,0.5);' },
-  button: {
-    padding: '8px',
-    top: '0',
-    color: '#fc6320',
-  },
+const classes = {
+  dicomViewer: "dicom-viewer",
+  renderer: "dicom-viewer-renderer",
+  toolbar: "dicom-viewer-toolbar",
+  toolbarBox: "dicom-viewer-toolbar-box",
+  button: "dicom-viewer-button",
 };
 
 class DicomViewer extends Component {
+
+  animationOn = true;
+  animationSkipRate = 3;
+
   constructor (props) {
     super(props);
-
-    this.state = {
-      files: this.extractFilesPath(this.props.data),
-      mode: this.props.mode === undefined ? 'quad_view' : this.props.mode,
-      orientation:
-        this.props.orientation === undefined
-          ? 'coronal'
-          : this.props.orientation,
-      fullScreen: false,
-      ready: false
-    };
 
     // 3d renderer
     this.r0 = {
@@ -70,6 +39,7 @@ class DicomViewer extends Component {
       controls: null,
       scene: null,
       light: null,
+      parent: this,
     };
 
     // 2d axial renderer
@@ -88,6 +58,8 @@ class DicomViewer extends Component {
       stackHelper: null,
       localizerHelper: null,
       localizerScene: null,
+      widgets: [],
+      parent: this,
     };
 
     // 2d sagittal renderer
@@ -106,6 +78,8 @@ class DicomViewer extends Component {
       stackHelper: null,
       localizerHelper: null,
       localizerScene: null,
+      widgets: [],
+      parent: this,
     };
 
     // 2d coronal renderer
@@ -124,220 +98,279 @@ class DicomViewer extends Component {
       stackHelper: null,
       localizerHelper: null,
       localizerScene: null,
+      widgets: [],
+      parent: this,
     };
 
-    this.changeMode = this.changeMode.bind(this);
-    this.changeOrientation = this.changeOrientation.bind(this);
-    this.download = this.download.bind(this);
-    this.restore = this.restore.bind(this);
-    this.fullScreen = this.fullScreen.bind(this);
+    this.state = { ready: false }
+
     this.containerRef = React.createRef();
+
+    this.onRender = this.props.onRender;
+    this.drag = false;
+    this.animationSkipRate = this.props.animationSkipRate || 3;
+
+    this.startAnimation = this.startAnimation.bind(this);
+    this.stopAnimation = this.stopAnimation.bind(this);
+    this.centerOn = this.centerOn.bind(this);
   }
 
   extractFilesPath (data) {
-    let files;
-    if (data !== undefined) {
-      if (data.getMetaType === undefined) {
-        files = data;
-      } else if (data.getMetaType() === 'Instance') {
-        if (data.getVariable().getInitialValues()[0].value.format === 'NIFTI') {
-          files = data.getVariable().getInitialValues()[0].value.data;
-        } else if (
-          data.getVariable().getInitialValues()[0].value.format === 'DCM'
-        ) {
-          // todo: What do we do here?
-        }
+    if (!data) {
+      return undefined;
+    }
+    if (!data.getMetaType) {
+      return data;
+    }
+    if (data.getMetaType() === 'Instance') {
+      const value = data.getVariable().getInitialValues()[0].value;
+      switch (value.format){
+      case 'NIFTI':
+        return value.data
+      case 'DCM':
+        break; // todo: what do we do here?
       }
     }
-    return files;
+    return undefined;
   }
 
-  loadModel () {
-    if (this.state.files !== undefined && null != this.state.files) {
-      this.ready = false;
-      const _this = this;
+  loadModel (modelData) {
+    const data = this.extractFilesPath(modelData)
+    if (!data) {
+      return
+    }
 
+    this.ready = false
+    const _this = this;
+
+    let animationCount = 0;
+    /**
+     * Init the view
+     */
+    function init () {
       /**
-       * Init the quadview
+       * Called on each animation frame
        */
-      function init () {
-        /**
-         * Called on each animation frame
-         */
-        function animate () {
+      function animate () {
+        if ( _this.ready && _this.animationOn && animationCount++ % _this.animationSkipRate === 0) {
           // we are ready when both meshes have been loaded
-          if (_this.ready) {
-            if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === '3d')
-              || _this.state.mode === 'quad_view'
-            ) {
-              // render
-              _this.r0.controls.update();
-              _this.r0.light.position.copy(_this.r0.camera.position);
-              _this.r0.renderer.render(_this.r0.scene, _this.r0.camera);
+          const { mode, orientation } = _this.props;
+          const shouldRenderPlane = plane => mode === 'quad_view' || orientation === plane;
+          const shouldRender3D = shouldRenderPlane('3d');
+
+          const planesSetup = {
+            'r1': 'sagittal',
+            'r2': 'axial',
+            'r3': 'coronal'
+          };
+
+          if (shouldRender3D) {
+            // render
+            _this.r0.controls.update();
+            _this.r0.light.position.copy(_this.r0.camera.position);
+            _this.r0.renderer.render(_this.r0.scene, _this.r0.camera);
+            _this.r0.scene.background = new THREE.Color("#353535");
+          }
+
+          for (const [planeName, planeOrientation] of Object.entries(planesSetup)) {
+            if (!shouldRenderPlane(planeOrientation)) {
+              continue
             }
+            const plane = _this[planeName]
+            const camera = plane.camera
+            const renderer = plane.renderer
+            plane.controls.update();
 
-            if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'sagittal')
-              || _this.state.mode === 'quad_view'
-            ) {
-              _this.r1.controls.update();
-              // r1
-              _this.r1.renderer.clear();
-              _this.r1.renderer.render(_this.r1.scene, _this.r1.camera);
+            // clear renderer
+            renderer.clear();
 
-              // localizer
-              _this.r1.renderer.clearDepth();
-              _this.r1.renderer.render(
-                _this.r1.localizerScene,
-                _this.r1.camera
-              );
-            }
+            plane.renderer.render(plane.scene, camera);
+            plane.scene.background = new THREE.Color("#353535");
 
-            if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'axial')
-              || _this.state.mode === 'quad_view'
-            ) {
-              _this.r2.controls.update();
-              // r2
-              _this.r2.renderer.clear();
-              _this.r2.renderer.render(_this.r2.scene, _this.r2.camera);
-              // localizer
-              _this.r2.renderer.clearDepth();
-              _this.r2.renderer.render(
-                _this.r2.localizerScene,
-                _this.r2.camera
-              );
-            }
+            // localizer
+            renderer.clearDepth();
+            renderer.render(
+              plane.localizerScene,
+              camera
+            );
 
-            if (
-              (_this.state.mode === 'single_view'
-                && _this.state.orientation === 'coronal')
-              || _this.state.mode === 'quad_view'
-            ) {
-              _this.r3.controls.update();
-              // r3
-              _this.r3.renderer.clear();
-              _this.r3.renderer.render(_this.r3.scene, _this.r3.camera);
-              // localizer
-              _this.r3.renderer.clearDepth();
-              _this.r3.renderer.render(
-                _this.r3.localizerScene,
-                _this.r3.camera
-              );
+            // Widgets
+            for (const widget of plane.widgets) {
+              widget.update();
             }
           }
 
-          // request new frame
-          requestAnimationFrame(function () {
-            animate();
-          });
+          if (_this.onRender) {
+            _this.onRender([_this.r0, _this.r1, _this.r2, _this.r3]);
+          }
         }
 
-        // renderers
-        DicomViewerUtils.initRenderer3D(_this.r0, _this.containerRef.current);
-        DicomViewerUtils.initRenderer2D(_this.r1, _this.containerRef.current);
-        DicomViewerUtils.initRenderer2D(_this.r2, _this.containerRef.current);
-        DicomViewerUtils.initRenderer2D(_this.r3, _this.containerRef.current);
-
-        // start rendering loop
-        animate();
+        // request new frame
+        requestAnimationFrame(animate);
       }
 
-      // init threeJS
-      init();
+      // renderers
+      DicomViewerUtils.initRenderer3D(_this.r0, _this.containerRef.current);
+      DicomViewerUtils.initRenderer2D(_this.r1, _this.containerRef.current);
+      DicomViewerUtils.initRenderer2D(_this.r2, _this.containerRef.current);
+      DicomViewerUtils.initRenderer2D(_this.r3, _this.containerRef.current);
 
-      /*
-       * load sequence for each file
-       * instantiate the loader
-       * it loads and parses the dicom image
-       */
-      let loader = new VolumeLoader();
-      loader
-        .load(this.state.files)
-        .then(function () {
-          let series = loader.data[0].mergeSeries(loader.data)[0];
-          loader.free();
-          loader = null;
-          // get first stack from series
-          let stack = series.stack[0];
-          stack.prepare();
+      // start rendering loop
+      animate();
+    }
 
-          // center 3d camera/control on the stack
-          let centerLPS = stack.worldCenter();
-          _this.r0.camera.lookAt(centerLPS.x, centerLPS.y, centerLPS.z);
-          _this.r0.camera.updateProjectionMatrix();
-          _this.r0.controls.target.set(centerLPS.x, centerLPS.y, centerLPS.z);
+    // init threeJS
+    init();
 
-          // bouding box
-          let boxHelper = new HelpersBoundingBox(stack);
-          _this.r0.scene.add(boxHelper);
+    /*
+     * load sequence for each file
+     * instantiate the loader
+     * it loads and parses the dicom image
+     */
+    let loader = new VolumeLoader();
+    loader
+      .load(this.extractFilesPath(data))
+      .then(() => {
+        const { applySegmentationLUT } = _this.props;
 
-          // red slice
-          DicomViewerUtils.initHelpersStack(_this.r1, stack);
-          _this.r0.scene.add(_this.r1.scene);
+        const series = loader.data[0].mergeSeries(loader.data)[0];
+        loader.free();
+        loader = null;
+        // get first stack from series
+        const stack = series.stack[0];
+        stack.prepare();
 
-          // yellow slice
-          DicomViewerUtils.initHelpersStack(_this.r2, stack);
-          _this.r0.scene.add(_this.r2.scene);
+        // center 3d camera/control on the stack
+        const centerLPS = stack.worldCenter();
+        _this.r0.camera.lookAt(centerLPS.x, centerLPS.y, centerLPS.z);
+        _this.r0.camera.updateProjectionMatrix();
+        _this.r0.controls.target.set(centerLPS.x, centerLPS.y, centerLPS.z);
 
-          // green slice
-          DicomViewerUtils.initHelpersStack(_this.r3, stack);
-          _this.r0.scene.add(_this.r3.scene);
+        // bouding box
+        const boxHelper = new HelpersBoundingBox(stack);
+        _this.r0.scene.add(boxHelper);
 
-          // create new mesh with Localizer shaders
-          let plane1 = _this.r1.stackHelper.slice.cartesianEquation();
-          let plane2 = _this.r2.stackHelper.slice.cartesianEquation();
-          let plane3 = _this.r3.stackHelper.slice.cartesianEquation();
+        // Init the 2D planes stack helpers
+        DicomViewerUtils.initHelpersStack(_this.r1, stack);
+        DicomViewerUtils.initHelpersStack(_this.r2, stack);
+        DicomViewerUtils.initHelpersStack(_this.r3, stack);
 
-          // localizer red slice
-          DicomViewerUtils.initHelpersLocalizer(_this.r1, stack, plane1, [
-            {
-              plane: plane2,
-              color: new THREE.Color(_this.r2.stackHelper.borderColor),
-            },
-            {
-              plane: plane3,
-              color: new THREE.Color(_this.r3.stackHelper.borderColor),
-            },
-          ]);
+        // Init the 2D planes segmentation LUT if necessary
+        if (applySegmentationLUT) {
+          DicomViewerUtils.initSegmentationLUT(_this.r1, stack, _this.r1.stackHelper);
+          DicomViewerUtils.initSegmentationLUT(_this.r2, stack, _this.r2.stackHelper);
+          DicomViewerUtils.initSegmentationLUT(_this.r3, stack, _this.r3.stackHelper);
+        }
 
-          // localizer yellow slice
-          DicomViewerUtils.initHelpersLocalizer(_this.r2, stack, plane2, [
-            {
-              plane: plane1,
-              color: new THREE.Color(_this.r1.stackHelper.borderColor),
-            },
-            {
-              plane: plane3,
-              color: new THREE.Color(_this.r3.stackHelper.borderColor),
-            },
-          ]);
+        const planesSetup = {
+          'r1': ['r2', 'r3'], // red slice
+          'r2': ['r1', 'r3'], // yellow slice
+          'r3': ['r1', 'r2'] // green slice
+        }
 
-          // localizer green slice
-          DicomViewerUtils.initHelpersLocalizer(_this.r3, stack, plane3, [
-            {
-              plane: plane1,
-              color: new THREE.Color(_this.r1.stackHelper.borderColor),
-            },
-            {
-              plane: plane2,
-              color: new THREE.Color(_this.r2.stackHelper.borderColor),
-            },
-          ]);
+        // Initialize 2D planes localizer (cross on 2D planes)
+        for (const [planeName, linkedPlaneNames] of Object.entries(planesSetup)) {
+          const plane = _this[planeName]
 
-          _this.configureEvents();
-          _this.ready = true;
-          _this.props.onLoaded(_this.r0.scene)
-          _this.setState({ ready: true })
-        })
-        .catch(function (error) {
-          window.console.log('oops... something went wrong...');
-          window.console.log(error);
-        });
+          // Add each 2D plane to the 3D scene
+          _this.r0.scene.add(plane.scene);
+
+          /*
+           * Init the localizer
+           * create new mesh with Localizer shaders
+           */
+          const planeEquation = plane.stackHelper.slice.cartesianEquation();
+
+          /*
+           * create new mesh with Localizer shaders
+           * compute the dependent stack helper
+           */
+          const linkedPlanes = linkedPlaneNames.map(name => {
+            const linkedStackHelper = _this[name].stackHelper;
+            return ({
+              plane: linkedStackHelper.slice.cartesianEquation(),
+              color: new THREE.Color(linkedStackHelper.borderColor)
+            })
+          });
+
+          DicomViewerUtils.initHelpersLocalizer(plane, stack, planeEquation, linkedPlanes);
+        }
+
+        _this.configureEvents();
+        _this.updateLayout(_this.props.mode);
+        _this.ready = true;
+        _this.setState({ ready: true });
+        _this.props.onLoaded();
+      })
+      .catch(error => {
+        window.console.log('oops... something went wrong...');
+        window.console.log(error);
+      });
+  }
+
+  updateLayout (mode) {
+    if (mode === 'single_view') {
+      this.setSingleLayout(this.props.orientation);
+    } else {
+      this.setQuadLayout();
+    }
+  }
+
+  centerOn (plane, point) {
+    if (!plane.stackHelper) {
+      return
+    }
+    const stackHelper = plane.stackHelper
+    const ijk = StackModel.worldToData(
+      stackHelper.stack,
+      point
+    );
+    this.r1.stackHelper.index = ijk.getComponent(
+      (this.r1.stackHelper.orientation + 2) % 3
+    );
+    this.r2.stackHelper.index = ijk.getComponent(
+      (this.r2.stackHelper.orientation + 2) % 3
+    );
+    this.r3.stackHelper.index = ijk.getComponent(
+      (this.r3.stackHelper.orientation + 2) % 3
+    );
+
+    DicomViewerUtils.updateLocalizer(this.r2, [
+      this.r1.localizerHelper,
+      this.r3.localizerHelper,
+    ]);
+    DicomViewerUtils.updateLocalizer(this.r1, [
+      this.r2.localizerHelper,
+      this.r3.localizerHelper,
+    ]);
+    DicomViewerUtils.updateLocalizer(this.r3, [
+      this.r1.localizerHelper,
+      this.r2.localizerHelper,
+    ]);
+  }
+
+  clickedOnPoint (event, callback) {
+    const canvas = event.srcElement.parentElement;
+    const id = event.target.id;
+    const mouse = {
+      x: ((event.clientX - offset(canvas).left) / canvas.clientWidth) * 2 - 1,
+      y:
+          -((event.clientY - offset(canvas).top) / canvas.clientHeight) * 2 + 1,
+    };
+
+    const plane = this[`r${id}`]
+    if (!plane) {
+      return
+    }
+    const camera = plane.camera;
+    // const stackHelper = plane.stackHelper;
+    const scene = plane.scene;
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+      callback(plane, intersects[0].point, event)
     }
   }
 
@@ -345,72 +378,11 @@ class DicomViewer extends Component {
     const _this = this;
 
     function goToPoint (event) {
-      const canvas = event.srcElement.parentElement;
-      const id = event.target.id;
-      const mouse = {
-        x: ((event.clientX - offset(canvas).left) / canvas.clientWidth) * 2 - 1,
-        y:
-          -((event.clientY - offset(canvas).top) / canvas.clientHeight) * 2 + 1,
-      };
+      _this.clickedOnPoint(event, _this.centerOn)
+    }
 
-      let camera = null;
-      let stackHelper = null;
-      let scene = null;
-      switch (id) {
-      case '0':
-        camera = _this.r0.camera;
-        stackHelper = _this.r1.stackHelper;
-        scene = _this.r0.scene;
-        break;
-      case '1':
-        camera = _this.r1.camera;
-        stackHelper = _this.r1.stackHelper;
-        scene = _this.r1.scene;
-        break;
-      case '2':
-        camera = _this.r2.camera;
-        stackHelper = _this.r2.stackHelper;
-        scene = _this.r2.scene;
-        break;
-      case '3':
-        camera = _this.r3.camera;
-        stackHelper = _this.r3.stackHelper;
-        scene = _this.r3.scene;
-        break;
-      }
-
-      const raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera(mouse, camera);
-
-      const intersects = raycaster.intersectObjects(scene.children, true);
-      if (intersects.length > 0) {
-        let ijk = StackModel.worldToData(
-          stackHelper.stack,
-          intersects[0].point
-        );
-        _this.r1.stackHelper.index = ijk.getComponent(
-          (_this.r1.stackHelper.orientation + 2) % 3
-        );
-        _this.r2.stackHelper.index = ijk.getComponent(
-          (_this.r2.stackHelper.orientation + 2) % 3
-        );
-        _this.r3.stackHelper.index = ijk.getComponent(
-          (_this.r3.stackHelper.orientation + 2) % 3
-        );
-
-        DicomViewerUtils.updateLocalizer(_this.r2, [
-          _this.r1.localizerHelper,
-          _this.r3.localizerHelper,
-        ]);
-        DicomViewerUtils.updateLocalizer(_this.r1, [
-          _this.r2.localizerHelper,
-          _this.r3.localizerHelper,
-        ]);
-        DicomViewerUtils.updateLocalizer(_this.r3, [
-          _this.r1.localizerHelper,
-          _this.r2.localizerHelper,
-        ]);
-      }
+    function pointClickedOn (event) {
+      _this.clickedOnPoint(event, _this.props.pointClickedOn)
     }
 
     function goToSingleView (event) {
@@ -436,18 +408,20 @@ class DicomViewer extends Component {
       }
     }
 
-    function toggleMode (event) {
-      if (_this.state.mode === 'single_view') {
-        _this.changeMode();
-      } else {
-        goToSingleView(event);
-      }
-    }
+    /*
+     * function toggleMode (event) {
+     *   if (_this.props.mode === 'single_view') {
+     *     _this.changeMode();
+     *   } else {
+     *     goToSingleView(event);
+     *   }
+     * }
+     */
 
     function onScroll (event) {
-      const id = event.target.domElement.id;
+      const view = event.target.domElement.dataset.view;
       let stackHelper = null;
-      switch (id) {
+      switch (view) {
       case 'r1':
         stackHelper = _this.r1.stackHelper;
         break;
@@ -483,15 +457,12 @@ class DicomViewer extends Component {
         _this.r1.localizerHelper,
         _this.r2.localizerHelper,
       ]);
+      return true;
     }
 
     function performEventAction (action, event) {
       // Check if it is a already defined action or a external one
-      if (
-        action === 'goToPoint'
-        || action === 'goToSingleView'
-        || action === 'toggleMode'
-      ) {
+      if (action === 'goToPoint' || action === 'goToSingleView' || action === 'toggleMode' || action === 'pointClickedOn') {
         eval(action + '(event)');
       } else {
         action(event, this);
@@ -499,24 +470,20 @@ class DicomViewer extends Component {
     }
 
     function eventHandling (event) {
-      if (event.type === 'click' && _this.props.onClick !== undefined) {
-        performEventAction(_this.props.onClick, event);
-      } else if (
-        event.type === 'click'
-        && (event.ctrlKey || event.metaKey)
-        && _this.props.onCtrlClick !== undefined
-      ) {
+      if (_this.drag) {
+        return
+      }
+      if (event.type === 'mouseup' && event.which === 3 && _this.props.onRightClick) {
+        performEventAction(_this.props.onRightClick, event);
+      }
+      const isClick = event.type === 'click';
+      if (isClick && (event.ctrlKey || event.metaKey) && _this.props.onCtrlClick) {
         performEventAction(_this.props.onCtrlClick, event);
-      } else if (
-        event.type === 'click'
-        && event.shiftKey
-        && _this.props.onShiftClick !== undefined
-      ) {
+      } else if (isClick && event.shiftKey && _this.props.onShiftClick) {
         performEventAction(_this.props.onShiftClick, event);
-      } else if (
-        event.type === 'dblclick'
-        && _this.props.onDoubleClick !== undefined
-      ) {
+      } else if (isClick && _this.props.onClick) {
+        performEventAction(_this.props.onClick, event);
+      } else if (event.type === 'dblclick' && _this.props.onDoubleClick) {
         performEventAction(_this.props.onDoubleClick, event);
       }
     }
@@ -533,10 +500,28 @@ class DicomViewer extends Component {
     this.r2.domElement.addEventListener('click', eventHandling);
     this.r3.domElement.addEventListener('click', eventHandling);
 
+    this.r0.domElement.addEventListener('mouseup', eventHandling);
+    this.r1.domElement.addEventListener('mouseup', eventHandling);
+    this.r2.domElement.addEventListener('mouseup', eventHandling);
+    this.r3.domElement.addEventListener('mouseup', eventHandling);
+
     // event listeners on scrol
     this.r1.controls.addEventListener('OnScroll', onScroll);
     this.r2.controls.addEventListener('OnScroll', onScroll);
     this.r3.controls.addEventListener('OnScroll', onScroll);
+
+    // event listener on mouse down/up/move to detect drag on all views
+    for (const subref of ['r0', 'r1', 'r2', 'r3']) {
+      this[subref].domElement.addEventListener('mousedown', () => {
+        this.drag = false; return false
+      });
+      this[subref].domElement.addEventListener('mousemove', () => {
+        this.drag = true
+      });
+      this[subref].domElement.addEventListener('mouseout', () => {
+        this.drag = false
+      });
+    }
   }
 
   setQuadLayout () {
@@ -549,35 +534,20 @@ class DicomViewer extends Component {
     DicomViewerUtils.windowResize2D(this.r3);
   }
 
-  setSingleLayout () {
-    let rendererObj;
-    switch (this.state.orientation) {
+  setSingleLayout (orientation) {
+    switch (orientation) {
     case '3d':
-      rendererObj = this.r0;
+      DicomViewerUtils.windowResize3D(this.r0);
       break;
     case 'sagittal':
-      rendererObj = this.r1;
+      DicomViewerUtils.windowResize2D(this.r1);
       break;
     case 'axial':
-      rendererObj = this.r2;
+      DicomViewerUtils.windowResize2D(this.r2);
       break;
     case 'coronal':
-      rendererObj = this.r3;
+      DicomViewerUtils.windowResize2D(this.r3);
       break;
-    }
-
-    if (this.state.orientation === '3d') {
-      DicomViewerUtils.windowResize3D(rendererObj);
-    } else {
-      DicomViewerUtils.windowResize2D(rendererObj);
-    }
-  }
-
-  setLayout () {
-    if (this.state.mode === 'single_view') {
-      this.setSingleLayout();
-    } else {
-      this.setQuadLayout();
     }
   }
 
@@ -589,81 +559,60 @@ class DicomViewer extends Component {
   }
 
   componentDidMount () {
-    this.loadModel();
+    this.loadModel(this.props.data);
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
-    if (prevState.files !== this.state.files) {
-      this.loadModel();
-    } else {
-      this.setLayout();
+  componentDidUpdate (prevProps, prevState) {
+
+    if (this.props.mode !== prevProps.mode
+      || this.props.orientation !== prevProps.orientation
+      || (this.props.update > 1 && this.props.update !== prevProps.update)
+      || prevState.ready !== this.state.ready) {
+      try {
+        this.updateLayout(this.props.mode);
+      } catch (e) {
+        // not ready yet
+      }
+
     }
+
   }
 
-  changeMode () {
-    if (this.state.mode === 'single_view') {
-      this.setState({ mode: 'quad_view' });
-    } else {
-      this.setState({ mode: 'single_view' });
-    }
+  shouldComponentUpdate (nextProps, nextState) {
+    this.animationOn = true;
+    return nextProps.data !== this.props.data
+           || nextProps.update !== this.props.update
+           || nextProps.fullScreen !== this.props.fullScreen
+           || nextProps.mode !== this.props.mode
+           || nextProps.orientation !== this.props.orientation
+           || nextState.ready !== this.state.ready
   }
 
-  changeOrientation () {
-    let newOrientation;
-    switch (this.state.orientation) {
-    case 'coronal':
-      newOrientation = 'sagittal';
-      break;
-    case 'sagittal':
-      newOrientation = 'axial';
-      break;
-    case 'axial':
-      newOrientation = '3d';
-      break;
-    case '3d':
-      newOrientation = 'coronal';
-      break;
-    default:
-      break;
-    }
-    this.setState({ orientation: newOrientation });
+  stopAnimation () {
+    this.animationOn = false
+  }
+  startAnimation () {
+    this.animationOn = true
   }
 
   download () {
-    createZipFromRemoteFiles(this.state.files, 'data.zip');
-  }
-
-  restore () {
-    this.setState({ fullScreen: false });
-  }
-
-  fullScreen () {
-    this.setState({ fullScreen: true });
+    createZipFromRemoteFiles(this.props.data, !Array.isArray(this.props.data) ? this.props.data : "data.zip");
   }
 
   getCustomButtons () {
     const customButtons = [];
+    const toolbarButtons = this.props.toolbarButtons;
 
-    if (this.state.mode === 'single_view') {
-      customButtons.push({
-        icon: faThLarge,
-        id: 'Multi View',
-        tooltip: 'Multi View',
-        action: this.changeMode,
-      });
-      customButtons.push({
-        icon: faExchangeAlt,
-        id: 'Change Orientation',
-        tooltip: 'Change Orientation',
-        action: this.changeOrientation,
-      });
+    const addButtons = buttons => {
+      if (! buttons) {
+        return ;
+      }
+      customButtons.push(...buttons.map(b => ({ ...b, id: b.tooltip })))
+    }
+    if (this.props.mode == 'single_view') {
+      addButtons(toolbarButtons?.single_view)
     } else {
-      customButtons.push({
-        icon: faSquare,
-        id: 'Single View',
-        tooltip: 'Single View',
-        action: this.changeMode,
-      });
+      addButtons(toolbarButtons?.quad_view)
     }
 
     if (this.props.showDownloadButton) {
@@ -675,28 +624,17 @@ class DicomViewer extends Component {
       });
     }
 
-    if (this.state.fullScreen) {
-      customButtons.push({
-        icon: faCompressAlt,
-        id: 'Restore',
-        tooltip: 'Restore',
-        action: this.restore,
-      });
+    if (this.props.fullScreen) {
+      addButtons(toolbarButtons?.fullScreen)
     } else {
-      customButtons.push({
-        icon: faExpandAlt,
-        id: 'Maximize',
-        tooltip: 'Maximize',
-        action: this.fullScreen,
-      });
+      addButtons(toolbarButtons?.minimized)
     }
 
     return customButtons;
   }
 
   render () {
-    const { classes, toolbarOptions, loaderOptions } = this.props;
-    const { fullScreen } = this.state;
+    const { toolbarOptions, loaderOptions, mode, orientation, id, fullScreen } = this.props;
     const customButtons = this.getCustomButtons();
 
     const containerStyle = fullScreen
@@ -714,13 +652,17 @@ class DicomViewer extends Component {
         width: '100%',
       };
 
+    const displayView = o => mode === 'single_view' && orientation === o
+    const display3DView = displayView('3d')
+    const doNotDisplay = o => mode === 'single_view' && orientation !== o
+
     const showLoader = loaderOptions && loaderOptions.showLoader
 
     const loader = loaderOptions && loaderOptions.instance ? (
       <loaderOptions.instance
         {...loaderOptions.props}
       />
-    ) : <Loader fullscreen={this.state.fullScreen}
+    ) : <Loader fullscreen={fullScreen}
       handleClose={toolbarOptions?.handleClose}
       messages={toolbarOptions?.messages}
       messagesInterval={toolbarOptions?.messagesInterval}
@@ -741,121 +683,101 @@ class DicomViewer extends Component {
     return (
       <div
         ref={this.containerRef}
-        key={this.props.id + '_component'}
-        id={this.props.id + '_component'}
+        key={`${id}_component`}
+        id={`${id}_component`}
         style={containerStyle}
+        onMouseLeave={this.stopAnimation}
+        className='container-dicom-viewer'
       >
         {!this.state.ready && showLoader && loader}
         {toolbar}
         <div
           className={classes.dicomViewer}
-          style={{ height: '90%', width: '100%' }}
+          style={{
+            height: '90%', width: '100%', display: 'flex',
+            flexWrap: 'wrap',
+            backgroundColor: '#353535'
+          }}
         >
           <div
             id="r0"
             className={classes.renderer + ' r0'}
+            data-view="r0"
             style={{
-              display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== '3d'
-                  ? 'none'
-                  : '',
-              width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === '3d'
-                  ? '100%'
-                  : '50%',
-              height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === '3d'
-                  ? '100%'
-                  : '50%',
+              display: doNotDisplay('3d') ? 'none' : '',
+              width: display3DView ? '100%' : '50%',
+              height: display3DView ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
+            onMouseEnter={this.startAnimation}
           />
           <div
             id="r1"
             className={classes.renderer + ' r1'}
+            data-view="r1"
             style={{
-              display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'sagittal'
-                  ? 'none'
-                  : '',
-              width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'sagittal'
-                  ? '100%'
-                  : '50%',
-              height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'sagittal'
-                  ? '100%'
-                  : '50%',
+              display: doNotDisplay('sagittal') ? 'none' : '',
+              width: displayView('sagittal') ? '100%' : '50%',
+              height: displayView('sagittal') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
+            onMouseEnter={this.startAnimation}
           />
           <div
             id="r2"
             className={classes.renderer + ' r2'}
+            data-view="r2"
             style={{
-              display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'axial'
-                  ? 'none'
-                  : '',
-              width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'axial'
-                  ? '100%'
-                  : '50%',
-              height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'axial'
-                  ? '100%'
-                  : '50%',
+              display: doNotDisplay('axial') ? 'none' : '',
+              width: displayView('axial') ? '100%' : '50%',
+              height: displayView('axial') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
+            onMouseEnter={this.startAnimation}
           />
           <div
             id="r3"
             className={classes.renderer + ' r3'}
+            data-view="r3"
             style={{
-              display:
-                this.state.mode === 'single_view'
-                && this.state.orientation !== 'coronal'
-                  ? 'none'
-                  : '',
-              width:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'coronal'
-                  ? '100%'
-                  : '50%',
-              height:
-                this.state.mode === 'single_view'
-                && this.state.orientation === 'coronal'
-                  ? '100%'
-                  : '50%',
+              display: doNotDisplay('coronal') ? 'none' : '',
+              width: displayView('coronal') ? '100%' : '50%',
+              height: displayView('coronal') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
+            onMouseEnter={this.startAnimation}
           />
+          <div className="segmentationLUT-r1" style={{ visibility: "hidden" }} />
+          <div className="segmentationLUT-r2" style={{ visibility: "hidden" }} />
+          <div className="segmentationLUT-r3" style={{ visibility: "hidden" }} />
         </div>
       </div>
-    )
+    );
   }
 }
 
-DicomViewer.defaultProps = {
+const Wrapper = props => <DicomViewer {...props} />;
+
+Wrapper.defaultProps = {
   onLoaded: () => {},
   mode: 'coronal',
-  orientation: 'goToPoint',
+  orientation: '3d',
   onClick: 'goToPoint',
   onCtrlClick: 'goToPoint',
   onShiftClick: 'goToPoint',
   onDoubleClick: 'goToPoint',
+  onRightClick: undefined,
   showDownloadButton: false,
   toolbarOptions: null,
   loaderOptions: { showLoader: true }
 };
 
 
-DicomViewer.propTypes = {
+Wrapper.propTypes = {
   /**
    * Component identifier
    */
@@ -868,6 +790,10 @@ DicomViewer.propTypes = {
    * Initial view mode: 'single_view' or 'quad_view'
    */
   mode: PropTypes.string,
+  /**
+   * Display the dicom viewer in full screen
+   */
+  fullScreen: PropTypes.bool,
   /**
    * Initial orientation view: 'coronal', 'axial' or 'sagittal'
    */
@@ -890,6 +816,13 @@ DicomViewer.propTypes = {
    * Action to performe on Shift click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
    */
   onShiftClick: PropTypes.oneOfType([
+    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.func,
+  ]),
+  /**
+   * Action to performe on right click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   */
+  onRightClick: PropTypes.oneOfType([
     PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
     PropTypes.func,
   ]),
@@ -978,8 +911,80 @@ DicomViewer.propTypes = {
        */
       backgroundColor: PropTypes.string,
     }),
-
   }),
+  /**
+   * Buttons and action to add depending in the view mode/full screen
+   */
+  toolbarButtons: PropTypes.shape({
+    /**
+     * Buttons to display if the view is minimized
+     */
+    minimized: PropTypes.arrayOf(PropTypes.shape({
+      /**
+       * The button icon
+       */
+      icon: PropTypes.string,
+      /**
+       * The tooltip of the button
+       */
+      tooltip: PropTypes.string,
+      /**
+       * A callback that will be called when the button is clicked
+       */
+      action: PropTypes.func,
+    })),
+    /**
+     * Buttons to display if the view is full screen
+     */
+    fullScreen: PropTypes.arrayOf(PropTypes.shape({
+      /**
+       * The button icon
+       */
+      icon: PropTypes.string,
+      /**
+       * The tooltip of the button
+       */
+      tooltip: PropTypes.string,
+      /**
+       * A callback that will be called when the button is clicked
+       */
+      action: PropTypes.func,
+    })),
+    /**
+     * Buttons to display if the view is in single view mode
+     */
+    single_view: PropTypes.arrayOf(PropTypes.shape({
+      /**
+       * The button icon
+       */
+      icon: PropTypes.string,
+      /**
+       * The tooltip of the button
+       */
+      tooltip: PropTypes.string,
+      /**
+       * A callback that will be called when the button is clicked
+       */
+      action: PropTypes.func,
+    })),
+    /**
+     * Buttons to display if the view in quad view mode
+     */
+    quad_view: PropTypes.arrayOf(PropTypes.shape({
+      /**
+       * The button icon
+       */
+      icon: PropTypes.string,
+      /**
+       * The tooltip of the button
+       */
+      tooltip: PropTypes.string,
+      /**
+       * A callback that will be called when the button is clicked
+       */
+      action: PropTypes.func,
+    }))
+  })
 };
 
-export default withStyles(styles)(DicomViewer);
+export default Wrapper
