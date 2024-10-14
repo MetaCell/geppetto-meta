@@ -22,8 +22,8 @@ const { gray600, gray900A } = vars;
 const drawerWidth = 240;
 
 const viewers = {
-  [ViewerType.default]: componentWidget(),
-  [ViewerType.ThreeD]: threeDViewerWidget(),
+  [ViewerType.MyComponent]: componentWidget(),
+  [ViewerType.ThreeDViewer]: threeDViewerWidget(),
 };
 
 interface LeftSidebarProps {
@@ -42,7 +42,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
     if (e.target.checked) {
       dispatch(addWidget(viewers[viewer]))
     } else {
-      dispatch(deleteWidget(viewer))
+      dispatch(deleteWidget(viewers[viewer].id))
     }
   };
 

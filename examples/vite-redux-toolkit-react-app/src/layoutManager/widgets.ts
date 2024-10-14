@@ -1,7 +1,7 @@
 import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 
 export const componentWidget = () => ({
-  id: 'Default',
+  id: 'MyComponent',
   name: 'panel1',
   component: "MyComponent",
   panelName: 'leftPanel',
@@ -10,7 +10,7 @@ export const componentWidget = () => ({
 });
 
 export const threeDViewerWidget = () => ({
-  id: '3D',
+  id: 'ThreeDViewer',
   name: "3D Viewer",
   component: 'ThreeDViewer',
   panelName: "leftPanel",

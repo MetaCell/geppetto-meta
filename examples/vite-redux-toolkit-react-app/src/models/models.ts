@@ -1,6 +1,6 @@
 export enum ViewerType {
-  default = "Default",
-  ThreeD = "3D",
+  MyComponent = "My Component",
+  ThreeDViewer = "3D Viewer",
   imageViewer= 'Image Viewer',
   dicomViewer= 'Dicom Viewer',
 }
