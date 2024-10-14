@@ -689,7 +689,11 @@ class DicomViewer extends Component {
         {toolbar}
         <div
           className={classes.dicomViewer}
-          style={{ height: '90%', width: '100%' }}
+          style={{
+            height: '90%', width: '100%', display: 'flex',
+            flexWrap: 'wrap',
+            backgroundColor: '#353535'
+          }}
         >
           <div
             id="r0"
@@ -699,6 +703,8 @@ class DicomViewer extends Component {
               display: doNotDisplay('3d') ? 'none' : '',
               width: display3DView ? '100%' : '50%',
               height: display3DView ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
             onMouseEnter={this.startAnimation}
           />
@@ -709,7 +715,9 @@ class DicomViewer extends Component {
             style={{
               display: doNotDisplay('sagittal') ? 'none' : '',
               width: displayView('sagittal') ? '100%' : '50%',
-              height: displayView('sagittal') ? '100%' : '50%'
+              height: displayView('sagittal') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
             onMouseEnter={this.startAnimation}
           />
@@ -720,7 +728,9 @@ class DicomViewer extends Component {
             style={{
               display: doNotDisplay('axial') ? 'none' : '',
               width: displayView('axial') ? '100%' : '50%',
-              height: displayView('axial') ? '100%' : '50%'
+              height: displayView('axial') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
             onMouseEnter={this.startAnimation}
           />
@@ -731,7 +741,9 @@ class DicomViewer extends Component {
             style={{
               display: doNotDisplay('coronal') ? 'none' : '',
               width: displayView('coronal') ? '100%' : '50%',
-              height: displayView('coronal') ? '100%' : '50%'
+              height: displayView('coronal') ? '100%' : '50%',
+              backgroundColor: '#000',
+              float: 'left',
             }}
             onMouseEnter={this.startAnimation}
           />
