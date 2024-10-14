@@ -139,7 +139,7 @@ class DicomViewer extends Component {
     if (!data) {
       return
     }
-    // this.setState(prev => ({ ...prev, ready: false }))
+
     this.ready = false
     const _this = this;
 
@@ -298,8 +298,8 @@ class DicomViewer extends Component {
 
         _this.configureEvents();
         _this.updateLayout(_this.props.mode);
-        // _this.setState(prev => ({ ...prev, ready: true }));
         _this.ready = true;
+        _this.setState({ ready: true });
         _this.props.onLoaded();
       })
       .catch(error => {
@@ -566,7 +566,8 @@ class DicomViewer extends Component {
 
     if (this.props.mode !== prevProps.mode
       || this.props.orientation !== prevProps.orientation
-      || (this.props.update > 1 && this.props.update !== prevProps.update) ) {
+      || (this.props.update > 1 && this.props.update !== prevProps.update)
+      || prevState.ready !== this.state.ready) {
       try {
         this.updateLayout(this.props.mode);
       } catch (e) {
@@ -584,7 +585,7 @@ class DicomViewer extends Component {
            || nextProps.fullScreen !== this.props.fullScreen
            || nextProps.mode !== this.props.mode
            || nextProps.orientation !== this.props.orientation
-           || this.ready == true
+           || nextState.ready !== this.state.ready
   }
 
   stopAnimation () {
@@ -603,12 +604,15 @@ class DicomViewer extends Component {
     const toolbarButtons = this.props.toolbarButtons;
 
     const addButtons = buttons => {
+      if (! buttons) {
+        return ;
+      }
       customButtons.push(...buttons.map(b => ({ ...b, id: b.tooltip })))
     }
     if (this.props.mode == 'single_view') {
-      addButtons(toolbarButtons.single_view)
+      addButtons(toolbarButtons?.single_view)
     } else {
-      addButtons(toolbarButtons.quad_view)
+      addButtons(toolbarButtons?.quad_view)
     }
 
     if (this.props.showDownloadButton) {
@@ -621,9 +625,9 @@ class DicomViewer extends Component {
     }
 
     if (this.props.fullScreen) {
-      addButtons(toolbarButtons.fullScreen)
+      addButtons(toolbarButtons?.fullScreen)
     } else {
-      addButtons(toolbarButtons.minimized)
+      addButtons(toolbarButtons?.minimized)
     }
 
     return customButtons;
@@ -685,7 +689,7 @@ class DicomViewer extends Component {
         onMouseLeave={this.stopAnimation}
         className='container-dicom-viewer'
       >
-        {!this.ready && showLoader && loader}
+        {!this.state.ready && showLoader && loader}
         {toolbar}
         <div
           className={classes.dicomViewer}
