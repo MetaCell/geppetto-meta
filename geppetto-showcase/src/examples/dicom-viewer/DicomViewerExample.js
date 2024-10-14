@@ -5,7 +5,6 @@ import {
   faThLarge,
   faSquare,
   faExchangeAlt,
-  faDownload,
   faExpandAlt,
   faCompressAlt,
 } from '@fortawesome/free-solid-svg-icons';
