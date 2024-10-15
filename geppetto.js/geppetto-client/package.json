@@ -49,8 +49,8 @@
     "typescript": "^4.3.2"
   },
   "peerDepedencies": {
-    "@metacell/geppetto-meta-core": "3.0.0",
-    "@metacell/geppetto-meta-ui": "3.0.0",
+    "@metacell/geppetto-meta-core": "^3.0.0-alpha.0",
+    "@metacell/geppetto-meta-ui": "^3.0.0-alpha.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@material-ui/core": "^4.11.4",
     "pako": "^1.0.3",
