@@ -17,3 +17,11 @@ export const threeDViewerWidget = () => ({
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });
+export const dicomDViewerWidget = () => ({
+  id: 'dicomViewer',
+  name: "Dicom Viewer",
+  component: 'dicomViewer',
+  panelName: "rightPanel",
+  enableClose: false,
+  status: WidgetStatus.ACTIVE
+});
