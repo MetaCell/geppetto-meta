@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-ui",
-  "version": "3.0.0",
+  "version": "3.0.0-alpha.0",
   "description": "React components from geppetto-meta to create neuroscience applications and visualize data.",
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "publish:yalc": "cd build && yalc publish --push",
     "watch": "nodemon -e js,ts,tsx,jsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.25.2",
