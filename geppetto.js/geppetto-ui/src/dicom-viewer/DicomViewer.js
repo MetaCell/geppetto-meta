@@ -566,8 +566,7 @@ class DicomViewer extends Component {
 
     if (this.props.mode !== prevProps.mode
       || this.props.orientation !== prevProps.orientation
-      || (this.props.update > 1 && this.props.update !== prevProps.update)
-      || prevState.ready !== this.state.ready) {
+      || (this.props.update > 1 && this.props.update !== prevProps.update)) {
       try {
         this.updateLayout(this.props.mode);
       } catch (e) {
@@ -585,7 +584,7 @@ class DicomViewer extends Component {
            || nextProps.fullScreen !== this.props.fullScreen
            || nextProps.mode !== this.props.mode
            || nextProps.orientation !== this.props.orientation
-           || nextState.ready !== this.state.ready
+           || nextState.ready !== this.state.ready && nextState.ready
   }
 
   stopAnimation () {
@@ -764,7 +763,7 @@ const Wrapper = props => <DicomViewer {...props} />;
 
 Wrapper.defaultProps = {
   onLoaded: () => {},
-  mode: 'coronal',
+  mode: 'quad_view',
   orientation: '3d',
   onClick: 'goToPoint',
   onCtrlClick: 'goToPoint',
@@ -789,7 +788,7 @@ Wrapper.propTypes = {
   /**
    * Initial view mode: 'single_view' or 'quad_view'
    */
-  mode: PropTypes.string,
+  mode: PropTypes.oneOf(['single_view', 'quad_view']),
   /**
    * Display the dicom viewer in full screen
    */
@@ -797,40 +796,40 @@ Wrapper.propTypes = {
   /**
    * Initial orientation view: 'coronal', 'axial' or 'sagittal'
    */
-  orientation: PropTypes.string,
+  orientation: PropTypes.oneOf(['coronal', 'axial', 'sagittal']),
   /**
-   * Action to perform on click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   * Action to perform on click: 'goToPoint', or custom action
    */
   onClick: PropTypes.oneOfType([
-    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
   /**
-   * Action to performe on Ctrl click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   * Action to performe on Ctrl click: 'goToPoint' or custom action
    */
   onCtrlClick: PropTypes.oneOfType([
-    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
   /**
-   * Action to performe on Shift click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   * Action to performe on Shift click: 'goToPoint' or custom action
    */
   onShiftClick: PropTypes.oneOfType([
-    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
   /**
-   * Action to performe on right click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   * Action to performe on right click: 'goToPoint' or custom action
    */
   onRightClick: PropTypes.oneOfType([
-    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
   /**
-   * Action to performe on double click: 'goToPoint', 'goToSingleView', 'toggleMode', or other
+   * Action to performe on double click: 'goToPoint' or custom action
    */
   onDoubleClick: PropTypes.oneOfType([
-    PropTypes.oneOf(['goToPoint', 'goToSingleView', 'toggleMode']),
+    PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
   /**
