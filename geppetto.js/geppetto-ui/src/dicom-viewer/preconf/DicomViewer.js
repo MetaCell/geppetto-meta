@@ -140,9 +140,9 @@ DicomViewer.propTypes = {
    */
   fullScreen: PropTypes.bool,
   /**
-   * Initial orientation view: 'coronal', 'axial' or 'sagittal'
+   * Initial orientation view: '3d', 'coronal', 'axial' or 'sagittal'
    */
-  orientation: PropTypes.oneOf(['coronal', 'axial', 'sagittal']),
+  orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal']),
   /**
    * Action to perform on click: 'goToPoint' or custom action, default is 'goToPoint'
    */
@@ -178,6 +178,10 @@ DicomViewer.propTypes = {
     PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
+  /**
+   * Enables segmentation LUT
+   */
+  applySegmentationLUT: PropTypes.bool,
   /**
    * Bool that defines the showing or not of the download button
    */

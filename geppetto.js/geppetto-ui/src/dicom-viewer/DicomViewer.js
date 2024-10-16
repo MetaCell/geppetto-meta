@@ -246,7 +246,7 @@ class DicomViewer extends Component {
         _this.r0.camera.updateProjectionMatrix();
         _this.r0.controls.target.set(centerLPS.x, centerLPS.y, centerLPS.z);
 
-        // bouding box
+        // bounding box
         const boxHelper = new HelpersBoundingBox(stack);
         _this.r0.scene.add(boxHelper);
 
@@ -566,7 +566,8 @@ class DicomViewer extends Component {
 
     if (this.props.mode !== prevProps.mode
       || this.props.orientation !== prevProps.orientation
-      || (this.props.update > 1 && this.props.update !== prevProps.update)) {
+      || (this.props.update > 1 && this.props.update !== prevProps.update)
+      || prevState.ready !== this.state.ready && !prevState.ready) {
       try {
         this.updateLayout(this.props.mode);
       } catch (e) {
@@ -794,9 +795,9 @@ Wrapper.propTypes = {
    */
   fullScreen: PropTypes.bool,
   /**
-   * Initial orientation view: 'coronal', 'axial' or 'sagittal'
+   * Initial orientation view: '3d', 'coronal', 'axial' or 'sagittal'
    */
-  orientation: PropTypes.oneOf(['coronal', 'axial', 'sagittal']),
+  orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal']),
   /**
    * Action to perform on click: 'goToPoint', or custom action
    */
@@ -832,6 +833,10 @@ Wrapper.propTypes = {
     PropTypes.oneOf(['goToPoint']),
     PropTypes.func,
   ]),
+  /**
+   * Enables segmentation LUT
+   */
+  applySegmentationLUT: PropTypes.bool,
   /**
    * Bool that defines the showing or not of the download button
    */
