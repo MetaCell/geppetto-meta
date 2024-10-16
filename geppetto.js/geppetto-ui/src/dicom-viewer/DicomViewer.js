@@ -634,7 +634,7 @@ class _DicomViewer extends Component {
   }
 
   hasCustomButtons () {
-    const buttons = this.props;
+    const buttons = this.props.toolbarButtons;
     return buttons?.single_view || buttons?.quad_view || buttons?.fullScreen || buttons?.minimized || this.props.showDownloadButton
   }
 
@@ -792,7 +792,7 @@ DicomViewer.propTypes = {
    */
   data: PropTypes.string.isRequired,
   /**
-   * Initial view mode: 'single_view' or 'quad_view'
+   * View mode: 'single_view' or 'quad_view'
    */
   mode: PropTypes.oneOf(['single_view', 'quad_view']),
   /**
@@ -800,7 +800,7 @@ DicomViewer.propTypes = {
    */
   fullScreen: PropTypes.bool,
   /**
-   * Initial orientation view: '3d', 'coronal', 'axial' or 'sagittal'
+   * Orientation view: '3d', 'coronal', 'axial' or 'sagittal'
    */
   orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal']),
   /**
