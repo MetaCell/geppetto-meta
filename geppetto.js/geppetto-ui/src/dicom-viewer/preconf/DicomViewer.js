@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import BaseDicomViewer from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import {
@@ -14,6 +14,20 @@ const DicomViewer = props => {
   const [fullScreen, setFullScreen] = useState(props.fullScreen);
   const [mode, setMode] = useState(props.mode);
   const [orientation, setOrientation] = useState(props.orientation);
+
+  useEffect(() => {
+    setFullScreen(props.fullScreen);
+  }, [props.fullScreen])
+
+  useEffect(() => {
+    setMode(props.mode);
+  }, [props.mode])
+
+
+  useEffect(() => {
+    setOrientation(props.orientation);
+  }, [props.orientation])
+
 
   const changeMode = () => {
     if (mode === 'single_view') {
@@ -84,9 +98,9 @@ const DicomViewer = props => {
 
   return <BaseDicomViewer
     { ...props}
-    orientation={props.orientation || orientation}
-    mode={props.mode || mode}
-    fullScreen={props.fullScreen || fullScreen}
+    orientation={orientation}
+    mode={mode}
+    fullScreen={fullScreen}
     onCtrlClick={props.onCtrlClick || toggleMode}
     toolbarOptions={{ innerDivStyles: { backgroundColor: 'rgb(0,0,0,0);' } }}
     toolbarButtons={{
