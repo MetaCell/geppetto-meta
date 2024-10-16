@@ -18,7 +18,7 @@ const styles = () => ({
   },
 });
 
-class Canvas extends Component {
+class _Canvas extends Component {
   constructor (props) {
     super(props);
     this.sceneRef = React.createRef();
@@ -458,6 +458,9 @@ Canvas.defaultProps = {
   onUpdateEnd: () => {},
   dracoDecoderPath: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 };
+
+
+const Canvas = props => <_Canvas {...props} />;
 
 Canvas.propTypes = {
   /**

@@ -5,4 +5,4 @@
 .vscode/
 jupyter_geppetto/build
 jupyter_geppetto/dist
-
+**/.cache

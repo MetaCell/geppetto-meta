@@ -8,7 +8,7 @@ import ForceGraph3D from 'react-force-graph-3d';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { splitter, getDarkerColor } from './utils'
 
-export default class GeppettoGraphVisualization extends Component {
+export default class _GeppettoGraphVisualization extends Component {
 
   // Ref to GGV container
   ggv = React.createRef()
@@ -393,6 +393,8 @@ export default class GeppettoGraphVisualization extends Component {
     return <ForceGraph3D {...commonProps} />
   }
 }
+
+const GeppettoGraphVisualization = props => <_GeppettoGraphVisualization {...props} />
 
 GeppettoGraphVisualization.defaultProps = {
   d2: false,
