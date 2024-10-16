@@ -20,7 +20,7 @@ const classes = {
   button: "dicom-viewer-button",
 };
 
-class DicomViewer extends Component {
+class _DicomViewer extends Component {
 
   animationOn = true;
   animationSkipRate = 3;
@@ -760,9 +760,9 @@ class DicomViewer extends Component {
   }
 }
 
-const Wrapper = props => <DicomViewer {...props} />;
+const DicomViewer = props => <_DicomViewer {...props} />;
 
-Wrapper.defaultProps = {
+DicomViewer.defaultProps = {
   onLoaded: () => {},
   mode: 'quad_view',
   orientation: '3d',
@@ -777,7 +777,7 @@ Wrapper.defaultProps = {
 };
 
 
-Wrapper.propTypes = {
+DicomViewer.propTypes = {
   /**
    * Component identifier
    */
@@ -991,4 +991,4 @@ Wrapper.propTypes = {
   })
 };
 
-export default Wrapper
+export default DicomViewer;
