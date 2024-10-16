@@ -4,128 +4,119 @@
  * @module model/Node
  * @author Jesus R. Martinez (jesus@metacell.us)
  */
-define(['jquery', 'underscore', 'backbone',
 
-  // Add requirement for Backbone-associations module
 
-], require => ({
-  Model: Backbone.Model.extend({
-    name: "",
-    instancePath: "",
-    id: "",
-    domainType: "",
-    _metaType: "",
-    aspectNode: null,
-    parent: null,
-    tags: null,
+class Model {
+  
+  constructor() {
+    this.name = "";
+    this.instancePath = "";
+    this.id = "";
+    this.domainType = "";
+    this._metaType = "";
+    this.aspectNode = null;
+    this.parent = null;
+    this.tags = null;
+  }
 
-    /**
-     * Gets the instance path of the node
-     *
-     * @command Node.getInstancePath()
-     * @returns {String} Instance path of this node
-     *
-     */
-    getInstancePath: function () {
-      return this.instancePath;
-    },
+  /**
+   * Gets the instance path of the node
+   *
+   * @command Node.getInstancePath()
+   * @returns {String} Instance path of this node
+   */
+  getInstancePath() {
+    return this.instancePath;
+  }
 
-    /**
-     * Gets the name of the node
-     *
-     * @command Node.getName()
-     * @returns {String} Name of the node
-     *
-     */
-    getName: function () {
-      return this.name;
-    },
+  /**
+   * Gets the name of the node
+   *
+   * @command Node.getName()
+   * @returns {String} Name of the node
+   */
+  getName() {
+    return this.name;
+  }
 
-    getAspectNode: function () {
-      return this.aspectNode;
-    },
+  getAspectNode() {
+    return this.aspectNode;
+  }
 
-    /**
-     * Sets the name of the node
-     *
-     * @command Node.setName()
-     *
-     */
-    setName: function (newname) {
-      this.name = newname;
-    },
+  /**
+   * Sets the name of the node
+   *
+   * @command Node.setName()
+   */
+  setName(newname) {
+    this.name = newname;
+  }
 
-    /**
-     * Get the id associated with node
-     *
-     * @command Node.getId()
-     * @returns {String} ID of node
-     */
-    getId: function () {
-      return this.id;
-    },
+  /**
+   * Get the id associated with node
+   *
+   * @command Node.getId()
+   * @returns {String} ID of node
+   */
+  getId() {
+    return this.id;
+  }
 
-    getDomainType: function () {
-      return this.domainType;
-    },
+  getDomainType() {
+    return this.domainType;
+  }
 
-    setDomainType: function (newDomainType) {
-      this.domainType = newDomainType;
-    },
+  setDomainType(newDomainType) {
+    this.domainType = newDomainType;
+  }
 
-    setParent: function (parent) {
-      this.parent = parent;
-    },
+  setParent(parent) {
+    this.parent = parent;
+  }
 
-    getParent: function () {
-      return this.parent;
-    },
+  getParent() {
+    return this.parent;
+  }
 
-    _all: function (predicate, matches) {
-      if (typeof matches === 'undefined') {
-        var matches = [];
-      }
-
-      if (predicate(this)) {
-        matches.push(this);
-      }
-
-      if (typeof this.getChildren === "function") {
-        var children = this.getChildren();
-        for (var ci in children) {
-          this._all.call(children[ci], predicate, matches);
-        }
-      }
-
-      return matches;
-    },
-
-    /**
-     * Search inside a node for all the nodes of a specific domain type.
-     *
-     * @param {String}
-     *            domainType - Domain type
-     * @returns {Array} List of Nodes
-     *
-     */
-    getSubNodesOfDomainType: function (domainType) {
-      return this._all(function (n) {
-        return n.domainType === domainType;
-      });
-    },
-
-    /**
-     * Search inside a node for all the nodes of a specific meta type.
-     *
-     * @param {String}
-     *            metaType - Meta Type
-     * @returns {Array} List of Nodes
-     *
-     */
-    getSubNodesOfMetaType: function (metaType) {
-      return this._all(function (n) {
-        return n._metaType === metaType;
-      });
+  /**
+   * Recursively collects all nodes matching the given predicate.
+   * @param {Function} predicate - Function to test each node.
+   * @param {Array} matches - Array to collect matched nodes.
+   * @returns {Array} List of matched nodes.
+   */
+  _all(predicate, matches = []) {
+    if (predicate(this)) {
+      matches.push(this);
     }
-  })
-}));
+
+    if (typeof this.getChildren === "function") {
+      for (const child of Object.values(this.getChildren())) {
+        this._all.call(child, predicate, matches)
+      }
+    }
+
+    return matches;
+  }
+
+  /**
+   * Search inside a node for all the nodes of a specific domain type.
+   *
+   * @param {String} domainType - Domain type
+   * @returns {Array} List of Nodes
+   */
+  getSubNodesOfDomainType(domainType) {
+    return this._all((n) => n.domainType === domainType);
+  }
+
+  /**
+   * Search inside a node for all the nodes of a specific meta type.
+   *
+   * @param {String} metaType - Meta Type
+   * @returns {Array} List of Nodes
+   */
+  getSubNodesOfMetaType(metaType) {
+    return this._all((n) => n._metaType === metaType);
+  }
+};
+
+export default Model;
