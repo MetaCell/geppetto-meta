@@ -633,6 +633,11 @@ class _DicomViewer extends Component {
     return customButtons;
   }
 
+  hasCustomButtons () {
+    const buttons = this.props;
+    return buttons?.single_view || buttons?.quad_view || buttons?.fullScreen || buttons?.minimized || this.props.showDownloadButton
+  }
+
   render () {
     const { toolbarOptions, loaderOptions, mode, orientation, id, fullScreen } = this.props;
     const customButtons = this.getCustomButtons();
@@ -690,7 +695,7 @@ class _DicomViewer extends Component {
         className='container-dicom-viewer'
       >
         {!this.state.ready && showLoader && loader}
-        {toolbar}
+        {this.hasCustomButtons() && toolbar}
         <div
           className={classes.dicomViewer}
           style={{
