@@ -15,7 +15,7 @@ import Events from './Events';
 function createChannel () {
   // Change link from blank to self for GEPPETTO_CONFIGURATION.embedded environments
   if (GEPPETTO_CONFIGURATION.embedded && GEPPETTO_CONFIGURATION.embedderURL !== "/" && typeof handleRequest == 'undefined') {
-    if ($.isArray(GEPPETTO_CONFIGURATION.embedderURL)) {
+    if (Array.isArray(GEPPETTO_CONFIGURATION.embedderURL)) {
       window.parent.postMessage({ "command": "ready" }, GEPPETTO_CONFIGURATION.embedderURL[0]);
     } else {
       window.parent.postMessage({ "command": "ready" }, GEPPETTO_CONFIGURATION.embedderURL);
