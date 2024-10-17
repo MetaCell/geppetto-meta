@@ -25,11 +25,7 @@ export default defineConfig({
   optimizeDeps: {
     include: [
       'three',
-      'three/examples/jsm/controls/OrbitControls',
-      'three/examples/jsm/controls/TrackballControls',
-      'three/examples/jsm/controls/DragControls',
-      'three/examples/jsm/postprocessing/EffectComposer',
-      'three/examples/jsm/controls/FlyControls',
     ],
   },
+  assetsInclude: ['**/*.gltf'],
 });
