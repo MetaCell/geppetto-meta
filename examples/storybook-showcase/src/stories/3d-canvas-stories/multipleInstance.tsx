@@ -1,9 +1,10 @@
 import { fn } from '@storybook/test';
 
 import ModelFactory from '@metacell/geppetto-meta-core/ModelFactory';
+import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 
 import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraControls';
-import { default as SimpleInstanceElement } from '@metacell/geppetto-meta-core/model/SimpleInstance';
+import SimpleInstance from '@metacell/geppetto-meta-core/model/SimpleInstance';
 import Resources from '@metacell/geppetto-meta-core/Resources';
 import { mapToCanvasData } from '@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils';
 
@@ -41,8 +42,8 @@ window.Instances = window.Instances || {};
 const model = () => {
   ModelFactory.cleanModel();
   const instances = [
-    new SimpleInstanceElement(instance1spec),
-    new SimpleInstanceElement(instance2spec),
+    new SimpleInstance(instance1spec),
+    new SimpleInstance(instance2spec),
   ];
   window.Instances = instances;
   augmentInstancesArray(window.Instances);
@@ -51,12 +52,12 @@ const model = () => {
 
 function getProxyInstances() {
   return model().map(i => (
-    { instancePath: i.getId(), color: { r: 0, g: 1, b: 0, a: 1 }, visibility: true }));
+    { instancePath: i.getId() }));
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const SimpleInstance = {
-  name: 'Single Simple Canvas Instance Display',
+export const MultipleInstances = {
+  name: 'Multiple Canvas Instances Display',
   args: {
     data: mapToCanvasData(getProxyInstances()),
     cameraOptions: {
@@ -66,15 +67,29 @@ export const SimpleInstance = {
       baseZoom: 1,
       cameraControls: {
         instance: CameraControls,
-        props: { wireframeButtonEnabled: false, buttonStyles: { color: '#ff0000' } },
+        props: { wireframeButtonEnabled: false },
       },
-      initialFlip: ['y', 'z'],
       reset: false,
       autorotate: false,
       wireframe: false,
     },
     backgroundColor: 0x505050,
     onSelection: fn(),
-    dracoDecoderPath: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/',
+  },
+
+  // We have a special "render" method here as we want to diplay as much of canvas than instances
+  render: (args: any[]) => {
+    const numberOfInstances = 5;
+    return (
+      <>
+        {[...Array(numberOfInstances).keys()].map(i => (
+          <Canvas
+            key={`canvas_${i}`}
+            {...args}
+          />
+        ),
+        )}
+      </>
+    );
   },
 };

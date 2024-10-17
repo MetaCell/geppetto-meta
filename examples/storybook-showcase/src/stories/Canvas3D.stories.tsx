@@ -2,7 +2,7 @@ import type { Meta } from '@storybook/react';
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 
 const meta = {
-  title: 'Example/3D-Canvas',
+  title: 'Data Viewers/3D Canvas',
   component: Canvas,
   tags: ['autodocs'],
   parameters: {
@@ -20,4 +20,5 @@ const meta = {
 export default meta;
 // type Story = StoryObj<typeof meta>;
 
-export { Primary } from './3d-canvas-stories/simpleInstances';
+export { SimpleInstance } from './3d-canvas-stories/simpleInstances';
+export { MultipleInstances } from './3d-canvas-stories/multipleInstance';

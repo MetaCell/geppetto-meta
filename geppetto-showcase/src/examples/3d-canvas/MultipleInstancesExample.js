@@ -106,7 +106,7 @@ class MultipleInstancesExample extends Component {
       showModel: true, showLoader: false, data: getProxyInstances(), cameraOptions: {
         ...this.state.cameraOptions,
         reset: true,
-      } 
+      }
     })
   }
 
@@ -133,7 +133,7 @@ class MultipleInstancesExample extends Component {
       showModel: true, data: getProxyInstances(), cameraOptions: {
         ...this.state.cameraOptions,
         reset: true, numberOfInstances: next
-      } 
+      }
     })
   }
 
@@ -144,7 +144,7 @@ class MultipleInstancesExample extends Component {
       showModel: true, data: getProxyInstances(), cameraOptions: {
         ...this.state.cameraOptions,
         reset: true, numberOfInstances: next
-      } 
+      }
     })
   }
 
@@ -157,7 +157,7 @@ class MultipleInstancesExample extends Component {
     return showLoader ? <Loader active={true} /> : showModel ? (
       <div ref={node => this.node = node} className={classes.container}>
         <>
-          { 
+          {
             [...Array(this.state.numberOfInstances)].map((e, i) =>
               <Canvas
                 key={`canvas_${i}`}
@@ -169,7 +169,6 @@ class MultipleInstancesExample extends Component {
                 onMount={this.onMount}
                 onHoverListeners={{ 'hoverId':this.hoverHandler }}
               />
-
             )
           }
         </>
@@ -184,4 +183,4 @@ class MultipleInstancesExample extends Component {
   }
 }
 
-export default withStyles(styles)(MultipleInstancesExample);  
+export default withStyles(styles)(MultipleInstancesExample);

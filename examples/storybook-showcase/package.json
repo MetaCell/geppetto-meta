@@ -27,6 +27,7 @@
     "d3": ">=4.0.0",
     "d3-plugins-dist": ">=3.2.0",
     "file-saver": "^2.0.2",
+    "html-to-image": "~1.10.8",
     "jszip": "^3.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -34,8 +35,7 @@
     "react-force-graph-3d": "^1.21.13",
     "react-resize-detector": "~6.7.8",
     "three": "~0.118.0",
-    "three-render-objects": "~1.27.4",
-    "html-to-image": "~1.10.8"
+    "three-render-objects": "~1.27.4"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^2.0.2",

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import Graph from '@metacell/geppetto-meta-ui/graph-visualization/Graph';
 
 const meta = {
-  title: 'Example/Graph',
+  title: 'Data Viewers/Graph',
   component: Graph,
   tags: ['autodocs'],
   parameters: {
@@ -36,16 +36,16 @@ export const Primary: Story = {
         { source: 3, target: 1 },
       ],
     },
-    nodeLabel: node => node.name,
-    linkLabel: link => link.name,
+    nodeLabel: (node: any) => node.name,
+    linkLabel: (link: any) => link.name,
     nodeRelSize: 5,
   },
 };
 
 export const Secondary: Story = {
   args: {
-    nodeLabel: node => node.name,
-    linkLabel: link => link.name,
+    nodeLabel: (node: any) => node.name,
+    linkLabel: (link: any) => link.name,
     data: {
       nodes: [
         { id: 1 },
