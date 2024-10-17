@@ -1,0 +1,210 @@
+/**
+cardDeckWrapper: {
+    border: 0,
+    outline: 0,
+    marginRight: "-0.5rem",
+    marginLeft: "-0.5rem"
+  },
+  cardWrapperTitle: props => ({
+    fontSize: "40px",
+    fontWeight: "300",
+    marginTop: "3rem",
+    color: getColor(props),
+    textAlign: "center"
+  }),
+  cardDeck: {
+    marginTop: "0.5rem",
+    marginRight: "3rem",
+    marginLeft: "3rem",
+    display: "table",
+    tableLayout: "fixed",
+    borderSpacing: "15px 0"
+  },
+  card: props => ({
+    borderRadius: 0,
+    border: 0,
+    cursor: "pointer",
+    padding:  "0.5rem",
+    background: theme.palette.background.default,
+    display: "table-cell",
+    width: "1%",
+    verticalAlign: "top",
+    "&:hover": {
+      border: "1px solid",
+      borderColor: getColor(props),
+    }
+  }),
+  img: {
+    display: 'block',
+    margin: 'auto',
+    width: '100px',
+  },
+  cardText: { textAlign: 'center', color: "white" },
+  cardTitle: props => ({
+    marginTop: "0.25em",
+    color: getColor(props),
+    marginBottom: "0.5em"
+  }),
+  cardAction: { height: "100%" },
+  cardImgTopCenterBlock: {
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+    borderRadius: "4px 4px 0 0"
+  },
+  cardActionDisabled: { height: "100%", opacity: "0.2" },
+  button: props => ({
+    padding: "0.25em",
+    top: 0,
+    color: getColor(props),
+  }),
+   legends: {
+    marginTop: theme.spacing(4),
+    marginLeft: theme.spacing(1),
+  },
+  legendTitle: {
+    fontSize: '14px',
+    color: 'white',
+  },
+
+   matrixTooltip: {
+    fontSize: "16px",
+    fontWeight: "100",
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif;",
+    color: "white",
+    stroke: "none",
+    textRendering: "optimizeLegibility",
+  },
+  */
+
+  :root{
+    --connectivity-deck-main-color: #fc6320;
+  }
+
+.connectivity-deck-wrapper {
+    border: 0;
+    outline: 0;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+}
+
+.connectivity-deck-title {
+    font-size: 40px;
+    font-weight: 300;
+    margin-top: 3rem;
+    color: var(--connectivity-deck-main-color);
+    text-align: center;
+}
+
+.connectivity-deck-card-deck {
+    margin-top: 0.5rem;
+    margin-right: 3rem;
+    margin-left: 3rem;
+    display: table;
+    table-layout: fixed;
+    border-spacing: 15px 0;
+}
+
+.connectivity-deck-card {
+    border-radius: 0;
+    border: 0;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: table-cell;
+    width: 1%;
+    vertical-align: top;
+}
+
+.connectivity-deck-card:hover {
+    border: 1px solid;
+    border-color: var(--connectivity-deck-main-color);
+}
+
+.connectivity-deck-card-img {
+    display: block;
+    margin: auto;
+    width: 100px;
+}
+
+.connectivity-deck-card-text {
+    text-align: center;
+    color: white;
+}
+
+.connectivity-deck-card-title {
+    margin-top: 0.25em;
+    color: var(--connectivity-deck-main-color);
+    margin-bottom: 0.5em;
+}
+
+.connectivity-deck-card-action {
+    height: 100%;
+}
+
+.connectivity-deck-card-img-top-center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 4px 4px 0 0;
+}
+
+.connectivity-deck-card-action-disabled {
+    height: 100%;
+    opacity: 0.2;
+}
+
+.connectivity-deck-button {
+    padding: 0.25em;
+    top: 0;
+}
+
+.connectivity-plot-legends {
+    margin-top: 1rem;
+    margin-left: 0.25rem;
+}
+
+.connectivity-plot-legend-title {
+    font-size: 14px;
+    color: white;
+}
+
+.connectivity-plot-container {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.connectivity-tooltip-matrix {
+    font-size: 16px;
+    font-weight: 100;
+    color: white;
+    stroke: none;
+    text-rendering: optimizeLegibility;
+}
+
+/**
+legend: {
+    fontSize: "12px",
+    fontWeight: "100",
+    color: "white", 
+  },
+  gridWrapper:{
+    display: "grid",
+    gridTemplateColumns: "auto auto",
+    columnGap: "5px",
+    justifyContent: "start",
+
+  },
+  */
+
+.icon-text-legend {
+    font-size: 12px;
+    font-weight: 100;
+    color: white;
+}
+
+.icon-text-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 5px;
+    justify-content: start;
+}

@@ -1,12 +1,10 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const styles = { lightTooltip: { fontSize: 12, }, };
 
-export default withStyles(styles)(({ onClick, tooltip, disabled, className, classes, icon, style }) => {
+export default ({ onClick, tooltip, disabled, className, icon, style }) => {
   const faicon = icon ? <FontAwesomeIcon icon={icon} className={" fa-xs "} /> : <></>
   return (
     <Tooltip
@@ -14,11 +12,11 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
       placement="left"
       disableFocusListener
       disableTouchListener
-      classes={{ tooltip: classes.lightTooltip }}
+      className="geppetto-tooltip"
     >
       <IconButton
         disabled={disabled}
-        onClick={event => onClick(event)}
+        onClick={onClick}
         className={className}
         disableRipple
         style={style}
@@ -27,5 +25,5 @@ export default withStyles(styles)(({ onClick, tooltip, disabled, className, clas
       </IconButton>
     </Tooltip>
   )
-})
+}
  

@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import Icon from '@material-ui/core/Icon'
 
 export default class TabsetIconFactory {
 
@@ -9,6 +8,6 @@ export default class TabsetIconFactory {
   }
 
   createIcon(iconName) {
-    return <Icon className={iconName} />
+    return <i className={`tabset-icon ${iconName}`} />
   }
 } 

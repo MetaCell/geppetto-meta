@@ -5,7 +5,7 @@ import Resources from '@metacell/geppetto-meta-core/Resources';
 import model from './model';
 import { Force } from '@metacell/geppetto-meta-ui/connectivity-viewer/layouts/Force';
 import ConnectivityComponent from '@metacell/geppetto-meta-ui/connectivity-viewer/ConnectivityComponent';
-import { withStyles } from '@material-ui/core';
+
 
 const styles = {
   connectivity: {
@@ -41,10 +41,9 @@ class ConnectivityShowcaseForce extends Component {
       const colors = ['#cb0000', '#003398'];
       const themeColor = '#145365'
       const names = ['pyramidals_48', 'baskets_12'];
-      const { classes } = this.props;
 
       return (
-        <div className={classes.connectivity}>
+        <div style={styles.connectivity}>
           <ConnectivityComponent
             id="ConnectivityContainerForce"
             data={data}
@@ -74,4 +73,4 @@ class ConnectivityShowcaseForce extends Component {
     }
 }
 
-export default withStyles(styles)(ConnectivityShowcaseForce);
+export default ConnectivityShowcaseForce;

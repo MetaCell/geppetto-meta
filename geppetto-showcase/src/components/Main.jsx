@@ -1,20 +1,20 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Drawer from '@mui/material/Drawer';
 import DrawerContent from './DrawerContent';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import Search from './Search';
 import pages from '../pages/index'
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader'
-const Home = lazy(() => import('../pages/home'));
+import Home from '../pages/home';
 
 const drawerWidth = 240;
-const styles = theme => ({
+const styles = {
   root: { display: 'flex' },
-  appBar: { zIndex: theme.zIndex.drawer + 1 },
+  appBar: theme => ({ zIndex: theme.zIndex.drawer + 1 }),
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -22,14 +22,14 @@ const styles = theme => ({
   drawerPaper: { width: drawerWidth },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: 3,
   },
   component: {
     width: '100%',
     height: '800px',
   },
-  toolbar: theme.mixins.toolbar,
-  toolbarMainButton: {
+  toolbar: theme => theme.mixins.toolbar,
+  toolbarMainButton: theme => ({
     color: 'white',
     opacity: '70%',
     fontSize: '16px',
@@ -41,9 +41,9 @@ const styles = theme => ({
       backgroundColor: theme.palette.primary.main,
       opacity: '60%',
     },
-  },
+  }),
   searchIcon: {
-    width: theme.spacing(7),
+    width: 7,
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -52,7 +52,7 @@ const styles = theme => ({
     justifyContent: 'center',
   },
   inputRoot: { color: 'inherit' },
-  inputInput: {
+  inputInput: theme => ({
     padding: theme.spacing(1, 1, 1, 7),
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -60,13 +60,13 @@ const styles = theme => ({
       width: 120,
       '&:focus': { width: 200 },
     },
-  },
+  }),
   grow: { flexGrow: 1, },
-  sectionDesktop: {
+  sectionDesktop: theme => ({
     display: 'none',
     [theme.breakpoints.up('md')]: { display: 'flex', },
-  },
-});
+  }),
+};
 
 class Main extends Component {
   constructor (props) {
@@ -88,22 +88,21 @@ class Main extends Component {
   }
 
   render () {
-    const { classes } = this.props;
-    const { searchFilter, currentPage } = this.state;
+    const { searchFilter } = this.state;
 
     return (
       <Router>
-        <div className={classes.root}>
-          <AppBar position="fixed" className={classes.appBar}>
+        <Box sx={styles.root}>
+          <AppBar position="fixed" sx={styles.appBar}>
             <Toolbar>
               <Link to="/" style={{ textDecoration: 'none' }}>
-                <Button className={classes.toolbarMainButton}>
+                <Button sx={styles.toolbarMainButton}>
                                         Geppetto Showcase
                 </Button>
               </Link>
               <Search searchHandler={this.searchHandler}/>
-              <div className={classes.grow}/>
-              <div className={classes.sectionDesktop}>
+              <Box sx={styles.grow}/>
+              <Box sx={styles.sectionDesktop}>
                 <Button
                   href="http://docs.geppetto.org/en/latest/"
                   target="_blank"
@@ -119,25 +118,24 @@ class Main extends Component {
                 <Button href="https://goo.gl/3ncZWn" target="_blank">
                                         Slack
                 </Button>
-              </div>
+              </Box>
             </Toolbar>
           </AppBar>
           <Drawer
-            className={classes.drawer}
+            sx={styles.drawer}
             variant="permanent"
-            classes={{ paper: classes.drawerPaper }}
           >
-            <div className={classes.toolbar}/>
+            <Box sx={styles.toolbar}/>
             <DrawerContent
               searchFilter={searchFilter}
               currentPageHandler={this.currentPageHandler}
             />
           </Drawer>
 
-          <main className={classes.content}>
+          <Box component="main" sx={styles.content}>
             <Suspense fallback={<Loader active={true}/>}>
-              <div className={classes.toolbar}/>
-              <div className={classes.component}>
+              <Box sx={styles.toolbar}/>
+              <Box sx={styles.component}>
                 <Switch>
                   {pages.filter(page => page.component != null).map(page => (
                     <Route
@@ -147,15 +145,15 @@ class Main extends Component {
                         currentPageHandler={this.currentPageHandler}/>)}
                     />
                   ))}
-                  <Route exact path="/" component={Home}/>
+                  <Route exact path="/" component={() => <Home />}/>
                 </Switch>
-              </div>
+              </Box>
             </Suspense>
-          </main>
-        </div>
+          </Box>
+        </Box>
       </Router>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Main);
+export default Main;

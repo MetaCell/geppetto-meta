@@ -1,10 +1,11 @@
 import React from 'react';
 import MenuSingleItem from './MenuSingleItem';
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuList from '@material-ui/core/MenuList';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Fade from '@mui/material/Fade';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuList from '@mui/material/MenuList';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import { Box } from '@mui/material';
 
 class MenuPopper extends React.Component {
   constructor (props) {
@@ -20,7 +21,7 @@ class MenuPopper extends React.Component {
       return (<Popper id={id} open={open} anchorEl={anchorEl} placement={String((this.props.position !== undefined) ? this.props.position : "right-start")} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={50}>
-            <React.Fragment>
+            <Box>
               <ClickAwayListener onClickAway={this.props.awayClickHandler}>
                 <Paper
                   style={this.props.drawersStyle.standard}
@@ -41,7 +42,7 @@ class MenuPopper extends React.Component {
                   </MenuList>
                 </Paper>
               </ClickAwayListener>
-            </React.Fragment>
+            </Box>
           </Fade>
         )}
       </Popper>);

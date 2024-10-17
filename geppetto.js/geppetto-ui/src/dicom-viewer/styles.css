@@ -1,0 +1,58 @@
+/**
+dicomViewer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    backgroundColor: '#353535',
+  },
+  renderer: {
+    backgroundColor: '#000',
+    float: 'left',
+    width: '50%',
+    height: '50%',
+  },
+  toolbar: {
+    padding: '0',
+    marginLeft: '5px',
+  },
+  toolbarBox: { backgroundColor: 'rgb(0,0,0,0.5);' },
+  button: {
+    padding: '8px',
+    top: '0',
+    color: '#fc6320',
+  },
+  **/
+
+:root {
+    --dicom-viewer-background-color: #353535;
+    --dicom-viewer-toolbar-background-color: rgb(0, 0, 0, 0.5);
+    --dicom-viewer-renderer-background-color: #000;
+    --dicom-viewer-button-color: #fc6320;
+}
+
+.dicom-viewer {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--dicom-viewer-background-color);
+}
+
+.dicom-viewer-renderer {
+  background-color: var(--dicom-viewer-renderer-background-color);
+  float: left;
+  width: 50%;
+  height: 50%;
+}
+
+.dicom-viewer-toolbar {
+  padding: 0;
+  margin-left: 5px;
+}
+
+.dicom-viewer-toolbar-box {
+  background-color: var(--dicom-viewer-toolbar-background-color);
+}
+
+.dicom-viewer-button {
+  padding: 8px;
+  top: 0;
+  color: var(--dicom-viewer-button-color);
+}

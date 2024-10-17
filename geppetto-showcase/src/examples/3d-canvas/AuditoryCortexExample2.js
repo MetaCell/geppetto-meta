@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraControls';
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils";
@@ -16,14 +16,14 @@ const COLORS = [
   { r: 0, g: 0.8, b: 0, a: 0.5 },
 ];
 
-const styles = () => ({
+const styles = {
   container: {
     height: '800px',
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },
-});
+};
 
 class AuditoryCortexExample2 extends Component {
   constructor (props) {
@@ -128,12 +128,11 @@ class AuditoryCortexExample2 extends Component {
   }
 
   render () {
-    const { classes } = this.props;
     const { data, cameraOptions, hasModelLoaded, showLoader } = this.state;
     const canvasData = mapToCanvasData(data)
 
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div ref={node => this.node = node} className={classes.container}>
+      <Box ref={node => this.node = node} sx={styles.container}>
         <div>
           <CanvasTooltip ref={this.tooltipRef}/>
         </div>
@@ -146,7 +145,7 @@ class AuditoryCortexExample2 extends Component {
           onHoverListeners={{ 'hoverId':this.hoverHandler }}
           onEmptyHoverListener={this.onEmptyHoverListener}
         />
-      </div>
+      </Box>
     )
       : <Button
         variant="outlined"
@@ -158,4 +157,4 @@ class AuditoryCortexExample2 extends Component {
   }
 }
 
-export default withStyles(styles)(AuditoryCortexExample2);
+export default AuditoryCortexExample2;

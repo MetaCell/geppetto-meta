@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Code from './Code';
 import { getConfigFromMarkdown } from './ShowcaseUtils';
-import Paper from '@material-ui/core/Paper';
-import Chip from '@material-ui/core/Chip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
+import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import PropsTable from './PropsTable';
 import BottomNavigation from '../BottomNavigation';
 
-const styles = theme => ({
+const styles = {
   root: {
     width: '100%',
-    paddingBottom: theme.spacing(5),
+    paddingBottom: 5,
   },
   innerRoot: {
     width: '100%',
-    paddingBottom: theme.spacing(10),
+    paddingBottom: 10,
   },
   mainTitle: {
     margin: '16px 0',
@@ -51,8 +50,8 @@ const styles = theme => ({
     display: 'table',
     margin: '0 auto',
   },
-  library: { margin: theme.spacing(1), },
-});
+  library: { margin: 1, },
+};
 
 function TabPanel (props) {
   const { children, value, index, ...other } = props;
@@ -99,11 +98,11 @@ class Showcase extends Component {
     const configs = getConfigFromMarkdown(markdown);
 
     return (
-      <div className={classes.root}>
-        <div className={classes.innerRoot}>
-          <h1 className={classes.mainTitle}>{configs.name}</h1>
-          <div className={classes.mainDescription}>{configs.description}</div>
-          <span className={classes.secondaryDescription}>
+      (<div sx={styles.root}>
+        <div sx={styles.innerRoot}>
+          <h1 sx={styles.mainTitle}>{configs.name}</h1>
+          <div sx={styles.mainDescription}>{configs.description}</div>
+          <span sx={styles.secondaryDescription}>
             {configs.detailedDescription}
           </span>
           {
@@ -121,12 +120,12 @@ class Showcase extends Component {
                   return (
                     <TabPanel value={this.state.tabValue} index={index} key={`tabpanel-${obj.name}`}>
                       <div key={obj.name}>
-                        <h2 className={classes.secondaryTitle}>{obj.name}</h2>
-                        <span className={classes.secondaryDescription}>
+                        <h2 sx={styles.secondaryTitle}>{obj.name}</h2>
+                        <span sx={styles.secondaryDescription}>
                           {obj.description}
                         </span>
                         <Paper variant="outlined">
-                          <div className={classes.centerComponent}>
+                          <div sx={styles.centerComponent}>
                             <obj.component ref={this.componentRef} />
                           </div>
                         </Paper>
@@ -143,12 +142,12 @@ class Showcase extends Component {
                   const file = obj.file.default.split('\n').join('\n');
                   return (
                     <div key={obj.name}>
-                      <h2 className={classes.secondaryTitle}>{obj.name}</h2>
-                      <span className={classes.secondaryDescription}>
+                      <h2 sx={styles.secondaryTitle}>{obj.name}</h2>
+                      <span sx={styles.secondaryDescription}>
                         {obj.description}
                       </span>
                       <Paper variant="outlined">
-                        <div className={classes.centerComponent}>
+                        <div sx={styles.centerComponent}>
                           <obj.component ref={this.componentRef} />
                         </div>
                       </Paper>
@@ -158,13 +157,13 @@ class Showcase extends Component {
                 })}
               </>
           }
-          <h2 className={classes.secondaryTitle}>Props</h2>
+          <h2 sx={styles.secondaryTitle}>Props</h2>
           <PropsTable propsConfigs={configs.props} />
-          <h2 className={classes.secondaryTitle}>Libraries</h2>
+          <h2 sx={styles.secondaryTitle}>Libraries</h2>
           {configs.libraries.map((library, i) => (
             <Chip
               key={i}
-              className={classes.library}
+              sx={styles.library}
               label={library.name}
               component="a"
               href={library.href}
@@ -175,9 +174,9 @@ class Showcase extends Component {
           ))}
         </div>
         <BottomNavigation currentPageHandler={currentPageHandler} />
-      </div>
+      </div>)
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(Showcase);
+export default Showcase;

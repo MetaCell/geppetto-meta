@@ -1,7 +1,8 @@
 import React from 'react';
 import MenuPopper from './MenuPopper';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class MenuSingleItem extends React.Component {
   constructor (props) {
@@ -37,7 +38,7 @@ class MenuSingleItem extends React.Component {
     const { customArrow } = this.props;
     return customArrow
       ? customArrow
-      : <i className="fa fa-chevron-right" style={{
+      : <FontAwesomeIcon icon="chevron-right" style={{
         marginLeft: '10px',
         position: 'absolute',
         marginRight: '0px',
@@ -99,7 +100,7 @@ class MenuSingleItem extends React.Component {
       >
         {item.icon
           ? <ListItemIcon style={ iconStyle }>
-            <i className={item.icon}></i>
+            {icon}
           </ListItemIcon>
           : undefined}
         <span className="menu-item-label">{item.label}</span>
