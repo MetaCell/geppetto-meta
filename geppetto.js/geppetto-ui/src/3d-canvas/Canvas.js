@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import { PropTypes } from 'prop-types';
 import ThreeDEngine from './threeDEngine/ThreeDEngine';
 import { cameraControlsActions } from "../camera-controls/CameraControls";
@@ -11,12 +10,12 @@ import { downloadScreenshot } from "./captureManager/Screenshoter";
 import { captureControlsActions } from "../capture-controls/CaptureControls";
 import { hasDifferentProxyInstances, hasDifferentThreeDObjects } from "./threeDEngine/util";
 
-const styles = () => ({
+const styles = {
   container: {
     height: '100%',
     width: '100%',
   },
-});
+}
 
 class _Canvas extends Component {
   constructor (props) {
@@ -343,14 +342,14 @@ class _Canvas extends Component {
   }
 
   render () {
-    const { classes, cameraOptions, captureOptions } = this.props;
+    const { cameraOptions, captureOptions } = this.props;
     const { cameraControls } = cameraOptions
     const cameraControlsHandler = cameraControls.cameraControlsHandler ? cameraControls.cameraControlsHandler : this.defaultCameraControlsHandler
     let captureInstance = null
     const { error } = this.state;
     if (error) {
       return (
-        <div className={classes.container}>
+        <div className="error-container" style={styles.container}>
           <p>Error: {error}</p>
         </div>
       );
@@ -369,7 +368,7 @@ class _Canvas extends Component {
     }
     return (
       <ReactResizeDetector skipOnMount='true' onResize={this.onResize}>
-        <div className={classes.container} ref={this.sceneRef} tabIndex={0}>
+        <div style={styles.container} ref={this.sceneRef} tabIndex={0}>
           {
             <cameraControls.instance
               ref={this.cameraControls}
@@ -384,6 +383,7 @@ class _Canvas extends Component {
   }
 }
 
+const Canvas = props => <_Canvas {...props} />;
 
 Canvas.defaultProps = {
   cameraOptions: {
@@ -458,9 +458,6 @@ Canvas.defaultProps = {
   onUpdateEnd: () => {},
   dracoDecoderPath: 'https://www.gstatic.com/draco/versioned/decoders/1.5.5/'
 };
-
-
-const Canvas = props => <_Canvas {...props} />;
 
 Canvas.propTypes = {
   /**
@@ -723,4 +720,4 @@ Canvas.propTypes = {
   dracoDecoderPath: PropTypes.string
 };
 
-export default withStyles(styles)(Canvas);
+export default Canvas;

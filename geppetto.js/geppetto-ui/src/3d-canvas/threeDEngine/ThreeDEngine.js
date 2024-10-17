@@ -48,7 +48,7 @@ export default class ThreeDEngine {
     this.mouseContainer = { x: 0, y: 0 }
     this.frameId = null;
     this.meshFactory = new MeshFactory(this.scene, linesThreshold, renderingThreshold, cameraOptions.depthWrite, 300, 1,
-      null, dracoDecoderPath, null);
+      null, dracoDecoderPath, THREE);
     this.pickingEnabled = pickingEnabled;
     this.onHoverListeners = onHoverListeners;
     this.onEmptyHoverListener = onEmptyHoverListener ;
