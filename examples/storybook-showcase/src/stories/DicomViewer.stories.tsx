@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import DicomViewer from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import { default as PreconfiguredDicomViewer } from '@metacell/geppetto-meta-ui/dicom-viewer/preconf/DicomViewer';
+import { Title, Subtitle, Description, Primary, Controls } from '@storybook/blocks';
 
 const meta = {
   title: 'Data Viewers/Dicom Viewer',
@@ -10,6 +11,17 @@ const meta = {
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'centered',
+    docs: {
+      page: () => (
+        <>
+          <Title />
+          <Subtitle />
+          <Description />
+          <Primary />
+          <Controls />
+        </>
+      ),
+    },
   },
   decorators: [
     Story => (

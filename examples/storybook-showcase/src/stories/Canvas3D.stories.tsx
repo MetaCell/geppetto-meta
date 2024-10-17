@@ -1,4 +1,6 @@
 import type { Meta } from '@storybook/react';
+import { Title, Subtitle, Description, Primary, Controls } from '@storybook/blocks';
+
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 
 const meta = {
@@ -8,6 +10,17 @@ const meta = {
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'centered',
+    docs: {
+      page: () => (
+        <>
+          <Title />
+          <Subtitle />
+          <Description />
+          <Primary />
+          <Controls />
+        </>
+      ),
+    },
   },
   decorators: [
     Story => (
