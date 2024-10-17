@@ -695,6 +695,10 @@ Canvas.propTypes = {
    */
   onHoverListeners: PropTypes.object,
   /**
+   * Function to call when a hovering out of an element
+   */
+  onEmptyHoverListener: PropTypes.func,
+  /**
    * Function to callback on selection changes
    */
   onSelection: PropTypes.func,

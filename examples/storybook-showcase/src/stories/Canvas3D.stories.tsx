@@ -23,3 +23,4 @@ export default meta;
 export { SimpleInstance } from './3d-canvas-stories/simpleInstances';
 export { MultipleInstances } from './3d-canvas-stories/multipleInstance';
 export { AuditoryCortexExample } from './3d-canvas-stories/auditoryCortexExample';
+export { AuditoryCortexExampleWithTooltip } from './3d-canvas-stories/auditoryCortexExample2';
