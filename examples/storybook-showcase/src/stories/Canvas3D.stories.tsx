@@ -38,3 +38,4 @@ export { MultipleInstances } from './3d-canvas-stories/multipleInstance';
 export { AuditoryCortexExample } from './3d-canvas-stories/auditoryCortexExample';
 export { AuditoryCortexExampleWithTooltip } from './3d-canvas-stories/auditoryCortexExample2';
 export { CA1CellExample } from './3d-canvas-stories/ca1CellExample';
+export { VFBExample } from './3d-canvas-stories/VFBExample';
