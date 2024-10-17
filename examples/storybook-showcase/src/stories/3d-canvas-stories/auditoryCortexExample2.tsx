@@ -16,12 +16,6 @@ const COLORS = [
   { r: 0, g: 0.8, b: 0, a: 0.5 },
 ];
 
-declare global {
-  interface Window { Instances: any }
-}
-
-window.Instances = window.Instances || {};
-
 const loadModel = () => {
   Manager.loadModel(acnet_model);
 };
