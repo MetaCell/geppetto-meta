@@ -97,7 +97,6 @@ module.exports = {
     "stackViewerRequest": true,
     "_": true,
     "labelsInTV": true,
-    "Backbone": true,
     "registeredEvents": true,
     "Handlebars": true,
     "ActiveXObject": true,
