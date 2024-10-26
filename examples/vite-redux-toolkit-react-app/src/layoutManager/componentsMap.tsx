@@ -1,9 +1,9 @@
 import MyComponent from '../components/MyComponent'
-import ThreeDViewer from "../components/viewers/ThreeD/ThreeDViewer.tsx";
+import DicomViewer from "../components/viewers/Dicom/DicomViewer";
 
 const componentMap = {
-  MyComponent,
-  ThreeDViewer,
+  'MyComponent': MyComponent,
+  'Dicom Viewer': DicomViewer
 }
 
 export default componentMap

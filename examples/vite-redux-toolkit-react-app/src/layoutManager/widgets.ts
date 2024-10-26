@@ -5,14 +5,14 @@ export const componentWidget = () => ({
   name: 'panel1',
   component: "MyComponent",
   panelName: 'leftPanel',
-  enableClose: true,
+  enableClose: false,
   status: WidgetStatus.ACTIVE
 });
 
-export const threeDViewerWidget = () => ({
-  id: '3D',
-  name: "3D Viewer",
-  component: 'ThreeDViewer',
+export const DicomViewerWidget = () => ({
+  id: 'Dicom Viewer',
+  name: "DicomViewer Viewer",
+  component: 'Dicom Viewer',
   panelName: "leftPanel",
   enableClose: false,
   status: WidgetStatus.ACTIVE

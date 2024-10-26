@@ -1,4 +1,4 @@
-# Dicom Viewer
+# Preconfigured Dicom Viewer
 
 Viewer for any images in the DICOM format.
 
@@ -11,19 +11,19 @@ Features:
 * Download data (download button)
 
 ```element
-dicom-viewer/DicomViewer
+dicom-viewer/preconf/DicomViewer
 ```
 
 ## Examples
 
-### Base Dicom Viewer Example
+### Dicom Viewer Example
 
 The following example shows a brain MRI in DICOM format acquired at The Brain Observatory.
-This component is the base component and is higly configurable.
-The component gives all you need to implement your own buttons, but do not provide a default implementation for the buttons.
+This component is a preconfigured version of the DicomViewer component .
+The component provides a default implementation for the buttons.
 
 ```
-dicom-viewer/DicomViewerExample
+dicom-viewer/DicomViewerPreconfExample
 ```
 
 ## Libraries
