@@ -4,8 +4,8 @@ Viewer for any images in the DICOM format.
 
 Features:
 * Tiled view with separated orientations at a glance
-* Combined view with all orientations
-* Single orientation view
+* Combined view with all orientations 
+* Single orientation view 
 * Navigate slice stack for each orientation (mouse wheel)
 * Rotate (Left-click + drag)
 * Download data (download button)
@@ -16,11 +16,9 @@ dicom-viewer/DicomViewer
 
 ## Examples
 
-### Base Dicom Viewer Example
+### Dicom Viewer Example
 
 The following example shows a brain MRI in DICOM format acquired at The Brain Observatory.
-This component is the base component and is higly configurable.
-The component gives all you need to implement your own buttons, but do not provide a default implementation for the buttons.
 
 ```
 dicom-viewer/DicomViewerExample
