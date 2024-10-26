@@ -1,10 +1,9 @@
 import MyComponent from '../components/MyComponent'
-import DicomViewer from "../components/viewers/Dicom/DicomViewer.tsx";
-import DicomViewerExample from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
+import ThreeDViewer from "../components/viewers/ThreeD/ThreeDViewer.tsx";
 
 const componentMap = {
-  'MyComponent': MyComponent,
-  'Dicom Viewer': DicomViewer
+  MyComponent,
+  ThreeDViewer,
 }
 
 export default componentMap
