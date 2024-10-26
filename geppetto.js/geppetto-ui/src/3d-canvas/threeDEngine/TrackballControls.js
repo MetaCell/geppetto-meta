@@ -519,6 +519,9 @@ class TrackballControls extends EventDispatcher {
       scope.setRotation(u[0], u[1], u[2], l);
     };
 
+    /**
+     * @type Class
+     */
     this.setRotation = function (x, y, z, radius) {
       _state = STATE.NONE;
       _prevState = STATE.NONE;
