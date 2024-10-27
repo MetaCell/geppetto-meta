@@ -17,3 +17,12 @@ export const DicomViewerWidget = () => ({
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });
+
+export const CanvasWidget = () =>({
+  id: 'canvasWidget',
+  name: "3D Canvas",
+  component: "canvasWidget",
+  panelName: "rightPanel",
+  enableClose: false,
+  status: WidgetStatus.ACTIVE,
+})

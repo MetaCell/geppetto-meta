@@ -8,6 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import { Theme } from "@mui/material/styles";
 import {addWidget, deleteWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
 import {
+  CanvasWidget,
   componentWidget, DicomViewerWidget,
 } from "../layoutManager/widgets.ts";
 import { useDispatch } from "react-redux";
@@ -23,6 +24,7 @@ const drawerWidth = 240;
 const viewers = {
   [ViewerType.default]: componentWidget(),
   [ViewerType.dicomViewer]: DicomViewerWidget(),
+  [ViewerType.ThreeD]: CanvasWidget(),
 };
 
 interface LeftSidebarProps {
