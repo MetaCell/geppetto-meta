@@ -3,7 +3,10 @@ name: Python package
 on: [push]
 
 jobs:
-  build:
+  build-test:
+    defaults:
+        run:
+          working-directory: pygeppetto
     runs-on: ubuntu-latest
     strategy:
       matrix:
