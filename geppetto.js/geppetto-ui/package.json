@@ -30,7 +30,6 @@
     "publish:yalc": "cd build && yalc publish --push",
     "watch": "nodemon -e js,ts,tsx,jsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.25.2",
@@ -70,6 +69,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@mui/material": "^6.1.1",
+    "@mui/icons-material": "^6.1.1",
     "@metacell/geppetto-meta-core": "^3.0.0-alpha.0",
     "aframe": "<1.1.0",
     "aframe-slice9-component": ">=1.0.0",
@@ -120,6 +120,6 @@
     }
   },
   "dependencies": {
-    "@mui/icons-material": "^6.1.1"
+    
   }
 }
