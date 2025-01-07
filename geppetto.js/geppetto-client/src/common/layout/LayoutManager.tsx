@@ -383,7 +383,7 @@ export class LayoutManager {
 
 
         let empty = true;
-        for (let child of node.getChildren()) {
+        for (const child of node.getChildren()) {
           empty = this.fixRowRecursive(child) && empty;
         }
 

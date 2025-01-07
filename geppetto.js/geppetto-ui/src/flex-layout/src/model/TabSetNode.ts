@@ -60,7 +60,6 @@ export class TabSetNode extends Node implements IDraggable, IDropTarget {
     /** @internal */
     private calculatedMaxWidth: number;
 
-    /** @internal */
     constructor(model: Model, json: any) {
         super(model);
         this.calculatedMinHeight = 0;

@@ -51,7 +51,6 @@ export class RowNode extends Node implements IDropTarget {
     /** @internal */
     private maxWidth: number;
 
-    /** @internal */
     constructor(model: Model, windowId: string, json: any) {
         super(model);
 
