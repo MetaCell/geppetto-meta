@@ -1,36 +1,72 @@
 import * as React from "react";
-import { I18nLabel } from "..";
-import Actions from "../model/Actions";
-import TabNode from "../model/TabNode";
-import Rect from "../Rect";
-import { IIcons, ILayoutCallbacks, ITitleObject } from "./Layout";
+import { I18nLabel } from "../I18nLabel";
+import { Actions } from "../model/Actions";
+import { TabNode } from "../model/TabNode";
+import { IIcons, LayoutInternal } from "./Layout";
 import { ICloseType } from "../model/ICloseType";
 import { CLASSES } from "../Types";
+import { getRenderStateEx, isAuxMouseEvent } from "./Utils";
 
-/** @hidden @internal */
+/** @internal */
 export interface IBorderButtonProps {
-    layout: ILayoutCallbacks;
+    layout: LayoutInternal;
     node: TabNode;
     selected: boolean;
     border: string;
-    iconFactory?: (node: TabNode) => React.ReactNode | undefined;
-    titleFactory?: (node: TabNode) => React.ReactNode | undefined;
-    icons?: IIcons;
+    icons: IIcons;
+    path: string;
 }
 
-/** @hidden @internal */
+/** @internal */
 export const BorderButton = (props: IBorderButtonProps) => {
-    const { layout, node, selected, border, iconFactory, titleFactory, icons } = props;
+    const { layout, node, selected, border, icons, path } = props;
     const selfRef = React.useRef<HTMLDivElement | null>(null);
+    const contentRef = React.useRef<HTMLInputElement | null>(null);
 
-    const onMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
-        const message = layout.i18nName(I18nLabel.Move_Tab, node.getName());
-        props.layout.dragStart(event, message, node, node.isEnableDrag(), onClick, (event2: Event) => undefined);
+    const onDragStart = (event: React.DragEvent<HTMLElement>) => {
+        if (node.isEnableDrag()) {
+            event.stopPropagation();
+            layout.setDragNode(event.nativeEvent, node as TabNode);
+        } else {
+            event.preventDefault();
+        }
+    };
+
+    const onDragEnd = (event: React.DragEvent<HTMLElement>) => {
+        event.stopPropagation();
+        layout.clearDragMain();
+    };
+
+    const onAuxMouseClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        if (isAuxMouseEvent(event)) {
+            layout.auxMouseClick(node, event);
+        } 
+    };
+
+    const onContextMenu = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        layout.showContextMenu(node, event);
     };
 
     const onClick = () => {
-        // layout.doAction(Actions.selectTab(node.getId()));
-        props.layout.customizeBottomBar(node)
+        layout.doAction(Actions.selectTab(node.getId()));
+    };
+
+    // const onDoubleClick = (event: Event) => {
+    //     // if (node.isEnableRename()) {
+    //     //     onRename();
+    //     // }
+    // };
+
+    // const onRename = () => {
+    //     layout.setEditingTab(node);
+    //     layout.getCurrentDocument()!.body.addEventListener("pointerdown", onEndEdit);
+    // };
+
+    const onEndEdit = (event: Event) => {
+        if (event.target !== contentRef.current!) {
+            layout.getCurrentDocument()!.body.removeEventListener("pointerdown", onEndEdit);
+            layout.setEditingTab(undefined);
+        }
     };
 
     const isClosable = () => {
@@ -47,7 +83,7 @@ export const BorderButton = (props: IBorderButtonProps) => {
         return false;
     };
 
-    const onClose = (event: React.MouseEvent<HTMLDivElement>) => {
+    const onClose = (event: React.MouseEvent<HTMLElement>) => {
         if (isClosable()) {
             layout.doAction(Actions.deleteTab(node.getId()));
         } else {
@@ -55,19 +91,30 @@ export const BorderButton = (props: IBorderButtonProps) => {
         }
     };
 
-    const onCloseMouseDown = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    const onClosePointerDown = (event: React.PointerEvent<HTMLElement>) => {
         event.stopPropagation();
     };
 
     React.useLayoutEffect(() => {
-        updateRect();
+        node.setTabRect(layout.getBoundingClientRect(selfRef.current!));
+        if (layout.getEditingTab() === node) {
+            (contentRef.current! as HTMLInputElement).select();
+        }
     });
 
-    const updateRect = () => {
-        // record position of tab in border
-        const clientRect = layout.getDomRect();
-        const r = selfRef.current!.getBoundingClientRect();
-        node._setTabRect(new Rect(r.left - clientRect.left, r.top - clientRect.top, r.width, r.height));
+    const onTextBoxPointerDown = (event: React.PointerEvent<HTMLInputElement>) => {
+        event.stopPropagation();
+    };
+
+    const onTextBoxKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.code === 'Escape') {
+            // esc
+            layout.setEditingTab(undefined);
+        } else if (event.code === 'Enter') {
+            // enter
+            layout.setEditingTab(undefined);
+            layout.doAction(Actions.renameTab(node.getId(), (event.target as HTMLInputElement).value));
+        }
     };
 
     const cm = layout.getClassName;
@@ -83,57 +130,73 @@ export const BorderButton = (props: IBorderButtonProps) => {
         classNames += " " + node.getClassName();
     }
 
-    let leadingContent = iconFactory ? iconFactory(node) : undefined;
-    let titleContent: React.ReactNode = node.getName();
-    let name = node.getName();
-
-    function isTitleObject(obj: any): obj is ITitleObject {
-        return obj.titleContent !== undefined 
-      }
-
-    if (titleFactory !== undefined) {
-        const titleObj = titleFactory(node);
-        if (titleObj !== undefined) {
-            if (typeof titleObj === "string") {
-                titleContent = titleObj as string;
-                name = titleObj as string;
-            } else if (isTitleObject(titleObj)) {
-                titleContent = titleObj.titleContent;
-                name = titleObj.name;
-            } else {
-                titleContent = titleObj;
-            }
+    let iconAngle = 0;
+    if (node.getModel().isEnableRotateBorderIcons() === false) {
+        if (border === "left") {
+            iconAngle = 90;
+        } else if (border === "right") {
+            iconAngle = -90;
         }
     }
 
-    if (typeof leadingContent === undefined && typeof node.getIcon() !== undefined) {
-        leadingContent = <img src={node.getIcon()} alt="leadingContent" />;
+    const renderState = getRenderStateEx(layout, node, iconAngle);
+
+    let content = renderState.content ? (
+        <div className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_CONTENT)}>
+            {renderState.content}
+        </div>) : null;
+
+    const leading = renderState.leading ? (
+        <div className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_LEADING)}>
+            {renderState.leading}
+        </div>) : null;
+
+    if (layout.getEditingTab() === node) {
+        content = (
+            <input
+                ref={contentRef}
+                className={cm(CLASSES.FLEXLAYOUT__TAB_BUTTON_TEXTBOX)}
+                data-layout-path={path + "/textbox"}
+                type="text"
+                autoFocus={true}
+                defaultValue={node.getName()}
+                onKeyDown={onTextBoxKeyPress}
+                onPointerDown={onTextBoxPointerDown}
+            />
+        );
     }
-
-    let buttons: any[] = [];
-
-    // allow customization of leading contents (icon) and contents
-    const renderState = { leading: leadingContent, content: titleContent, name, buttons };
-    layout.customizeTab(node, renderState);
-    node._setRenderedName(renderState.name);
-
-    const content = <div className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_CONTENT)}>{renderState.content}</div>;
-    const leading = <div className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_LEADING)}>{renderState.leading}</div>;
 
     if (node.isEnableClose()) {
         const closeTitle = layout.i18nName(I18nLabel.Close_Tab);
-        buttons.push(
-            <div key="close" title={closeTitle} className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_TRAILING)} onMouseDown={onCloseMouseDown} onClick={onClose} onTouchStart={onCloseMouseDown}>
-                {icons?.close}
+        renderState.buttons.push(
+            <div
+                key="close"
+                data-layout-path={path + "/button/close"}
+                title={closeTitle}
+                className={cm(CLASSES.FLEXLAYOUT__BORDER_BUTTON_TRAILING)}
+                onPointerDown={onClosePointerDown}
+                onClick={onClose}>
+                {(typeof icons.close === "function") ? icons.close(node) : icons.close}
             </div>
         );
     }
 
     return (
-        <div ref={selfRef} style={{}} className={classNames} onMouseDown={onMouseDown} onTouchStart={onMouseDown}>
+        <div
+            ref={selfRef}
+            data-layout-path={path}
+            className={classNames}
+            onClick={onClick}
+            onAuxClick={onAuxMouseClick}
+            onContextMenu={onContextMenu}
+            title={node.getHelpText()}
+            draggable={true}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+        >
             {leading}
             {content}
-            {buttons}
+            {renderState.buttons}
         </div>
     );
 };

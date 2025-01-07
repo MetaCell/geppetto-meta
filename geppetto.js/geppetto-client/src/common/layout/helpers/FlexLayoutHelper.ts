@@ -16,41 +16,43 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
     const rootNode = model.getNodeById("root");
 
-    const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
+    // const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
 
-    switch (position) {
-        case TabsetPosition.RIGHT:
-            rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-            rootNode._addChild(tabset);
-            break;
-        case TabsetPosition.LEFT:
-            rootNode.getChildren().forEach(node => node._setWeight(100 - weight));
-            rootNode._addChild(tabset, 0);
-            break;
-        case TabsetPosition.BOTTOM:
-        case TabsetPosition.TOP: {
+    // switch (position) {
+    //     case TabsetPosition.RIGHT:
+    //         rootNode.getChildren().forEach(node => node.setWeight(100 - weight));
+    //         rootNode.addChild(tabset);
+    //         break;
+    //     case TabsetPosition.LEFT:
+    //         rootNode.getChildren().forEach(node => node.setWeight(100 - weight));
+    //         rootNode.addChild(tabset, 0);
+    //         break;
+    //     case TabsetPosition.BOTTOM:
+    //     case TabsetPosition.TOP: {
 
-            tabset._setWeight(80);
-            let hrow = new FlexLayout.RowNode(model, {});
-            hrow._setWeight(100);
+    //         tabset.setWeight(80);
+    //         const hrow = new FlexLayout.RowNode(model, rootNode.windowId, {});
+    //         hrow.setWeight(100);
 
-            rootNode.getChildren().forEach(child => {
-                if (child['getWeight']) {
-                    const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
-                    child._setWeight(newWeight);
-                    hrow._addChild(child);
-                }
-            });
-            if (position === TabsetPosition.BOTTOM) {
-                hrow._addChild(tabset)
-            } else {
-                hrow._addChild(tabset, 0);
-            }
+    //         rootNode.getChildren().forEach(child => {
+    //             if (child['getWeight']) {
+    //                 const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
+    //                 child.setWeight(newWeight);
+    //                 hrow.addChild(child);
+    //             }
+    //         });
+    //         if (position === TabsetPosition.BOTTOM) {
+    //             hrow.addChild(tabset)
+    //         } else {
+    //             hrow.addChild(tabset, 0);
+    //         }
 
-            rootNode._removeAll();
-            rootNode._addChild(hrow, 0);
-        }
-    }
+    //         rootNode._removeAll();
+    //         rootNode.addChild(hrow, 0);
+    //     }
+    // }
+    // return tabset
+    return undefined
 }
 
 export function moveWidget(model, widget) {

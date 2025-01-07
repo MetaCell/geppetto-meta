@@ -19,7 +19,7 @@ export default {
     "type": "tabset",
     "weight": 100,
     "id": "root",
+    "active": "true",
     "children": []
   }
 }
-

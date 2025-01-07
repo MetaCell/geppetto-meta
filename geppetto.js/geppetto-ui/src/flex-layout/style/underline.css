@@ -2,12 +2,12 @@
   --color-text: black;
   --color-background: white;
   --color-base: white;
-  --color-1: #f7f7f7;
-  --color-2: #f0f0f0;
-  --color-3: #e9e9e9;
-  --color-4: #e2e2e2;
-  --color-5: #dbdbdb;
-  --color-6: #d4d4d4;
+  --color-1: #fafafa;
+  --color-2: whitesmoke;
+  --color-3: #eeeeee;
+  --color-4: #e6e6e6;
+  --color-5: #e0e0e0;
+  --color-6: #d9d9d9;
   --color-drag1: rgb(95, 134, 196);
   --color-drag2: rgb(119, 166, 119);
   --color-drag1-background: rgba(95, 134, 196, 0.1);
@@ -19,28 +19,28 @@
   --color-tabset-background: var(--color-background);
   --color-tabset-background-selected: var(--color-1);
   --color-tabset-background-maximized: var(--color-6);
-  --color-tabset-divider-line: var(--color-4);
+  --color-tabset-divider-line: var(--color-3);
   --color-tabset-header-background: var(--color-background);
   --color-tabset-header: var(--color-text);
   --color-border-tab-content: var(--color-background);
   --color-border-background: var(--color-background);
-  --color-border-divider-line: var(--color-4);
+  --color-border-divider-line: var(--color-3);
   --color-tab-content: var(--color-background);
   --color-tab-selected: var(--color-text);
-  --color-tab-selected-background: var(--color-4);
+  --color-tab-selected-background: transparent;
   --color-tab-unselected: gray;
   --color-tab-unselected-background: transparent;
   --color-tab-textbox: var(--color-text);
   --color-tab-textbox-background: var(--color-3);
   --color-border-tab-selected: var(--color-text);
-  --color-border-tab-selected-background: var(--color-4);
+  --color-border-tab-selected-background: transparent;
   --color-border-tab-unselected: gray;
-  --color-border-tab-unselected-background: var(--color-2);
+  --color-border-tab-unselected-background: transparent;
   --color-splitter: var(--color-1);
   --color-splitter-hover: var(--color-4);
   --color-splitter-drag: var(--color-4);
-  --color-drag-rect-border: #ccc;
-  --color-drag-rect-background: var(--color-5);
+  --color-drag-rect-border: var(--color-6);
+  --color-drag-rect-background: var(--color-4);
   --color-drag-rect: var(--color-text);
   --color-popup-border: var(--color-6);
   --color-popup-unselected: var(--color-text);
@@ -49,6 +49,9 @@
   --color-popup-selected-background: var(--color-3);
   --color-edge-marker: #aaa;
   --color-edge-icon: #555;
+  --color-underline: rgb(65, 105, 225);
+  --color-underline-hover: #aaa;
+  --underline_height: 3px;
 }
 
 .flexlayout__layout {
@@ -214,6 +217,9 @@
 }
 .flexlayout__tabset_tab_divider {
   width: 4px;
+  width: 1px;
+  margin: 4px 6px 4px 6px;
+  border-left: 1px solid #ddd;
 }
 .flexlayout__tabset_content {
   display: flex;
@@ -317,6 +323,7 @@
   box-sizing: border-box;
   padding: 3px 0.5em;
   cursor: pointer;
+  padding: 2px 0.5em calc(4px - var(--underline_height)) 0.5em;
 }
 .flexlayout__tab_button_stretch {
   background-color: transparent;
@@ -338,17 +345,20 @@
 .flexlayout__tab_button--selected {
   background-color: var(--color-tab-selected-background);
   color: var(--color-tab-selected);
+  border-bottom: var(--underline_height) solid var(--color-underline);
 }
 @media (hover: hover) {
   .flexlayout__tab_button:hover {
     background-color: var(--color-tab-selected-background);
     color: var(--color-tab-selected);
+    border-bottom: var(--underline_height) solid var(--color-underline-hover);
   }
 }
 .flexlayout__tab_button--unselected {
   background-color: var(--color-tab-unselected-background);
   color: var(--color-tab-unselected);
   color: gray;
+  border-bottom: var(--underline_height) solid transparent;
 }
 .flexlayout__tab_button_leading {
   display: flex;
@@ -512,6 +522,9 @@
 }
 .flexlayout__border_tab_divider {
   width: 4px;
+  width: 1px;
+  margin: 4px 6px 4px 6px;
+  border-left: 1px solid #ddd;
 }
 .flexlayout__border_button {
   display: flex;
@@ -522,20 +535,24 @@
   margin: 2px 0px;
   box-sizing: border-box;
   white-space: nowrap;
+  padding: 2px 0.5em calc(4px - var(--underline_height)) 0.5em;
 }
 .flexlayout__border_button--selected {
   background-color: var(--color-border-tab-selected-background);
   color: var(--color-border-tab-selected);
+  border-bottom: var(--underline_height) solid var(--color-underline);
 }
 @media (hover: hover) {
   .flexlayout__border_button:hover {
     background-color: var(--color-border-tab-selected-background);
     color: var(--color-border-tab-selected);
+    border-bottom: var(--underline_height) solid var(--color-underline-hover);
   }
 }
 .flexlayout__border_button--unselected {
   background-color: var(--color-border-tab-unselected-background);
   color: var(--color-border-tab-unselected);
+  border-bottom: var(--underline_height) solid transparent;
 }
 .flexlayout__border_button_leading {
   display: flex;
@@ -666,4 +683,8 @@
   font-family: var(--font-family);
 }
 
-/*# sourceMappingURL=light.css.map */
+.flexlayout__tab_button_textbox {
+  border: none;
+}
+
+/*# sourceMappingURL=underline.css.map */

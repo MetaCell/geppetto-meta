@@ -1,117 +1,114 @@
-import AttributeDefinitions from "../AttributeDefinitions";
-import DockLocation from "../DockLocation";
-import DropInfo from "../DropInfo";
-import Orientation from "../Orientation";
-import Rect from "../Rect";
-import IDraggable from "./IDraggable";
-import Model, { ILayoutMetrics } from "./Model";
+import { AttributeDefinitions } from "../AttributeDefinitions";
+import { DockLocation } from "../DockLocation";
+import { DropInfo } from "../DropInfo";
+import { Orientation } from "../Orientation";
+import { Rect } from "../Rect";
+import { IDraggable } from "./IDraggable";
+import { IJsonBorderNode, IJsonRowNode, IJsonTabNode, IJsonTabSetNode } from "./IJsonModel";
+import { Model } from "./Model";
 
-abstract class Node {
-    /** @hidden @internal */
-    protected _model: Model;
-    /** @hidden @internal */
-    protected _attributes: Record<string, any>;
-    /** @hidden @internal */
-    protected _parent?: Node;
-    /** @hidden @internal */
-    protected _children: Node[];
-    /** @hidden @internal */
-    protected _fixed: boolean;
-    /** @hidden @internal */
-    protected _rect: Rect;
-    /** @hidden @internal */
-    protected _visible: boolean;
-    /** @hidden @internal */
-    protected _listeners: Record<string, (params: any) => void>;
-    /** @hidden @internal */
-    protected _dirty: boolean = false;
-    /** @hidden @internal */
-    protected _tempSize: number = 0;
+export abstract class Node {
+    /** @internal */
+    protected model: Model;
+    /** @internal */
+    protected attributes: Record<string, any>;
+    /** @internal */
+    protected parent?: Node;
+    /** @internal */
+    protected children: Node[];
+    /** @internal */
+    protected rect: Rect;
+    /** @internal */
+    protected path: string;
+    /** @internal */
+    protected listeners: Map<string, (params: any) => void>;
 
-    /** @hidden @internal */
-    protected constructor(model: Model) {
-        this._model = model;
-        this._attributes = {};
-        this._children = [];
-        this._fixed = false;
-        this._rect = Rect.empty();
-        this._visible = false;
-        this._listeners = {};
+    /** @internal */
+    protected constructor(_model: Model) {
+        this.model = _model;
+        this.attributes = {};
+        this.children = [];
+        this.rect = Rect.empty();
+        this.listeners = new Map();
+        this.path = "";
     }
 
     getId() {
-        let id = this._attributes.id;
+        let id = this.attributes.id;
         if (id !== undefined) {
             return id as string;
         }
 
-        id = this._model._nextUniqueId();
-        this._setId(id);
+        id = this.model.nextUniqueId();
+        this.setId(id);
 
         return id as string;
     }
 
     getModel() {
-        return this._model;
+        return this.model;
     }
 
     getType() {
-        return this._attributes.type as string;
+        return this.attributes.type as string;
     }
 
     getParent() {
-        return this._parent;
+        return this.parent;
     }
 
     getChildren() {
-        return this._children;
+        return this.children;
     }
 
     getRect() {
-        return this._rect;
+        return this.rect;
     }
 
-    isVisible() {
-        return this._visible;
+    getPath() {
+        return this.path;
     }
 
     getOrientation(): Orientation {
-        if (this._parent === undefined) {
-            return this._model.isRootOrientationVertical() ? Orientation.VERT : Orientation.HORZ;
+        if (this.parent === undefined) {
+            return this.model.isRootOrientationVertical() ? Orientation.VERT : Orientation.HORZ;
         } else {
-            return Orientation.flip(this._parent.getOrientation());
+            return Orientation.flip(this.parent.getOrientation());
         }
     }
 
     // event can be: resize, visibility, maximize (on tabset), close
     setEventListener(event: string, callback: (params: any) => void) {
-        this._listeners[event] = callback;
+        this.listeners.set(event, callback);
     }
 
     removeEventListener(event: string) {
-        delete this._listeners[event];
+        this.listeners.delete(event);
     }
 
-    /** @hidden @internal */
-    _setId(id: string) {
-        this._attributes.id = id;
+    abstract toJson(): IJsonRowNode | IJsonBorderNode | IJsonTabSetNode | IJsonTabNode | undefined;
+
+    /** @internal */
+    setId(id: string) {
+        this.attributes.id = id;
     }
 
-    /** @hidden @internal */
-    _fireEvent(event: string, params: any) {
+    /** @internal */
+    fireEvent(event: string, params: any) {
         // console.log(this._type, " fireEvent " + event + " " + JSON.stringify(params));
-        if (this._listeners[event] !== undefined) {
-            this._listeners[event](params);
+        if (this.listeners.has(event)) {
+            this.listeners.get(event)!(params);
         }
     }
 
-    _getAttr(name: string) {
-        let val = this._attributes[name];
+    /** @internal */
+    getAttr(name: string) {
+        let val = this.attributes[name];
 
         if (val === undefined) {
-            const modelName = this._getAttributeDefinitions().getModelName(name);
+            const modelName = this.getAttributeDefinitions().getModelName(name);
             if (modelName !== undefined) {
-                val = this._model._getAttribute(modelName);
+                val = this.model.getAttribute(modelName);
             }
         }
 
@@ -119,68 +116,80 @@ abstract class Node {
         return val;
     }
 
-    /** @hidden @internal */
-    _forEachNode(fn: (node: Node, level: number) => void, level: number) {
+    /** @internal */
+    forEachNode(fn: (node: Node, level: number) => void, level: number) {
         fn(this, level);
         level++;
-        this._children.forEach((node) => {
-            node._forEachNode(fn, level);
-        });
-    }
-
-    /** @hidden @internal */
-    _setVisible(visible: boolean) {
-        if (visible !== this._visible) {
-            this._fireEvent("visibility", { visible });
-            this._visible = visible;
+        for (const node of this.children) {
+            node.forEachNode(fn, level);
         }
     }
 
-    /** @hidden @internal */
-    _getDrawChildren(): Node[] | undefined {
-        return this._children;
+    /** @internal */
+    setPaths(path: string) {
+        let i = 0;
+
+        for (const node of this.children) {
+            let newPath = path;
+            if (node.getType() === "row") {
+                if (node.getOrientation() === Orientation.VERT) {
+                    newPath += "/c" + i;
+                } else {
+                    newPath += "/r" + i;
+                }
+            } else if (node.getType() === "tabset") {
+                newPath += "/ts" + i;
+            } else if (node.getType() === "tab") {
+                newPath += "/t" + i;
+            }
+
+            node.path = newPath;
+
+            node.setPaths(newPath);
+            i++;
+        }
     }
 
-    /** @hidden @internal */
-    _setParent(parent: Node) {
-        this._parent = parent;
+    /** @internal */
+    setParent(parent: Node) {
+        this.parent = parent;
     }
 
-    /** @hidden @internal */
-    _setRect(rect: Rect) {
-        this._rect = rect;
+    /** @internal */
+    setRect(rect: Rect) {
+        this.rect = rect;
     }
 
-    _setWeight(weight: number) {
-        this._attributes.weight = weight;
+    /** @internal */
+    setPath(path: string) {
+        this.path = path;
     }
 
-    /** @hidden @internal */
-    _setSelected(index: number) {
-        this._attributes.selected = index;
+    /** @internal */
+    setWeight(weight: number) {
+        this.attributes.weight = weight;
     }
 
-    /** @hidden @internal */
-    _isFixed() {
-        return this._fixed;
+    /** @internal */
+    setSelected(index: number) {
+        this.attributes.selected = index;
     }
 
-    /** @hidden @internal */
-    _layout(rect: Rect, metrics: ILayoutMetrics) {
-        this._rect = rect;
-    }
-
-    /** @hidden @internal */
-    _findDropTargetNode(dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined {
+    /** @internal */
+    findDropTargetNode(windowId: string, dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined {
         let rtn: DropInfo | undefined;
-        if (this._rect.contains(x, y)) {
-            rtn = this.canDrop(dragNode, x, y);
-            if (rtn === undefined) {
-                if (this._children.length !== 0) {
-                    for (const child of this._children) {
-                        rtn = child._findDropTargetNode(dragNode, x, y);
-                        if (rtn !== undefined) {
-                            break;
+        if (this.rect.contains(x, y)) {
+            if (this.model.getMaximizedTabset(windowId) !== undefined) {
+                rtn = this.model.getMaximizedTabset(windowId)!.canDrop(dragNode, x, y);
+            } else {
+                rtn = this.canDrop(dragNode, x, y);
+                if (rtn === undefined) {
+                    if (this.children.length !== 0) {
+                        for (const child of this.children) {
+                            rtn = child.findDropTargetNode(windowId, dragNode, x, y);
+                            if (rtn !== undefined) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -190,13 +199,13 @@ abstract class Node {
         return rtn;
     }
 
-    /** @hidden @internal */
+    /** @internal */
     canDrop(dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined {
         return undefined;
     }
 
-    /** @hidden @internal */
-    _canDockInto(dragNode: Node & IDraggable, dropInfo: DropInfo | undefined): boolean {
+    /** @internal */
+    canDockInto(dragNode: Node & IDraggable, dropInfo: DropInfo | undefined): boolean {
         if (dropInfo != null) {
             if (dropInfo.location === DockLocation.CENTER && dropInfo.node.isEnableDrop() === false) {
                 return false;
@@ -212,97 +221,60 @@ abstract class Node {
             }
 
             // finally check model callback to check if drop allowed
-            if (this._model._getOnAllowDrop()) {
-                return (this._model._getOnAllowDrop() as (dragNode: Node, dropInfo: DropInfo) => boolean)(dragNode, dropInfo);
+            if (this.model.getOnAllowDrop()) {
+                return (this.model.getOnAllowDrop() as (dragNode: Node, dropInfo: DropInfo) => boolean)(dragNode, dropInfo);
             }
         }
         return true;
     }
 
-    /** @hidden @internal */
-    _removeChild(childNode: Node) {
-        const pos = this._children.indexOf(childNode);
+    /** @internal */
+    removeChild(childNode: Node) {
+        const pos = this.children.indexOf(childNode);
         if (pos !== -1) {
-            this._children.splice(pos, 1);
+            this.children.splice(pos, 1);
         }
-        this._dirty = true;
         return pos;
     }
 
-    _addChild(childNode: Node, pos?: number) {
+    /** @internal */
+    addChild(childNode: Node, pos?: number) {
         if (pos != null) {
-            this._children.splice(pos, 0, childNode);
+            this.children.splice(pos, 0, childNode);
         } else {
-            this._children.push(childNode);
-            pos = this._children.length - 1;
+            this.children.push(childNode);
+            pos = this.children.length - 1;
         }
-        childNode._parent = this;
-        this._dirty = true;
+        childNode.parent = this;
         return pos;
     }
 
-    /** @hidden @internal */
-    _removeAll() {
-        this._children = [];
-        this._dirty = true;
+    /** @internal */
+    removeAll() {
+        this.children = [];
     }
 
-    /** @hidden @internal */
-    _styleWithPosition(style?: Record<string, any>) {
+    /** @internal */
+    styleWithPosition(style?: Record<string, any>) {
         if (style == null) {
             style = {};
         }
-        // return this._rect.styleWithPosition(style);
-        let tempStyle = this._rect.styleWithPosition(style);
-        let sidesValue = this.getModel()._getAttribute("sideBorders");
-        if((sidesValue != undefined) && (sidesValue > 0)) {
-            let tempWidth = tempStyle.width.replace('px', '');
-            let tempLeft = tempStyle.left.replace('px', '');
-            if((Number(tempWidth) + Number(tempLeft)) >= window.innerWidth) {
-                tempWidth = (tempWidth - (sidesValue * 2)) + "px";
-                tempStyle.width = tempWidth;
-                return tempStyle;
-            }
-        }
-        return tempStyle;
+        return this.rect.styleWithPosition(style);
     }
 
-    /** @hidden @internal */
-    _getTempSize() {
-        return this._tempSize;
-    }
-
-    /** @hidden @internal */
-    _setTempSize(value: number) {
-        this._tempSize = value;
-    }
-
-    /** @hidden @internal */
+    /** @internal */
     isEnableDivide() {
         return true;
     }
 
-    /** @hidden @internal */
-    _toAttributeString() {
-        return JSON.stringify(this._attributes, undefined, "\t");
+    /** @internal */
+    toAttributeString() {
+        return JSON.stringify(this.attributes, undefined, "\t");
     }
 
     // implemented by subclasses
-    /** @hidden @internal */
-    abstract _updateAttrs(json: any): void;
-    /** @hidden @internal */
-    abstract _getAttributeDefinitions(): AttributeDefinitions;
-    /** @hidden @internal */
-    abstract _toJson(): any;
-    isMaximized(): boolean {
-        return false
-    }
-    getName(): string {
-        return undefined
-    }
-    getSelectedNode(): Node {
-        throw new Error("Not implemented")
-    }
+    /** @internal */
+    abstract updateAttrs(json: any): void;
+    /** @internal */
+    abstract getAttributeDefinitions(): AttributeDefinitions;
 }
-
-export default Node;

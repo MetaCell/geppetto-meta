@@ -1,13 +1,14 @@
-import DockLocation from "../DockLocation";
-import DropInfo from "../DropInfo";
-import IDraggable from "./IDraggable";
-import Node from "./Node";
+import { DockLocation } from "../DockLocation";
+import { DropInfo } from "../DropInfo";
+import { IDraggable } from "./IDraggable";
+import { Node } from "./Node";
 
-export default interface IDropTarget {
-    /** @hidden @internal */
+export interface IDropTarget {
+    /** @internal */
     canDrop(dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined;
-    /** @hidden @internal */
+    /** @internal */
     drop(dragNode: Node & IDraggable, location: DockLocation, index: number, select?: boolean): void;
-    /** @hidden @internal */
+    /** @internal */
     isEnableDrop(): boolean;
 }
+
