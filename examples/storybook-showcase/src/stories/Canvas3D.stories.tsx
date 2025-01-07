@@ -1,5 +1,6 @@
 import type { Meta } from '@storybook/react';
 import { Title, Subtitle, Description, Primary, Controls } from '@storybook/blocks';
+import { LazyStories } from '../../.storybook/blocks/LazyStory';
 
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 
@@ -11,6 +12,12 @@ const meta = {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: 'centered',
     docs: {
+      canvas: {
+        // sourceState: 'shown',
+      },
+      source: {
+        type: 'dynamic',
+      },
       page: () => (
         <>
           <Title />
@@ -18,15 +25,18 @@ const meta = {
           <Description />
           <Primary />
           <Controls />
+          <LazyStories />
         </>
       ),
     },
   },
   decorators: [
     Story => (
-      <div style={{ height: '700px', width: '900px' }}>
-        <Story />
-      </div>
+      <>
+        <div style={{ height: '700px', width: '900px' }}>
+          <Story />
+        </div>
+      </>
     )],
 } satisfies Meta<typeof Canvas>;
 

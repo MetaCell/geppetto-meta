@@ -8,6 +8,11 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    // docs: {
+    //   canvas: {
+    //     sourceState: 'shown',
+    //   },
+    // },
   },
 
   tags: ['autodocs'],

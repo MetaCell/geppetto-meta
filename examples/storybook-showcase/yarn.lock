@@ -939,6 +939,15 @@
     "@storybook/global" "^5.0.0"
     ts-dedent "^2.0.0"
 
+"@storybook/addon-storysource@^8.3.5":
+  version "8.3.5"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-8.3.5.tgz#d24edb90fad2e9a84cf3bb217cf300813d0d6630"
+  integrity sha512-NdVVlBtVRLBeMNwaMNd+B/XDNbQGQ4yKjZOCNBzGsV0sf0fAm8BQ7D5HJFbL4/VoZmRxlYCeQRYHu+/iE2VJhg==
+  dependencies:
+    "@storybook/source-loader" "8.3.5"
+    estraverse "^5.2.0"
+    tiny-invariant "^1.3.1"
+
 "@storybook/addon-toolbars@8.3.5":
   version "8.3.5"
   resolved "https://registry.yarnpkg.com/@storybook/addon-toolbars/-/addon-toolbars-8.3.5.tgz#7328fed0f4a24c6828ba23e06b9cddd0d3e00e2b"
@@ -1105,6 +1114,16 @@
     ts-dedent "^2.0.0"
     type-fest "~2.19"
     util-deprecate "^1.0.2"
+
+"@storybook/source-loader@8.3.5":
+  version "8.3.5"
+  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-8.3.5.tgz#a481aa79a0c686a949e68d4e0f8a9f62f35847a7"
+  integrity sha512-rQRWMqsM2PROeQxBCX23sDKdTMpdkub3A2Q3+6JhVzYRQodQrQDbzVRULq3G7RGXdktTkE+huVO4pLKaDa7PDw==
+  dependencies:
+    "@storybook/csf" "^0.1.11"
+    estraverse "^5.2.0"
+    lodash "^4.17.21"
+    prettier "^3.1.1"
 
 "@storybook/test@8.3.5", "@storybook/test@^8.3.3":
   version "8.3.5"
@@ -5428,6 +5447,11 @@ prepend-http@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha512-PhmXi5XmoyKw1Un4E+opM2KcsJInDvKyuOumcjjw3waw86ZNjHwVUOOWLc4bCzLdcKNaWBH9e99sbWzDQsVaYg==
+
+prettier@^3.1.1:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.3.3.tgz#30c54fe0be0d8d12e6ae61dbb10109ea00d53105"
+  integrity sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==
 
 pretty-format@^27.0.2:
   version "27.5.1"
