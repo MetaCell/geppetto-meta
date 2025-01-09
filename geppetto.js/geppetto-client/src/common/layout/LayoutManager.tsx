@@ -396,7 +396,6 @@ export class LayoutManager {
       }
     }
     return false;
-
   }
 
   /**

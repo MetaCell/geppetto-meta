@@ -14,7 +14,7 @@ import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
  * @private
  */
 export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
-    const rootNode = model.getNodeById("root");
+    const rootNode = model.getRoot();
 
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
     switch (position) {
@@ -28,27 +28,26 @@ export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, w
             break;
         case TabsetPosition.BOTTOM:
         case TabsetPosition.TOP: {
-
-            model.doAction(FlexLayout.Actions.updateNodeAttributes(tabset.getId(), {weight: 80}))
-
             const hrow = new FlexLayout.RowNode(model, rootNode.windowId, {});
-            model.doAction(FlexLayout.Actions.updateNodeAttributes(hrow.getId(), {weight: 100}))
+
+            if (position === TabsetPosition.BOTTOM) {
+                (hrow as any).addChild(tabset)
+            } else {
+                (hrow as any).addChild(tabset, 0)
+            }
 
             rootNode.getChildren().forEach(child => {
                 if (child.getWeight) {
                     const newWeight = (child as FlexLayout.TabSetNode).getWeight() / 2;
                     child.setWeight(newWeight);
-                    model.doAction(FlexLayout.Actions.moveNode((child as BaseNode).getId(), hrow.getId(), FlexLayout.DockLocation.CENTER, -1))
+                    (hrow as any).addChild(child, 0)
                 }
             });
-            if (position === TabsetPosition.BOTTOM) {
-                model.doAction(FlexLayout.Actions.moveNode(tabset.getId(), hrow.getId(), FlexLayout.DockLocation.CENTER, -1))
-            } else {
-                model.doAction(FlexLayout.Actions.moveNode(tabset.getId(), hrow.getId(), FlexLayout.DockLocation.CENTER, 0))
-            }
 
-            rootNode._removeAll();
-            rootNode.addChild(hrow, 0);
+            rootNode.removeAll();
+            rootNode.addChild(hrow);
+            (tabset as any).setWeight(80);
+            (hrow as any).setWeight(100);
         }
     }
     return tabset

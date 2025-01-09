@@ -18,10 +18,18 @@ import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
-import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
+import { TabsetPosition, type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
+import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
 import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
 
 import { componentWidget } from "../widgets";
+
+const Positions = {
+  [TabsetPosition.BOTTOM]: TabsetPosition.BOTTOM,
+  [TabsetPosition.LEFT]: TabsetPosition.LEFT,
+  [TabsetPosition.RIGHT]: TabsetPosition.RIGHT,
+  [TabsetPosition.TOP]: TabsetPosition.TOP
+};
 
 const HomePage = () => {
   const store = useStore();
@@ -31,6 +39,7 @@ const HomePage = () => {
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
   const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
+  const [location, setLocation] = useState(TabsetPosition.RIGHT)
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
 
@@ -38,14 +47,14 @@ const HomePage = () => {
     if (LayoutComponent === undefined) {
       const myManager = getLayoutManagerInstance();
       if (myManager) {
-      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
         setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
       }
     }
   }, [store, LayoutComponent])
 
   const addComponent = () => {
-    dispatch(addWidget(componentWidget(name, color, panel)));
+    dispatch(addWidget(componentWidget(name, color, panel, location)));
   };
 
 
@@ -53,6 +62,7 @@ const HomePage = () => {
     const updatedWidget = { ...widget };
     updatedWidget.status = WidgetStatus.ACTIVE;
     updatedWidget.panelName = panel;
+    updatedWidget.defaultPosition = Positions[location];
     dispatch(updateWidget(updatedWidget));
   };
 
@@ -66,7 +76,7 @@ const HomePage = () => {
       }}>
         <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
           setName(event.target.value as string)
-        }/>
+        } />
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select
@@ -98,14 +108,30 @@ const HomePage = () => {
             <MenuItem value={"orange"}>Orange</MenuItem>
           </Select>
         </FormControl>
+        <FormControl>
+          <InputLabel id="name">Position</InputLabel>
+          <Select
+            labelId="position"
+            value={location}
+            label="Position"
+            onChange={(event: SelectChangeEvent) =>
+              setLocation(Positions[event.target.value as string])
+            }
+          >
+            <MenuItem value={TabsetPosition.RIGHT}>Right</MenuItem>
+            <MenuItem value={TabsetPosition.LEFT}>Left</MenuItem>
+            <MenuItem value={TabsetPosition.TOP}>Top</MenuItem>
+            <MenuItem value={TabsetPosition.BOTTOM}>Bottom</MenuItem>
+          </Select>
+        </FormControl>
         <Button variant="contained" onClick={addComponent}>
-                    Add Component
+          Add Component
         </Button>
 
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
             <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
+              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon /> : <VisibilityOnIcon />}
             </IconButton>
           </Tooltip>
         ))}
@@ -117,7 +143,7 @@ const HomePage = () => {
         width: '100%',
         height: '90vh',
       }}>
-        {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
+        {LayoutComponent === undefined ? <CircularProgress /> : <LayoutComponent />}
       </Box>
     </Box>
   );
