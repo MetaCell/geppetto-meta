@@ -1,19 +1,19 @@
 import * as React from 'react';
 import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
-import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
-import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
-import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import {type ComponentMap, type IComponentConfig, type Widget, WidgetStatus} from './model';
+import { Actions } from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
+import { DockLocation } from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
+import { Model } from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import { BaseNode, type ComponentMap, type IComponentConfig, type Widget, WidgetStatus } from './model';
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
-import {getWidget, widget2Node} from "./utils";
+import { getWidget, widget2Node } from "./utils";
 import * as GeppettoActions from '../actions';
 
-import {layoutActions, removeWidgetFromStore, setLayout, updateLayout,} from "./actions";
+import { layoutActions, removeWidgetFromStore, setLayout, updateLayout, } from "./actions";
 
-import {MinimizeHelper} from "./helpers/MinimizeHelper";
-import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
+import { MinimizeHelper } from "./helpers/MinimizeHelper";
+import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
 import type { IJsonModel } from '@metacell/geppetto-meta-ui/flex-layout/src/model/IJsonModel';
 
 
@@ -45,7 +45,7 @@ export class LayoutManager {
   /**
    * Used to restore weights from the default layout
    */
-  defaultWeights: {[id: string]: number} = {};
+  defaultWeights: { [id: string]: number } = {};
   widgetFactory: WidgetFactory;
   tabsetIconFactory: TabsetIconFactory;
   store;
@@ -73,7 +73,7 @@ export class LayoutManager {
       : new TabsetIconFactory();
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
-    this.minimizeHelper= new MinimizeHelper(isMinimizeEnabled, this.model)
+    this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model)
   }
 
 
@@ -263,7 +263,7 @@ export class LayoutManager {
    * @memberof Control
    */
   middleware = (store) => (next) => (action) => {
-    if(!this.store) {
+    if (!this.store) {
       next(setLayout(JSON.stringify(this.model.toJson())));
     }
 
