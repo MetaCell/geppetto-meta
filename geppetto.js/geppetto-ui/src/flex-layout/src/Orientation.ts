@@ -1,4 +1,4 @@
-class Orientation {
+export class Orientation {
     static HORZ = new Orientation("horz");
     static VERT = new Orientation("vert");
 
@@ -10,10 +10,10 @@ class Orientation {
         }
     }
 
-    /** @hidden @internal */
+    /** @internal */
     private _name: string;
 
-    /** @hidden @internal */
+    /** @internal */
     private constructor(name: string) {
         this._name = name;
     }
@@ -26,5 +26,3 @@ class Orientation {
         return this._name;
     }
 }
-
-export default Orientation;

@@ -1,40 +1,23 @@
-import DockLocation from "./DockLocation";
-import DragDrop from "./DragDrop";
-import DropInfo from "./DropInfo";
-import { I18nLabel } from "./I18nLabel";
-import Action from "./model/Action";
-import Actions from "./model/Actions";
-import BorderNode from "./model/BorderNode";
-import BorderSet from "./model/BorderSet";
-import Model from "./model/Model";
-import Node from "./model/Node";
-import RowNode from "./model/RowNode";
-import SplitterNode from "./model/SplitterNode";
-import TabNode from "./model/TabNode";
-import TabSetNode from "./model/TabSetNode";
-import Orientation from "./Orientation";
-import Rect from "./Rect";
-import Layout from "./view/Layout";
-import IIcons from "./view/Layout";
+export * from './view/Layout';
 
-export { Layout, I18nLabel, Actions, Action, Model, Node, RowNode, SplitterNode, TabNode, TabSetNode, BorderNode, BorderSet, DockLocation, Orientation, DragDrop, DropInfo, Rect, IIcons };
+export * from './model/Action';
+export * from './model/Actions';
+export * from './model/BorderNode';
+export * from './model/BorderSet';
+export * from './model/ICloseType';
+export * from './model/IDraggable';
+export * from './model/IDropTarget';
+export * from './model/IJsonModel';
+export * from './model/Model';
+export * from './model/Node';
+export * from './model/RowNode';
+export * from './model/TabNode';
+export * from './model/TabSetNode';
+export * from './model/LayoutWindow';
 
-export default {
-    Layout,
-    I18nLabel,
-    Actions,
-    Action,
-    Model,
-    Node,
-    RowNode,
-    SplitterNode,
-    TabNode,
-    TabSetNode,
-    BorderNode,
-    BorderSet,
-    DockLocation,
-    Orientation,
-    DragDrop,
-    DropInfo,
-    Rect,
-};
+export * from './DockLocation';
+export * from './DropInfo';
+export * from './I18nLabel';
+export * from './Orientation';
+export * from './Rect';
+export * from './Types';

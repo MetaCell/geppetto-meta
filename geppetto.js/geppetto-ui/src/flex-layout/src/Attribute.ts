@@ -1,19 +1,24 @@
-/** @hidden @internal */
-class Attribute {
+/** @internal */
+export class Attribute {
     static NUMBER = "number";
     static STRING = "string";
     static BOOLEAN = "boolean";
 
     name: string;
+    alias: string | undefined;
     modelName?: string;
+    pairedAttr?: Attribute;
+    pairedType?: string;
     defaultValue: any;
     alwaysWriteJson?: boolean;
     type?: string; 
     required: boolean;
     fixed: boolean;
+    description?: string;
 
     constructor(name: string, modelName: string | undefined, defaultValue: any, alwaysWriteJson?: boolean) {
         this.name = name;
+        this.alias = undefined;
         this.modelName = modelName;
         this.defaultValue = defaultValue;
         this.alwaysWriteJson = alwaysWriteJson;
@@ -28,6 +33,15 @@ class Attribute {
         return this;
     }
 
+    setAlias(value: string) {
+        this.alias = value;
+        return this;
+    }
+
+    setDescription(value: string) {
+        this.description = value;
+    }
+
     setRequired() {
         this.required = true;
         return this;
@@ -38,7 +52,13 @@ class Attribute {
         return this;
     }
 
-}
+    // sets modelAttr for nodes, and nodeAttr for model
+    setpairedAttr(value: Attribute) {
+        this.pairedAttr = value;
+    }
 
-/** @hidden @internal */
-export default Attribute;
+    setPairedType(value: string) {
+        this.pairedType = value;
+    }
+
+}

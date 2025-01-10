@@ -1,116 +1,80 @@
-import DropInfo from "../DropInfo";
-import Orientation from "../Orientation";
-import Rect from "../Rect";
-import BorderNode from "./BorderNode";
-import IDraggable from "./IDraggable";
-import Model, { ILayoutMetrics } from "./Model";
-import Node from "./Node";
+import { DockLocation } from "../DockLocation";
+import { DropInfo } from "../DropInfo";
+import { BorderNode } from "./BorderNode";
+import { IDraggable } from "./IDraggable";
+import { Model } from "./Model";
+import { Node } from "./Node";
 
-class BorderSet {
-    /** @hidden @internal */
-    static _fromJson(json: any, model: Model) {
+export class BorderSet {
+    /** @internal */
+    static fromJson(json: any, model: Model) {
         const borderSet = new BorderSet(model);
-        borderSet._borders = json.map((borderJson: any) => BorderNode._fromJson(borderJson, model));
+        borderSet.borders = json.map((borderJson: any) => BorderNode.fromJson(borderJson, model));
+        for (const border of borderSet.borders) {
+            borderSet.borderMap.set(border.getLocation(), border);
+        }
         return borderSet;
     }
-    /** @hidden @internal */
-    private _model: Model;
-    /** @hidden @internal */
-    private _borders: BorderNode[];
+    /** @internal */
+    private borders: BorderNode[];
+    /** @internal */
+    private borderMap: Map<DockLocation, BorderNode>;
+    /** @internal */
+    private layoutHorizontal: boolean;
 
-    /** @hidden @internal */
-    constructor(model: Model) {
-        this._model = model;
-        this._borders = [];
+    /** @internal */
+    constructor(_model: Model) {
+        this.borders = [];
+        this.borderMap = new Map<DockLocation, BorderNode>();
+        this.layoutHorizontal = true;
     }
 
+    toJson() {
+        return this.borders.map((borderNode) => borderNode.toJson());
+    }
+
+    /** @internal */
+    getLayoutHorizontal () {
+        return this.layoutHorizontal;
+    }
+
+    /** @internal */
     getBorders() {
-        return this._borders;
+        return this.borders;
     }
 
-    /** @hidden @internal */
-    _forEachNode(fn: (node: Node, level: number) => void) {
-        this._borders.forEach((borderNode) => {
+    /** @internal */
+    getBorderMap() {
+        return this.borderMap;
+    }
+
+    /** @internal */
+    forEachNode(fn: (node: Node, level: number) => void) {
+        for (const borderNode of this.borders) {
             fn(borderNode, 0);
-            borderNode.getChildren().forEach((node) => {
-                node._forEachNode(fn, 1);
-            });
-        });
+            for (const node of borderNode.getChildren()) {
+                node.forEachNode(fn, 1);
+            }
+        }
     }
 
-    /** @hidden @internal */
-    _toJson() {
-        return this._borders.map((borderNode) => borderNode._toJson());
-    }
-
-    /** @hidden @internal */
-    _layoutBorder(outerInnerRects: { inner: Rect; outer: Rect }, metrics: ILayoutMetrics) {
-        const rect = outerInnerRects.outer;
-        const height = rect.height;
-        const width = rect.width;
-        let sumHeight = 0;
-        let sumWidth = 0;
-        let adjustableHeight = 0;
-        let adjustableWidth = 0;
-
-        const showingBorders = this._borders.filter((border) => border.isShowing());
-
-        // sum size of borders to see they will fit
-        for (const border of showingBorders) {
-            if (border.isShowing()) {
-                border._setAdjustedSize(border.getSize());
-                const visible = border.getSelected() !== -1;
-                if (border.getLocation().getOrientation() === Orientation.HORZ) {
-                    sumWidth += border.getBorderBarSize() + this._model.getSplitterSize();
-                    if (visible) {
-                        sumWidth += border.getSize();
-                        adjustableWidth += border.getSize();
-                    }
-                } else {
-                    sumHeight += border.getBorderBarSize() + this._model.getSplitterSize();
-                    if (visible) {
-                        sumHeight += border.getSize();
-                        adjustableHeight += border.getSize();
-                    }
+        /** @internal */
+        setPaths() {
+            for (const borderNode of this.borders) {
+                const path = "/border/" + borderNode.getLocation().getName();
+                borderNode.setPath(path);
+                let i = 0;
+                for (const node of borderNode.getChildren()) {
+                    node.setPath( path + "/t" + i);
+                    i++;
                 }
             }
         }
 
-        // adjust border sizes if too large
-        let j = 0;
-        while ((sumWidth > width && adjustableWidth > 0) || (sumHeight > height && adjustableHeight > 0)) {
-            const border = showingBorders[j];
-            if (border.getSelected() !== -1) {
-                // visible
-                const size = border._getAdjustedSize();
-                if (sumWidth > width && adjustableWidth > 0 && border.getLocation().getOrientation() === Orientation.HORZ && size > 0) {
-                    border._setAdjustedSize(size - 1);
-                    sumWidth--;
-                    adjustableWidth--;
-                } else if (sumHeight > height && adjustableHeight > 0 && border.getLocation().getOrientation() === Orientation.VERT && size > 0) {
-                    border._setAdjustedSize(size - 1);
-                    sumHeight--;
-                    adjustableHeight--;
-                }
-            }
-            j = (j + 1) % showingBorders.length;
-        }
 
-        showingBorders.forEach((border) => {
-            outerInnerRects.outer = border._layoutBorderOuter(outerInnerRects.outer, metrics);
-        });
-
-        outerInnerRects.inner = outerInnerRects.outer;
-
-        showingBorders.forEach((border) => {
-            outerInnerRects.inner = border._layoutBorderInner(outerInnerRects.inner, metrics);
-        });
-        return outerInnerRects;
-    }
-
-    /** @hidden @internal */
-    _findDropTargetNode(dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined {
-        for (const border of this._borders) {
+    /** @internal */
+    findDropTargetNode(dragNode: Node & IDraggable, x: number, y: number): DropInfo | undefined {
+        for (const border of this.borders) {
             if (border.isShowing()) {
                 const dropInfo = border.canDrop(dragNode, x, y);
                 if (dropInfo !== undefined) {
@@ -121,5 +85,3 @@ class BorderSet {
         return undefined;
     }
 }
-
-export default BorderSet;

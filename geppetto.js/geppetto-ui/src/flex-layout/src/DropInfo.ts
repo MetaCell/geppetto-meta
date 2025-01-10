@@ -1,9 +1,9 @@
-import DockLocation from "./DockLocation";
-import IDropTarget from "./model/IDropTarget";
-import Node from "./model/Node";
-import Rect from "./Rect";
+import { DockLocation } from "./DockLocation";
+import { IDropTarget } from "./model/IDropTarget";
+import { Node } from "./model/Node";
+import { Rect } from "./Rect";
 
-class DropInfo {
+export class DropInfo {
     node: Node & IDropTarget;
     rect: Rect;
     location: DockLocation;
@@ -18,4 +18,3 @@ class DropInfo {
         this.className = className;
     }
 }
-export default DropInfo;

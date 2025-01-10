@@ -1,8 +1,13 @@
-import Orientation from "./Orientation";
+import { IJsonRect } from "./model/IJsonModel";
+import { Orientation } from "./Orientation";
 
-class Rect {
+export class Rect {
     static empty() {
         return new Rect(0, 0, 0, 0);
+    }
+
+    static fromJson(json: IJsonRect): Rect {
+        return new Rect(json.x, json.y, json.width, json.height);
     }
 
     x: number;
@@ -17,21 +22,64 @@ class Rect {
         this.height = height;
     }
 
-    static fromElement(element: Element) {
-      let {x, y, width, height} = element.getBoundingClientRect();
-      return new Rect(x, y, width, height);
+    toJson() {
+        return {x: this.x, y: this.y, width: this.width, height: this.height};
+    }
+
+    snap(round: number) {
+        this.x = Math.round(this.x / round) * round;
+        this.y = Math.round(this.y / round) * round;
+        this.width = Math.round(this.width / round) * round;
+        this.height= Math.round(this.height / round) * round;
+    }
+
+    static getBoundingClientRect(element: Element) {
+        let { x, y, width, height } = element.getBoundingClientRect();
+        return new Rect(x, y, width, height);
+    }
+
+    static getContentRect(element: HTMLElement) {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+
+        const paddingLeft = parseFloat(style.paddingLeft);
+        const paddingRight = parseFloat(style.paddingRight);
+        const paddingTop = parseFloat(style.paddingTop);
+        const paddingBottom = parseFloat(style.paddingBottom);
+        const borderLeftWidth = parseFloat(style.borderLeftWidth);
+        const borderRightWidth = parseFloat(style.borderRightWidth);
+        const borderTopWidth = parseFloat(style.borderTopWidth);
+        const borderBottomWidth = parseFloat(style.borderBottomWidth);
+
+        const contentWidth = rect.width - borderLeftWidth - paddingLeft - paddingRight - borderRightWidth;
+        const contentHeight = rect.height - borderTopWidth - paddingTop - paddingBottom - borderBottomWidth;
+
+        return new Rect(
+            rect.left + borderLeftWidth + paddingLeft,
+            rect.top + borderTopWidth + paddingTop,
+            contentWidth,
+            contentHeight,
+        );
+    }
+
+    static fromDomRect(domRect: DOMRect) {
+        return new Rect(domRect.x, domRect.y, domRect.width, domRect.height);
+    }
+
+    relativeTo(r: Rect | DOMRect) {
+        return new Rect(this.x - r.x, this.y - r.y, this.width, this.height);
     }
 
     clone() {
         return new Rect(this.x, this.y, this.width, this.height);
     }
 
-    equals(rect: Rect) {
-        if (this.x === rect.x && this.y === rect.y && this.width === rect.width && this.height === rect.height) {
-            return true;
-        } else {
-            return false;
-        }
+    equals(rect: Rect | null | undefined) {
+        return this.x === rect?.x && this.y === rect?.y && this.width === rect?.width && this.height === rect?.height
+    }
+
+    equalSize(rect: Rect | null | undefined) {
+        return this.width === rect?.width && this.height === rect?.height
     }
 
     getBottom() {
@@ -40,6 +88,10 @@ class Rect {
 
     getRight() {
         return this.x + this.width;
+    }
+
+    getCenter() {
+        return { x: this.x + this.width / 2, y: this.y + this.height / 2 };
     }
 
     positionElement(element: HTMLElement, position?: string) {
@@ -72,7 +124,7 @@ class Rect {
         this.y = (outerRect.height - this.height) / 2;
     }
 
-    /** @hidden @internal */
+    /** @internal */
     _getSize(orientation: Orientation) {
         let prefSize = this.width;
         if (orientation === Orientation.VERT) {
@@ -85,5 +137,3 @@ class Rect {
         return "(Rect: x=" + this.x + ", y=" + this.y + ", width=" + this.width + ", height=" + this.height + ")";
     }
 }
-
-export default Rect;
