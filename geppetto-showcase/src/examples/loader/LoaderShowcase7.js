@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core';
+import Button from '@mui/material/Button';
 
-const styles = () => ({ typography: { textDecoration: 'underline', }, });
+const styles = { typography: { textDecoration: 'underline', }, };
 
 class LoaderShowcase7 extends Component {
   constructor (props) {
@@ -25,7 +24,6 @@ class LoaderShowcase7 extends Component {
 
   render () {
     const { active } = this.state;
-    const { classes } = this.props;
 
     return (
       <div>
@@ -33,7 +31,7 @@ class LoaderShowcase7 extends Component {
           Show Loader
         </Button>
         <Loader
-          className={classes.typography}
+          sx={styles.typography}
           active={active}
           handleClose={this.handleClose}
           messages={['Loading Project', 'Did you know you can...']}
@@ -42,4 +40,4 @@ class LoaderShowcase7 extends Component {
     );
   }
 }
-export default withStyles(styles)(LoaderShowcase7);
+export default LoaderShowcase7;

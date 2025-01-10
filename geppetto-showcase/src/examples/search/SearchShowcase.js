@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Search from '@metacell/geppetto-meta-ui/search/Search';
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 
 export default class SearchShowcase extends Component {
   constructor (props) {

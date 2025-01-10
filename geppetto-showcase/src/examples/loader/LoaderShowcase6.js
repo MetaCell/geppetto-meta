@@ -1,10 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src';
-import { withStyles } from '@material-ui/core';
 
-const styles = () => ({
+const styles = {
   container: {
     width: '100%',
     height: '100%',
@@ -12,7 +11,7 @@ const styles = () => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+};
 
 const json = {
   global: {
@@ -86,12 +85,11 @@ class LoaderShowcase6 extends Component {
 
   factory (node) {
     const { active } = this.state;
-    const { classes } = this.props;
     const component = node.getComponent();
 
     if (component === 'loader') {
       return (
-        <div className={classes.container}>
+        <Box sx={styles.container}>
           <Fragment>
             <Button
               variant="outlined"
@@ -106,7 +104,7 @@ class LoaderShowcase6 extends Component {
               fullscreen={false}
             />
           </Fragment>
-        </div>
+        </Box>
       );
     } else {
       return <div className="flexChildContainer">Content {node.getName()}</div>;
@@ -115,14 +113,14 @@ class LoaderShowcase6 extends Component {
 
   render () {
     return (
-      <div style={{ position: 'relative', height: '800px', width: '1200px' }}>
+      <Box sx={{ position: 'relative', height: '800px', width: '1200px' }}>
         <FlexLayout.Layout
           model={this.state.model}
           factory={this.factory.bind(this)}
         />
-      </div>
+      </Box>
     );
   }
 }
 
-export default withStyles(styles)(LoaderShowcase6);
+export default LoaderShowcase6;

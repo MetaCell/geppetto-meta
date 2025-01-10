@@ -1,31 +1,14 @@
-/*
- * import React, { Component } from 'react';
- * import { withStyles } from '@material-ui/core';
- *
- *
- * class Tree extends Component {
- * constructor (props) {
- *  super(props);
- * }
- * render () {
- *  return <></>
- * }
- * }
- *
- * export default withStyles(styles)(Tree);
- */
 import SortableTree from '@nosferatu500/react-sortable-tree';
 import {
   toggleExpandedForAll,
   changeNodeAtPath,
   walk,
 } from '@nosferatu500/react-sortable-tree';
-import { withStyles } from '@material-ui/core';
 import '@nosferatu500/react-sortable-tree/style.css';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-const styles = () => ({ treeViewer: { height: '100%' } });
+const styles = { treeViewer: { height: '100%' } };
 
 class Tree extends Component {
   constructor (props) {
@@ -193,7 +176,6 @@ class Tree extends Component {
 
   render () {
     const {
-      classes,
       style,
       searchQuery,
       onlyExpandSearchedNodes,
@@ -201,7 +183,7 @@ class Tree extends Component {
       ...others
     } = this.props;
     return (
-      <div className={classes.treeViewer} style={style}>
+      <div style={{ ...styles.treeViewer, ...style }}>
         {controls}
         <SortableTree
           style={style}
@@ -290,4 +272,4 @@ Tree.propTypes = {
   searchFinishCallback: PropTypes.func,
 };
 
-export default withStyles(styles)(Tree);
+export default Tree;

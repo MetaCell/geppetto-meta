@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import ConnectivityToolbar from './subcomponents/ConnectivityToolbar';
 import ConnectivityPlot from './subcomponents/ConnectivityPlot';
 import { Matrix } from './layouts/Matrix';
 import { Hive } from './layouts/Hive';
 import { Force } from './layouts/Force';
 import { Chord } from './layouts/Chord';
-import Grid from '@material-ui/core/Grid';
 import { PropTypes } from 'prop-types';
-import CustomToolbar from "../common/CustomToolbar";
 
-const styles = theme => ({
+import './styles.css';
+
+const styles = {
   container: {
     display: 'flex',
     alignItems: 'stretch',
     flex: 1,
   },
-});
+};
 
 class ConnectivityComponent extends Component {
   constructor (props) {
@@ -93,7 +92,6 @@ class ConnectivityComponent extends Component {
 
   renderContent () {
     const {
-      classes,
       id,
       data,
       colorMap,
@@ -116,8 +114,8 @@ class ConnectivityComponent extends Component {
     } = this.state;
 
     return (
-      <Grid className={classes.container} container spacing={2}>
-        <Grid item sm={12} xs={12}>
+      <div styles={styles.container}>
+        <div >
           <ConnectivityToolbar
             id={id}
             layout={layout}
@@ -128,8 +126,8 @@ class ConnectivityComponent extends Component {
             sortOptionsHandler={this.sortOptionsHandler}
             options={toolbarOptions}
           />
-        </Grid>
-        <Grid item sm={12} xs>
+        </div>
+        <div>
           <ConnectivityPlot
             ref={this.plotRef}
             id={id}
@@ -149,20 +147,19 @@ class ConnectivityComponent extends Component {
             linkType={linkType}
             library={library}
           />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     );
   }
 
   render () {
-    const { classes } = this.props;
     const { dimensions } = this.state;
 
     const content = dimensions != null ? this.renderContent() : '';
     return (
       <div
         ref={this.containerRef}
-        className={classes.container}
+        style={styles.container}
         onMouseEnter={() => this.toolbarHandler(true)}
         onMouseLeave={() => this.toolbarHandler(false)}
       >
@@ -286,4 +283,4 @@ ConnectivityComponent.propTypes = {
   }),
 };
 
-export default withStyles(styles)(ConnectivityComponent);
+export default ConnectivityComponent;
