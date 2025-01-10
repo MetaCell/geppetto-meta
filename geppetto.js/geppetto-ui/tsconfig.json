@@ -14,6 +14,7 @@
     "noImplicitReturns": true,
     "strict": false,
     "noUnusedLocals": false,
+    "allowJs": true,
     "jsx": "react",
     "types": [
       "jest",
