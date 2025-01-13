@@ -41,7 +41,7 @@ const HomePage = () => {
 
   const LayoutComponent = useMemo(() => {
     return getLayoutManagerInstance()?.getComponent()
-  }, [store, getLayoutManagerInstance()])
+  }, [store])
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel, location)));

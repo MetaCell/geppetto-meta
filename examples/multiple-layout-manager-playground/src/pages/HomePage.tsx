@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import {
   Box,
@@ -19,7 +18,8 @@ import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
+import 'flexlayout-react/style/dark.css';
+
 
 import { componentWidget } from '../widgets';
 
@@ -28,21 +28,13 @@ const HomePage = () => {
   const dispatch = useDispatch();
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
   const widgets = useSelector(state => state.widgets);
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
 
-  useEffect(() => {
-    if (LayoutComponent === undefined) {
-      const myManager = getLayoutManagerInstance();
-      if (myManager) {
-      // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
-      }
-    }
-  }, [store, LayoutComponent])
+  const LayoutComponent = useMemo(() => {
+    return getLayoutManagerInstance()?.getComponent()
+  }, [store])
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel)));
@@ -66,7 +58,7 @@ const HomePage = () => {
       }}>
         <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
           setName(event.target.value as string)
-        }/>
+        } />
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select
@@ -99,14 +91,14 @@ const HomePage = () => {
           </Select>
         </FormControl>
         <Button variant="contained" onClick={addComponent}>
-                    Add Component
+          Add Component
         </Button>
 
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
             <span>
               <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-                {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon/> : <VisibilityOnIcon/>}
+                {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon /> : <VisibilityOnIcon />}
               </IconButton>
             </span>
           </Tooltip>
@@ -119,7 +111,7 @@ const HomePage = () => {
         width: '100%',
         height: '90vh',
       }}>
-        {LayoutComponent === undefined ? <CircularProgress/> : <LayoutComponent/>}
+        {LayoutComponent === undefined ? <CircularProgress /> : <LayoutComponent />}
       </Box>
     </Box>
   );
