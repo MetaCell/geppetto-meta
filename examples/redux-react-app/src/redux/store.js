@@ -19,7 +19,7 @@ const reducers = {
  *
  * You can build upon geppetto-meta's configuration by passing your own reducers, initial state and middlewares.
  */
-const store = createStore(
+const {layoutManager ,store} = createStore(
   reducers,
   INIT_STATE,
   [exampleMiddleware],
