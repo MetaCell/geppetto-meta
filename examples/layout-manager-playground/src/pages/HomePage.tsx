@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import {
   Box,
@@ -36,27 +36,18 @@ const HomePage = () => {
   const dispatch = useDispatch();
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
   const widgets = useSelector(state => state.widgets);
-  // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
   const [panel, setPanel] = useState("topLeft");
   const [location, setLocation] = useState(TabsetPosition.RIGHT)
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
 
-  useEffect(() => {
-    if (LayoutComponent === undefined) {
-      const myManager = getLayoutManagerInstance();
-      if (myManager) {
-        // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-        setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
-      }
-    }
-  }, [store, LayoutComponent])
+  const LayoutComponent = useMemo(() => {
+    return getLayoutManagerInstance()?.getComponent()
+  }, [store, getLayoutManagerInstance()])
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel, location)));
   };
-
 
   const activateWidget = (widget: Widget) => {
     const updatedWidget = { ...widget };
@@ -65,7 +56,6 @@ const HomePage = () => {
     updatedWidget.defaultPosition = Positions[location];
     dispatch(updateWidget(updatedWidget));
   };
-
 
   return (
     <Box>

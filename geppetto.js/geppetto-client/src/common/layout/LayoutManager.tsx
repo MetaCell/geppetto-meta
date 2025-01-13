@@ -168,9 +168,7 @@ export class LayoutManager {
    * @memberof Component
    *
    */
-  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => ({
-    classes,
-  }) => (
+  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => (props) => (
     <div className="layout-outer-wrapper" style={styles.container}>
       <div className="layout-wrapper" style={styles.flexlayout}>
         <FlexLayout.Layout
