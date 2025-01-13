@@ -29,7 +29,8 @@
     "react-dom": "^18.3.1",
     "react-redux": "^7.2.0",
     "web-vitals": "^2.1.4",
-    "pako": "^1.0.3"
+    "pako": "^1.0.3",
+    "flexlayout-react": "^0.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

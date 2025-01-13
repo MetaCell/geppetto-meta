@@ -1,4 +1,4 @@
-import type * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import type * as FlexLayout from 'flexlayout-react';
 import { layoutActions } from './actions';
 import * as General from '../actions';
 import { WidgetStatus, type WidgetMap, type ExtendedNode, BaseNode } from './model'

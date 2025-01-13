@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import {
   Box,
@@ -19,8 +18,7 @@ import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { TabsetPosition, type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
-import '@metacell/geppetto-meta-ui/flex-layout/style/dark.scss'
+import 'flexlayout-react/style/dark.css';
 
 import { componentWidget } from "../widgets";
 

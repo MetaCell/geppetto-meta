@@ -2,9 +2,9 @@ import {
   BorderNode,
   TabNode,
   TabSetNode,
-} from '@metacell/geppetto-meta-ui/flex-layout/src';
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
-import { IIcons } from '@metacell/geppetto-meta-ui/flex-layout/src/view/Layout';
+  IIcons
+} from 'flexlayout-react';
+import * as FlexLayout from 'flexlayout-react';
 import type React from 'react';
 
 /*

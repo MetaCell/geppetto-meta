@@ -1,5 +1,5 @@
 import { WidgetStatus, Widget, WidgetMap } from './model';
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import * as FlexLayout from 'flexlayout-react';
 
 export const layoutActions = {
   SET_LAYOUT: 'SET_LAYOUT',
@@ -50,7 +50,7 @@ export const updateWidget = (newConf: Widget) => ({
 
 /**
  * Support action: do not consider as part of the api
- * @param id 
+ * @param id
  */
 export const setLayout = ((newLayout: string) => ({
   type: layoutActions.SET_LAYOUT,
@@ -59,7 +59,7 @@ export const setLayout = ((newLayout: string) => ({
 
 export const updateLayout = ((layout: FlexLayout.Model) => ({
   type: layoutActions.UPDATE_LAYOUT,
-  data: layout 
+  data: layout
 }));
 
 export const minimizeWidget = id => ({
@@ -93,7 +93,7 @@ export const destroyWidget = deleteWidget;
 
 /**
  * Support action: do not consider as part of the api
- * @param id 
+ * @param id
  */
 export const removeWidgetFromStore = id => ({
   type: layoutActions.REMOVE_WIDGET,

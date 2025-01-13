@@ -1,8 +1,6 @@
 import * as React from 'react';
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
-import { Actions } from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
-import { DockLocation } from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
-import { Model } from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import * as FlexLayout from 'flexlayout-react';
+import { Actions, DockLocation, Model, IJsonModel } from 'flexlayout-react'
 import { BaseNode, type ComponentMap, type IComponentConfig, type Widget, WidgetStatus } from './model';
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
@@ -14,7 +12,6 @@ import { layoutActions, removeWidgetFromStore, setLayout, updateLayout, } from "
 
 import { MinimizeHelper } from "./helpers/MinimizeHelper";
 import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
-import type { IJsonModel } from '@metacell/geppetto-meta-ui/flex-layout/src/model/IJsonModel';
 
 
 const styles = {
