@@ -1,5 +1,5 @@
 import React from 'react';
-import Popover from '@material-ui/core/Popover';
+import Popover from '@mui/material/Popover';
 import { SketchPicker, CompactPicker, SwatchesPicker } from 'react-color';
 import BaseIconComponent from './BaseIconComponent';
 

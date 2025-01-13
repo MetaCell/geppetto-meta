@@ -4,6 +4,7 @@ const BigImgViewer = lazy(() => import(/* webpackChunkName: "bigimageviewer" */'
 const Canvas = lazy(() => import(/* webpackChunkName: "canvas" */'./dataviewers/canvas'));
 const ConnectivityViewer = lazy(() => import(/* webpackChunkName: "connectivityviewer" */'./dataviewers/connectivityviewer'));
 const DicomViewer = lazy(() => import(/* webpackChunkName: "dicomviewer" */'./dataviewers/dicomviewer'));
+const DicomViewerPreconf = lazy(() => import(/* webpackChunkName: "dicomviewerPreconf" */'./dataviewers/dicomviewerPreconf'));
 const GraphVisualizer = lazy(() => import(/* webpackChunkName: "graphvisualizer" */'./dataviewers/graphvisualizer'));
 const HTMLViewer = lazy(() => import(/* webpackChunkName: "htmlviewer" */'./dataviewers/htmlviewer'));
 const MoviePlayer = lazy(() => import(/* webpackChunkName: "movieplayer" */'./dataviewers/movieplayer'));
@@ -42,6 +43,12 @@ const pages = [
     parent: 'Data Viewers',
     name: 'Dicom Viewer',
     to: '/dataviewers/dicomviewer',
+  },
+  {
+    component: DicomViewerPreconf,
+    parent: 'Data Viewers',
+    name: 'Preconfigured Dicom Viewer',
+    to: '/dataviewers/dicomviewerPreconf',
   },
   {
     component: GraphVisualizer,

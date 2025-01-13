@@ -1,35 +1,29 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import Box from '@mui/material/Box';
 import pages from '../pages/index';
 import { Link } from 'react-router-dom';
 
-const styles = (theme) => ({
+const styles = {
   root: {
     width: '100%',
     display: 'flex',
   },
-  grow: {
-    flexGrow: 1,
-  },
-  divider: {
-    marginBottom: theme.spacing(2),
-  },
-});
+  grow: { flexGrow: 1, },
+  divider: theme => ({ marginBottom: theme.spacing(2), }),
+};
 
 class BottomNavigation extends Component {
-  getPages() {
+  getPages () {
     const currentPath = window.location.pathname;
     let nextPage = null;
     let previousPage = null;
     let next = 1;
     let previous = -1;
-    const activePages = pages.filter((page) => {
-      return page.component != null;
-    });
+    const activePages = pages.filter(page => page.component != null);
     for (let i = 0; i < activePages.length; i++) {
       let page = activePages[i];
       if (page.to === currentPath) {
@@ -47,13 +41,13 @@ class BottomNavigation extends Component {
     return { previous: previousPage, next: nextPage };
   }
 
-  render() {
-    const { classes, currentPageHandler } = this.props;
+  render () {
+    const { currentPageHandler } = this.props;
     const pages = this.getPages();
     return (
       <div>
-        <Divider variant="middle" className={classes.divider} />
-        <div className={classes.root}>
+        <Divider variant="middle" sx={styles.divider} />
+        <Box sx={styles.root}>
           {pages.previous !== null ? (
             <Link to={pages.previous.to} style={{ textDecoration: 'none' }}>
               <Button
@@ -65,7 +59,7 @@ class BottomNavigation extends Component {
               </Button>
             </Link>
           ) : null}
-          <span className={classes.grow} />
+          <Box component="span" sx={styles.grow} />
           {pages.next !== null ? (
             <Link to={pages.next.to} style={{ textDecoration: 'none' }}>
               <Button
@@ -78,10 +72,10 @@ class BottomNavigation extends Component {
               </Button>
             </Link>
           ) : null}
-        </div>
+        </Box>
       </div>
     );
   }
 }
 
-export default withStyles(styles, { withTheme: true })(BottomNavigation);
+export default BottomNavigation;

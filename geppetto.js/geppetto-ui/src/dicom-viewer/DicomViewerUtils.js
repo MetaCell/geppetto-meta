@@ -58,6 +58,7 @@ const dicomViewerUtils = {
         rendererObj.localizerHelper.remove(rendererObj.localizerHelper._mesh);
         rendererObj.localizerHelper._mesh.geometry.dispose();
         rendererObj.localizerHelper._mesh.geometry = null;
+        rendererObj.localizerHelper._mesh.material.dispose();
         rendererObj.localizerHelper._mesh = null;
       }
     }

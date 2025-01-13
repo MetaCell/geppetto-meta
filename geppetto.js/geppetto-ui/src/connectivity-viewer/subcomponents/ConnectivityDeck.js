@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import Card from '@material-ui/core/Card';
-import Modal from '@material-ui/core/Modal';
-import { withStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import CardContent from '@material-ui/core/CardContent';
-import CardActionArea from '@material-ui/core/CardActionArea';
+import Card from '@mui/material/Card';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
 import IconButtonWithTooltip from "../../common/IconButtonWithTooltip";
 import { Matrix } from "../layouts/Matrix";
 import { Force } from "../layouts/Force";
@@ -16,71 +15,20 @@ import ForceImg from '../images/force.svg';
 import HiveImg from '../images/hive.svg';
 import ChordImg from '../images/chord.svg';
 
+const classes = {
+  cardDeckWrapper: "connectivity-deck-wrapper",
+  cardWrapperTitle: "connectivity-deck-title",
+  cardDeck: "connectivity-deck-card-deck",
+  card: "connectivity-deck-card",
+  img: "connectivity-deck-card-img",
+  cardText: "connectivity-deck-card-text",
+  cardTitle: "connectivity-deck-card-title",
+  cardAction: "connectivity-deck-card-action",
+  cardImgTopCenterBlock: "connectivity-deck-card-img-top-center-block",
+  cardActionDisabled: "connectivity-deck-card-action-disabled",
+  button: "connectivity-deck-button",
+};
 
-const defaultColor = '#fc6320'
-const getColor = props => props?.styles?.color ? props?.styles?.color : defaultColor
-
-const styles = theme => ({
-  cardDeckWrapper: {
-    border: 0,
-    outline: 0,
-    marginRight: theme.spacing(-2),
-    marginLeft: theme.spacing(-2)
-  },
-  cardWrapperTitle: props => ({
-    fontSize: "40px",
-    fontWeight: "300",
-    marginTop: theme.spacing(10),
-    color: getColor(props),
-    textAlign: "center"
-  }),
-  cardDeck: {
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(10),
-    marginLeft: theme.spacing(10),
-    display: "table",
-    tableLayout: "fixed",
-    borderSpacing: "15px 0"
-  },
-  card: props => ({
-    borderRadius: 0,
-    border: 0,
-    cursor: "pointer",
-    padding: theme.spacing(2),
-    background: theme.palette.background.default,
-    display: "table-cell",
-    width: "1%",
-    verticalAlign: "top",
-    "&:hover": {
-      border: "1px solid",
-      borderColor: getColor(props),
-    }
-  }),
-  img: {
-    display: 'block',
-    margin: 'auto',
-    width: '100px',
-  },
-  cardText: { textAlign: 'center', color: "white" },
-  cardTitle: props => ({
-    marginTop: theme.spacing(1),
-    color: getColor(props),
-    marginBottom: "0.5em"
-  }),
-  cardAction: { height: "100%" },
-  cardImgTopCenterBlock: {
-    display: "block",
-    marginLeft: "auto",
-    marginRight: "auto",
-    borderRadius: "4px 4px 0 0"
-  },
-  cardActionDisabled: { height: "100%", opacity: "0.2" },
-  button: props => ({
-    padding: theme.spacing(1),
-    top: theme.spacing(0),
-    color: getColor(props),
-  }),
-});
 
 class ConnectivityDeck extends Component {
   constructor (props) {
@@ -126,7 +74,6 @@ class ConnectivityDeck extends Component {
 
   render () {
     const { open } = this.state;
-    const { classes } = this.props;
 
     return (
       <span>
@@ -175,4 +122,4 @@ class ConnectivityDeck extends Component {
   }
 }
 
-export default withStyles(styles)(ConnectivityDeck);
+export default ConnectivityDeck;
