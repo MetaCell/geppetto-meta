@@ -1,4 +1,4 @@
-import { createStore } from '@metacell/geppetto-meta-client/common';
+import { createLayoutAndStore } from '@metacell/geppetto-meta-client/common';
 import baseLayout from '../layout/defaultLayout';
 import componentMap from '../layout/componentsMap';
 
@@ -7,7 +7,7 @@ function configureStore() {
   const reducers = {};
   const INIT_STATE = {};
   const isMinimizeEnabled = true;
-  const {layoutManager, store} = createStore(
+  const { store } = createLayoutAndStore(
     reducers,
     INIT_STATE,
     middlewares,
