@@ -18,7 +18,7 @@ import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import 'flexlayout-react/style/dark.css';
+import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
 
 
 import { componentWidget } from '../widgets';
