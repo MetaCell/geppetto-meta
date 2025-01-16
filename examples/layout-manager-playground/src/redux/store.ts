@@ -1,4 +1,4 @@
-import { createStore } from '@metacell/geppetto-meta-client/common';
+import { createLayoutAndStore } from '@metacell/geppetto-meta-client/common';
 import baseLayout from '../layout/defaultLayout';
 import componentMap from '../layout/componentsMap';
 
@@ -7,13 +7,14 @@ function configureStore() {
   const reducers = {};
   const INIT_STATE = {};
   const isMinimizeEnabled = true;
-  return createStore(
+  const { store } = createLayoutAndStore(
     reducers,
     INIT_STATE,
     middlewares,
     // @ts-expect-error The two objects misses some fields to be type-coherent with the signature, but those fields are not really required
     { baseLayout, componentMap, isMinimizeEnabled },
   );
+  return store;
 }
 
 const store = configureStore()
