@@ -76,7 +76,7 @@ class EventManager {
 
   setStore(store: Store<any, GeppettoAction>) {
     if (this.initialized) {
-      throw Error("Cannot set the store more than once")
+      console.warn("Multiple stores found, EventManager will use the last one set.")
     }
     this.store = store;
     this.initialized = true;

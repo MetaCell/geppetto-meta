@@ -1,7 +1,7 @@
-import type * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
+import type * as FlexLayout from 'flexlayout-react';
 import { layoutActions } from './actions';
 import * as General from '../actions';
-import { WidgetStatus, type WidgetMap, type ExtendedNode } from './model'
+import { WidgetStatus, type WidgetMap, type ExtendedNode, BaseNode } from './model'
 import layoutInitialState from './defaultLayout';
 export { layoutInitialState };
 
@@ -112,10 +112,13 @@ export const widgets = (state: WidgetMap = {}, action) => {
   case layoutActions.UPDATE_LAYOUT: {
     const model: FlexLayout.Model = action.data;
     const updatedWidgets = { ...state };
-    const parents = new Set(Object.keys(updatedWidgets).map(widgetId => model.getNodeById(widgetId)).filter(n => n).map(n => n?.getParent()));
+    const parents = new Set(Object.keys(updatedWidgets).map(widgetId => model.getNodeById(widgetId)).filter(n => n).map(n => n?.getParent() as BaseNode));
     for (const parent of parents) {
       for (const i in parent.getChildren()) {
-        const node = parent.getChildren()[i];
+        const node = parent.getChildren()[i] as BaseNode;
+        if (!node.isVisible) {
+          continue
+        }
         if (!updatedWidgets[node.getId()]) {
           continue;
         }

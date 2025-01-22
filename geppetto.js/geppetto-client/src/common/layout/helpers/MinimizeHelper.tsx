@@ -4,7 +4,7 @@ import {Store} from "redux";
 import {Widget, WidgetStatus} from "../model";
 import {updateWidget} from "../actions";
 // @ts-ignore
-import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
+import type { Model } from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
 import {MINIMIZED_PANEL} from '../../layout';
 import {createTabSet, moveWidget} from "./FlexLayoutHelper";
 
@@ -60,7 +60,7 @@ export class MinimizeHelper {
      */
     minimizeWidget(widgetId) {
         if(this.store && this.minimizeBorderID) {
-            
+
             let updatedWidget = { ...getWidget(this.store, widgetId) };
             updatedWidget.status = WidgetStatus.MINIMIZED;
             updatedWidget.defaultPanel = updatedWidget.panelName;

@@ -2,7 +2,7 @@ import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common
 
 
 
-export const componentWidget = (name: string, color: string, panelName="panel1") : Widget => ({
+export const componentWidget = (name: string, color: string, panelName="panel1", defaultPosition?) : Widget => ({
   id: name + Math.random(),
   name: name,
   component: "MyComponent",
@@ -14,5 +14,6 @@ export const componentWidget = (name: string, color: string, panelName="panel1")
     color
   },
   session: undefined,
-  config: undefined
+  config: undefined,
+  defaultPosition: defaultPosition
 });

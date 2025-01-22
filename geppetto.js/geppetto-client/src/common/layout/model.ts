@@ -2,9 +2,9 @@ import {
   BorderNode,
   TabNode,
   TabSetNode,
-} from '@metacell/geppetto-meta-ui/flex-layout/src';
-import Node from '@metacell/geppetto-meta-ui/flex-layout/src/model/Node';
-import { IIcons } from '@metacell/geppetto-meta-ui/flex-layout/src/view/Layout';
+  IIcons
+} from 'flexlayout-react';
+import * as FlexLayout from 'flexlayout-react';
 import type React from 'react';
 
 /*
@@ -31,7 +31,7 @@ export enum TabsetPosition {
 /**
  * Extended Node interface
  */
-export interface ExtendedNode extends Node {
+export interface ExtendedNode extends FlexLayout.Node {
   config?: Widget;
 }
 
@@ -84,4 +84,13 @@ export interface IComponentConfig {
   icons?: IIcons;
   tabButtons?: Array<(props: TabButtonArgs) => React.ReactNode>;
   tabSetButtons?: Array<(props: TabSetButtonArgs) => React.ReactNode>;
+}
+
+
+export interface BaseNode extends FlexLayout.Node {
+  isMaximized: () => boolean,
+  getName: () => string,
+  isVisible: () => boolean,
+  getSelectedNode: () => FlexLayout.Node,
+  getWeight: () => number | undefined
 }
