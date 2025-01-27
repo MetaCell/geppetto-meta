@@ -23,3 +23,25 @@
   ```js
   import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
   ```
+* The removal of material-ui, and specifically the way of creating HOC with `useStyle` implies that the technique that was used before by a main app to instanciate the `LayoutComponent` changed.
+  Before, `useState` with `useEffect` was used:
+  ```js
+  const store = useStore();
+  const [LayoutComponent, setLayoutComponent] = useState<any | undefined>(undefined);
+
+  useEffect(() => {
+    if (LayoutComponent === undefined) {
+      const myManager = getLayoutManagerInstance();
+      if (myManager) {
+        setLayoutComponent(myManager.getComponent() as React.ComponentType<any>);
+      }
+    }
+  }, [store, LayoutComponent])
+  ```
+  Now, `useMemo` has to be used instead
+  ```js
+  const store = useStore();
+  const LayoutComponent = useMemo(() => {
+    return getLayoutManagerInstance()?.getComponent()
+  }, [store])
+  ```

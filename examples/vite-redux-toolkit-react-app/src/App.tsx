@@ -2,9 +2,9 @@ import HomePage from "./pages/HomePage";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MainLayout from "./components/MainLayout.tsx";
-import '@metacell/geppetto-meta-ui/flex-layout/style/light.scss'
+import '@metacell/geppetto-meta-client/common/layout/styles/light.css'
 
-const darkTheme = createTheme({
+const lightTheme = createTheme({
   palette: {
     mode: 'light',
   },
@@ -12,10 +12,10 @@ const darkTheme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <MainLayout>
-        <HomePage/>
+        <HomePage />
       </MainLayout>
     </ThemeProvider>
   );
