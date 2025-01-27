@@ -1,34 +1,29 @@
 import * as React from 'react';
-import * as FlexLayout from '@metacell/geppetto-meta-ui/flex-layout/src/index';
-import Actions from '@metacell/geppetto-meta-ui/flex-layout/src/model/Actions';
-import DockLocation from '@metacell/geppetto-meta-ui/flex-layout/src/DockLocation';
-import Model from '@metacell/geppetto-meta-ui/flex-layout/src/model/Model';
-import {type ComponentMap, type IComponentConfig, type Widget, WidgetStatus} from './model';
-import {createStyles, withStyles} from '@material-ui/core/styles'
+import * as FlexLayout from 'flexlayout-react';
+import { Actions, DockLocation, Model, IJsonModel } from 'flexlayout-react'
+import { BaseNode, type ComponentMap, type IComponentConfig, type Widget, WidgetStatus } from './model';
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
-import {getWidget, widget2Node} from "./utils";
+import { getWidget, widget2Node } from "./utils";
 import * as GeppettoActions from '../actions';
 
-import {layoutActions, removeWidgetFromStore, setLayout, updateLayout,} from "./actions";
+import { layoutActions, removeWidgetFromStore, setLayout, updateLayout, } from "./actions";
 
-import {MinimizeHelper} from "./helpers/MinimizeHelper";
-import {createTabSet, moveWidget} from "./helpers/FlexLayoutHelper";
-import type { IJsonModel } from '@metacell/geppetto-meta-ui/flex-layout/src/model/IJsonModel';
+import { MinimizeHelper } from "./helpers/MinimizeHelper";
+import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
 
 
-const styles = (theme) => createStyles({
+const styles = {
   container: {
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'stretch',
-    position: 'relative'
-  },
-  spacer: { width: theme.spacing(1) },
-  flexlayout: { flexGrow: 1, position: 'relative' }
-});
+    position: 'relative',
+  } as const,
+  flexlayout: { flexGrow: 1, position: 'relative' } as const
+};
 
 let instance: LayoutManager = null;
 
@@ -47,7 +42,7 @@ export class LayoutManager {
   /**
    * Used to restore weights from the default layout
    */
-  defaultWeights: {[id: string]: number} = {};
+  defaultWeights: { [id: string]: number } = {};
   widgetFactory: WidgetFactory;
   tabsetIconFactory: TabsetIconFactory;
   store;
@@ -75,20 +70,26 @@ export class LayoutManager {
       : new TabsetIconFactory();
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
-    this.minimizeHelper= new MinimizeHelper(isMinimizeEnabled, this.model)
+    this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model)
   }
-
-
 
   setLayout(model: any) {
     this.model = FlexLayout.Model.fromJson(
-       model || defaultLayoutConfiguration
+      model || defaultLayoutConfiguration
     );
-    const allNodes: FlexLayout.Node[] = Object.values(this.model._idMap);
-    for(const node of allNodes) {
-        this.defaultWeights[node.getId()] = node._getAttr("weight");
-    }
-    this.fixRowRecursive(this.model._root)
+    this.model.visitNodes((node) => {
+      const fn = (node as BaseNode)?.getWeight;
+      if (!fn) {
+        return
+      }
+      this.defaultWeights[node.getId()] = fn.bind(node)();
+    })
+    // for (const node of allNodes) {
+    //   this.defaultWeights[node.getId()] = (node as BaseNode).getWeight();
+    //   console.log("Visit", node)
+    // }
+
+    this.fixRowRecursive(this.model.getRoot())
   }
 
   /**
@@ -103,7 +104,7 @@ export class LayoutManager {
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-        createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+      tabset = createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
     }
     widgetConfiguration.pos = widgetConfiguration.pos ?? tabset.getChildren().length
     this.model.doAction(
@@ -164,11 +165,9 @@ export class LayoutManager {
    * @memberof Component
    *
    */
-  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => ({
-    classes,
-  }) => (
-    <div className={classes.container}>
-      <div className={classes.flexlayout}>
+  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => (props) => (
+    <div className="layout-outer-wrapper" style={styles.container}>
+      <div className="layout-wrapper" style={styles.flexlayout}>
         <FlexLayout.Layout
           model={this.model}
           factory={this.factory}
@@ -194,7 +193,7 @@ export class LayoutManager {
    * Get the layout component.
    * @memberof Control
    */
-  getComponent = (config?: IComponentConfig) => withStyles(styles)(this.Component(this, config));
+  getComponent = (config?: IComponentConfig) => this.Component(this, config);
 
 
   /**
@@ -257,7 +256,7 @@ export class LayoutManager {
    * @memberof Control
    */
   middleware = (store) => (next) => (action) => {
-    if(!this.store) {
+    if (!this.store) {
       next(setLayout(JSON.stringify(this.model.toJson())));
     }
 
@@ -335,47 +334,61 @@ export class LayoutManager {
       next(action);
     }
     if (nextSetLayout) {
-      this.fixRowRecursive(this.model._root)
+      this.fixRowRecursive(this.model.getRoot())
       next(updateLayout(this.model));
     }
 
   };
 
-  restoreWeight(node: FlexLayout.Node) {
+  setTabsetWeight(node: FlexLayout.Node, weight: number) {
+    this.model.doAction(FlexLayout.Actions.updateNodeAttributes(node.getId(), { weight: 0 }))
+  }
 
-    if(node._getAttr("weight") == 0) {
-      node._setWeight(this.defaultWeights[node.getId()] ?? 50);
+  restoreWeight(node: FlexLayout.Node) {
+    const baseNode = node as BaseNode;
+    if (baseNode?.getWeight?.() === 0) {
+      this.setTabsetWeight(baseNode, this.defaultWeights[baseNode.getId()] ?? 50)
     }
 
-    if(node.getParent()) {
-      this.restoreWeight(node.getParent());
+    if (baseNode.getParent()) {
+      this.restoreWeight(baseNode.getParent());
     }
   }
 
+  containsWidget(node: FlexLayout.Node) {
+    if (node.getChildren().length === 0 || !node.getChildren().every(n => n.getType() === "tab")) {
+      return false
+    }
+    for (const child of node.getChildren()) {
+      if (this.containsWidget(child)) {
+        return true;
+      }
+    }
+    return false
+  }
+
   fixRowRecursive(node: FlexLayout.Node) {
-    if(node.getType() === "row" || node.getType() === "tabset") {
-      if(node.getChildren().length === 0) {
-        node._setWeight(0);
+    if (node.getType() === "row" || node.getType() === "tabset") {
+      if (node.getChildren().length === 0) {
+        this.setTabsetWeight(node, 0)
         return true;
       } else {
 
 
         let empty = true;
-        for(let child of node.getChildren()) {
-          empty =  this.fixRowRecursive(child) && empty;
+        for (const child of node.getChildren()) {
+          empty = this.fixRowRecursive(child) && empty;
         }
 
-        if(!empty) {
+        if (!empty) {
           this.restoreWeight(node);
         } else {
-          node._setWeight(0);
+          this.setTabsetWeight(node, 0)
         }
-
         return empty;
       }
     }
     return false;
-
   }
 
   /**
@@ -459,12 +472,12 @@ export class LayoutManager {
         break;
       }
       case Actions.MAXIMIZE_TOGGLE:
-	// reminder, widgets are not maximised but tabsets are
+        // reminder, widgets are not maximised but tabsets are
         break;
       case Actions.RENAME_TAB:
         break;
-      case Actions.ADJUST_SPLIT:
-        break;
+      // case Actions.ADJUST_SPLIT:
+      //   break;
       case Actions.ADD_NODE: {
         break;
       }
@@ -478,7 +491,7 @@ export class LayoutManager {
     if (defaultAction) {
       this.model.doAction(action);
     }
-    this.fixRowRecursive(this.model._root)
+    this.fixRowRecursive(this.model.getRoot())
 
     const newModel = this.model.toJson();
     if (oldModel !== newModel) {
@@ -500,7 +513,7 @@ export class LayoutManager {
     const mergedWidget = { ...previousWidget, ...widget }
 
     const widgetRestored = this.minimizeHelper.restoreWidgetIfNecessary(previousWidget, mergedWidget);
-    if(!widgetRestored){
+    if (!widgetRestored) {
       moveWidget(model, mergedWidget);
     }
 
@@ -514,11 +527,12 @@ export class LayoutManager {
       if (mergedWidget.status === WidgetStatus.ACTIVE) {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
-      if((widget.status === WidgetStatus.MAXIMIZED && !node.getParent().isMaximized()) ||
-          (widget.status === WidgetStatus.ACTIVE && node.getParent().isMaximized())) {
+      const parent = node.getParent() as BaseNode;
+      if ((widget.status === WidgetStatus.MAXIMIZED && !parent.isMaximized()) ||
+        (widget.status === WidgetStatus.ACTIVE && parent.isMaximized())) {
         this.model.doAction(FlexLayout.Actions.maximizeToggle(node.getParent().getId()));
       }
-      else if(widget.status === WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
+      else if (widget.status === WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
         this.minimizeHelper.minimizeWidget(node.getId());
       }
     }

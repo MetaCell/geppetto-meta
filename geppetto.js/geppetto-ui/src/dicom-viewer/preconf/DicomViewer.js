@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import BaseDicomViewer from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import {
@@ -14,6 +14,20 @@ const DicomViewer = props => {
   const [fullScreen, setFullScreen] = useState(props.fullScreen);
   const [mode, setMode] = useState(props.mode);
   const [orientation, setOrientation] = useState(props.orientation);
+
+  useEffect(() => {
+    setFullScreen(props.fullScreen);
+  }, [props.fullScreen])
+
+  useEffect(() => {
+    setMode(props.mode);
+  }, [props.mode])
+
+
+  useEffect(() => {
+    setOrientation(props.orientation);
+  }, [props.orientation])
+
 
   const changeMode = () => {
     if (mode === 'single_view') {
@@ -132,17 +146,21 @@ DicomViewer.propTypes = {
    */
   data: PropTypes.string.isRequired,
   /**
-   * Initial view mode: 'single_view' or 'quad_view'
+   * Initial view mode: 'single_view', 'quad_view' or undefined
+   * If undefined, the component state is used.
+   * If a value different from undefined is used, this version overwrite the internal state.
    */
-  mode: PropTypes.oneOf(['single_view', 'quad_view']),
+  mode: PropTypes.oneOf(['single_view', 'quad_view', undefined]),
   /**
    * Display the dicom viewer in full screen
    */
   fullScreen: PropTypes.bool,
   /**
    * Initial orientation view: '3d', 'coronal', 'axial' or 'sagittal'
+   * If undefined, the component state is used.
+   * If a value different from undefined is used, this version overwrite the internal state.
    */
-  orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal']),
+  orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal', undefined]),
   /**
    * Action to perform on click: 'goToPoint' or custom action, default is 'goToPoint'
    */

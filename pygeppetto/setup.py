@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-__version__ = "0.8.1"
+__version__ = "0.9.1"
 
 required_packages = [
     'pyecore>=0.11.5',
@@ -31,8 +31,10 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
         "Topic :: Software Development",

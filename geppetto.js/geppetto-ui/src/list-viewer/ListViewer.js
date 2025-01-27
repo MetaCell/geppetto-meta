@@ -58,7 +58,7 @@ export const IconComponent = ({ icon, action, color, tooltip }) => ({ value, }) 
 );
 
 export const MultiStatusComponent = availableStatuses =>
-  class Comp extends React.Component {
+  (class Comp extends React.Component {
     constructor (props) {
       super(props);
       // State contains the index of a circular list
@@ -88,7 +88,7 @@ export const MultiStatusComponent = availableStatuses =>
         />
       );
     }
-  };
+  });
 
 /**
  * Wraps a component implementing a click action on it.

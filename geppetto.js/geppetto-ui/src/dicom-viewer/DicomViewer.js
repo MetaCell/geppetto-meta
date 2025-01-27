@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { PropTypes } from 'prop-types';
 
 import * as THREE from 'three';
@@ -20,7 +21,7 @@ const classes = {
   button: "dicom-viewer-button",
 };
 
-class DicomViewer extends Component {
+class _DicomViewer extends Component {
 
   animationOn = true;
   animationSkipRate = 3;
@@ -633,6 +634,11 @@ class DicomViewer extends Component {
     return customButtons;
   }
 
+  hasCustomButtons () {
+    const buttons = this.props.toolbarButtons;
+    return buttons?.single_view || buttons?.quad_view || buttons?.fullScreen || buttons?.minimized || this.props.showDownloadButton
+  }
+
   render () {
     const { toolbarOptions, loaderOptions, mode, orientation, id, fullScreen } = this.props;
     const customButtons = this.getCustomButtons();
@@ -690,7 +696,7 @@ class DicomViewer extends Component {
         className='container-dicom-viewer'
       >
         {!this.state.ready && showLoader && loader}
-        {toolbar}
+        {this.hasCustomButtons() && toolbar}
         <div
           className={classes.dicomViewer}
           style={{
@@ -760,9 +766,9 @@ class DicomViewer extends Component {
   }
 }
 
-const Wrapper = props => <DicomViewer {...props} />;
+const DicomViewer = props => <_DicomViewer {...props} />;
 
-Wrapper.defaultProps = {
+DicomViewer.defaultProps = {
   onLoaded: () => {},
   mode: 'quad_view',
   orientation: '3d',
@@ -777,7 +783,7 @@ Wrapper.defaultProps = {
 };
 
 
-Wrapper.propTypes = {
+DicomViewer.propTypes = {
   /**
    * Component identifier
    */
@@ -787,7 +793,7 @@ Wrapper.propTypes = {
    */
   data: PropTypes.string.isRequired,
   /**
-   * Initial view mode: 'single_view' or 'quad_view'
+   * View mode: 'single_view' or 'quad_view'
    */
   mode: PropTypes.oneOf(['single_view', 'quad_view']),
   /**
@@ -795,7 +801,7 @@ Wrapper.propTypes = {
    */
   fullScreen: PropTypes.bool,
   /**
-   * Initial orientation view: '3d', 'coronal', 'axial' or 'sagittal'
+   * Orientation view: '3d', 'coronal', 'axial' or 'sagittal'
    */
   orientation: PropTypes.oneOf(['3d', 'coronal', 'axial', 'sagittal']),
   /**
@@ -991,4 +997,4 @@ Wrapper.propTypes = {
   })
 };
 
-export default Wrapper
+export default DicomViewer;

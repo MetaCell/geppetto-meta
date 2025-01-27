@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraControls';
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import Loader from '@metacell/geppetto-meta-ui/loader/Loader';
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils"
@@ -13,14 +13,14 @@ const COLORS = [
   { r: 0.43, g: 0.57, b: 0, a: 1 },
   { r: 1, g: 0.41, b: 0.71, a: 1 },
 ];
-const styles = () => ({
+const styles = {
   container: {
     height: '800px',
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   }
-});
+};
 
 class CA1Example extends Component {
   constructor (props) {
@@ -100,14 +100,13 @@ class CA1Example extends Component {
   }
 
   render () {
-    const { classes } = this.props;
     const { data, cameraOptions, showLoader, hasModelLoaded } = this.state;
     const canvasData = mapToCanvasData(data)
 
 
     return showLoader ? <Loader active={true}/>
       : hasModelLoaded ? (
-        <div ref={node => this.node = node} className={classes.container}>
+        <Box ref={node => this.node = node} sx={styles.container}>
           <Canvas
             ref={this.canvasRef}
             data={canvasData}
@@ -117,7 +116,7 @@ class CA1Example extends Component {
             backgroundColor={0x505050}
             onHoverListeners={{ 'hoverId':this.hoverListener }}
           />
-        </div>
+        </Box>
       ) : <Button
         variant="outlined"
         color="primary"
@@ -128,4 +127,4 @@ class CA1Example extends Component {
   }
 }
 
-export default withStyles(styles)(CA1Example);
+export default CA1Example;

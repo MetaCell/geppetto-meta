@@ -1,4 +1,9 @@
 import React from 'react';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faRss, faCube, faSlidersH, faTree } from '@fortawesome/free-solid-svg-icons'
+import { faQuora } from '@fortawesome/free-brands-svg-icons'
+import { Facebook, Twitter, Search, QueryBuilder, List, Info, QuestionMark } from '@mui/icons-material'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const toolbarMenu = {
   global: {
@@ -125,15 +130,15 @@ const toolbarMenu = {
         },
         {
           label: (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M7.32911 13.2291L3.85411 9.75414L2.67078 10.9291L7.32911 15.5875L17.3291 5.58748L16.1541 4.41248L7.32911 13.2291Z" fill="#D6D5D7"/>
-                </svg>
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7.32911 13.2291L3.85411 9.75414L2.67078 10.9291L7.32911 15.5875L17.3291 5.58748L16.1541 4.41248L7.32911 13.2291Z" fill="#D6D5D7"/>
+              </svg>
                 Feedback
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M7.32911 13.2291L3.85411 9.75414L2.67078 10.9291L7.32911 15.5875L17.3291 5.58748L16.1541 4.41248L7.32911 13.2291Z" fill="#5A48E6"/>
-                </svg>
-              </>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7.32911 13.2291L3.85411 9.75414L2.67078 10.9291L7.32911 15.5875L17.3291 5.58748L16.1541 4.41248L7.32911 13.2291Z" fill="#5A48E6"/>
+              </svg>
+            </>
           ),
           icon: '',
           action: {
@@ -143,7 +148,7 @@ const toolbarMenu = {
         },
         {
           label: 'Social media',
-          icon: 'my-svg-icon',
+          icon: '',
           position: 'right-start',
           action: {
             handlerAction: 'submenu',
@@ -152,7 +157,7 @@ const toolbarMenu = {
           list: [
             {
               label: 'Twitter',
-              icon: 'fa fa-twitter',
+              icon: <Twitter />,
               action: {
                 handlerAction: 'openNewTab',
                 parameters: ['http://twitter.com/virtualflybrain'],
@@ -160,7 +165,7 @@ const toolbarMenu = {
             },
             {
               label: 'Facebook',
-              icon: 'fa fa-facebook',
+              icon: <Facebook />,
               action: {
                 handlerAction: 'openNewTab',
                 parameters: [
@@ -178,7 +183,7 @@ const toolbarMenu = {
             },
             {
               label: 'Rss',
-              icon: 'fa fa-rss',
+              icon: <FontAwesomeIcon icon={faRss} />,
               action: {
                 handlerAction: 'openNewTab',
                 parameters: ['http://blog.virtualflybrain.org/rss'],
@@ -196,7 +201,7 @@ const toolbarMenu = {
       list: [
         {
           label: 'Search',
-          icon: 'fa fa-search',
+          icon: <Search fontSize="small" />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['spotlightVisible'],
@@ -204,7 +209,7 @@ const toolbarMenu = {
         },
         {
           label: 'Query',
-          icon: 'fa fa-quora',
+          icon: <FontAwesomeIcon icon={faQuora} />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['queryBuilderVisible'],
@@ -212,7 +217,7 @@ const toolbarMenu = {
         },
         {
           label: 'Layers',
-          icon: 'fa fa-list',
+          icon: <List fontSize="small" />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['controlPanelVisible'],
@@ -220,7 +225,7 @@ const toolbarMenu = {
         },
         {
           label: 'Term Info',
-          icon: 'fa fa-info',
+          icon: <Info fontSize="small" />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['termInfoVisible'],
@@ -228,7 +233,7 @@ const toolbarMenu = {
         },
         {
           label: '3D Viewer',
-          icon: 'fa fa-cube',
+          icon: <FontAwesomeIcon icon={faCube} />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['canvasVisible'],
@@ -236,7 +241,7 @@ const toolbarMenu = {
         },
         {
           label: 'Slice Viewer',
-          icon: 'fa fa-sliders',
+          icon: <FontAwesomeIcon icon={faSlidersH} />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['sliceViewerVisible'],
@@ -244,7 +249,7 @@ const toolbarMenu = {
         },
         {
           label: 'Tree Browser',
-          icon: 'fa fa-tree',
+          icon: <FontAwesomeIcon icon={faTree} />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['treeBrowserVisible'],
@@ -608,7 +613,7 @@ const toolbarMenu = {
         },
         {
           label: 'Quick Help',
-          icon: 'fa fa-question',
+          icon: <QuestionMark fontSize="small" />,
           action: {
             handlerAction: 'UIElementHandler',
             parameters: ['quickHelpVisible'],

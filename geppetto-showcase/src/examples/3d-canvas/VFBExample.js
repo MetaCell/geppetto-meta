@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
 import Canvas from '@metacell/geppetto-meta-ui/3d-canvas/Canvas';
 import CameraControls from '@metacell/geppetto-meta-ui/camera-controls/CameraControls';
 import * as THREE from 'three';
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 import { applySelection, mapToCanvasData } from "@metacell/geppetto-meta-ui/3d-canvas/utils/SelectionUtils"
 import Manager from '@metacell/geppetto-meta-core/ModelManager';
 
@@ -27,14 +27,14 @@ const COLORS = [
   { r: 0, g: 0.52, b: 0.96, a: 1 },
   { r: 1, g: 0, b: 0, a: 1 },
 ];
-const styles = () => ({
+const styles = {
   container: {
     height: '800px',
     width: '1240px',
     display: 'flex',
     alignItems: 'stretch',
   },
-});
+};
 
 class VFBExample extends Component {
   constructor (props) {
@@ -192,12 +192,11 @@ class VFBExample extends Component {
   }
 
   render () {
-    const { classes } = this.props;
     const { data, threeDObjects, hasModelLoaded, showLoader, cameraOptions } = this.state;
     const canvasData = mapToCanvasData(data)
     
     return showLoader ? <Loader active={true}/> : hasModelLoaded ? (
-      <div ref={node => this.node = node} className={classes.container}>
+      <Box ref={node => this.node = node} sx={styles.container}>
         <>
           <Canvas
             ref={this.canvasRef}
@@ -211,7 +210,7 @@ class VFBExample extends Component {
             onHoverListeners={{ 'hoverId':this.hoverHandler }}
           />
         </>
-      </div>
+      </Box>
     ) : <Button
       variant="outlined"
       color="primary"
@@ -222,4 +221,4 @@ class VFBExample extends Component {
   }
 }
 
-export default withStyles(styles)(VFBExample);
+export default VFBExample;

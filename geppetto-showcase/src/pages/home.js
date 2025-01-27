@@ -1,19 +1,17 @@
-import Typography from '@material-ui/core/Typography';
+import Typography from '@mui/material/Typography';
 import React, { Component, Fragment } from 'react';
 
-export default class Home extends Component {
-  render () {
-    return (
-      <Fragment>
-        <Typography paragraph>
+export const Home = () => (
+  <Fragment>
+    <Typography>
           Skip to the science. The visualisation and simulation platform focused
           on what matters to you.
-        </Typography>
-        <Typography paragraph>
+    </Typography>
+    <Typography>
           Some of the react components responsible for giving you an amazing
           experience.
-        </Typography>
-      </Fragment>
-    );
-  }
-}
+    </Typography>
+  </Fragment>
+);
+
+export default Home;
