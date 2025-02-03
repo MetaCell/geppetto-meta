@@ -5,6 +5,7 @@
   "repository": "https://github.com/MetaCell/geppetto-website.git",
   "license": "MIT",
   "scripts": {
+    "link:yalc": "yalc link @metacell/geppetto-meta-core && yalc link @metacell/geppetto-meta-ui && yalc link @metacell/geppetto-meta-client",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --open --mode development",
     "build": "webpack"

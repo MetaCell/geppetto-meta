@@ -100,7 +100,7 @@
     "react-overlays": "^0.8.0",
     "react-player": "^0.18.0",
     "react-plotly.js": "^2.3.0",
-    "react-resize-detector": "^6.7.4",
+    "react-resize-detector": "^9.0.0",
     "react-rnd": "^7.3.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",

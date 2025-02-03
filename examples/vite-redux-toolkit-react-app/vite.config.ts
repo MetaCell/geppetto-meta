@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import commonjs from 'vite-plugin-commonjs'
 
 const gzipFixPlugin = () => {
   const fixHeader = (server) => {
@@ -22,7 +23,7 @@ const gzipFixPlugin = () => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), gzipFixPlugin()],
+  plugins: [react(), gzipFixPlugin(), commonjs()],
   optimizeDeps: {
     exclude: ['@metacell/geppetto-meta-core', '@metacell/geppetto-meta-client', '@metacell/geppetto-meta-ui']
   },
