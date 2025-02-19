@@ -1,4 +1,4 @@
-import { defineConfig, Plugin } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import commonjs from "vite-plugin-commonjs";
 
@@ -21,28 +21,29 @@ const gzipFixPlugin = (): Plugin => {
   };
 };
 
-const aliasThreeForFiber = (): Plugin => {
-  return {
-    name: "alias-three-for-fiber",
-    enforce: "pre",
-    resolveId(source, importer) {
-      if (source === "three" && importer?.includes("@react-three/fiber")) {
-        return this.resolve("three-latest");
-      }
-      return null;
-    },
-  };
-};
+// const aliasThreeForFiber = (): Plugin => {
+//   return {
+//     name: "alias-three-for-fiber",
+//     enforce: "pre",
+//     resolveId(source, importer) {
+//       if (source === "three" && importer?.includes("dicom")) {
+//         console.log(`[vite-plugin] Redirecting "three" -> "three-legacy"`, importer);
+//         return this.resolve("three-legacy")
+//       }
+//       return null;
+//     },
+//   };
+// };
 
 export default defineConfig({
-  plugins: [react(), gzipFixPlugin(), commonjs(), aliasThreeForFiber()],
+  plugins: [react(), gzipFixPlugin(), commonjs()],
   optimizeDeps: {
-    include: ["three-latest"], // Ensure `three-latest` is pre-bundled
+    // include: ["three-legacy"], // Ensure "three-legacy" is pre-bundled
     exclude: [
       "@metacell/geppetto-meta-core",
       "@metacell/geppetto-meta-client",
       "@metacell/geppetto-meta-ui",
-      "three",
+      // "three",
     ],
   },
   assetsInclude: ["**/*.nii.gz"],

@@ -10,8 +10,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
-    "preview": "vite preview",
-    "postinstall": "patch-package"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -37,14 +36,13 @@
     "nifti-reader-js": "^0.6.8",
     "openseadragon": "^5.0.0",
     "patch-package": "^8.0.0",
-    "postinstall-postinstall": "^2.1.0",
     "react": "^18.3.1",
     "react-color": "^2.19.3",
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.2",
     "react-resize-detector": "^9.0.0",
-    "three": "^0.118.0",
-    "three-latest": "npm:three@^0.173.0"
+    "three-legacy": "npm:three@^0.118.0",
+    "three": "^0.173.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

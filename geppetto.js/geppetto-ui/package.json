@@ -111,8 +111,8 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",
     "react-slick": "^0.29.0",
-    "three": ">=0.111.0",
-    "three-latest": "npm:three@^0.173.0",
+    "three-legacy": "npm:three@>=0.111.0",
+    "three": "^0.173.0",
     "three-render-objects": ">=1.13.3",
     "underscore": "~1.9.1"
   },
