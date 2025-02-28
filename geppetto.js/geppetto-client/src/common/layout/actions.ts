@@ -59,7 +59,7 @@ export const setLayout = ((newLayout: string) => ({
 
 export const updateLayout = ((layout: FlexLayout.Model) => ({
   type: layoutActions.UPDATE_LAYOUT,
-  data: layout
+  data: layout.toJson()
 }));
 
 export const minimizeWidget = id => ({

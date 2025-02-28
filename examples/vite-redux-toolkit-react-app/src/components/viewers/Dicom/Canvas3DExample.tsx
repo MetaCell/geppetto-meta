@@ -3,6 +3,9 @@ import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
+import * as THREE from "three";
+
+console.log("three.js for 3D view", THREE.REVISION);
 
 const classes = {
   container: {
@@ -37,9 +40,23 @@ function MyRotatingBox() {
 const Canvas3DExample: React.FC = () => {
   return (
     <Box className={classes.container} style={classes.container}>
-      <Canvas3D>
-        <MyRotatingBox />
-      </Canvas3D>
+      <Canvas3D
+        object3dUrls={[
+          {
+            url: "http://localhost:8000/ADAL.stl",
+            opts: {
+              material: {
+                color: "green",
+                transparent: true,
+                opacity: 0.5,
+              },
+            },
+            highlightOnClick: true,
+          },
+          "http://localhost:8000/ASEL.stl",
+        ]}
+        onLoadError={(e) => console.log(e)}
+      ></Canvas3D>
     </Box>
   );
 };

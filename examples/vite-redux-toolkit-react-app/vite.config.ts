@@ -26,9 +26,9 @@ const gzipFixPlugin = (): Plugin => {
 //     name: "alias-three-for-fiber",
 //     enforce: "pre",
 //     resolveId(source, importer) {
-//       if (source === "three" && importer?.includes("dicom")) {
-//         console.log(`[vite-plugin] Redirecting "three" -> "three-legacy"`, importer);
-//         return this.resolve("three-legacy")
+//       if (source === "three" && importer?.includes("fiber")) {
+//         console.log(`[vite-plugin] Redirecting "three" -> "three-lastest"`, importer);
+//         return this.resolve("three-latest")
 //       }
 //       return null;
 //     },
@@ -38,7 +38,7 @@ const gzipFixPlugin = (): Plugin => {
 export default defineConfig({
   plugins: [react(), gzipFixPlugin(), commonjs()],
   optimizeDeps: {
-    // include: ["three-legacy"], // Ensure "three-legacy" is pre-bundled
+    // include: ["three-latest"], // Ensure "three-legacy" is pre-bundled
     exclude: [
       "@metacell/geppetto-meta-core",
       "@metacell/geppetto-meta-client",

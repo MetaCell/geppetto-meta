@@ -30,8 +30,7 @@
     "publish:yalc": "cd build && yalc publish --push",
     "watch": "nodemon -e js,ts,tsx,jsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.25.2",
@@ -44,6 +43,7 @@
     "@eslint/js": "^9.9.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
+    "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^8.17.14",
     "@types/jest": "^29.5.12",
     "@types/mocha": "^8.2.2",
@@ -111,8 +111,8 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.0",
     "react-slick": "^0.29.0",
-    "three-legacy": "npm:three@>=0.111.0",
     "three": "^0.173.0",
+    "three-legacy": "npm:three@>=0.111.0",
     "three-render-objects": ">=1.13.3",
     "underscore": "~1.9.1"
   },
