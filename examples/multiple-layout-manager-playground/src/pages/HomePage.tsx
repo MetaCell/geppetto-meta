@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useStore, useSelector } from 'react-redux';
 import {
   Box,
@@ -15,7 +15,7 @@ import {
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
-import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
+import { useLayoutManager } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
 import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
@@ -32,9 +32,7 @@ const HomePage = () => {
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
 
-  const LayoutComponent = useMemo(() => {
-    return getLayoutManagerInstance()?.getComponent()
-  }, [store])
+  const LayoutComponent = useLayoutManager(store);
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel)));

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import * as FlexLayout from 'flexlayout-react';
 import { Actions, DockLocation, Model, IJsonModel } from 'flexlayout-react'
 import { BaseNode, type ComponentMap, type IComponentConfig, type Widget, WidgetStatus } from './model';
@@ -12,6 +13,7 @@ import { layoutActions, removeWidgetFromStore, setLayout, updateLayout, } from "
 
 import { MinimizeHelper } from "./helpers/MinimizeHelper";
 import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
+import { Store } from 'redux';
 
 
 const styles = {
@@ -567,4 +569,13 @@ export function initLayoutManager(model, componentMap: ComponentMap, iconFactory
   return instance;
 }
 
-export const getLayoutManagerInstance = () => instance;
+export const getLayoutManagerInstance = () => instance; 
+
+export const useLayoutManager = (store: Store) => {
+  const Component = useMemo(() => {
+    return getLayoutManagerInstance()?.getComponent();
+  }, [store]);
+
+  return Component ? Component : null;
+};
+
