@@ -2,8 +2,8 @@ import { WidgetStatus, type Widget } from "@metacell/geppetto-meta-client/common
 
 
 
-export const componentWidget = (name: string, color: string, panelName="panel1", defaultPosition?) : Widget => ({
-  id: name + Math.random(),
+export const componentWidget = (name: string, color: string, panelName = "panel1", defaultPosition?, id?: string): Widget => ({
+  id: id || name + Math.random(),
   name: name,
   component: "MyComponent",
   panelName,
