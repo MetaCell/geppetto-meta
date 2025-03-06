@@ -288,13 +288,14 @@ export class LayoutManager {
 
         break;
       }
-      case layoutActions.REMOVE_WIDGET:
       case layoutActions.DESTROY_WIDGET: {
         const widget = action.data;
         this.deleteWidget(widget);
         break;
       }
       case layoutActions.REMOVE_WIDGET: {
+        const widget = action.data;
+        this.widgetFactory.deleteWidget(widget.id);
         break;
       }
       case layoutActions.ACTIVATE_WIDGET: {
