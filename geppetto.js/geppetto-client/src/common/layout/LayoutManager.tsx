@@ -288,6 +288,7 @@ export class LayoutManager {
 
         break;
       }
+      case layoutActions.REMOVE_WIDGET:
       case layoutActions.DESTROY_WIDGET: {
         const widget = action.data;
         this.deleteWidget(widget);
@@ -419,6 +420,7 @@ export class LayoutManager {
    */
   private deleteWidget(widget: any) {
     this.model.doAction(Actions.deleteTab(widget.id));
+    this.widgetFactory.deleteWidget(widget.id);
   }
 
   /**

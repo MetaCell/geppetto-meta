@@ -114,6 +114,16 @@ class WidgetFactory {
     return this.widgets[widgetConfig.id];
   }
 
+    /**
+   * Deletes a widget.
+   *
+   * @param widgetId - The ID of the widget to delete
+   */
+    deleteWidget(widgetId) {
+      delete this.widgets[widgetId];
+      delete this.refs[widgetId];
+    }
+
   /**
    * Creates a new widget according to `widgetConfig`.
    *
