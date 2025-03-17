@@ -11,14 +11,14 @@ import {
   InputLabel,
   MenuItem,
   FormControl
-} from "@mui/material"
+} from "@mui/material";
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOnIcon from '@mui/icons-material/Visibility';
 import Select, { type SelectChangeEvent } from '@mui/material/Select';
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
 import { TabsetPosition, type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
+import '@metacell/geppetto-meta-client/common/layout/styles/dark.css';
 
 import { componentWidget } from "../widgets";
 
@@ -35,16 +35,17 @@ const HomePage = () => {
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
   const widgets = useSelector(state => state.widgets);
   const [panel, setPanel] = useState("topLeft");
-  const [location, setLocation] = useState(TabsetPosition.RIGHT)
+  const [location, setLocation] = useState(TabsetPosition.RIGHT);
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
+  const [customId, setCustomId] = useState("");
 
   const LayoutComponent = useMemo(() => {
-    return getLayoutManagerInstance()?.getComponent()
-  }, [store])
+    return getLayoutManagerInstance()?.getComponent();
+  }, [store]);
 
   const addComponent = () => {
-    dispatch(addWidget(componentWidget(name, color, panel, location)));
+    dispatch(addWidget(componentWidget(name, color, panel, location, customId)));
   };
 
   const activateWidget = (widget: Widget) => {
@@ -62,6 +63,9 @@ const HomePage = () => {
         display: 'flex',
         padding: 2
       }}>
+        <TextField label="ID (Optional)" variant="outlined" value={customId} onChange={(event) =>
+          setCustomId(event.target.value)
+        } />
         <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
           setName(event.target.value as string)
         } />

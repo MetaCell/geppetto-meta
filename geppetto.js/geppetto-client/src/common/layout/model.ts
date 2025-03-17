@@ -52,9 +52,9 @@ export interface Widget {
   enableDrag?: boolean;
   enableRename?: boolean;
   pos?: number;
-  session: any;
-  config: any;
-  props: any;
+  session?: any;
+  config?: any;
+  props?: any;
 }
 
 /**
