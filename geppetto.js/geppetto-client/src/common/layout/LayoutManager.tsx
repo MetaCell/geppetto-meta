@@ -1,28 +1,38 @@
-import * as React from 'react';
-import * as FlexLayout from 'flexlayout-react';
-import { Actions, DockLocation, Model, IJsonModel } from 'flexlayout-react'
-import { BaseNode, type ComponentMap, type IComponentConfig, type Widget, WidgetStatus } from './model';
+import * as React from "react";
+import * as FlexLayout from "flexlayout-react";
+import { Actions, DockLocation, Model, IJsonModel } from "flexlayout-react";
+import {
+  BaseNode,
+  type ComponentMap,
+  type IComponentConfig,
+  type Widget,
+  WidgetStatus,
+} from "./model";
 import WidgetFactory from "./WidgetFactory";
 import TabsetIconFactory from "./TabsetIconFactory";
 import defaultLayoutConfiguration from "./defaultLayout";
 import { getWidget, widget2Node } from "./utils";
-import * as GeppettoActions from '../actions';
+import * as GeppettoActions from "../actions";
 
-import { layoutActions, removeWidgetFromStore, setLayout, updateLayout, } from "./actions";
+import {
+  layoutActions,
+  removeWidgetFromStore,
+  setLayout,
+  updateLayout,
+} from "./actions";
 
 import { MinimizeHelper } from "./helpers/MinimizeHelper";
 import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
 
-
 const styles = {
   container: {
     flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    position: 'relative',
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "stretch",
+    position: "relative",
   } as const,
-  flexlayout: { flexGrow: 1, position: 'relative' } as const
+  flexlayout: { flexGrow: 1, position: "relative" } as const,
 };
 
 let instance: LayoutManager = null;
@@ -37,7 +47,6 @@ let instance: LayoutManager = null;
  */
 
 export class LayoutManager {
-
   model: Model;
   /**
    * Used to restore weights from the default layout
@@ -48,6 +57,7 @@ export class LayoutManager {
   store;
   layoutManager = this;
   private minimizeHelper: MinimizeHelper;
+  layout;
 
   /**
    * @constructor
@@ -62,7 +72,6 @@ export class LayoutManager {
     tabsetIconFactory: TabsetIconFactory = null,
     isMinimizeEnabled = false
   ) {
-
     this.setLayout(model);
     this.widgetFactory = new WidgetFactory(componentMap);
     this.tabsetIconFactory = tabsetIconFactory
@@ -70,26 +79,25 @@ export class LayoutManager {
       : new TabsetIconFactory();
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
-    this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model)
+    this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model);
+    this.layout = React.createRef();
   }
 
   setLayout(model: any) {
-    this.model = FlexLayout.Model.fromJson(
-      model || defaultLayoutConfiguration
-    );
+    this.model = FlexLayout.Model.fromJson(model || defaultLayoutConfiguration);
     this.model.visitNodes((node) => {
       const fn = (node as BaseNode)?.getWeight;
       if (!fn) {
-        return
+        return;
       }
       this.defaultWeights[node.getId()] = fn.bind(node)();
-    })
+    });
     // for (const node of allNodes) {
     //   this.defaultWeights[node.getId()] = (node as BaseNode).getWeight();
     //   console.log("Visit", node)
     // }
 
-    this.fixRowRecursive(this.model.getRoot())
+    this.fixRowRecursive(this.model.getRoot());
   }
 
   /**
@@ -98,15 +106,24 @@ export class LayoutManager {
    * @param {Widget} widgetConfiguration widget to add
    */
   addWidget(widgetConfiguration: Widget) {
-    if (this.getWidget(widgetConfiguration.id) && this.model.getNodeById(widgetConfiguration.id)) {
+    if (
+      this.getWidget(widgetConfiguration.id) &&
+      this.model.getNodeById(widgetConfiguration.id)
+    ) {
       return this.updateWidget(widgetConfiguration);
     }
     const { model } = this;
     let tabset = model.getNodeById(widgetConfiguration.panelName);
     if (tabset === undefined) {
-      tabset = createTabSet(this.model, widgetConfiguration.panelName, widgetConfiguration.defaultPosition, widgetConfiguration.defaultWeight);
+      tabset = createTabSet(
+        this.model,
+        widgetConfiguration.panelName,
+        widgetConfiguration.defaultPosition,
+        widgetConfiguration.defaultWeight
+      );
     }
-    widgetConfiguration.pos = widgetConfiguration.pos ?? tabset.getChildren().length
+    widgetConfiguration.pos =
+      widgetConfiguration.pos ?? tabset.getChildren().length;
     this.model.doAction(
       Actions.addNode(
         widget2Node(widgetConfiguration),
@@ -126,10 +143,10 @@ export class LayoutManager {
    * @param tabSetButtons
    */
   onRenderTabSet = (panel, renderValues, tabSetButtons) => {
-    if (panel.getType() === 'tabset') {
+    if (panel.getType() === "tabset") {
       this.minimizeHelper.addMinimizeButtonToTabset(panel, renderValues);
       if (Array.isArray(tabSetButtons) && tabSetButtons.length > 0) {
-        tabSetButtons.forEach(Button => {
+        tabSetButtons.forEach((Button) => {
           renderValues.stickyButtons.push(
             <Button key={panel.getId()} panel={panel} />
           );
@@ -137,8 +154,6 @@ export class LayoutManager {
       }
     }
   };
-
-
 
   /**
    * Handle rendering of tab set.
@@ -148,9 +163,9 @@ export class LayoutManager {
    * @param tabButtons
    */
   onRenderTab = (panel, renderValues, tabButtons) => {
-    if (panel.getType() === 'tab') {
+    if (panel.getType() === "tab") {
       if (Array.isArray(tabButtons) && tabButtons.length > 0) {
-        tabButtons.forEach(Button => {
+        tabButtons.forEach((Button) => {
           renderValues.buttons.push(
             <Button key={panel.getId()} panel={panel} />
           );
@@ -165,36 +180,43 @@ export class LayoutManager {
    * @memberof Component
    *
    */
-  Component = (layoutManager: LayoutManager, config?: IComponentConfig) => (props) => (
-    <div className="layout-outer-wrapper" style={styles.container}>
-      <div className="layout-wrapper" style={styles.flexlayout}>
-        <FlexLayout.Layout
-          model={this.model}
-          factory={this.factory}
-          icons={config?.icons}
-          // iconFactory={layoutManager.iconFactory.bind(this)}
-          onAction={action => layoutManager.onAction(action)}
-          onRenderTab={(node, renderValues) =>
-            layoutManager.onRenderTab(node, renderValues, config?.tabButtons)
-          }
-          onRenderTabSet={(node, renderValues) => {
-            layoutManager.onRenderTabSet(
-              node,
-              renderValues,
-              config?.tabSetButtons
-            );
-          }}
-        />
-      </div>
-    </div>
-  );
+  Component =
+    (layoutManager: LayoutManager, config?: IComponentConfig) => (props) => {
+      return (
+        <div className="layout-outer-wrapper" style={styles.container}>
+          <div className="layout-wrapper" style={styles.flexlayout}>
+            <FlexLayout.Layout
+              ref={this.layout}
+              model={this.model}
+              factory={this.factory}
+              icons={config?.icons}
+              // iconFactory={layoutManager.iconFactory.bind(this)}
+              onAction={(action) => layoutManager.onAction(action)}
+              onRenderTab={(node, renderValues) =>
+                layoutManager.onRenderTab(
+                  node,
+                  renderValues,
+                  config?.tabButtons
+                )
+              }
+              onRenderTabSet={(node, renderValues) => {
+                layoutManager.onRenderTabSet(
+                  node,
+                  renderValues,
+                  config?.tabSetButtons
+                );
+              }}
+            />
+          </div>
+        </div>
+      );
+    };
 
   /**
    * Get the layout component.
    * @memberof Control
    */
   getComponent = (config?: IComponentConfig) => this.Component(this, config);
-
 
   /**
    * Export a session.
@@ -220,7 +242,7 @@ export class LayoutManager {
       try {
         component.importSession(conf);
       } catch (e) {
-        console.error('Error importing session for', widgetId, e)
+        console.error("Error importing session for", widgetId, e);
       }
     } else {
       // The component may not be yet initialized when loading the session
@@ -266,7 +288,7 @@ export class LayoutManager {
     // this.model.doAction(Actions.UPDATE_MODEL_ATTRIBUTES, {});
 
     this.store = store;
-    this.widgetFactory.setStore(store)
+    this.widgetFactory.setStore(store);
     this.minimizeHelper.setStore(store);
 
     let nextAction = true;
@@ -282,10 +304,9 @@ export class LayoutManager {
         break;
       }
       case layoutActions.UPDATE_WIDGET: {
-
-        let updatedWidget = this.updateWidget(action.data);
+        const updatedWidget = this.updateWidget(action.data);
         action = { ...action, data: updatedWidget };
-
+        this.layout?.current?.redraw();
         break;
       }
       case layoutActions.DESTROY_WIDGET: {
@@ -294,11 +315,13 @@ export class LayoutManager {
         break;
       }
       case layoutActions.REMOVE_WIDGET: {
+        const widget = action.data;
+        this.widgetFactory.deleteWidget(widget.id);
         break;
       }
       case layoutActions.ACTIVATE_WIDGET: {
         action.data.status = WidgetStatus.ACTIVE;
-        const widget = this.getWidget(action.data.id)
+        const widget = this.getWidget(action.data.id);
         widget.status = WidgetStatus.ACTIVE;
         this.updateWidget(widget);
         break;
@@ -321,7 +344,10 @@ export class LayoutManager {
       case GeppettoActions.IMPORT_APPLICATION_STATE: {
         const incomingState = action.data.redux.layout;
         this.model = FlexLayout.Model.fromJson(incomingState);
-        this.minimizeHelper = new MinimizeHelper(this.minimizeHelper.getIsMinimizeEnabled(), this.model)
+        this.minimizeHelper = new MinimizeHelper(
+          this.minimizeHelper.getIsMinimizeEnabled(),
+          this.model
+        );
         this.importSession(action.data.sessions);
         nextSetLayout = false;
       }
@@ -334,20 +360,24 @@ export class LayoutManager {
       next(action);
     }
     if (nextSetLayout) {
-      this.fixRowRecursive(this.model.getRoot())
+      this.fixRowRecursive(this.model.getRoot());
       next(updateLayout(this.model));
     }
-
   };
 
   setTabsetWeight(node: FlexLayout.Node, weight: number) {
-    this.model.doAction(FlexLayout.Actions.updateNodeAttributes(node.getId(), { weight: 0 }))
+    this.model.doAction(
+      FlexLayout.Actions.updateNodeAttributes(node.getId(), { weight: 0 })
+    );
   }
 
   restoreWeight(node: FlexLayout.Node) {
     const baseNode = node as BaseNode;
     if (baseNode?.getWeight?.() === 0) {
-      this.setTabsetWeight(baseNode, this.defaultWeights[baseNode.getId()] ?? 50)
+      this.setTabsetWeight(
+        baseNode,
+        this.defaultWeights[baseNode.getId()] ?? 50
+      );
     }
 
     if (baseNode.getParent()) {
@@ -356,25 +386,26 @@ export class LayoutManager {
   }
 
   containsWidget(node: FlexLayout.Node) {
-    if (node.getChildren().length === 0 || !node.getChildren().every(n => n.getType() === "tab")) {
-      return false
+    if (
+      node.getChildren().length === 0 ||
+      !node.getChildren().every((n) => n.getType() === "tab")
+    ) {
+      return false;
     }
     for (const child of node.getChildren()) {
       if (this.containsWidget(child)) {
         return true;
       }
     }
-    return false
+    return false;
   }
 
   fixRowRecursive(node: FlexLayout.Node) {
     if (node.getType() === "row" || node.getType() === "tabset") {
       if (node.getChildren().length === 0) {
-        this.setTabsetWeight(node, 0)
+        this.setTabsetWeight(node, 0);
         return true;
       } else {
-
-
         let empty = true;
         for (const child of node.getChildren()) {
           empty = this.fixRowRecursive(child) && empty;
@@ -383,7 +414,7 @@ export class LayoutManager {
         if (!empty) {
           this.restoreWeight(node);
         } else {
-          this.setTabsetWeight(node, 0)
+          this.setTabsetWeight(node, 0);
         }
         return empty;
       }
@@ -419,6 +450,7 @@ export class LayoutManager {
    */
   private deleteWidget(widget: any) {
     this.model.doAction(Actions.deleteTab(widget.id));
+    this.widgetFactory.deleteWidget(widget.id);
   }
 
   /**
@@ -427,7 +459,7 @@ export class LayoutManager {
    * @private
    */
   private getWidgets(): Widget[] {
-    return Object.values(this.store.getState().widgets)
+    return Object.values(this.store.getState().widgets);
   }
 
   /**
@@ -437,7 +469,7 @@ export class LayoutManager {
    * @private
    */
   private getWidget(id): Widget {
-    return getWidget(this.store, id)
+    return getWidget(this.store, id);
   }
 
   /**
@@ -467,7 +499,7 @@ export class LayoutManager {
           defaultAction = false;
         } else {
           // remove widget from widgets list
-          this.store.dispatch(removeWidgetFromStore(action.data.node))
+          this.store.dispatch(removeWidgetFromStore(action.data.node));
         }
         break;
       }
@@ -491,14 +523,13 @@ export class LayoutManager {
     if (defaultAction) {
       this.model.doAction(action);
     }
-    this.fixRowRecursive(this.model.getRoot())
+    this.fixRowRecursive(this.model.getRoot());
 
     const newModel = this.model.toJson();
     if (oldModel !== newModel) {
-
       this.store.dispatch(updateLayout(this.model));
     }
-    return undefined
+    return undefined;
   }
 
   /**
@@ -510,9 +541,12 @@ export class LayoutManager {
   private updateWidget(widget: Widget) {
     const { model } = this;
     const previousWidget = this.getWidget(widget.id);
-    const mergedWidget = { ...previousWidget, ...widget }
+    const mergedWidget = { ...previousWidget, ...widget };
 
-    const widgetRestored = this.minimizeHelper.restoreWidgetIfNecessary(previousWidget, mergedWidget);
+    const widgetRestored = this.minimizeHelper.restoreWidgetIfNecessary(
+      previousWidget,
+      mergedWidget
+    );
     if (!widgetRestored) {
       moveWidget(model, mergedWidget);
     }
@@ -521,23 +555,30 @@ export class LayoutManager {
 
     const node = this.model.getNodeById(widget.id);
 
-
     if (node) {
-      model.doAction(Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget)));
+      model.doAction(
+        Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget))
+      );
       if (mergedWidget.status === WidgetStatus.ACTIVE) {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
       const parent = node.getParent() as BaseNode;
-      if ((widget.status === WidgetStatus.MAXIMIZED && !parent.isMaximized()) ||
-        (widget.status === WidgetStatus.ACTIVE && parent.isMaximized())) {
-        this.model.doAction(FlexLayout.Actions.maximizeToggle(node.getParent().getId()));
-      }
-      else if (widget.status === WidgetStatus.MINIMIZED && !this.minimizeHelper.isMinimized(widget)) {
+      if (
+        (widget.status === WidgetStatus.MAXIMIZED && !parent.isMaximized()) ||
+        (widget.status === WidgetStatus.ACTIVE && parent.isMaximized())
+      ) {
+        this.model.doAction(
+          FlexLayout.Actions.maximizeToggle(node.getParent().getId())
+        );
+      } else if (
+        widget.status === WidgetStatus.MINIMIZED &&
+        !this.minimizeHelper.isMinimized(widget)
+      ) {
         this.minimizeHelper.minimizeWidget(node.getId());
       }
     }
 
-    return mergedWidget
+    return mergedWidget;
   }
 
   /**
@@ -558,12 +599,20 @@ export class LayoutManager {
     // TODO move to newest flexlayout-react to add this functionality when needed
     return this.tabsetIconFactory.factory(node.getConfig());
   }
-
-
 }
 
-export function initLayoutManager(model, componentMap: ComponentMap, iconFactory: TabsetIconFactory, isMinimizeEnabled: boolean) {
-  instance = new LayoutManager(model, componentMap, iconFactory, isMinimizeEnabled);
+export function initLayoutManager(
+  model,
+  componentMap: ComponentMap,
+  iconFactory: TabsetIconFactory,
+  isMinimizeEnabled: boolean
+) {
+  instance = new LayoutManager(
+    model,
+    componentMap,
+    iconFactory,
+    isMinimizeEnabled
+  );
   return instance;
 }
 
