@@ -6,10 +6,14 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import { Theme } from "@mui/material/styles";
-import {addWidget, deleteWidget} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {
+  addWidget,
+  deleteWidget,
+} from "@metacell/geppetto-meta-client/common/layout/actions";
 import {
   CanvasWidget,
-  componentWidget, DicomViewerWidget,
+  componentWidget,
+  DicomViewerWidget,
 } from "../layoutManager/widgets.ts";
 import { useDispatch } from "react-redux";
 import { FormControlLabel, FormGroup } from "@mui/material";
@@ -39,11 +43,11 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
   open,
 }) => {
   const dispatch = useDispatch();
-  const handleToggle = (e, viewer) => {
-    if (e.target.checked) {
-      dispatch(addWidget(viewers[viewer]))
+  const handleToggle = (checked, viewer) => {
+    if (checked) {
+      dispatch(addWidget(viewers[viewer]));
     } else {
-      dispatch(deleteWidget(viewer))
+      dispatch(deleteWidget(viewer));
     }
   };
 
@@ -112,7 +116,7 @@ const LeftSidebar: React.FC<LeftSidebarProps> = ({
                     height={16}
                     thumbDimension={12.8}
                     checkedPosition="translateX(0.8125rem)"
-                    onChange={(e) => handleToggle(e, viewer)}
+                    onChange={(e) => handleToggle(e.target.checked, viewer)}
                   />
                 }
                 key={viewer}

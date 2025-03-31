@@ -45,3 +45,28 @@
     return getLayoutManagerInstance()?.getComponent()
   }, [store])
   ```
+* `ami.js` relies on an old version of `three.js`, as now `fiber` and `drei` are used for the 3D canvas, and uses more modern revision of `three`, there is now a different way of importing `three` in your `package.json` if `ami.js` and `fiber/drei` are required in the same app:
+  ```json
+  {
+    "dependencies": {
+      "three-legacy": "npm:three@^0.118.0",
+      "three": "^0.173.0",
+      "@react-three/fiber": "YOUR_VERSION",
+      "@react-three/drei": "YOUR_VERSION",
+    }
+  }
+  ```
+  The dependencies configuration needs to follow those names, and the version for `three-legacy` needs to be `npm:three@^0.118.0`. This specific version uses aliases from NPM/Yarn to be able to host two different versions of `three`. In this example `three` is the version that will be loaded and used by `fiber/drei` while `three-legacy` will only be used by the dicom viewer from `geppetto-ui`.
+
+
+### New features
+* The flex-layout introduces now a new `redraw()` method that can be called by accessing the `layout` of the `LayerManager`:
+  ```typescript
+  const manager = ... // gets the LayoutManager one way or the other
+  manager.layout.current.redraw();
+  ```
+
+
+### Bug fixes
+
+* Each layout for the FlexLayout are now stored in a serialized-compatible way in the redux store, making redux-store, or global context that would embbed a store for the FlexLayout, fully serializable.
