@@ -1,27 +1,28 @@
 import { WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
+import { ViewerType } from "../models";
 
 export const componentWidget = () => ({
-  id: 'Default',
+  id: ViewerType.default,
   name: 'panel1',
-  component: "MyComponent",
+  component: ViewerType.default,
   panelName: 'leftPanel',
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });
 
 export const DicomViewerWidget = () => ({
-  id: 'Dicom Viewer',
+  id: ViewerType.dicomViewer,
   name: "DicomViewer Viewer",
-  component: 'Dicom Viewer',
+  component: ViewerType.dicomViewer,
   panelName: "leftPanel",
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });
 
 export const CanvasWidget = () =>({
-  id: 'canvasWidget',
+  id: ViewerType.ThreeD,
   name: "3D Canvas",
-  component: "canvasWidget",
+  component: ViewerType.ThreeD,
   panelName: "rightPanel",
   enableClose: false,
   status: WidgetStatus.ACTIVE,
