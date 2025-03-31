@@ -43,7 +43,7 @@ const Canvas3DExample: React.FC = () => {
       <Canvas3D
         object3dUrls={[
           {
-            url: "http://localhost:8000/ADAL.stl",
+            url: `http://localhost:${window.location.port}/ADAL.stl`,
             opts: {
               material: {
                 color: "green",
@@ -53,7 +53,7 @@ const Canvas3DExample: React.FC = () => {
             },
             highlightOnClick: true,
           },
-          "http://localhost:8000/ASEL.stl",
+          `http://localhost:${window.location.port}/nervering.stl`,
         ]}
         onLoadError={(e) => console.log(e)}
       ></Canvas3D>

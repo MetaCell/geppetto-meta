@@ -52,14 +52,14 @@ export const updateWidget = (newConf: Widget) => ({
  * Support action: do not consider as part of the api
  * @param id
  */
-export const setLayout = ((newLayout: string) => ({
+export const setLayout = ((newLayout: FlexLayout.Model) => ({
   type: layoutActions.SET_LAYOUT,
-  data: newLayout
+  data: JSON.parse(JSON.stringify(newLayout.toJson()))  // toJson creates a mutable object, so we need to clone it full
 }))
 
 export const updateLayout = ((layout: FlexLayout.Model) => ({
   type: layoutActions.UPDATE_LAYOUT,
-  data: layout.toJson()
+  data: JSON.parse(JSON.stringify(layout.toJson()))  // toJson creates a mutable object, so we need to clone it full
 }));
 
 export const minimizeWidget = id => ({

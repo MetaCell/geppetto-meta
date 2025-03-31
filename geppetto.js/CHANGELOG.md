@@ -58,6 +58,15 @@
   ```
   The dependencies configuration needs to follow those names, and the version for `three-legacy` needs to be `npm:three@^0.118.0`. This specific version uses aliases from NPM/Yarn to be able to host two different versions of `three`. In this example `three` is the version that will be loaded and used by `fiber/drei` while `three-legacy` will only be used by the dicom viewer from `geppetto-ui`.
 
+
+### New features
+* The flex-layout introduces now a new `redraw()` method that can be called by accessing the `layout` of the `LayerManager`:
+  ```typescript
+  const manager = ... // gets the LayoutManager one way or the other
+  manager.layout.current.redraw();
+  ```
+
+
 ### Bug fixes
 
 * Each layout for the FlexLayout are now stored in a serialized-compatible way in the redux store, making redux-store, or global context that would embbed a store for the FlexLayout, fully serializable.

@@ -572,20 +572,22 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-3.0.0-alpha.0.tgz#5a53c186d28ec9f9e75d78f05430f048cfa3b8b8"
-  integrity sha512-6Em85a11gGTapZOAcsV7ISZoQceHsHl+QmipmgBMzufFT4my9PP8+tkW16aShTnU10QUA3iP35abg9Zad91isg==
+"@metacell/geppetto-meta-client@^3.0.0-alpha.1":
+  version "3.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-3.0.0-alpha.2.tgz#d2c05a28903af252a80f7223a946bb902e975126"
+  integrity sha512-57SIA+bGg+BM7T56hqt2gcvtt4V18FZcVCeodgSkLXUVRjtQhynkkWtKqkeCkbnv9JspjVmIIZAZ05IgJVCcDQ==
+  dependencies:
+    flexlayout-react "^0.8.1"
 
-"@metacell/geppetto-meta-core@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-3.0.0-alpha.0.tgz#ca7980419a4092ef0894498dec0ed70ec2e3c024"
-  integrity sha512-LDkAGw0RTP+lzsr/Jcwe4Dek3vqBLRRmVed6gGUYAc8CDi69G/kvaOmJIZdtz05NWTuGj/IQsAUA7AhNgMihDQ==
+"@metacell/geppetto-meta-core@^3.0.0-alpha.1":
+  version "3.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-3.0.0-alpha.2.tgz#47d32b335e2dcc39512d4dc53e7acae63f0c5813"
+  integrity sha512-nYPSAMgcdJiLpzwNhTEIdKXtyNn6y7b9XOGpz4xyKkR9k6cwlmRghuLifrKEjUsNV4vrjPnEQBLB+wBD8eEOqA==
 
-"@metacell/geppetto-meta-ui@^3.0.0-alpha.0":
-  version "3.0.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-3.0.0-alpha.0.tgz#fffc9652bdf49445fd84c7eb2e90113f093c400d"
-  integrity sha512-6h91M1kbBlepd93X3TbNCGol6m61+05JCJ7fO770nNi0uzitoq3lxx5/bYA+QGp0txKMXy4vTSbDF57BkGSvAA==
+"@metacell/geppetto-meta-ui@^3.0.0-alpha.1":
+  version "3.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-3.0.0-alpha.2.tgz#66e02583b2d405541fae50302607097ff160d640"
+  integrity sha512-/bvFHD85LFvOAE72u1mQT/Ji9wl0+5HLP6XvHkMbTBqs8ohz4qrLTqpsPjb7yOWsIxQ0ALTHcX/KiY6Noa3NEg==
 
 "@mui/core-downloads-tracker@^5.16.7":
   version "5.16.7"
