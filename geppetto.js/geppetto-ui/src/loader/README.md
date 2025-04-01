@@ -21,7 +21,7 @@ loader/LoaderShowcase7
 Basic example usage of the Loader with fullscreen false .
 
 ```
-loader/LoaderShowcase6
+
 ```
 
 ### Loader Example 5

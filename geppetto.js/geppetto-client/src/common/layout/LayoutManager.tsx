@@ -279,7 +279,7 @@ export class LayoutManager {
    */
   middleware = (store) => (next) => (action) => {
     if (!this.store) {
-      next(setLayout(JSON.stringify(this.model.toJson())));
+      next(setLayout(this.model));
     }
 
     // This is a hack to unlock transitory state in the model before any other action is dispatched. See https://metacell.atlassian.net/browse/GEP-126
