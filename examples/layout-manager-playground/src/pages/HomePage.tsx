@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useDispatch, useStore, useSelector } from 'react-redux';
+import { useMemo, useState } from "react";
+import { useDispatch, useStore, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -10,15 +10,22 @@ import {
   Tooltip,
   InputLabel,
   MenuItem,
-  FormControl
+  FormControl,
 } from "@mui/material";
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityOnIcon from '@mui/icons-material/Visibility';
-import Select, { type SelectChangeEvent } from '@mui/material/Select';
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityOnIcon from "@mui/icons-material/Visibility";
+import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
-import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
-import { TabsetPosition, type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import '@metacell/geppetto-meta-client/common/layout/styles/dark.css';
+import {
+  addWidget,
+  updateWidget,
+} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {
+  TabsetPosition,
+  type Widget,
+  WidgetStatus,
+} from "@metacell/geppetto-meta-client/common/layout/model";
+import "@metacell/geppetto-meta-client/common/layout/styles/dark.css";
 
 import { componentWidget } from "../widgets";
 
@@ -26,14 +33,14 @@ const Positions = {
   [TabsetPosition.BOTTOM]: TabsetPosition.BOTTOM,
   [TabsetPosition.LEFT]: TabsetPosition.LEFT,
   [TabsetPosition.RIGHT]: TabsetPosition.RIGHT,
-  [TabsetPosition.TOP]: TabsetPosition.TOP
+  [TabsetPosition.TOP]: TabsetPosition.TOP,
 };
 
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
-  const widgets = useSelector(state => state.widgets);
+  const widgets = useSelector((state) => state.widgets);
   const [panel, setPanel] = useState("topLeft");
   const [location, setLocation] = useState(TabsetPosition.RIGHT);
   const [name, setName] = useState("Component 1");
@@ -45,30 +52,43 @@ const HomePage = () => {
   }, [store]);
 
   const addComponent = () => {
-    dispatch(addWidget(componentWidget(name, color, panel, location, customId)));
+    dispatch(
+      addWidget(componentWidget(name, color, panel, location, customId))
+    );
   };
 
   const activateWidget = (widget: Widget) => {
     const updatedWidget = { ...widget };
     updatedWidget.status = WidgetStatus.ACTIVE;
     updatedWidget.panelName = panel;
-    updatedWidget.defaultPosition = Positions[location];
+    // updatedWidget.defaultPosition = Positions[location];
     dispatch(updateWidget(updatedWidget));
   };
 
   return (
     <Box>
-      <Stack direction="row" spacing={2} sx={{
-        width: '100%',
-        display: 'flex',
-        padding: 2
-      }}>
-        <TextField label="ID (Optional)" variant="outlined" value={customId} onChange={(event) =>
-          setCustomId(event.target.value)
-        } />
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
-          setName(event.target.value as string)
-        } />
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          width: "100%",
+          display: "flex",
+          padding: 2,
+        }}
+      >
+        <TextField
+          label="ID (Optional)"
+          variant="outlined"
+          value={customId}
+          onChange={(event) => setCustomId(event.target.value)}
+        />
+        <TextField
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          value={name}
+          onChange={(event) => setName(event.target.value as string)}
+        />
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select
@@ -122,23 +142,36 @@ const HomePage = () => {
 
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
-            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon /> : <VisibilityOnIcon />}
+            <IconButton
+              onClick={() => activateWidget(widget)}
+              disabled={widget.status === WidgetStatus.ACTIVE}
+            >
+              {widget.status == WidgetStatus.ACTIVE ? (
+                <VisibilityOffIcon />
+              ) : (
+                <VisibilityOnIcon />
+              )}
             </IconButton>
           </Tooltip>
         ))}
-
       </Stack>
-      <Box p={2} sx={{
-        display: 'flex',
-        position: 'relative',
-        width: '100%',
-        height: '90vh',
-      }}>
-        {LayoutComponent === undefined ? <CircularProgress /> : <LayoutComponent />}
+      <Box
+        p={2}
+        sx={{
+          display: "flex",
+          position: "relative",
+          width: "100%",
+          height: "90vh",
+        }}
+      >
+        {LayoutComponent === undefined ? (
+          <CircularProgress />
+        ) : (
+          <LayoutComponent />
+        )}
       </Box>
     </Box>
   );
-}
+};
 
 export default HomePage;

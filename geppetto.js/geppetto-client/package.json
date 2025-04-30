@@ -32,7 +32,7 @@
     "watch": "nodemon -e js,ts,jsx,tsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
   "dependencies": {
-    "flexlayout-react": "^0.8.1"
+    "flexlayout-react": "^0.8.15"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",

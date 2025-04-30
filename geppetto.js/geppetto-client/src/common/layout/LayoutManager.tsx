@@ -367,7 +367,7 @@ export class LayoutManager {
 
   setTabsetWeight(node: FlexLayout.Node, weight: number) {
     this.model.doAction(
-      FlexLayout.Actions.updateNodeAttributes(node.getId(), { weight: 0 })
+      FlexLayout.Actions.updateNodeAttributes(node.getId(), { weight })
     );
   }
 
