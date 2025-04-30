@@ -61,7 +61,7 @@ const HomePage = () => {
     const updatedWidget = { ...widget };
     updatedWidget.status = WidgetStatus.ACTIVE;
     updatedWidget.panelName = panel;
-    // updatedWidget.defaultPosition = Positions[location];
+    updatedWidget.defaultPosition = Positions[location];
     dispatch(updateWidget(updatedWidget));
   };
 
