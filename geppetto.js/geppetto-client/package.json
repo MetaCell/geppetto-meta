@@ -1,6 +1,6 @@
 {
   "name": "@metacell/geppetto-meta-client",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0-alpha.7",
   "description": "Geppetto web frontend. Geppetto is an open-source platform to build web-based tools to visualize and simulate neuroscience data and models.",
   "keywords": [
     "geppetto",
@@ -32,7 +32,7 @@
     "watch": "nodemon -e js,ts,jsx,tsx --ignore build --exec \"yarn build:dev && cd build && yalc push --changed\""
   },
   "dependencies": {
-    "flexlayout-react": "^0.8.1"
+    "flexlayout-react": "^0.8.15"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",
@@ -56,14 +56,14 @@
     "typescript": "^4.3.2"
   },
   "peerDepedencies": {
-    "@metacell/geppetto-meta-core": "^3.0.0-alpha.0",
-    "@metacell/geppetto-meta-ui": "^3.0.0-alpha.0",
+    "@metacell/geppetto-meta-core": "^3.0.0-alpha.7",
+    "@metacell/geppetto-meta-ui": "^3.0.0-alpha.7",
     "@material-ui/core": "^4.11.4",
     "pako": "^1.0.3",
     "react": "^18.3.1",
     "react-redux": "^7.2.3",
     "react-rnd": "^7.3.0",
-    "redux": "^4.1.0",
+    "redux": "^5.0.1",
     "url-join": "^4.0.0"
   },
   "buildOptions": {

@@ -26,23 +26,26 @@ const Positions = {
   [TabsetPosition.BOTTOM]: TabsetPosition.BOTTOM,
   [TabsetPosition.LEFT]: TabsetPosition.LEFT,
   [TabsetPosition.RIGHT]: TabsetPosition.RIGHT,
-  [TabsetPosition.TOP]: TabsetPosition.TOP
+  [TabsetPosition.TOP]: TabsetPosition.TOP,
 };
 
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
-  const widgets = useSelector(state => state.widgets);
+  const widgets = useSelector((state) => state.widgets);
   const [panel, setPanel] = useState("topLeft");
-  const [location, setLocation] = useState(TabsetPosition.RIGHT)
+  const [location, setLocation] = useState(TabsetPosition.RIGHT);
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
+  const [customId, setCustomId] = useState("");
 
   const LayoutComponent = useLayoutManager(store);
 
   const addComponent = () => {
-    dispatch(addWidget(componentWidget(name, color, panel, location)));
+    dispatch(
+      addWidget(componentWidget(name, color, panel, location, customId))
+    );
   };
 
   const activateWidget = (widget: Widget) => {
@@ -55,14 +58,28 @@ const HomePage = () => {
 
   return (
     <Box>
-      <Stack direction="row" spacing={2} sx={{
-        width: '100%',
-        display: 'flex',
-        padding: 2
-      }}>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
-          setName(event.target.value as string)
-        } />
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          width: "100%",
+          display: "flex",
+          padding: 2,
+        }}
+      >
+        <TextField
+          label="ID (Optional)"
+          variant="outlined"
+          value={customId}
+          onChange={(event) => setCustomId(event.target.value)}
+        />
+        <TextField
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          value={name}
+          onChange={(event) => setName(event.target.value as string)}
+        />
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select

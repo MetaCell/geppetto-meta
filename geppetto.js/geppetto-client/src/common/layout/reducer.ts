@@ -1,4 +1,4 @@
-import type * as FlexLayout from 'flexlayout-react';
+import * as FlexLayout from 'flexlayout-react';
 import { layoutActions } from './actions';
 import * as General from '../actions';
 import { WidgetStatus, type WidgetMap, type ExtendedNode, BaseNode } from './model'
@@ -41,7 +41,7 @@ export const layout = (state = layoutInitialState, action) => {
     return { ...state, ...action.data }
   }
   case layoutActions.UPDATE_LAYOUT: {
-    return { ...state, ...action.data.toJson() }
+    return { ...state, ...action.data }
   }
 
   case General.IMPORT_APPLICATION_STATE: {
@@ -110,7 +110,7 @@ export const widgets = (state: WidgetMap = {}, action) => {
     return newWidgets;
   }
   case layoutActions.UPDATE_LAYOUT: {
-    const model: FlexLayout.Model = action.data;
+    const model: FlexLayout.Model = FlexLayout.Model.fromJson(action.data);
     const updatedWidgets = { ...state };
     const parents = new Set(Object.keys(updatedWidgets).map(widgetId => model.getNodeById(widgetId)).filter(n => n).map(n => n?.getParent() as BaseNode));
     for (const parent of parents) {

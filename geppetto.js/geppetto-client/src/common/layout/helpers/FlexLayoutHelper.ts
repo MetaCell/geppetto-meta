@@ -14,7 +14,6 @@ import * as FlexLayout from 'flexlayout-react';
 export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, weight = 50) {
     const rootNode = model.getRoot();
 
-    // @ts-expect-error: Constructor is declared as "internal" in the flex-layout source code
     const tabset = new FlexLayout.TabSetNode(model, { id: tabsetID });
     switch (position) {
         case TabsetPosition.RIGHT:
@@ -27,7 +26,6 @@ export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, w
             break;
         case TabsetPosition.BOTTOM:
         case TabsetPosition.TOP: {
-            // @ts-expect-error: Constructor is declared as "internal" in the flex-layout source code
             const hrow = new FlexLayout.RowNode(model, rootNode.windowId, {});
 
             if (position === TabsetPosition.BOTTOM) {

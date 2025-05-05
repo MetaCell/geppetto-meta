@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { PropTypes } from 'prop-types';
 
-import * as THREE from 'three';
+import * as THREE from 'three-legacy';
 import DicomViewerUtils from './DicomViewerUtils';
 import { offset } from '../utilities';
 import { boundingBoxHelperFactory, VolumeLoader, StackModel } from 'ami.js';
