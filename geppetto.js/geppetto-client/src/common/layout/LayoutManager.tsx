@@ -36,8 +36,6 @@ const styles = {
   flexlayout: { flexGrow: 1, position: "relative" } as const,
 };
 
-let instance: LayoutManager = null;
-
 /**
  * Wraps the FlexLayout component in order to allow a declarative specification (widgets).
  * of the layout and the components displayed.
@@ -602,6 +600,8 @@ export class LayoutManager {
   }
 }
 
+// Global instance
+let instance: LayoutManager = null;
 export function initLayoutManager(
   model,
   componentMap: ComponentMap,
@@ -619,9 +619,23 @@ export function initLayoutManager(
 
 export const getLayoutManagerInstance = () => instance;
 
-export const useLayoutManager = (store: Store) => {
+// export const useLayoutManager = (store: Store) => {
+//   const Component = React.useMemo(() => {
+//     return getLayoutManagerInstance()?.getComponent();
+//   }, [store]);
+
+//   return Component ? Component : null;
+// };
+
+export const layoutManagerRegistry = new WeakMap<object, LayoutManager>();
+
+export const registerStoreLayout = (store, layoutManager) => {
+  layoutManagerRegistry.set(store, layoutManager);
+};
+
+export const useLayoutManager = (store: object) => {
   const Component = React.useMemo(() => {
-    return getLayoutManagerInstance()?.getComponent();
+    return layoutManagerRegistry.get(store)?.getComponent();
   }, [store]);
 
   return Component ? Component : null;
