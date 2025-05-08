@@ -35,6 +35,8 @@ const styles = {
   flexlayout: { flexGrow: 1, position: "relative" } as const,
 };
 
+const DEFAULT_SPLITER_SIZE = 8;
+
 let instance: LayoutManager = null;
 
 /**
@@ -58,6 +60,7 @@ export class LayoutManager {
   layoutManager = this;
   private minimizeHelper: MinimizeHelper;
   layout;
+  private defaultSplitterSize;
 
   /**
    * @constructor
@@ -80,6 +83,7 @@ export class LayoutManager {
     this.middleware = this.middleware.bind(this);
     this.factory = this.factory.bind(this);
     this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model);
+    this.defaultSplitterSize = DEFAULT_SPLITER_SIZE;
     this.layout = React.createRef();
   }
 
@@ -400,6 +404,16 @@ export class LayoutManager {
     return false;
   }
 
+  hasOnlyOneTab() {
+    let childrenCount = 0;
+    this.model.visitNodes((node) => {
+      childrenCount += node.getChildren().some((n) => n.getType() === "tab")
+        ? 1
+        : 0;
+    });
+    return childrenCount === 1;
+  }
+
   fixRowRecursive(node: FlexLayout.Node) {
     if (node.getType() === "row" || node.getType() === "tabset") {
       if (node.getChildren().length === 0) {
@@ -407,10 +421,23 @@ export class LayoutManager {
         return true;
       } else {
         let empty = true;
-        for (const child of node.getChildren()) {
+        const children = node.getChildren();
+        for (const child of children) {
           empty = this.fixRowRecursive(child) && empty;
         }
-
+        if (this.model.getRoot() === node) {
+          if (this.hasOnlyOneTab()) {
+            this.model.doAction(
+              FlexLayout.Actions.updateModelAttributes({ splitterSize: 0 })
+            );
+          } else {
+            this.model.doAction(
+              FlexLayout.Actions.updateModelAttributes({
+                splitterSize: this.defaultSplitterSize,
+              })
+            );
+          }
+        }
         if (!empty) {
           this.restoreWeight(node);
         } else {
