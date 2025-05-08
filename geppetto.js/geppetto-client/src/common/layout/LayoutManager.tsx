@@ -600,15 +600,15 @@ export class LayoutManager {
   }
 }
 
-// Global instance
-let instance: LayoutManager = null;
+// Global registry for layout manager
+export const layoutManagerRegistry = new WeakMap<object, LayoutManager>();
 export function initLayoutManager(
   model,
   componentMap: ComponentMap,
   iconFactory: TabsetIconFactory,
   isMinimizeEnabled: boolean
 ) {
-  instance = new LayoutManager(
+  const instance = new LayoutManager(
     model,
     componentMap,
     iconFactory,
@@ -616,18 +616,6 @@ export function initLayoutManager(
   );
   return instance;
 }
-
-export const getLayoutManagerInstance = () => instance;
-
-// export const useLayoutManager = (store: Store) => {
-//   const Component = React.useMemo(() => {
-//     return getLayoutManagerInstance()?.getComponent();
-//   }, [store]);
-
-//   return Component ? Component : null;
-// };
-
-export const layoutManagerRegistry = new WeakMap<object, LayoutManager>();
 
 export const registerStoreLayout = (store, layoutManager) => {
   layoutManagerRegistry.set(store, layoutManager);
