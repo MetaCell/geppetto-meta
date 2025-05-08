@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDispatch, useStore, useSelector } from 'react-redux';
+import { useState } from "react";
+import { useDispatch, useStore, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -10,34 +10,39 @@ import {
   Tooltip,
   InputLabel,
   MenuItem,
-  FormControl
-} from "@mui/material"
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityOnIcon from '@mui/icons-material/Visibility';
-import Select, { type SelectChangeEvent } from '@mui/material/Select';
+  FormControl,
+} from "@mui/material";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityOnIcon from "@mui/icons-material/Visibility";
+import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import { useLayoutManager } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
-import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
-import { type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
+import {
+  addWidget,
+  updateWidget,
+} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {
+  type Widget,
+  WidgetStatus,
+} from "@metacell/geppetto-meta-client/common/layout/model";
+import "@metacell/geppetto-meta-client/common/layout/styles/dark.css";
 
-
-import { componentWidget } from '../widgets';
+import { componentWidget } from "../widgets";
 
 const HomePage = () => {
   const store = useStore();
   const dispatch = useDispatch();
   // @ts-expect-error The type checker do not know here about "widget", a better type annotation for "state" is required
-  const widgets = useSelector(state => state.widgets);
+  const widgets = useSelector((state) => state.widgets);
   const [panel, setPanel] = useState("topLeft");
   const [name, setName] = useState("Component 1");
   const [color, setColor] = useState("red");
+  const [version, setVersion] = useState(0);
 
   const LayoutComponent = useLayoutManager(store);
 
   const addComponent = () => {
     dispatch(addWidget(componentWidget(name, color, panel)));
   };
-
 
   const activateWidget = (widget: Widget) => {
     const updatedWidget = { ...widget };
@@ -46,17 +51,28 @@ const HomePage = () => {
     dispatch(updateWidget(updatedWidget));
   };
 
+  const scheduleRefresh = () => {
+    setVersion(version + 1);
+  };
 
   return (
     <Box>
-      <Stack direction="row" spacing={2} sx={{
-        width: '100%',
-        display: 'flex',
-        padding: 2
-      }}>
-        <TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={(event) =>
-          setName(event.target.value as string)
-        } />
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          width: "100%",
+          display: "flex",
+          padding: 2,
+        }}
+      >
+        <TextField
+          id="outlined-basic"
+          label="Name"
+          variant="outlined"
+          value={name}
+          onChange={(event) => setName(event.target.value as string)}
+        />
         <FormControl>
           <InputLabel id="name">Panel</InputLabel>
           <Select
@@ -95,24 +111,41 @@ const HomePage = () => {
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
             <span>
-              <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-                {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon /> : <VisibilityOnIcon />}
+              <IconButton
+                onClick={() => activateWidget(widget)}
+                disabled={widget.status === WidgetStatus.ACTIVE}
+              >
+                {widget.status == WidgetStatus.ACTIVE ? (
+                  <VisibilityOffIcon />
+                ) : (
+                  <VisibilityOnIcon />
+                )}
               </IconButton>
             </span>
           </Tooltip>
         ))}
 
+        <Button variant="contained" onClick={scheduleRefresh}>
+          Force Refresh
+        </Button>
       </Stack>
-      <Box p={2} sx={{
-        display: 'flex',
-        position: 'relative',
-        width: '100%',
-        height: '90vh',
-      }}>
-        {LayoutComponent === undefined ? <CircularProgress /> : <LayoutComponent />}
+      <Box
+        p={2}
+        sx={{
+          display: "flex",
+          position: "relative",
+          width: "100%",
+          height: "90vh",
+        }}
+      >
+        {LayoutComponent === undefined ? (
+          <CircularProgress />
+        ) : (
+          <LayoutComponent />
+        )}
       </Box>
     </Box>
   );
-}
+};
 
 export default HomePage;
