@@ -24,6 +24,7 @@ import {
 
 import { MinimizeHelper } from "./helpers/MinimizeHelper";
 import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
+import { Store } from "redux";
 
 const styles = {
   container: {
@@ -658,13 +659,15 @@ export class LayoutManager {
   }
 }
 
+// Global registry for layout manager
+export const layoutManagerRegistry = new WeakMap<object, LayoutManager>();
 export function initLayoutManager(
   model,
   componentMap: ComponentMap,
   iconFactory: TabsetIconFactory,
   isMinimizeEnabled: boolean
 ) {
-  instance = new LayoutManager(
+  const instance = new LayoutManager(
     model,
     componentMap,
     iconFactory,
@@ -673,4 +676,14 @@ export function initLayoutManager(
   return instance;
 }
 
-export const getLayoutManagerInstance = () => instance;
+export const registerStoreLayout = (store, layoutManager) => {
+  layoutManagerRegistry.set(store, layoutManager);
+};
+
+export const useLayoutManager = (store: object) => {
+  const Component = React.useMemo(() => {
+    return layoutManagerRegistry.get(store)?.getComponent();
+  }, [store]);
+
+  return Component ? Component : null;
+};

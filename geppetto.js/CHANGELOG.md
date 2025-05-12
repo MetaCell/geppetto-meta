@@ -38,12 +38,10 @@
     }
   }, [store, LayoutComponent])
   ```
-  Now, `useMemo` has to be used instead
+  Now, the new hook `useLayoutManager` has to be used instead
   ```js
   const store = useStore();
-  const LayoutComponent = useMemo(() => {
-    return getLayoutManagerInstance()?.getComponent()
-  }, [store])
+  const LayoutComponent = useLayoutManager(store)
   ```
 * `ami.js` relies on an old version of `three.js`, as now `fiber` and `drei` are used for the 3D canvas, and uses more modern revision of `three`, there is now a different way of importing `three` in your `package.json` if `ami.js` and `fiber/drei` are required in the same app:
   ```json
