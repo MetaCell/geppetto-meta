@@ -5,6 +5,7 @@ import {
   BaseNode,
   type ComponentMap,
   type IComponentConfig,
+  TabsetPosition,
   type Widget,
   WidgetStatus,
 } from "./model";
@@ -60,6 +61,7 @@ export class LayoutManager {
   layoutManager = this;
   private minimizeHelper: MinimizeHelper;
   layout;
+  private layoutWrapper;
   private defaultSplitterSize;
 
   /**
@@ -85,6 +87,7 @@ export class LayoutManager {
     this.minimizeHelper = new MinimizeHelper(isMinimizeEnabled, this.model);
     this.defaultSplitterSize = DEFAULT_SPLITER_SIZE;
     this.layout = React.createRef();
+    this.layoutWrapper = React.createRef();
   }
 
   setLayout(model: any) {
@@ -147,6 +150,9 @@ export class LayoutManager {
    * @param tabSetButtons
    */
   onRenderTabSet = (panel, renderValues, tabSetButtons) => {
+    if (this.layoutWrapper.current) {
+      this.layoutWrapper.current.style.visibility = "hidden";
+    }
     if (panel.getType() === "tabset") {
       this.minimizeHelper.addMinimizeButtonToTabset(panel, renderValues);
       if (Array.isArray(tabSetButtons) && tabSetButtons.length > 0) {
@@ -167,6 +173,9 @@ export class LayoutManager {
    * @param tabButtons
    */
   onRenderTab = (panel, renderValues, tabButtons) => {
+    if (this.layoutWrapper.current) {
+      this.layoutWrapper.current.style.visibility = "";
+    }
     if (panel.getType() === "tab") {
       if (Array.isArray(tabButtons) && tabButtons.length > 0) {
         tabButtons.forEach((Button) => {
@@ -188,7 +197,11 @@ export class LayoutManager {
     (layoutManager: LayoutManager, config?: IComponentConfig) => (props) => {
       return (
         <div className="layout-outer-wrapper" style={styles.container}>
-          <div className="layout-wrapper" style={styles.flexlayout}>
+          <div
+            className="layout-wrapper"
+            ref={this.layoutWrapper}
+            style={styles.flexlayout}
+          >
             <FlexLayout.Layout
               ref={this.layout}
               model={this.model}
@@ -196,15 +209,15 @@ export class LayoutManager {
               icons={config?.icons}
               // iconFactory={layoutManager.iconFactory.bind(this)}
               onAction={(action) => layoutManager.onAction(action)}
-              onRenderTab={(node, renderValues) =>
-                layoutManager.onRenderTab(
+              onRenderTab={(node, renderValues) => {
+                return layoutManager.onRenderTab(
                   node,
                   renderValues,
                   config?.tabButtons
-                )
-              }
+                );
+              }}
               onRenderTabSet={(node, renderValues) => {
-                layoutManager.onRenderTabSet(
+                return layoutManager.onRenderTabSet(
                   node,
                   renderValues,
                   config?.tabSetButtons
@@ -367,6 +380,7 @@ export class LayoutManager {
       this.fixRowRecursive(this.model.getRoot());
       next(updateLayout(this.model));
     }
+    // this.hideIfEmpty();
   };
 
   setTabsetWeight(node: FlexLayout.Node, weight: number) {
@@ -404,15 +418,31 @@ export class LayoutManager {
     return false;
   }
 
-  hasOnlyOneTab() {
+  childrenByTabset() {
     let childrenCount = 0;
     this.model.visitNodes((node) => {
       childrenCount += node.getChildren().some((n) => n.getType() === "tab")
         ? 1
         : 0;
     });
-    return childrenCount === 1;
+    return childrenCount;
   }
+
+  // hasOnlyOneTab() {
+  //   return this.childrenByTabset() === 1;
+  // }
+
+  // hideIfEmpty() {
+  //   if (!this.layoutWrapper.current) {
+  //     return true;
+  //   }
+  //   if (this.childrenByTabset() > 0) {
+  //     this.layoutWrapper.current.style.visibility = "";
+  //     return;
+  //   }
+  //   this.layoutWrapper.current.style.visibility = "hidden";
+  //   return false;
+  // }
 
   fixRowRecursive(node: FlexLayout.Node) {
     if (node.getType() === "row" || node.getType() === "tabset") {
@@ -426,7 +456,7 @@ export class LayoutManager {
           empty = this.fixRowRecursive(child) && empty;
         }
         if (this.model.getRoot() === node) {
-          if (this.hasOnlyOneTab()) {
+          if (this.childrenByTabset() <= 1) {
             this.model.doAction(
               FlexLayout.Actions.updateModelAttributes({ splitterSize: 0 })
             );
@@ -520,7 +550,7 @@ export class LayoutManager {
 
         break;
       case Actions.DELETE_TAB: {
-        if (this.getWidget(action.data.node).hideOnClose) {
+        if (this.getWidget(action.data.node)?.hideOnClose) {
           // widget only minimized, won't be removed from layout nor widgets list
           this.minimizeHelper.minimizeWidget(action.data.node);
           defaultAction = false;
