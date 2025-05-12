@@ -5,7 +5,6 @@ import {
   BaseNode,
   type ComponentMap,
   type IComponentConfig,
-  TabsetPosition,
   type Widget,
   WidgetStatus,
 } from "./model";
@@ -24,7 +23,6 @@ import {
 
 import { MinimizeHelper } from "./helpers/MinimizeHelper";
 import { createTabSet, moveWidget } from "./helpers/FlexLayoutHelper";
-import { Store } from "redux";
 
 const styles = {
   container: {
@@ -100,11 +98,6 @@ export class LayoutManager {
       }
       this.defaultWeights[node.getId()] = fn.bind(node)();
     });
-    // for (const node of allNodes) {
-    //   this.defaultWeights[node.getId()] = (node as BaseNode).getWeight();
-    //   console.log("Visit", node)
-    // }
-
     this.fixRowRecursive(this.model.getRoot());
   }
 
@@ -381,7 +374,6 @@ export class LayoutManager {
       this.fixRowRecursive(this.model.getRoot());
       next(updateLayout(this.model));
     }
-    // this.hideIfEmpty();
   };
 
   setTabsetWeight(node: FlexLayout.Node, weight: number) {
@@ -428,22 +420,6 @@ export class LayoutManager {
     });
     return childrenCount;
   }
-
-  // hasOnlyOneTab() {
-  //   return this.childrenByTabset() === 1;
-  // }
-
-  // hideIfEmpty() {
-  //   if (!this.layoutWrapper.current) {
-  //     return true;
-  //   }
-  //   if (this.childrenByTabset() > 0) {
-  //     this.layoutWrapper.current.style.visibility = "";
-  //     return;
-  //   }
-  //   this.layoutWrapper.current.style.visibility = "hidden";
-  //   return false;
-  // }
 
   fixRowRecursive(node: FlexLayout.Node) {
     if (node.getType() === "row" || node.getType() === "tabset") {
