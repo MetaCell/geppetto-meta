@@ -1,7 +1,7 @@
 import * as redux from "redux";
 import { callbacksMiddleware } from './middleware/geppettoMiddleware';
 
-import { initLayoutManager, LayoutManager } from './layout/LayoutManager';
+import { initLayoutManager, LayoutManager, registerStoreLayout } from './layout/LayoutManager';
 import EventManager from './EventManager';
 import { layoutInitialState, type LayoutState, layout, widgets } from './reducer/geppettoLayout';
 import geppettoClientReducer, { clientInitialState, type ClientState } from './reducer/geppettoClient';
@@ -64,6 +64,7 @@ function getLayoutAndStore(
   );
 
   EventManager.setStore(store);
+  registerStoreLayout(store, layoutManager);
 
   return { layoutManager, store };
 }

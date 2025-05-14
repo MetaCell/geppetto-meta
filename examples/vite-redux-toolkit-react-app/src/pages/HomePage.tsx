@@ -1,14 +1,11 @@
-import { useMemo } from "react";
 import { useStore } from "react-redux";
 import { Box, CircularProgress } from "@mui/material";
-import { getLayoutManagerInstance } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
+import { useLayoutManager } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
 import "@metacell/geppetto-meta-client/common/layout/styles/dark.css";
 
 const HomePage = () => {
   const store = useStore();
-  const LayoutComponent = useMemo(() => {
-    return getLayoutManagerInstance()?.getComponent();
-  }, [store]);
+  const LayoutComponent = useLayoutManager(store);
 
   return (
     <Box

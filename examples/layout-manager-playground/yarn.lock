@@ -572,22 +572,22 @@
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
 
-"@metacell/geppetto-meta-client@^3.0.0-alpha.1":
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-3.0.0-alpha.2.tgz#d2c05a28903af252a80f7223a946bb902e975126"
-  integrity sha512-57SIA+bGg+BM7T56hqt2gcvtt4V18FZcVCeodgSkLXUVRjtQhynkkWtKqkeCkbnv9JspjVmIIZAZ05IgJVCcDQ==
+"@metacell/geppetto-meta-client@^3.0.0-alpha.7":
+  version "3.0.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-client/-/geppetto-meta-client-3.0.0-alpha.7.tgz#4283d92aa1d8773f0edd05f82765063d1e859939"
+  integrity sha512-FJ28pCHbgYsNxOrvf0g7fk3cwSb2S9UaPVhHnh4nABosbmTuhlmxsitr3hOcYfVsHwR2IoJbo2bCmr93M34jYg==
   dependencies:
-    flexlayout-react "^0.8.1"
+    flexlayout-react "^0.8.15"
 
-"@metacell/geppetto-meta-core@^3.0.0-alpha.1":
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-3.0.0-alpha.2.tgz#47d32b335e2dcc39512d4dc53e7acae63f0c5813"
-  integrity sha512-nYPSAMgcdJiLpzwNhTEIdKXtyNn6y7b9XOGpz4xyKkR9k6cwlmRghuLifrKEjUsNV4vrjPnEQBLB+wBD8eEOqA==
+"@metacell/geppetto-meta-core@^3.0.0-alpha.7":
+  version "3.0.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-core/-/geppetto-meta-core-3.0.0-alpha.7.tgz#138f19cf0b791c7623bfedfd1bb179fed6d0dafa"
+  integrity sha512-ghbUN/dVVLU3bI8yq6himJajrt20V0vxHKsFVLsE6uV8vTkLPkgzboPucuaV5/1StmHi7FYrWoSYO8hZfBkhtw==
 
-"@metacell/geppetto-meta-ui@^3.0.0-alpha.1":
-  version "3.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-3.0.0-alpha.2.tgz#66e02583b2d405541fae50302607097ff160d640"
-  integrity sha512-/bvFHD85LFvOAE72u1mQT/Ji9wl0+5HLP6XvHkMbTBqs8ohz4qrLTqpsPjb7yOWsIxQ0ALTHcX/KiY6Noa3NEg==
+"@metacell/geppetto-meta-ui@^3.0.0-alpha.7":
+  version "3.0.0-alpha.7"
+  resolved "https://registry.yarnpkg.com/@metacell/geppetto-meta-ui/-/geppetto-meta-ui-3.0.0-alpha.7.tgz#1e8ba61390b009eb13083ad7be64b9519837c1b4"
+  integrity sha512-ZdWVuOS27SbjMtsDQ+7rma5fFyUEMtXCiyakdl08mNjButqN08H5Y9fCpQpk/BNUG/NDQDfolECjRBzkXtIbDQ==
 
 "@mui/core-downloads-tracker@^5.16.7":
   version "5.16.7"
@@ -1492,10 +1492,10 @@ flatted@^3.2.9:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.3.1.tgz#21db470729a6734d4997002f439cb308987f567a"
   integrity sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==
 
-flexlayout-react@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.8.1.tgz#9ea310fdf8326f6af2c13ace61b166471d937d3e"
-  integrity sha512-zNB++3bnx1XGjslpJyaDvVYkgjXNZyeHAabBvZp0REha9skljtxJYApOR9XazlFCKloqLF8Uk8ado3LsNW/rPg==
+flexlayout-react@^0.8.15:
+  version "0.8.17"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.8.17.tgz#52c5f7e147b3baccd5f531ac4ada69efe59eda9d"
+  integrity sha512-F0utJcrIGBpF4btqRYLFOoITQcyFxUp19X4dvFvEceD/CJkRoefV96iN1lDU63t9ystgltmWw7AscgNbKJMlcA==
 
 fs-extra@^8.0.1:
   version "8.1.0"
