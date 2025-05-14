@@ -29,7 +29,6 @@ export default {
           {
             type: "row",
             id: "top",
-
             children: [{
               type: "tabset",
               id: "topLeft",
