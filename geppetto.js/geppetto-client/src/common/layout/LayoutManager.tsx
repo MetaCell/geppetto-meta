@@ -581,7 +581,7 @@ export class LayoutManager {
       previousWidget,
       mergedWidget
     );
-    if (!widgetRestored) {
+    if (!widgetRestored && previousWidget.panelName != mergedWidget.panelName) {
       moveWidget(model, mergedWidget);
     }
 
