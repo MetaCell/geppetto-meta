@@ -75,7 +75,9 @@ const HomePage = () => {
   };
 
   const moveToBottom = () => {
-    for (const widget of Object.values(widgets) as Widget[]) {
+    for (const widget of (Object.values(widgets) as Widget[]).filter(
+      (e) => e.panelName === "topLeft"
+    ) as Widget[]) {
       dispatch(
         updateWidget({
           ...widget,
@@ -165,7 +167,7 @@ const HomePage = () => {
         </Button>
 
         <Button variant="contained" onClick={moveToBottom}>
-          MoveToBottom
+          Move topleft Panel to bottom
         </Button>
 
         {Object.values(widgets).map((widget: Widget, index: number) => (

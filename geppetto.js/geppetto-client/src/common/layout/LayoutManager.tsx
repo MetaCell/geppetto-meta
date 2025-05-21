@@ -581,8 +581,14 @@ export class LayoutManager {
       previousWidget,
       mergedWidget
     );
-    if (!widgetRestored && previousWidget.panelName != mergedWidget.panelName) {
-      moveWidget(model, mergedWidget);
+    if (!widgetRestored) {
+      if (
+        previousWidget.pos !== mergedWidget.pos ||
+        previousWidget.panelName !== mergedWidget.panelName ||
+        mergedWidget.status !== previousWidget.status
+      ) {
+        moveWidget(model, mergedWidget);
+      }
     }
 
     this.widgetFactory.updateWidget(mergedWidget);
