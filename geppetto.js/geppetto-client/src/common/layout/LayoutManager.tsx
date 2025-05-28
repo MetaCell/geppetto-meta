@@ -566,6 +566,14 @@ export class LayoutManager {
     return undefined;
   }
 
+  private shouldMoveWidget(previous, current) {
+    return (
+      previous.pos !== current.pos ||
+      previous.panelName !== current.panelName ||
+      current.status !== previous.status
+    );
+  }
+
   /**
    * Update a widget.
    *
@@ -581,14 +589,8 @@ export class LayoutManager {
       previousWidget,
       mergedWidget
     );
-    if (!widgetRestored) {
-      if (
-        previousWidget.pos !== mergedWidget.pos ||
-        previousWidget.panelName !== mergedWidget.panelName ||
-        mergedWidget.status !== previousWidget.status
-      ) {
-        moveWidget(model, mergedWidget);
-      }
+    if (!widgetRestored && this.shouldMoveWidget) {
+      moveWidget(model, mergedWidget);
     }
 
     this.widgetFactory.updateWidget(mergedWidget);
