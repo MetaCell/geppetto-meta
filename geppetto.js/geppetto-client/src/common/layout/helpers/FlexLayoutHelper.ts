@@ -1,5 +1,5 @@
 
-import {TabsetPosition} from "../model";
+import {TabsetPosition, WidgetStatus} from "../model";
 import * as FlexLayout from 'flexlayout-react';
 
 /**
@@ -51,13 +51,14 @@ export function createTabSet(model, tabsetID, position = TabsetPosition.RIGHT, w
     return tabset
 }
 
-export function moveWidget(model, widget) {
+export function moveWidget(model, widget, select=widget.status === WidgetStatus.ACTIVE) {
     model.doAction(
         FlexLayout.Actions.moveNode(
             widget.id,
             widget.panelName,
             FlexLayout.DockLocation.CENTER,
-            widget.pos
+            widget.pos,
+            select
         )
     );
 }

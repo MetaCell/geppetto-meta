@@ -116,9 +116,6 @@ export const widgets = (state: WidgetMap = {}, action) => {
     for (const parent of parents) {
       for (const i in parent.getChildren()) {
         const node = parent.getChildren()[i] as BaseNode;
-        if (!node.isVisible) {
-          continue
-        }
         if (!updatedWidgets[node.getId()]) {
           continue;
         }

@@ -566,6 +566,14 @@ export class LayoutManager {
     return undefined;
   }
 
+  private shouldMoveWidget(previous, current) {
+    return (
+      previous.pos !== current.pos ||
+      previous.panelName !== current.panelName ||
+      current.status !== previous.status
+    );
+  }
+
   /**
    * Update a widget.
    *
@@ -581,7 +589,7 @@ export class LayoutManager {
       previousWidget,
       mergedWidget
     );
-    if (!widgetRestored) {
+    if (!widgetRestored && this.shouldMoveWidget) {
       moveWidget(model, mergedWidget);
     }
 

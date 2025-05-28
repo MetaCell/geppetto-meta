@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useDispatch, useStore, useSelector } from 'react-redux';
+import { useState } from "react";
+import { useDispatch, useStore, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -10,15 +10,22 @@ import {
   Tooltip,
   InputLabel,
   MenuItem,
-  FormControl
-} from "@mui/material"
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import VisibilityOnIcon from '@mui/icons-material/Visibility';
-import Select, { type SelectChangeEvent } from '@mui/material/Select';
+  FormControl,
+} from "@mui/material";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityOnIcon from "@mui/icons-material/Visibility";
+import Select, { type SelectChangeEvent } from "@mui/material/Select";
 import { useLayoutManager } from "@metacell/geppetto-meta-client/common/layout/LayoutManager";
-import { addWidget, updateWidget } from '@metacell/geppetto-meta-client/common/layout/actions';
-import { TabsetPosition, type Widget, WidgetStatus } from "@metacell/geppetto-meta-client/common/layout/model";
-import '@metacell/geppetto-meta-client/common/layout/styles/dark.css'
+import {
+  addWidget,
+  updateWidget,
+} from "@metacell/geppetto-meta-client/common/layout/actions";
+import {
+  TabsetPosition,
+  type Widget,
+  WidgetStatus,
+} from "@metacell/geppetto-meta-client/common/layout/model";
+import "@metacell/geppetto-meta-client/common/layout/styles/dark.css";
 
 import { componentWidget } from "../widgets";
 
@@ -54,6 +61,30 @@ const HomePage = () => {
     updatedWidget.panelName = panel;
     updatedWidget.defaultPosition = Positions[location];
     dispatch(updateWidget(updatedWidget));
+  };
+
+  const updateProps = () => {
+    for (const widget of Object.values(widgets) as Widget[]) {
+      dispatch(
+        updateWidget({
+          ...widget,
+          props: { ...widget.props, name: `UPDATED ${widget.props.name}` },
+        })
+      );
+    }
+  };
+
+  const moveToBottom = () => {
+    for (const widget of (Object.values(widgets) as Widget[]).filter(
+      (e) => e.panelName === "topLeft"
+    ) as Widget[]) {
+      dispatch(
+        updateWidget({
+          ...widget,
+          panelName: "bottom",
+        })
+      );
+    }
   };
 
   return (
@@ -131,25 +162,46 @@ const HomePage = () => {
           Add Component
         </Button>
 
+        <Button variant="contained" onClick={updateProps}>
+          Update All Props
+        </Button>
+
+        <Button variant="contained" onClick={moveToBottom}>
+          Move topleft Panel to bottom
+        </Button>
+
         {Object.values(widgets).map((widget: Widget, index: number) => (
           <Tooltip key={index} title={widget.name}>
-            <IconButton onClick={() => activateWidget(widget)} disabled={widget.status === WidgetStatus.ACTIVE}>
-              {widget.status == WidgetStatus.ACTIVE ? <VisibilityOffIcon /> : <VisibilityOnIcon />}
+            <IconButton
+              onClick={() => activateWidget(widget)}
+              disabled={widget.status === WidgetStatus.ACTIVE}
+            >
+              {widget.status == WidgetStatus.ACTIVE ? (
+                <VisibilityOffIcon />
+              ) : (
+                <VisibilityOnIcon />
+              )}
             </IconButton>
           </Tooltip>
         ))}
-
       </Stack>
-      <Box p={2} sx={{
-        display: 'flex',
-        position: 'relative',
-        width: '100%',
-        height: '90vh',
-      }}>
-        {LayoutComponent === undefined ? <CircularProgress /> : <LayoutComponent />}
+      <Box
+        p={2}
+        sx={{
+          display: "flex",
+          position: "relative",
+          width: "100%",
+          height: "90vh",
+        }}
+      >
+        {LayoutComponent === undefined ? (
+          <CircularProgress />
+        ) : (
+          <LayoutComponent />
+        )}
       </Box>
     </Box>
   );
-}
+};
 
 export default HomePage;
