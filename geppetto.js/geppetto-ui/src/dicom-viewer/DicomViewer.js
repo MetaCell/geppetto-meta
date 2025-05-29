@@ -114,6 +114,7 @@ class _DicomViewer extends Component {
     this.startAnimation = this.startAnimation.bind(this);
     this.stopAnimation = this.stopAnimation.bind(this);
     this.centerOn = this.centerOn.bind(this);
+    this.resizeObserver = null;
   }
 
   extractFilesPath (data) {
@@ -215,6 +216,19 @@ class _DicomViewer extends Component {
       DicomViewerUtils.initRenderer2D(_this.r1, _this.containerRef.current);
       DicomViewerUtils.initRenderer2D(_this.r2, _this.containerRef.current);
       DicomViewerUtils.initRenderer2D(_this.r3, _this.containerRef.current);
+
+      _this.resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          const { width, height } = entry.contentRect;
+          _this.r0.renderer.setSize(width, height);
+          _this.r0.camera.aspect = width / height;
+          _this.r0.camera.updateProjectionMatrix();
+          _this.r0.controls.handleResize();
+        }
+      });
+
+
+      _this.resizeObserver.observe(_this.r0.domElement);
 
       // start rendering loop
       animate();
@@ -553,6 +567,10 @@ class _DicomViewer extends Component {
   }
 
   componentWillUnmount () {
+    if (this.resizeObserver && this.r0.domElement) {
+      this.resizeObserver.unobserve(this.r0.domElement);
+      this.resizeObserver.disconnect();
+    }
     DicomViewerUtils.dispose(this.r0);
     DicomViewerUtils.dispose(this.r1);
     DicomViewerUtils.dispose(this.r2);

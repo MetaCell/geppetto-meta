@@ -18,11 +18,7 @@ const HomePage = () => {
         marginTop: 8,
       }}
     >
-      {LayoutComponent === undefined ? (
-        <CircularProgress />
-      ) : (
-        <LayoutComponent />
-      )}
+      {!LayoutComponent ? <CircularProgress /> : <LayoutComponent />}
     </Box>
   );
 };

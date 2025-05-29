@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import BaseDicomViewer from '@metacell/geppetto-meta-ui/dicom-viewer/DicomViewer';
 import {
