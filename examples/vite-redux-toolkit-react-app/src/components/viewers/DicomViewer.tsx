@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DicomViewer from "@metacell/geppetto-meta-ui/dicom-viewer/preconf/DicomViewer";
 import Loader from "@metacell/geppetto-meta-ui/loader/Loader";
 import * as THREE from "three-legacy";
@@ -23,7 +23,9 @@ const DicomViewerExample: React.FC = () => {
         showDownloadButton={true}
         onLoaded={onLoaded}
         loaderOptions={{ showLoader: false }}
-        toolbarOptions={{ innerDivStyles: { backgroundColor: "rgb(0,0,0,0)" } }}
+        toolbarOptions={{
+          innerDivStyles: { backgroundColor: "rgb(0,0,0,0)" },
+        }}
       />
     </>
   );
