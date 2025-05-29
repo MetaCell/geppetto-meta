@@ -5,7 +5,7 @@ export const componentWidget = () => ({
   id: ViewerType.default,
   name: 'panel1',
   component: ViewerType.default,
-  panelName: 'leftPanel',
+  panelName: 'rightPanel',
   enableClose: false,
   status: WidgetStatus.ACTIVE
 });

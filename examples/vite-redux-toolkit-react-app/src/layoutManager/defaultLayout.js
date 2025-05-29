@@ -10,33 +10,33 @@ export default {
   layout: {
     type: "row",
     id: "root",
-    // children: [
-    //   {
-    //     type: "row",
-    //     weight: 60,
-    //     children: [
-    //       {
-    //         type: "tabset",
-    //         id: "leftPanel",
-    //         weight: 100,
-    //         enableDeleteWhenEmpty: false,
-    //         children: []
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     type: "row",
-    //     weight: 40,
-    //     children: [
-    //       {
-    //         type: "tabset",
-    //         weight: 100,
-    //         id: "rightPanel",
-    //         enableDeleteWhenEmpty: false,
-    //         children: []
-    //       }
-    //     ]
-    //   }
-    // ]
+    children: [
+      {
+        type: "row",
+        weight: 60,
+        children: [
+          {
+            type: "tabset",
+            id: "leftPanel",
+            weight: 100,
+            enableDeleteWhenEmpty: false,
+            children: []
+          }
+        ]
+      },
+      {
+        type: "row",
+        weight: 40,
+        children: [
+          {
+            type: "tabset",
+            weight: 100,
+            id: "rightPanel",
+            enableDeleteWhenEmpty: false,
+            children: []
+          }
+        ]
+      }
+    ]
   }
 };
