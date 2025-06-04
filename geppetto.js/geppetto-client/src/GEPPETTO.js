@@ -129,7 +129,7 @@ const EventsMapping = {
   [Events.Jupyter_geppetto_extension_ready]: EventManager.clientActions.JUPYTER_GEPPETTO_EXTENSION_READY,
 };
 
-export function initGeppetto (useWebsocket = true, loadStyle = true) {
+export function initGeppetto (useWebsocket = true) {
   if (!window.GEPPETTO_CONFIGURATION) {
     window.GEPPETTO_CONFIGURATION = {}
   }
@@ -139,14 +139,8 @@ export function initGeppetto (useWebsocket = true, loadStyle = true) {
     GEPPETTO.MessageSocket = WSMain.socket
   }
 
-  if (loadStyle) {
-    require('./style/less/main.less');
-  }
-
   GEPPETTO.ComponentFactory = ComponentFactory;
   window.GEPPETTO = GEPPETTO;
 }
 
 export default GEPPETTO;
-
-
