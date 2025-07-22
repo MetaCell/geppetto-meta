@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "css-loader": "^3.0.0",
-    "less": "^2.7.2",
+    "less": "^4.4.0",
     "less-loader": "^5.0.0",
     "style-loader": "^0.13.2",
     "webpack": "^4.35.0",
