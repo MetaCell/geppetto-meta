@@ -589,7 +589,10 @@ export class LayoutManager {
       previousWidget,
       mergedWidget
     );
-    if (!widgetRestored && this.shouldMoveWidget) {
+    if (
+      !widgetRestored &&
+      this.shouldMoveWidget(previousWidget, mergedWidget)
+    ) {
       moveWidget(model, mergedWidget);
     }
 
@@ -601,7 +604,10 @@ export class LayoutManager {
       model.doAction(
         Actions.updateNodeAttributes(mergedWidget.id, widget2Node(mergedWidget))
       );
-      if (mergedWidget.status === WidgetStatus.ACTIVE) {
+      if (
+        mergedWidget.status === WidgetStatus.ACTIVE &&
+        mergedWidget.status !== previousWidget.status
+      ) {
         model.doAction(FlexLayout.Actions.selectTab(mergedWidget.id));
       }
       const parent = node.getParent() as BaseNode;
