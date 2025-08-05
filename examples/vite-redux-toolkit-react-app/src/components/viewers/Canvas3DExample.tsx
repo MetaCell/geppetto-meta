@@ -53,9 +53,32 @@ const Canvas3DExample: React.FC = () => {
             },
             highlightOnClick: true,
           },
-          `http://localhost:${window.location.port}/nervering.stl`,
+          {
+            url: `http://localhost:${window.location.port}/nervering.stl`,
+            opts: {
+              material: {
+                flatShading: false,
+                color: "hotpink",
+                depthWrite: true,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.FrontSide,
+              },
+            },
+            // disableMeshClick: true,
+            onMeshClick: (mesh, id, event) => {
+              event.stopPropagation();
+              console.debug("DEDICATED CLICK HANDLER");
+              console.debug("MESH", mesh);
+              console.debug("id", id);
+              console.debug("event", event);
+            },
+          },
+          `http://localhost:${window.location.port}/2.obj`,
         ]}
-        onLoadError={(e) => console.log(e)}
+        onLoadError={(e) => console.debug(e)}
+        onLoadSuccess={() => console.debug("All 3D objects loaded properly")}
+        onMeshClick={(_, id) => console.debug("Global mesh handler click", id)}
       ></Canvas3D>
     </Box>
   );
