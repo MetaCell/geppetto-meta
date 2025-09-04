@@ -24,6 +24,9 @@ type Canvas3DProps = Canvas3DBaseProps &
  * Wraps @react-three/fiber’s <Canvas /> and handles lights and if it has to be interactive or not.
  * Beside the defined parameters, the additional props are passed to the three/fiber <Canvas /> component.
  *
+ * By default, the fameloop is set to "demand" to optimize performance, and can be overridden via props.
+ * By default, ambient and directional lights are added, but can be disabled via props.
+ *
  * @param defaultLightOff Disables default ambient + directional lights (default: false)
  * @param nonInteractive If true, disables default camera controls (default: false)
  */
