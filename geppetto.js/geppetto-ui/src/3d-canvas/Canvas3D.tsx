@@ -24,8 +24,8 @@ type Canvas3DProps = Canvas3DBaseProps &
  * Wraps @react-three/fiber’s <Canvas /> and handles lights and if it has to be interactive or not.
  * Beside the defined parameters, the additional props are passed to the three/fiber <Canvas /> component.
  *
- * @param defaultLightOff Disables default ambient + directional lights
- * @param nonInteractive If true, disables default camera controls
+ * @param defaultLightOff Disables default ambient + directional lights (default: false)
+ * @param nonInteractive If true, disables default camera controls (default: false)
  */
 export const Canvas3D: React.FC<Canvas3DProps> = ({
   children,
@@ -48,12 +48,15 @@ export const Canvas3D: React.FC<Canvas3DProps> = ({
 };
 
 /**
+ * Hook that lets you load multiple 3D objects in parallel using a specified loader.
  *
- * @param loader
- * @param urls
- * @param onLoadError
- * @param onProgress
- * @returns
+ * If an error occurs during loading of a URL, the onLoadError callback is called with the URL and error details, but the loading continues for other URLs.
+ *
+ * @param loader The loader class to use for loading (e.g., STLLoader, OBJLoader)
+ * @param urls the URL or array of URLs to load
+ * @param onLoadError the callback function that is called when an error occurs during loading of a URL.
+ * @param onProgress the callback function that is called to report progress during loading of a URL.
+ * @returns an object mapping each URL to its loaded 3D object. If a URL failed to load, it will not be included in the returned object.
  */
 export const useParallelLoader = <T,>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
