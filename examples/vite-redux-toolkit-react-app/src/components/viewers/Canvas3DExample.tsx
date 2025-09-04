@@ -1,9 +1,15 @@
-import React, { useRef, useState } from "react";
-import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import React, { Suspense, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
+import { CameraControls, Center } from "@react-three/drei";
 import { Mesh } from "three";
 import * as THREE from "three";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import {
+  Canvas3D,
+  useParallelLoader,
+} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 
 console.log("three.js for 3D view", THREE.REVISION);
 
@@ -27,7 +33,7 @@ function MyRotatingBox() {
 
   return (
     <mesh
-      scale={active ? 1.5 : 1}
+      scale={active ? 5 : 1}
       onClick={() => setActive(!active)}
       ref={myMesh}
     >
@@ -40,47 +46,42 @@ function MyRotatingBox() {
 const Canvas3DExample: React.FC = () => {
   return (
     <Box className={classes.container} style={classes.container}>
-      <Canvas3D
-        object3dUrls={[
-          {
-            url: `http://localhost:${window.location.port}/ADAL.stl`,
-            opts: {
-              material: {
-                color: "green",
-                transparent: true,
-                opacity: 0.5,
-              },
-            },
-            highlightOnClick: true,
-          },
-          {
-            url: `http://localhost:${window.location.port}/nervering.stl`,
-            opts: {
-              material: {
-                flatShading: false,
-                color: "hotpink",
-                depthWrite: true,
-                transparent: true,
-                opacity: 0.3,
-                side: THREE.FrontSide,
-              },
-            },
-            // disableMeshClick: true,
-            onMeshClick: (mesh, id, event) => {
-              event.stopPropagation();
-              console.debug("DEDICATED CLICK HANDLER");
-              console.debug("MESH", mesh);
-              console.debug("id", id);
-              console.debug("event", event);
-            },
-          },
-          `http://localhost:${window.location.port}/2.obj`,
-        ]}
-        onLoadError={(e) => console.debug(e)}
-        onLoadSuccess={() => console.debug("All 3D objects loaded properly")}
-        onMeshClick={(_, id) => console.debug("Global mesh handler click", id)}
-      ></Canvas3D>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Canvas3DContent />
+      </Suspense>
     </Box>
+  );
+};
+
+const Canvas3DContent: React.FC = () => {
+  const urls = [
+    `http://localhost:${window.location.port}/ADAL.stl`,
+    `http://localhost:${window.location.port}/nervering.stl`,
+  ];
+
+  const stlGeometries = useParallelLoader(STLLoader, urls);
+  const objGroups = useParallelLoader(
+    OBJLoader,
+    `http://localhost:${window.location.port}/2.obj`
+  );
+
+  return (
+    <Canvas3D frameloop={"always"}>
+      <group>
+        <Center>
+          {Object.entries(stlGeometries).map(([url, geometry]) => (
+            <mesh key={url}>
+              <primitive attach="geometry" object={geometry} />
+              <meshStandardMaterial transparent={true} opacity={0.3} />
+            </mesh>
+          ))}
+          {Object.entries(objGroups).map(([url, group]) => (
+            <primitive key={url} object={group} />
+          ))}
+        </Center>
+      </group>
+      <MyRotatingBox />
+    </Canvas3D>
   );
 };
 
