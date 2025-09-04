@@ -1,15 +1,9 @@
-import {
-  Canvas,
-  CanvasProps,
-  MeshProps,
-  MeshStandardMaterialProps,
-  ThreeEvent,
-} from "@react-three/fiber";
+import { Canvas, CanvasProps } from "@react-three/fiber";
 import React, { useEffect, useRef } from "react";
 
 import { CameraControls } from "@react-three/drei";
 import { useState } from "react";
-import { BufferGeometry, Loader, Mesh } from "three";
+import { Loader } from "three";
 
 type Canvas3DBaseProps = {
   children?;
