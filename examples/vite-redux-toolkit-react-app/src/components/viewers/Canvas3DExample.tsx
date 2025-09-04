@@ -57,9 +57,12 @@ const Canvas3DContent: React.FC = () => {
   const urls = [
     `http://localhost:${window.location.port}/ADAL.stl`,
     `http://localhost:${window.location.port}/nervering.stl`,
+    `http://localhost:${window.location.port}/n.stl`,
   ];
 
-  const stlGeometries = useParallelLoader(STLLoader, urls);
+  const stlGeometries = useParallelLoader(STLLoader, urls, (url, error) => {
+    console.debug("ERROR LOADING STL", url, error);
+  });
   const objGroups = useParallelLoader(
     OBJLoader,
     `http://localhost:${window.location.port}/2.obj`
