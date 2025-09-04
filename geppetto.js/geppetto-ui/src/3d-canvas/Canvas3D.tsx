@@ -60,7 +60,7 @@ export const useParallelLoader = <T,>(
   loader: new (...args: any[]) => Loader<T>,
   urls: string[] | string,
   onLoadError?: (url, error) => void,
-  onProgress?: (event: ProgressEvent<EventTarget>) => void
+  onProgress?: (url, event: ProgressEvent<EventTarget>) => void
   // onLoadSuccess?: () => void
 ): Record<string, any> => {
   const [objects, setObjects] = useState<Record<string, any>>({});
@@ -104,7 +104,7 @@ export const useParallelLoader = <T,>(
               (geometry) => {
                 resolve({ url, object: geometry });
               },
-              onProgress,
+              (event) => onProgress?.(url, event),
               (error) => {
                 if (!onLoadError) {
                   console.error(`Error loading ${url}:`, error);

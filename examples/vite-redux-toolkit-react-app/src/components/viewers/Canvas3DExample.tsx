@@ -60,9 +60,16 @@ const Canvas3DContent: React.FC = () => {
     `http://localhost:${window.location.port}/n.stl`,
   ];
 
-  const stlGeometries = useParallelLoader(STLLoader, urls, (url, error) => {
-    console.debug("ERROR LOADING STL", url, error);
-  });
+  const stlGeometries = useParallelLoader(
+    STLLoader,
+    urls,
+    (url, error) => {
+      console.debug("ERROR LOADING STL", url, error);
+    },
+    (url, event) => {
+      console.debug("STL LOAD PROGRESS", url, event);
+    }
+  );
   const objGroups = useParallelLoader(
     OBJLoader,
     `http://localhost:${window.location.port}/2.obj`
