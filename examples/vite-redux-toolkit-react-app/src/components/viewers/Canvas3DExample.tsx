@@ -1,7 +1,7 @@
 import React, { Suspense, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
-import { CameraControls, Center } from "@react-three/drei";
+import { CameraControls, Center, Html } from "@react-three/drei";
 import { Mesh } from "three";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
@@ -25,6 +25,7 @@ const classes = {
 function MyRotatingBox() {
   const myMesh = useRef<Mesh>();
   const [active, setActive] = useState(false);
+  const [switchColor, setSwitchColor] = useState(false);
 
   useFrame(({ clock }) => {
     const a = clock.getElapsedTime();
@@ -34,11 +35,15 @@ function MyRotatingBox() {
   return (
     <mesh
       scale={active ? 5 : 1}
-      onClick={() => setActive(!active)}
+      onClick={() => {
+        setActive(!active);
+        setSwitchColor((prev) => !prev);
+      }}
       ref={myMesh}
+      position={[10, 10, 10]}
     >
       <boxGeometry />
-      <meshPhongMaterial color="royalblue" />
+      <meshPhongMaterial color={switchColor ? "royalblue" : "hotpink"} />
     </mesh>
   );
 }
