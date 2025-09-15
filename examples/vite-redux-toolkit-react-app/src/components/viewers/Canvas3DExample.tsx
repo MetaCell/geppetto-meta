@@ -1,7 +1,14 @@
 import React, { Suspense, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
-import { CameraControls, Center, Html } from "@react-three/drei";
+import {
+  CameraControls,
+  Center,
+  Gltf,
+  Html,
+  useCamera,
+  useGLTF,
+} from "@react-three/drei";
 import { Mesh } from "three";
 import * as THREE from "three";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
@@ -40,7 +47,6 @@ function MyRotatingBox() {
         setSwitchColor((prev) => !prev);
       }}
       ref={myMesh}
-      position={[10, 10, 10]}
     >
       <boxGeometry />
       <meshPhongMaterial color={switchColor ? "royalblue" : "hotpink"} />
@@ -65,19 +71,21 @@ const Canvas3DContent: React.FC = () => {
     `http://localhost:${window.location.port}/n.stl`,
   ];
 
-  const stlGeometries = useParallelLoader(
-    STLLoader,
-    urls,
-    (url, error) => {
+  const stlGeometries = useParallelLoader(STLLoader, urls, undefined, {
+    onError: (url, error) => {
       console.debug("ERROR LOADING STL", url, error);
     },
-    (url, event) => {
+    onProgress: (url, event) => {
       console.debug("STL LOAD PROGRESS", url, event);
-    }
-  );
+    },
+  });
   const objGroups = useParallelLoader(
     OBJLoader,
     `http://localhost:${window.location.port}/2.obj`
+  );
+
+  useGLTF.setDecoderPath(
+    "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/"
   );
 
   return (
@@ -94,8 +102,14 @@ const Canvas3DContent: React.FC = () => {
             <primitive key={url} object={group} />
           ))}
         </Center>
+        {/* <Center>
+          <Gltf
+            src={`http://localhost:${window.location.port}/Avocado.gltf`}
+            useDraco={true}
+          />
+        </Center> */}
       </group>
-      <MyRotatingBox />
+      {/* <MyRotatingBox /> */}
     </Canvas3D>
   );
 };

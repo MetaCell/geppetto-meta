@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from "react";
 import { CameraControls } from "@react-three/drei";
 import { useState } from "react";
 import { Loader } from "three";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 type Canvas3DBaseProps = {
   children?;
@@ -51,17 +52,23 @@ export const Canvas3D: React.FC<Canvas3DProps> = ({
  *
  * @param loader The loader class to use for loading (e.g., STLLoader, OBJLoader)
  * @param urls the URL or array of URLs to load
- * @param onLoadError the callback function that is called when an error occurs during loading of a URL.
+ * @param loaderInit the callback function that is called just after creating the loader.
+ * @param progress an object that contains 3 optional keys: onError, onProgress, onFinish.
+ * @param onError the callback function that is called when an error occurs during loading of a URL.
  * @param onProgress the callback function that is called to report progress during loading of a URL.
+ * @param onFinish the callback function that is called to report that the object at an URL loaded properly.
  * @returns an object mapping each URL to its loaded 3D object. If a URL failed to load, it will not be included in the returned object.
  */
 export const useParallelLoader = <T,>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   loader: new (...args: any[]) => Loader<T>,
   urls: string[] | string,
-  onLoadError?: (url, error) => void,
-  onProgress?: (url, event: ProgressEvent<EventTarget>) => void
-  // onLoadSuccess?: () => void
+  loaderInit?: (loader) => void,
+  progress?: {
+    onError?: (url, error) => void;
+    onProgress?: (url, event: ProgressEvent<EventTarget>) => void;
+    onFinish?: (url) => void;
+  }
 ): Record<string, any> => {
   const [objects, setObjects] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +100,7 @@ export const useParallelLoader = <T,>(
 
     setIsLoading(true);
     const _loader = new loader();
+    loaderInit?.(_loader);
 
     // Create the loading promise
     const promise = (async (): Promise<Record<string, T>> => {
@@ -102,14 +110,15 @@ export const useParallelLoader = <T,>(
             _loader.load(
               url,
               (geometry) => {
+                progress?.onFinish?.(url);
                 resolve({ url, object: geometry });
               },
-              (event) => onProgress?.(url, event),
+              (event) => progress?.onProgress?.(url, event),
               (error) => {
-                if (!onLoadError) {
+                if (!progress?.onError) {
                   console.error(`Error loading ${url}:`, error);
                 } else {
-                  onLoadError(url, error);
+                  progress?.onError(url, error);
                 }
                 resolve({ url, object: null });
               }
