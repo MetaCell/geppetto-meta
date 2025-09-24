@@ -16,7 +16,7 @@ const classes = {
   },
 };
 
-function MyRotatingBox() {
+const Canvas3DExample: React.FC = () => {
   const myMesh = useRef<Mesh>();
   const [active, setActive] = useState(false);
 
@@ -26,22 +26,16 @@ function MyRotatingBox() {
   });
 
   return (
-    <mesh
-      scale={active ? 1.5 : 1}
-      onClick={() => setActive(!active)}
-      ref={myMesh}
-    >
-      <boxGeometry />
-      <meshPhongMaterial color="royalblue" />
-    </mesh>
-  );
-}
-
-const Canvas3DExample: React.FC = () => {
-  return (
     <Box className={classes.container} style={classes.container}>
-      <Canvas3D onLoadError={(e) => console.log(e)}>
-        <MyRotatingBox />
+      <Canvas3D>
+        <mesh
+          scale={active ? 1.5 : 1}
+          onClick={() => setActive(!active)}
+          ref={myMesh}
+        >
+          <boxGeometry />
+          <meshPhongMaterial color="royalblue" />
+        </mesh>
       </Canvas3D>
     </Box>
   );
