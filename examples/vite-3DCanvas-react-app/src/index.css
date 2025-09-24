@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.flexlayout__tab {
+  background-color: #F6F5F4;
+  border-radius: 0rem 0.5rem 0.5rem 0.5rem;
+}
+
+.flexlayout__tab_button {
+  background-color: #F6F5F4;
+  margin: 0;
+  border-radius: 0.25rem 0.25rem 0rem 0rem;
+  padding: 0.1875rem 0.75rem 0.1875rem 0.75rem;
+}
+
+.flexlayout__splitter {
+  background-color: #ffffff;
+  width: .75rem;
+}
+
+.flexlayout__tabset-selected {
+  background-color: #ffffff;
+}
+
+.flexlayout__tabset_tabbar_outer_top {
+  border-bottom: 0
+}
+
+.flexlayout__tab_button_content {
+  color: #393937;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
