@@ -3,6 +3,14 @@ import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
+import Toolbar3D from "../toolbar/Toobar3D";
+import Toolbar3DButton from "../toolbar/Toolbar3DButton";
+import Toolbar3DSeparator from "../toolbar/Toolbar3DSeperator";
+import {
+	Navigation3D,
+	Zoom3DButtons,
+	Animation3DControls
+} from "../toolbar/groups";
 import * as THREE from "three";
 
 console.log("three.js for 3D view", THREE.REVISION);
@@ -12,7 +20,12 @@ const classes = {
 		height: "100%",
 		width: "100%",
 		display: "flex",
-		alignItems: "stretch",
+		flexDirection: "column" as const,
+		position: "relative" as const,
+	},
+	canvasContainer: {
+		flex: 1,
+		position: "relative" as const,
 	},
 };
 
@@ -39,10 +52,25 @@ function MyRotatingBox() {
 
 const Canvas3DExample: React.FC = () => {
 	return (
-		<Box className={classes.container} style={classes.container}>
-			<Canvas3D frameloop={"always"}>
-				<MyRotatingBox />
-			</Canvas3D>
+		<Box style={{ display: "flex", width: "100%" }}>
+			<Toolbar3D>
+				<Navigation3D />
+				<Toolbar3DSeparator />
+				<Zoom3DButtons />
+				<Toolbar3DSeparator />
+				<Animation3DControls />
+				<Toolbar3DSeparator />
+				<Toolbar3DButton
+					icon={<i className="fas fa-camera" />}
+					tooltip="Camera"
+					onClick={() => console.log("Camera clicked")}
+				/>
+			</Toolbar3D>
+			<Box sx={classes.canvasContainer}>
+				<Canvas3D frameloop={"always"}>
+					<MyRotatingBox />
+				</Canvas3D>
+			</Box>
 		</Box>
 	);
 };
