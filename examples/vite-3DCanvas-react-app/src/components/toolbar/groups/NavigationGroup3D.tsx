@@ -5,14 +5,14 @@ import Forward3D from "./Forward3D";
 import Backward3D from "./Backward3D";
 
 const Navigation3D: React.FC = () => {
-    return (
-        <>
-            <PanLeft3D />
-            <PanRight3D />
-            <Forward3D />
-            <Backward3D />
-        </>
-    );
+  return (
+    <>
+      <PanLeft3D />
+      <PanRight3D />
+      <Forward3D />
+      <Backward3D />
+    </>
+  );
 };
 
 export default Navigation3D;

@@ -1,13 +1,16 @@
-import { Canvas, CanvasProps } from "@react-three/fiber";
-import React, { useEffect, useRef } from "react";
+import { Canvas, CanvasProps, useThree } from "@react-three/fiber";
+import React, { forwardRef, useEffect, useRef } from "react";
 
+import { RootState } from "@react-three/fiber";
 import { CameraControls } from "@react-three/drei";
 import { useState } from "react";
 import { Loader } from "three";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import create from "zustand";
 
+export type FiberRootState = RootState;
 type Canvas3DBaseProps = {
   children?;
+  ref?;
   defaultLightOff?: boolean;
   nonInteractive?: boolean;
 };
@@ -25,25 +28,34 @@ type Canvas3DProps = Canvas3DBaseProps &
  * @param defaultLightOff Disables default ambient + directional lights (default: false)
  * @param nonInteractive If true, disables default camera controls (default: false)
  */
-export const Canvas3D: React.FC<Canvas3DProps> = ({
-  children,
-  defaultLightOff = false,
-  nonInteractive = false,
-  ...canvasProps
-}) => {
-  return (
-    <Canvas frameloop={"demand"} {...canvasProps}>
-      {!defaultLightOff && (
-        <>
-          <ambientLight intensity={0.5} />
-          <directionalLight />
-        </>
-      )}
-      {children}
-      {!nonInteractive && <CameraControls />}
-    </Canvas>
-  );
-};
+export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
+  HTMLCanvasElement,
+  Canvas3DBaseProps
+>(
+  (
+    {
+      children,
+      defaultLightOff = false,
+      nonInteractive = false,
+      ...canvasProps
+    },
+    ref
+  ) => {
+    return (
+      <Canvas ref={ref} frameloop={"demand"} {...canvasProps}>
+        <FiberBridge />
+        {!defaultLightOff && (
+          <>
+            <ambientLight intensity={0.5} />
+            <directionalLight />
+          </>
+        )}
+        {children}
+        {!nonInteractive && <CameraControls />}
+      </Canvas>
+    );
+  }
+);
 
 /**
  * Hook that lets you load multiple 3D objects in parallel using a specified loader.
@@ -157,4 +169,25 @@ export const useParallelLoader = <T,>(
     throw loadingPromise;
   }
   return objects;
+};
+
+type FiberStore = {
+  rootState: RootState | null;
+  setRootState: (s: RootState) => void;
+};
+
+export const useFiberStore = create<FiberStore>((set) => ({
+  rootState: null,
+  setRootState: (s) => set({ rootState: s }),
+}));
+
+const FiberBridge: React.FC = () => {
+  const state = useThree();
+  const setRootState = useFiberStore((s) => s.setRootState);
+
+  React.useEffect(() => {
+    setRootState(state);
+  }, [state, setRootState]);
+
+  return null;
 };
