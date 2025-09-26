@@ -1,14 +1,13 @@
 import React, { useRef, useState } from "react";
-import {
-  Canvas3D,
-  useFiber,
-} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
-import Toolbar3D from "../toolbar/Toobar3D";
-import Toolbar3DButton from "../toolbar/Toolbar3DButton";
-import Toolbar3DSeparator from "../toolbar/Toolbar3DSeperator";
+import {
+  Toolbar3DButton,
+  Toolbar3D,
+  Toolbar3DSeparator,
+} from "../toolbar/Toolbar3D";
 import {
   Navigation3D,
   Zoom3DButtons,
@@ -55,26 +54,48 @@ function MyRotatingBox() {
 
 const Canvas3DExample: React.FC = () => {
   return (
-    <Box style={{ display: "flex", width: "100%" }}>
-      <Toolbar3D>
-        <Navigation3D />
-        <Toolbar3DSeparator />
-        <Zoom3DButtons />
-        <Toolbar3DSeparator />
-        <Animation3DControls />
-        <Toolbar3DSeparator />
-        <Toolbar3DButton
-          icon={<i className="fas fa-camera" />}
-          tooltip="Camera"
-          onClick={({ camera }) => console.log("Camera clicked", camera)}
-        />
-      </Toolbar3D>
-      <Box sx={classes.canvasContainer}>
-        <Canvas3D frameloop={"always"}>
-          <MyRotatingBox />
-        </Canvas3D>
+    <>
+      <Box style={{ display: "flex", width: "100%" }}>
+        <Toolbar3D>
+          <Navigation3D />
+          <Toolbar3DSeparator />
+          <Zoom3DButtons />
+          <Toolbar3DSeparator />
+          <Animation3DControls />
+          <Toolbar3DSeparator />
+          <Toolbar3DButton
+            icon={<i className="fas fa-camera" />}
+            tooltip="Camera"
+            onClick={({ camera }) => console.log("Camera clicked", camera)}
+          />
+        </Toolbar3D>
+        <Box sx={classes.canvasContainer}>
+          <Canvas3D frameloop={"always"}>
+            <MyRotatingBox />
+          </Canvas3D>
+        </Box>
       </Box>
-    </Box>
+      {/* <Box style={{ display: "flex", width: "100%" }}>
+        <Toolbar3D canvasId="canvas02">
+          <Navigation3D />
+          <Toolbar3DSeparator />
+          <Zoom3DButtons />
+          <Toolbar3DSeparator />
+          <Animation3DControls />
+          <Toolbar3DSeparator />
+          <Toolbar3DButton
+            icon={<i className="fas fa-camera" />}
+            tooltip="Camera"
+            onClick={({ camera }) => console.log("Camera clicked", camera)}
+          />
+        </Toolbar3D>
+        <Box sx={classes.canvasContainer}>
+          <Canvas3D id="canvas02" frameloop={"always"}>
+            <MyRotatingBox />
+          </Canvas3D>
+        </Box>
+      </Box> */}
+    </>
   );
 };
 
