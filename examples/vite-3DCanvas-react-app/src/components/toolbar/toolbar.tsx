@@ -32,24 +32,14 @@ const Toolbar3D = ({ children, sx, canvasId }: {
 }
 
 
-const Toolbar3DButton = ({ icon, tooltip, onClick, style }: { 
-    icon: React.ReactNode, 
-    tooltip: string, 
-    onClick: (context: { camera?: any, [key: string]: any }) => void, 
+const Toolbar3DButton = ({ icon, tooltip, onClick, style }: {
+    icon: React.ReactNode,
+    tooltip: string,
+    onClick: (context: { camera?: any, [key: string]: any }) => void,
     style?: React.CSSProperties
 }) => {
-    const handleClick = () => {
-        // Here we can gather context data that might be useful
-        // For now, let's provide a basic camera context
-        const context = {
-            camera: "default-camera", // This could be retrieved from React context, props, or refs
-            // You can add more context data here as needed
-        };
-        onClick(context);
-    };
-
     return (
-        <button style={{ ...baseButtonStyles, ...style }} title={tooltip} onClick={handleClick}>
+        <button style={{ ...baseButtonStyles, ...style }} title={tooltip} onClick={onClick}>
             {icon}
         </button>
     );
