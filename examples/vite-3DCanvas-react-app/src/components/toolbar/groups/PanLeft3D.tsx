@@ -1,5 +1,5 @@
 import React from "react";
-import { Toolbar3DButton } from "../Toolbar3D";
+import { Toolbar3DButton } from "../toolbar";
 
 const PanLeft3D: React.FC = () => {
   return (

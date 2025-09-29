@@ -3,11 +3,7 @@ import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
-import {
-  Toolbar3DButton,
-  Toolbar3D,
-  Toolbar3DSeparator,
-} from "../toolbar/Toolbar3D";
+import { Toolbar3DButton, Toolbar3D, Toolbar3DSeparator } from "../toolbar";
 import {
   Navigation3D,
   Zoom3DButtons,
@@ -86,7 +82,7 @@ const Canvas3DExample: React.FC = () => {
           <Toolbar3DButton
             icon={<i className="fas fa-camera" />}
             tooltip="Camera"
-            onClick={({ camera }) => console.log("Camera clicked", camera)}
+            onClick={() => console.log("Camera clicked")}
           />
         </Toolbar3D>
         <Box sx={classes.canvasContainer}>
