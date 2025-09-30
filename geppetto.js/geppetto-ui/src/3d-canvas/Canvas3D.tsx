@@ -2,7 +2,7 @@ import { Canvas, CanvasProps, useThree } from "@react-three/fiber";
 import React, { forwardRef, useEffect, useRef } from "react";
 
 import { RootState } from "@react-three/fiber";
-import { CameraControls } from "@react-three/drei";
+import { CameraControls, CameraControlsProps } from "@react-three/drei";
 import { useState } from "react";
 import { Loader } from "three";
 import create from "zustand";
@@ -14,6 +14,7 @@ type Canvas3DBaseProps = {
   ref?;
   defaultLightOff?: boolean;
   nonInteractive?: boolean;
+  cameraOptions?: CameraControlsProps;
 };
 
 type Canvas3DProps = Canvas3DBaseProps &
@@ -153,6 +154,7 @@ export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
       children,
       defaultLightOff = false,
       nonInteractive = false,
+      cameraOptions,
       ...canvasProps
     },
     ref
@@ -167,15 +169,19 @@ export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
           </>
         )}
         {children}
-        {!nonInteractive && <CameraControls />}
+        {!nonInteractive && <CameraControls makeDefault {...cameraOptions} />}
       </Canvas>
     );
   }
 );
 
+export type Canvas3DRootState = Omit<RootState, "controls"> & {
+  controls: CameraControls;
+};
+
 type FiberStore = {
-  rootStates: Record<string, RootState | null>;
-  setRootState: (id: string, state: RootState) => void;
+  rootStates: Record<string, Canvas3DRootState | null>;
+  setRootState: (id: string, state: Canvas3DRootState) => void;
   clearRootState: (id: string) => void;
 };
 
@@ -207,6 +213,7 @@ const FiberBridge: React.FC<{ storeId?: string }> = ({ storeId }) => {
   const clearRootState = useFiberStore((s) => s.clearRootState);
 
   React.useEffect(() => {
+    // @ts-expect-error
     setRootState(id, state);
     return () => {
       clearRootState(id);

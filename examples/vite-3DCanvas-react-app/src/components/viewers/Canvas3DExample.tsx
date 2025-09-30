@@ -1,10 +1,17 @@
 import React, { useRef, useState } from "react";
-import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import {
+  Canvas3D,
+  Canvas3DRootState,
+} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
 import { Mesh } from "three";
 import { CameraControls } from "@react-three/drei";
-import { Toolbar3D, Toolbar3DButton, Toolbar3DSeparator } from "../toolbar/Toolbar3D";
+import {
+  Toolbar3D,
+  Toolbar3DButton,
+  Toolbar3DSeparator,
+} from "../toolbar/Toolbar3D";
 import { CameraControlsProvider } from "../toolbar/CameraControlsContext";
 import {
   Navigation3D,
@@ -54,24 +61,27 @@ const Canvas3DExample: React.FC = () => {
   const [activeCamera, setActiveCamera] = useState(false);
   const cameraControlsRef = useRef<CameraControls>(null);
 
-  const handleCameraClick = (fiber: any) => {
+  const handleCameraClick = (fiber: Canvas3DRootState) => {
     console.log("Camera clicked", fiber.camera);
+    console.log("Camera clicked", fiber);
     console.log("Current activeCamera state:", activeCamera);
-    console.log("CameraControls ref:", cameraControlsRef.current);
+    console.log("CameraControls:", fiber.controls);
 
     setActiveCamera(!activeCamera);
 
-    if (cameraControlsRef.current) {
+    if (fiber.controls) {
       if (!activeCamera) {
         console.log("Setting focus position...");
-        cameraControlsRef.current.setLookAt(
+
+        /* prettier-ignore */
+        fiber.controls.setLookAt(
           5, 5, 5,  // Camera position
           0, 0, 0,  // Look at center
           true      // Enable animation
         );
       } else {
         console.log("Resetting camera...");
-        cameraControlsRef.current.reset(true);
+        fiber.controls.reset(true);
       }
     } else {
       console.log("CameraControls ref is null!");
@@ -80,14 +90,14 @@ const Canvas3DExample: React.FC = () => {
 
   const Scene = () => (
     <>
-      <CameraControls
+      {/* <CameraControls
         ref={cameraControlsRef}
         minDistance={2}
         maxDistance={20}
         enablePan={true}
         enableZoom={true}
         enableRotate={true}
-      />
+      /> */}
       <MyRotatingBox />
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
@@ -115,7 +125,16 @@ const Canvas3DExample: React.FC = () => {
           </Toolbar3D>
         </CameraControlsProvider>
         <Box sx={classes.canvasContainer}>
-          <Canvas3D frameloop={"always"} nonInteractive={true}>
+          <Canvas3D
+            frameloop={"always"}
+            cameraOptions={{
+              minDistance: 2,
+              maxDistance: 20,
+              enablePan: true,
+              enableZoom: true,
+              enableRotate: true,
+            }}
+          >
             <Scene />
           </Canvas3D>
         </Box>
