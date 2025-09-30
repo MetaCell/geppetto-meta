@@ -1,39 +1,38 @@
 import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { useCameraControls } from "../CameraControlsContext";
+import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { PerspectiveCamera } from "three";
 
 const EnhancedZoom3DButtons: React.FC = () => {
-  const cameraControlsRef = useCameraControls();
-
-  const handleZoomIn = (fiber: any) => {
+  const handleZoomIn = (fiber: Canvas3DRootState) => {
     if (fiber?.camera) {
       const camera = fiber.camera;
-      if (camera.isPerspectiveCamera) {
+      if (camera instanceof PerspectiveCamera) {
         camera.fov = Math.max(camera.fov - 5, 10);
         camera.updateProjectionMatrix();
       }
     }
   };
 
-  const handleZoomOut = (fiber: any) => {
+  const handleZoomOut = (fiber: Canvas3DRootState) => {
     if (fiber?.camera) {
       const camera = fiber.camera;
-      if (camera.isPerspectiveCamera) {
+      if (camera instanceof PerspectiveCamera) {
         camera.fov = Math.min(camera.fov + 5, 120);
         camera.updateProjectionMatrix();
       }
     }
   };
 
-  const handleDollyIn = (_fiber: any) => {
-    if (cameraControlsRef?.current) {
-      cameraControlsRef.current.dolly(-0.5, true);
+  const handleDollyIn = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      fiber.controls.dolly(-0.5, true);
     }
   };
 
-  const handleDollyOut = (_fiber: any) => {
-    if (cameraControlsRef?.current) {
-      cameraControlsRef.current.dolly(0.5, true);
+  const handleDollyOut = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      fiber.controls.dolly(0.5, true);
     }
   };
 

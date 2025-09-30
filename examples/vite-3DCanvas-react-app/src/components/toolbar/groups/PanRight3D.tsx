@@ -1,13 +1,11 @@
 import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { useCameraControls } from "../CameraControlsContext";
+import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 
 const PanRight3D: React.FC = () => {
-  const cameraControlsRef = useCameraControls();
-
-  const handlePanRight = (fiber: any) => {
-    if (cameraControlsRef?.current) {
-      cameraControlsRef.current.truck(0.5, 0, true);
+  const handlePanRight = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      fiber.controls.truck(0.5, 0, true);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const moveDistance = 1;

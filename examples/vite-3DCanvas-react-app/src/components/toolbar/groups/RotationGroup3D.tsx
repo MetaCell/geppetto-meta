@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { useCameraControls } from "../CameraControlsContext";
+import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 
 const Animation3DControls: React.FC = () => {
-  const cameraControlsRef = useCameraControls();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const animationRef = useRef<number | null>(null);
   const startAngleRef = useRef<number>(0);
+  const currentFiberRef = useRef<Canvas3DRootState | null>(null);
 
   useEffect(() => {
     return () => {
@@ -17,24 +17,25 @@ const Animation3DControls: React.FC = () => {
     };
   }, []);
 
-  const handlePlay = (_fiber: any) => {
-    if (cameraControlsRef?.current) {
+  const handlePlay = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      currentFiberRef.current = fiber;
       setIsPlaying(true);
       setIsPaused(false);
 
       if (!isPaused) {
-        startAngleRef.current = cameraControlsRef.current.azimuthAngle;
+        startAngleRef.current = fiber.controls.azimuthAngle;
       }
 
       const animate = () => {
-        if (cameraControlsRef.current) {
+        if (currentFiberRef.current?.controls) {
           const currentTime = Date.now() * 0.001;
           const rotationSpeed = 0.5;
           const newAngle = startAngleRef.current + currentTime * rotationSpeed;
 
-          cameraControlsRef.current.rotateTo(
+          currentFiberRef.current.controls.rotateTo(
             newAngle,
-            cameraControlsRef.current.polarAngle,
+            currentFiberRef.current.controls.polarAngle,
             false
           );
 
@@ -49,7 +50,7 @@ const Animation3DControls: React.FC = () => {
     }
   };
 
-  const handlePause = (_fiber: any) => {
+  const handlePause = (_fiber: Canvas3DRootState) => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
@@ -58,7 +59,7 @@ const Animation3DControls: React.FC = () => {
     }
   };
 
-  const handleStop = (_fiber: any) => {
+  const handleStop = (fiber: Canvas3DRootState) => {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = null;
@@ -67,15 +68,15 @@ const Animation3DControls: React.FC = () => {
     setIsPlaying(false);
     setIsPaused(false);
 
-    if (cameraControlsRef?.current) {
-      cameraControlsRef.current.reset(true);
+    if (fiber?.controls) {
+      fiber.controls.reset(true);
     }
   };
 
-  const handleRotateLeft = (fiber: any) => {
-    if (cameraControlsRef?.current) {
-      const currentAzimuth = cameraControlsRef.current.azimuthAngle;
-      cameraControlsRef.current.rotateTo(currentAzimuth + 0.2, cameraControlsRef.current.polarAngle, true);
+  const handleRotateLeft = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      const currentAzimuth = fiber.controls.azimuthAngle;
+      fiber.controls.rotateTo(currentAzimuth + 0.2, fiber.controls.polarAngle, true);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const radius = camera.position.length();
@@ -89,10 +90,10 @@ const Animation3DControls: React.FC = () => {
     }
   };
 
-  const handleRotateRight = (fiber: any) => {
-    if (cameraControlsRef?.current) {
-      const currentAzimuth = cameraControlsRef.current.azimuthAngle;
-      cameraControlsRef.current.rotateTo(currentAzimuth - 0.2, cameraControlsRef.current.polarAngle, true);
+  const handleRotateRight = (fiber: Canvas3DRootState) => {
+    if (fiber?.controls) {
+      const currentAzimuth = fiber.controls.azimuthAngle;
+      fiber.controls.rotateTo(currentAzimuth - 0.2, fiber.controls.polarAngle, true);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const radius = camera.position.length();
