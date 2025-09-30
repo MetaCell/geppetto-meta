@@ -18,6 +18,15 @@ const toolbarButtonBaseStyles: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
+  border: "none",
+  backgroundColor: "transparent",
+  transition: "all 0.2s ease",
+};
+
+const toolbarButtonActiveStyles: React.CSSProperties = {
+  ...toolbarButtonBaseStyles,
+  color: "#1976d2",
+  backgroundColor: "#e3f2fd",
 };
 
 const CanvasIdContext = React.createContext<string | undefined>(undefined);
@@ -44,23 +53,35 @@ export const Toolbar3DButton = ({
   tooltip,
   onClick,
   style,
+  active = false,
 }: {
   icon: React.ReactNode;
   tooltip: string;
   onClick: (fiber: RootState) => void;
   style?: React.CSSProperties;
+  active?: boolean;
 }) => {
   const canvasId = useCanvasId();
   const fiber = useFiber(canvasId ?? "default");
 
+  const buttonStyle = active ? toolbarButtonActiveStyles : toolbarButtonBaseStyles;
+
+  const handleClick = () => {
+    if (fiber) {
+      onClick(fiber);
+    } else {
+      console.log("No fiber found - canvas might not be ready");
+    }
+  };
+
   return (
-    <div
-      style={{ ...toolbarButtonBaseStyles, ...style }}
+    <button
+      style={{ ...buttonStyle, ...style }}
       title={tooltip}
-      onClick={() => fiber && onClick(fiber)}
+      onClick={handleClick}
     >
       {icon}
-    </div>
+    </button>
   );
 };
 
