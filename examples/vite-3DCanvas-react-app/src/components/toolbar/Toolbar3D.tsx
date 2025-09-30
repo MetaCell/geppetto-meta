@@ -1,6 +1,9 @@
 import React from "react";
 import { Box, SxProps, Theme, Divider } from "@mui/material";
-import { useFiber } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import {
+  Canvas3DRootState,
+  useFiber,
+} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import { RootState } from "@react-three/fiber";
 
 const toolbarBaseStyles: SxProps<Theme> = {
@@ -57,14 +60,16 @@ export const Toolbar3DButton = ({
 }: {
   icon: React.ReactNode;
   tooltip: string;
-  onClick: (fiber: RootState) => void;
+  onClick: (fiber: Canvas3DRootState) => void;
   style?: React.CSSProperties;
   active?: boolean;
 }) => {
   const canvasId = useCanvasId();
   const fiber = useFiber(canvasId ?? "default");
 
-  const buttonStyle = active ? toolbarButtonActiveStyles : toolbarButtonBaseStyles;
+  const buttonStyle = active
+    ? toolbarButtonActiveStyles
+    : toolbarButtonBaseStyles;
 
   const handleClick = () => {
     if (fiber) {
