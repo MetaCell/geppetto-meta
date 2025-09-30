@@ -14,7 +14,7 @@ type Canvas3DBaseProps = {
   ref?;
   defaultLightOff?: boolean;
   nonInteractive?: boolean;
-  cameraOptions?: CameraControlsProps;
+  controlsOption?: CameraControlsProps;
 };
 
 type Canvas3DProps = Canvas3DBaseProps &
@@ -154,7 +154,7 @@ export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
       children,
       defaultLightOff = false,
       nonInteractive = false,
-      cameraOptions,
+      controlsOption,
       ...canvasProps
     },
     ref
@@ -169,7 +169,7 @@ export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
           </>
         )}
         {children}
-        {!nonInteractive && <CameraControls makeDefault {...cameraOptions} />}
+        {!nonInteractive && <CameraControls makeDefault {...controlsOption} />}
       </Canvas>
     );
   }

@@ -127,13 +127,14 @@ const Canvas3DExample: React.FC = () => {
         <Box sx={classes.canvasContainer}>
           <Canvas3D
             frameloop={"always"}
-            cameraOptions={{
+            controlsOption={{
               minDistance: 2,
               maxDistance: 20,
               enablePan: true,
               enableZoom: true,
               enableRotate: true,
             }}
+            defaultLightOff
           >
             <Scene />
           </Canvas3D>

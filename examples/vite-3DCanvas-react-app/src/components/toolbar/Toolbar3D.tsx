@@ -4,7 +4,6 @@ import {
   Canvas3DRootState,
   useFiber,
 } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
-import { RootState } from "@react-three/fiber";
 
 const toolbarBaseStyles: SxProps<Theme> = {
   display: "flex",
