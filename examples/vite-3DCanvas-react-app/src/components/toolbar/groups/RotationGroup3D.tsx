@@ -1,6 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Toolbar3DButton } from "../Toolbar3D";
+import * as THREE from "three";
 import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Toolbar3DButton } from "../Toolbar3D";
+
+const ROTATION_SPEED = 0.5;
+const MANUAL_ROTATION_AMOUNT = 0.2;
+const CAMERA_ROTATION_AMOUNT = 0.1;
+
+interface RotationControls {
+  horizontal: (fiber: Canvas3DRootState, direction: 1 | -1) => void;
+  vertical: (fiber: Canvas3DRootState, direction: 1 | -1) => void;
+}
 
 const Animation3DControls: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,36 +28,35 @@ const Animation3DControls: React.FC = () => {
   }, []);
 
   const handlePlay = (fiber: Canvas3DRootState) => {
-    if (fiber?.controls) {
-      currentFiberRef.current = fiber;
-      setIsPlaying(true);
-      setIsPaused(false);
-
-      if (!isPaused) {
-        startAngleRef.current = fiber.controls.azimuthAngle;
-      }
-
-      const animate = () => {
-        if (currentFiberRef.current?.controls) {
-          const currentTime = Date.now() * 0.001;
-          const rotationSpeed = 0.5;
-          const newAngle = startAngleRef.current + currentTime * rotationSpeed;
-
-          currentFiberRef.current.controls.rotateTo(
-            newAngle,
-            currentFiberRef.current.controls.polarAngle,
-            false
-          );
-
-          animationRef.current = requestAnimationFrame(animate);
-        }
-      };
-
-      animate();
-      console.log("Animation started using CameraControls");
-    } else {
+    if (!fiber?.controls) {
       console.log("No camera controls available for animation");
+      return;
     }
+
+    currentFiberRef.current = fiber;
+    setIsPlaying(true);
+    setIsPaused(false);
+
+    if (!isPaused) {
+      startAngleRef.current = fiber.controls.azimuthAngle;
+    }
+
+    const animate = () => {
+      if (currentFiberRef.current?.controls) {
+        const currentTime = Date.now() * 0.001;
+        const newAngle = startAngleRef.current + currentTime * ROTATION_SPEED;
+
+        currentFiberRef.current.controls.rotateTo(
+          newAngle,
+          currentFiberRef.current.controls.polarAngle,
+          false
+        );
+
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    animate();
   };
 
   const handlePause = (_fiber: Canvas3DRootState) => {
@@ -73,39 +82,55 @@ const Animation3DControls: React.FC = () => {
     }
   };
 
-  const handleRotateLeft = (fiber: Canvas3DRootState) => {
-    if (fiber?.controls) {
-      const currentAzimuth = fiber.controls.azimuthAngle;
-      fiber.controls.rotateTo(currentAzimuth + 0.2, fiber.controls.polarAngle, true);
-    } else if (fiber?.camera) {
-      const camera = fiber.camera;
-      const radius = camera.position.length();
-      const angle = Math.atan2(camera.position.x, camera.position.z);
-      const newAngle = angle + 0.1;
+  const rotateHorizontalCamera = (camera: THREE.Camera, angle: number) => {
+    const radius = camera.position.length();
+    const currentAngle = Math.atan2(camera.position.x, camera.position.z);
+    const newAngle = currentAngle + (angle * CAMERA_ROTATION_AMOUNT);
 
-      camera.position.x = radius * Math.sin(newAngle);
-      camera.position.z = radius * Math.cos(newAngle);
-      camera.lookAt(0, 0, 0);
-      camera.updateMatrixWorld();
+    camera.position.x = radius * Math.sin(newAngle);
+    camera.position.z = radius * Math.cos(newAngle);
+    camera.lookAt(0, 0, 0);
+    camera.updateMatrixWorld();
+  };
+
+  const rotateVerticalCamera = (camera: THREE.Camera, direction: number) => {
+    const right = new THREE.Vector3();
+    camera.getWorldDirection(right).cross(new THREE.Vector3(0, 1, 0)).normalize();
+
+    const rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.makeRotationAxis(right, direction * CAMERA_ROTATION_AMOUNT);
+
+    camera.position.applyMatrix4(rotationMatrix);
+    camera.lookAt(0, 0, 0);
+    camera.updateMatrixWorld();
+  };
+
+  const rotationControls: RotationControls = {
+    horizontal: (fiber: Canvas3DRootState, direction: 1 | -1) => {
+      if (fiber?.controls) {
+        const currentAzimuth = fiber.controls.azimuthAngle;
+        fiber.controls.rotateTo(
+          currentAzimuth + (direction * MANUAL_ROTATION_AMOUNT),
+          fiber.controls.polarAngle,
+          true
+        );
+      } else if (fiber?.camera) {
+        rotateHorizontalCamera(fiber.camera, direction);
+      }
+    },
+    vertical: (fiber: Canvas3DRootState, direction: 1 | -1) => {
+      if (fiber?.controls) {
+        fiber.controls.rotate(0, direction * MANUAL_ROTATION_AMOUNT, true);
+      } else if (fiber?.camera) {
+        rotateVerticalCamera(fiber.camera, direction);
+      }
     }
   };
 
-  const handleRotateRight = (fiber: Canvas3DRootState) => {
-    if (fiber?.controls) {
-      const currentAzimuth = fiber.controls.azimuthAngle;
-      fiber.controls.rotateTo(currentAzimuth - 0.2, fiber.controls.polarAngle, true);
-    } else if (fiber?.camera) {
-      const camera = fiber.camera;
-      const radius = camera.position.length();
-      const angle = Math.atan2(camera.position.x, camera.position.z);
-      const newAngle = angle - 0.1;
-
-      camera.position.x = radius * Math.sin(newAngle);
-      camera.position.z = radius * Math.cos(newAngle);
-      camera.lookAt(0, 0, 0);
-      camera.updateMatrixWorld();
-    }
-  };
+  const handleRotateLeft = (fiber: Canvas3DRootState) => rotationControls.horizontal(fiber, 1);
+  const handleRotateRight = (fiber: Canvas3DRootState) => rotationControls.horizontal(fiber, -1);
+  const handleRotateUp = (fiber: Canvas3DRootState) => rotationControls.vertical(fiber, -1);
+  const handleRotateDown = (fiber: Canvas3DRootState) => rotationControls.vertical(fiber, 1);
 
   return (
     <>
@@ -127,14 +152,24 @@ const Animation3DControls: React.FC = () => {
         onClick={handleStop}
       />
       <Toolbar3DButton
-        icon={<i className="fas fa-rotate-left" />}
+        icon={<i className="fas fa-undo" />}
         tooltip="Rotate Left"
         onClick={handleRotateLeft}
       />
       <Toolbar3DButton
-        icon={<i className="fas fa-rotate-right" />}
+        icon={<i className="fas fa-redo" />}
         tooltip="Rotate Right"
         onClick={handleRotateRight}
+      />
+      <Toolbar3DButton
+        icon={<i className="fas fa-redo fa-rotate-270" />}
+        tooltip="Rotate Up"
+        onClick={handleRotateUp}
+      />
+      <Toolbar3DButton
+        icon={<i className="fas fa-redo fa-rotate-90" />}
+        tooltip="Rotate Down"
+        onClick={handleRotateDown}
       />
     </>
   );

@@ -3,18 +3,22 @@ import { Toolbar3DButton } from "../Toolbar3D";
 import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 import * as THREE from "three";
 
-const PanLeft3D: React.FC = () => {
+interface PanLeft3DProps {
+  distance?: number;
+  useTransition?: boolean;
+}
+
+const PanLeft3D: React.FC<PanLeft3DProps> = ({ distance = 0.5, useTransition = true }) => {
   const handlePanLeft = (fiber: Canvas3DRootState) => {
     if (fiber?.controls) {
-      fiber.controls.truck(-0.5, 0, true);
+      fiber.controls.truck(-distance, 0, useTransition);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const right = new THREE.Vector3();
       camera.getWorldDirection(right);
       right.cross(camera.up).normalize();
 
-      const moveDistance = 1;
-      camera.position.add(right.multiplyScalar(-moveDistance));
+      camera.position.add(right.multiplyScalar(-distance));
     } else {
       console.log("No camera controls or camera found!");
     }
