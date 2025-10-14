@@ -1,6 +1,6 @@
 import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Canvas3DRootState } from "../../Canvas3D";
 
 const PanRight3D: React.FC = () => {
   const handlePanRight = (fiber: Canvas3DRootState) => {

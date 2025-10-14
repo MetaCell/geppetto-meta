@@ -1,6 +1,6 @@
 import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import type { Canvas3DRootState } from "../../Canvas3D";
 import { PerspectiveCamera } from "three";
 
 const EnhancedZoom3DButtons: React.FC = () => {

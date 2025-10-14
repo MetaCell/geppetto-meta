@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as THREE from "three";
-import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Canvas3DRootState } from "../../Canvas3D";
 import { Toolbar3DButton } from "../Toolbar3D";
 
 const ROTATION_SPEED = 0.5;
@@ -85,7 +85,7 @@ const Animation3DControls: React.FC = () => {
   const rotateHorizontalCamera = (camera: THREE.Camera, angle: number) => {
     const radius = camera.position.length();
     const currentAngle = Math.atan2(camera.position.x, camera.position.z);
-    const newAngle = currentAngle + (angle * CAMERA_ROTATION_AMOUNT);
+    const newAngle = currentAngle + angle * CAMERA_ROTATION_AMOUNT;
 
     camera.position.x = radius * Math.sin(newAngle);
     camera.position.z = radius * Math.cos(newAngle);
@@ -95,7 +95,10 @@ const Animation3DControls: React.FC = () => {
 
   const rotateVerticalCamera = (camera: THREE.Camera, direction: number) => {
     const right = new THREE.Vector3();
-    camera.getWorldDirection(right).cross(new THREE.Vector3(0, 1, 0)).normalize();
+    camera
+      .getWorldDirection(right)
+      .cross(new THREE.Vector3(0, 1, 0))
+      .normalize();
 
     const rotationMatrix = new THREE.Matrix4();
     rotationMatrix.makeRotationAxis(right, direction * CAMERA_ROTATION_AMOUNT);
@@ -110,7 +113,7 @@ const Animation3DControls: React.FC = () => {
       if (fiber?.controls) {
         const currentAzimuth = fiber.controls.azimuthAngle;
         fiber.controls.rotateTo(
-          currentAzimuth + (direction * MANUAL_ROTATION_AMOUNT),
+          currentAzimuth + direction * MANUAL_ROTATION_AMOUNT,
           fiber.controls.polarAngle,
           true
         );
@@ -124,13 +127,17 @@ const Animation3DControls: React.FC = () => {
       } else if (fiber?.camera) {
         rotateVerticalCamera(fiber.camera, direction);
       }
-    }
+    },
   };
 
-  const handleRotateLeft = (fiber: Canvas3DRootState) => rotationControls.horizontal(fiber, 1);
-  const handleRotateRight = (fiber: Canvas3DRootState) => rotationControls.horizontal(fiber, -1);
-  const handleRotateUp = (fiber: Canvas3DRootState) => rotationControls.vertical(fiber, -1);
-  const handleRotateDown = (fiber: Canvas3DRootState) => rotationControls.vertical(fiber, 1);
+  const handleRotateLeft = (fiber: Canvas3DRootState) =>
+    rotationControls.horizontal(fiber, 1);
+  const handleRotateRight = (fiber: Canvas3DRootState) =>
+    rotationControls.horizontal(fiber, -1);
+  const handleRotateUp = (fiber: Canvas3DRootState) =>
+    rotationControls.vertical(fiber, -1);
+  const handleRotateDown = (fiber: Canvas3DRootState) =>
+    rotationControls.vertical(fiber, 1);
 
   return (
     <>

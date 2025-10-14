@@ -10,12 +10,12 @@ import {
   Toolbar3D,
   Toolbar3DButton,
   Toolbar3DSeparator,
-} from "../toolbar/Toolbar3D";
+} from "@metacell/geppetto-meta-ui/3d-canvas/toolbar/Toolbar3D";
 import {
   Navigation3D,
   EnhancedZoom3DButtons,
   Animation3DControls,
-} from "../toolbar/groups";
+} from "@metacell/geppetto-meta-ui/3d-canvas/toolbar/groups";
 import * as THREE from "three";
 
 console.log("three.js for 3D view", THREE.REVISION);

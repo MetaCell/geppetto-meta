@@ -1,9 +1,6 @@
 import React from "react";
 import { Box, SxProps, Theme, Divider } from "@mui/material";
-import {
-  Canvas3DRootState,
-  useFiber,
-} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Canvas3DRootState, useFiber } from "../Canvas3D";
 
 const toolbarBaseStyles: SxProps<Theme> = {
   display: "flex",

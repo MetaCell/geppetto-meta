@@ -1,12 +1,12 @@
 import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
-import { Canvas3DRootState } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import { Canvas3DRootState } from "../../Canvas3D";
 import { PerspectiveCamera, OrthographicCamera } from "three";
 
 const Zoom3DButtons: React.FC = () => {
   const handleZoomIn = (fiber: Canvas3DRootState) => {
     console.log("Zoom In clicked!");
-    
+
     if (fiber?.controls && fiber?.camera) {
       // TRUE ZOOM: Change FOV, not camera position
       const camera = fiber.camera;
@@ -30,7 +30,7 @@ const Zoom3DButtons: React.FC = () => {
 
   const handleZoomOut = (fiber: Canvas3DRootState) => {
     console.log("Zoom Out clicked!");
-    
+
     if (fiber?.controls && fiber?.camera) {
       // TRUE ZOOM: Change FOV, not camera position
       const camera = fiber.camera;
