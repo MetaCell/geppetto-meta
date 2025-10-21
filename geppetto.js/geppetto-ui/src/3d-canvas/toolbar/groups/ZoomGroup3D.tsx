@@ -3,15 +3,32 @@ import { Toolbar3DButton } from "../Toolbar3D";
 import { Canvas3DRootState } from "../../Canvas3D";
 import { PerspectiveCamera, OrthographicCamera } from "three";
 
+interface ZoomOptions {
+  fovStep?: number;
+  minFov?: number;
+  maxFov?: number;
+  minZoom?: number;
+  zoomMultiplier?: number;
+  maxZoom?: number;
+}
+
 const Zoom3DButtons: React.FC = () => {
-  const handleZoomIn = (fiber: Canvas3DRootState) => {
+  const handleZoomIn = (
+    fiber: Canvas3DRootState,
+    {
+      fovStep = 5,
+      minFov = 10,
+      zoomMultiplier = 1.1,
+      maxZoom = 10
+    }: ZoomOptions = {}
+  ) => {
     console.log("Zoom In clicked!");
 
     if (fiber?.controls && fiber?.camera) {
       // TRUE ZOOM: Change FOV, not camera position
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.max(camera.fov - 5, 10); // Decrease FOV = zoom in
+        camera.fov = Math.max(camera.fov - fovStep, minFov);
         camera.updateProjectionMatrix();
         console.log("Zoomed in using FOV change");
       }
@@ -19,23 +36,31 @@ const Zoom3DButtons: React.FC = () => {
       // Fallback zoom logic
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.max(camera.fov - 5, 10);
+        camera.fov = Math.max(camera.fov - fovStep, minFov);
         camera.updateProjectionMatrix();
       } else if (camera instanceof OrthographicCamera) {
-        camera.zoom = Math.min(camera.zoom * 1.1, 10);
+        camera.zoom = Math.min(camera.zoom * zoomMultiplier, maxZoom);
         camera.updateProjectionMatrix();
       }
     }
   };
 
-  const handleZoomOut = (fiber: Canvas3DRootState) => {
+  const handleZoomOut = (
+    fiber: Canvas3DRootState,
+    {
+      fovStep = 5,
+      maxFov = 120,
+      zoomMultiplier = 0.9,
+      minZoom = 0.1
+    }: ZoomOptions = {}
+  ) => {
     console.log("Zoom Out clicked!");
 
     if (fiber?.controls && fiber?.camera) {
       // TRUE ZOOM: Change FOV, not camera position
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.min(camera.fov + 5, 120); // Increase FOV = zoom out
+        camera.fov = Math.min(camera.fov + fovStep, maxFov); // Increase FOV = zoom out
         camera.updateProjectionMatrix();
         console.log("Zoomed out using FOV change");
       }
@@ -43,10 +68,10 @@ const Zoom3DButtons: React.FC = () => {
       // Fallback zoom logic
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.min(camera.fov + 5, 120);
+        camera.fov = Math.min(camera.fov + fovStep, maxFov);
         camera.updateProjectionMatrix();
       } else if (camera instanceof OrthographicCamera) {
-        camera.zoom = Math.max(camera.zoom * 0.9, 0.1);
+        camera.zoom = Math.max(camera.zoom * zoomMultiplier, minZoom);
         camera.updateProjectionMatrix();
       }
     }

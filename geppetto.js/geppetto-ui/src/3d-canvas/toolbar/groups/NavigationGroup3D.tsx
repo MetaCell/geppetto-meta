@@ -4,13 +4,18 @@ import PanRight3D from "./PanRight3D";
 import PanDown3D from "./PanDown3D";
 import PanUp3D from "./PanUp3D";
 
-const Navigation3D: React.FC = () => {
+interface PanOptions {
+  distance?: number;
+  useTransition?: boolean;
+}
+
+const Navigation3D: React.FC<{ panOptions?: PanOptions }> = ({ panOptions = { distance: 0.5, useTransition: true } }) => {
   return (
     <>
-      <PanLeft3D />
-      <PanRight3D />
-      <PanDown3D />
-      <PanUp3D />
+      <PanLeft3D panOptions={panOptions} />
+      <PanRight3D panOptions={panOptions} />
+      <PanDown3D panOptions={panOptions} />
+      <PanUp3D  panOptions={panOptions} />
     </>
   );
 };

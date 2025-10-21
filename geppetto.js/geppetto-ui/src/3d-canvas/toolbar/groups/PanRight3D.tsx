@@ -2,10 +2,17 @@ import React from "react";
 import { Toolbar3DButton } from "../Toolbar3D";
 import { Canvas3DRootState } from "../../Canvas3D";
 
-const PanRight3D: React.FC = () => {
+interface PanRight3DProps {
+  distance?: number;
+  useTransition?: boolean;
+}
+
+const PanRight3D: React.FC<{ panOptions?: PanRight3DProps }> = ({ panOptions }) => {
+  const { distance = 0.5, useTransition = true } = panOptions || {};
+
   const handlePanRight = (fiber: Canvas3DRootState) => {
     if (fiber?.controls) {
-      fiber.controls.truck(0.5, 0, true);
+      fiber.controls.truck(distance, 0, useTransition);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const moveDistance = 1;

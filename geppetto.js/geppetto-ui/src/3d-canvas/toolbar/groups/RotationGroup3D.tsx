@@ -3,16 +3,24 @@ import * as THREE from "three";
 import { Canvas3DRootState } from "../../Canvas3D";
 import { Toolbar3DButton } from "../Toolbar3D";
 
-const ROTATION_SPEED = 0.5;
-const MANUAL_ROTATION_AMOUNT = 0.2;
-const CAMERA_ROTATION_AMOUNT = 0.1;
+interface RotationOptions {
+  rotationSpeed?: number;
+  manualStep?: number;
+  cameraStep?: number;
+}
 
 interface RotationControls {
   horizontal: (fiber: Canvas3DRootState, direction: 1 | -1) => void;
   vertical: (fiber: Canvas3DRootState, direction: 1 | -1) => void;
 }
 
-const Animation3DControls: React.FC = () => {
+const Animation3DControls: React.FC<{ rotationOptions?: RotationOptions }> = ({ rotationOptions = {
+  rotationSpeed: 0.5,
+  manualStep: 0.2,
+  cameraStep: 0.1
+} }) => {
+  const { rotationSpeed, manualStep, cameraStep } = rotationOptions;
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const animationRef = useRef<number | null>(null);
@@ -44,7 +52,7 @@ const Animation3DControls: React.FC = () => {
     const animate = () => {
       if (currentFiberRef.current?.controls) {
         const currentTime = Date.now() * 0.001;
-        const newAngle = startAngleRef.current + currentTime * ROTATION_SPEED;
+        const newAngle = startAngleRef.current + currentTime * rotationSpeed;
 
         currentFiberRef.current.controls.rotateTo(
           newAngle,
@@ -85,7 +93,7 @@ const Animation3DControls: React.FC = () => {
   const rotateHorizontalCamera = (camera: THREE.Camera, angle: number) => {
     const radius = camera.position.length();
     const currentAngle = Math.atan2(camera.position.x, camera.position.z);
-    const newAngle = currentAngle + angle * CAMERA_ROTATION_AMOUNT;
+    const newAngle = currentAngle + angle * cameraStep;
 
     camera.position.x = radius * Math.sin(newAngle);
     camera.position.z = radius * Math.cos(newAngle);
@@ -101,7 +109,7 @@ const Animation3DControls: React.FC = () => {
       .normalize();
 
     const rotationMatrix = new THREE.Matrix4();
-    rotationMatrix.makeRotationAxis(right, direction * CAMERA_ROTATION_AMOUNT);
+    rotationMatrix.makeRotationAxis(right, direction * cameraStep);
 
     camera.position.applyMatrix4(rotationMatrix);
     camera.lookAt(0, 0, 0);
@@ -113,7 +121,7 @@ const Animation3DControls: React.FC = () => {
       if (fiber?.controls) {
         const currentAzimuth = fiber.controls.azimuthAngle;
         fiber.controls.rotateTo(
-          currentAzimuth + direction * MANUAL_ROTATION_AMOUNT,
+          currentAzimuth + direction * manualStep,
           fiber.controls.polarAngle,
           true
         );
@@ -123,7 +131,7 @@ const Animation3DControls: React.FC = () => {
     },
     vertical: (fiber: Canvas3DRootState, direction: 1 | -1) => {
       if (fiber?.controls) {
-        fiber.controls.rotate(0, direction * MANUAL_ROTATION_AMOUNT, true);
+        fiber.controls.rotate(0, direction * manualStep, true);
       } else if (fiber?.camera) {
         rotateVerticalCamera(fiber.camera, direction);
       }

@@ -3,10 +3,17 @@ import { Toolbar3DButton } from "../Toolbar3D";
 import { Canvas3DRootState } from "../../Canvas3D";
 import * as THREE from "three";
 
-const PanUp3D: React.FC = () => {
+interface PanUp3DProps {
+  distance?: number;
+  useTransition?: boolean;
+}
+
+const PanUp3D: React.FC<{ panOptions?: PanUp3DProps }> = ({ panOptions }) => {
+  const { distance = 0.5, useTransition = true } = panOptions || {};
+
   const handlePanUp = (fiber: Canvas3DRootState) => {
     if (fiber?.controls) {
-      fiber.controls.truck(0, 0.5, true);
+      fiber.controls.truck(0, distance, useTransition);
     } else if (fiber?.camera) {
       const camera = fiber.camera;
       const right = new THREE.Vector3();

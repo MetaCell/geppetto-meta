@@ -3,12 +3,25 @@ import { Toolbar3DButton } from "../Toolbar3D";
 import type { Canvas3DRootState } from "../../Canvas3D";
 import { PerspectiveCamera } from "three";
 
-const EnhancedZoom3DButtons: React.FC = () => {
+interface ZoomOptions {
+  fovStep?: number;
+  minFov?: number;
+  maxFov?: number;
+  dollyStep?: number;
+}
+
+interface EnhancedZoom3DButtonsProps {
+  zoomOptions?: ZoomOptions;
+}
+
+const EnhancedZoom3DButtons: React.FC<EnhancedZoom3DButtonsProps> = ({ zoomOptions = { fovStep: 5, minFov: 10, maxFov: 120, dollyStep: 0.5 } }) => {
+  const { fovStep, minFov, maxFov, dollyStep } = zoomOptions;
+
   const handleZoomIn = (fiber: Canvas3DRootState) => {
     if (fiber?.camera) {
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.max(camera.fov - 5, 10);
+        camera.fov = Math.max(camera.fov - fovStep, minFov);
         camera.updateProjectionMatrix();
       }
     }
@@ -18,7 +31,7 @@ const EnhancedZoom3DButtons: React.FC = () => {
     if (fiber?.camera) {
       const camera = fiber.camera;
       if (camera instanceof PerspectiveCamera) {
-        camera.fov = Math.min(camera.fov + 5, 120);
+        camera.fov = Math.min(camera.fov + fovStep, maxFov);
         camera.updateProjectionMatrix();
       }
     }
@@ -26,13 +39,13 @@ const EnhancedZoom3DButtons: React.FC = () => {
 
   const handleDollyIn = (fiber: Canvas3DRootState) => {
     if (fiber?.controls) {
-      fiber.controls.dolly(-0.5, true);
+      fiber.controls.dolly(-dollyStep, true);
     }
   };
 
   const handleDollyOut = (fiber: Canvas3DRootState) => {
     if (fiber?.controls) {
-      fiber.controls.dolly(0.5, true);
+      fiber.controls.dolly(dollyStep, true);
     }
   };
 
