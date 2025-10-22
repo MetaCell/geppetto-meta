@@ -1,49 +1,24 @@
-import { Canvas, CanvasProps } from "@react-three/fiber";
-import React, { useEffect, useRef } from "react";
+import { Canvas, CanvasProps, useThree } from "@react-three/fiber";
+import React, { forwardRef, useEffect, useRef } from "react";
 
-import { CameraControls } from "@react-three/drei";
+import { RootState } from "@react-three/fiber";
+import { CameraControls, CameraControlsProps } from "@react-three/drei";
 import { useState } from "react";
 import { Loader } from "three";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import create from "zustand";
 
+export type FiberRootState = RootState;
 type Canvas3DBaseProps = {
+  id?: string;
   children?;
+  ref?;
   defaultLightOff?: boolean;
   nonInteractive?: boolean;
+  controlsOption?: CameraControlsProps;
 };
 
 type Canvas3DProps = Canvas3DBaseProps &
   Omit<CanvasProps, keyof Canvas3DBaseProps>;
-
-/**
- * Wraps @react-three/fiber’s <Canvas /> and handles lights and if it has to be interactive or not.
- * Beside the defined parameters, the additional props are passed to the three/fiber <Canvas /> component.
- *
- * By default, the fameloop is set to "demand" to optimize performance, and can be overridden via props.
- * By default, ambient and directional lights are added, but can be disabled via props.
- *
- * @param defaultLightOff Disables default ambient + directional lights (default: false)
- * @param nonInteractive If true, disables default camera controls (default: false)
- */
-export const Canvas3D: React.FC<Canvas3DProps> = ({
-  children,
-  defaultLightOff = false,
-  nonInteractive = false,
-  ...canvasProps
-}) => {
-  return (
-    <Canvas frameloop={"demand"} {...canvasProps}>
-      {!defaultLightOff && (
-        <>
-          <ambientLight intensity={0.5} />
-          <directionalLight />
-        </>
-      )}
-      {children}
-      {!nonInteractive && <CameraControls />}
-    </Canvas>
-  );
-};
 
 /**
  * Hook that lets you load multiple 3D objects in parallel using a specified loader.
@@ -157,4 +132,93 @@ export const useParallelLoader = <T,>(
     throw loadingPromise;
   }
   return objects;
+};
+
+/**
+ * Wraps @react-three/fiber’s <Canvas /> and handles lights and if it has to be interactive or not.
+ * Beside the defined parameters, the additional props are passed to the three/fiber <Canvas /> component.
+ *
+ * By default, the fameloop is set to "demand" to optimize performance, and can be overridden via props.
+ * By default, ambient and directional lights are added, but can be disabled via props.
+ *
+ * @param defaultLightOff Disables default ambient + directional lights (default: false)
+ * @param nonInteractive If true, disables default camera controls (default: false)
+ */
+export const Canvas3D: React.FC<Canvas3DProps> = forwardRef<
+  HTMLCanvasElement,
+  Canvas3DBaseProps
+>(
+  (
+    {
+      id = undefined,
+      children,
+      defaultLightOff = false,
+      nonInteractive = false,
+      controlsOption,
+      ...canvasProps
+    },
+    ref
+  ) => {
+    return (
+      <Canvas ref={ref} frameloop={"demand"} {...canvasProps}>
+        <FiberBridge storeId={id} />
+        {!defaultLightOff && (
+          <>
+            <ambientLight intensity={0.5} />
+            <directionalLight />
+          </>
+        )}
+        {children}
+        {!nonInteractive && <CameraControls makeDefault {...controlsOption} />}
+      </Canvas>
+    );
+  }
+);
+
+export type Canvas3DRootState = Omit<RootState, "controls"> & {
+  controls: CameraControls;
+};
+
+type FiberStore = {
+  rootStates: Record<string, Canvas3DRootState | null>;
+  setRootState: (id: string, state: Canvas3DRootState) => void;
+  clearRootState: (id: string) => void;
+};
+
+export const useFiberStore = create<FiberStore>((set) => ({
+  rootStates: {},
+
+  setRootState: (id, state) =>
+    set((prev) => ({
+      rootStates: {
+        ...prev.rootStates,
+        [id]: state,
+      },
+    })),
+
+  clearRootState: (id) =>
+    set((prev) => {
+      const { [id]: _, ...rest } = prev.rootStates;
+      return { rootStates: rest };
+    }),
+}));
+
+export const useFiber = (id: string) =>
+  useFiberStore((s) => s.rootStates[id] ?? null);
+
+const FiberBridge: React.FC<{ storeId?: string }> = ({ storeId }) => {
+  const state = useThree();
+  const id = storeId ?? "default";
+  const setRootState = useFiberStore((s) => s.setRootState);
+  const clearRootState = useFiberStore((s) => s.clearRootState);
+
+  React.useEffect(() => {
+    // @ts-expect-error
+    setRootState(id, state);
+    return () => {
+      clearRootState(id);
+    };
+  }, [id, state, setRootState, clearRootState]);
+
+  return null;
 };
