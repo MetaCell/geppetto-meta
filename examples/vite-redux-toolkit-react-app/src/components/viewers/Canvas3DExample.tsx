@@ -1,9 +1,22 @@
-import React, { useRef, useState } from "react";
-import { Canvas3D } from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
+import React, { Suspense, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import { useFrame } from "@react-three/fiber";
+import {
+  CameraControls,
+  Center,
+  Gltf,
+  Html,
+  useCamera,
+  useGLTF,
+} from "@react-three/drei";
 import { Mesh } from "three";
 import * as THREE from "three";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import {
+  Canvas3D,
+  useParallelLoader,
+} from "@metacell/geppetto-meta-ui/3d-canvas/Canvas3D";
 
 console.log("three.js for 3D view", THREE.REVISION);
 
@@ -19,6 +32,7 @@ const classes = {
 function MyRotatingBox() {
   const myMesh = useRef<Mesh>();
   const [active, setActive] = useState(false);
+  const [switchColor, setSwitchColor] = useState(false);
 
   useFrame(({ clock }) => {
     const a = clock.getElapsedTime();
@@ -27,12 +41,15 @@ function MyRotatingBox() {
 
   return (
     <mesh
-      scale={active ? 1.5 : 1}
-      onClick={() => setActive(!active)}
+      scale={active ? 5 : 1}
+      onClick={() => {
+        setActive(!active);
+        setSwitchColor((prev) => !prev);
+      }}
       ref={myMesh}
     >
       <boxGeometry />
-      <meshPhongMaterial color="royalblue" />
+      <meshPhongMaterial color={switchColor ? "royalblue" : "hotpink"} />
     </mesh>
   );
 }
@@ -40,24 +57,60 @@ function MyRotatingBox() {
 const Canvas3DExample: React.FC = () => {
   return (
     <Box className={classes.container} style={classes.container}>
-      <Canvas3D
-        object3dUrls={[
-          {
-            url: `http://localhost:${window.location.port}/ADAL.stl`,
-            opts: {
-              material: {
-                color: "green",
-                transparent: true,
-                opacity: 0.5,
-              },
-            },
-            highlightOnClick: true,
-          },
-          `http://localhost:${window.location.port}/nervering.stl`,
-        ]}
-        onLoadError={(e) => console.log(e)}
-      ></Canvas3D>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Canvas3DContent />
+      </Suspense>
     </Box>
+  );
+};
+
+const Canvas3DContent: React.FC = () => {
+  const urls = [
+    `http://localhost:${window.location.port}/ADAL.stl`,
+    `http://localhost:${window.location.port}/nervering.stl`,
+    `http://localhost:${window.location.port}/n.stl`,
+  ];
+
+  const stlGeometries = useParallelLoader(STLLoader, urls, undefined, {
+    onError: (url, error) => {
+      console.debug("ERROR LOADING STL", url, error);
+    },
+    onProgress: (url, event) => {
+      console.debug("STL LOAD PROGRESS", url, event);
+    },
+  });
+  const objGroups = useParallelLoader(
+    OBJLoader,
+    `http://localhost:${window.location.port}/2.obj`
+  );
+
+  useGLTF.setDecoderPath(
+    "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/jsm/libs/draco/"
+  );
+
+  return (
+    <Canvas3D frameloop={"always"}>
+      <group>
+        <Center>
+          {Object.entries(stlGeometries).map(([url, geometry]) => (
+            <mesh key={url}>
+              <primitive attach="geometry" object={geometry} />
+              <meshStandardMaterial transparent={true} opacity={0.3} />
+            </mesh>
+          ))}
+          {Object.entries(objGroups).map(([url, group]) => (
+            <primitive key={url} object={group} />
+          ))}
+        </Center>
+        {/* <Center>
+          <Gltf
+            src={`http://localhost:${window.location.port}/Avocado.gltf`}
+            useDraco={true}
+          />
+        </Center> */}
+      </group>
+      {/* <MyRotatingBox /> */}
+    </Canvas3D>
   );
 };
 
