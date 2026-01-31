@@ -32,7 +32,7 @@
     "d3-plugins-dist": "^3.2.0",
     "dotenv": "8.2.0",
     "dotenv-expand": "5.1.0",
-    "eslint": "^7.11.0",
+    "eslint": "^9.26.0",
     "file-saver": "^2.0.2",
     "fs-extra": "^9.0.1",
     "griddle-react": "^1.13.1",
