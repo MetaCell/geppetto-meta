@@ -11,7 +11,7 @@
     "start": "node --max_old_space_size=2048 node_modules/webpack-dev-server/bin/webpack-dev-server.js --progress  --config webpack.config.dev.js"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.2.1",
+    "@jupyter-widgets/base": "^6.0.11",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
