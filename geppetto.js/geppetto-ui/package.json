@@ -64,8 +64,8 @@
     "nodemon": "^3.1.4",
     "sass": "^1.32.12",
     "stats.js": "^0.17.0",
-    "three-latest": "npm:three@^0.173.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "typescript-eslint": "^8.60.0"
   },
   "peerDependencies": {
     "@emotion/react": "^11.13.3",
