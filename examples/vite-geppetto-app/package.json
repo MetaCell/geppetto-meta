@@ -1,0 +1,50 @@
+{
+  "name": "vite-geppetto-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare": "yarn link:yalc",
+    "link:yalc": "yalc link @metacell/geppetto && yalc link ami.js",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@metacell/geppetto": "file:.yalc/@metacell/geppetto",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@reduxjs/toolkit": "^2.12.0",
+    "@types/three": "^0.180.0",
+    "flexlayout-react": "^0.8.17",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.3.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "eslint": "^10.0.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^17.0.0",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^8.0.0",
+    "vite-plugin-commonjs": "^0.10.4",
+    "yalc": "^1.0.0-pre.53"
+  },
+  "resolutions": {
+    "react": "^19.0.0"
+  }
+}

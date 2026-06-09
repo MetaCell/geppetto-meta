@@ -6,4 +6,4 @@
 jupyter_geppetto/build
 jupyter_geppetto/dist
 dist/
-
+node_modules/
