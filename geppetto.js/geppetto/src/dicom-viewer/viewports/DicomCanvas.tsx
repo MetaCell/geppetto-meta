@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrientationMode, PlaneOrientation, ViewMode, ClickAction } from "../types";
 import { Viewport2DContent } from "./Viewport2DContent";
@@ -155,7 +155,14 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
   onFps,
   children,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null!);
+  /*
+   * useState (not useRef) so the div's presence is known via React state — R3F's
+   * eventSource is read once at <Canvas> mount, so a plain ref object (still null
+   * on first render) would hand it a stale/empty eventSource. A callback ref lets
+   * us delay mounting <Canvas> until the container div actually exists in the DOM.
+   */
+  const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
+  const containerRef = useCallback((el: HTMLDivElement | null) => setContainerEl(el), []);
   const r0Ref = useRef<HTMLDivElement>(null!); // 3d
   const r1Ref = useRef<HTMLDivElement>(null!); // axial
   const r2Ref = useRef<HTMLDivElement>(null!); // sagittal
@@ -174,82 +181,85 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
           We render all four viewports imperatively inside this one WebGL context,
           each scissored to its tracking div's bounds.
           pointer-events: none so tracking divs receive mouse/wheel events.
-          R3F listens via eventSource={containerRef} so raycasting still works. */}
-      <Canvas
-        style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-        frameloop="demand"
-        gl={{ antialias: true, localClippingEnabled: true, autoClear: false }}
-        eventSource={containerRef}
-        eventPrefix="client"
-      >
-        {/* Clear canvas once per frame before any viewport renders */}
-        <FrameClearer />
-        {/* Register this canvas in useFiberStore so Toolbar3DButton can find it by viewerId */}
-        <FiberRegistrar viewerId={viewerId} />
-        {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
-        <StoreInvalidator viewerId={viewerId} />
-        {onFps && <FpsTracker onFps={onFps} />}
+          R3F listens via eventSource={containerEl} so raycasting still works.
+          containerEl is null on first render; <Canvas> only mounts once the div is in the DOM. */}
+      {containerEl && (
+        <Canvas
+          style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+          frameloop="demand"
+          gl={{ antialias: true, localClippingEnabled: true, autoClear: false }}
+          eventSource={containerEl}
+          eventPrefix="client"
+        >
+          {/* Clear canvas once per frame before any viewport renders */}
+          <FrameClearer />
+          {/* Register this canvas in useFiberStore so Toolbar3DButton can find it by viewerId */}
+          <FiberRegistrar viewerId={viewerId} />
+          {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
+          <StoreInvalidator viewerId={viewerId} />
+          {onFps && <FpsTracker onFps={onFps} />}
 
-        <Viewport3DContent
-          stack={stack}
-          domRef={r0Ref}
-          animationSkipRate={animationSkipRate}
-          onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
-          onClick={onClick}
-          onCtrlClick={onCtrlClick}
-          onShiftClick={onShiftClick}
-          onDoubleClick={onDoubleClick}
-          onRightClick={onRightClick}
-        />
+          <Viewport3DContent
+            stack={stack}
+            domRef={r0Ref}
+            animationSkipRate={animationSkipRate}
+            onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
+            onClick={onClick}
+            onCtrlClick={onCtrlClick}
+            onShiftClick={onShiftClick}
+            onDoubleClick={onDoubleClick}
+            onRightClick={onRightClick}
+          />
 
-        <Viewport2DContent
-          stack={stack}
-          planeOrientation="axial"
-          sliceColor={SLICE_COLORS.axial}
-          domRef={r1Ref}
-          animationSkipRate={animationSkipRate}
-          onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
-          onHandleReady={onViewport2DReady}
-          onClick={onClick}
-          onCtrlClick={onCtrlClick}
-          onShiftClick={onShiftClick}
-          onDoubleClick={onDoubleClick}
-          onRightClick={onRightClick}
-        />
+          <Viewport2DContent
+            stack={stack}
+            planeOrientation="axial"
+            sliceColor={SLICE_COLORS.axial}
+            domRef={r1Ref}
+            animationSkipRate={animationSkipRate}
+            onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
+            onHandleReady={onViewport2DReady}
+            onClick={onClick}
+            onCtrlClick={onCtrlClick}
+            onShiftClick={onShiftClick}
+            onDoubleClick={onDoubleClick}
+            onRightClick={onRightClick}
+          />
 
-        <Viewport2DContent
-          stack={stack}
-          planeOrientation="sagittal"
-          sliceColor={SLICE_COLORS.sagittal}
-          domRef={r2Ref}
-          animationSkipRate={animationSkipRate}
-          onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
-          onHandleReady={onViewport2DReady}
-          onClick={onClick}
-          onCtrlClick={onCtrlClick}
-          onShiftClick={onShiftClick}
-          onDoubleClick={onDoubleClick}
-          onRightClick={onRightClick}
-        />
+          <Viewport2DContent
+            stack={stack}
+            planeOrientation="sagittal"
+            sliceColor={SLICE_COLORS.sagittal}
+            domRef={r2Ref}
+            animationSkipRate={animationSkipRate}
+            onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
+            onHandleReady={onViewport2DReady}
+            onClick={onClick}
+            onCtrlClick={onCtrlClick}
+            onShiftClick={onShiftClick}
+            onDoubleClick={onDoubleClick}
+            onRightClick={onRightClick}
+          />
 
-        <Viewport2DContent
-          stack={stack}
-          planeOrientation="coronal"
-          sliceColor={SLICE_COLORS.coronal}
-          domRef={r3Ref}
-          animationSkipRate={animationSkipRate}
-          onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
-          onHandleReady={onViewport2DReady}
-          onClick={onClick}
-          onCtrlClick={onCtrlClick}
-          onShiftClick={onShiftClick}
-          onDoubleClick={onDoubleClick}
-          onRightClick={onRightClick}
-        />
+          <Viewport2DContent
+            stack={stack}
+            planeOrientation="coronal"
+            sliceColor={SLICE_COLORS.coronal}
+            domRef={r3Ref}
+            animationSkipRate={animationSkipRate}
+            onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
+            onHandleReady={onViewport2DReady}
+            onClick={onClick}
+            onCtrlClick={onCtrlClick}
+            onShiftClick={onShiftClick}
+            onDoubleClick={onDoubleClick}
+            onRightClick={onRightClick}
+          />
 
-        {/* DicomOverlay and DicomLayer components render here */}
-        {children}
-      </Canvas>
+          {/* DicomOverlay and DicomLayer components render here */}
+          {children}
+        </Canvas>
+      )}
     </div>
   );
 };
