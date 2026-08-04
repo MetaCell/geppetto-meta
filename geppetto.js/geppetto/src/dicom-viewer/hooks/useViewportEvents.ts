@@ -89,12 +89,12 @@ export function useViewportEvents({
       if (typeof action === "string") {
         if (action === "goToPoint" && point) goToPoint(point);
         else if (action === "expandView") expandView();
-      } else {
-        action(ctx, point ?? new THREE.Vector3(), event);
+      } else if (point) {
+        action(ctx, point, event, planeOrientation);
       }
       invalidate();
     },
-    [camera, scene, domRef, ctx, goToPoint, expandView, invalidate],
+    [camera, scene, domRef, ctx, goToPoint, expandView, invalidate, planeOrientation],
   );
 
   useEffect(() => {

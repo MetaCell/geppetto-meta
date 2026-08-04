@@ -141,7 +141,12 @@ export interface LoaderOptions {
 export type ClickAction =
   | "goToPoint"
   | "expandView" // expand / collapse the clicked viewport (ctrl+click default)
-  | ((ctx: DicomViewerContext, point: THREE.Vector3, event: MouseEvent) => void);
+  | ((
+      ctx: DicomViewerContext,
+      point: THREE.Vector3,
+      event: MouseEvent,
+      planeOrientation: PlaneOrientation | "3d",
+    ) => void);
 
 /*
  * Fired on every (rAF-throttled) pointer move over a viewport, and once more
