@@ -3,7 +3,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useViewport2D } from "./useViewport2D";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { useViewportEvents } from "../hooks/useViewportEvents";
-import { PlaneOrientation, ClickAction } from "../types";
+import { PlaneOrientation, ClickAction, HoverAction } from "../types";
 
 interface Viewport2DContentProps {
   stack: any | null;
@@ -19,6 +19,7 @@ interface Viewport2DContentProps {
   onShiftClick?: ClickAction;
   onDoubleClick?: ClickAction;
   onRightClick?: ClickAction;
+  onHover?: HoverAction;
 }
 
 export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
@@ -34,6 +35,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   onShiftClick,
   onDoubleClick,
   onRightClick,
+  onHover,
 }) => {
   // size: canvas container dimensions — changes on resize, used to retrigger fitCamera
   const { size, gl, invalidate } = useThree();
@@ -50,6 +52,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     onShiftClick,
     onDoubleClick,
     onRightClick,
+    onHover,
   });
   const frameCount = useRef(0);
   const readyFired = useRef(false);

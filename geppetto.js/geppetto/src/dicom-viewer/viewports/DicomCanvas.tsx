@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrientationMode, PlaneOrientation, ViewMode, ClickAction } from "../types";
+import { OrientationMode, PlaneOrientation, ViewMode, ClickAction, HoverAction } from "../types";
 import { Viewport2DContent } from "./Viewport2DContent";
 import { Viewport3DContent } from "./Viewport3DContent";
 import { useDicomViewerStore } from "../hooks/useDicomViewerStore";
@@ -19,6 +19,7 @@ interface DicomCanvasProps {
   onShiftClick?: ClickAction;
   onDoubleClick?: ClickAction;
   onRightClick?: ClickAction;
+  onHover?: HoverAction;
   onFps?: (fps: number) => void;
   children?: React.ReactNode;
 }
@@ -152,6 +153,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
   onShiftClick,
   onDoubleClick,
   onRightClick,
+  onHover,
   onFps,
   children,
 }) => {
@@ -209,6 +211,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             onShiftClick={onShiftClick}
             onDoubleClick={onDoubleClick}
             onRightClick={onRightClick}
+            onHover={onHover}
           />
 
           <Viewport2DContent
@@ -224,6 +227,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             onShiftClick={onShiftClick}
             onDoubleClick={onDoubleClick}
             onRightClick={onRightClick}
+            onHover={onHover}
           />
 
           <Viewport2DContent
@@ -239,6 +243,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             onShiftClick={onShiftClick}
             onDoubleClick={onDoubleClick}
             onRightClick={onRightClick}
+            onHover={onHover}
           />
 
           <Viewport2DContent
@@ -254,6 +259,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             onShiftClick={onShiftClick}
             onDoubleClick={onDoubleClick}
             onRightClick={onRightClick}
+            onHover={onHover}
           />
 
           {/* DicomOverlay and DicomLayer components render here */}

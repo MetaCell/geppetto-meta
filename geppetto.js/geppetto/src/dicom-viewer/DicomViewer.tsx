@@ -40,6 +40,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
   onShiftClick,
   onDoubleClick,
   onRightClick,
+  onHover,
   animationSkipRate = 1,
   onRender,
   onFps,
@@ -233,6 +234,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
               onShiftClick={onShiftClick}
               onDoubleClick={onDoubleClick}
               onRightClick={onRightClick}
+              onHover={onHover}
             >
               {/* R3F scene content: DicomLayer, DicomOverlay, custom three.js objects */}
               {children}

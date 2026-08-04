@@ -143,6 +143,17 @@ export type ClickAction =
   | "expandView" // expand / collapse the clicked viewport (ctrl+click default)
   | ((ctx: DicomViewerContext, point: THREE.Vector3, event: MouseEvent) => void);
 
+/*
+ * Fired on every (rAF-throttled) pointer move over a viewport, and once more
+ * with point=null on mouseleave. Point is null whenever the pointer isn't over
+ * any raycastable geometry (e.g. outside the loaded volume).
+ */
+export type HoverAction = (
+  ctx: DicomViewerContext,
+  point: THREE.Vector3 | null,
+  planeOrientation: PlaneOrientation | "3d",
+) => void;
+
 export interface DicomViewerProps {
   id: string;
   data: string | string[];
@@ -156,6 +167,7 @@ export interface DicomViewerProps {
   onShiftClick?: ClickAction;
   onDoubleClick?: ClickAction;
   onRightClick?: ClickAction;
+  onHover?: HoverAction;
   showDownloadButton?: boolean;
   applySegmentationLUT?: boolean;
   animationSkipRate?: number;

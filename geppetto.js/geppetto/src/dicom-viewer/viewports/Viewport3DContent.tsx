@@ -4,7 +4,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useViewport3D } from "./useViewport3D";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { useDicomViewerContext } from "../DicomViewerContext";
-import { ClickAction } from "../types";
+import { ClickAction, HoverAction } from "../types";
 
 interface Viewport3DContentProps {
   stack: any | null;
@@ -16,6 +16,7 @@ interface Viewport3DContentProps {
   onShiftClick?: ClickAction;
   onDoubleClick?: ClickAction;
   onRightClick?: ClickAction;
+  onHover?: HoverAction;
 }
 
 export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
@@ -28,6 +29,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
   onShiftClick,
   onDoubleClick,
   onRightClick,
+  onHover,
 }) => {
   const { size, gl, invalidate } = useThree();
   const handle = useViewport3D(stack, domRef);
@@ -43,6 +45,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     onShiftClick,
     onDoubleClick,
     onRightClick,
+    onHover,
   });
   const frameCount = useRef(0);
   const readyFired = useRef(false);

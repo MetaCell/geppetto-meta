@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { PlaneOrientation, ClickAction } from "../types";
+import { PlaneOrientation, ClickAction, HoverAction } from "../types";
 import { useDicomViewerContext } from "../DicomViewerContext";
 
 interface UseViewportEventsArgs {
@@ -14,6 +14,7 @@ interface UseViewportEventsArgs {
   onShiftClick?: ClickAction;
   onDoubleClick?: ClickAction;
   onRightClick?: ClickAction;
+  onHover?: HoverAction;
 }
 
 // Drag threshold in pixels — pointer motion beyond this suppresses click events
@@ -46,6 +47,7 @@ export function useViewportEvents({
   onShiftClick,
   onDoubleClick,
   onRightClick,
+  onHover,
 }: UseViewportEventsArgs) {
   const ctx = useDicomViewerContext();
   const { invalidate } = useThree();
@@ -99,22 +101,46 @@ export function useViewportEvents({
     const el = domRef.current;
     if (!el) return undefined;
 
+    let hoverRaf: number | null = null;
+    let latestHoverEvent: MouseEvent | null = null;
+
     const onMouseDown = (e: MouseEvent) => {
       mouseDownPos.current = { x: e.clientX, y: e.clientY };
       isDragging.current = false;
     };
 
     const onMouseMove = (e: MouseEvent) => {
-      if (!mouseDownPos.current) return;
-      const dx = e.clientX - mouseDownPos.current.x;
-      const dy = e.clientY - mouseDownPos.current.y;
-      if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
-        isDragging.current = true;
+      if (mouseDownPos.current) {
+        const dx = e.clientX - mouseDownPos.current.x;
+        const dy = e.clientY - mouseDownPos.current.y;
+        if (Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
+          isDragging.current = true;
+        }
       }
+
+      if (!onHover || !camera || !scene) return;
+      /*
+       * Throttle raycasting to one pick per animation frame, but always raycast
+       * from the LATEST event (not the one that happened to schedule the pending
+       * frame), or the hover position would visibly lag/snap while throttled.
+       */
+      latestHoverEvent = e;
+      if (hoverRaf !== null) return;
+      hoverRaf = requestAnimationFrame(() => {
+        hoverRaf = null;
+        const point = pickPoint(latestHoverEvent as MouseEvent, el, camera, scene);
+        onHover(ctx, point, planeOrientation);
+        invalidate();
+      });
     };
 
     const onMouseUp = () => {
       mouseDownPos.current = null;
+    };
+
+    const onMouseLeave = () => {
+      onHover?.(ctx, null, planeOrientation);
+      invalidate();
     };
 
     const onClickHandler = (e: MouseEvent) => {
@@ -140,6 +166,7 @@ export function useViewportEvents({
     el.addEventListener("mousedown", onMouseDown);
     el.addEventListener("mousemove", onMouseMove);
     el.addEventListener("mouseup", onMouseUp);
+    el.addEventListener("mouseleave", onMouseLeave);
     el.addEventListener("click", onClickHandler);
     el.addEventListener("dblclick", onDblClick);
     el.addEventListener("contextmenu", onContextMenu);
@@ -148,9 +175,25 @@ export function useViewportEvents({
       el.removeEventListener("mousedown", onMouseDown);
       el.removeEventListener("mousemove", onMouseMove);
       el.removeEventListener("mouseup", onMouseUp);
+      el.removeEventListener("mouseleave", onMouseLeave);
       el.removeEventListener("click", onClickHandler);
       el.removeEventListener("dblclick", onDblClick);
       el.removeEventListener("contextmenu", onContextMenu);
+      if (hoverRaf !== null) cancelAnimationFrame(hoverRaf);
     };
-  }, [domRef.current, dispatch, onClick, onCtrlClick, onShiftClick, onDoubleClick, onRightClick]);
+  }, [
+    domRef.current,
+    dispatch,
+    onClick,
+    onCtrlClick,
+    onShiftClick,
+    onDoubleClick,
+    onRightClick,
+    onHover,
+    camera,
+    scene,
+    ctx,
+    planeOrientation,
+    invalidate,
+  ]);
 }
