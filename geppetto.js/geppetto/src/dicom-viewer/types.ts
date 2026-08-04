@@ -88,6 +88,7 @@ export interface DicomViewerActions {
   setLayerOpacity: (id: string, opacity: number) => void;
   setLayerTransform: (id: string, transform: LayerTransform) => void;
   setLayerWindowLevel: (id: string, center: number, width: number) => void;
+  setLayerLut: (id: string, name: string) => void;
 }
 
 // Full context exposed to hooks/buttons inside <DicomViewer>

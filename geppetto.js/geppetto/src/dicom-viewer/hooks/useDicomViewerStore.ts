@@ -154,6 +154,12 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
             ?.setWindowLevel?.(center, width);
           patch({});
         },
+        setLayerLut: (layerId, name) => {
+          get()
+            .viewers[id]?.layers.find(l => l.id === layerId)
+            ?.setLut?.(name);
+          patch({});
+        },
       };
 
       return {

@@ -28,10 +28,41 @@ export interface DicomLayerProps extends LayerMaterialOpts {
  * The LUT-based technique keeps background voxels transparent while tissue
  * remains fully opaque — see createLayerMaterial.ts for the implementation.
  */
-export function DicomLayer({ id, data, renderOrder = 1, ...materialOpts }: DicomLayerProps): null {
+export function DicomLayer({
+  id,
+  data,
+  renderOrder = 1,
+  opacity,
+  lut,
+  windowCenter,
+  windowWidth,
+  ...restMaterialOpts
+}: DicomLayerProps): null {
   const ctx = useDicomViewerContext();
   const { stack: layerStack } = useLayerStack(data);
   const layerRef = useRef<LayerState | null>(null);
+
+  // React to opacity changes after mount — creation-time value only seeds the initial uniform.
+  useEffect(() => {
+    if (opacity === undefined) return;
+    ctx.setLayerOpacity(id, opacity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opacity, id]);
+
+  /*
+   * Window/level and LUT are independent knobs but often change together (e.g. a
+   * preset switch resets both), so they share one effect rather than firing two
+   * separate store updates (and two invalidates) per user action.
+   */
+  useEffect(() => {
+    if (windowCenter !== undefined && windowWidth !== undefined) {
+      ctx.setLayerWindowLevel(id, windowCenter, windowWidth);
+    }
+    if (lut !== undefined) {
+      ctx.setLayerLut(id, lut);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [windowCenter, windowWidth, lut, id]);
 
   useEffect(() => {
     /*
@@ -40,7 +71,13 @@ export function DicomLayer({ id, data, renderOrder = 1, ...materialOpts }: Dicom
      */
     if (!layerStack || !ctx.stack) return undefined;
 
-    const partial = createLayerMaterial(layerStack, materialOpts);
+    const partial = createLayerMaterial(layerStack, {
+      opacity,
+      lut,
+      windowCenter,
+      windowWidth,
+      ...restMaterialOpts,
+    });
     const layer: LayerState = { id, renderOrder, ...partial };
     layerRef.current = layer;
     ctx.registerLayer(layer);
