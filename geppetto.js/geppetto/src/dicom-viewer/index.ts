@@ -14,9 +14,23 @@ export { DicomViewerButton } from "./toolbar/DicomViewerButton";
 // Context hook — use inside any component rendered inside <DicomViewer>
 export { useDicomViewerContext } from "./DicomViewerContext";
 
+/*
+ * Canvas-id context + per-canvas R3F root-state registry — independent from
+ * 3d-canvas's own Canvas3D/Toolbar3D versions of the same pattern (aliased on
+ * export since @metacell/geppetto's root barrel re-exports both modules, and
+ * 3d-canvas already exports names of the same shape). Needed if you are
+ * building a custom toolbar button from scratch instead of using
+ * <DicomViewerButton>.
+ */
+export {
+  CanvasIdContext as DicomCanvasIdContext,
+  useCanvasId as useDicomCanvasId,
+  useFiber as useDicomFiber,
+} from "./canvas-context";
+
 // Low-level hooks (for advanced use cases)
 export { useDicomViewer, useDicomViewerStore } from "./hooks/useDicomViewerStore";
-export { useVolumeLoader } from "./hooks/useVolumeLoader";
+export { useVolumeLoader, pctOf } from "./hooks/useVolumeLoader";
 export { useLayerStack } from "./hooks/useLayerStack";
 export { createLayerMaterial } from "./layers/createLayerMaterial";
 
@@ -36,4 +50,7 @@ export type {
   ToolbarButton,
   ToolbarButtons,
   ClickAction,
+  HoverAction,
 } from "./types";
+export type { CanvasRootState } from "./canvas-context";
+export type { DownloadProgress } from "./hooks/useVolumeLoader";
