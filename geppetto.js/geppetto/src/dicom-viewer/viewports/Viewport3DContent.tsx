@@ -5,12 +5,15 @@ import { useViewport3D } from "./useViewport3D";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { ClickAction, HoverAction } from "../types";
+import { useFirstFrameFlag } from "./useFirstFrameFlag";
 
 interface Viewport3DContentProps {
   stack: any | null;
   domRef: React.RefObject<HTMLElement>;
   animationSkipRate: number;
   onReady?: (scene: any, camera: any) => void;
+  // Fires once the first real WebGL frame for this viewport has been painted
+  onFirstFrame?: () => void;
   onClick?: ClickAction;
   onCtrlClick?: ClickAction;
   onShiftClick?: ClickAction;
@@ -24,6 +27,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
   domRef,
   animationSkipRate,
   onReady,
+  onFirstFrame,
   onClick,
   onCtrlClick,
   onShiftClick,
@@ -34,6 +38,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
   const { size, gl, invalidate } = useThree();
   const handle = useViewport3D(stack, domRef);
   const ctx = useDicomViewerContext();
+  const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
 
   useViewportEvents({
     domRef,
@@ -203,6 +208,8 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
 
     gl.setScissorTest(false);
     gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
+
+    markFirstFrame();
   }, 1);
 
   return null;

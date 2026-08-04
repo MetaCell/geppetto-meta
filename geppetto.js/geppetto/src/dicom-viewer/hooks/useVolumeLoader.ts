@@ -15,10 +15,22 @@ export function resolveDataUrls(data: any): string[] | null {
   return null;
 }
 
+export interface DownloadProgress {
+  loaded: number;
+  total: number; // 0 to indicate unknown size
+}
+
+// Percentage for a DownloadProgress reading, or null while size is unknown (total === 0)
+export function pctOf(p: DownloadProgress | null): number | null {
+  if (!p || p.total === 0) return null;
+  return Math.min(100, Math.round((p.loaded / p.total) * 100));
+}
+
 interface UseVolumeLoaderResult {
   stack: any | null;
   loading: boolean;
   error: Error | null;
+  downloadProgress: DownloadProgress | null;
 }
 
 /*
@@ -29,6 +41,7 @@ export function useVolumeLoader(data: string | string[] | any | null): UseVolume
   const [stack, setStack] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgress | null>(null);
   const loaderRef = useRef<any>(null);
 
   useEffect(() => {
@@ -39,9 +52,14 @@ export function useVolumeLoader(data: string | string[] | any | null): UseVolume
     setLoading(true);
     setError(null);
     setStack(null);
+    setDownloadProgress(null);
 
     const loader = new VolumeLoader();
     loaderRef.current = loader;
+
+    loader.on("fetch-progress", ({ loaded, total }: { loaded: number; total: number }) => {
+      if (!cancelled) setDownloadProgress({ loaded, total });
+    });
 
     loader
       .load(urls)
@@ -54,11 +72,13 @@ export function useVolumeLoader(data: string | string[] | any | null): UseVolume
         s.prepare();
         setStack(s);
         setLoading(false);
+        setDownloadProgress(null);
       })
       .catch((err: Error) => {
         if (cancelled) return;
         setError(err);
         setLoading(false);
+        setDownloadProgress(null);
       });
 
     return () => {
@@ -68,5 +88,5 @@ export function useVolumeLoader(data: string | string[] | any | null): UseVolume
     };
   }, [JSON.stringify(resolveDataUrls(data))]);
 
-  return { stack, loading, error };
+  return { stack, loading, error, downloadProgress };
 }

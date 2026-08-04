@@ -14,6 +14,8 @@ interface DicomCanvasProps {
   animationSkipRate: number;
   onViewportReady?: (id: number, scene: any, camera: any) => void;
   onViewport2DReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
+  // Fires once the first real WebGL frame for viewport `id` has been painted
+  onViewportFirstFrame?: (id: number) => void;
   onClick?: ClickAction;
   onCtrlClick?: ClickAction;
   onShiftClick?: ClickAction;
@@ -148,6 +150,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
   animationSkipRate,
   onViewportReady,
   onViewport2DReady,
+  onViewportFirstFrame,
   onClick,
   onCtrlClick,
   onShiftClick,
@@ -206,6 +209,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             domRef={r0Ref}
             animationSkipRate={animationSkipRate}
             onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
+            onFirstFrame={() => onViewportFirstFrame?.(0)}
             onClick={onClick}
             onCtrlClick={onCtrlClick}
             onShiftClick={onShiftClick}
@@ -221,6 +225,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             domRef={r1Ref}
             animationSkipRate={animationSkipRate}
             onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
+            onFirstFrame={() => onViewportFirstFrame?.(1)}
             onHandleReady={onViewport2DReady}
             onClick={onClick}
             onCtrlClick={onCtrlClick}
@@ -237,6 +242,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             domRef={r2Ref}
             animationSkipRate={animationSkipRate}
             onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
+            onFirstFrame={() => onViewportFirstFrame?.(2)}
             onHandleReady={onViewport2DReady}
             onClick={onClick}
             onCtrlClick={onCtrlClick}
@@ -253,6 +259,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
             domRef={r3Ref}
             animationSkipRate={animationSkipRate}
             onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
+            onFirstFrame={() => onViewportFirstFrame?.(3)}
             onHandleReady={onViewport2DReady}
             onClick={onClick}
             onCtrlClick={onCtrlClick}

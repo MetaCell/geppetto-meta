@@ -4,6 +4,7 @@ import { useViewport2D } from "./useViewport2D";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { PlaneOrientation, ClickAction, HoverAction } from "../types";
+import { useFirstFrameFlag } from "./useFirstFrameFlag";
 
 interface Viewport2DContentProps {
   stack: any | null;
@@ -14,6 +15,8 @@ interface Viewport2DContentProps {
   onReady?: (scene: any, camera: any) => void;
   // Exposes stackHelper + localizerHelper for localizer cross-ref initialisation
   onHandleReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
+  // Fires once the first real WebGL frame for this viewport has been painted
+  onFirstFrame?: () => void;
   onClick?: ClickAction;
   onCtrlClick?: ClickAction;
   onShiftClick?: ClickAction;
@@ -30,6 +33,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   animationSkipRate,
   onReady,
   onHandleReady,
+  onFirstFrame,
   onClick,
   onCtrlClick,
   onShiftClick,
@@ -41,6 +45,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   const { size, gl, invalidate } = useThree();
   const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef);
   const ctx = useDicomViewerContext();
+  const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
 
   useViewportEvents({
     domRef,
@@ -208,6 +213,8 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
     gl.setScissorTest(false);
     gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
+
+    markFirstFrame();
   }, 1);
 
   return null;

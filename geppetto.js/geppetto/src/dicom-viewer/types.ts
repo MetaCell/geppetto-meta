@@ -162,6 +162,8 @@ export type HoverAction = (
 export interface DicomViewerProps {
   id: string;
   data: string | string[];
+  // Noun used in the loading overlay's copy, e.g. "Loading scan… 42%" (default: "image")
+  assetLabel?: string;
   mode?: ViewMode;
   orientation?: OrientationMode;
   threshold3D?: number; // initial intensity threshold for 3D transparency (0 = off)
