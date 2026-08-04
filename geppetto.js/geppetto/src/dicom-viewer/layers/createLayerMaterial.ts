@@ -152,12 +152,12 @@ export function createLayerMaterial(
      * Segmentation (label map): LUT is keyed by integer label.
      * Background label 0 has alpha 0 in standard presets — always transparent.
      */
-    helperSegLut = new SegmentationLutHelper("lut-host", segmentation);
+    helperSegLut = new SegmentationLutHelper(document.createElement("div"), segmentation);
     uniforms.uLutSegmentation.value = 1;
     uniforms.uTextureLUTSegmentation.value = helperSegLut.texture;
   } else {
     // Continuous overlay: 1-D color + opacity LUT keyed by normalized intensity.
-    helperLut = new LutHelper("lut-host");
+    helperLut = new LutHelper(document.createElement("div"));
     helperLut.luts = LutHelper.presetLuts();
     helperLut.lut = lutName;
     uniforms.uLut.value = 1;
