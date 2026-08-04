@@ -127,20 +127,32 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
             },
           })),
 
+        /*
+         * These mutate the layer's GPU uniforms imperatively (setOpacity/setTransform/
+         * setWindowLevel close over the material's uniforms directly — see
+         * createLayerMaterial.ts), so the viewer record itself never changes shape.
+         * patch({}) bumps the record's reference identity anyway, purely so
+         * StoreInvalidator (DicomCanvas.tsx) sees a change and invalidates —
+         * otherwise these calls are silent no-ops under frameloop="demand" until
+         * some unrelated invalidate happens to fire.
+         */
         setLayerOpacity: (layerId, opacity) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setOpacity(opacity);
+          patch({});
         },
         setLayerTransform: (layerId, transform: LayerTransform) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setTransform(transform);
+          patch({});
         },
         setLayerWindowLevel: (layerId, center, width) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setWindowLevel?.(center, width);
+          patch({});
         },
       };
 
