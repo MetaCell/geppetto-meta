@@ -54,20 +54,7 @@ export function useViewportEvents({
 
   const goToPoint = useCallback(
     (point: THREE.Vector3) => {
-      if (!ctx.stack) return;
-      // Convert world position to IJK voxel index
-      const lps2IJK = ctx.stack.lps2IJK;
-      const ijk = point.clone().applyMatrix4(lps2IJK);
-      const planes: PlaneOrientation[] = ["axial", "sagittal", "coronal"];
-      planes.forEach(plane => {
-        const maxIdx = ctx.sliceMaxIndices[plane];
-        let idx: number;
-        if (plane === "axial") idx = Math.round(ijk.z);
-        else if (plane === "sagittal") idx = Math.round(ijk.x);
-        else idx = Math.round(ijk.y);
-        const clamped = Math.max(0, Math.min(maxIdx, idx));
-        ctx.setSliceIndex(plane, clamped);
-      });
+      ctx.centerOnPoint(point);
       // Also switch to the clicked plane in single_view mode
       if (ctx.viewMode === "single_view" && planeOrientation !== "3d") {
         ctx.setOrientation(planeOrientation);

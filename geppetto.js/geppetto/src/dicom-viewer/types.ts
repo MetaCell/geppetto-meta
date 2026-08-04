@@ -37,6 +37,13 @@ export interface DicomViewerState {
   orientation: OrientationMode;
   sliceIndices: Record<PlaneOrientation, number>;
   sliceMaxIndices: Record<PlaneOrientation, number>;
+  /*
+   * Each 2D viewport's actual ami.js camera.stackOrientation (0/1/2), i.e. which
+   * IJK axis that plane's slices step along. This depends on the volume's
+   * acquisition orientation, not a fixed axial/sagittal/coronal → z/x/y mapping —
+   * centerOnPoint uses it to convert a world point to the right slice index per plane.
+   */
+  planeStackOrientations: Record<PlaneOrientation, number>;
   isLoading: boolean;
   layers: LayerState[];
   /*
@@ -67,7 +74,15 @@ export interface DicomViewerActions {
   setSliceMaxIndex: (plane: PlaneOrientation, maxIdx: number) => void;
   // Bulk setter kept for API compatibility; prefer setSliceMaxIndex for new code.
   setSliceMaxIndices: (maxIndices: Record<PlaneOrientation, number>) => void;
+  setPlaneStackOrientation: (plane: PlaneOrientation, stackOrientation: number) => void;
   setLoading: (loading: boolean) => void;
+  /*
+   * Converts a world (LPS) point to IJK and sets all 3 plane slice indices to
+   * center on it, using each plane's real planeStackOrientations mapping.
+   * Single source of truth for "center on this point" — used by click-to-center
+   * (useViewportEvents.ts's goToPoint) and any other externally-triggered request.
+   */
+  centerOnPoint: (point: THREE.Vector3) => void;
   registerLayer: (layer: LayerState) => void;
   unregisterLayer: (id: string) => void;
   setLayerOpacity: (id: string, opacity: number) => void;

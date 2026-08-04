@@ -158,6 +158,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
       });
     }
     ctx.setSliceIndex(planeOrientation, Math.floor(maxIdx / 2));
+    ctx.setPlaneStackOrientation(planeOrientation, handle.camera.stackOrientation);
     invalidate();
   }, [handle?.stackHelper]);
 

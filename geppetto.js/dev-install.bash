@@ -7,4 +7,4 @@ cd "${PARENT_PATH}"
 # Build @metacell/geppetto and register it globally via yarn link so that
 # consumer apps can pick it up with `yarn link @metacell/geppetto`.
 echo "[*] Install geppetto"
-(cd geppetto && yarn install && yarn build:clean && yarn build && yarn link)
+(cd geppetto && yarn install && yarn build:clean && yarn build && yarn publish:yalc)

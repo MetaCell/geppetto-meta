@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { create } from "zustand";
 import type {
   DicomViewerActions,
@@ -6,6 +7,7 @@ import type {
   LayerTransform,
   PlaneOrientation,
 } from "../types";
+import { centerSlicesOnPoint } from "../utils";
 
 type ViewerRecord = DicomViewerState & DicomViewerActions;
 
@@ -21,6 +23,7 @@ const defaultViewerState = (): DicomViewerState => ({
   orientation: "3d",
   sliceIndices: { axial: 0, sagittal: 0, coronal: 0 },
   sliceMaxIndices: { axial: 0, sagittal: 0, coronal: 0 },
+  planeStackOrientations: { axial: 0, sagittal: 1, coronal: 2 },
   isLoading: false,
   layers: [],
   threshold3D: 0,
@@ -75,7 +78,32 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
           })),
         // Bulk setter kept for API compat.
         setSliceMaxIndices: sliceMaxIndices => patch({ sliceMaxIndices }),
+        setPlaneStackOrientation: (plane: PlaneOrientation, stackOrientation: number) =>
+          set(s => ({
+            viewers: {
+              ...s.viewers,
+              [id]: {
+                ...s.viewers[id],
+                planeStackOrientations: {
+                  ...s.viewers[id].planeStackOrientations,
+                  [plane]: stackOrientation,
+                },
+              },
+            },
+          })),
         setLoading: isLoading => patch({ isLoading }),
+
+        centerOnPoint: (point: THREE.Vector3) => {
+          const viewer = get().viewers[id];
+          if (!viewer) return;
+          centerSlicesOnPoint(
+            point,
+            viewer.stack,
+            viewer.sliceMaxIndices,
+            viewer.planeStackOrientations,
+            viewer.setSliceIndex,
+          );
+        },
 
         registerLayer: (layer: LayerState) =>
           set(s => ({
