@@ -120,8 +120,17 @@ export function createLayerMaterial(
   uniforms.uPixelType.value = stack.pixelType;
   uniforms.uPackedPerPixel.value = stack.packedPerPixel;
   uniforms.uBitsAllocated.value = stack.bitsAllocated;
+
+  /*
+   * ami.js's data shader expects non-negative intensities and shifts volumes with
+   * a negative minimum (e.g. CT in Hounsfield units, which go below 0) up by this
+   * offset when packing textures. Window/level and threshold uniforms are compared
+   * against those shifted values, so they must be offset the same way or they'll
+   * be wrong for any volume with negative intensities.
+   */
+  const amiOffset = stack.minMax[0] < 0 ? -stack.minMax[0] : 0;
   uniforms.uWindowCenterWidth.value = [
-    windowCenter ?? stack.windowCenter,
+    amiOffset + (windowCenter ?? stack.windowCenter),
     windowWidth ?? stack.windowWidth,
   ];
   uniforms.uRescaleSlopeIntercept.value = [stack.rescaleSlope, stack.rescaleIntercept];
@@ -131,8 +140,17 @@ export function createLayerMaterial(
     stack.dimensionsIJK.z,
   ];
   uniforms.uInterpolation.value = interpolation;
-  uniforms.uLowerUpperThreshold.value = [...stack.minMax];
+  uniforms.uLowerUpperThreshold.value = [amiOffset + stack.minMax[0], amiOffset + stack.minMax[1]];
   uniforms.uOpacity.value = opacity;
+
+  /*
+   * Single source of truth for the amiOffset math — used by both the
+   * backgroundRemoval and default setWindowLevel closures below so the
+   * offset can't drift out of sync.
+   */
+  const applyWindowLevel = (center: number, width: number) => {
+    uniforms.uWindowCenterWidth.value = [amiOffset + center, width];
+  };
 
   const material = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
@@ -172,9 +190,7 @@ export function createLayerMaterial(
         buildAirAlphaLut(helperLut, v, threshold);
         uniforms.uTextureLUT.value = helperLut.texture;
       };
-      const setWindowLevel = (center: number, width: number) => {
-        uniforms.uWindowCenterWidth.value = [center, width];
-      };
+      const setWindowLevel = applyWindowLevel;
       const setLut = (name: string) => {
         helperLut.lut = name;
         uniforms.uTextureLUT.value = helperLut.texture;
@@ -203,11 +219,7 @@ export function createLayerMaterial(
   const setOpacity = (v: number) => {
     uniforms.uOpacity.value = v;
   };
-  const setWindowLevel = segmentation
-    ? undefined
-    : (center: number, width: number) => {
-        uniforms.uWindowCenterWidth.value = [center, width];
-      };
+  const setWindowLevel = segmentation ? undefined : applyWindowLevel;
   const setLut =
     helperLut && !segmentation
       ? (name: string) => {
