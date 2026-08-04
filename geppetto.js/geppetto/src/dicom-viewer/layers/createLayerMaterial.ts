@@ -189,6 +189,7 @@ export function createLayerMaterial(
       const setOpacity = (v: number) => {
         buildAirAlphaLut(helperLut, v, threshold);
         uniforms.uTextureLUT.value = helperLut.texture;
+        uniforms.uOpacity.value = v;
       };
       const setWindowLevel = applyWindowLevel;
       const setLut = (name: string) => {
