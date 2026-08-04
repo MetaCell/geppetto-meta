@@ -104,23 +104,29 @@ Viewer state lives in two layers:
 
 ### Fiber store integration
 
-`DicomCanvas` mounts a `FiberRegistrar` component inside the R3F `<Canvas>`. This calls `useThree()` and writes the result into the shared `useFiberStore` (the same store used by `Canvas3D`) under the viewer's `id`. As a result, `useFiber(viewerId)` and `Toolbar3DButton` work for DICOM canvases exactly as they do for `Canvas3D` canvases, and `DicomViewer` provides `CanvasIdContext` with the viewer `id` so the toolbar wiring resolves automatically.
+`DicomCanvas` mounts a `FiberRegistrar` component inside the R3F `<Canvas>`. This calls `useThree()` and writes the result into `dicom-viewer`'s own `useFiberStore` (from `./canvas-context`) under the viewer's `id`. `DicomViewer` provides `CanvasIdContext` with the viewer `id` so `useDicomFiber(viewerId)` / `<DicomViewerButton>` resolve the current canvas automatically.
+
+This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions of the same pattern — the two intentionally don't share state. A DICOM viewport's `controls` are ami.js's `TrackballControl` / `TrackballOrthoControl`, not the `CameraControls` that `Canvas3D`'s pan/zoom/rotate toolbar groups expect, so a shared, single-typed store would either be wrong for one side or require unsafe casts (which is what an earlier version of this file did). Keeping `dicom-viewer` self-contained also means it doesn't require the sibling `3d-canvas` module to exist.
+
+> **If you built a custom toolbar button by importing `useFiber`/`CanvasIdContext` directly from `3d-canvas/toolbar/Toolbar3D` or `3d-canvas/Canvas3D`**, that import no longer resolves DICOM canvases — switch to `useDicomFiber`/`DicomCanvasIdContext` exported from `@metacell/geppetto/dicom-viewer` (see [`DicomViewerButton`](#dicomviewerbutton) below, which already does this for you).
 
 ## `DicomViewer` props
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `id` | `string` | **required** | Unique identifier. Used as the key in `useDicomViewerStore` and `useFiberStore`. Two viewers on the same page must have different ids. |
+| `id` | `string` | **required** | Unique identifier. Used as the key in `useDicomViewerStore` and `dicom-viewer`'s `useFiberStore`. Two viewers on the same page must have different ids. |
 | `data` | `string \| string[]` | **required** | URL(s) to load. Single string for NIfTI/NRRD; array of strings for multi-file DICOM series. Also accepts a Geppetto `Instance` model object (the NIfTI URL is extracted automatically). |
+| `assetLabel` | `string` | `'image'` | Noun used in the built-in loading overlay's copy, e.g. `Loading scan… 42%`. Purely cosmetic. |
 | `mode` | `'quad_view' \| 'single_view'` | `'quad_view'` | Initial view layout. |
 | `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | `'3d'` | Active viewport in `single_view`. In `quad_view` this determines which pane is highlighted. |
-| `threshold3D` | `number` | `0` | Initial intensity threshold for 3D transparency. Fragments with raw intensity below this value are discarded. `0` = no transparency. |
+| `threshold3D` | `number` | `0` | Initial intensity threshold for 3D transparency. Fragments with raw intensity below this value are discarded. `0` = no transparency. Correctly offset for volumes with a negative minimum intensity (e.g. CT in Hounsfield units). |
 | `onLoaded` | `() => void` | — | Called once the volume has been loaded and the stack is ready. |
 | `onClick` | `ClickAction` | — | Action fired on a plain left-click in any viewport. |
 | `onCtrlClick` | `ClickAction` | — | Action fired on Ctrl+click (or ⌘+click on macOS). |
 | `onShiftClick` | `ClickAction` | — | Action fired on Shift+click. |
 | `onDoubleClick` | `ClickAction` | — | Action fired on double-click. |
 | `onRightClick` | `ClickAction` | — | Action fired on right-click (context menu suppressed). |
+| `onHover` | `HoverAction` | — | Fired on (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
 | `animationSkipRate` | `number` | `1` | Render every Nth frame. Use values > 1 to reduce GPU load for complex scenes. |
 | `onRender` | `(viewports: ViewportHandle[]) => void` | — | Called once all four viewports have initialised. Receives an array of `{ id, scene, camera }` handles. |
 | `onFps` | `(fps: number) => void` | — | Called approximately every 500 ms with the current frame rate. Resets to 0 after 600 ms of inactivity (demand rendering). |
@@ -133,10 +139,29 @@ Viewer state lives in two layers:
 type ClickAction =
   | 'goToPoint'     // navigate all slice planes to the clicked world position
   | 'expandView'    // expand the clicked viewport to single_view (or collapse back)
-  | ((ctx: DicomViewerContext, point: THREE.Vector3, event: MouseEvent) => void);
+  | ((
+      ctx: DicomViewerContext,
+      point: THREE.Vector3,
+      event: MouseEvent,
+      planeOrientation: PlaneOrientation | '3d', // which viewport the click happened in
+    ) => void);
 ```
 
-Drag is detected with a 4-pixel threshold — dragging suppresses the click event so rotating or panning does not accidentally trigger navigation.
+Drag is detected with a 4-pixel threshold — dragging suppresses the click event so rotating or panning does not accidentally trigger navigation. A custom (function) action only fires when the click actually hit raycastable geometry — a miss (e.g. clicking empty space around the volume) does not invoke it at all, rather than invoking it with a fabricated origin point.
+
+`'goToPoint'` centers all three 2D planes on the clicked world position using each plane's real ami.js acquisition orientation, so it centers correctly regardless of whether the volume was acquired axially, sagittally, or coronally.
+
+### `HoverAction` type
+
+```ts
+type HoverAction = (
+  ctx: DicomViewerContext,
+  point: THREE.Vector3 | null,
+  planeOrientation: PlaneOrientation | '3d',
+) => void;
+```
+
+Passed as `onHover` on `<DicomViewer>`. Raycasting is throttled to at most one pick per animation frame — pointer-move events between frames are coalesced, always raycasting from the latest event so the reported position doesn't lag behind a fast-moving pointer. `point` is `null` whenever the pointer isn't over any raycastable geometry, and fires once more with `point: null` on `mouseleave` so consumers can reliably clear hover state (e.g. hide a crosshair/tooltip) when the pointer exits a viewport.
 
 ## Preconfigured viewer additional props
 
@@ -149,6 +174,17 @@ Drag is detected with a 4-pixel threshold — dragging suppresses the click even
 | `extraOverlay` | `ReactNode` | — | Additional DOM elements added to the overlay alongside the built-in toolbar. Use for custom HUD elements, not for R3F scene content. |
 
 Default click behaviour in the preconf viewer: plain click = `'goToPoint'`, Ctrl+click = `'expandView'`.
+
+## Loading state
+
+`<DicomViewer>` shows a built-in overlay (dark scrim, label, progress bar) automatically — no wiring required — and distinguishes two phases that a plain `isLoading` boolean would conflate:
+
+1. **Downloading** — the volume is still being fetched. Label reads `Loading {assetLabel}… N%` when the server reports a `Content-Length` (via ami.js's `fetch-progress` event), or `Loading {assetLabel}…` with an indeterminate animated bar when it doesn't.
+2. **Decoding** — the download finished and the stack exists, but nothing has painted yet: `StackHelper`/`DataTexture` construction and the first WebGL frame are still pending. Label reads `Decoding {assetLabel}…`. This phase exists because a `stack` being non-null does *not* mean anything is visible yet — GPU resource construction and the first `gl.render()` call still have to happen.
+
+The overlay clears only once a real frame has actually been drawn for every viewport relevant to the current `mode`/`orientation` (all four in `quad_view`; just the active one in `single_view`) — tracked via each viewport's own render pass, not merely via the presence of `stack`. Switching to `single_view` and back does *not* re-trigger the overlay; only loading a new `data` value does.
+
+Use `assetLabel` to customize the noun in the copy (`assetLabel="scan"` → `Loading scan… 42%`). If you need the raw numbers for a custom loading UI instead of the built-in overlay, call `useVolumeLoader`/`useLayerStack` yourself — see [Advanced: custom volume loading](#advanced-custom-volume-loading).
 
 ## Viewer state and context
 
@@ -176,6 +212,7 @@ Throws if called outside a `<DicomViewer>`.
 | `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | Active viewport in single view. |
 | `sliceIndices` | `Record<PlaneOrientation, number>` | Current slice index for each 2D plane. |
 | `sliceMaxIndices` | `Record<PlaneOrientation, number>` | Maximum slice index for each plane (set once the stack helper is ready). |
+| `planeStackOrientations` | `Record<PlaneOrientation, number>` | Each plane's real ami.js `camera.stackOrientation` (0/1/2) — which IJK axis that plane's slices step along. Set internally by `Viewport2DContent` once its camera is ready; used by `centerOnPoint` so click-to-center works for any acquisition orientation, not just axial. Not normally read directly. |
 | `isLoading` | `boolean` | Volume is currently being fetched/parsed. |
 | `layers` | `LayerState[]` | Registered overlay layers (from `<DicomLayer>`). |
 | `threshold3D` | `number` | Current 3D transparency threshold value. |
@@ -191,6 +228,8 @@ Throws if called outside a `<DicomViewer>`.
 | `setOrientation` | `(o: OrientationMode) => void` | Set active viewport (matters in `single_view`). |
 | `setSliceIndex` | `(plane: PlaneOrientation, idx: number) => void` | Navigate to a specific slice. Uses a functional Zustand update to avoid races when multiple viewports write concurrently. |
 | `setSliceMaxIndex` | `(plane: PlaneOrientation, maxIdx: number) => void` | Update the max-index for one plane (set internally by `Viewport2DContent`). |
+| `setPlaneStackOrientation` | `(plane: PlaneOrientation, stackOrientation: number) => void` | Records a plane's real ami.js `camera.stackOrientation`. Set internally by `Viewport2DContent`; not normally called directly. |
+| `centerOnPoint` | `(point: THREE.Vector3) => void` | Converts a world (LPS) point to IJK and sets all three plane slice indices to center on it, using each plane's real `planeStackOrientations` mapping. Single source of truth for "center on this point" — used by `'goToPoint'` and safe to call directly for a custom "jump to coordinate" action. |
 | `setThreshold3D` | `(value: number) => void` | Update threshold value without toggling it on/off. |
 | `setThreshold3DEnabled` | `(enabled: boolean) => void` | Toggle threshold on/off without changing the stored value. |
 | `registerLayer` | `(layer: LayerState) => void` | Register a new overlay layer (called by `<DicomLayer>`). |
@@ -198,6 +237,7 @@ Throws if called outside a `<DicomViewer>`.
 | `setLayerOpacity` | `(id, opacity) => void` | Delegates to the layer's own `setOpacity` closure (which handles background-removal LUT curves if needed). |
 | `setLayerTransform` | `(id, transform: LayerTransform) => void` | Apply a rigid translate/rotate/scale to an overlay layer. |
 | `setLayerWindowLevel` | `(id, center, width) => void` | Update window/level for a continuous overlay layer. |
+| `setLayerLut` | `(id, name: string) => void` | Switch a continuous overlay layer's colour LUT preset at runtime. No-op for segmentation layers (they don't expose `setLut`). |
 | `syncLocalizers` | `() => void` | Manually re-synchronise the localizer line equations after a slice change. Called automatically by slice navigation. |
 
 ### Coordinate helpers
@@ -278,10 +318,10 @@ import { DicomLayer } from '@metacell/geppetto/dicom-viewer';
 | `id` | `string` | **required** | Unique identifier used to find this layer in `ctx.layers`. |
 | `data` | `string \| string[]` | **required** | URL(s) of the overlay volume. Accepts the same formats as the base `data` prop. |
 | `renderOrder` | `number` | `1` | Draw order relative to other layers. Lower = drawn first. |
-| `opacity` | `number` | `1` | Initial layer opacity (0–1). |
-| `lut` | `string` | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset). Ignored in segmentation mode. |
-| `windowCenter` | `number` | stack default | Initial window centre for contrast. |
-| `windowWidth` | `number` | stack default | Initial window width for contrast. |
+| `opacity` | `number` | `1` | Layer opacity (0–1). **Reactive** — changing it after mount calls `ctx.setLayerOpacity` automatically, no need to call the action yourself. |
+| `lut` | `string` | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset). Ignored in segmentation mode. **Reactive** — changing it after mount calls `ctx.setLayerLut` automatically. |
+| `windowCenter` | `number` | stack default | Window centre for contrast. **Reactive** together with `windowWidth` — changing either after mount calls `ctx.setLayerWindowLevel` automatically (both must be defined). |
+| `windowWidth` | `number` | stack default | Window width for contrast. See `windowCenter`. |
 | `interpolation` | `0 \| 1` | `1` | `0` = nearest-neighbour (for label maps), `1` = trilinear (default). |
 | `segmentation` | `object` | — | Switch to label-map mode. See below. |
 | `backgroundRemoval` | `boolean \| { threshold?: number }` | — | Enable air transparency for CT overlays. Voxels below the threshold (default: `0.2` of normalised intensity) are kept transparent using an opacity LUT curve. Setting `opacity` via `setLayerOpacity` rebuilds the curve automatically. |
@@ -309,11 +349,26 @@ Two things follow from using `segmentation`:
 
 ### Layer runtime control
 
-After mount, any layer registered in the context can be controlled via actions:
+There are two ways to adjust a mounted layer — pick whichever fits how your app manages state:
+
+**1. Declaratively, via `<DicomLayer>`'s own props.** `opacity`, `lut`, `windowCenter`, and `windowWidth` are reactive: changing them (e.g. from a slider bound to component state) re-applies automatically, no manual action call needed.
+
+```tsx
+const [opacity, setOpacity] = useState(0.7);
+
+<DicomLayer id="activation" data="/fmri.nii.gz" lut="hot_and_cold" opacity={opacity} />
+<input type="range" min={0} max={1} step={0.01} value={opacity}
+       onChange={e => setOpacity(Number(e.target.value))} />
+```
+
+**2. Imperatively, via context actions** — for state that doesn't naturally live as a React prop (e.g. a toolbar button, or code outside the component that rendered the `<DicomLayer>`):
 
 ```ts
 // Adjust opacity
 ctx.setLayerOpacity('activation', 0.5);
+
+// Switch the colour LUT preset
+ctx.setLayerLut('activation', 'spectrum');
 
 // Adjust contrast
 ctx.setLayerWindowLevel('activation', 400, 800);
@@ -325,6 +380,8 @@ ctx.setLayerTransform('activation', {
   scale: [1, 1, 1],
 });
 ```
+
+`renderOrder`, `data`, `segmentation`, `interpolation`, and `backgroundRemoval` are creation-time only — changing them after mount has no effect until the layer unmounts and remounts (e.g. via a `key` change), since they determine how the GPU material itself is built.
 
 GPU resources (ShaderMaterial, DataTextures) are created when both the base stack and the overlay stack are ready, and disposed automatically when `<DicomLayer>` unmounts.
 
@@ -351,7 +408,7 @@ import { DicomOverlay } from '@metacell/geppetto/dicom-viewer';
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `coordinateSystem` | `'world' \| 'voxel'` | `'world'` | Coordinate space for child positions. `'world'` = LPS millimetres. `'voxel'` = IJK voxel indices — the `ijk2LPS` matrix is applied automatically as a group transform. |
-| `viewports` | `OrientationMode[]` | all four | Restrict the overlay to specific viewports, e.g. `['axial', '3d']`. |
+| `viewports` | `OrientationMode[]` | all four | Restrict the overlay to specific viewports, e.g. `['axial', '3d']`. Exclusion is exact — an overlay restricted to 2D planes (e.g. `['axial']`) will not also appear in the 3D view, even though the 2D scenes are nested inside the 3D scene for slice-plane rendering. |
 | `children` | `ReactNode` | **required** | Any R3F-compatible JSX (meshes, lights, helpers, etc.). |
 
 ### Voxel-space positioning example
@@ -412,7 +469,19 @@ A toolbar button with access to both the DICOM domain context and the underlying
 | `disabled` | `boolean` | Dims the button and suppresses click. |
 | `style` | `CSSProperties` | Inline style overrides. |
 
-`fiber` is a plain R3F `RootState` (`CanvasRootState`, exposed by `./canvas-context`'s own `useFiber()`) — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. It is *not* the same store as Canvas3D's `Canvas3DRootState`: dicom-viewer keeps its own independent registry since its `controls` are ami.js's `TrackballControl`/`TrackballOrthoControl`, not the `CameraControls` that Canvas3D's toolbar groups expect. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
+`fiber` is a plain R3F `RootState` (type `CanvasRootState`, importable from `@metacell/geppetto/dicom-viewer`) — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. It is *not* the same store as Canvas3D's `Canvas3DRootState`: dicom-viewer keeps its own independent registry (see [Fiber store integration](#fiber-store-integration)) since its `controls` are ami.js's `TrackballControl`/`TrackballOrthoControl`, not the `CameraControls` that Canvas3D's toolbar groups expect. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
+
+To build a toolbar button from scratch instead of using `<DicomViewerButton>`, use `useDicomCanvasId`/`useDicomFiber`/`DicomCanvasIdContext` — dicom-viewer's own exports of this pattern, aliased on export to avoid a name collision with `3d-canvas`'s identically-shaped `useCanvasId`/`useFiber`/`CanvasIdContext` in `@metacell/geppetto`'s flattened root barrel:
+
+```tsx
+import { useDicomCanvasId, useDicomFiber } from '@metacell/geppetto/dicom-viewer';
+
+function MyCustomButton() {
+  const canvasId = useDicomCanvasId();
+  const fiber = useDicomFiber(canvasId ?? '');
+  // ...
+}
+```
 
 ### `Toolbar3DSeparator`
 
@@ -487,16 +556,23 @@ Used internally by `<DicomViewer>` to load the base stack. Exported for cases wh
 ```ts
 import { useVolumeLoader } from '@metacell/geppetto/dicom-viewer';
 
-const { stack, loading, error } = useVolumeLoader('/brain.nii.gz');
+const { stack, loading, error, downloadProgress } = useVolumeLoader('/brain.nii.gz');
 ```
 
 - Calls `stack.prepare()` and `loader.free()` after loading to release raw frame buffers.
 - Returns `null` for `stack` while loading or on error.
 - Re-triggers when the URL changes.
+- `downloadProgress` is a live `DownloadProgress | null` (`{ loaded: number; total: number }`, `total: 0` means the server didn't report a `Content-Length`), updated from ami.js's `VolumeLoader`'s `fetch-progress` event during the fetch and cleared once loading finishes or errors. Use the exported `pctOf(downloadProgress)` helper to turn it into a `0–100` percentage, or `null` while size is unknown:
+
+  ```ts
+  import { pctOf } from '@metacell/geppetto/dicom-viewer';
+
+  const pct = pctOf(downloadProgress); // number | null
+  ```
 
 ### `useLayerStack`
 
-Like `useVolumeLoader` but keeps `_rawData` intact (no `loader.free()`) because `createLayerMaterial` needs the raw buffer to build GPU `DataTexture`s. Used internally by `<DicomLayer>`.
+Like `useVolumeLoader` but keeps `_rawData` intact (no `loader.free()`) because `createLayerMaterial` needs the raw buffer to build GPU `DataTexture`s. Used internally by `<DicomLayer>`. Also exposes `downloadProgress`, with the same shape and semantics as `useVolumeLoader`.
 
 ### `createLayerMaterial`
 
@@ -559,7 +635,26 @@ interface ViewportHandle {
 type ClickAction =
   | 'goToPoint'
   | 'expandView'
-  | ((ctx: DicomViewerContext, point: THREE.Vector3, event: MouseEvent) => void);
+  | ((
+      ctx: DicomViewerContext,
+      point: THREE.Vector3,
+      event: MouseEvent,
+      planeOrientation: PlaneOrientation | '3d',
+    ) => void);
+
+type HoverAction = (
+  ctx: DicomViewerContext,
+  point: THREE.Vector3 | null,
+  planeOrientation: PlaneOrientation | '3d',
+) => void;
+
+interface DownloadProgress {
+  loaded: number;
+  total: number; // 0 = server did not report a size
+}
+
+// A plain R3F RootState — dicom-viewer's own type, independent from Canvas3D's Canvas3DRootState
+type CanvasRootState = import('@react-three/fiber').RootState;
 ```
 
 All types are re-exported from the package index and can be imported as:
@@ -572,6 +667,9 @@ import type {
   LayerTransform,
   LayerState,
   ClickAction,
+  HoverAction,
+  DownloadProgress,
+  CanvasRootState,
   DicomViewerContextType, // DicomViewerContext re-exported under this name to avoid collision with the React context object
   ViewportHandle,
 } from '@metacell/geppetto/dicom-viewer';
