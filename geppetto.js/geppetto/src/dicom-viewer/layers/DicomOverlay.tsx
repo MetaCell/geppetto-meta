@@ -44,15 +44,22 @@ export const DicomOverlay: React.FC<DicomOverlayProps> = ({
   }, []);
 
   const content = useMemo(() => {
-    if (coordinateSystem === "voxel" && ctx.stack) {
-      // ijk2LPS is the stack's IJK-to-world transform (column-major THREE.Matrix4)
-      return (
+    const inner =
+      coordinateSystem === "voxel" && ctx.stack ? (
+        // ijk2LPS is the stack's IJK-to-world transform (column-major THREE.Matrix4)
         <group matrix={ctx.stack.ijk2LPS} matrixAutoUpdate={false}>
           {children}
         </group>
+      ) : (
+        <>{children}</>
       );
-    }
-    return <>{children}</>;
+    /*
+     * Tagged so Viewport3DContent can find and hide these portal roots for its
+     * render pass — the 2D scenes are nested into the 3D scene for slice-plane
+     * rendering, which would otherwise also drag in overlays whose `viewports`
+     * prop excludes "3d".
+     */
+    return <group userData={{ isDicomOverlayPortal: true }}>{inner}</group>;
   }, [coordinateSystem, children, ctx.stack]);
 
   return (

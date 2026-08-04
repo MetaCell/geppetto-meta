@@ -167,7 +167,32 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
       });
     }
 
+    /*
+     * The axial/sagittal/coronal scenes are nested inside this 3D scene so
+     * their slice planes render here too, but that also drags in anything
+     * DicomOverlay portaled into those 2D scenes, even overlays whose
+     * `viewports` prop excludes "3d". Hide those nested copies for this
+     * render only: an overlay that DOES want 3D inclusion already has its
+     * own dedicated portal directly into this scene (untouched here, since
+     * it isn't nested inside one of the three 2D scenes below).
+     */
+    const hiddenOverlayRoots: THREE.Object3D[] = [];
+    [ctx.viewportScenes.axial, ctx.viewportScenes.sagittal, ctx.viewportScenes.coronal].forEach(
+      scene2d => {
+        scene2d?.children.forEach(child => {
+          if (child.userData.isDicomOverlayPortal && child.visible) {
+            child.visible = false;
+            hiddenOverlayRoots.push(child);
+          }
+        });
+      },
+    );
+
     gl.render(handle.scene, handle.camera);
+
+    hiddenOverlayRoots.forEach(obj => {
+      obj.visible = true;
+    });
 
     patched.forEach(({ mat, savedLower }) => {
       mat.uniforms.uLowerUpperThreshold.value[0] = savedLower;
