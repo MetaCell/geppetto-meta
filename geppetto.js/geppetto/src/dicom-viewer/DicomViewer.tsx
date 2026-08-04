@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { DicomViewerContext } from "./DicomViewerContext";
-import { CanvasIdContext } from "../3d-canvas/toolbar/Toolbar3D";
+import { CanvasIdContext } from "./canvas-context";
 import { useDicomViewerStore, useDicomViewer } from "./hooks/useDicomViewerStore";
 import { pctOf, useVolumeLoader } from "./hooks/useVolumeLoader";
 import { useLocalizerSync, initLocalizerCrossRefs } from "./hooks/useLocalizerSync";

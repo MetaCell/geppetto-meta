@@ -1,8 +1,7 @@
 import React from "react";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { DicomViewerContext } from "../types";
-import { useCanvasId } from "../../3d-canvas/toolbar/Toolbar3D";
-import { useFiber, Canvas3DRootState } from "../../3d-canvas/Canvas3D";
+import { useCanvasId, useFiber, CanvasRootState } from "../canvas-context";
 
 const buttonBase: React.CSSProperties = {
   padding: "0.75rem",
@@ -30,7 +29,7 @@ interface DicomViewerButtonProps {
    * Receives both the DICOM domain context and the underlying R3F fiber state.
    * `fiber` is null only if the canvas has not mounted yet — guard before use.
    */
-  onClick: (ctx: DicomViewerContext, fiber: Canvas3DRootState | null) => void;
+  onClick: (ctx: DicomViewerContext, fiber: CanvasRootState | null) => void;
   active?: boolean;
   style?: React.CSSProperties;
   disabled?: boolean;

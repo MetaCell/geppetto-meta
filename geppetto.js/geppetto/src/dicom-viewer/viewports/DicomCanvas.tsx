@@ -4,7 +4,7 @@ import { OrientationMode, PlaneOrientation, ViewMode, ClickAction, HoverAction }
 import { Viewport2DContent } from "./Viewport2DContent";
 import { Viewport3DContent } from "./Viewport3DContent";
 import { useDicomViewerStore } from "../hooks/useDicomViewerStore";
-import { useFiberStore, Canvas3DRootState } from "../../3d-canvas/Canvas3D";
+import { useFiberStore } from "../canvas-context";
 
 interface DicomCanvasProps {
   viewerId: string;
@@ -112,16 +112,17 @@ const SLICE_COLORS = {
 };
 
 /*
- * Registers this DicomViewer's R3F canvas in the shared useFiberStore so that
- * Toolbar3DButton (and any component using useFiber) can look it up by viewerId.
- * Mirrors Canvas3D's FiberBridge — must live inside <Canvas> to call useThree().
+ * Registers this DicomViewer's R3F canvas in dicom-viewer's own useFiberStore so
+ * that DicomViewerButton (and any component using useFiber) can look it up by
+ * viewerId. Mirrors Canvas3D's FiberBridge conceptually, but uses an independent
+ * store — must live inside <Canvas> to call useThree().
  */
 function FiberRegistrar({ viewerId }: { viewerId: string }) {
   const state = useThree();
   const setRootState = useFiberStore(s => s.setRootState);
   const clearRootState = useFiberStore(s => s.clearRootState);
   useEffect(() => {
-    setRootState(viewerId, state as unknown as Canvas3DRootState);
+    setRootState(viewerId, state);
     return () => clearRootState(viewerId);
   }, [viewerId, state, setRootState, clearRootState]);
   return null;

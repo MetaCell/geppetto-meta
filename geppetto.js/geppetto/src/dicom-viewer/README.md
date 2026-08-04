@@ -407,12 +407,12 @@ A toolbar button with access to both the DICOM domain context and the underlying
 |---|---|---|
 | `icon` | `ReactNode` | Icon element. |
 | `tooltip` | `string` | Native `title` attribute. |
-| `onClick` | `(ctx: DicomViewerContext, fiber: Canvas3DRootState \| null) => void` | Called with both the DICOM context and the R3F root state. `fiber` is `null` only before the canvas mounts. |
+| `onClick` | `(ctx: DicomViewerContext, fiber: CanvasRootState \| null) => void` | Called with both the DICOM context and the R3F root state. `fiber` is `null` only before the canvas mounts. |
 | `active` | `boolean` | Highlighted (blue) background when `true`. |
 | `disabled` | `boolean` | Dims the button and suppresses click. |
 | `style` | `CSSProperties` | Inline style overrides. |
 
-`fiber` is the same `Canvas3DRootState` exposed by `useFiber()` in Canvas3D — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
+`fiber` is a plain R3F `RootState` (`CanvasRootState`, exposed by `./canvas-context`'s own `useFiber()`) — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. It is *not* the same store as Canvas3D's `Canvas3DRootState`: dicom-viewer keeps its own independent registry since its `controls` are ami.js's `TrackballControl`/`TrackballOrthoControl`, not the `CameraControls` that Canvas3D's toolbar groups expect. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
 
 ### `Toolbar3DSeparator`
 
