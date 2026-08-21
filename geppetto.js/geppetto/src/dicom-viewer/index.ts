@@ -32,7 +32,11 @@ export {
 export { useDicomViewer, useDicomViewerStore } from "./hooks/useDicomViewerStore";
 export { useVolumeLoader, pctOf } from "./hooks/useVolumeLoader";
 export { useLayerStack } from "./hooks/useLayerStack";
-export { createLayerMaterial } from "./layers/createLayerMaterial";
+export { createLayerMaterial, LUT_PRESETS } from "./layers/createLayerMaterial";
+
+// Geometry helpers (for building custom slice-aware overlays)
+export { soToCol, makePlaneFilter } from "./utils";
+export type { PlaneFilter } from "./utils";
 
 // Types
 export type {

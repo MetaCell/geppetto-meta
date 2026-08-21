@@ -19,6 +19,23 @@ export interface LayerMaterialOpts {
 }
 
 /*
+ * Valid `lut` names — the keys of ami.js's LutHelper.presetLuts(), spelled out here
+ * so consumers can build a LUT picker without reaching into ami.js directly.
+ */
+export const LUT_PRESETS = [
+  "default",
+  "spectrum",
+  "hot_and_cold",
+  "gold",
+  "red",
+  "green",
+  "blue",
+  "walking_dead",
+  "random",
+  "muscle_bone",
+] as const;
+
+/*
  * Builds the air-alpha opacity LUT curve that makes background voxels
  * transparent while keeping tissue fully opaque at any normal opacity value.
  * Called on first creation and again whenever opacity changes for continuous layers.
