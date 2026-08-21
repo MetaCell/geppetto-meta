@@ -41,8 +41,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   onRightClick,
   onHover,
 }) => {
-  // size: canvas container dimensions — changes on resize, used to retrigger fitCamera
-  const { size, gl, invalidate } = useThree();
+  const { gl, invalidate } = useThree();
   const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef);
   const ctx = useDicomViewerContext();
   const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
@@ -105,15 +104,30 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     };
   }, [handle, domRef.current, invalidate]);
 
-  // Recalculate camera frustum when the viewport is resized.
+  /*
+   * Recalculate camera frustum whenever this pane's own on-screen size changes. A
+   * ResizeObserver on the tracking div (rather than reacting to R3F's canvas-level
+   * `size`) is required because a pane can start out hidden (0x0 — e.g. single_view's
+   * inactive panes) and later become visible from a pure CSS layout change (switching
+   * view mode) with no window/canvas resize involved — `size` never changes in that
+   * case, so the camera would otherwise be stuck with the degenerate zero-size frustum
+   * it was created with while hidden.
+   */
   useEffect(() => {
-    if (!handle || !domRef.current) return;
-    const rect = domRef.current.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0) {
-      handle.fitCamera({ width: rect.width, height: rect.height });
-      invalidate();
-    }
-  }, [size, handle]);
+    const el = domRef.current;
+    if (!handle || !el) return undefined;
+    const applyFit = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        handle.fitCamera({ width: rect.width, height: rect.height });
+        invalidate();
+      }
+    };
+    applyFit();
+    const observer = new ResizeObserver(applyFit);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [handle, domRef.current]);
 
   // Sync slice index from Zustand store → StackHelper, then refresh overlay meshes
   const sliceIndex = ctx.sliceIndices[planeOrientation];
