@@ -172,11 +172,14 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
    * ---------------------------------------------------------------------------
    */
   const vpHandlesRef = useRef<(ViewportHandle | undefined)[]>([]);
+  const onRenderFiredRef = useRef(false);
   const handleViewportReady = useCallback(
     (vpId: number, scene: any, camera: any) => {
       vpHandlesRef.current[vpId] = { id: vpId, scene, camera };
+      if (onRenderFiredRef.current) return;
       const readyCount = vpHandlesRef.current.filter(Boolean).length;
       if (readyCount === 4) {
+        onRenderFiredRef.current = true;
         onRender?.(vpHandlesRef.current as ViewportHandle[]);
       }
     },
@@ -198,22 +201,28 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
   const expectedViewportIdsRef = useRef<Set<number>>(new Set([0, 1, 2, 3]));
   const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
 
-  // A new volume starts a new "first paint" cycle
+  // A new volume starts a new "first paint" cycle, and needs its own single onRender call
   useEffect(() => {
     renderedViewportsRef.current.clear();
     setHasRenderedOnce(false);
+    vpHandlesRef.current = [];
+    onRenderFiredRef.current = false;
   }, [data]);
 
-  // single_view only ever renders the active pane, so that's all we should wait on
+  /*
+   * single_view only ever renders the active pane, so that's all we should wait on.
+   * Unconditional: switching viewMode/orientation can newly expect a pane that hasn't
+   * painted yet (e.g. single_view -> quad_view exposes three panes that were never
+   * rendered while hidden), and hasRenderedOnce must go back to false in that case —
+   * not just forward to true — or the loading overlay stays incorrectly hidden.
+   */
   useEffect(() => {
     const expected =
       viewer && viewer.viewMode === "single_view"
         ? new Set([VP_ID_MAP[viewer.orientation]])
         : new Set([0, 1, 2, 3]);
     expectedViewportIdsRef.current = expected;
-    if ([...expected].every(vpId => renderedViewportsRef.current.has(vpId))) {
-      setHasRenderedOnce(true);
-    }
+    setHasRenderedOnce([...expected].every(vpId => renderedViewportsRef.current.has(vpId)));
   }, [viewer?.viewMode, viewer?.orientation]);
 
   const handleViewportFirstFrame = useCallback((vpId: number) => {
