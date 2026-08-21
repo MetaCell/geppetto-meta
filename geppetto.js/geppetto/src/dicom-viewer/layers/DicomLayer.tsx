@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { useLayerStack } from "../hooks/useLayerStack";
+import { DownloadProgress } from "../hooks/useVolumeLoader";
 import { createLayerMaterial, LayerMaterialOpts } from "./createLayerMaterial";
 import { LayerState } from "../types";
 
@@ -11,6 +12,8 @@ export interface DicomLayerProps extends LayerMaterialOpts {
   data: string | string[] | any;
   // Render order relative to other layers; lower = drawn first (default: 1)
   renderOrder?: number;
+  // Reports this layer's own fetch progress — same shape/semantics as useVolumeLoader's
+  onProgress?: (progress: DownloadProgress | null) => void;
 }
 
 /*
@@ -32,6 +35,7 @@ export function DicomLayer({
   id,
   data,
   renderOrder = 1,
+  onProgress,
   opacity,
   lut,
   windowCenter,
@@ -39,8 +43,15 @@ export function DicomLayer({
   ...restMaterialOpts
 }: DicomLayerProps): null {
   const ctx = useDicomViewerContext();
-  const { stack: layerStack } = useLayerStack(data);
+  const { stack: layerStack, downloadProgress } = useLayerStack(data);
   const layerRef = useRef<LayerState | null>(null);
+  // Ref (not a dep) so a new onProgress identity every render doesn't refire the effect below
+  const onProgressRef = useRef(onProgress);
+  onProgressRef.current = onProgress;
+
+  useEffect(() => {
+    onProgressRef.current?.(downloadProgress);
+  }, [downloadProgress]);
 
   // React to opacity changes after mount — creation-time value only seeds the initial uniform.
   useEffect(() => {
