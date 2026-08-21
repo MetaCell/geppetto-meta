@@ -129,6 +129,17 @@ export function useViewport2D(
       // Create / recreate meshes for each layer (geometry may have changed on slice nav)
       layers.forEach(layer => {
         const old = overlayMeshesRef.current.get(layer.id);
+        /*
+         * Pure opacity/window-level/LUT edits leave both the geometry (unchanged slice)
+         * and material (same object, mutated uniforms in place) untouched — skip tearing
+         * down and recreating the mesh in that case. Without this, every store-level layer
+         * edit (dragging a slider fires one update per pointer-move) rebuilt the mesh
+         * purely to pick up a value that was already live via the shared material/uniforms
+         * reference.
+         */
+        if (old && old.geometry === stackHelper.slice.geometry && old.material === layer.material) {
+          return;
+        }
         if (old) scene.remove(old);
         const mesh = new THREE.Mesh(stackHelper.slice.geometry, layer.material);
         mesh.applyMatrix4(baseStack._ijk2LPS);

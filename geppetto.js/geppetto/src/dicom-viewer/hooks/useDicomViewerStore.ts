@@ -131,34 +131,38 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
          * These mutate the layer's GPU uniforms imperatively (setOpacity/setTransform/
          * setWindowLevel close over the material's uniforms directly — see
          * createLayerMaterial.ts), so the viewer record itself never changes shape.
-         * patch({}) bumps the record's reference identity anyway, purely so
-         * StoreInvalidator (DicomCanvas.tsx) sees a change and invalidates —
-         * otherwise these calls are silent no-ops under frameloop="demand" until
-         * some unrelated invalidate happens to fire.
+         * Bumping both the record's reference AND the `layers` array's own reference
+         * (rather than patch({}), which only bumps the record) serves two purposes:
+         * the record bump is what makes StoreInvalidator (DicomCanvas.tsx) see a
+         * change and invalidate — otherwise these calls are silent no-ops under
+         * frameloop="demand" until some unrelated invalidate happens to fire — and
+         * the array bump keeps `ctx.layers` itself a fresh reference on every edit,
+         * so any consumer that keys off `ctx.layers` by reference (not just by the
+         * mutated uniforms inside it) reliably re-evaluates too.
          */
         setLayerOpacity: (layerId, opacity) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setOpacity(opacity);
-          patch({});
+          patch({ layers: [...get().viewers[id].layers] });
         },
         setLayerTransform: (layerId, transform: LayerTransform) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setTransform(transform);
-          patch({});
+          patch({ layers: [...get().viewers[id].layers] });
         },
         setLayerWindowLevel: (layerId, center, width) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setWindowLevel?.(center, width);
-          patch({});
+          patch({ layers: [...get().viewers[id].layers] });
         },
         setLayerLut: (layerId, name) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setLut?.(name);
-          patch({});
+          patch({ layers: [...get().viewers[id].layers] });
         },
       };
 
