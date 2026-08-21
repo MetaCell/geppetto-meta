@@ -1,17 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { VolumeLoader } from "ami.js";
 
-// Handles both a plain URL string/array and a Geppetto Instance model object.
-export function resolveDataUrls(data: any): string[] | null {
+// Normalises the `data` prop to a URL array — a plain string becomes a single-element array.
+export function resolveDataUrls(data: string | string[] | null | undefined): string[] | null {
   if (!data) return null;
-  // Plain string or array — pass through
   if (typeof data === "string") return [data];
   if (Array.isArray(data)) return data;
-  // Geppetto Instance model
-  if (typeof data.getMetaType === "function" && data.getMetaType() === "Instance") {
-    const value = data.getVariable().getInitialValues()[0].value;
-    if (value.format === "NIFTI") return Array.isArray(value.data) ? value.data : [value.data];
-  }
   return null;
 }
 
@@ -37,7 +31,7 @@ interface UseVolumeLoaderResult {
  * Loads a DICOM/NIFTI/NRRD volume and returns the prepared StackModel.
  * Calls loader.free() after prepare() to release raw frame buffers.
  */
-export function useVolumeLoader(data: string | string[] | any | null): UseVolumeLoaderResult {
+export function useVolumeLoader(data: string | string[] | null): UseVolumeLoaderResult {
   const [stack, setStack] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

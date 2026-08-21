@@ -15,7 +15,7 @@ interface UseLayerStackResult {
  * the DataTextures. Callers must call stack.prepare() and stack.pack() before
  * passing the stack to createLayerMaterial.
  */
-export function useLayerStack(data: string | string[] | any | null): UseLayerStackResult {
+export function useLayerStack(data: string | string[] | null): UseLayerStackResult {
   const [stack, setStack] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);

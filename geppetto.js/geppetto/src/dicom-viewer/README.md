@@ -115,7 +115,7 @@ This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `id` | `string` | **required** | Unique identifier. Used as the key in `useDicomViewerStore` and `dicom-viewer`'s `useFiberStore`. Two viewers on the same page must have different ids. |
-| `data` | `string \| string[]` | **required** | URL(s) to load. Single string for NIfTI/NRRD; array of strings for multi-file DICOM series. Also accepts a Geppetto `Instance` model object (the NIfTI URL is extracted automatically). |
+| `data` | `string \| string[]` | **required** | URL(s) to load. Single string for NIfTI/NRRD; array of strings for multi-file DICOM series. |
 | `assetLabel` | `string` | `'image'` | Noun used in the built-in loading overlay's copy, e.g. `Loading scan… 42%`. Purely cosmetic. |
 | `mode` | `'quad_view' \| 'single_view'` | `'quad_view'` | Initial view layout. |
 | `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | `'3d'` | Active viewport in `single_view`. In `quad_view` this determines which pane is highlighted. |

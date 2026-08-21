@@ -8,8 +8,8 @@ import { LayerState } from "../types";
 export interface DicomLayerProps extends LayerMaterialOpts {
   // Unique id used to identify this layer in the store (registerLayer/unregisterLayer)
   id: string;
-  // DICOM URL(s) or Geppetto instance for the overlay volume
-  data: string | string[] | any;
+  // DICOM URL(s) for the overlay volume
+  data: string | string[];
   // Render order relative to other layers; lower = drawn first (default: 1)
   renderOrder?: number;
   // Reports this layer's own fetch progress — same shape/semantics as useVolumeLoader's
