@@ -213,7 +213,7 @@ Pre-assembled button groups are available from `toolbar/groups/`. All groups mus
 ### `Navigation3D` — pan controls
 
 ```tsx
-import { Navigation3D } from '@metacell/geppetto/3d-canvas/toolbar/groups';
+import { Navigation3D } from '@metacell/geppetto/3d-canvas';
 
 <Navigation3D panOptions={{ distance: 0.5, useTransition: true }} />
 ```
@@ -230,7 +230,7 @@ Individual pan buttons (`PanLeft3D`, `PanRight3D`) are also exported for use wit
 ### `Zoom3DButtons` — FOV zoom
 
 ```tsx
-import { Zoom3DButtons } from '@metacell/geppetto/3d-canvas/toolbar/groups';
+import { Zoom3DButtons } from '@metacell/geppetto/3d-canvas';
 
 <Zoom3DButtons />
 ```
@@ -240,7 +240,7 @@ Two buttons: Zoom In and Zoom Out. Adjusts `camera.fov` on `PerspectiveCamera` (
 ### `EnhancedZoom3DButtons` — FOV zoom + dolly
 
 ```tsx
-import { EnhancedZoom3DButtons } from '@metacell/geppetto/3d-canvas/toolbar/groups';
+import { EnhancedZoom3DButtons } from '@metacell/geppetto/3d-canvas';
 
 <EnhancedZoom3DButtons zoomOptions={{ fovStep: 5, minFov: 10, maxFov: 120, dollyStep: 0.5 }} />
 ```
@@ -257,7 +257,7 @@ Four buttons: FOV Zoom In, FOV Zoom Out, Dolly In (moves camera closer via `cont
 ### `Animation3DControls` — rotation and auto-rotation
 
 ```tsx
-import { Animation3DControls } from '@metacell/geppetto/3d-canvas/toolbar/groups';
+import { Animation3DControls } from '@metacell/geppetto/3d-canvas';
 
 <Animation3DControls rotationOptions={{ rotationSpeed: 0.5, manualStep: 0.2, cameraStep: 0.1 }} />
 ```
@@ -275,7 +275,7 @@ Seven buttons: Play (auto-rotate), Pause, Stop (resets camera), Rotate Left, Rot
 ```tsx
 import { Canvas3D } from '@metacell/geppetto/3d-canvas/Canvas3D';
 import { Toolbar3D, Toolbar3DButton, Toolbar3DSeparator } from '@metacell/geppetto/3d-canvas/toolbar/Toolbar3D';
-import { Navigation3D, EnhancedZoom3DButtons, Animation3DControls } from '@metacell/geppetto/3d-canvas/toolbar/groups';
+import { Navigation3D, EnhancedZoom3DButtons, Animation3DControls } from '@metacell/geppetto/3d-canvas';
 
 function Viewer() {
   return (

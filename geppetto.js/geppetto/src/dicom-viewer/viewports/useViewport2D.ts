@@ -82,7 +82,15 @@ export function useViewport2D(
     // Now safe to set canvas (triggers _updateCanvas internally).
     camera.canvas = { width: domEl.clientWidth, height: domEl.clientHeight };
     camera.update();
-    camera.fitBox(2, 1);
+    /*
+     * A pane can start out hidden (0x0) — e.g. single_view mode's inactive panes —
+     * in which case fitBox's internal _computeZoom bails out (dimension <= 0) and
+     * logs AMI's "Invalid dimension provided." warning for no benefit. Viewport2DContent's
+     * resize effect already re-fits (via fitCamera below) once this pane gets a real size.
+     */
+    if (domEl.clientWidth > 0 && domEl.clientHeight > 0) {
+      camera.fitBox(2, 1);
+    }
 
     /*
      * Prevent React Three Fiber's View.prepareSkissor from overwriting AMI's

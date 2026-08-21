@@ -12,7 +12,36 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./*": "./dist/*"
+    "./3d-canvas": {
+      "import": "./dist/3d-canvas/index.js",
+      "types": "./dist/3d-canvas/index.d.ts"
+    },
+    "./3d-canvas/Canvas3D": {
+      "import": "./dist/3d-canvas/Canvas3D.js",
+      "types": "./dist/3d-canvas/Canvas3D.d.ts"
+    },
+    "./3d-canvas/toolbar/Toolbar3D": {
+      "import": "./dist/3d-canvas/toolbar/Toolbar3D.js",
+      "types": "./dist/3d-canvas/toolbar/Toolbar3D.d.ts"
+    },
+    "./dicom-viewer": {
+      "import": "./dist/dicom-viewer/index.js",
+      "types": "./dist/dicom-viewer/index.d.ts"
+    },
+    "./dicom-viewer/DicomViewer": {
+      "import": "./dist/dicom-viewer/DicomViewer.js",
+      "types": "./dist/dicom-viewer/DicomViewer.d.ts"
+    },
+    "./dicom-viewer/preconf/DicomViewer": {
+      "import": "./dist/dicom-viewer/preconf/DicomViewer.js",
+      "types": "./dist/dicom-viewer/preconf/DicomViewer.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/layout/index.js",
+      "types": "./dist/layout/index.d.ts"
+    },
+    "./layout/styles/*.css": "./dist/layout/styles/*.css",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"
@@ -27,7 +56,14 @@
     "react"
   ],
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
+    "prepublishOnly": "yarn build",
     "build": "vite build",
     "build:clean": "rm -rf dist",
     "build:dev": "vite build --mode development",
@@ -73,8 +109,8 @@
     "@react-three/fiber": "^9.0.0",
     "ami.js": ">=0.33.0",
     "flexlayout-react": "^0.8.17",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": ">=19.0.0 <19.3.0",
+    "react-dom": ">=19.0.0 <19.3.0",
     "three": "^0.180.0"
   },
   "resolutions": {
