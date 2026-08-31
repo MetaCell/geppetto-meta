@@ -6,12 +6,6 @@ import { DicomViewerButton } from "../toolbar/DicomViewerButton";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { DicomViewerProps, DicomViewerContext, OrientationMode } from "../types";
 
-/*
- * ---------------------------------------------------------------------------
- * Standard toolbar button definitions
- * ---------------------------------------------------------------------------
- */
-
 const NEXT_ORIENTATION: Record<OrientationMode, OrientationMode> = {
   "3d": "coronal",
   coronal: "sagittal",
@@ -24,14 +18,6 @@ const CycleIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>⇄
 // Filled diamond — visually suggests "threshold / cutoff"
 const ThreshIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>◈</span>;
 
-/*
- * Built-in standard toolbar — rendered inside <DicomViewer> so it has access
- * to the DicomViewerContext.  Reads context directly so button active-states
- * are kept in sync with store state (e.g. threshold3D toggle).
- * Pass `extra` to append additional buttons at the end of the toolbar —
- * useful for application-specific actions that need to live alongside the
- * built-in buttons without replacing the whole toolbar.
- */
 function StandardToolbar({ viewerId, extra }: { viewerId: string; extra?: React.ReactNode }) {
   const ctx = useDicomViewerContext();
   return (
@@ -74,25 +60,10 @@ function StandardToolbar({ viewerId, extra }: { viewerId: string; extra?: React.
   );
 }
 
-/*
- * ---------------------------------------------------------------------------
- * Convenience wrapper — adds default toolbar + sensible click defaults.
- * Mirrors the old preconf/DicomViewer.js behaviour while using the new API.
- * ---------------------------------------------------------------------------
- */
-
 interface PreconfDicomViewerProps extends DicomViewerProps {
   // Set to false to suppress the built-in toolbar
   showToolbar?: boolean;
-  /*
-   * Extra buttons / nodes appended inside the built-in toolbar after the last separator.
-   * Use DicomViewerButton / Toolbar3DSeparator for consistent styling.
-   */
   toolbarExtra?: React.ReactNode;
-  /*
-   * Extra DOM elements appended to the overlay alongside the built-in toolbar.
-   * Use this for custom HUD elements, not for R3F scene content (use children for that).
-   */
   extraOverlay?: React.ReactNode;
 }
 
@@ -113,11 +84,6 @@ export const DicomViewer: React.FC<PreconfDicomViewerProps> = ({
       onClick={onClick}
       onCtrlClick={onCtrlClick}
       threshold3D={threshold3D}
-      /*
-       * Toolbar + any extra overlay elements are DOM content — pass via overlay
-       * so they render outside the WebGL Canvas (children go inside the R3F
-       * Canvas as scene content).
-       */
       overlay={
         showToolbar || extraOverlay ? (
           <>

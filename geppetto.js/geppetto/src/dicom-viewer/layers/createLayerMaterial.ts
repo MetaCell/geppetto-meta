@@ -18,10 +18,6 @@ export interface LayerMaterialOpts {
   backgroundRemoval?: boolean | { threshold?: number };
 }
 
-/*
- * Valid `lut` names — the keys of ami.js's LutHelper.presetLuts(), spelled out here
- * so consumers can build a LUT picker without reaching into ami.js directly.
- */
 export const LUT_PRESETS = [
   "default",
   "spectrum",
@@ -35,11 +31,6 @@ export const LUT_PRESETS = [
   "muscle_bone",
 ] as const;
 
-/*
- * Builds the air-alpha opacity LUT curve that makes background voxels
- * transparent while keeping tissue fully opaque at any normal opacity value.
- * Called on first creation and again whenever opacity changes for continuous layers.
- */
 export function buildAirAlphaLut(
   lut: any, // LutHelper
   opacity: number,
@@ -59,25 +50,12 @@ export function buildAirAlphaLut(
   lut.lutO = "bg-remove";
 }
 
-/*
- * ami.js's LutHelper.texture getter allocates a brand-new THREE.Texture (wrapping the
- * same backing canvas) on every single access — it's never cached. setOpacity/setLut
- * reassign it on every slider tick / LUT change, so the texture this REPLACES must be
- * disposed here, or it leaks its GPU-side resource forever: DicomLayer's own unmount
- * cleanup only ever sees the last one assigned, not the many discarded in between.
- */
 function refreshLutTexture(uniforms: Record<string, { value: any }>, lut: any): void {
   const prev = uniforms.uTextureLUT.value;
   uniforms.uTextureLUT.value = lut.texture;
   if (prev?.isTexture) prev.dispose();
 }
 
-/*
- * Applies a rigid transform (translate/rotate/scale) to a layer by composing
- * the overlay's base lps2IJK with the inverse of the transform matrix and
- * writing the result into uWorldToData. This enables runtime co-registration
- * nudging without reloading the volume.
- */
 export function applyLayerTransform(
   uniforms: Record<string, { value: any }>,
   baseLps2IJK: THREE.Matrix4,
@@ -88,11 +66,6 @@ export function applyLayerTransform(
   const [sx, sy, sz] = t.scale ?? [1, 1, 1];
   const D2R = Math.PI / 180;
 
-  /*
-   * Compose: T * R * S * T0 (rotate/scale around volume centre, then translate)
-   * For simplicity we compute the transform relative to origin; callers who
-   * need centre-anchored rotation should pre-translate before calling.
-   */
   const T = new THREE.Matrix4().makeTranslation(tx, ty, tz);
   const R = new THREE.Matrix4().makeRotationFromEuler(
     new THREE.Euler(rxDeg * D2R, ryDeg * D2R, rzDeg * D2R),
@@ -104,10 +77,6 @@ export function applyLayerTransform(
   uniforms.uWorldToData.value = baseLps2IJK.clone().multiply(Minv);
 }
 
-/*
- * Pure factory: creates a GPU material + uniforms for one overlay volume.
- * Returns a LayerState without an id or renderOrder — the caller assigns those.
- */
 export function createLayerMaterial(
   stack: any,
   opts: LayerMaterialOpts = {},
@@ -151,13 +120,6 @@ export function createLayerMaterial(
   uniforms.uPackedPerPixel.value = stack.packedPerPixel;
   uniforms.uBitsAllocated.value = stack.bitsAllocated;
 
-  /*
-   * ami.js's data shader expects non-negative intensities and shifts volumes with
-   * a negative minimum (e.g. CT in Hounsfield units, which go below 0) up by this
-   * offset when packing textures. Window/level and threshold uniforms are compared
-   * against those shifted values, so they must be offset the same way or they'll
-   * be wrong for any volume with negative intensities.
-   */
   const amiOffset = stack.minMax[0] < 0 ? -stack.minMax[0] : 0;
   uniforms.uWindowCenterWidth.value = [
     amiOffset + (windowCenter ?? stack.windowCenter),
@@ -173,11 +135,6 @@ export function createLayerMaterial(
   uniforms.uLowerUpperThreshold.value = [amiOffset + stack.minMax[0], amiOffset + stack.minMax[1]];
   uniforms.uOpacity.value = opacity;
 
-  /*
-   * Single source of truth for the amiOffset math — used by both the
-   * backgroundRemoval and default setWindowLevel closures below so the
-   * offset can't drift out of sync.
-   */
   const applyWindowLevel = (center: number, width: number) => {
     uniforms.uWindowCenterWidth.value = [amiOffset + center, width];
   };
@@ -196,10 +153,6 @@ export function createLayerMaterial(
   let helperSegLut: any = null;
 
   if (segmentation) {
-    /*
-     * Segmentation (label map): LUT is keyed by integer label.
-     * Background label 0 has alpha 0 in standard presets — always transparent.
-     */
     helperSegLut = new SegmentationLutHelper(document.createElement("div"), segmentation);
     uniforms.uLutSegmentation.value = 1;
     uniforms.uTextureLUTSegmentation.value = helperSegLut.texture;
@@ -243,10 +196,6 @@ export function createLayerMaterial(
     }
   }
 
-  /*
-   * Default setOpacity — plain uniform write (segmentation layers, or
-   * continuous without backgroundRemoval)
-   */
   const setOpacity = (v: number) => {
     uniforms.uOpacity.value = v;
   };

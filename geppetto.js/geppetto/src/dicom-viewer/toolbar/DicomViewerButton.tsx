@@ -25,21 +25,12 @@ const buttonActive: React.CSSProperties = {
 interface DicomViewerButtonProps {
   icon: React.ReactNode;
   tooltip: string;
-  /*
-   * Receives both the DICOM domain context and the underlying R3F fiber state.
-   * `fiber` is null only if the canvas has not mounted yet — guard before use.
-   */
   onClick: (ctx: DicomViewerContext, fiber: CanvasRootState | null) => void;
   active?: boolean;
   style?: React.CSSProperties;
   disabled?: boolean;
 }
 
-/*
- * A toolbar button with access to both the DicomViewer domain context and the
- * underlying R3F canvas state.  Must be rendered inside a <DicomViewer> so both
- * DicomViewerContext and CanvasIdContext are available.
- */
 export const DicomViewerButton: React.FC<DicomViewerButtonProps> = ({
   icon,
   tooltip,

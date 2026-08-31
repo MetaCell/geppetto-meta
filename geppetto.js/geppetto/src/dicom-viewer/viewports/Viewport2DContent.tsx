@@ -74,10 +74,6 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     invalidate();
   }, [handle]);
 
-  /*
-   * Invalidate from DOM pointer events so panning/zooming bootstraps the render
-   * loop before controls.update() runs inside useFrame.
-   */
   useEffect(() => {
     const el = domRef.current;
     if (!el || !handle) return undefined;
@@ -104,15 +100,6 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     };
   }, [handle, domRef.current, invalidate]);
 
-  /*
-   * Recalculate camera frustum whenever this pane's own on-screen size changes. A
-   * ResizeObserver on the tracking div (rather than reacting to R3F's canvas-level
-   * `size`) is required because a pane can start out hidden (0x0 — e.g. single_view's
-   * inactive panes) and later become visible from a pure CSS layout change (switching
-   * view mode) with no window/canvas resize involved — `size` never changes in that
-   * case, so the camera would otherwise be stuck with the degenerate zero-size frustum
-   * it was created with while hidden.
-   */
   useEffect(() => {
     const el = domRef.current;
     if (!handle || !el) return undefined;

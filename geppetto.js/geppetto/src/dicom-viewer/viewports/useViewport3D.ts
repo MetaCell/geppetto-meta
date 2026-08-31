@@ -23,19 +23,11 @@ export function useViewport3D(
 
     const scene = new THREE.Scene();
 
-    /*
-     * Use aspect 1 as safe default — Viewport3DContent corrects it via useEffect([size,handle])
-     * once the div is laid out.  clientWidth/clientHeight can be 0 before layout, producing NaN.
-     */
     const aspect =
       domEl.clientWidth > 0 && domEl.clientHeight > 0 ? domEl.clientWidth / domEl.clientHeight : 1;
 
     const camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100000);
 
-    /*
-     * Position camera at 2× the largest world-space dimension from the center,
-     * so the stack is always visible regardless of LPS coordinate magnitudes.
-     */
     const worldbb = stack.worldBoundingBox(); // [xmin,xmax,ymin,ymax,zmin,zmax]
     const center = stack.worldCenter();
     const diagonal = Math.sqrt(
@@ -60,15 +52,6 @@ export function useViewport3D(
     // Ambient light so wireframe is visible even without directional light
     scene.add(new THREE.AmbientLight(0x404040, 2));
 
-    /*
-     * ---------------------------------------------------------------------------
-     * Build a wireframe bounding box directly from the world-space AABB.
-     * worldBoundingBox() returns [xmin,xmax, ymin,ymax, zmin,zmax] in LPS space.
-     * Avoid BoundingBoxHelper which internally creates a Mesh with null material
-     * (can throw in THREE r180) and relies on BoxHelper.setFromObject on an
-     * off-scene Mesh whose matrixWorld may not be up-to-date.
-     * ---------------------------------------------------------------------------
-     */
     const bbCenterX = (worldbb[0] + worldbb[1]) / 2;
     const bbCenterY = (worldbb[2] + worldbb[3]) / 2;
     const bbCenterZ = (worldbb[4] + worldbb[5]) / 2;

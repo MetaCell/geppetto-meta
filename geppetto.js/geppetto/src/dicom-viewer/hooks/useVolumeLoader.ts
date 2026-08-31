@@ -28,19 +28,9 @@ interface UseVolumeLoaderResult {
 }
 
 export interface UseVolumeLoaderOptions {
-  /*
-   * When true, skips loader.free() and calls stack.pack() after prepare() — needed by
-   * overlay layers (see useLayerStack) whose raw buffers must survive for texture
-   * building, unlike the base volume which frees its loader eagerly once packed.
-   */
   retainRawData?: boolean;
 }
 
-/*
- * Loads a DICOM/NIFTI/NRRD volume and returns the prepared StackModel.
- * Calls loader.free() after prepare() to release raw frame buffers, unless
- * options.retainRawData is set.
- */
 export function useVolumeLoader(
   data: string | string[] | null,
   options: UseVolumeLoaderOptions = {},

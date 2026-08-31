@@ -65,16 +65,8 @@ export function useViewportEvents({
     [ctx, planeOrientation],
   );
 
-  /*
-   * Expand the clicked viewport to fill the container (single_view), or collapse
-   * back to quad_view if we're already in single_view.
-   */
   const expandView = useCallback(() => {
     if (ctx.viewMode === "quad_view") {
-      /*
-       * Show only the clicked viewport — for 2D planes use that plane's orientation;
-       * for the 3D pane keep orientation as '3d'.
-       */
       ctx.setOrientation(planeOrientation as any);
       ctx.setViewMode("single_view");
     } else {
@@ -119,11 +111,6 @@ export function useViewportEvents({
       }
 
       if (!onHover || !camera || !scene) return;
-      /*
-       * Throttle raycasting to one pick per animation frame, but always raycast
-       * from the LATEST event (not the one that happened to schedule the pending
-       * frame), or the hover position would visibly lag/snap while throttled.
-       */
       latestHoverEvent = e;
       if (hoverRaf !== null) return;
       hoverRaf = requestAnimationFrame(() => {

@@ -1,11 +1,6 @@
 import * as THREE from "three";
 import { OrientationMode, PlaneOrientation } from "./types";
 
-/*
- * Canonical viewport ID <-> orientation mapping, matching DicomCanvas's onViewportReady
- * call order (0=3d, 1=axial, 2=sagittal, 3=coronal). Shared by DicomViewer's mode-driven
- * "expected viewports" bookkeeping and any consumer resolving a ViewportHandle by plane.
- */
 export const VP_ID_MAP: Record<OrientationMode, number> = {
   "3d": 0,
   axial: 1,
@@ -13,29 +8,12 @@ export const VP_ID_MAP: Record<OrientationMode, number> = {
   coronal: 3,
 };
 
-/*
- * Extracts the IJK component that corresponds to a given ami.js
- * camera.stackOrientation. Per ami.js conventions:
- *   stackOrientation 0 -> directions[2] (zCosine, K axis -> ijk.z)
- *   stackOrientation 1 -> directions[0] (xCosine, I axis -> ijk.x)
- *   stackOrientation 2 -> directions[1] (yCosine, J axis -> ijk.y)
- */
 function ijkComponentForStackOrientation(ijk: THREE.Vector3, stackOrientation: number): number {
   if (stackOrientation === 0) return ijk.z;
   if (stackOrientation === 1) return ijk.x;
   return ijk.y;
 }
 
-/*
- * Converts a world (LPS) point to IJK via the stack's lps2IJK matrix and sets
- * all 3 plane slice indices to center on it.
- *
- * planeStackOrientations carries each plane's actual camera.stackOrientation
- * (see Viewport2DContent.tsx), since which IJK axis maps to which plane
- * depends on the volume's acquisition orientation, not a fixed assignment —
- * assuming axial/sagittal/coronal always map to z/x/y is only correct for
- * axially-acquired volumes.
- */
 export function centerSlicesOnPoint(
   point: THREE.Vector3,
   stack: any,
@@ -54,13 +32,6 @@ export function centerSlicesOnPoint(
   });
 }
 
-/*
- * Maps an ami.js camera.stackOrientation to the ijk2LPS column index for that
- * plane's normal — the same stackOrientation -> axis convention as
- * ijkComponentForStackOrientation above, applied to matrix columns instead of
- * vector components: stackOrientation 0 -> K axis (col 2), 1 -> I axis (col 0),
- * 2 -> J axis (col 1).
- */
 export function soToCol(stackOrientation: number): 0 | 1 | 2 {
   if (stackOrientation === 0) return 2;
   if (stackOrientation === 1) return 0;
@@ -69,13 +40,6 @@ export function soToCol(stackOrientation: number): 0 | 1 | 2 {
 
 export type PlaneFilter = ((lpsX: number, lpsY: number, lpsZ: number) => boolean) | null;
 
-/*
- * Returns a predicate testing whether an LPS point lies within `tolerance` of the
- * slice plane defined by ijk2LPS column `col` at index `sliceIdx`. Generic spatial
- * filter for any overlay that needs "show this marker only on the currently
- * displayed slice" — pass a tolerance matching the rendered marker's radius so the
- * visual clipping lines up with the spatial filter.
- */
 export function makePlaneFilter(
   stack: any,
   sliceIdx: number,

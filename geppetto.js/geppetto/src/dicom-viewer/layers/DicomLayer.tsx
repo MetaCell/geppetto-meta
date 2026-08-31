@@ -16,21 +16,6 @@ export interface DicomLayerProps extends LayerMaterialOpts {
   onProgress?: (progress: DownloadProgress | null) => void;
 }
 
-/*
- * Declarative multi-image overlay layer component.
- *
- * Drop a <DicomLayer> inside <DicomViewer> to load an additional volume and
- * blend it on top of the base stack.  The layer is registered in the context
- * store so toolbar buttons / useLayerControls can mutate its opacity / LUT /
- * transform at runtime.
- *
- * GPU resources (ShaderMaterial + DataTextures) are created once and disposed
- * when the component unmounts.
- *
- * For CT background removal (air transparency) pass backgroundRemoval={true}.
- * The LUT-based technique keeps background voxels transparent while tissue
- * remains fully opaque — see createLayerMaterial.ts for the implementation.
- */
 export function DicomLayer({
   id,
   data,
@@ -60,11 +45,6 @@ export function DicomLayer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [opacity, id]);
 
-  /*
-   * Window/level and LUT are independent knobs but often change together (e.g. a
-   * preset switch resets both), so they share one effect rather than firing two
-   * separate store updates (and two invalidates) per user action.
-   */
   useEffect(() => {
     if (windowCenter !== undefined && windowWidth !== undefined) {
       ctx.setLayerWindowLevel(id, windowCenter, windowWidth);
@@ -76,10 +56,6 @@ export function DicomLayer({
   }, [windowCenter, windowWidth, lut, id]);
 
   useEffect(() => {
-    /*
-     * Wait for both the base stack (for geometry/orientation) and the overlay
-     * stack (for texture data) to be ready.
-     */
     if (!layerStack || !ctx.stack) return undefined;
 
     const partial = createLayerMaterial(layerStack, {

@@ -11,12 +11,6 @@ export interface LayerTransform {
   scale?: [number, number, number];
 }
 
-/*
- * Represents a loaded overlay volume's GPU resources + controls.
- * setOpacity encapsulates the background-removal logic so callers
- * don't need to know whether the layer uses a plain uniform or an
- * air-alpha LUT curve.
- */
 export interface LayerState {
   id: string;
   material: THREE.ShaderMaterial;
@@ -37,26 +31,10 @@ export interface DicomViewerState {
   orientation: OrientationMode;
   sliceIndices: Record<PlaneOrientation, number>;
   sliceMaxIndices: Record<PlaneOrientation, number>;
-  /*
-   * Each 2D viewport's actual ami.js camera.stackOrientation (0/1/2), i.e. which
-   * IJK axis that plane's slices step along. This depends on the volume's
-   * acquisition orientation, not a fixed axial/sagittal/coronal → z/x/y mapping —
-   * centerOnPoint uses it to convert a world point to the right slice index per plane.
-   */
   planeStackOrientations: Record<PlaneOrientation, number>;
   isLoading: boolean;
   layers: LayerState[];
-  /*
-   * Intensity threshold value for the 3D viewport.
-   * Only applied when threshold3DEnabled is true.
-   * Fragments with raw intensity below this value are discarded (transparent).
-   */
   threshold3D: number;
-  /*
-   * Whether the threshold is currently active.  Decoupled from the value so a
-   * slider can set the value without inadvertently activating transparency, and
-   * the toolbar button can toggle on/off without resetting the slider position.
-   */
   threshold3DEnabled: boolean;
 }
 
@@ -67,21 +45,11 @@ export interface DicomViewerActions {
   setThreshold3D: (value: number) => void;
   setThreshold3DEnabled: (enabled: boolean) => void;
   setSliceIndex: (plane: PlaneOrientation, idx: number) => void;
-  /*
-   * Per-plane setter (preferred) — uses a functional Zustand update so concurrent
-   * calls from multiple viewports cannot overwrite each other's values.
-   */
   setSliceMaxIndex: (plane: PlaneOrientation, maxIdx: number) => void;
   // Bulk setter kept for API compatibility; prefer setSliceMaxIndex for new code.
   setSliceMaxIndices: (maxIndices: Record<PlaneOrientation, number>) => void;
   setPlaneStackOrientation: (plane: PlaneOrientation, stackOrientation: number) => void;
   setLoading: (loading: boolean) => void;
-  /*
-   * Converts a world (LPS) point to IJK and sets all 3 plane slice indices to
-   * center on it, using each plane's real planeStackOrientations mapping.
-   * Single source of truth for "center on this point" — used by click-to-center
-   * (useViewportEvents.ts's goToPoint) and any other externally-triggered request.
-   */
   centerOnPoint: (point: THREE.Vector3) => void;
   registerLayer: (layer: LayerState) => void;
   unregisterLayer: (id: string) => void;
@@ -97,10 +65,6 @@ export interface DicomViewerContext extends DicomViewerState, DicomViewerActions
   dataToWorld: (ijk: THREE.Vector3) => THREE.Vector3;
   worldToData: (lps: THREE.Vector3) => THREE.Vector3;
   syncLocalizers: () => void;
-  /*
-   * Per-viewport scene objects — populated by Viewport*Content components once ready.
-   * DicomOverlay uses these to portal overlay children into individual scenes.
-   */
   viewportScenes: Partial<Record<OrientationMode, THREE.Scene>>;
   registerViewportScene: (id: OrientationMode, scene: THREE.Scene) => void;
 }
@@ -149,11 +113,6 @@ export type ClickAction =
       planeOrientation: PlaneOrientation | "3d",
     ) => void);
 
-/*
- * Fired on every (rAF-throttled) pointer move over a viewport, and once more
- * with point=null on mouseleave. Point is null whenever the pointer isn't over
- * any raycastable geometry (e.g. outside the loaded volume).
- */
 export type HoverAction = (
   ctx: DicomViewerContext,
   point: THREE.Vector3 | null,
@@ -186,9 +145,6 @@ export interface DicomViewerProps {
   onFps?: (fps: number) => void;
   // R3F scene content (DicomLayer, DicomOverlay) — rendered inside the WebGL Canvas.
   children?: React.ReactNode;
-  /*
-   * DOM / HTML content (toolbar, HUD) — rendered outside the Canvas in a normal
-   * React DOM tree so that HTML elements are not mistaken for Three.js objects.
-   */
+  // DOM / HTML content (toolbar, HUD) — rendered outside the Canvas.
   overlay?: React.ReactNode;
 }

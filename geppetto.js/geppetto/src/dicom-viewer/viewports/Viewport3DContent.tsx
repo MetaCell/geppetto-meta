@@ -66,13 +66,6 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     invalidate();
   }, [handle]);
 
-  /*
-   * Invalidate from DOM pointer/wheel events so dragging bootstraps the render
-   * loop before controls.update() has a chance to run inside useFrame.
-   * (AMI's TrackballControl fires 'change' from within update(), which is called
-   * from useFrame — so listening to controls 'change' doesn't help; we must
-   * trigger the first frame from the raw DOM events instead.)
-   */
   useEffect(() => {
     const el = domRef.current;
     if (!el || !handle) return undefined;
@@ -102,11 +95,6 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     };
   }, [handle, domRef.current, invalidate]);
 
-  /*
-   * Invalidate after React commits a threshold change so useFrame sees the
-   * updated values.  StoreInvalidator fires before React re-renders (wrong
-   * timing); useEffect fires after commit (correct timing).
-   */
   useEffect(() => {
     invalidate();
   }, [ctx.threshold3D, ctx.threshold3DEnabled]);
@@ -175,15 +163,6 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
       });
     }
 
-    /*
-     * The axial/sagittal/coronal scenes are nested inside this 3D scene so
-     * their slice planes render here too, but that also drags in anything
-     * DicomOverlay portaled into those 2D scenes, even overlays whose
-     * `viewports` prop excludes "3d". Hide those nested copies for this
-     * render only: an overlay that DOES want 3D inclusion already has its
-     * own dedicated portal directly into this scene (untouched here, since
-     * it isn't nested inside one of the three 2D scenes below).
-     */
     const hiddenOverlayRoots: THREE.Object3D[] = [];
     [ctx.viewportScenes.axial, ctx.viewportScenes.sagittal, ctx.viewportScenes.coronal].forEach(
       scene2d => {

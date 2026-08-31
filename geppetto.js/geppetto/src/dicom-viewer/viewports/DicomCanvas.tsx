@@ -26,21 +26,10 @@ interface DicomCanvasProps {
   children?: React.ReactNode;
 }
 
-/*
- * Subscribes directly to the Zustand store (not via React context) and calls
- * invalidate() only when this viewer's state actually changes.
- * Using the raw store subscription means zero React re-renders are involved —
- * no risk of creating a spurious render loop.
- */
 function StoreInvalidator({ viewerId }: { viewerId: string }) {
   const { invalidate } = useThree();
 
   useEffect(() => {
-    /*
-     * Zustand v3 basic subscribe: listener(newState, prevState).
-     * Using the single-argument form avoids the deprecated subscribeWithSelector
-     * path (triggered whenever a second argument is present).
-     */
     return useDicomViewerStore.subscribe((state, prev: any) => {
       if (state.viewers[viewerId] !== prev?.viewers[viewerId]) {
         invalidate();
@@ -51,13 +40,6 @@ function StoreInvalidator({ viewerId }: { viewerId: string }) {
   return null;
 }
 
-/*
- * Counts useFrame calls (= actual WebGL frames rendered) and reports via callback.
- * Must live inside the Canvas so it has access to the R3F render loop.
- * With frameloop="demand", useFrame stops firing when idle, so we schedule a
- * 600 ms decay timeout after each frame — if no new frame arrives in time the
- * counter resets to 0, giving an accurate "idle = 0 fps" reading.
- */
 function FpsTracker({ onFps }: { onFps: (fps: number) => void }) {
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
@@ -111,13 +93,7 @@ const SLICE_COLORS = {
   coronal: 0x76ff03,
 };
 
-/*
- * Registers this DicomViewer's R3F canvas in dicom-viewer's own useFiberStore so
- * that DicomViewerButton (and any component using useFiber) can look it up by
- * viewerId. Mirrors Canvas3D's FiberBridge conceptually, but uses an independent
- * store — must live inside <Canvas> to call useThree().
- */
-function FiberRegistrar({ viewerId }: { viewerId: string }) {
+function FiberRegister({ viewerId }: { viewerId: string }) {
   const state = useThree();
   const setRootState = useFiberStore(s => s.setRootState);
   const clearRootState = useFiberStore(s => s.clearRootState);
@@ -128,11 +104,6 @@ function FiberRegistrar({ viewerId }: { viewerId: string }) {
   return null;
 }
 
-/*
- * Clears the entire canvas once at the start of each frame (priority -1, runs before
- * all viewport renders at priority 1).  Without this, old frames bleed through in
- * regions not covered by any viewport's gl.render() call.
- */
 function FrameClearer() {
   const { gl } = useThree();
   useFrame(() => {
@@ -161,12 +132,6 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
   onFps,
   children,
 }) => {
-  /*
-   * useState (not useRef) so the div's presence is known via React state — R3F's
-   * eventSource is read once at <Canvas> mount, so a plain ref object (still null
-   * on first render) would hand it a stale/empty eventSource. A callback ref lets
-   * us delay mounting <Canvas> until the container div actually exists in the DOM.
-   */
   const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
   const containerRef = useCallback((el: HTMLDivElement | null) => setContainerEl(el), []);
   const r0Ref = useRef<HTMLDivElement>(null!); // 3d
@@ -176,19 +141,15 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
 
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
-      {/* Four tracking divs that define viewport regions.
-          Viewport*Content reads their bounds to set the WebGL scissor/viewport. */}
+      {/* Four tracking divs that define viewport regions */}
       <div ref={r0Ref} style={viewportStyle("3d", viewMode, orientation)} />
       <div ref={r1Ref} style={viewportStyle("axial", viewMode, orientation)} />
       <div ref={r2Ref} style={viewportStyle("sagittal", viewMode, orientation)} />
       <div ref={r3Ref} style={viewportStyle("coronal", viewMode, orientation)} />
 
-      {/* Single canvas overlaid over the whole container.
-          We render all four viewports imperatively inside this one WebGL context,
-          each scissored to its tracking div's bounds.
-          pointer-events: none so tracking divs receive mouse/wheel events.
-          R3F listens via eventSource={containerEl} so raycasting still works.
-          containerEl is null on first render; <Canvas> only mounts once the div is in the DOM. */}
+      {/* Single canvas overlaid over the whole container — all four viewports render
+          imperatively inside this one WebGL context, each scissored to its tracking
+          div's bounds. */}
       {containerEl && (
         <Canvas
           style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
@@ -200,7 +161,7 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
           {/* Clear canvas once per frame before any viewport renders */}
           <FrameClearer />
           {/* Register this canvas in useFiberStore so Toolbar3DButton can find it by viewerId */}
-          <FiberRegistrar viewerId={viewerId} />
+          <FiberRegister viewerId={viewerId} />
           {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
           <StoreInvalidator viewerId={viewerId} />
           {onFps && <FpsTracker onFps={onFps} />}

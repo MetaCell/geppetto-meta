@@ -104,7 +104,7 @@ Viewer state lives in two layers:
 
 ### Fiber store integration
 
-`DicomCanvas` mounts a `FiberRegistrar` component inside the R3F `<Canvas>`. This calls `useThree()` and writes the result into `dicom-viewer`'s own `useFiberStore` (from `./canvas-context`) under the viewer's `id`. `DicomViewer` provides `CanvasIdContext` with the viewer `id` so `useDicomFiber(viewerId)` / `<DicomViewerButton>` resolve the current canvas automatically.
+`DicomCanvas` mounts a `FiberRegister` component inside the R3F `<Canvas>`. This calls `useThree()` and writes the result into `dicom-viewer`'s own `useFiberStore` (from `./canvas-context`) under the viewer's `id`. `DicomViewer` provides `CanvasIdContext` with the viewer `id` so `useDicomFiber(viewerId)` / `<DicomViewerButton>` resolve the current canvas automatically.
 
 This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions of the same pattern — the two intentionally don't share state. A DICOM viewport's `controls` are ami.js's `TrackballControl` / `TrackballOrthoControl`, not the `CameraControls` that `Canvas3D`'s pan/zoom/rotate toolbar groups expect, so a shared, single-typed store would either be wrong for one side or require unsafe casts (which is what an earlier version of this file did). Keeping `dicom-viewer` self-contained also means it doesn't require the sibling `3d-canvas` module to exist.
 
@@ -128,7 +128,7 @@ This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions
 | `onRightClick` | `ClickAction` | — | Action fired on right-click (context menu suppressed). |
 | `onHover` | `HoverAction` | — | Fired on (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
 | `animationSkipRate` | `number` | `1` | Render every Nth frame. Use values > 1 to reduce GPU load for complex scenes. |
-| `onRender` | `(viewports: ViewportHandle[]) => void` | — | Called once all four viewports have initialised. Receives an array of `{ id, scene, camera }` handles. |
+| `onRender` | `(viewports: ViewportHandle[]) => void` | — | Called once all four viewports have initialised. Receives an array of `{ id, scene, camera }` handles, indexed by the exported `VP_ID_MAP` (`{ '3d': 0, axial: 1, sagittal: 2, coronal: 3 }`) — e.g. `viewports[VP_ID_MAP.axial]` for the axial pane. |
 | `onFps` | `(fps: number) => void` | — | Called approximately every 500 ms with the current frame rate. Resets to 0 after 600 ms of inactivity (demand rendering). |
 | `children` | `ReactNode` | — | **R3F scene content** — rendered inside the WebGL Canvas. Use for `<DicomLayer>`, `<DicomOverlay>`, or custom Three.js objects. |
 | `overlay` | `ReactNode` | — | **DOM content** — rendered outside the WebGL Canvas in the normal React tree. Use for toolbars, HUDs, legends. |
@@ -319,12 +319,13 @@ import { DicomLayer } from '@metacell/geppetto/dicom-viewer';
 | `data` | `string \| string[]` | **required** | URL(s) of the overlay volume. Accepts the same formats as the base `data` prop. |
 | `renderOrder` | `number` | `1` | Draw order relative to other layers. Lower = drawn first. |
 | `opacity` | `number` | `1` | Layer opacity (0–1). **Reactive** — changing it after mount calls `ctx.setLayerOpacity` automatically, no need to call the action yourself. |
-| `lut` | `string` | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset). Ignored in segmentation mode. **Reactive** — changing it after mount calls `ctx.setLayerLut` automatically. |
+| `lut` | `string` | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset — see the exported `LUT_PRESETS` list). Ignored in segmentation mode. **Reactive** — changing it after mount calls `ctx.setLayerLut` automatically. |
 | `windowCenter` | `number` | stack default | Window centre for contrast. **Reactive** together with `windowWidth` — changing either after mount calls `ctx.setLayerWindowLevel` automatically (both must be defined). |
 | `windowWidth` | `number` | stack default | Window width for contrast. See `windowCenter`. |
 | `interpolation` | `0 \| 1` | `1` | `0` = nearest-neighbour (for label maps), `1` = trilinear (default). |
 | `segmentation` | `object` | — | Switch to label-map mode. See below. |
 | `backgroundRemoval` | `boolean \| { threshold?: number }` | — | Enable air transparency for CT overlays. Voxels below the threshold (default: `0.2` of normalised intensity) are kept transparent using an opacity LUT curve. Setting `opacity` via `setLayerOpacity` rebuilds the curve automatically. |
+| `onProgress` | `(progress: DownloadProgress \| null) => void` | — | Reports this layer's own fetch progress — same shape/semantics as `useVolumeLoader`'s `downloadProgress` (see [Loading state](#loading-state)). Fires `null` once loading finishes or errors. |
 
 #### Label-map mode (`segmentation`)
 
@@ -422,6 +423,44 @@ import { DicomOverlay } from '@metacell/geppetto/dicom-viewer';
   </mesh>
 </DicomOverlay>
 ```
+
+### Clipping an overlay to the current slice
+
+`viewports` restricts which *panes* an overlay renders into, but a marker list (electrode
+contacts, coregistration control points, seed points, …) often also needs to be filtered *within*
+a 2D pane so only markers lying on the currently-displayed slice show up. `usePlaneFilters` builds
+that filter for you:
+
+```tsx
+import * as THREE from 'three';
+import { usePlaneFilters, useDicomViewerContext } from '@metacell/geppetto/dicom-viewer';
+
+function SliceClippedMarkers({ points, radius }: { points: THREE.Vector3[]; radius: number }) {
+  const ctx = useDicomViewerContext();
+  const filters = usePlaneFilters(ctx.stack, ctx.sliceIndices, ctx.planeStackOrientations, radius);
+
+  return (
+    <>
+      <DicomOverlay viewports={['axial']}>
+        {points
+          .filter(p => filters.axial?.(p.x, p.y, p.z))
+          .map((p, i) => <mesh key={i} position={p}><sphereGeometry args={[radius]} /></mesh>)}
+      </DicomOverlay>
+      {/* ...repeat for sagittal / coronal with filters.sagittal / filters.coronal */}
+    </>
+  );
+}
+```
+
+`usePlaneFilters(stack, sliceIndices, planeStackOrientations, tolerance)` returns one
+`PlaneFilter` per anatomical plane — `(lpsX, lpsY, lpsZ) => boolean`, or `null` while `stack` isn't
+ready yet. `tolerance` should roughly match the rendered marker's radius so the visual clipping
+lines up with the spatial filter. It's built from two lower-level exports if you need more control:
+
+- `soToCol(stackOrientation)` — maps an AMI.js `camera.stackOrientation` (0/1/2) to the `ijk2LPS`
+  matrix column index for that plane's normal.
+- `makePlaneFilter(stack, sliceIdx, col, tolerance)` — builds a single `PlaneFilter` from a stack,
+  a slice index, and a `ijk2LPS` column (as returned by `soToCol`).
 
 ## Toolbar system
 
@@ -562,6 +601,7 @@ const { stack, loading, error, downloadProgress } = useVolumeLoader('/brain.nii.
 - Calls `stack.prepare()` and `loader.free()` after loading to release raw frame buffers.
 - Returns `null` for `stack` while loading or on error.
 - Re-triggers when the URL changes.
+- Second argument is an optional `UseVolumeLoaderOptions` (also exported): `{ retainRawData?: boolean }`. When `true`, skips `loader.free()` and calls `stack.pack()` after `prepare()` instead — needed by overlay layers (see `useLayerStack`, which is exactly `useVolumeLoader(data, { retainRawData: true })`) whose raw buffers must survive for texture building. Leave it `false` (the default) for the base volume.
 - `downloadProgress` is a live `DownloadProgress | null` (`{ loaded: number; total: number }`, `total: 0` means the server didn't report a `Content-Length`), updated from ami.js's `VolumeLoader`'s `fetch-progress` event during the fetch and cleared once loading finishes or errors. Use the exported `pctOf(downloadProgress)` helper to turn it into a `0–100` percentage, or `null` while size is unknown:
 
   ```ts
@@ -589,6 +629,8 @@ const layerState = createLayerMaterial(stack, {
 // layerState: { material, uniforms, lut, baseLps2IJK, setOpacity, setWindowLevel, setLut, setTransform }
 ```
 
+`LUT_PRESETS` (also exported) spells out the valid `lut` names — the keys of AMI.js's `LutHelper.presetLuts()` — so a LUT picker can be built without reaching into AMI.js directly: `'default' | 'spectrum' | 'hot_and_cold' | 'gold' | 'red' | 'green' | 'blue' | 'walking_dead' | 'random' | 'muscle_bone'`.
+
 ## Performance notes
 
 - **Demand rendering** — `frameloop="demand"` is set on the R3F Canvas. Frames are only rendered when state changes. The `StoreInvalidator` component (inside the Canvas) subscribes to `useDicomViewerStore` and calls `invalidate()` whenever this viewer's record changes, so toolbar actions and slice navigation trigger rendering automatically.
@@ -597,7 +639,7 @@ const layerState = createLayerMaterial(stack, {
 
 - **Scissor rendering** — the single WebGL context renders all four viewports in one pass per frame. There is no per-viewport clear; `FrameClearer` clears the full canvas once at the start of each frame.
 
-- **Layer disposal** — `DicomLayer` disposes its `ShaderMaterial` and all `DataTexture`s on unmount. If the WebGL context has already been destroyed at that point (e.g. the parent component unmounts), disposal errors are silently swallowed.
+- **Layer disposal** — `DicomLayer` disposes its `ShaderMaterial` and all `DataTexture`s on unmount. If the WebGL context has already been destroyed at that point (e.g. the parent component unmounts), disposal errors are silently swallowed. Mid-session LUT textures are also disposed correctly: AMI.js's `LutHelper.texture` getter allocates a brand-new `THREE.Texture` on every access rather than caching one, so every opacity/LUT change (`setLayerOpacity`, `setLayerLut`, `backgroundRemoval`'s opacity-driven curve rebuilds) disposes the texture it replaces instead of leaking it.
 
 ## Types reference
 
@@ -653,6 +695,13 @@ interface DownloadProgress {
   total: number; // 0 = server did not report a size
 }
 
+interface UseVolumeLoaderOptions {
+  retainRawData?: boolean;
+}
+
+// (lpsX, lpsY, lpsZ) => boolean, or null while the stack isn't ready — see usePlaneFilters
+type PlaneFilter = ((lpsX: number, lpsY: number, lpsZ: number) => boolean) | null;
+
 // A plain R3F RootState — dicom-viewer's own type, independent from Canvas3D's Canvas3DRootState
 type CanvasRootState = import('@react-three/fiber').RootState;
 ```
@@ -669,6 +718,8 @@ import type {
   ClickAction,
   HoverAction,
   DownloadProgress,
+  UseVolumeLoaderOptions,
+  PlaneFilter,
   CanvasRootState,
   DicomViewerContextType, // DicomViewerContext re-exported under this name to avoid collision with the React context object
   ViewportHandle,

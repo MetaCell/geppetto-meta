@@ -31,10 +31,6 @@ export function useViewport2D(
   // useState (not useRef) so that components re-render when the handle is created/destroyed.
   const [handle, setHandle] = useState<Viewport2DHandle | null>(null);
 
-  /*
-   * Track overlay meshes per layer id so we can swap them when geometry rebuilds.
-   * useRef is correct here — mesh map changes must not trigger re-renders.
-   */
   const overlayMeshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
 
   useEffect(() => {
@@ -69,11 +65,6 @@ export function useViewport2D(
     };
     camera.orientation = ORIENTATION_MAP[planeOrientation];
 
-    /*
-     * Controls MUST be assigned before camera.canvas — the canvas setter calls
-     * _updateCanvas → _updateMatrices → this._controls.update() and
-     * this.controls.handleResize(), both of which crash if _controls is null.
-     */
     const controls = new TrackballOrthoControl(camera, domEl);
     controls.staticMoving = true;
     controls.noRotate = true;
@@ -82,21 +73,10 @@ export function useViewport2D(
     // Now safe to set canvas (triggers _updateCanvas internally).
     camera.canvas = { width: domEl.clientWidth, height: domEl.clientHeight };
     camera.update();
-    /*
-     * A pane can start out hidden (0x0) — e.g. single_view mode's inactive panes —
-     * in which case fitBox's internal _computeZoom bails out (dimension <= 0) and
-     * logs AMI's "Invalid dimension provided." warning for no benefit. Viewport2DContent's
-     * resize effect already re-fits (via fitCamera below) once this pane gets a real size.
-     */
     if (domEl.clientWidth > 0 && domEl.clientHeight > 0) {
       camera.fitBox(2, 1);
     }
 
-    /*
-     * Prevent React Three Fiber's View.prepareSkissor from overwriting AMI's
-     * left/right/top/bottom directly — set manual=true so it only calls
-     * updateProjectionMatrix(), which delegates to AMI's own implementation.
-     */
     (camera as any).manual = true;
 
     // --- StackHelper ---
@@ -129,14 +109,6 @@ export function useViewport2D(
       // Create / recreate meshes for each layer (geometry may have changed on slice nav)
       layers.forEach(layer => {
         const old = overlayMeshesRef.current.get(layer.id);
-        /*
-         * Pure opacity/window-level/LUT edits leave both the geometry (unchanged slice)
-         * and material (same object, mutated uniforms in place) untouched — skip tearing
-         * down and recreating the mesh in that case. Without this, every store-level layer
-         * edit (dragging a slider fires one update per pointer-move) rebuilt the mesh
-         * purely to pick up a value that was already live via the shared material/uniforms
-         * reference.
-         */
         if (old && old.geometry === stackHelper.slice.geometry && old.material === layer.material) {
           return;
         }

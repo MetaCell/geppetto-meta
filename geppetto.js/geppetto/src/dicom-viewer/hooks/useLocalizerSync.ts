@@ -12,13 +12,6 @@ interface UseLocalizerSyncArgs {
   coronal: PlaneLocalizerRef;
 }
 
-/*
- * ──────────────────────────────────────────────────────────────────────────────
- * initLocalizerCrossRefs
- * Called once after all three viewports are initialised.  Wires each
- * LocalizerHelper with the other two planes' equations and border colours.
- * ──────────────────────────────────────────────────────────────────────────────
- */
 export function initLocalizerCrossRefs(
   axial: PlaneLocalizerRef,
   sagittal: PlaneLocalizerRef,
@@ -43,13 +36,6 @@ export function initLocalizerCrossRefs(
   });
 }
 
-/*
- * ──────────────────────────────────────────────────────────────────────────────
- * useLocalizerSync
- * Returns syncAll() which re-synchronises all three localizers after any slice
- * navigation.  Called by ctx.syncLocalizers() from Viewport2DContent.
- * ──────────────────────────────────────────────────────────────────────────────
- */
 export function useLocalizerSync(viewportsRef: MutableRefObject<UseLocalizerSyncArgs | null>) {
   const syncAll = useCallback(() => {
     const vp = viewportsRef.current;

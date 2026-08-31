@@ -94,12 +94,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     if (threshold3D !== undefined) viewer?.setThreshold3D(threshold3D);
   }, [threshold3D]);
 
-  /*
-   * ---------------------------------------------------------------------------
-   * Viewport scene registry — populated by Viewport*Content once they init.
-   * DicomOverlay reads these to portal its children into per-viewport scenes.
-   * ---------------------------------------------------------------------------
-   */
   const vpScenesRef = useRef<Partial<Record<OrientationMode, THREE.Scene>>>({});
   const [viewportScenes, setViewportScenes] = useState<
     Partial<Record<OrientationMode, THREE.Scene>>
@@ -109,12 +103,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     vpScenesRef.current = { ...vpScenesRef.current, [vpId]: scene };
     setViewportScenes(prev => ({ ...prev, [vpId]: scene }));
 
-    /*
-     * Wire 2D scenes into the 3D scene so the perspective camera renders slice planes.
-     * Pattern from viewers_blend: r0.scene.add(pane.scene). Each 2D scene contains a
-     * StackHelper (textured slice quad); adding it to the 3D scene makes those planes
-     * visible from the perspective camera without duplicating any geometry or data.
-     */
     const all = vpScenesRef.current;
     const scene3d = all["3d"];
     if (scene3d && all.axial && all.sagittal && all.coronal) {
@@ -124,11 +112,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     }
   }, []);
 
-  /*
-   * ---------------------------------------------------------------------------
-   * Localizer cross-ref initialisation + sync
-   * ---------------------------------------------------------------------------
-   */
   const vpLocalizersRef = useRef<{
     axial: { stackHelper: any; localizerHelper: any };
     sagittal: { stackHelper: any; localizerHelper: any };
@@ -153,22 +136,12 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
       ) {
         initLocalizerCrossRefs(axial, sagittal, coronal);
         localizerInitRef.current = true;
-        /*
-         * Force an immediate sync so the localizer uniforms reflect the current
-         * slice positions — without this the lines wouldn't appear until the next
-         * user-driven slice navigation event.
-         */
         syncAll();
       }
     },
     [syncAll],
   );
 
-  /*
-   * ---------------------------------------------------------------------------
-   * onRender callback — fires once all 4 viewport handles are ready
-   * ---------------------------------------------------------------------------
-   */
   const vpHandlesRef = useRef<(ViewportHandle | undefined)[]>([]);
   const onRenderFiredRef = useRef(false);
   const handleViewportReady = useCallback(
@@ -184,17 +157,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     [onRender],
   );
 
-  /*
-   * ---------------------------------------------------------------------------
-   * "Has anything actually painted yet" tracking, for the loading overlay.
-   * A stack existing only means the data decoded — StackHelper/DataTexture
-   * construction still has to run and a WebGL frame still has to be drawn
-   * before the user sees anything. Viewport*Content's useFrame calls
-   * markFirstFrame() (via useFirstFrameFlag) once their render pass actually
-   * completes; this tracks that across however many viewports are relevant
-   * for the current viewMode/orientation.
-   * ---------------------------------------------------------------------------
-   */
   const renderedViewportsRef = useRef<Set<number>>(new Set());
   const expectedViewportIdsRef = useRef<Set<number>>(new Set([0, 1, 2, 3]));
   const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
@@ -207,13 +169,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     onRenderFiredRef.current = false;
   }, [data]);
 
-  /*
-   * single_view only ever renders the active pane, so that's all we should wait on.
-   * Unconditional: switching viewMode/orientation can newly expect a pane that hasn't
-   * painted yet (e.g. single_view -> quad_view exposes three panes that were never
-   * rendered while hidden), and hasRenderedOnce must go back to false in that case —
-   * not just forward to true — or the loading overlay stays incorrectly hidden.
-   */
   useEffect(() => {
     const expected =
       viewer && viewer.viewMode === "single_view"
@@ -231,11 +186,6 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     }
   }, []);
 
-  /*
-   * ---------------------------------------------------------------------------
-   * Coordinate conversion helpers
-   * ---------------------------------------------------------------------------
-   */
   const dataToWorld = useCallback(
     (ijk: THREE.Vector3): THREE.Vector3 => {
       if (!stack) return ijk.clone();
@@ -331,8 +281,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
               {children}
             </DicomCanvas>
           )}
-          {/* DOM overlay: toolbar, HUD — rendered outside the WebGL Canvas so HTML
-            elements are handled by the normal React DOM renderer, not R3F. */}
+          {/* DOM overlay: toolbar, HUD — rendered outside the WebGL Canvas */}
           {overlay}
         </div>
       </DicomViewerContext.Provider>
