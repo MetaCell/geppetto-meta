@@ -1,13 +1,16 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import {
   DicomViewerPreconf,
   DicomOverlay,
+  DicomLayer,
   DicomViewerButton,
   useDicomViewerContext,
   usePlaneFilters,
+  LUT_PRESETS,
+  pctOf,
 } from "@metacell/geppetto";
-import type { HoverAction, PlaneOrientation } from "@metacell/geppetto";
+import type { HoverAction, PlaneOrientation, DownloadProgress } from "@metacell/geppetto";
 
 /*
  * Copy (or symlink) the NIfTI file from the sibling example into this app's
@@ -92,6 +95,22 @@ function PlaneClippedSphereOverlay({ count, color, seed, planes }: PlaneClippedS
   );
 }
 
+/*
+ * LayerNudgeController — imperative co-registration nudge for a <DicomLayer>.
+ * `setLayerTransform` has no declarative prop equivalent on <DicomLayer> (only
+ * opacity/lut/windowCenter/windowWidth are reactive props), so this renders as
+ * a logic-only Canvas child — same "return null" pattern as <DicomLayer> itself
+ * — that re-applies the transform via context whenever `translateX` changes.
+ */
+function LayerNudgeController({ layerId, translateX }: { layerId: string; translateX: number }) {
+  const ctx = useDicomViewerContext();
+  useEffect(() => {
+    ctx.setLayerTransform(layerId, { translate: [translateX, 0, 0] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [layerId, translateX]);
+  return null;
+}
+
 /* HUD helpers */
 const hudBase: React.CSSProperties = {
   position: "absolute",
@@ -113,6 +132,7 @@ const AllIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>⬤�
 const SomeIcon = () => (
   <span style={{ fontSize: "0.7em", fontWeight: 700, color: "cyan" }}>⬤</span>
 );
+const LayerIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>◱</span>;
 
 interface HoverInfo {
   plane: string;
@@ -126,6 +146,23 @@ const DicomViewerExample: React.FC = () => {
   const [showAll, setShowAll] = useState(false);
   const [showSelected, setShowSelected] = useState(false);
   const [hover, setHover] = useState<HoverInfo | null>(null);
+
+  /*
+   * DicomLayer demo — overlays the same volume on top of itself with a false-
+   * colour LUT, air removed, and a co-registration nudge. There's no second
+   * dataset shipped with this example, so self-overlay is used purely to
+   * exercise the <DicomLayer> mechanics (declarative opacity/lut props,
+   * backgroundRemoval, and the imperative setLayerTransform action) without
+   * implying any clinical meaning.
+   */
+  const [showLayer, setShowLayer] = useState(false);
+  const [layerOpacity, setLayerOpacity] = useState(0.6);
+  const [layerLutIndex, setLayerLutIndex] = useState(1); // "spectrum"
+  const [layerNudge, setLayerNudge] = useState(15);
+  const [layerProgress, setLayerProgress] = useState<DownloadProgress | null>(null);
+  const [layerLoading, setLayerLoading] = useState(false);
+  const layerLut = LUT_PRESETS[layerLutIndex];
+  const layerPct = pctOf(layerProgress);
 
   const fpsColor = fps >= 50 ? "#4caf50" : fps >= 25 ? "#ff9800" : "#f44336";
   const handleFps = useCallback((v: number) => setFps(v), []);
@@ -156,6 +193,21 @@ const DicomViewerExample: React.FC = () => {
         onClick={() => setShowSelected(v => !v)}
         active={showSelected}
       />
+      <DicomViewerButton
+        icon={<LayerIcon />}
+        tooltip="Toggle a self-overlay <DicomLayer> (false-colour LUT, air removed, co-registration nudge)"
+        onClick={() =>
+          setShowLayer(v => {
+            if (v) {
+              // Turning off: reset so a later toggle-on doesn't briefly show stale loading state
+              setLayerLoading(false);
+              setLayerProgress(null);
+            }
+            return !v;
+          })
+        }
+        active={showLayer}
+      />
     </>
   );
 
@@ -184,6 +236,20 @@ const DicomViewerExample: React.FC = () => {
         )}
         {showSelected && (
           <PlaneClippedSphereOverlay count={20} color="cyan" seed={2} planes={["axial"]} />
+        )}
+        {showLayer && (
+          <>
+            <DicomLayer
+              id="overlay-self"
+              data={DATA}
+              lut={layerLut}
+              opacity={layerOpacity}
+              backgroundRemoval
+              onLoadingChange={setLayerLoading}
+              onProgress={setLayerProgress}
+            />
+            <LayerNudgeController layerId="overlay-self" translateX={layerNudge} />
+          </>
         )}
       </DicomViewerPreconf>
 
@@ -219,6 +285,89 @@ const DicomViewerExample: React.FC = () => {
         />
         <span style={{ minWidth: 30, textAlign: "right" }}>{threshold3D}</span>
       </div>
+
+      {/* DicomLayer overlay controls HUD */}
+      {showLayer && (
+        <div style={{ ...hudBase, bottom: 12, right: 12, flexDirection: "column", alignItems: "stretch" }}>
+          <style>{`@keyframes overlay-layer-indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}`}</style>
+          <span style={{ fontWeight: 700 }}>Overlay layer</span>
+          {layerLoading && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span>{layerPct !== null ? `loading… ${layerPct}%` : "loading…"}</span>
+              <div
+                style={{
+                  width: 80,
+                  height: 4,
+                  borderRadius: 2,
+                  backgroundColor: "rgba(255,255,255,0.25)",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    height: "100%",
+                    borderRadius: 2,
+                    backgroundColor: "#fff",
+                    width: layerPct !== null ? `${layerPct}%` : "35%",
+                    transition: layerPct !== null ? "width 0.2s ease" : "none",
+                    animation:
+                      layerPct === null ? "overlay-layer-indeterminate 1.2s linear infinite" : "none",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              opacity: layerLoading ? 0.4 : 1,
+              pointerEvents: layerLoading ? "none" : "auto",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ minWidth: 42 }}>opacity</span>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={layerOpacity}
+                onChange={e => setLayerOpacity(Number(e.target.value))}
+                style={{ width: 110, accentColor: "#1976d2" }}
+              />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ minWidth: 42 }}>nudge</span>
+              <input
+                type="range"
+                min={-30}
+                max={30}
+                step={1}
+                value={layerNudge}
+                onChange={e => setLayerNudge(Number(e.target.value))}
+                style={{ width: 110, accentColor: "#1976d2" }}
+              />
+              <span style={{ minWidth: 32, textAlign: "right" }}>{layerNudge}mm</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLayerLutIndex(i => (i + 1) % LUT_PRESETS.length)}
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                color: "#eee",
+                border: "1px solid rgba(255,255,255,0.3)",
+                borderRadius: 4,
+                padding: "3px 6px",
+                cursor: "pointer",
+              }}
+            >
+              lut: {layerLut}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
