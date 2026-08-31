@@ -1,5 +1,17 @@
 import * as THREE from "three";
-import { PlaneOrientation } from "./types";
+import { OrientationMode, PlaneOrientation } from "./types";
+
+/*
+ * Canonical viewport ID <-> orientation mapping, matching DicomCanvas's onViewportReady
+ * call order (0=3d, 1=axial, 2=sagittal, 3=coronal). Shared by DicomViewer's mode-driven
+ * "expected viewports" bookkeeping and any consumer resolving a ViewportHandle by plane.
+ */
+export const VP_ID_MAP: Record<OrientationMode, number> = {
+  "3d": 0,
+  axial: 1,
+  sagittal: 2,
+  coronal: 3,
+};
 
 /*
  * Extracts the IJK component that corresponds to a given ami.js

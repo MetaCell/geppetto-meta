@@ -41,10 +41,13 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
     set(state => {
       if (state.viewers[id]) return state;
 
-      const patch = (partial: Partial<DicomViewerState>) =>
-        set(s => ({
-          viewers: { ...s.viewers, [id]: { ...s.viewers[id], ...partial } },
-        }));
+      const updateViewer = (updater: (v: ViewerRecord) => Partial<DicomViewerState>) =>
+        set(s => {
+          const v = s.viewers[id];
+          if (!v) return s;
+          return { viewers: { ...s.viewers, [id]: { ...v, ...updater(v) } } };
+        });
+      const patch = (partial: Partial<DicomViewerState>) => updateViewer(() => partial);
 
       const actions: DicomViewerActions = {
         setStack: stack => patch({ stack }),
@@ -52,44 +55,19 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
         setOrientation: orientation => patch({ orientation }),
         setThreshold3D: threshold3D => patch({ threshold3D }),
         setThreshold3DEnabled: threshold3DEnabled => patch({ threshold3DEnabled }),
-        setSliceIndex: (plane: PlaneOrientation, idx: number) =>
-          set(s => ({
-            viewers: {
-              ...s.viewers,
-              [id]: {
-                ...s.viewers[id],
-                sliceIndices: { ...s.viewers[id].sliceIndices, [plane]: idx },
-              },
-            },
-          })),
         /*
-         * Per-plane setter — functional update avoids stale-spread races when
-         * multiple viewports initialise concurrently.
+         * Per-plane setter — functional update (via updateViewer) avoids stale-spread
+         * races when multiple viewports initialise concurrently.
          */
+        setSliceIndex: (plane: PlaneOrientation, idx: number) =>
+          updateViewer(v => ({ sliceIndices: { ...v.sliceIndices, [plane]: idx } })),
         setSliceMaxIndex: (plane: PlaneOrientation, maxIdx: number) =>
-          set(s => ({
-            viewers: {
-              ...s.viewers,
-              [id]: {
-                ...s.viewers[id],
-                sliceMaxIndices: { ...s.viewers[id].sliceMaxIndices, [plane]: maxIdx },
-              },
-            },
-          })),
+          updateViewer(v => ({ sliceMaxIndices: { ...v.sliceMaxIndices, [plane]: maxIdx } })),
         // Bulk setter kept for API compat.
         setSliceMaxIndices: sliceMaxIndices => patch({ sliceMaxIndices }),
         setPlaneStackOrientation: (plane: PlaneOrientation, stackOrientation: number) =>
-          set(s => ({
-            viewers: {
-              ...s.viewers,
-              [id]: {
-                ...s.viewers[id],
-                planeStackOrientations: {
-                  ...s.viewers[id].planeStackOrientations,
-                  [plane]: stackOrientation,
-                },
-              },
-            },
+          updateViewer(v => ({
+            planeStackOrientations: { ...v.planeStackOrientations, [plane]: stackOrientation },
           })),
         setLoading: isLoading => patch({ isLoading }),
 
@@ -106,63 +84,47 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
         },
 
         registerLayer: (layer: LayerState) =>
-          set(s => ({
-            viewers: {
-              ...s.viewers,
-              [id]: {
-                ...s.viewers[id],
-                layers: [...s.viewers[id].layers.filter(l => l.id !== layer.id), layer],
-              },
-            },
-          })),
+          updateViewer(v => ({ layers: [...v.layers.filter(l => l.id !== layer.id), layer] })),
 
         unregisterLayer: (layerId: string) =>
-          set(s => ({
-            viewers: {
-              ...s.viewers,
-              [id]: {
-                ...s.viewers[id],
-                layers: s.viewers[id].layers.filter(l => l.id !== layerId),
-              },
-            },
-          })),
+          updateViewer(v => ({ layers: v.layers.filter(l => l.id !== layerId) })),
 
         /*
          * These mutate the layer's GPU uniforms imperatively (setOpacity/setTransform/
          * setWindowLevel close over the material's uniforms directly — see
          * createLayerMaterial.ts), so the viewer record itself never changes shape.
-         * Bumping both the record's reference AND the `layers` array's own reference
-         * (rather than patch({}), which only bumps the record) serves two purposes:
-         * the record bump is what makes StoreInvalidator (DicomCanvas.tsx) see a
-         * change and invalidate — otherwise these calls are silent no-ops under
-         * frameloop="demand" until some unrelated invalidate happens to fire — and
-         * the array bump keeps `ctx.layers` itself a fresh reference on every edit,
-         * so any consumer that keys off `ctx.layers` by reference (not just by the
-         * mutated uniforms inside it) reliably re-evaluates too.
+         * Bumping just the viewer record's identity is what tells StoreInvalidator to
+         * redraw on frameloop="demand" — but consumers decide whether to rebuild/refresh
+         * against the `layers` ARRAY's own identity specifically (see Viewport2DContent's
+         * "layers changed" effect), so a plain record-identity bump alone isn't enough:
+         * any reader that isn't the one currently driving the edit would never
+         * re-evaluate against the new value until something unrelated happened to
+         * trigger it. Bump `layers` too so every consumer reliably reacts to every
+         * opacity/window-level/LUT/transform edit.
          */
         setLayerOpacity: (layerId, opacity) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setOpacity(opacity);
-          patch({ layers: [...get().viewers[id].layers] });
+          updateViewer(v => ({ layers: [...v.layers] }));
         },
         setLayerTransform: (layerId, transform: LayerTransform) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setTransform(transform);
-          patch({ layers: [...get().viewers[id].layers] });
+          updateViewer(v => ({ layers: [...v.layers] }));
         },
         setLayerWindowLevel: (layerId, center, width) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setWindowLevel?.(center, width);
-          patch({ layers: [...get().viewers[id].layers] });
+          updateViewer(v => ({ layers: [...v.layers] }));
         },
         setLayerLut: (layerId, name) => {
           get()
             .viewers[id]?.layers.find(l => l.id === layerId)
             ?.setLut?.(name);
-          patch({ layers: [...get().viewers[id].layers] });
+          updateViewer(v => ({ layers: [...v.layers] }));
         },
       };
 

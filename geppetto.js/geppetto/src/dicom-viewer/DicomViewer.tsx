@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { DicomViewerContext } from "./DicomViewerContext";
 import { CanvasIdContext } from "./canvas-context";
@@ -13,6 +13,7 @@ import {
   PlaneOrientation,
   ViewportHandle,
 } from "./types";
+import { VP_ID_MAP } from "./utils";
 
 const loadingOverlayStyle: React.CSSProperties = {
   position: "absolute",
@@ -37,9 +38,6 @@ const progressBarTrackStyle: React.CSSProperties = {
   backgroundColor: "rgba(255,255,255,0.25)",
   overflow: "hidden",
 };
-
-// Maps each viewport pane to the numeric id DicomCanvas/onViewportReady use for it
-const VP_ID_MAP: Record<OrientationMode, number> = { "3d": 0, axial: 1, sagittal: 2, coronal: 3 };
 
 export const DicomViewer: React.FC<DicomViewerProps> = ({
   id,
@@ -254,18 +252,21 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     [stack],
   );
 
-  // Viewer may not exist yet on the very first render (store registers async)
-  if (!viewer) return null;
+  const ctxValue: DicomViewerContextType | null = useMemo(() => {
+    if (!viewer) return null;
+    return {
+      ...viewer,
+      rawData: data,
+      dataToWorld,
+      worldToData,
+      syncLocalizers: syncAll,
+      viewportScenes,
+      registerViewportScene,
+    };
+  }, [viewer, data, dataToWorld, worldToData, syncAll, viewportScenes, registerViewportScene]);
 
-  const ctxValue: DicomViewerContextType = {
-    ...viewer,
-    rawData: data,
-    dataToWorld,
-    worldToData,
-    syncLocalizers: syncAll,
-    viewportScenes,
-    registerViewportScene,
-  };
+  // Viewer may not exist yet on the very first render (store registers async)
+  if (!viewer || !ctxValue) return null;
 
   const isLoading = viewer.isLoading || loading;
   // stack ready but nothing painted yet: StackHelper/DataTexture setup + first WebGL frame still pending

@@ -35,8 +35,9 @@ export { useLayerStack } from "./hooks/useLayerStack";
 export { createLayerMaterial, LUT_PRESETS } from "./layers/createLayerMaterial";
 
 // Geometry helpers (for building custom slice-aware overlays)
-export { soToCol, makePlaneFilter } from "./utils";
+export { soToCol, makePlaneFilter, VP_ID_MAP } from "./utils";
 export type { PlaneFilter } from "./utils";
+export { usePlaneFilters } from "./hooks/usePlaneFilters";
 
 // Types
 export type {

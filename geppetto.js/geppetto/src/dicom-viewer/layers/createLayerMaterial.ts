@@ -60,6 +60,19 @@ export function buildAirAlphaLut(
 }
 
 /*
+ * ami.js's LutHelper.texture getter allocates a brand-new THREE.Texture (wrapping the
+ * same backing canvas) on every single access — it's never cached. setOpacity/setLut
+ * reassign it on every slider tick / LUT change, so the texture this REPLACES must be
+ * disposed here, or it leaks its GPU-side resource forever: DicomLayer's own unmount
+ * cleanup only ever sees the last one assigned, not the many discarded in between.
+ */
+function refreshLutTexture(uniforms: Record<string, { value: any }>, lut: any): void {
+  const prev = uniforms.uTextureLUT.value;
+  uniforms.uTextureLUT.value = lut.texture;
+  if (prev?.isTexture) prev.dispose();
+}
+
+/*
  * Applies a rigid transform (translate/rotate/scale) to a layer by composing
  * the overlay's base lps2IJK with the inverse of the transform matrix and
  * writing the result into uWorldToData. This enables runtime co-registration
@@ -201,17 +214,17 @@ export function createLayerMaterial(
       const threshold =
         typeof backgroundRemoval === "object" ? (backgroundRemoval.threshold ?? 0.2) : 0.2;
       buildAirAlphaLut(helperLut, opacity, threshold);
-      uniforms.uTextureLUT.value = helperLut.texture;
+      refreshLutTexture(uniforms, helperLut);
       // setOpacity rebuilds the air-alpha curve so air stays transparent
       const setOpacity = (v: number) => {
         buildAirAlphaLut(helperLut, v, threshold);
-        uniforms.uTextureLUT.value = helperLut.texture;
+        refreshLutTexture(uniforms, helperLut);
         uniforms.uOpacity.value = v;
       };
       const setWindowLevel = applyWindowLevel;
       const setLut = (name: string) => {
         helperLut.lut = name;
-        uniforms.uTextureLUT.value = helperLut.texture;
+        refreshLutTexture(uniforms, helperLut);
       };
       const setTransform = (t: LayerTransform) => applyLayerTransform(uniforms, baseLps2IJK, t);
 
@@ -226,7 +239,7 @@ export function createLayerMaterial(
         setTransform,
       };
     } else {
-      uniforms.uTextureLUT.value = helperLut.texture;
+      refreshLutTexture(uniforms, helperLut);
     }
   }
 
@@ -242,7 +255,7 @@ export function createLayerMaterial(
     helperLut && !segmentation
       ? (name: string) => {
           helperLut.lut = name;
-          uniforms.uTextureLUT.value = helperLut.texture;
+          refreshLutTexture(uniforms, helperLut);
         }
       : undefined;
   const setTransform = (t: LayerTransform) => applyLayerTransform(uniforms, baseLps2IJK, t);

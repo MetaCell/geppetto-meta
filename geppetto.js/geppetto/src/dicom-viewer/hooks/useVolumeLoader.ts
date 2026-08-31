@@ -27,11 +27,25 @@ interface UseVolumeLoaderResult {
   downloadProgress: DownloadProgress | null;
 }
 
+export interface UseVolumeLoaderOptions {
+  /*
+   * When true, skips loader.free() and calls stack.pack() after prepare() — needed by
+   * overlay layers (see useLayerStack) whose raw buffers must survive for texture
+   * building, unlike the base volume which frees its loader eagerly once packed.
+   */
+  retainRawData?: boolean;
+}
+
 /*
  * Loads a DICOM/NIFTI/NRRD volume and returns the prepared StackModel.
- * Calls loader.free() after prepare() to release raw frame buffers.
+ * Calls loader.free() after prepare() to release raw frame buffers, unless
+ * options.retainRawData is set.
  */
-export function useVolumeLoader(data: string | string[] | null): UseVolumeLoaderResult {
+export function useVolumeLoader(
+  data: string | string[] | null,
+  options: UseVolumeLoaderOptions = {},
+): UseVolumeLoaderResult {
+  const { retainRawData = false } = options;
   const [stack, setStack] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -60,10 +74,11 @@ export function useVolumeLoader(data: string | string[] | null): UseVolumeLoader
       .then(() => {
         if (cancelled) return;
         const series = loader.data[0].mergeSeries(loader.data)[0];
-        loader.free();
+        if (!retainRawData) loader.free();
         loaderRef.current = null;
         const s = series.stack[0];
         s.prepare();
+        if (retainRawData) s.pack();
         setStack(s);
         setLoading(false);
         setDownloadProgress(null);
@@ -80,7 +95,7 @@ export function useVolumeLoader(data: string | string[] | null): UseVolumeLoader
       loaderRef.current?.free();
       loaderRef.current = null;
     };
-  }, [JSON.stringify(resolveDataUrls(data))]);
+  }, [JSON.stringify(resolveDataUrls(data)), retainRawData]);
 
   return { stack, loading, error, downloadProgress };
 }
