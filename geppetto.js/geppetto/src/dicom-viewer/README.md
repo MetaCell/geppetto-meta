@@ -325,7 +325,8 @@ import { DicomLayer } from '@metacell/geppetto/dicom-viewer';
 | `interpolation` | `0 \| 1` | `1` | `0` = nearest-neighbour (for label maps), `1` = trilinear (default). |
 | `segmentation` | `object` | — | Switch to label-map mode. See below. |
 | `backgroundRemoval` | `boolean \| { threshold?: number }` | — | Enable air transparency for CT overlays. Voxels below the threshold (default: `0.2` of normalised intensity) are kept transparent using an opacity LUT curve. Setting `opacity` via `setLayerOpacity` rebuilds the curve automatically. |
-| `onProgress` | `(progress: DownloadProgress \| null) => void` | — | Reports this layer's own fetch progress — same shape/semantics as `useVolumeLoader`'s `downloadProgress` (see [Loading state](#loading-state)). Fires `null` once loading finishes or errors. |
+| `onProgress` | `(progress: DownloadProgress \| null) => void` | — | Reports this layer's own fetch progress — same shape/semantics as `useVolumeLoader`'s `downloadProgress` (see [Loading state](#loading-state)). Fires `null` on mount, and again once loading finishes or errors — so it can't alone distinguish "not started" from "finished"; use `onLoadingChange` for that. |
+| `onLoadingChange` | `(loading: boolean) => void` | — | Reports the fetch+decode span as a plain boolean. Prefer this over `onProgress` for a "something is happening" indicator: byte progress may never fire at all when the volume is served from cache and the real cost is CPU-side gzip/parse work, not network transfer. |
 
 #### Label-map mode (`segmentation`)
 

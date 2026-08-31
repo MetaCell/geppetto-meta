@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo } from "react";
 import { createPortal, useThree } from "@react-three/fiber";
+import React, { useEffect, useMemo } from "react";
 import { useDicomViewerContext } from "../DicomViewerContext";
-import { OrientationMode } from "../types";
+import type { OrientationMode } from "../types";
 
 const ALL_VIEWPORTS: OrientationMode[] = ["3d", "axial", "sagittal", "coronal"];
 
@@ -43,8 +43,7 @@ export const DicomOverlay: React.FC<DicomOverlayProps> = ({
       {viewports.map(vp => {
         const scene = ctx.viewportScenes[vp];
         if (!scene) return null;
-        // createPortal's 3rd param is a RootState override, not a React key —
-        // the key has to be set on the returned element itself.
+        // createPortal's 3rd param isn't a key — see doc/dev/dicom-viewer.md
         return React.cloneElement(createPortal(content, scene), { key: vp });
       })}
     </>

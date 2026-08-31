@@ -199,6 +199,11 @@ overlay stack (for texture data) to be ready before creating the layer.
   `Viewport3DContent` can find and hide these portal roots for its render pass — the 2D scenes are
   nested into the 3D scene for slice-plane rendering, which would otherwise also drag in overlays
   whose `viewports` prop excludes `"3d"`.
+- **Portal key bug**: each viewport's portal must get a distinct React `key` (there's one per
+  entry in `viewports`), but R3F's `createPortal(children, container, state)` takes a `RootState`
+  override as its 3rd argument — not a key. Passing `{ key: vp }` there silently merges into
+  `state` and never actually keys the element, so the fix wraps the portal in
+  `React.cloneElement(createPortal(...), { key: vp })` instead.
 
 ## `preconf/DicomViewer.tsx`
 

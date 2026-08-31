@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { useLayerStack } from "../hooks/useLayerStack";
-import { DownloadProgress } from "../hooks/useVolumeLoader";
-import { createLayerMaterial, LayerMaterialOpts } from "./createLayerMaterial";
-import { LayerState } from "../types";
+import type { DownloadProgress } from "../hooks/useVolumeLoader";
+import type { LayerState } from "../types";
+import { createLayerMaterial, type LayerMaterialOpts } from "./createLayerMaterial";
 
 export interface DicomLayerProps extends LayerMaterialOpts {
   // Unique id used to identify this layer in the store (registerLayer/unregisterLayer)
@@ -14,6 +14,7 @@ export interface DicomLayerProps extends LayerMaterialOpts {
   renderOrder?: number;
   // Reports this layer's own fetch progress — same shape/semantics as useVolumeLoader's
   onProgress?: (progress: DownloadProgress | null) => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 export function DicomLayer({
@@ -21,6 +22,7 @@ export function DicomLayer({
   data,
   renderOrder = 1,
   onProgress,
+  onLoadingChange,
   opacity,
   lut,
   windowCenter,
@@ -28,15 +30,21 @@ export function DicomLayer({
   ...restMaterialOpts
 }: DicomLayerProps): null {
   const ctx = useDicomViewerContext();
-  const { stack: layerStack, downloadProgress } = useLayerStack(data);
+  const { stack: layerStack, loading, downloadProgress } = useLayerStack(data);
   const layerRef = useRef<LayerState | null>(null);
-  // Ref (not a dep) so a new onProgress identity every render doesn't refire the effect below
+  // Refs (not deps) so a new onProgress/onLoadingChange identity every render doesn't refire these
   const onProgressRef = useRef(onProgress);
   onProgressRef.current = onProgress;
+  const onLoadingChangeRef = useRef(onLoadingChange);
+  onLoadingChangeRef.current = onLoadingChange;
 
   useEffect(() => {
     onProgressRef.current?.(downloadProgress);
   }, [downloadProgress]);
+
+  useEffect(() => {
+    onLoadingChangeRef.current?.(loading);
+  }, [loading]);
 
   // React to opacity changes after mount — creation-time value only seeds the initial uniform.
   useEffect(() => {
