@@ -1,9 +1,8 @@
 /*
- * ami.js is the MetaCell fork of the AMI medical-imaging library.
- * It ships as plain JS with no bundled TypeScript declarations; all imports
- * from it are typed as `any` in the source code.
+ * @metacell/ami is the MetaCell fork of the AMI medical-imaging library,
+ * published on npm. All imports from it are typed as `any` in the source code.
  */
-declare module "ami.js";
+declare module "@metacell/ami";
 
 /*
  * Minimal process.env shim so files that guard dev-only code with

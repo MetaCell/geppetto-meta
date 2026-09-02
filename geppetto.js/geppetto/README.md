@@ -18,7 +18,7 @@ This package consolidates the previously separate `geppetto-ui`, `geppetto-core`
 
 ```bash
 # peer dependencies
-yarn add react react-dom three @react-three/fiber @react-three/drei @mui/material flexlayout-react ami.js
+yarn add react react-dom three @react-three/fiber @react-three/drei @mui/material flexlayout-react @metacell/ami
 
 # package (not yet on npm — use yalc for local development)
 yalc add @metacell/geppetto

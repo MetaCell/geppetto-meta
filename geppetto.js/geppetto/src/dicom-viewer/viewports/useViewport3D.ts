@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
-import { TrackballControl } from "ami.js";
+import { TrackballControl } from "@metacell/ami";
 
 interface Viewport3DHandle {
   scene: THREE.Scene;

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
-import { StackHelper, LocalizerHelper, OrthographicCamera, TrackballOrthoControl } from "ami.js";
+import { StackHelper, LocalizerHelper, OrthographicCamera, TrackballOrthoControl } from "@metacell/ami";
 import { LayerState, PlaneOrientation } from "../types";
 
 interface Viewport2DHandle {

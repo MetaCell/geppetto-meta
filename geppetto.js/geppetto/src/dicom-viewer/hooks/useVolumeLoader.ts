@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { VolumeLoader } from "ami.js";
+import { VolumeLoader } from "@metacell/ami";
 
 // Normalises the `data` prop to a URL array — a plain string becomes a single-element array.
 export function resolveDataUrls(data: string | string[] | null | undefined): string[] | null {

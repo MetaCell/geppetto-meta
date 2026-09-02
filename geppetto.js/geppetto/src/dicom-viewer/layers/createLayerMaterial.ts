@@ -5,7 +5,7 @@ import {
   DataFragmentShader,
   LutHelper,
   SegmentationLutHelper,
-} from "ami.js";
+} from "@metacell/ami";
 import { LayerState, LayerTransform } from "../types";
 
 export interface LayerMaterialOpts {

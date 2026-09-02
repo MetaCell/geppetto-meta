@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "yarn link:yalc",
-    "link:yalc": "yalc link @metacell/geppetto && yalc link ami.js",
+    "link:yalc": "yalc link @metacell/geppetto",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@metacell/ami": "^0.34.0",
     "@metacell/geppetto": "file:.yalc/@metacell/geppetto",
     "@mui/icons-material": "^9.0.0",
     "@mui/material": "^9.0.0",

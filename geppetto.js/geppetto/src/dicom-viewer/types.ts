@@ -26,7 +26,7 @@ export interface LayerState {
 }
 
 export interface DicomViewerState {
-  stack: any | null; // ami.js StackModel
+  stack: any | null; // @metacell/ami StackModel
   viewMode: ViewMode;
   orientation: OrientationMode;
   sliceIndices: Record<PlaneOrientation, number>;

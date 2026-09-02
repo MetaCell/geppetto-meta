@@ -107,7 +107,7 @@
     "@mui/material": "^9.0.0",
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
-    "ami.js": ">=0.33.0",
+    "@metacell/ami": ">=0.34.0",
     "flexlayout-react": "^0.8.17",
     "react": ">=19.0.0 <19.3.0",
     "react-dom": ">=19.0.0 <19.3.0",

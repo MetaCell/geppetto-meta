@@ -30,7 +30,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [
       "@metacell/geppetto",
-      "ami.js",
+      "@metacell/ami",
     ],
   },
   assetsInclude: ["**/*.nii.gz"],
