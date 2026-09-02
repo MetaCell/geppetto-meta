@@ -4,7 +4,7 @@ React component library for neuroscience data visualisation, built by [MetaCell]
 
 This package consolidates the previously separate `geppetto-ui`, `geppetto-core`, and `geppetto-client` packages into a single, tree-shakeable TypeScript library targeting React 19, MUI v9, and React Three Fiber v9.
 
-**ESM only.** This package ships ES modules exclusively — there is no CommonJS build. Requires Node ≥18, or a bundler/runtime with native ESM support (Vite, current Webpack, current Jest with ESM enabled, etc.). A plain `require('@metacell/geppetto')` will not work.
+**ESM only.** This package ships ES modules exclusively — there is no CommonJS build. Requires Node ≥22, or a bundler/runtime with native ESM support (Vite, current Webpack, current Jest with ESM enabled, etc.). A plain `require('@metacell/geppetto')` will not work.
 
 ## Modules
 
