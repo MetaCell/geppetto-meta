@@ -1,0 +1,119 @@
+{
+  "name": "@metacell/geppetto",
+  "version": "1.0.0-alpha.0",
+  "description": "MetaCell's neuroscience visualization components for React.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./3d-canvas": {
+      "import": "./dist/3d-canvas/index.js",
+      "types": "./dist/3d-canvas/index.d.ts"
+    },
+    "./3d-canvas/Canvas3D": {
+      "import": "./dist/3d-canvas/Canvas3D.js",
+      "types": "./dist/3d-canvas/Canvas3D.d.ts"
+    },
+    "./3d-canvas/toolbar/Toolbar3D": {
+      "import": "./dist/3d-canvas/toolbar/Toolbar3D.js",
+      "types": "./dist/3d-canvas/toolbar/Toolbar3D.d.ts"
+    },
+    "./dicom-viewer": {
+      "import": "./dist/dicom-viewer/index.js",
+      "types": "./dist/dicom-viewer/index.d.ts"
+    },
+    "./dicom-viewer/DicomViewer": {
+      "import": "./dist/dicom-viewer/DicomViewer.js",
+      "types": "./dist/dicom-viewer/DicomViewer.d.ts"
+    },
+    "./dicom-viewer/preconf/DicomViewer": {
+      "import": "./dist/dicom-viewer/preconf/DicomViewer.js",
+      "types": "./dist/dicom-viewer/preconf/DicomViewer.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/layout/index.js",
+      "types": "./dist/layout/index.d.ts"
+    },
+    "./layout/styles/*.css": "./dist/layout/styles/*.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaCell/geppetto-meta"
+  },
+  "keywords": [
+    "geppetto",
+    "neuroscience",
+    "react"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "vite build",
+    "build:clean": "rm -rf dist",
+    "build:dev": "vite build --mode development",
+    "build:types": "tsc --emitDeclarationOnly",
+    "publish:yalc": "yalc publish --push",
+    "watch": "vite build --watch --mode development",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint-fix": "eslint . --fix",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "@mui/material": "^9.0.0",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/three": "^0.180.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "eslint": "^10.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "flexlayout-react": "^0.8.17",
+    "redux": "^5.0.0",
+    "globals": "^17.0.0",
+    "prettier": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.180.0",
+    "typescript": "^6.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^8.0.0",
+    "vite-plugin-dts": "^5.0.0",
+    "vitest": "^4.0.0"
+  },
+  "peerDependencies": {
+    "@mui/material": "^9.0.0",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.0.0",
+    "@metacell/ami": ">=0.34.0",
+    "flexlayout-react": "^0.8.17",
+    "react": ">=19.0.0 <19.3.0",
+    "react-dom": ">=19.0.0 <19.3.0",
+    "three": "^0.180.0"
+  },
+  "resolutions": {
+    "react": "^19.0.0"
+  }
+}
