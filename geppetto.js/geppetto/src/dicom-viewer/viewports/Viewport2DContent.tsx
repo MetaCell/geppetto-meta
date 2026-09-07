@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useViewport2D } from "./useViewport2D";
+import { useCanvasId } from "../canvas-context";
 import { useDicomViewerContext } from "../DicomViewerContext";
+import { useSliceIndices } from "../hooks/useDicomViewerStore";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { PlaneOrientation, ClickAction, HoverAction } from "../types";
 import { useFirstFrameFlag } from "./useFirstFrameFlag";
@@ -116,8 +118,13 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     return () => observer.disconnect();
   }, [handle, domRef.current]);
 
-  // Sync slice index from Zustand store → StackHelper, then refresh overlay meshes
-  const sliceIndex = ctx.sliceIndices[planeOrientation];
+  /*
+   * Sync slice index from Zustand store → StackHelper, then refresh overlay meshes
+   * Subscribed directly rather than read off the context: this is the value that changes on every
+   * scrub tick, and routing it through the context re-rendered every consumer in the viewer.
+   */
+  const sliceIndices = useSliceIndices(useCanvasId());
+  const sliceIndex = sliceIndices?.[planeOrientation] ?? 0;
   useEffect(() => {
     if (!handle?.stackHelper || sliceIndex === prevSliceIndex.current) return;
     prevSliceIndex.current = sliceIndex;

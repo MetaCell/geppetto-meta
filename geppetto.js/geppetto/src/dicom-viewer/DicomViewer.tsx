@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as THREE from "three";
 import { DicomViewerContext } from "./DicomViewerContext";
 import { CanvasIdContext } from "./canvas-context";
-import { useDicomViewerStore, useDicomViewer } from "./hooks/useDicomViewerStore";
+import { useDicomViewerStore, useDicomViewerStable } from "./hooks/useDicomViewerStore";
 import { pctOf, useVolumeLoader } from "./hooks/useVolumeLoader";
 import { useLocalizerSync, initLocalizerCrossRefs } from "./hooks/useLocalizerSync";
 import { DicomCanvas } from "./viewports/DicomCanvas";
@@ -66,7 +66,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     return () => unregisterViewer(id);
   }, [id]);
 
-  const viewer = useDicomViewer(id);
+  const viewer = useDicomViewerStable(id);
 
   // Load base volume
   const { stack, loading, error, downloadProgress } = useVolumeLoader(data);

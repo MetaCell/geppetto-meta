@@ -59,8 +59,15 @@ export interface DicomViewerActions {
   setLayerLut: (id: string, name: string) => void;
 }
 
+/*
+ * sliceIndices is deliberately NOT part of the context: it is the highest-frequency write in the
+ * viewer, and including it made every scrub tick produce a new context value and re-render every
+ * consumer. Components that need it subscribe directly with useSliceIndices(useDicomCanvasId()),
+ * so only they re-render.
+ */
 // Full context exposed to hooks/buttons inside <DicomViewer>
-export interface DicomViewerContext extends DicomViewerState, DicomViewerActions {
+export interface DicomViewerContext
+  extends Omit<DicomViewerState, "sliceIndices">, DicomViewerActions {
   rawData: string | string[] | null;
   dataToWorld: (ijk: THREE.Vector3) => THREE.Vector3;
   worldToData: (lps: THREE.Vector3) => THREE.Vector3;

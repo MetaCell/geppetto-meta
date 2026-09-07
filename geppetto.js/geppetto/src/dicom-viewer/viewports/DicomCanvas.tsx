@@ -114,7 +114,11 @@ function FrameClearer() {
   return null;
 }
 
-export const DicomCanvas: React.FC<DicomCanvasProps> = ({
+/*
+ * Memoised as a backstop: its props are primitives and memoised callbacks, none of which change
+ * when a slice does, so even if a parent re-renders for an unrelated reason, this subtree does not.
+ */
+const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   viewerId,
   viewMode,
   orientation,
@@ -238,3 +242,5 @@ export const DicomCanvas: React.FC<DicomCanvasProps> = ({
     </div>
   );
 };
+
+export const DicomCanvas = React.memo(DicomCanvasImpl);

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { create } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import type {
   DicomViewerActions,
   DicomViewerState,
@@ -123,5 +124,40 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
     }),
 }));
 
+/*
+ * Subscribing to the whole record re-renders on EVERY patch, including slice scrubbing — the
+ * highest-frequency write in the viewer. That re-renders DicomViewer, which rebuilds ctxValue,
+ * which re-renders every context consumer (all panes, every overlay), none of which needed to
+ * know. Kept for callers that genuinely want everything.
+ */
 export const useDicomViewer = (id: string): ViewerRecord | null =>
   useDicomViewerStore(s => s.viewers[id] ?? null);
+
+/*
+ * The record WITHOUT sliceIndices, shallow-compared. A slice patch produces a new record object but
+ * leaves every field here untouched, so the shallow comparison holds and no re-render happens. This
+ * is what keeps scrubbing from cascading through the whole subtree.
+ */
+export const useDicomViewerStable = (id: string): Omit<ViewerRecord, "sliceIndices"> | null =>
+  useDicomViewerStore(
+    useShallow(s => {
+      const viewer = s.viewers[id];
+      if (!viewer) return null;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { sliceIndices, ...rest } = viewer;
+      return rest;
+    }),
+  );
+
+/*
+ * Slice positions, for the few components that actually depend on them (the 2D panes and any
+ * overlay that filters by proximity to the current slice).
+ *
+ * Returns the STORED reference, never a constructed object: several call sites put this straight
+ * into a dependency array, and a fresh object per store event would re-run those effects on every
+ * unrelated patch — worse than the cascade this replaces.
+ */
+export const useSliceIndices = (
+  id: string | undefined,
+): Record<PlaneOrientation, number> | undefined =>
+  useDicomViewerStore(s => (id ? s.viewers[id]?.sliceIndices : undefined));

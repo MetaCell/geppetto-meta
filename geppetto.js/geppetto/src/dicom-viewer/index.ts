@@ -25,7 +25,12 @@ export {
 } from "./canvas-context";
 
 // Low-level hooks (for advanced use cases)
-export { useDicomViewer, useDicomViewerStore } from "./hooks/useDicomViewerStore";
+export {
+  useDicomViewer,
+  useDicomViewerStable,
+  useDicomViewerStore,
+  useSliceIndices,
+} from "./hooks/useDicomViewerStore";
 export { useVolumeLoader, pctOf } from "./hooks/useVolumeLoader";
 export { useLayerStack } from "./hooks/useLayerStack";
 export { createLayerMaterial, LUT_PRESETS } from "./layers/createLayerMaterial";
