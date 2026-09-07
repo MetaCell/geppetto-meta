@@ -3,6 +3,11 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrientationMode, PlaneOrientation, ViewMode, ClickAction, HoverAction } from "../types";
 import { Viewport2DContent } from "./Viewport2DContent";
 import { Viewport3DContent } from "./Viewport3DContent";
+import {
+  createRenderScheduler,
+  RenderSchedulerContext,
+  useRenderScheduler,
+} from "./renderScheduler";
 import { useDicomViewerStore } from "../hooks/useDicomViewerStore";
 import { useFiberStore } from "../canvas-context";
 
@@ -28,14 +33,20 @@ interface DicomCanvasProps {
 
 function StoreInvalidator({ viewerId }: { viewerId: string }) {
   const { invalidate } = useThree();
+  const scheduler = useRenderScheduler();
 
   useEffect(() => {
     return useDicomViewerStore.subscribe((state, prev: any) => {
       if (state.viewers[viewerId] !== prev?.viewers[viewerId]) {
+        /*
+         * Marks the frame as "shared state moved", which is what lets the other panes redraw their
+         * localizer crosshairs even while one pane is being dragged (see renderScheduler).
+         */
+        scheduler.bumpSharedRevision();
         invalidate();
       }
     });
-  }, [viewerId, invalidate]);
+  }, [viewerId, invalidate, scheduler]);
 
   return null;
 }
@@ -104,10 +115,40 @@ function FiberRegister({ viewerId }: { viewerId: string }) {
   return null;
 }
 
-function FrameClearer() {
-  const { gl } = useThree();
+/*
+ * Wipes the whole canvas only when the layout changed. Per-frame clearing used to be
+ * unconditional, which forced every pane to redraw every frame or be left blank - the thing that
+ * made skipping idle panes impossible. Each pane now clears its own scissor rect just before
+ * drawing, so a pane that skips a frame simply keeps its previous pixels.
+ */
+function FrameClearer({
+  viewMode,
+  orientation,
+}: {
+  viewMode: ViewMode;
+  orientation: OrientationMode;
+}) {
+  const { gl, size } = useThree();
+  const scheduler = useRenderScheduler();
+
+  /*
+   * Pane rects move when the view mode changes and when the canvas resizes; anything that is no
+   * longer covered by a pane must be wiped or it keeps showing the old frame.
+   */
+  useEffect(() => {
+    scheduler.requestFullClear();
+  }, [viewMode, orientation, size.width, size.height, scheduler]);
+
   useFrame(() => {
+    /*
+     * Runs at priority -1, before every pane, so the sibling-throttle decision is made once per
+     * frame and all panes see the same answer.
+     */
+    scheduler.beginFrame(performance.now());
+
+    if (!scheduler.consumeFullClear()) return;
     gl.autoClear = true;
+    gl.setScissorTest(false);
     gl.clear();
     gl.autoClear = false;
   }, -1);
@@ -143,6 +184,13 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   const r2Ref = useRef<HTMLDivElement>(null!); // sagittal
   const r3Ref = useRef<HTMLDivElement>(null!); // coronal
 
+  /*
+   * One scheduler per canvas, never module-level: an app can mount several <DicomViewer>s on the
+   * same page and a shared gate would let a drag in one freeze the others.
+   */
+  const schedulerRef = useRef<ReturnType<typeof createRenderScheduler> | undefined>(undefined);
+  if (!schedulerRef.current) schedulerRef.current = createRenderScheduler();
+
   return (
     <div ref={containerRef} style={{ position: "relative", width: "100%", height: "100%" }}>
       {/* Four tracking divs that define viewport regions */}
@@ -158,85 +206,100 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
         <Canvas
           style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
           frameloop="demand"
-          gl={{ antialias: true, localClippingEnabled: true, autoClear: false }}
+          /*
+           * antialias:false - MSAA costs little on a GPU but is expensive under software rendering
+           * (SwiftShader/llvmpipe), which is what a machine without hardware acceleration falls
+           * back to. These panes are volume slices, where it buys almost nothing visually.
+           * preserveDrawingBuffer:true is REQUIRED by the per-pane render gating: WebGL clears the
+           * drawing buffer after every composite unless asked not to, so a pane that skips a frame
+           * would render nothing and go black instead of keeping its previous pixels.
+           */
+          gl={{
+            antialias: false,
+            preserveDrawingBuffer: true,
+            localClippingEnabled: true,
+            autoClear: false,
+          }}
           eventSource={containerEl}
           eventPrefix="client"
         >
-          {/* Clear canvas once per frame before any viewport renders */}
-          <FrameClearer />
-          {/* Register this canvas in useFiberStore so Toolbar3DButton can find it by viewerId */}
-          <FiberRegister viewerId={viewerId} />
-          {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
-          <StoreInvalidator viewerId={viewerId} />
-          {onFps && <FpsTracker onFps={onFps} />}
+          <RenderSchedulerContext.Provider value={schedulerRef.current}>
+            {/* Wipes the canvas only when the layout changed; panes clear their own scissor rect */}
+            <FrameClearer viewMode={viewMode} orientation={orientation} />
+            {/* Register this canvas in useFiberStore so Toolbar3DButton can find it by viewerId */}
+            <FiberRegister viewerId={viewerId} />
+            {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
+            <StoreInvalidator viewerId={viewerId} />
+            {onFps && <FpsTracker onFps={onFps} />}
 
-          <Viewport3DContent
-            stack={stack}
-            domRef={r0Ref}
-            animationSkipRate={animationSkipRate}
-            onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
-            onFirstFrame={() => onViewportFirstFrame?.(0)}
-            onClick={onClick}
-            onCtrlClick={onCtrlClick}
-            onShiftClick={onShiftClick}
-            onDoubleClick={onDoubleClick}
-            onRightClick={onRightClick}
-            onHover={onHover}
-          />
+            <Viewport3DContent
+              stack={stack}
+              domRef={r0Ref}
+              animationSkipRate={animationSkipRate}
+              onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
+              onFirstFrame={() => onViewportFirstFrame?.(0)}
+              onClick={onClick}
+              onCtrlClick={onCtrlClick}
+              onShiftClick={onShiftClick}
+              onDoubleClick={onDoubleClick}
+              onRightClick={onRightClick}
+              onHover={onHover}
+            />
 
-          <Viewport2DContent
-            stack={stack}
-            planeOrientation="axial"
-            sliceColor={SLICE_COLORS.axial}
-            domRef={r1Ref}
-            animationSkipRate={animationSkipRate}
-            onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
-            onFirstFrame={() => onViewportFirstFrame?.(1)}
-            onHandleReady={onViewport2DReady}
-            onClick={onClick}
-            onCtrlClick={onCtrlClick}
-            onShiftClick={onShiftClick}
-            onDoubleClick={onDoubleClick}
-            onRightClick={onRightClick}
-            onHover={onHover}
-          />
+            <Viewport2DContent
+              stack={stack}
+              planeOrientation="axial"
+              sliceColor={SLICE_COLORS.axial}
+              domRef={r1Ref}
+              animationSkipRate={animationSkipRate}
+              onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
+              onFirstFrame={() => onViewportFirstFrame?.(1)}
+              onHandleReady={onViewport2DReady}
+              onClick={onClick}
+              onCtrlClick={onCtrlClick}
+              onShiftClick={onShiftClick}
+              onDoubleClick={onDoubleClick}
+              onRightClick={onRightClick}
+              onHover={onHover}
+            />
 
-          <Viewport2DContent
-            stack={stack}
-            planeOrientation="sagittal"
-            sliceColor={SLICE_COLORS.sagittal}
-            domRef={r2Ref}
-            animationSkipRate={animationSkipRate}
-            onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
-            onFirstFrame={() => onViewportFirstFrame?.(2)}
-            onHandleReady={onViewport2DReady}
-            onClick={onClick}
-            onCtrlClick={onCtrlClick}
-            onShiftClick={onShiftClick}
-            onDoubleClick={onDoubleClick}
-            onRightClick={onRightClick}
-            onHover={onHover}
-          />
+            <Viewport2DContent
+              stack={stack}
+              planeOrientation="sagittal"
+              sliceColor={SLICE_COLORS.sagittal}
+              domRef={r2Ref}
+              animationSkipRate={animationSkipRate}
+              onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
+              onFirstFrame={() => onViewportFirstFrame?.(2)}
+              onHandleReady={onViewport2DReady}
+              onClick={onClick}
+              onCtrlClick={onCtrlClick}
+              onShiftClick={onShiftClick}
+              onDoubleClick={onDoubleClick}
+              onRightClick={onRightClick}
+              onHover={onHover}
+            />
 
-          <Viewport2DContent
-            stack={stack}
-            planeOrientation="coronal"
-            sliceColor={SLICE_COLORS.coronal}
-            domRef={r3Ref}
-            animationSkipRate={animationSkipRate}
-            onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
-            onFirstFrame={() => onViewportFirstFrame?.(3)}
-            onHandleReady={onViewport2DReady}
-            onClick={onClick}
-            onCtrlClick={onCtrlClick}
-            onShiftClick={onShiftClick}
-            onDoubleClick={onDoubleClick}
-            onRightClick={onRightClick}
-            onHover={onHover}
-          />
+            <Viewport2DContent
+              stack={stack}
+              planeOrientation="coronal"
+              sliceColor={SLICE_COLORS.coronal}
+              domRef={r3Ref}
+              animationSkipRate={animationSkipRate}
+              onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
+              onFirstFrame={() => onViewportFirstFrame?.(3)}
+              onHandleReady={onViewport2DReady}
+              onClick={onClick}
+              onCtrlClick={onCtrlClick}
+              onShiftClick={onShiftClick}
+              onDoubleClick={onDoubleClick}
+              onRightClick={onRightClick}
+              onHover={onHover}
+            />
 
-          {/* DicomOverlay and DicomLayer components render here */}
-          {children}
+            {/* DicomOverlay and DicomLayer components render here */}
+            {children}
+          </RenderSchedulerContext.Provider>
         </Canvas>
       )}
     </div>

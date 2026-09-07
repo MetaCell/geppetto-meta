@@ -83,7 +83,9 @@ function App() {
 
 ### Single WebGL context, four viewports
 
-`DicomCanvas` creates one R3F `<Canvas>` that covers the full container. Four invisible tracking `<div>`s define the viewport regions (top-left = 3D, top-right = axial, bottom-left = sagittal, bottom-right = coronal). Each viewport reads its tracking div's bounds on every frame, sets the WebGL scissor and viewport to those bounds, and calls `gl.render(scene, camera)` imperatively. A `FrameClearer` component clears the full canvas once at priority -1 before any viewport renders, preventing frame bleed.
+`DicomCanvas` creates one R3F `<Canvas>` that covers the full container. Four invisible tracking `<div>`s define the viewport regions (top-left = 3D, top-right = axial, bottom-left = sagittal, bottom-right = coronal). Each viewport reads its tracking div's bounds on every frame, sets the WebGL scissor and viewport to those bounds, clears just that rect, and calls `gl.render(scene, camera)` imperatively. A `FrameClearer` component runs at priority -1, before any viewport, and wipes the *whole* canvas only when the layout changes (view mode, orientation, resize) — not every frame, since a viewport can now legitimately skip a frame and keep its previous pixels (see the render scheduler below).
+
+Each `DicomCanvas` also creates one `RenderScheduler` (`./viewports/renderScheduler.ts`), provided to its Canvas subtree via context, that gates which viewports actually redraw while one of them is being dragged or wheel-scrubbed — full rate for the one under interaction, throttled for the rest unless shared state moved. This is what keeps interaction cheap without hardware acceleration; see [Performance notes](#performance-notes) for the consumer-facing summary and the dev docs for the full mechanism.
 
 ```
 ┌─────────────────────────────┐
@@ -100,7 +102,7 @@ Viewer state lives in two layers:
 
 1. **`useDicomViewerStore`** — a global Zustand store keyed by viewer `id`. Holds all domain state (stack, slice indices, view mode, layers, threshold). Multiple viewers on the same page each get their own record.
 
-2. **`DicomViewerContext`** — a React context provided at the `<DicomViewer>` root that exposes the state and actions from the store plus derived helpers (`dataToWorld`, `worldToData`, `syncLocalizers`, `viewportScenes`). Components inside `<DicomViewer>` consume this via `useDicomViewerContext()`.
+2. **`DicomViewerContext`** — a React context provided at the `<DicomViewer>` root that exposes the state and actions from the store plus derived helpers (`dataToWorld`, `worldToData`, `syncLocalizers`, `viewportScenes`). Components inside `<DicomViewer>` consume this via `useDicomViewerContext()`. `sliceIndices` is deliberately left off — it's the highest-frequency write in the viewer, so components that need it subscribe directly with `useSliceIndices(useDicomCanvasId())` instead of pulling every consumer into every scrub tick's re-render.
 
 ### Fiber store integration
 
@@ -210,7 +212,6 @@ Throws if called outside a `<DicomViewer>`.
 | `stack` | `StackModel \| null` | The loaded AMI.js base stack. `null` while loading. |
 | `viewMode` | `'quad_view' \| 'single_view'` | Current layout. |
 | `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | Active viewport in single view. |
-| `sliceIndices` | `Record<PlaneOrientation, number>` | Current slice index for each 2D plane. |
 | `sliceMaxIndices` | `Record<PlaneOrientation, number>` | Maximum slice index for each plane (set once the stack helper is ready). |
 | `planeStackOrientations` | `Record<PlaneOrientation, number>` | Each plane's real ami.js `camera.stackOrientation` (0/1/2) — which IJK axis that plane's slices step along. Set internally by `Viewport2DContent` once its camera is ready; used by `centerOnPoint` so click-to-center works for any acquisition orientation, not just axial. Not normally read directly. |
 | `isLoading` | `boolean` | Volume is currently being fetched/parsed. |
@@ -219,6 +220,8 @@ Throws if called outside a `<DicomViewer>`.
 | `threshold3DEnabled` | `boolean` | Whether 3D threshold is applied this frame. Decoupled from the value so toggling does not reset a slider position. |
 | `rawData` | `string \| string[] \| null` | The original `data` prop. |
 | `viewportScenes` | `Partial<Record<OrientationMode, THREE.Scene>>` | Per-viewport Three.js scenes, populated once each viewport initialises. Read by `<DicomOverlay>` to portal content. |
+
+**`sliceIndices` is not on the context.** It's the highest-frequency write in the viewer — every wheel tick during a scrub — and including it here meant every tick rebuilt the context value and re-rendered every consumer (every viewport, every overlay). Read it with `useSliceIndices(useDicomCanvasId())` instead (see [Advanced: reading viewer state outside the component tree](#advanced-reading-viewer-state-outside-the-component-tree)); only components that call it re-render when it changes.
 
 ### Action methods
 
@@ -282,12 +285,13 @@ When `quad_view` is active, each 2D viewport renders crosshair lines showing whe
 
 ### Mouse wheel
 
-Scroll on any 2D viewport to advance or retreat one slice. The scroll handler is attached to the tracking div, not the canvas, so it does not conflict with 3D pan/zoom.
+Scroll on any 2D viewport to advance or retreat one slice. The scroll handler is attached to the tracking div, not the canvas, so it does not conflict with 3D pan/zoom. Ticks from one continuous scroll gesture are batched and applied once per animation frame rather than once per wheel event — a fast trackpad scroll traverses the same number of slices without triggering a store write (and the resulting re-renders) for every single tick.
 
 ### Programmatic
 
 ```ts
-ctx.setSliceIndex('axial', ctx.sliceIndices.axial + 10);
+const sliceIndices = useSliceIndices(useDicomCanvasId());
+ctx.setSliceIndex('axial', (sliceIndices?.axial ?? 0) + 10);
 ```
 
 Slice indices are clamped to `[0, sliceMaxIndices[plane]]` by the viewport logic.
@@ -567,7 +571,35 @@ function SliceCounter({ viewerId }: { viewerId: string }) {
 }
 ```
 
-Returns `null` when the viewer is not yet registered (before the `<DicomViewer>` mounts).
+Returns `null` when the viewer is not yet registered (before the `<DicomViewer>` mounts). Subscribes to the *whole* record, so it re-renders on every patch — including slice scrubbing, the highest-frequency write in the viewer. Prefer `useDicomViewerStable` or `useSliceIndices` below unless you genuinely need everything.
+
+### `useDicomViewerStable(id)`
+
+Like `useDicomViewer`, but shallow-compared and without `sliceIndices`. A slice patch produces a new record object, but every other field is unchanged, so the shallow comparison holds and this hook does not re-render for it:
+
+```ts
+import { useDicomViewerStable } from '@metacell/geppetto/dicom-viewer';
+
+const viewer = useDicomViewerStable(viewerId); // Omit<ViewerRecord, 'sliceIndices'> | null
+```
+
+This is what `<DicomViewer>` itself uses internally to read its own record.
+
+### `useSliceIndices(id)`
+
+Direct selector for the one field the above two omit:
+
+```ts
+import { useSliceIndices, useDicomCanvasId } from '@metacell/geppetto/dicom-viewer';
+
+function SliceCounter() {
+  // Inside a <DicomViewer>, useDicomCanvasId() gives you its id automatically.
+  const sliceIndices = useSliceIndices(useDicomCanvasId());
+  return <span>Axial slice: {sliceIndices?.axial ?? 0}</span>;
+}
+```
+
+Returns the store's own object reference (never a freshly-constructed one), so it's safe to put directly in a `useEffect`/`useMemo` dependency array — a new object per call would re-run those on every unrelated store patch, which defeats the point of subscribing narrowly.
 
 ### `useDicomViewerStore`
 
@@ -638,7 +670,9 @@ const layerState = createLayerMaterial(stack, {
 
 - **`animationSkipRate`** — set to `2` or `3` to render every 2nd or 3rd frame when the scene is very complex. This reduces GPU load at the cost of slightly less responsive interaction.
 
-- **Scissor rendering** — the single WebGL context renders all four viewports in one pass per frame. There is no per-viewport clear; `FrameClearer` clears the full canvas once at the start of each frame.
+- **Scissor rendering** — the single WebGL context renders all four viewports in one pass per frame, each scissored to its own tracking div. Each viewport clears only its own scissor rect right before drawing; the canvas is wiped in full only when the layout changes (view mode, orientation, or a resize), not on every frame — a viewport that skips a frame (see the next point) simply keeps its previous pixels instead of going blank.
+
+- **Per-pane render gating during interaction** — while a viewport is being dragged (orbiting the 3D view, dragging or wheel-scrubbing a 2D plane), only that viewport renders at full rate; the other three throttle to roughly 8fps and only when shared viewer state actually changed (e.g. a slice scrub moves every plane's localizer crosshair, so siblings do need to redraw; orbiting the 3D view touches no shared state, so the 2D planes correctly stay still). This matters most without hardware acceleration (a software GL fallback such as SwiftShader/llvmpipe): without it, one `invalidate()` per mouse move redraws all four viewports, a 4x CPU cost on every pointer move. Idle behaviour (nothing being interacted with) is unaffected — every viewport renders on every `invalidate()` as before. See [`renderScheduler.ts`](doc/dev/dicom-viewer.md#viewportsrenderschedulerts) in the dev docs for the mechanism.
 
 - **Layer disposal** — `DicomLayer` disposes its `ShaderMaterial` and all `DataTexture`s on unmount. If the WebGL context has already been destroyed at that point (e.g. the parent component unmounts), disposal errors are silently swallowed. Mid-session LUT textures are also disposed correctly: AMI.js's `LutHelper.texture` getter allocates a brand-new `THREE.Texture` on every access rather than caching one, so every opacity/LUT change (`setLayerOpacity`, `setLayerLut`, `backgroundRemoval`'s opacity-driven curve rebuilds) disposes the texture it replaces instead of leaking it.
 

@@ -6,6 +6,7 @@ import { useViewportEvents } from "../hooks/useViewportEvents";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { ClickAction, HoverAction } from "../types";
 import { useFirstFrameFlag } from "./useFirstFrameFlag";
+import { useRenderScheduler } from "./renderScheduler";
 
 interface Viewport3DContentProps {
   stack: any | null;
@@ -53,6 +54,13 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     onHover,
   });
   const frameCount = useRef(0);
+  /*
+   * Per-instance identity for the render scheduler; object identity avoids needing a naming scheme
+   * that stays unique across view modes.
+   */
+  const scheduler = useRenderScheduler();
+  const paneId = useRef({}).current;
+  const lastDrawnRevision = useRef(-1);
   const readyFired = useRef(false);
 
   // Register the 3D scene in context and fire onReady once the handle is live.
@@ -72,28 +80,43 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     let pressed = false;
     const onDown = () => {
       pressed = true;
+      // Tells the scheduler that only this pane needs redrawing while the drag lasts.
+      scheduler.beginInteraction(paneId);
       invalidate();
     };
     const onMove = () => {
       if (pressed) invalidate();
     };
     const onUp = () => {
+      if (!pressed) return;
       pressed = false;
+      // Releases the gate and forces one all-panes frame so anything skipped mid-drag catches up.
+      scheduler.endInteraction();
+      invalidate();
     };
     const onWheel = () => invalidate(); // zoom
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerup", onUp);
-    el.addEventListener("pointercancel", onUp);
+    /*
+     * pointerup/pointercancel are bound to WINDOW, not the pane: releasing the mouse outside the
+     * pane it was pressed in is routine, and a release that never reaches this element would leave
+     * the interaction gate latched on forever - every other pane then stops redrawing until some
+     * viewer-store write happens to bump the shared revision.
+     */
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    // A drag interrupted by the tab losing focus never produces a pointerup at all.
+    window.addEventListener("blur", onUp);
     el.addEventListener("wheel", onWheel);
     return () => {
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerup", onUp);
-      el.removeEventListener("pointercancel", onUp);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      window.removeEventListener("blur", onUp);
       el.removeEventListener("wheel", onWheel);
     };
-  }, [handle, domRef.current, invalidate]);
+  }, [handle, domRef.current, invalidate, scheduler, paneId]);
 
   useEffect(() => {
     invalidate();
@@ -117,7 +140,18 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
 
+    /*
+     * Kept outside the skip below so a damped/inertial camera keeps settling even on frames this
+     * pane does not draw - only the GL work is skipped, never the state update.
+     */
     handle.controls.update();
+
+    /*
+     * While a 2D pane is being dragged this one holds its previous pixels; orbiting here touches no
+     * shared state, so the 2D panes correctly sit still while this one moves (see renderScheduler).
+     */
+    if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
+    lastDrawnRevision.current = scheduler.getSharedRevision();
 
     // Light follows camera for depth cues
     const light = handle.scene.children.find((c: any) => c.isDirectionalLight);
@@ -139,6 +173,10 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     gl.setScissor(x, y, w, h);
     gl.setScissorTest(true);
     gl.setViewport(x, y, w, h);
+    // Clear just this pane's rect - the canvas is no longer wiped wholesale each frame.
+    gl.autoClear = true;
+    gl.clear();
+    gl.autoClear = false;
 
     // --- 3D transparency threshold ---
     interface PatchedUniform {

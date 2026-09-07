@@ -7,6 +7,14 @@ import { useSliceIndices } from "../hooks/useDicomViewerStore";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { PlaneOrientation, ClickAction, HoverAction } from "../types";
 import { useFirstFrameFlag } from "./useFirstFrameFlag";
+import { useRenderScheduler } from "./renderScheduler";
+
+/*
+ * How long the wheel must be quiet before a slice scrub counts as finished. Long enough to span the
+ * gaps between ticks of one continuous scroll gesture, short enough that the sibling panes snap to
+ * their final crosshair position without a visible pause.
+ */
+const SCRUB_IDLE_MS = 150;
 
 interface Viewport2DContentProps {
   stack: any | null;
@@ -61,6 +69,13 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     onHover,
   });
   const frameCount = useRef(0);
+  /*
+   * Per-instance identity for the render scheduler; object identity avoids needing a naming scheme
+   * that stays unique across view modes.
+   */
+  const scheduler = useRenderScheduler();
+  const paneId = useRef({}).current;
+  const lastDrawnRevision = useRef(-1);
   const readyFired = useRef(false);
   const prevSliceIndex = useRef<number>(-1);
 
@@ -82,25 +97,40 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     let pressed = false;
     const onDown = () => {
       pressed = true;
+      // Tells the scheduler that only this pane needs redrawing while the drag lasts.
+      scheduler.beginInteraction(paneId);
       invalidate();
     };
     const onMove = () => {
       if (pressed) invalidate();
     };
     const onUp = () => {
+      if (!pressed) return;
       pressed = false;
+      // Releases the gate and forces one all-panes frame so anything skipped mid-drag catches up.
+      scheduler.endInteraction();
+      invalidate();
     };
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerup", onUp);
-    el.addEventListener("pointercancel", onUp);
+    /*
+     * pointerup/pointercancel are bound to WINDOW, not the pane: releasing the mouse outside the
+     * pane it was pressed in is routine, and a release that never reaches this element would leave
+     * the interaction gate latched on forever - every other pane then stops redrawing until some
+     * viewer-store write happens to bump the shared revision.
+     */
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    // A drag interrupted by the tab losing focus never produces a pointerup at all.
+    window.addEventListener("blur", onUp);
     return () => {
       el.removeEventListener("pointerdown", onDown);
       el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerup", onUp);
-      el.removeEventListener("pointercancel", onUp);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      window.removeEventListener("blur", onUp);
     };
-  }, [handle, domRef.current, invalidate]);
+  }, [handle, domRef.current, invalidate, scheduler, paneId]);
 
   useEffect(() => {
     const el = domRef.current;
@@ -146,20 +176,55 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     if (!handle || !domRef.current) return undefined;
     const el = domRef.current;
 
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
+    /*
+     * A wheel scrub has no pointerdown/up to bracket it, so it is treated as an interaction that
+     * ends once the wheel goes quiet. Without this, scrubbing bumps the shared revision on every
+     * tick and every sibling pane redraws at full rate.
+     */
+    let scrubEnd: ReturnType<typeof setTimeout> | undefined;
+    /*
+     * Wheel events fire far faster than frames - a trackpad emits well over 60/s - and each
+     * setSliceIndex writes the store, which produces a new viewer record and re-renders every
+     * consumer. Ticks are accumulated and applied once per animation frame instead, so a burst
+     * costs one cascade rather than one per event. The same number of slices is traversed.
+     */
+    let pendingDelta = 0;
+    let flushHandle: number | undefined;
+
+    const flush = () => {
+      flushHandle = undefined;
       const sh = handle.stackHelper;
-      if (!sh) return;
-      const delta = e.deltaY > 0 ? 1 : -1;
-      const next = sh.index + delta;
-      if (next < 0 || next > sh.orientationMaxIndex) return;
+      const delta = pendingDelta;
+      pendingDelta = 0;
+      if (!sh || delta === 0) return;
+      const next = Math.min(Math.max(sh.index + delta, 0), sh.orientationMaxIndex);
+      if (next === sh.index) return;
       ctx.setSliceIndex(planeOrientation, next);
       invalidate();
     };
 
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (!handle.stackHelper) return;
+      pendingDelta += e.deltaY > 0 ? 1 : -1;
+
+      scheduler.beginInteraction(paneId);
+      if (scrubEnd) clearTimeout(scrubEnd);
+      scrubEnd = setTimeout(() => {
+        scheduler.endInteraction();
+        invalidate();
+      }, SCRUB_IDLE_MS);
+
+      if (flushHandle === undefined) flushHandle = requestAnimationFrame(flush);
+    };
+
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
-  }, [handle, domRef.current, planeOrientation, ctx.setSliceIndex]);
+    return () => {
+      if (scrubEnd) clearTimeout(scrubEnd);
+      if (flushHandle !== undefined) cancelAnimationFrame(flushHandle);
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, [handle, domRef.current, planeOrientation, ctx.setSliceIndex, scheduler, paneId]);
 
   // Publish max slice indices to context once stack helper is ready.
   useEffect(() => {
@@ -184,7 +249,19 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
 
+    /*
+     * Kept outside the skip below so a damped/inertial camera keeps settling even on frames this
+     * pane does not draw - only the GL work is skipped, never the state update.
+     */
     handle.controls.update();
+
+    /*
+     * While another pane is being dragged this one holds its previous pixels instead of redrawing
+     * (see renderScheduler). It still draws whenever shared state moved, which is what keeps the
+     * localizer crosshair in step while slices are scrubbed in a sibling pane.
+     */
+    if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
+    lastDrawnRevision.current = scheduler.getSharedRevision();
 
     // --- Scissored render for this viewport ---
     const rect = domRef.current.getBoundingClientRect();
@@ -202,6 +279,13 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     gl.setScissor(x, y, w, h);
     gl.setScissorTest(true);
     gl.setViewport(x, y, w, h);
+    /*
+     * Clear just this pane's rect. The canvas is no longer wiped wholesale each frame (that would
+     * blank any pane which skips), and gl.clear() honours the scissor box, so this stays local.
+     */
+    gl.autoClear = true;
+    gl.clear();
+    gl.autoClear = false;
 
     gl.render(handle.scene, handle.camera);
 

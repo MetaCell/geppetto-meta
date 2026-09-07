@@ -51,6 +51,12 @@ duplicate export and fail to build.
   geometry (e.g. outside the loaded volume).
 - **`overlay` prop**: DOM / HTML content (toolbar, HUD) — rendered outside the Canvas in a normal
   React DOM tree so that HTML elements are not mistaken for Three.js objects.
+- **`DicomViewerContext` omits `sliceIndices`**: it's the highest-frequency write in the viewer —
+  every wheel tick during a scrub — and it used to be part of the context, which meant every tick
+  produced a new context value and re-rendered every consumer (every viewport, every overlay).
+  Components that need it call `useSliceIndices(useDicomCanvasId())` instead, so only they
+  re-render. `DicomViewerState` itself still has the field (the store needs it); only the context
+  type omits it.
 
 ## `utils.ts`
 
@@ -102,6 +108,18 @@ place.
   driving the edit would never re-evaluate against the new value until something unrelated
   happened to trigger it. Bump `layers` too so every consumer reliably reacts to every
   opacity/window-level/LUT/transform edit.
+- **`useDicomViewer` vs `useDicomViewerStable` vs `useSliceIndices`**: three selectors over the same
+  record, for three different needs. `useDicomViewer` subscribes to the whole record by reference —
+  simplest, but re-renders on every patch including slice scrubbing, the highest-frequency write in
+  the viewer. `useDicomViewerStable` shallow-compares the record with `sliceIndices` stripped out
+  (via `useShallow`), so a slice patch — which only touches that one field — produces a new record
+  object that shallow-equals the old one everywhere else, and the hook does not re-render;
+  `DicomViewer.tsx` uses this one for its own subscription. `useSliceIndices` is the complement: a
+  narrow selector over just that field, for the few consumers (2D viewports, slice-aware overlays)
+  that actually need it. It returns the store's own object reference rather than constructing one,
+  since several call sites put it straight into a `useEffect`/`useMemo` dependency array — a fresh
+  object per call would re-run those on every unrelated patch, which is the exact cascade this hook
+  exists to avoid.
 
 ## `hooks/useLocalizerSync.ts`
 
@@ -243,7 +261,10 @@ overlay stack (for texture data) to be ready before creating the layer.
   subscription means zero React re-renders are involved — no risk of creating a spurious render
   loop. Uses Zustand v3's basic subscribe form — `listener(newState, prevState)` — since the
   single-argument form avoids the deprecated `subscribeWithSelector` path (triggered whenever a
-  second argument is present).
+  second argument is present). Also calls `scheduler.bumpSharedRevision()` before `invalidate()` —
+  this is the ONLY place shared-state changes are reported to the render scheduler, and it's what
+  lets sibling viewports redraw their localizer crosshairs even while another viewport is being
+  dragged (see `viewports/renderScheduler.ts`).
 - **`FpsTracker`**: counts `useFrame` calls (= actual WebGL frames rendered) and reports via
   callback. Must live inside the Canvas so it has access to the R3F render loop. With
   `frameloop="demand"`, `useFrame` stops firing when idle, so it schedules a 600 ms decay timeout
@@ -253,15 +274,100 @@ overlay stack (for texture data) to be ready before creating the layer.
   `useFiberStore` so that `DicomViewerButton` (and any component using `useFiber`) can look it up
   by `viewerId`. Mirrors `Canvas3D`'s `FiberBridge` conceptually, but uses an independent store —
   must live inside `<Canvas>` to call `useThree()`.
-- **`FrameClearer`**: clears the entire canvas once at the start of each frame (priority -1, runs
-  before all viewport renders at priority 1). Without this, old frames bleed through in regions
-  not covered by any viewport's `gl.render()` call.
+- **`FrameClearer`**: no longer clears the canvas unconditionally every frame. It requests a full
+  clear (via the render scheduler) whenever the layout changes — `viewMode`, `orientation`, or the
+  canvas' own `size` — and otherwise only clears when one is actually pending, right before any
+  viewport renders (priority -1, before all viewport renders at priority 1). It also calls
+  `scheduler.beginFrame(performance.now())` first, once per frame, so the "may siblings redraw this
+  frame" decision is made exactly once and every viewport sees the same answer instead of each
+  computing it independently (and possibly disagreeing at a throttle-window boundary). Per-frame
+  unconditional clearing was removed because it's incompatible with per-pane render gating: a
+  viewport that skips a frame needs its previous pixels still on screen, not a canvas that was just
+  wiped out from under it.
+- **`RenderSchedulerContext.Provider`**: one `RenderScheduler` instance is created per `DicomCanvas`
+  (via `useRef`, lazily) and provided here, inside the `<Canvas>`. Every viewport, `StoreInvalidator`
+  and `FrameClearer` read it via `useRenderScheduler()`. See `viewports/renderScheduler.ts` for what
+  it does and why.
+- **`gl={{ antialias: false, preserveDrawingBuffer: true, ... }}`**: both changed from the earlier
+  `{ antialias: true }` with no `preserveDrawingBuffer`. `antialias: false` — MSAA costs little on a
+  GPU but is expensive under software rendering (SwiftShader/llvmpipe, what a machine without
+  hardware acceleration falls back to); these panes are volume slices, where it buys almost nothing
+  visually. `preserveDrawingBuffer: true` is REQUIRED by per-pane render gating: WebGL clears the
+  drawing buffer after every composite unless told not to, so a viewport that skips a frame would
+  render nothing and go black instead of keeping its previous pixels.
 - **Container-ref race fix**: `useState` (not `useRef`) is used so the container div's presence is
   known via React state — R3F's `eventSource` is read once at `<Canvas>` mount, so a plain ref
   object (still null on first render) would hand it a stale/empty `eventSource`. A callback ref
   lets `<Canvas>` mounting be delayed until the container div actually exists in the DOM.
   `pointer-events: none` on the canvas so tracking divs receive mouse/wheel events; R3F listens via
   `eventSource={containerEl}` so raycasting still works.
+
+## `viewports/renderScheduler.ts`
+
+**Why it exists.** All four viewports (3D + 3 orthogonal planes) render into one R3F
+`<Canvas frameloop="demand">`, scissored to their own tracking-div rect. Each viewport has its own
+`useFrame`, so a single `invalidate()` — one mouse move — reruns all four. On a real GPU that's
+free. Under software rendering (SwiftShader/llvmpipe — what a machine with no hardware acceleration
+falls back to) it's a 4x CPU multiplier on every pointer move, and it's the reason dragging or
+scrubbing felt disproportionately slow compared to how little actually changed on screen: three of
+the four viewports were doing full render work every frame for no visible reason, since only one of
+them was under the pointer.
+
+**What it does.** One rule replaces "redraw everything on every invalidate": while a viewport is
+under an active pointer interaction, render only that viewport at full rate; the other three
+throttle to ~8fps (`SIBLING_REDRAW_INTERVAL_MS`), and even then only on a frame where *shared*
+viewer state actually changed. That exception is what keeps the localizer crosshairs correct:
+scrubbing slices in one 2D viewport writes into `useDicomViewerStore`, which — via
+`StoreInvalidator`'s `bumpSharedRevision()` — tells every sibling "something you display changed, you
+need to redraw your crosshair on this frame." Orbiting the 3D viewport touches no shared state, so
+the 2D viewports correctly sit still while it moves. Idle behaviour (nothing being interacted with)
+is completely unchanged — every viewport renders on every `invalidate()`, exactly as before this
+existed.
+
+**How it integrates.**
+- `DicomCanvas` creates exactly one `RenderScheduler` per canvas (`createRenderScheduler()`, held in
+  a `useRef` so it survives re-renders) and provides it via `RenderSchedulerContext`, INSIDE the
+  `<Canvas>` — R3F runs Canvas children through a separate reconciler, so a provider outside it would
+  never reach the viewports. It must be one-per-canvas, never module-level state: an app can mount
+  several `<DicomViewer>`s on one page, and a shared gate would let a drag in one freeze every pane
+  of all the others.
+- Each viewport (`Viewport2DContent`, `Viewport3DContent`) creates one stable identity object
+  (`const paneId = useRef({}).current`) to identify itself to the scheduler — object identity avoids
+  needing a naming scheme that stays unique across every possible view-mode/layout combination.
+- On `pointerdown` a viewport calls `scheduler.beginInteraction(paneId)`; on release,
+  `scheduler.endInteraction()`. A 2D viewport's wheel handler does the same around a scrub (see
+  below), since a wheel gesture has no down/up pair to bracket it.
+- Every `useFrame`, before doing any GL work, calls
+  `scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)` and bails out if it returns
+  false — skipping the scissor/clear/render entirely and leaving whatever was already drawn on
+  screen (safe only because of `preserveDrawingBuffer: true`, see `DicomCanvas.tsx` above).
+- `FrameClearer` calls `scheduler.beginFrame(now)` once per frame, before any viewport's `useFrame`
+  runs (R3F priority -1 vs. the viewports' priority 1) — this is what makes the "may siblings redraw"
+  decision get made exactly once per frame and seen identically by every viewport, instead of each
+  one computing it independently and possibly disagreeing right at a throttle-window boundary.
+- **Release-outside-pane fix**: `pointerup`/`pointercancel` are bound to `window`, not the pane
+  element, with a `blur` listener alongside them. This is a real bug fix, not just plumbing for the
+  scheduler: releasing the mouse outside the element it was pressed in is routine (fast drags
+  routinely leave the pointer outside the source element), and a release that never reaches the
+  pane's own listener left `activePane` set forever — every other viewport then stops redrawing
+  until some unrelated store write happens to bump the shared revision, which reads as "the viewer
+  randomly stopped updating" with no error anywhere. A drag interrupted by the tab losing focus
+  never fires `pointerup` at all, which is what the `blur` listener catches.
+- **Staleness safety valve**: `beginFrame` also force-releases `activePane` if
+  `INTERACTION_STALE_MS` (3s) has passed since the interaction last touched the scheduler, even
+  without a matching `endInteraction()`. Belt-and-braces on top of the window-level fix above — the
+  gate should be provably impossible to leave stuck, not just fixed for the one repro that was found.
+- **Read imperatively, never through React state**: `RenderScheduler`'s methods are called from
+  inside `useFrame`, every frame, and must never themselves trigger a re-render — that would defeat
+  the entire point. All of its state (`activePane`, `sharedRevision`, etc.) is plain closure
+  variables, not `useState`.
+
+**What ties into it elsewhere:**
+- `Viewport2DContent`'s wheel handler batches ticks into one `requestAnimationFrame` flush instead
+  of one `setSliceIndex` per wheel event, and treats the scrub as a scheduler interaction that ends
+  `SCRUB_IDLE_MS` (150ms) after the wheel goes quiet — see `viewports/Viewport2DContent.tsx` below.
+- Each viewport clears only its own scissor rect on the frames it actually draws, rather than relying
+  on a full-canvas clear every frame — see `DicomCanvas.tsx`'s `FrameClearer` entry above.
 
 ## `viewports/useFirstFrameFlag.ts`
 
@@ -312,6 +418,27 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
   panes) and later become visible from a pure CSS layout change (switching view mode) with no
   window/canvas resize involved — `size` never changes in that case, so the camera would otherwise
   be stuck with the degenerate zero-size frustum it was created with while hidden.
+- **Render-scheduler gating**: registers a stable `paneId`, calls `beginInteraction`/`endInteraction`
+  around pointer drags, and `useFrame` bails out early (before any scissor/clear/render work) when
+  `scheduler.shouldRenderPane(...)` says this frame isn't this pane's turn. See
+  `viewports/renderScheduler.ts` for the full mechanism; this is one of its two viewport-side
+  integration points (the other is `Viewport3DContent.tsx`).
+- **`pointerup`/`pointercancel` on `window`, plus `blur`**: not an arbitrary style choice — releasing
+  the mouse outside the pane it was pressed in is routine, and a release that never reaches the
+  pane's own element left the scheduler's interaction gate latched on forever, freezing every other
+  pane. See the "Release-outside-pane fix" entry under `viewports/renderScheduler.ts`.
+- **Wheel-scrub batching**: wheel events fire far faster than frames (a trackpad emits well over
+  60/s), and each `setSliceIndex` call used to write the store directly from the handler — one store
+  write, and therefore one full re-render cascade through every context consumer, per event. Ticks
+  are now accumulated into `pendingDelta` and applied once per `requestAnimationFrame` instead, so a
+  fast scroll burst costs one cascade rather than one per tick; the same number of slices is still
+  traversed, just coalesced. The scrub is also reported to the render scheduler as an interaction
+  (`beginInteraction`) that ends `SCRUB_IDLE_MS` (150ms) after the wheel goes quiet
+  (`scheduler.endInteraction()` on a debounced timeout) — a wheel gesture has no natural down/up pair,
+  so this timeout is what stands in for one.
+- **Own-scissor-rect clear**: clears just this viewport's scissor rect (`gl.clear()` honours the
+  active scissor box) immediately before `gl.render()`, rather than relying on a canvas-wide clear —
+  see `DicomCanvas.tsx`'s `FrameClearer` entry for why the canvas is no longer wiped every frame.
 
 ## `viewports/Viewport3DContent.tsx`
 
@@ -329,9 +456,18 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
   copies are hidden for this render only — an overlay that DOES want 3D inclusion already has its
   own dedicated portal directly into the 3D scene (untouched here, since it isn't nested inside one
   of the three 2D scenes).
+- **Render-scheduler gating**: same `paneId`/`beginInteraction`/`endInteraction`/`shouldRenderPane`
+  pattern as `Viewport2DContent.tsx` (see `viewports/renderScheduler.ts`), plus the same
+  window-bound `pointerup`/`pointercancel`/`blur` listeners and own-scissor-rect clear before
+  `gl.render()`. Orbiting this viewport touches no shared viewer state, so — unlike a slice scrub —
+  it never triggers a sibling redraw; the 2D viewports correctly stay frozen while the 3D view moves.
 
 ## `DicomViewer.tsx`
 
+- **`useDicomViewerStable`, not `useDicomViewer`**: this component's own record subscription uses
+  the shallow-compared, `sliceIndices`-excluding hook (see `hooks/useDicomViewerStore.ts` above) —
+  otherwise every slice scrub would re-render `DicomViewer` itself, rebuild `ctxValue`, and cascade
+  into every context consumer for no reason (nothing here reads `sliceIndices` directly).
 - **Viewport scene registry**: populated by `Viewport*Content` once they init. `DicomOverlay`
   reads these to portal its children into per-viewport scenes.
 - **2D→3D scene wiring**: 2D scenes are wired into the 3D scene so the perspective camera renders
