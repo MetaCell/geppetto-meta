@@ -6,6 +6,8 @@ import {
   DicomLayer,
   DicomViewerButton,
   useDicomViewerContext,
+  useDicomCanvasId,
+  useSliceIndices,
   usePlaneFilters,
   LUT_PRESETS,
   pctOf,
@@ -28,6 +30,9 @@ import type {
  * decompressing the file before AMI.js reads it.
  */
 const DATA = "/assets/EX_SITU_2009_UCSD_T1_WEIGHTED.nii.gz";
+
+// useSliceIndices() reads undefined before the viewer registers; fall back to origin.
+const DEFAULT_SLICE_INDICES: Record<PlaneOrientation, number> = { axial: 0, sagittal: 0, coronal: 0 };
 
 /*
  * Minimal seeded PRNG — deterministic sphere positions across renders.
@@ -59,6 +64,10 @@ interface PlaneClippedSphereOverlayProps {
 
 function PlaneClippedSphereOverlay({ count, color, seed, planes }: PlaneClippedSphereOverlayProps) {
   const ctx = useDicomViewerContext();
+  // Subscribed directly instead of read from the context: slice position is the highest-frequency
+  // write in the viewer, and carrying it on the context value re-rendered every consumer on every
+  // scrub tick. This component genuinely needs it — it filters by proximity to the current slice.
+  const sliceIndices = useSliceIndices(useDicomCanvasId()) ?? DEFAULT_SLICE_INDICES;
 
   const { positions, radius } = useMemo(() => {
     if (!ctx.stack) return { positions: [] as [number, number, number][], radius: 5 };
@@ -75,7 +84,7 @@ function PlaneClippedSphereOverlay({ count, color, seed, planes }: PlaneClippedS
 
   // Tolerance a bit larger than the sphere radius so a sphere doesn't need to
   // sit exactly on the slice plane to still be considered "on" it.
-  const filters = usePlaneFilters(ctx.stack, ctx.sliceIndices, ctx.planeStackOrientations, radius * 1.5);
+  const filters = usePlaneFilters(ctx.stack, sliceIndices, ctx.planeStackOrientations, radius * 1.5);
 
   const sphere = (pos: [number, number, number], i: number) => (
     <mesh key={i} position={pos}>
@@ -147,6 +156,7 @@ function StackWindowDefaultsReporter({
  */
 function PinMarker({ point }: { point: THREE.Vector3 }) {
   const ctx = useDicomViewerContext();
+  const sliceIndices = useSliceIndices(useDicomCanvasId()) ?? DEFAULT_SLICE_INDICES;
 
   const radius = useMemo(() => {
     if (!ctx.stack) return 4;
@@ -154,7 +164,7 @@ function PinMarker({ point }: { point: THREE.Vector3 }) {
     return Math.max(bb[1] - bb[0], bb[3] - bb[2], bb[5] - bb[4]) * 0.02;
   }, [ctx.stack]);
 
-  const filters = usePlaneFilters(ctx.stack, ctx.sliceIndices, ctx.planeStackOrientations, radius * 2);
+  const filters = usePlaneFilters(ctx.stack, sliceIndices, ctx.planeStackOrientations, radius * 2);
 
   const renderPin = () => (
     <mesh position={[point.x, point.y, point.z]}>
@@ -380,7 +390,7 @@ const DicomViewerExample: React.FC = () => {
 
       {/* 3D threshold slider HUD */}
       <div style={{ ...hudBase, bottom: 12, left: 12 }}>
-        <span>3D threshold</span>
+        <span>Transparency threshold</span>
         <input
           type="range"
           min={0}
@@ -490,6 +500,7 @@ const DicomViewerExample: React.FC = () => {
             )}
             <button
               type="button"
+              title="Cycle the overlay's colour LUT preset"
               onClick={() => setLayerLutIndex(i => (i + 1) % LUT_PRESETS.length)}
               style={{
                 background: "rgba(255,255,255,0.12)",
