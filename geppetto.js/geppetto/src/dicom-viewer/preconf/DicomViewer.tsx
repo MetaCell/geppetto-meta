@@ -4,7 +4,12 @@ import { DicomViewerToolbar } from "../toolbar/DicomViewerToolbar";
 import { Toolbar3DSeparator } from "../../3d-canvas/toolbar/Toolbar3D";
 import { DicomViewerButton } from "../toolbar/DicomViewerButton";
 import { useDicomViewerContext } from "../DicomViewerContext";
-import { DicomViewerProps, DicomViewerContext, OrientationMode } from "../types";
+import {
+  DicomViewerProps,
+  DicomViewerContext,
+  OrientationMode,
+  ViewportInteractions,
+} from "../types";
 
 const NEXT_ORIENTATION: Record<OrientationMode, OrientationMode> = {
   "3d": "coronal",
@@ -67,11 +72,16 @@ interface PreconfDicomViewerProps extends DicomViewerProps {
   extraOverlay?: React.ReactNode;
 }
 
+// ctrl+click expands the clicked viewport; second click collapses.
+const DEFAULT_INTERACTIONS: ViewportInteractions = {
+  onClick: "goToPoint",
+  onCtrlClick: "expandView",
+};
+
 export const DicomViewer: React.FC<PreconfDicomViewerProps> = ({
   id,
   showToolbar = true,
-  onClick = "goToPoint",
-  onCtrlClick = "expandView", // ctrl+click expands the clicked viewport; second click collapses
+  interactions,
   toolbarExtra,
   extraOverlay,
   children,
@@ -81,8 +91,7 @@ export const DicomViewer: React.FC<PreconfDicomViewerProps> = ({
   return (
     <BaseDicomViewer
       id={id}
-      onClick={onClick}
-      onCtrlClick={onCtrlClick}
+      interactions={{ ...DEFAULT_INTERACTIONS, ...interactions }}
       threshold3D={threshold3D}
       overlay={
         showToolbar || extraOverlay ? (

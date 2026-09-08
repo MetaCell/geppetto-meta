@@ -4,7 +4,7 @@ import { useThree, useFrame } from "@react-three/fiber";
 import { useViewport3D } from "./useViewport3D";
 import { useViewportEvents } from "../hooks/useViewportEvents";
 import { useDicomViewerContext } from "../DicomViewerContext";
-import { ClickAction, HoverAction } from "../types";
+import { ViewportInteractions } from "../types";
 import { useFirstFrameFlag } from "./useFirstFrameFlag";
 import { useRenderScheduler } from "./renderScheduler";
 
@@ -15,12 +15,7 @@ interface Viewport3DContentProps {
   onReady?: (scene: any, camera: any) => void;
   // Fires once the first real WebGL frame for this viewport has been painted
   onFirstFrame?: () => void;
-  onClick?: ClickAction;
-  onCtrlClick?: ClickAction;
-  onShiftClick?: ClickAction;
-  onDoubleClick?: ClickAction;
-  onRightClick?: ClickAction;
-  onHover?: HoverAction;
+  interactions?: ViewportInteractions;
 }
 
 export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
@@ -29,12 +24,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
   animationSkipRate,
   onReady,
   onFirstFrame,
-  onClick,
-  onCtrlClick,
-  onShiftClick,
-  onDoubleClick,
-  onRightClick,
-  onHover,
+  interactions,
 }) => {
   const { size, gl, invalidate } = useThree();
   const handle = useViewport3D(stack, domRef);
@@ -46,18 +36,10 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     planeOrientation: "3d",
     camera: handle?.camera ?? null,
     scene: handle?.scene ?? null,
-    onClick,
-    onCtrlClick,
-    onShiftClick,
-    onDoubleClick,
-    onRightClick,
-    onHover,
+    interactions,
   });
   const frameCount = useRef(0);
-  /*
-   * Per-instance identity for the render scheduler; object identity avoids needing a naming scheme
-   * that stays unique across view modes.
-   */
+  // Per-instance identity for the render scheduler — see renderScheduler.ts / dev doc.
   const scheduler = useRenderScheduler();
   const paneId = useRef({}).current;
   const lastDrawnRevision = useRef(-1);
@@ -97,12 +79,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     const onWheel = () => invalidate(); // zoom
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
-    /*
-     * pointerup/pointercancel are bound to WINDOW, not the pane: releasing the mouse outside the
-     * pane it was pressed in is routine, and a release that never reaches this element would leave
-     * the interaction gate latched on forever - every other pane then stops redrawing until some
-     * viewer-store write happens to bump the shared revision.
-     */
+    // pointerup/pointercancel bound to WINDOW, not the pane — see dev doc's "release-outside-pane fix".
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
     // A drag interrupted by the tab losing focus never produces a pointerup at all.
@@ -140,16 +117,10 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
 
-    /*
-     * Kept outside the skip below so a damped/inertial camera keeps settling even on frames this
-     * pane does not draw - only the GL work is skipped, never the state update.
-     */
+    // Kept outside the render-skip below so an inertial camera keeps settling on skipped frames too.
     handle.controls.update();
 
-    /*
-     * While a 2D pane is being dragged this one holds its previous pixels; orbiting here touches no
-     * shared state, so the 2D panes correctly sit still while this one moves (see renderScheduler).
-     */
+    // Skips this frame's GL work when it isn't this pane's turn — see renderScheduler.ts / dev doc.
     if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
     lastDrawnRevision.current = scheduler.getSharedRevision();
 

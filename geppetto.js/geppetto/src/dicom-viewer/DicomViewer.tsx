@@ -47,12 +47,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
   orientation = "3d",
   threshold3D,
   onLoaded,
-  onClick,
-  onCtrlClick,
-  onShiftClick,
-  onDoubleClick,
-  onRightClick,
-  onHover,
+  interactions,
   animationSkipRate = 1,
   onRender,
   onFps,
@@ -270,12 +265,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
               onViewport2DReady={handleViewport2DReady}
               onViewportFirstFrame={handleViewportFirstFrame}
               onFps={onFps}
-              onClick={onClick}
-              onCtrlClick={onCtrlClick}
-              onShiftClick={onShiftClick}
-              onDoubleClick={onDoubleClick}
-              onRightClick={onRightClick}
-              onHover={onHover}
+              interactions={interactions}
             >
               {/* R3F scene content: DicomLayer, DicomOverlay, custom three.js objects */}
               {children}

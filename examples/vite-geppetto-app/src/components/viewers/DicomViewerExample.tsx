@@ -147,8 +147,8 @@ function StackWindowDefaultsReporter({
 }
 
 /*
- * PinMarker — single movable marker placed via a custom onClick handler (see
- * `handlePinClick`), demonstrating that `onClick` accepts an arbitrary
+ * PinMarker — single movable marker placed via a custom interactions.onClick handler (see
+ * `handlePinClick`), demonstrating that it accepts an arbitrary
  * function alongside the built-in "goToPoint"/"expandView" presets. Reuses
  * `usePlaneFilters` for the same slice-clipping technique as
  * PlaneClippedSphereOverlay: always visible in 3D, only visible in a 2D pane
@@ -331,9 +331,11 @@ const DicomViewerExample: React.FC = () => {
         data={DATA}
         mode="quad_view"
         orientation="3d"
-        onClick={pinMode ? handlePinClick : "goToPoint"}
-        onCtrlClick="expandView"
-        onHover={handleHover}
+        interactions={{
+          onClick: pinMode ? handlePinClick : "goToPoint",
+          onCtrlClick: "expandView",
+          onHover: handleHover,
+        }}
         threshold3D={threshold3D}
         onFps={handleFps}
         toolbarExtra={toolbarExtra}

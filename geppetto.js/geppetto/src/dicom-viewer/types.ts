@@ -126,6 +126,22 @@ export type HoverAction = (
   planeOrientation: PlaneOrientation | "3d",
 ) => void;
 
+/*
+ * The full set of per-viewport mouse interactions, bundled so it can be threaded through
+ * DicomViewer -> DicomCanvas -> Viewport2D/3DContent -> useViewportEvents as one prop instead of six.
+ */
+export interface ViewportInteractions {
+  onClick?: ClickAction;
+  onCtrlClick?: ClickAction;
+  onShiftClick?: ClickAction;
+  onDoubleClick?: ClickAction;
+  onRightClick?: ClickAction;
+  onHover?: HoverAction;
+}
+
+// Stable empty default so consumers that pass no interactions don't trigger effect churn.
+export const NO_INTERACTIONS: ViewportInteractions = {};
+
 export interface DicomViewerProps {
   id: string;
   data: string | string[];
@@ -136,12 +152,7 @@ export interface DicomViewerProps {
   threshold3D?: number; // initial intensity threshold for 3D transparency (0 = off)
   fullScreen?: boolean;
   onLoaded?: () => void;
-  onClick?: ClickAction;
-  onCtrlClick?: ClickAction;
-  onShiftClick?: ClickAction;
-  onDoubleClick?: ClickAction;
-  onRightClick?: ClickAction;
-  onHover?: HoverAction;
+  interactions?: ViewportInteractions;
   showDownloadButton?: boolean;
   applySegmentationLUT?: boolean;
   animationSkipRate?: number;

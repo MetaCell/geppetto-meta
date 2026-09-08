@@ -25,6 +25,15 @@ duplicate export and fail to build.
 
 ## `types.ts`
 
+- **`ViewportInteractions`**: the six per-viewport mouse callbacks (`onClick`, `onCtrlClick`,
+  `onShiftClick`, `onDoubleClick`, `onRightClick`, `onHover`) bundled into one object instead of six
+  separate props, threaded through `DicomViewer -> DicomCanvas -> Viewport2D/3DContent ->
+  useViewportEvents` as a single `interactions` prop. Six independent optional props meant six names
+  to repeat (and keep in sync) at every layer of that chain; bundling them means adding a seventh
+  interaction later only touches `ViewportInteractions` and the one component that acts on it, not
+  every intermediate layer's prop list. `NO_INTERACTIONS` (`{}`) is a stable default so a consumer
+  that never passes `interactions` doesn't get a fresh `{}` — and therefore a spurious effect
+  re-run — every render.
 - **`LayerState`**: represents a loaded overlay volume's GPU resources + controls. `setOpacity`
   encapsulates the background-removal logic so callers don't need to know whether the layer uses
   a plain uniform or an air-alpha LUT curve.
@@ -232,6 +241,11 @@ overlay stack (for texture data) to be ready before creating the layer.
   buttons without replacing the whole toolbar.
 - This component is a convenience wrapper — adds default toolbar + sensible click defaults.
   Mirrors the old `preconf/DicomViewer.js` behaviour while using the new API.
+- **`DEFAULT_INTERACTIONS`**: `{ onClick: 'goToPoint', onCtrlClick: 'expandView' }`, merged with
+  whatever the consumer passes as `{ ...DEFAULT_INTERACTIONS, ...interactions }` — a plain object
+  spread, not per-field default params, since `interactions` is now a single object rather than six
+  independently-defaultable props. A consumer's own `onClick`/`onCtrlClick` overrides the default;
+  any other field they set (e.g. `onHover`) passes through untouched.
 - **`toolbarExtra`**: extra buttons / nodes appended inside the built-in toolbar after the last
   separator. Use `DicomViewerButton` / `Toolbar3DSeparator` for consistent styling.
 - **`extraOverlay`**: extra DOM elements appended to the overlay alongside the built-in toolbar.

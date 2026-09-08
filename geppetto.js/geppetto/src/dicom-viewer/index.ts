@@ -40,6 +40,9 @@ export { soToCol, makePlaneFilter, VP_ID_MAP } from "./utils";
 export type { PlaneFilter } from "./utils";
 export { usePlaneFilters } from "./hooks/usePlaneFilters";
 
+// Stable empty default for the `interactions` prop — see ViewportInteractions.
+export { NO_INTERACTIONS } from "./types";
+
 // Types
 export type {
   ViewMode,
@@ -57,6 +60,7 @@ export type {
   ToolbarButtons,
   ClickAction,
   HoverAction,
+  ViewportInteractions,
 } from "./types";
 export type { CanvasRootState } from "./canvas-context";
 export type { DownloadProgress, UseVolumeLoaderOptions } from "./hooks/useVolumeLoader";

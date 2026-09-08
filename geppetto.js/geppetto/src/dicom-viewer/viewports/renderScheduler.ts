@@ -1,30 +1,6 @@
 import React, { useContext } from "react";
 
-/*
- * Per-pane render gating, scoped to ONE canvas.
- *
- * Every pane (3D + the 3 orthogonal planes) renders into one <Canvas frameloop="demand"> through
- * its own scissor rect. Because each pane owns a useFrame, a single invalidate() - one mouse move -
- * re-renders all of them. On a GPU that is free; under software rendering (SwiftShader/llvmpipe,
- * what a machine without hardware acceleration falls back to) it is a 4x CPU multiplier on every
- * pointer move.
- *
- * The rule that fixes this without losing correctness:
- *
- *   during a drag, render only the pane being dragged - UNLESS shared viewer state changed this
- *   frame, in which case every pane renders.
- *
- * That exception keeps the localizer crosshairs live: scrubbing slices writes sliceIndices into
- * useDicomViewerStore, which bumps the revision, so sibling planes redraw their crosshair on the
- * same frame. Orbiting the 3D pane touches no shared state, so the 2D panes correctly sit still.
- *
- * ONE INSTANCE PER CANVAS, never module-level state: an app can mount several <DicomViewer>s on
- * the same page, and a module-global gate would let a drag in one freeze the panes of all the
- * others. Each DicomCanvas creates its own and provides it to its subtree.
- *
- * Read imperatively from useFrame rather than through React state - it is consulted every frame and
- * must never trigger a re-render.
- */
+// Per-pane render gating, scoped to one canvas — see doc/dev/dicom-viewer.md#viewportsrenderschedulerts
 export interface RenderScheduler {
   beginInteraction(pane: object): void;
   endInteraction(): void;
@@ -36,58 +12,27 @@ export interface RenderScheduler {
   shouldRenderPane(pane: object, lastDrawnRevision: number): boolean;
 }
 
-/*
- * How often panes OTHER than the one being interacted with may redraw, while an interaction is in
- * progress. Scrubbing slices moves the localizer crosshair in every sibling plane, so they cannot
- * simply be frozen - but they do not need 60fps either. At ~8fps the crosshair still tracks
- * visibly while the sibling panes cost a fraction of what a full-rate redraw costs, which is what
- * makes wheel-scrubbing cheap on a machine without hardware acceleration. Siblings always get a
- * final frame when the interaction ends, so nothing is left stale.
- */
+// How often sibling panes may redraw during an interaction — see dev doc for the tradeoff.
 const SIBLING_REDRAW_INTERVAL_MS = 120;
 
-/*
- * Safety valve. The gate is only ever released by an explicit endInteraction(), so any path that
- * fails to deliver one latches it on and silently freezes every other pane - which is exactly what
- * happened when pointerup landed outside the pane it started in. Window-level listeners fix that
- * particular case, but a latched gate degrades so quietly (no error, panes simply stop updating)
- * that it is worth making it impossible rather than merely fixed. No genuine drag consists of a
- * pointerdown with no further activity for this long.
- */
+// Safety valve if an interaction is abandoned without a matching endInteraction() — see dev doc.
 const INTERACTION_STALE_MS = 3000;
 
-/*
- * Named timestamp(), not now(): beginFrame takes a `now` parameter and shadowing it here would be
- * a silent trap for anyone adding a call inside that function.
- */
+// Named timestamp(), not now(): beginFrame takes a `now` param, shadowing it here would be a trap.
 const timestamp = (): number =>
   typeof performance !== "undefined" ? performance.now() : Date.now();
 
 export function createRenderScheduler(): RenderScheduler {
-  /*
-   * Identity of the pane under an active pointer drag, or null when idle. Panes pass a
-   * per-instance object, so no naming scheme has to stay unique across view modes.
-   */
+  // Identity of the pane under an active pointer drag, or null when idle.
   let activePane: object | null = null;
   // Bumped whenever shared viewer state changes; panes compare against what they last drew.
   let sharedRevision = 0;
-  /*
-   * Set when the canvas must be wiped in full rather than per-pane: the layout changed, so pixels
-   * outside the new pane rects (the margins beside the centred 3D pane, a pane that just
-   * unmounted) would otherwise keep showing the previous frame - nothing draws over them.
-   */
+  // Whether the whole canvas must be wiped (layout changed) rather than per-pane.
   let fullClearPending = true;
-  /*
-   * Whether siblings of the interacted pane are permitted to redraw on the current frame. Decided
-   * once per frame (beginFrame) rather than per pane, so every sibling updates on the same frame
-   * instead of tearing across several.
-   */
+  // Whether siblings may redraw this frame — decided once per frame in beginFrame.
   let siblingsAllowedThisFrame = true;
   let lastSiblingFrameAt = 0;
-  /*
-   * Refreshed by beginInteraction and by every frame the active pane draws, so a live drag never
-   * goes stale while an abandoned one does.
-   */
+  // Refreshed on every touch so a live drag never goes stale while an abandoned one does.
   let interactionTouchedAt = 0;
 
   return {
@@ -139,10 +84,7 @@ export function createRenderScheduler(): RenderScheduler {
         interactionTouchedAt = timestamp();
         return true;
       }
-      /*
-       * A sibling redraws only when shared state actually moved (scrubbing moves crosshairs;
-       * orbiting the 3D pane does not) AND its throttle window has elapsed.
-       */
+      // A sibling redraws only when shared state moved AND its throttle window has elapsed.
       return siblingsAllowedThisFrame && lastDrawnRevision !== sharedRevision;
     },
   };
@@ -150,10 +92,7 @@ export function createRenderScheduler(): RenderScheduler {
 
 export const RenderSchedulerContext = React.createContext<RenderScheduler | null>(null);
 
-/*
- * The provider is rendered INSIDE <Canvas>. R3F runs its children through a separate reconciler, so
- * a provider placed outside the canvas would not reach the viewports.
- */
+// Rendered INSIDE <Canvas> — R3F's children use a separate reconciler, so a provider outside it never reaches the viewports.
 export function useRenderScheduler(): RenderScheduler {
   const scheduler = useContext(RenderSchedulerContext);
   if (!scheduler) {

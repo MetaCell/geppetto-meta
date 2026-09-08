@@ -123,17 +123,36 @@ This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions
 | `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | `'3d'` | Active viewport in `single_view`. In `quad_view` this determines which pane is highlighted. |
 | `threshold3D` | `number` | `0` | Initial intensity threshold for 3D transparency. Fragments with raw intensity below this value are discarded. `0` = no transparency. Correctly offset for volumes with a negative minimum intensity (e.g. CT in Hounsfield units). |
 | `onLoaded` | `() => void` | — | Called once the volume has been loaded and the stack is ready. |
-| `onClick` | `ClickAction` | — | Action fired on a plain left-click in any viewport. |
-| `onCtrlClick` | `ClickAction` | — | Action fired on Ctrl+click (or ⌘+click on macOS). |
-| `onShiftClick` | `ClickAction` | — | Action fired on Shift+click. |
-| `onDoubleClick` | `ClickAction` | — | Action fired on double-click. |
-| `onRightClick` | `ClickAction` | — | Action fired on right-click (context menu suppressed). |
-| `onHover` | `HoverAction` | — | Fired on (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
+| `interactions` | `ViewportInteractions` | — | Bundles all six per-viewport mouse interactions (`onClick`, `onCtrlClick`, `onShiftClick`, `onDoubleClick`, `onRightClick`, `onHover`) into one object. See [`ViewportInteractions` type](#viewportinteractions-type). |
 | `animationSkipRate` | `number` | `1` | Render every Nth frame. Use values > 1 to reduce GPU load for complex scenes. |
 | `onRender` | `(viewports: ViewportHandle[]) => void` | — | Called once all four viewports have initialised. Receives an array of `{ id, scene, camera }` handles, indexed by the exported `VP_ID_MAP` (`{ '3d': 0, axial: 1, sagittal: 2, coronal: 3 }`) — e.g. `viewports[VP_ID_MAP.axial]` for the axial pane. |
 | `onFps` | `(fps: number) => void` | — | Called approximately every 500 ms with the current frame rate. Resets to 0 after 600 ms of inactivity (demand rendering). |
 | `children` | `ReactNode` | — | **R3F scene content** — rendered inside the WebGL Canvas. Use for `<DicomLayer>`, `<DicomOverlay>`, or custom Three.js objects. |
 | `overlay` | `ReactNode` | — | **DOM content** — rendered outside the WebGL Canvas in the normal React tree. Use for toolbars, HUDs, legends. |
+
+### `ViewportInteractions` type
+
+```ts
+interface ViewportInteractions {
+  onClick?: ClickAction;
+  onCtrlClick?: ClickAction;
+  onShiftClick?: ClickAction;
+  onDoubleClick?: ClickAction;
+  onRightClick?: ClickAction;
+  onHover?: HoverAction;
+}
+```
+
+| Field | Fires on |
+|---|---|
+| `onClick` | A plain left-click in any viewport. |
+| `onCtrlClick` | Ctrl+click (or ⌘+click on macOS). |
+| `onShiftClick` | Shift+click. |
+| `onDoubleClick` | Double-click. |
+| `onRightClick` | Right-click (context menu suppressed). |
+| `onHover` | (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
+
+A stable empty object, `NO_INTERACTIONS`, is exported for cases that need to pass "no interactions" explicitly without allocating a fresh `{}` — mainly relevant to code that itself forwards an `interactions` prop through several layers.
 
 ### `ClickAction` type
 
@@ -163,7 +182,7 @@ type HoverAction = (
 ) => void;
 ```
 
-Passed as `onHover` on `<DicomViewer>`. Raycasting is throttled to at most one pick per animation frame — pointer-move events between frames are coalesced, always raycasting from the latest event so the reported position doesn't lag behind a fast-moving pointer. `point` is `null` whenever the pointer isn't over any raycastable geometry, and fires once more with `point: null` on `mouseleave` so consumers can reliably clear hover state (e.g. hide a crosshair/tooltip) when the pointer exits a viewport.
+Passed as `interactions.onHover`. Raycasting is throttled to at most one pick per animation frame — pointer-move events between frames are coalesced, always raycasting from the latest event so the reported position doesn't lag behind a fast-moving pointer. `point` is `null` whenever the pointer isn't over any raycastable geometry, and fires once more with `point: null` on `mouseleave` so consumers can reliably clear hover state (e.g. hide a crosshair/tooltip) when the pointer exits a viewport.
 
 ## Preconfigured viewer additional props
 
@@ -725,6 +744,15 @@ type HoverAction = (
   planeOrientation: PlaneOrientation | '3d',
 ) => void;
 
+interface ViewportInteractions {
+  onClick?: ClickAction;
+  onCtrlClick?: ClickAction;
+  onShiftClick?: ClickAction;
+  onDoubleClick?: ClickAction;
+  onRightClick?: ClickAction;
+  onHover?: HoverAction;
+}
+
 interface DownloadProgress {
   loaded: number;
   total: number; // 0 = server did not report a size
@@ -752,6 +780,7 @@ import type {
   LayerState,
   ClickAction,
   HoverAction,
+  ViewportInteractions,
   DownloadProgress,
   UseVolumeLoaderOptions,
   PlaneFilter,

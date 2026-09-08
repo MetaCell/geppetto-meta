@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrientationMode, PlaneOrientation, ViewMode, ClickAction, HoverAction } from "../types";
+import { OrientationMode, PlaneOrientation, ViewMode, ViewportInteractions } from "../types";
 import { Viewport2DContent } from "./Viewport2DContent";
 import { Viewport3DContent } from "./Viewport3DContent";
 import {
@@ -21,12 +21,7 @@ interface DicomCanvasProps {
   onViewport2DReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
   // Fires once the first real WebGL frame for viewport `id` has been painted
   onViewportFirstFrame?: (id: number) => void;
-  onClick?: ClickAction;
-  onCtrlClick?: ClickAction;
-  onShiftClick?: ClickAction;
-  onDoubleClick?: ClickAction;
-  onRightClick?: ClickAction;
-  onHover?: HoverAction;
+  interactions?: ViewportInteractions;
   onFps?: (fps: number) => void;
   children?: React.ReactNode;
 }
@@ -38,10 +33,7 @@ function StoreInvalidator({ viewerId }: { viewerId: string }) {
   useEffect(() => {
     return useDicomViewerStore.subscribe((state, prev: any) => {
       if (state.viewers[viewerId] !== prev?.viewers[viewerId]) {
-        /*
-         * Marks the frame as "shared state moved", which is what lets the other panes redraw their
-         * localizer crosshairs even while one pane is being dragged (see renderScheduler).
-         */
+        // Marks the frame as "shared state moved" — see renderScheduler.ts / dev doc.
         scheduler.bumpSharedRevision();
         invalidate();
       }
@@ -115,12 +107,7 @@ function FiberRegister({ viewerId }: { viewerId: string }) {
   return null;
 }
 
-/*
- * Wipes the whole canvas only when the layout changed. Per-frame clearing used to be
- * unconditional, which forced every pane to redraw every frame or be left blank - the thing that
- * made skipping idle panes impossible. Each pane now clears its own scissor rect just before
- * drawing, so a pane that skips a frame simply keeps its previous pixels.
- */
+// Wipes the whole canvas only when the layout changed — see doc/dev/dicom-viewer.md's FrameClearer entry.
 function FrameClearer({
   viewMode,
   orientation,
@@ -131,19 +118,13 @@ function FrameClearer({
   const { gl, size } = useThree();
   const scheduler = useRenderScheduler();
 
-  /*
-   * Pane rects move when the view mode changes and when the canvas resizes; anything that is no
-   * longer covered by a pane must be wiped or it keeps showing the old frame.
-   */
+  // Pane rects move on layout/resize; anything newly uncovered must be wiped.
   useEffect(() => {
     scheduler.requestFullClear();
   }, [viewMode, orientation, size.width, size.height, scheduler]);
 
   useFrame(() => {
-    /*
-     * Runs at priority -1, before every pane, so the sibling-throttle decision is made once per
-     * frame and all panes see the same answer.
-     */
+    // Priority -1: runs before every pane, so all panes see the same per-frame throttle decision.
     scheduler.beginFrame(performance.now());
 
     if (!scheduler.consumeFullClear()) return;
@@ -168,12 +149,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   onViewportReady,
   onViewport2DReady,
   onViewportFirstFrame,
-  onClick,
-  onCtrlClick,
-  onShiftClick,
-  onDoubleClick,
-  onRightClick,
-  onHover,
+  interactions,
   onFps,
   children,
 }) => {
@@ -184,10 +160,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   const r2Ref = useRef<HTMLDivElement>(null!); // sagittal
   const r3Ref = useRef<HTMLDivElement>(null!); // coronal
 
-  /*
-   * One scheduler per canvas, never module-level: an app can mount several <DicomViewer>s on the
-   * same page and a shared gate would let a drag in one freeze the others.
-   */
+  // One scheduler per canvas, never module-level — see doc/dev/dicom-viewer.md's renderScheduler.ts entry.
   const schedulerRef = useRef<ReturnType<typeof createRenderScheduler> | undefined>(undefined);
   if (!schedulerRef.current) schedulerRef.current = createRenderScheduler();
 
@@ -206,14 +179,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
         <Canvas
           style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
           frameloop="demand"
-          /*
-           * antialias:false - MSAA costs little on a GPU but is expensive under software rendering
-           * (SwiftShader/llvmpipe), which is what a machine without hardware acceleration falls
-           * back to. These panes are volume slices, where it buys almost nothing visually.
-           * preserveDrawingBuffer:true is REQUIRED by the per-pane render gating: WebGL clears the
-           * drawing buffer after every composite unless asked not to, so a pane that skips a frame
-           * would render nothing and go black instead of keeping its previous pixels.
-           */
+          // antialias:false + preserveDrawingBuffer:true — see doc/dev/dicom-viewer.md's DicomCanvas.tsx entry.
           gl={{
             antialias: false,
             preserveDrawingBuffer: true,
@@ -238,12 +204,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
               animationSkipRate={animationSkipRate}
               onReady={(scene, camera) => onViewportReady?.(0, scene, camera)}
               onFirstFrame={() => onViewportFirstFrame?.(0)}
-              onClick={onClick}
-              onCtrlClick={onCtrlClick}
-              onShiftClick={onShiftClick}
-              onDoubleClick={onDoubleClick}
-              onRightClick={onRightClick}
-              onHover={onHover}
+              interactions={interactions}
             />
 
             <Viewport2DContent
@@ -255,12 +216,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
               onReady={(scene, camera) => onViewportReady?.(1, scene, camera)}
               onFirstFrame={() => onViewportFirstFrame?.(1)}
               onHandleReady={onViewport2DReady}
-              onClick={onClick}
-              onCtrlClick={onCtrlClick}
-              onShiftClick={onShiftClick}
-              onDoubleClick={onDoubleClick}
-              onRightClick={onRightClick}
-              onHover={onHover}
+              interactions={interactions}
             />
 
             <Viewport2DContent
@@ -272,12 +228,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
               onReady={(scene, camera) => onViewportReady?.(2, scene, camera)}
               onFirstFrame={() => onViewportFirstFrame?.(2)}
               onHandleReady={onViewport2DReady}
-              onClick={onClick}
-              onCtrlClick={onCtrlClick}
-              onShiftClick={onShiftClick}
-              onDoubleClick={onDoubleClick}
-              onRightClick={onRightClick}
-              onHover={onHover}
+              interactions={interactions}
             />
 
             <Viewport2DContent
@@ -289,12 +240,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
               onReady={(scene, camera) => onViewportReady?.(3, scene, camera)}
               onFirstFrame={() => onViewportFirstFrame?.(3)}
               onHandleReady={onViewport2DReady}
-              onClick={onClick}
-              onCtrlClick={onCtrlClick}
-              onShiftClick={onShiftClick}
-              onDoubleClick={onDoubleClick}
-              onRightClick={onRightClick}
-              onHover={onHover}
+              interactions={interactions}
             />
 
             {/* DicomOverlay and DicomLayer components render here */}

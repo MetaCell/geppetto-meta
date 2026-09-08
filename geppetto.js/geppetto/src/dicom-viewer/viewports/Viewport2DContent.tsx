@@ -5,15 +5,11 @@ import { useCanvasId } from "../canvas-context";
 import { useDicomViewerContext } from "../DicomViewerContext";
 import { useSliceIndices } from "../hooks/useDicomViewerStore";
 import { useViewportEvents } from "../hooks/useViewportEvents";
-import { PlaneOrientation, ClickAction, HoverAction } from "../types";
+import { PlaneOrientation, ViewportInteractions } from "../types";
 import { useFirstFrameFlag } from "./useFirstFrameFlag";
 import { useRenderScheduler } from "./renderScheduler";
 
-/*
- * How long the wheel must be quiet before a slice scrub counts as finished. Long enough to span the
- * gaps between ticks of one continuous scroll gesture, short enough that the sibling panes snap to
- * their final crosshair position without a visible pause.
- */
+// How long the wheel must be quiet before a slice scrub counts as finished — see dev doc.
 const SCRUB_IDLE_MS = 150;
 
 interface Viewport2DContentProps {
@@ -27,12 +23,7 @@ interface Viewport2DContentProps {
   onHandleReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
   // Fires once the first real WebGL frame for this viewport has been painted
   onFirstFrame?: () => void;
-  onClick?: ClickAction;
-  onCtrlClick?: ClickAction;
-  onShiftClick?: ClickAction;
-  onDoubleClick?: ClickAction;
-  onRightClick?: ClickAction;
-  onHover?: HoverAction;
+  interactions?: ViewportInteractions;
 }
 
 export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
@@ -44,12 +35,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   onReady,
   onHandleReady,
   onFirstFrame,
-  onClick,
-  onCtrlClick,
-  onShiftClick,
-  onDoubleClick,
-  onRightClick,
-  onHover,
+  interactions,
 }) => {
   const { gl, invalidate } = useThree();
   const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef);
@@ -61,18 +47,10 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     planeOrientation,
     camera: handle?.camera ?? null,
     scene: handle?.scene ?? null,
-    onClick,
-    onCtrlClick,
-    onShiftClick,
-    onDoubleClick,
-    onRightClick,
-    onHover,
+    interactions,
   });
   const frameCount = useRef(0);
-  /*
-   * Per-instance identity for the render scheduler; object identity avoids needing a naming scheme
-   * that stays unique across view modes.
-   */
+  // Per-instance identity for the render scheduler — see renderScheduler.ts / dev doc.
   const scheduler = useRenderScheduler();
   const paneId = useRef({}).current;
   const lastDrawnRevision = useRef(-1);
@@ -113,12 +91,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     };
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
-    /*
-     * pointerup/pointercancel are bound to WINDOW, not the pane: releasing the mouse outside the
-     * pane it was pressed in is routine, and a release that never reaches this element would leave
-     * the interaction gate latched on forever - every other pane then stops redrawing until some
-     * viewer-store write happens to bump the shared revision.
-     */
+    // pointerup/pointercancel bound to WINDOW, not the pane — see dev doc's "release-outside-pane fix".
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
     // A drag interrupted by the tab losing focus never produces a pointerup at all.
@@ -148,11 +121,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     return () => observer.disconnect();
   }, [handle, domRef.current]);
 
-  /*
-   * Sync slice index from Zustand store → StackHelper, then refresh overlay meshes
-   * Subscribed directly rather than read off the context: this is the value that changes on every
-   * scrub tick, and routing it through the context re-rendered every consumer in the viewer.
-   */
+  // Subscribed directly, not off the context — see dev doc's "sliceIndices omitted" note.
   const sliceIndices = useSliceIndices(useCanvasId());
   const sliceIndex = sliceIndices?.[planeOrientation] ?? 0;
   useEffect(() => {
@@ -176,18 +145,9 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     if (!handle || !domRef.current) return undefined;
     const el = domRef.current;
 
-    /*
-     * A wheel scrub has no pointerdown/up to bracket it, so it is treated as an interaction that
-     * ends once the wheel goes quiet. Without this, scrubbing bumps the shared revision on every
-     * tick and every sibling pane redraws at full rate.
-     */
+    // A wheel scrub has no pointerdown/up to bracket it — ends once the wheel goes quiet, see dev doc.
     let scrubEnd: ReturnType<typeof setTimeout> | undefined;
-    /*
-     * Wheel events fire far faster than frames - a trackpad emits well over 60/s - and each
-     * setSliceIndex writes the store, which produces a new viewer record and re-renders every
-     * consumer. Ticks are accumulated and applied once per animation frame instead, so a burst
-     * costs one cascade rather than one per event. The same number of slices is traversed.
-     */
+    // Ticks batched into one rAF flush instead of one store write per event — see dev doc.
     let pendingDelta = 0;
     let flushHandle: number | undefined;
 
@@ -249,17 +209,10 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
 
-    /*
-     * Kept outside the skip below so a damped/inertial camera keeps settling even on frames this
-     * pane does not draw - only the GL work is skipped, never the state update.
-     */
+    // Kept outside the render-skip below so an inertial camera keeps settling on skipped frames too.
     handle.controls.update();
 
-    /*
-     * While another pane is being dragged this one holds its previous pixels instead of redrawing
-     * (see renderScheduler). It still draws whenever shared state moved, which is what keeps the
-     * localizer crosshair in step while slices are scrubbed in a sibling pane.
-     */
+    // Skips this frame's GL work when it isn't this pane's turn — see renderScheduler.ts / dev doc.
     if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
     lastDrawnRevision.current = scheduler.getSharedRevision();
 
@@ -279,10 +232,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     gl.setScissor(x, y, w, h);
     gl.setScissorTest(true);
     gl.setViewport(x, y, w, h);
-    /*
-     * Clear just this pane's rect. The canvas is no longer wiped wholesale each frame (that would
-     * blank any pane which skips), and gl.clear() honours the scissor box, so this stays local.
-     */
+    // Clear just this pane's scissor rect — the canvas is no longer wiped wholesale each frame.
     gl.autoClear = true;
     gl.clear();
     gl.autoClear = false;

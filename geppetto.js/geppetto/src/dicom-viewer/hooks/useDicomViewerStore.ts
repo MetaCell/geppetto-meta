@@ -143,8 +143,7 @@ export const useDicomViewerStable = (id: string): Omit<ViewerRecord, "sliceIndic
     useShallow(s => {
       const viewer = s.viewers[id];
       if (!viewer) return null;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { sliceIndices, ...rest } = viewer;
+      const { sliceIndices: _sliceIndices, ...rest } = viewer;
       return rest;
     }),
   );

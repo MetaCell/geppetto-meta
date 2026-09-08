@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { PlaneOrientation, ClickAction, HoverAction } from "../types";
+import { PlaneOrientation, ClickAction, ViewportInteractions, NO_INTERACTIONS } from "../types";
 import { useDicomViewerContext } from "../DicomViewerContext";
 
 interface UseViewportEventsArgs {
@@ -9,12 +9,7 @@ interface UseViewportEventsArgs {
   planeOrientation: PlaneOrientation | "3d";
   camera: THREE.Camera | null;
   scene: THREE.Scene | null;
-  onClick?: ClickAction;
-  onCtrlClick?: ClickAction;
-  onShiftClick?: ClickAction;
-  onDoubleClick?: ClickAction;
-  onRightClick?: ClickAction;
-  onHover?: HoverAction;
+  interactions?: ViewportInteractions;
 }
 
 // Drag threshold in pixels — pointer motion beyond this suppresses click events
@@ -42,13 +37,9 @@ export function useViewportEvents({
   planeOrientation,
   camera,
   scene,
-  onClick,
-  onCtrlClick,
-  onShiftClick,
-  onDoubleClick,
-  onRightClick,
-  onHover,
+  interactions = NO_INTERACTIONS,
 }: UseViewportEventsArgs) {
+  const { onClick, onCtrlClick, onShiftClick, onDoubleClick, onRightClick, onHover } = interactions;
   const ctx = useDicomViewerContext();
   const { invalidate } = useThree();
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null);
