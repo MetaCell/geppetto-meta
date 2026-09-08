@@ -59,8 +59,10 @@ useViewportEvents` as a single `interactions` prop. Six independent optional pro
 
   `PaneDescriptor.id` is the pane's stable identity — see `viewports/DicomCanvas.tsx`'s sticky-mount
   entry. Two panes may share a `planeOrientation` (an MRI-axial pane and a CT-only-axial pane side
-  by side) as long as their ids differ; they'll also share that orientation's slice index, which is
-  the desired behavior for co-registered modalities, not a limitation. `PaneDescriptor.onRender`
+  by side) as long as their ids differ; by default each still scrubs independently (see
+  `PaneDescriptor.syncSliceWith` and `hooks/useDicomViewerStore.ts`'s "sliceIndices keyed by slice
+  key" entry) — sharing an orientation no longer implies sharing a slice position, that's opt-in.
+  `PaneDescriptor.onRender`
   fires once, ever, per pane id, with `(handle, siblings)` — `siblings` is every pane of the same
   view that's already fired, keyed by id inclusive of the pane itself, letting the _last_ pane to
   become ready detect the complete set and perform cross-pane wiring without the framework doing
@@ -163,6 +165,26 @@ place.
   same pattern as `useFiberStore` in `Canvas3D`.
 - **`setSliceIndex`**: functional update (via `updateViewer`) avoids stale-spread races when
   multiple viewports initialise concurrently.
+- **`sliceIndices` keyed by "slice key", not `PlaneOrientation`**: it was a fixed 3-slot
+  `Record<PlaneOrientation, number>` — fine when at most one pane per orientation exists, but once
+  a custom view can declare a second pane at the same `planeOrientation` (e.g. `dual_row_view`'s
+  layer row), a single shared slot per orientation forces those panes to always show the same
+  slice with no way to opt out. Widened to `Record<string, number>`, defaulting each pane's key to
+  its own `id` (`PaneDescriptor.syncSliceWith`, resolved in `Viewport2DContent` as
+  `sliceKey = syncSliceWith ?? id`) — independent by default, synced only when a descriptor asks
+  for it. The canonical panes' ids equal their orientation, so `sliceIndices.axial` etc. keeps
+  meaning what it always meant; this is the same "canonical id doubles as the key" convention
+  already used for `viewportScenes`. `sliceMaxIndices`/`planeStackOrientations` stay
+  `PlaneOrientation`-keyed — they're facts about the stack at that orientation, not navigation
+  state, and are identical for every pane sharing an orientation regardless of sync.
+- **The initial-slice seed only runs for the slot's own owner**: `Viewport2DContent`'s
+  "stack helper ready" effect used to unconditionally call `setSliceIndex(planeOrientation,
+maxIdx/2)` once per pane mount. With a shared/synced slot, that would reset an already-navigated
+  position back to the middle every time a _new_ pane sharing that slot mounts (e.g. opening
+  `dual_row_view` for the first time re-centering an `axial` pane the user had already scrubbed).
+  Guarded to `if (!syncSliceWith)` — only the slot's actual owner ever seeds it; a synced pane
+  relies on whichever pane it's synced to (in practice always a canonical pane, mounted since the
+  viewer's very first render) to have already done this.
 - **`setLayerOpacity`/`setLayerTransform`/`setLayerWindowLevel`/`setLayerLut`**: these mutate the
   layer's GPU uniforms imperatively (`setOpacity`/`setTransform`/`setWindowLevel` close over the
   material's uniforms directly — see `createLayerMaterial.ts`), so the viewer record itself never
@@ -547,6 +569,13 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
 - **`sliceColor` now optional**: defaults to `DEFAULT_SLICE_COLORS[planeOrientation]` (the same
   three colors previously hardcoded in `DicomCanvas.tsx`'s `SLICE_COLORS`) so a `PaneDescriptor`
   can omit it entirely for the common case and only set it to get a non-default crosshair tint.
+- **`syncSliceWith` / `sliceKey`**: `const sliceKey = syncSliceWith ?? id` is used everywhere the
+  component reads or writes the _current_ slice position (`sliceIndices?.[sliceKey]`, wheel-scroll's
+  `ctx.setSliceIndex(sliceKey, next)`, the initial middle-slice seed) — but NOT for
+  `setSliceMaxIndex`/`setPlaneStackOrientation`, which stay keyed by `planeOrientation` (see
+  `hooks/useDicomViewerStore.ts`'s entry on why those two are different from `sliceIndices`).
+  `registerViewportScene` also stays keyed by `id`, never `sliceKey` — scene registration is about
+  this specific pane's visual instance, unrelated to which slice-navigation group it's in.
 - **ResizeObserver fix**: camera frustum is recalculated whenever the pane's own on-screen size
   changes. A `ResizeObserver` on the tracking div (rather than reacting to R3F's canvas-level
   `size`) is required because a pane can start out hidden (0×0 — e.g. `single_view`'s inactive

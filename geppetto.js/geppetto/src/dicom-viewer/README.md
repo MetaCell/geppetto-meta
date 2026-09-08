@@ -158,6 +158,7 @@ interface PaneDescriptor {
   style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
   layerIds?: string[]; // allowlist of registered layer ids this pane draws; omitted = all layers
   sliceColor?: number; // crosshair tint; falls back to a per-orientation default when omitted
+  syncSliceWith?: string; // sync this pane's slice to another pane's id; omitted = independent
   onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
 }
 type ViewLayouts = Record<string, PaneDescriptor[]>;
@@ -202,7 +203,9 @@ If `mode` doesn't match any key in `viewLayouts` (or the default map), the viewe
 
 **`layerIds` and per-pane layer filtering.** By default a pane draws every layer registered via `<DicomLayer>`. Passing `layerIds` restricts it to an allowlist — e.g. two panes at the same `planeOrientation` (different ids) can each show a different subset of registered layers. Pass a stable (module-level or memoized) array; a fresh array literal every render still works but re-runs the pane's overlay-refresh effect needlessly.
 
-A view can declare more than four panes — e.g. a second `'axial'`-oriented pane under a different id, filtered to a different `layerIds` allowlist. Each 2D pane gets its own slice navigation, resize handling, and layer filtering automatically; panes sharing a `planeOrientation` also share that orientation's slice index (scrubbing one scrubs both), which is the intended behavior for e.g. two co-registered modalities shown side by side.
+A view can declare more than four panes — e.g. a second `'axial'`-oriented pane under a different id, filtered to a different `layerIds` allowlist. Each 2D pane gets its own slice navigation, resize handling, and layer filtering automatically.
+
+**`syncSliceWith` — independent by default, sync as an opt-in.** A pane's current slice is keyed by its own `id`, so two panes sharing a `planeOrientation` (different ids) scrub independently by default — scrolling one has no effect on the other. Set `syncSliceWith: 'otherPaneId'` to instead read and write that other pane's slice slot, keeping the two in lockstep (scrubbing either one moves both) — useful when a second pane is meant to track a primary one, e.g. two co-registered modalities that should always show the same physical slice. `sliceMaxIndices`/`planeStackOrientations` (facts about an orientation on the loaded stack, not navigation state) stay orientation-keyed regardless.
 
 > **Not yet supported:** per-pane LUT override. A layer's LUT is a property of its shared `THREE.ShaderMaterial` (one material per layer, reused by every pane that draws it), so showing the same layer with two different LUTs in two panes would need per-pane material cloning — a real feature, just not built yet since nothing in this repo needs it. Also still hardcoded to the four canonical ids (`'3d'`/`'axial'`/`'sagittal'`/`'coronal'`) only: embedding the 2D scenes inside the 3D one, and localizer crosshair sync. A custom pane doesn't participate in either until that's generalized — see the dev docs.
 
@@ -828,6 +831,7 @@ interface PaneDescriptor {
   style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
   layerIds?: string[];
   sliceColor?: number;
+  syncSliceWith?: string;
   onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
 }
 type ViewLayouts = Record<string, PaneDescriptor[]>;

@@ -387,6 +387,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
                   planeOrientation={planeOrientation!}
                   sliceColor={desc.sliceColor}
                   layerIds={desc.layerIds}
+                  syncSliceWith={desc.syncSliceWith}
                   domRef={domRef}
                   animationSkipRate={animationSkipRate}
                   onReady={handlePaneReady(id)}

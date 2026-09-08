@@ -30,7 +30,13 @@ export interface DicomViewerState {
   stack: any | null; // @metacell/ami StackModel
   viewMode: ViewMode;
   orientation: OrientationMode;
-  sliceIndices: Record<PlaneOrientation, number>;
+  /*
+   * Keyed by "slice key" (not PlaneOrientation) — a pane's own id by default, or another pane's id
+   * when it opts into PaneDescriptor.syncSliceWith. The canonical panes' ids equal their
+   * orientation, so this is the same "canonical id doubles as the key" convention as
+   * viewportScenes; a custom pane gets its own independent slot unless it syncs to one.
+   */
+  sliceIndices: Record<string, number>;
   sliceMaxIndices: Record<PlaneOrientation, number>;
   planeStackOrientations: Record<PlaneOrientation, number>;
   isLoading: boolean;
@@ -45,7 +51,7 @@ export interface DicomViewerActions {
   setOrientation: (orientation: OrientationMode) => void;
   setThreshold3D: (value: number) => void;
   setThreshold3DEnabled: (enabled: boolean) => void;
-  setSliceIndex: (plane: PlaneOrientation, idx: number) => void;
+  setSliceIndex: (sliceKey: string, idx: number) => void;
   setSliceMaxIndex: (plane: PlaneOrientation, maxIdx: number) => void;
   // Bulk setter kept for API compatibility; prefer setSliceMaxIndex for new code.
   setSliceMaxIndices: (maxIndices: Record<PlaneOrientation, number>) => void;
@@ -169,6 +175,12 @@ export interface PaneDescriptor {
   style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
   // Allowlist of registered layer ids this pane draws; omitted = every registered layer.
   layerIds?: string[];
+  /*
+   * A 2D pane's own current slice defaults to its own id's slot — independent from any other
+   * pane, even one sharing its planeOrientation. Set this to another pane's id to instead read and
+   * write that pane's slot, keeping the two in lockstep (scrubbing either one moves both).
+   */
+  syncSliceWith?: string;
   sliceColor?: number; // crosshair tint; falls back to a per-orientation default when omitted
   /*
    * Fires once, when this pane paints its first real frame. `siblings` is every other pane of the

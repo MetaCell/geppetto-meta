@@ -5,6 +5,7 @@ import {
   DicomOverlay,
   DicomLayer,
   DicomViewerButton,
+  DicomViewerToolbar,
   useDicomViewerContext,
   useDicomCanvasId,
   useSliceIndices,
@@ -214,6 +215,7 @@ const PinIcon = () => (
 );
 const RowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▤</span>;
 const DualRowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▦</span>;
+const SyncIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>⇌</span>;
 
 // Stable references (not fresh array literals per render) — see the layerIds note in the docs.
 const DUAL_ROW_LAYER_IDS = ["dual-row-layer"];
@@ -236,7 +238,7 @@ const NO_LAYER_IDS: string[] = [];
  * ever selected. It's left in to show the shape — it would fire for a mode that introduces a
  * genuinely new pane id instead.
  */
-const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
+const STATIC_VIEW_LAYOUTS: ViewLayouts = {
   ...DEFAULT_VIEW_LAYOUTS,
   row_view: [
     {
@@ -286,25 +288,34 @@ const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
       },
     },
   ],
-  /*
-   * Custom view mode demo #2 — a 2x3 grid modelled on HFO's dual_row_view: a "solo" row on top
-   * showing a second load of the same volume as a <DicomLayer> (a different LUT, "hot_and_cold",
-   * so it's visually distinct), and the plain canonical row underneath. HFO's real dual_row_view
-   * puts a genuinely different modality (CT) in the top row; there's only one dataset shipped with
-   * this example, so the same file stands in for it here — the point is the *mechanism*
-   * (layerIds routing a specific overlay layer to a specific pane), not the clinical content.
-   *
-   * Top row panes are new ids (there's no canonical "solo" pane), so kind/planeOrientation must be
-   * given explicitly and layerIds restricts each to only the "dual-row-layer" overlay. Bottom row
-   * reuses the canonical ids and sets layerIds to an empty array so it stays a plain, unfiltered
-   * view regardless of whether the unrelated "overlay-self" layer (toggled separately) is on.
-   */
-  dual_row_view: [
+};
+
+/*
+ * Custom view mode demo #2 — a 2x3 grid modelled on HFO's dual_row_view: a "solo" row on top
+ * showing a second load of the same volume as a <DicomLayer> (a different LUT, "hot_and_cold", so
+ * it's visually distinct), and the plain canonical row underneath. HFO's real dual_row_view puts a
+ * genuinely different modality (CT) in the top row; there's only one dataset shipped with this
+ * example, so the same file stands in for it here — the point is the *mechanism* (layerIds routing
+ * a specific overlay layer to a specific pane), not the clinical content.
+ *
+ * Top row panes are new ids (there's no canonical "solo" pane), so kind/planeOrientation must be
+ * given explicitly and layerIds restricts each to only the "dual-row-layer" overlay. Bottom row
+ * reuses the canonical ids and sets layerIds to an empty array so it stays a plain, unfiltered
+ * view regardless of whether the unrelated "overlay-self" layer (toggled separately) is on.
+ *
+ * A function (not a static array) because whether the top row tracks the bottom row is now
+ * user-toggleable — see the "sync panes" HUD below. `synced` sets each top-row pane's
+ * syncSliceWith to its bottom-row counterpart's id; omitted (independent), a new pane id gets its
+ * own slice slot by default, so the two rows scrub separately.
+ */
+function buildDualRowViewPanes(synced: boolean): ViewLayouts["dual_row_view"] {
+  return [
     {
       id: "dual_row_axial",
       kind: "2d",
       planeOrientation: "axial",
       layerIds: DUAL_ROW_LAYER_IDS,
+      syncSliceWith: synced ? "axial" : undefined,
       style: () => ({ position: "absolute", top: 0, left: "0%", width: "33.3333%", height: "50%" }),
     },
     {
@@ -312,6 +323,7 @@ const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
       kind: "2d",
       planeOrientation: "sagittal",
       layerIds: DUAL_ROW_LAYER_IDS,
+      syncSliceWith: synced ? "sagittal" : undefined,
       style: () => ({
         position: "absolute",
         top: 0,
@@ -325,6 +337,7 @@ const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
       kind: "2d",
       planeOrientation: "coronal",
       layerIds: DUAL_ROW_LAYER_IDS,
+      syncSliceWith: synced ? "coronal" : undefined,
       style: () => ({
         position: "absolute",
         top: 0,
@@ -366,8 +379,37 @@ const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
         height: "50%",
       }),
     },
-  ],
-};
+  ];
+}
+
+/*
+ * Mounted inside <DicomViewerPreconf> (has DicomViewerContext access) only while dual_row_view is
+ * active. When sync is switched OFF, each top-row pane's slot is frozen mid-transition — while
+ * synced it shares the bottom row's slot and never writes its own — so without this, un-syncing
+ * would snap each top-row pane back to whatever stale value its own slot last held (its initial
+ * middle slice, most likely) instead of staying where it visually was. This copies the shared
+ * slice into each pane's own slot at the moment sync turns off, so the switch is seamless.
+ * (Turning sync ON needs no equivalent handling: syncSliceWith just repoints the read/write target
+ * at the shared slot, which already holds the correct current value.)
+ */
+function DualRowSyncController({ synced }: { synced: boolean }) {
+  const ctx = useDicomViewerContext();
+  const sliceIndices = useSliceIndices(useDicomCanvasId());
+  const sliceIndicesRef = useRef(sliceIndices);
+  sliceIndicesRef.current = sliceIndices;
+  const wasSynced = useRef(synced);
+
+  useEffect(() => {
+    if (wasSynced.current && !synced) {
+      (["axial", "sagittal", "coronal"] as const).forEach(plane => {
+        ctx.setSliceIndex(`dual_row_${plane}`, sliceIndicesRef.current?.[plane] ?? 0);
+      });
+    }
+    wasSynced.current = synced;
+  }, [synced, ctx]);
+
+  return null;
+}
 
 interface HoverInfo {
   plane: string;
@@ -384,6 +426,13 @@ const DicomViewerExample: React.FC = () => {
     "quad_view",
   );
   const [hover, setHover] = useState<HoverInfo | null>(null);
+
+  // dual_row_view's top/bottom row sync — see buildDualRowViewPanes / DualRowSyncController above.
+  const [dualRowSynced, setDualRowSynced] = useState(false);
+  const viewLayouts = useMemo(
+    () => ({ ...STATIC_VIEW_LAYOUTS, dual_row_view: buildDualRowViewPanes(dualRowSynced) }),
+    [dualRowSynced],
+  );
 
   /*
    * DicomLayer demo — overlays the same volume on top of itself with a false-
@@ -523,13 +572,34 @@ const DicomViewerExample: React.FC = () => {
     </>
   );
 
+  /*
+   * A separate DicomViewerToolbar (not folded into toolbarExtra above) so it only appears while
+   * dual_row_view is active, rather than always-on like the standard toolbar's buttons. Reuses the
+   * same toolbar/button components as the rest of this example — DicomViewerButton is the
+   * dicom-viewer-context-aware analog of 3d-canvas's Toolbar3DButton (same pattern, but resolves
+   * this canvas's own fiber store rather than Canvas3D's incompatible one).
+   */
+  const dualRowToolbar = viewMode === "dual_row_view" && (
+    <DicomViewerToolbar
+      viewerId="dicom-viewer"
+      sx={{ position: "absolute", top: 8, right: 60, borderRadius: 1, boxShadow: 1 }}
+    >
+      <DicomViewerButton
+        icon={<SyncIcon />}
+        tooltip="Sync each top-row (layer) pane's slice with its bottom-row counterpart. Bidirectional — since both then read/write the same underlying slot, scrubbing either one moves both."
+        onClick={() => setDualRowSynced(v => !v)}
+        active={dualRowSynced}
+      />
+    </DicomViewerToolbar>
+  );
+
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <DicomViewerPreconf
         id="dicom-viewer"
         data={DATA}
         mode={viewMode}
-        viewLayouts={CUSTOM_VIEW_LAYOUTS}
+        viewLayouts={viewLayouts}
         orientation="3d"
         interactions={{
           onClick: pinMode ? handlePinClick : "goToPoint",
@@ -540,6 +610,7 @@ const DicomViewerExample: React.FC = () => {
         onFps={handleFps}
         onRender={handleRender}
         toolbarExtra={toolbarExtra}
+        extraOverlay={dualRowToolbar}
       >
         {/* R3F scene children: DicomOverlay / DicomLayer */}
         <StackWindowDefaultsReporter onReady={handleStackWindowDefaults} />
@@ -571,17 +642,20 @@ const DicomViewerExample: React.FC = () => {
             <LayerNudgeController layerId="overlay-self" translateX={layerNudge} />
           </>
         )}
-        {/* dual_row_view's top row routes to this layer via layerIds — see CUSTOM_VIEW_LAYOUTS */}
+        {/* dual_row_view's top row routes to this layer via layerIds — see buildDualRowViewPanes */}
         {viewMode === "dual_row_view" && (
-          <DicomLayer
-            id="dual-row-layer"
-            data={DATA}
-            lut="hot_and_cold"
-            opacity={0.85}
-            backgroundRemoval
-            onLoadingChange={setDualRowLayerLoading}
-            onProgress={setDualRowLayerProgress}
-          />
+          <>
+            <DicomLayer
+              id="dual-row-layer"
+              data={DATA}
+              lut="hot_and_cold"
+              opacity={0.85}
+              backgroundRemoval
+              onLoadingChange={setDualRowLayerLoading}
+              onProgress={setDualRowLayerProgress}
+            />
+            <DualRowSyncController synced={dualRowSynced} />
+          </>
         )}
       </DicomViewerPreconf>
 

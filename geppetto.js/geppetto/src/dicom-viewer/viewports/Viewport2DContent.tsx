@@ -25,6 +25,8 @@ interface Viewport2DContentProps {
   planeOrientation: PlaneOrientation;
   sliceColor?: number;
   layerIds?: string[];
+  // Own slice slot defaults to `id`; set to another pane's id to read/write that pane's slot instead.
+  syncSliceWith?: string;
   domRef: React.RefObject<HTMLElement>;
   animationSkipRate: number;
   onReady?: (scene: any, camera: any) => void;
@@ -45,6 +47,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   planeOrientation,
   sliceColor = DEFAULT_SLICE_COLORS[planeOrientation],
   layerIds,
+  syncSliceWith,
   domRef,
   animationSkipRate,
   onReady,
@@ -57,6 +60,8 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   const ctx = useDicomViewerContext();
   const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
   const visibleLayers = layerIds ? ctx.layers.filter(l => layerIds.includes(l.id)) : ctx.layers;
+  // This pane's own slot by default; synced panes share another pane's slot instead — see dev doc.
+  const sliceKey = syncSliceWith ?? id;
 
   useViewportEvents({
     domRef,
@@ -145,7 +150,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
   // Subscribed directly, not off the context — see dev doc's "sliceIndices omitted" note.
   const sliceIndices = useSliceIndices(useCanvasId());
-  const sliceIndex = sliceIndices?.[planeOrientation] ?? 0;
+  const sliceIndex = sliceIndices?.[sliceKey] ?? 0;
   useEffect(() => {
     if (!handle?.stackHelper || sliceIndex === prevSliceIndex.current) return;
     prevSliceIndex.current = sliceIndex;
@@ -181,7 +186,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
       if (!sh || delta === 0) return;
       const next = Math.min(Math.max(sh.index + delta, 0), sh.orientationMaxIndex);
       if (next === sh.index) return;
-      ctx.setSliceIndex(planeOrientation, next);
+      ctx.setSliceIndex(sliceKey, next);
       invalidate();
     };
 
@@ -206,7 +211,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
       if (flushHandle !== undefined) cancelAnimationFrame(flushHandle);
       el.removeEventListener("wheel", onWheel);
     };
-  }, [handle, domRef.current, planeOrientation, ctx.setSliceIndex, scheduler, paneId]);
+  }, [handle, domRef.current, sliceKey, ctx.setSliceIndex, scheduler, paneId]);
 
   // Publish max slice indices to context once stack helper is ready.
   useEffect(() => {
@@ -220,7 +225,15 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
         [planeOrientation]: maxIdx,
       });
     }
-    ctx.setSliceIndex(planeOrientation, Math.floor(maxIdx / 2));
+    /*
+     * Only the slot's own owner seeds it — a synced pane relies on whichever pane it's synced to
+     * (already mounted, in practice always a canonical pane) to have already done this or to do it
+     * itself; seeding here too would reset a shared slot back to the middle on every pane sharing
+     * it that mounts later, undoing wherever the user had already navigated to.
+     */
+    if (!syncSliceWith) {
+      ctx.setSliceIndex(sliceKey, Math.floor(maxIdx / 2));
+    }
     ctx.setPlaneStackOrientation(planeOrientation, handle.camera.stackOrientation);
     invalidate();
   }, [handle?.stackHelper]);

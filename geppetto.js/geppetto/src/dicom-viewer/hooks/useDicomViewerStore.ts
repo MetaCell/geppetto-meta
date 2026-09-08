@@ -52,8 +52,8 @@ export const useDicomViewerStore = create<DicomViewerStore>((set, get) => ({
         setOrientation: orientation => patch({ orientation }),
         setThreshold3D: threshold3D => patch({ threshold3D }),
         setThreshold3DEnabled: threshold3DEnabled => patch({ threshold3DEnabled }),
-        setSliceIndex: (plane: PlaneOrientation, idx: number) =>
-          updateViewer(v => ({ sliceIndices: { ...v.sliceIndices, [plane]: idx } })),
+        setSliceIndex: (sliceKey: string, idx: number) =>
+          updateViewer(v => ({ sliceIndices: { ...v.sliceIndices, [sliceKey]: idx } })),
         setSliceMaxIndex: (plane: PlaneOrientation, maxIdx: number) =>
           updateViewer(v => ({ sliceMaxIndices: { ...v.sliceMaxIndices, [plane]: maxIdx } })),
         // Bulk setter kept for API compat.
@@ -156,7 +156,5 @@ export const useDicomViewerStable = (id: string): Omit<ViewerRecord, "sliceIndic
  * into a dependency array, and a fresh object per store event would re-run those effects on every
  * unrelated patch — worse than the cascade this replaces.
  */
-export const useSliceIndices = (
-  id: string | undefined,
-): Record<PlaneOrientation, number> | undefined =>
+export const useSliceIndices = (id: string | undefined): Record<string, number> | undefined =>
   useDicomViewerStore(s => (id ? s.viewers[id]?.sliceIndices : undefined));
