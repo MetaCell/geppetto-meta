@@ -15,13 +15,6 @@ interface Viewport2DHandle {
   dispose: () => void;
 }
 
-// Slice orientation string → AMI StackHelper orientation integer
-const ORIENTATION_MAP: Record<PlaneOrientation, string> = {
-  axial: "axial",
-  sagittal: "sagittal",
-  coronal: "coronal",
-};
-
 export function useViewport2D(
   stack: any | null,
   planeOrientation: PlaneOrientation,
@@ -63,7 +56,7 @@ export function useViewport2D(
       center: stack.worldCenter().clone(),
       halfDimensions: new THREE.Vector3(lpsDims.x + 5, lpsDims.y + 5, lpsDims.z + 5),
     };
-    camera.orientation = ORIENTATION_MAP[planeOrientation];
+    camera.orientation = planeOrientation;
 
     const controls = new TrackballOrthoControl(camera, domEl);
     controls.staticMoving = true;

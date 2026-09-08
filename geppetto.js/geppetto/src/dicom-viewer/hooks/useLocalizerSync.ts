@@ -50,27 +50,21 @@ export function useLocalizerSync(viewportsRef: MutableRefObject<UseLocalizerSync
       }
     });
 
-    // 2. Re-wire cross-plane equations (axial → plane1=sagittal, plane2=coronal)
-    if (axial.localizerHelper) {
-      if (sagittal.stackHelper)
-        axial.localizerHelper.plane1 = sagittal.stackHelper.slice.cartesianEquation();
-      if (coronal.stackHelper)
-        axial.localizerHelper.plane2 = coronal.stackHelper.slice.cartesianEquation();
-    }
-    // sagittal → plane1=axial, plane2=coronal
-    if (sagittal.localizerHelper) {
-      if (axial.stackHelper)
-        sagittal.localizerHelper.plane1 = axial.stackHelper.slice.cartesianEquation();
-      if (coronal.stackHelper)
-        sagittal.localizerHelper.plane2 = coronal.stackHelper.slice.cartesianEquation();
-    }
-    // coronal → plane1=axial, plane2=sagittal
-    if (coronal.localizerHelper) {
-      if (axial.stackHelper)
-        coronal.localizerHelper.plane1 = axial.stackHelper.slice.cartesianEquation();
-      if (sagittal.stackHelper)
-        coronal.localizerHelper.plane2 = sagittal.stackHelper.slice.cartesianEquation();
-    }
+    // 2. Re-wire cross-plane equations — same host/first/second triangle as initLocalizerCrossRefs.
+    const links: Array<[PlaneLocalizerRef, PlaneLocalizerRef, PlaneLocalizerRef]> = [
+      [axial, sagittal, coronal],
+      [sagittal, axial, coronal],
+      [coronal, axial, sagittal],
+    ];
+    links.forEach(([host, first, second]) => {
+      if (!host.localizerHelper) return;
+      if (first.stackHelper) {
+        host.localizerHelper.plane1 = first.stackHelper.slice.cartesianEquation();
+      }
+      if (second.stackHelper) {
+        host.localizerHelper.plane2 = second.stackHelper.slice.cartesianEquation();
+      }
+    });
   }, [viewportsRef]);
 
   return { syncAll };

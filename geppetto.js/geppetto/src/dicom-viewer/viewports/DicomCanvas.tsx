@@ -92,12 +92,8 @@ const HIDDEN_STYLE: React.CSSProperties = {
   visibility: "hidden",
 };
 
-// The four ids that get an automatic kind/planeOrientation — see resolvePaneKind below.
-const CANONICAL_PLANE_ORIENTATION: Partial<Record<string, PlaneOrientation>> = {
-  axial: "axial",
-  sagittal: "sagittal",
-  coronal: "coronal",
-};
+// The three 2D ids that get an automatic planeOrientation — see resolvePaneKind below.
+const CANONICAL_PLANE_ORIENTATIONS = new Set(["axial", "sagittal", "coronal"]);
 
 /*
  * Resolves a pane's actual kind/planeOrientation. For the four canonical ids, these are derived
@@ -111,8 +107,9 @@ function resolvePaneKind(desc: PaneDescriptor): {
   planeOrientation?: PlaneOrientation;
 } {
   if (desc.id === "3d") return { kind: "3d" };
-  const canonicalOrientation = CANONICAL_PLANE_ORIENTATION[desc.id];
-  if (canonicalOrientation) return { kind: "2d", planeOrientation: canonicalOrientation };
+  if (CANONICAL_PLANE_ORIENTATIONS.has(desc.id)) {
+    return { kind: "2d", planeOrientation: desc.id as PlaneOrientation };
+  }
   if (!desc.kind) {
     throw new Error(
       `PaneDescriptor "${desc.id}" needs an explicit kind — it isn't one of the built-in pane ids ` +

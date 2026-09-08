@@ -30,10 +30,10 @@ export function useViewport3D(
 
     const worldbb = stack.worldBoundingBox(); // [xmin,xmax,ymin,ymax,zmin,zmax]
     const center = stack.worldCenter();
-    const diagonal = Math.sqrt(
-      Math.pow(worldbb[1] - worldbb[0], 2) +
-        Math.pow(worldbb[3] - worldbb[2], 2) +
-        Math.pow(worldbb[5] - worldbb[4], 2),
+    const diagonal = Math.hypot(
+      worldbb[1] - worldbb[0],
+      worldbb[3] - worldbb[2],
+      worldbb[5] - worldbb[4],
     );
     const offset = diagonal === 0 ? 250 : diagonal;
     camera.position.set(center.x + offset * 0.7, center.y + offset * 0.7, center.z + offset * 0.7);

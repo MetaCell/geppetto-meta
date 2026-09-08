@@ -31,7 +31,6 @@ export function DicomLayer({
 }: DicomLayerProps): null {
   const ctx = useDicomViewerContext();
   const { stack: layerStack, loading, downloadProgress } = useLayerStack(data);
-  const layerRef = useRef<LayerState | null>(null);
   // Refs (not deps) so a new onProgress/onLoadingChange identity every render doesn't refire these
   const onProgressRef = useRef(onProgress);
   onProgressRef.current = onProgress;
@@ -74,7 +73,6 @@ export function DicomLayer({
       ...restMaterialOpts,
     });
     const layer: LayerState = { id, renderOrder, ...partial };
-    layerRef.current = layer;
     ctx.registerLayer(layer);
 
     return () => {
@@ -91,7 +89,6 @@ export function DicomLayer({
       } catch (_) {
         // Swallow — component may unmount after the WebGL context is lost
       }
-      layerRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [layerStack, ctx.stack, id, renderOrder]);
