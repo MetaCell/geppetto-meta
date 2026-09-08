@@ -12,14 +12,27 @@ import { useRenderScheduler } from "./renderScheduler";
 // How long the wheel must be quiet before a slice scrub counts as finished — see dev doc.
 const SCRUB_IDLE_MS = 150;
 
+// Crosshair tint fallback when a PaneDescriptor doesn't set its own sliceColor.
+const DEFAULT_SLICE_COLORS: Record<PlaneOrientation, number> = {
+  axial: 0xff1744,
+  sagittal: 0xffea00,
+  coronal: 0x76ff03,
+};
+
 interface Viewport2DContentProps {
+  id: string;
   stack: any | null;
   planeOrientation: PlaneOrientation;
-  sliceColor: number;
+  sliceColor?: number;
+  layerIds?: string[];
   domRef: React.RefObject<HTMLElement>;
   animationSkipRate: number;
   onReady?: (scene: any, camera: any) => void;
-  // Exposes stackHelper + localizerHelper for localizer cross-ref initialisation
+  /*
+   * Exposes stackHelper + localizerHelper for localizer cross-ref initialisation. Only meaningful
+   * (and only invoked) for a pane whose id equals its own orientation — see dev doc's
+   * "localizer cross-refs stay canonical-only" note.
+   */
   onHandleReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
   // Fires once the first real WebGL frame for this viewport has been painted
   onFirstFrame?: () => void;
@@ -27,9 +40,11 @@ interface Viewport2DContentProps {
 }
 
 export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
+  id,
   stack,
   planeOrientation,
-  sliceColor,
+  sliceColor = DEFAULT_SLICE_COLORS[planeOrientation],
+  layerIds,
   domRef,
   animationSkipRate,
   onReady,
@@ -41,6 +56,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef);
   const ctx = useDicomViewerContext();
   const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
+  const visibleLayers = layerIds ? ctx.layers.filter(l => layerIds.includes(l.id)) : ctx.layers;
 
   useViewportEvents({
     domRef,
@@ -60,10 +76,16 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   // Register the AMI scene in the DicomViewer context and fire callbacks once.
   useEffect(() => {
     if (!handle) return;
-    ctx.registerViewportScene(planeOrientation, handle.scene);
+    ctx.registerViewportScene(id, handle.scene);
     if (!readyFired.current) {
       onReady?.(handle.scene, handle.camera);
-      onHandleReady?.(planeOrientation, handle.stackHelper, handle.localizerHelper);
+      /*
+       * Localizer cross-refs are a fixed axial/sagittal/coronal triangle (see useLocalizerSync.ts) —
+       * only the canonical pane for each orientation (id === its own orientation) participates.
+       */
+      if (id === planeOrientation) {
+        onHandleReady?.(planeOrientation, handle.stackHelper, handle.localizerHelper);
+      }
       readyFired.current = true;
     }
     invalidate();
@@ -129,16 +151,16 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     prevSliceIndex.current = sliceIndex;
     handle.stackHelper.index = sliceIndex;
     ctx.syncLocalizers();
-    handle.refreshOverlayMeshes(ctx.layers, stack);
+    handle.refreshOverlayMeshes(visibleLayers, stack);
     invalidate();
-  }, [sliceIndex, handle, ctx.layers, stack]);
+  }, [sliceIndex, handle, ctx.layers, layerIds, stack]);
 
-  // Also refresh overlay meshes when the layers list changes (new layer added/removed)
+  // Also refresh overlay meshes when the layers list (or this pane's layerIds filter) changes
   useEffect(() => {
     if (!handle?.stackHelper || !stack) return;
-    handle.refreshOverlayMeshes(ctx.layers, stack);
+    handle.refreshOverlayMeshes(visibleLayers, stack);
     invalidate();
-  }, [ctx.layers, handle, stack]);
+  }, [ctx.layers, layerIds, handle, stack]);
 
   // Slice navigation via scroll on the tracking div
   useEffect(() => {
@@ -206,6 +228,13 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   useFrame(() => {
     if (!handle || !domRef.current) return;
 
+    /*
+     * Fires as soon as this pane's render loop is alive — even while hidden/zero-size (a
+     * sticky-mounted pane that isn't part of the active view). A hidden pane has nothing to paint,
+     * so "ready" can't wait on real pixels the way a visible pane's readiness does below.
+     */
+    markFirstFrame();
+
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
 
@@ -255,8 +284,6 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
     gl.setScissorTest(false);
     gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
-
-    markFirstFrame();
   }, 1);
 
   return null;

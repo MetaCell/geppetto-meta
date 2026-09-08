@@ -9,11 +9,9 @@ import { DicomCanvas } from "./viewports/DicomCanvas";
 import {
   DicomViewerProps,
   DicomViewerContext as DicomViewerContextType,
-  OrientationMode,
   PlaneOrientation,
   ViewportHandle,
 } from "./types";
-import { VP_ID_MAP } from "./utils";
 
 const loadingOverlayStyle: React.CSSProperties = {
   position: "absolute",
@@ -44,6 +42,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
   data,
   assetLabel = "image",
   mode = "quad_view",
+  viewLayouts,
   orientation = "3d",
   threshold3D,
   onLoaded,
@@ -89,12 +88,10 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     if (threshold3D !== undefined) viewer?.setThreshold3D(threshold3D);
   }, [threshold3D]);
 
-  const vpScenesRef = useRef<Partial<Record<OrientationMode, THREE.Scene>>>({});
-  const [viewportScenes, setViewportScenes] = useState<
-    Partial<Record<OrientationMode, THREE.Scene>>
-  >({});
+  const vpScenesRef = useRef<Partial<Record<string, THREE.Scene>>>({});
+  const [viewportScenes, setViewportScenes] = useState<Partial<Record<string, THREE.Scene>>>({});
 
-  const registerViewportScene = useCallback((vpId: OrientationMode, scene: THREE.Scene) => {
+  const registerViewportScene = useCallback((vpId: string, scene: THREE.Scene) => {
     vpScenesRef.current = { ...vpScenesRef.current, [vpId]: scene };
     setViewportScenes(prev => ({ ...prev, [vpId]: scene }));
 
@@ -137,49 +134,24 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     [syncAll],
   );
 
-  const vpHandlesRef = useRef<(ViewportHandle | undefined)[]>([]);
-  const onRenderFiredRef = useRef(false);
-  const handleViewportReady = useCallback(
-    (vpId: number, scene: any, camera: any) => {
-      vpHandlesRef.current[vpId] = { id: vpId, scene, camera };
-      if (onRenderFiredRef.current) return;
-      const readyCount = vpHandlesRef.current.filter(Boolean).length;
-      if (readyCount === 4) {
-        onRenderFiredRef.current = true;
-        onRender?.(vpHandlesRef.current as ViewportHandle[]);
-      }
+  /*
+   * DicomCanvas does all the per-pane readiness bookkeeping internally (see its checkReady) and
+   * calls onRender once per view activation. This wraps that to (a) dismiss the loading overlay
+   * and (b) forward to the consumer's own onRender, if any.
+   */
+  const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
+  const handleRenderComplete = useCallback(
+    (viewports: Readonly<Record<string, ViewportHandle>>, renderedMode: string) => {
+      setHasRenderedOnce(true);
+      onRender?.(viewports, renderedMode);
     },
     [onRender],
   );
 
-  const renderedViewportsRef = useRef<Set<number>>(new Set());
-  const expectedViewportIdsRef = useRef<Set<number>>(new Set([0, 1, 2, 3]));
-  const [hasRenderedOnce, setHasRenderedOnce] = useState(false);
-
-  // A new volume starts a new "first paint" cycle, and needs its own single onRender call
+  // A new volume starts a new "first paint" cycle.
   useEffect(() => {
-    renderedViewportsRef.current.clear();
     setHasRenderedOnce(false);
-    vpHandlesRef.current = [];
-    onRenderFiredRef.current = false;
   }, [data]);
-
-  useEffect(() => {
-    const expected =
-      viewer && viewer.viewMode === "single_view"
-        ? new Set([VP_ID_MAP[viewer.orientation]])
-        : new Set([0, 1, 2, 3]);
-    expectedViewportIdsRef.current = expected;
-    setHasRenderedOnce([...expected].every(vpId => renderedViewportsRef.current.has(vpId)));
-  }, [viewer?.viewMode, viewer?.orientation]);
-
-  const handleViewportFirstFrame = useCallback((vpId: number) => {
-    renderedViewportsRef.current.add(vpId);
-    const expected = expectedViewportIdsRef.current;
-    if ([...expected].every(expectedId => renderedViewportsRef.current.has(expectedId))) {
-      setHasRenderedOnce(true);
-    }
-  }, []);
 
   const dataToWorld = useCallback(
     (ijk: THREE.Vector3): THREE.Vector3 => {
@@ -261,11 +233,11 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
               orientation={viewer.orientation}
               stack={stack}
               animationSkipRate={animationSkipRate}
-              onViewportReady={handleViewportReady}
               onViewport2DReady={handleViewport2DReady}
-              onViewportFirstFrame={handleViewportFirstFrame}
+              onRender={handleRenderComplete}
               onFps={onFps}
               interactions={interactions}
+              viewLayouts={viewLayouts}
             >
               {/* R3F scene content: DicomLayer, DicomOverlay, custom three.js objects */}
               {children}

@@ -1,7 +1,8 @@
 import React from "react";
 import * as THREE from "three";
 
-export type ViewMode = "single_view" | "quad_view";
+// `(string & {})` keeps autocomplete for the two built-ins while still allowing any custom mode name.
+export type ViewMode = "single_view" | "quad_view" | (string & {});
 export type OrientationMode = "3d" | "axial" | "sagittal" | "coronal";
 export type PlaneOrientation = "axial" | "sagittal" | "coronal";
 
@@ -72,12 +73,17 @@ export interface DicomViewerContext
   dataToWorld: (ijk: THREE.Vector3) => THREE.Vector3;
   worldToData: (lps: THREE.Vector3) => THREE.Vector3;
   syncLocalizers: () => void;
-  viewportScenes: Partial<Record<OrientationMode, THREE.Scene>>;
-  registerViewportScene: (id: OrientationMode, scene: THREE.Scene) => void;
+  /*
+   * Keyed by pane id (not OrientationMode) — the canonical panes' ids happen to equal their
+   * orientation ("3d"/"axial"/"sagittal"/"coronal"), so existing consumers keyed on those strings
+   * keep working; a custom pane just adds a non-colliding extra entry under its own id.
+   */
+  viewportScenes: Partial<Record<string, THREE.Scene>>;
+  registerViewportScene: (id: string, scene: THREE.Scene) => void;
 }
 
 export interface ViewportHandle {
-  id: number;
+  id: string;
   scene: THREE.Scene;
   camera: THREE.Camera;
 }
@@ -142,12 +148,53 @@ export interface ViewportInteractions {
 // Stable empty default so consumers that pass no interactions don't trigger effect churn.
 export const NO_INTERACTIONS: ViewportInteractions = {};
 
+/*
+ * One viewport pane: what it shows (kind/planeOrientation), where it sits (style), and which
+ * layers/LUT/crosshair color it uses. `id` is the pane's stable identity across mode switches —
+ * it drives sticky mounting (see viewports/DicomCanvas.tsx) and is the key used everywhere a pane
+ * needs to be addressed (onRender, registerViewportScene, ...). Two panes may share a
+ * planeOrientation (e.g. an MRI axial pane and a CT-only axial pane side by side) as long as
+ * their ids differ.
+ *
+ * `kind`/`planeOrientation` are only needed when `id` introduces a genuinely new pane. For the
+ * four canonical ids ("3d"/"axial"/"sagittal"/"coronal") they're derived from `id` automatically
+ * (see viewports/DicomCanvas.tsx's resolvePaneKind) and any value passed here is ignored — a
+ * canonical pane's kind/orientation isn't something a view can override, only reposition, so
+ * there's nothing to keep in sync by hand and no way to accidentally mismatch them.
+ */
+export interface PaneDescriptor {
+  id: string;
+  kind?: "3d" | "2d";
+  planeOrientation?: PlaneOrientation; // required (with kind) when id isn't a canonical pane id
+  style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
+  // Allowlist of registered layer ids this pane draws; omitted = every registered layer.
+  layerIds?: string[];
+  sliceColor?: number; // crosshair tint; falls back to a per-orientation default when omitted
+  /*
+   * Fires once, when this pane paints its first real frame. `siblings` is every other pane of the
+   * same view that has already fired, keyed by id (inclusive of this pane) — enough to implement
+   * "wire A and B together once both exist" without the framework doing that wiring itself.
+   */
+  onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
+}
+
+/*
+ * Named view modes, keyed by the string passed as DicomViewer's `mode` prop. Each entry is just an
+ * array of panes — DEFAULT_VIEW_LAYOUTS (exported from viewports/DicomCanvas) supplies
+ * "single_view" and "quad_view" this way too, so a custom mode is described identically to a
+ * built-in one. A consumer adds a mode by spreading that default map and adding its own entry —
+ * no registry, no subclassing.
+ */
+export type ViewLayouts = Record<string, PaneDescriptor[]>;
+
 export interface DicomViewerProps {
   id: string;
   data: string | string[];
   // Noun used in the loading overlay's copy, e.g. "Loading scan… 42%" (default: "image")
   assetLabel?: string;
   mode?: ViewMode;
+  // Custom/extra view modes, merged over DEFAULT_VIEW_LAYOUTS (see viewports/DicomCanvas.tsx)
+  viewLayouts?: ViewLayouts;
   orientation?: OrientationMode;
   threshold3D?: number; // initial intensity threshold for 3D transparency (0 = off)
   fullScreen?: boolean;
@@ -159,7 +206,8 @@ export interface DicomViewerProps {
   toolbarOptions?: ToolbarOptions;
   loaderOptions?: LoaderOptions;
   toolbarButtons?: ToolbarButtons;
-  onRender?: (viewports: ViewportHandle[]) => void;
+  // Fires once, when every pane declared by viewLayouts[mode] has painted its first frame.
+  onRender?: (viewports: Readonly<Record<string, ViewportHandle>>, mode: string) => void;
   onFps?: (fps: number) => void;
   // R3F scene content (DicomLayer, DicomOverlay) — rendered inside the WebGL Canvas.
   children?: React.ReactNode;

@@ -1,12 +1,5 @@
 import * as THREE from "three";
-import { OrientationMode, PlaneOrientation } from "./types";
-
-export const VP_ID_MAP: Record<OrientationMode, number> = {
-  "3d": 0,
-  axial: 1,
-  sagittal: 2,
-  coronal: 3,
-};
+import { PlaneOrientation } from "./types";
 
 function ijkComponentForStackOrientation(ijk: THREE.Vector3, stackOrientation: number): number {
   if (stackOrientation === 0) return ijk.z;

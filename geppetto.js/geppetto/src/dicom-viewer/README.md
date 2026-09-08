@@ -6,9 +6,9 @@ A React component for visualising DICOM, NIfTI, and NRRD volumetric data in a qu
 
 Two entry points exist, suited for different use cases:
 
-| Component | Location | Toolbar | When to use |
-|---|---|---|---|
-| `DicomViewer` | `./DicomViewer` | None — bring your own | Custom UIs, full control |
+| Component               | Location                | Toolbar                                              | When to use                   |
+| ----------------------- | ----------------------- | ---------------------------------------------------- | ----------------------------- |
+| `DicomViewer`           | `./DicomViewer`         | None — bring your own                                | Custom UIs, full control      |
 | `DicomViewer` (preconf) | `./preconf/DicomViewer` | Built-in (view toggle, orientation cycle, threshold) | Quick start, standard toolbar |
 
 Both share the same rendering engine, state model, and extension points.
@@ -22,15 +22,15 @@ Anything AMI.js `VolumeLoader` accepts: multi-file DICOM series, single-file NIf
 ### Preconfigured viewer (recommended for new projects)
 
 ```tsx
-import { DicomViewer } from '@metacell/geppetto/dicom-viewer/preconf/DicomViewer';
+import { DicomViewer } from "@metacell/geppetto/dicom-viewer/preconf/DicomViewer";
 
 function App() {
   return (
-    <div style={{ width: '800px', height: '600px' }}>
+    <div style={{ width: "800px", height: "600px" }}>
       <DicomViewer
         id="brain"
         data="/path/to/volume.nii.gz"
-        onLoaded={() => console.log('volume ready')}
+        onLoaded={() => console.log("volume ready")}
       />
     </div>
   );
@@ -40,26 +40,23 @@ function App() {
 ### Base viewer with a custom toolbar
 
 ```tsx
-import { DicomViewer } from '@metacell/geppetto/dicom-viewer/DicomViewer';
-import { DicomViewerToolbar, DicomViewerButton } from '@metacell/geppetto/dicom-viewer';
-import { Toolbar3DSeparator } from '@metacell/geppetto/3d-canvas/toolbar/Toolbar3D';
+import { DicomViewer } from "@metacell/geppetto/dicom-viewer/DicomViewer";
+import { DicomViewerToolbar, DicomViewerButton } from "@metacell/geppetto/dicom-viewer";
+import { Toolbar3DSeparator } from "@metacell/geppetto/3d-canvas/toolbar/Toolbar3D";
 
 function App() {
   return (
-    <div style={{ width: '800px', height: '600px' }}>
+    <div style={{ width: "800px", height: "600px" }}>
       <DicomViewer
         id="brain"
         data="/path/to/volume.nii.gz"
         overlay={
-          <DicomViewerToolbar
-            viewerId="brain"
-            sx={{ position: 'absolute', top: 8, right: 8 }}
-          >
+          <DicomViewerToolbar viewerId="brain" sx={{ position: "absolute", top: 8, right: 8 }}>
             <DicomViewerButton
               icon={<span>⊞</span>}
               tooltip="Toggle quad / single view"
               onClick={ctx =>
-                ctx.setViewMode(ctx.viewMode === 'quad_view' ? 'single_view' : 'quad_view')
+                ctx.setViewMode(ctx.viewMode === "quad_view" ? "single_view" : "quad_view")
               }
             />
             <Toolbar3DSeparator />
@@ -67,7 +64,12 @@ function App() {
               icon={<span>⇄</span>}
               tooltip="Next orientation"
               onClick={ctx => {
-                const next = { '3d': 'coronal', coronal: 'sagittal', sagittal: 'axial', axial: '3d' };
+                const next = {
+                  "3d": "coronal",
+                  coronal: "sagittal",
+                  sagittal: "axial",
+                  axial: "3d",
+                };
                 ctx.setOrientation(next[ctx.orientation]);
               }}
             />
@@ -83,7 +85,7 @@ function App() {
 
 ### Single WebGL context, four viewports
 
-`DicomCanvas` creates one R3F `<Canvas>` that covers the full container. Four invisible tracking `<div>`s define the viewport regions (top-left = 3D, top-right = axial, bottom-left = sagittal, bottom-right = coronal). Each viewport reads its tracking div's bounds on every frame, sets the WebGL scissor and viewport to those bounds, clears just that rect, and calls `gl.render(scene, camera)` imperatively. A `FrameClearer` component runs at priority -1, before any viewport, and wipes the *whole* canvas only when the layout changes (view mode, orientation, resize) — not every frame, since a viewport can now legitimately skip a frame and keep its previous pixels (see the render scheduler below).
+`DicomCanvas` creates one R3F `<Canvas>` that covers the full container. Four invisible tracking `<div>`s define the viewport regions (top-left = 3D, top-right = axial, bottom-left = sagittal, bottom-right = coronal). Each viewport reads its tracking div's bounds on every frame, sets the WebGL scissor and viewport to those bounds, clears just that rect, and calls `gl.render(scene, camera)` imperatively. A `FrameClearer` component runs at priority -1, before any viewport, and wipes the _whole_ canvas only when the layout changes (view mode, orientation, resize) — not every frame, since a viewport can now legitimately skip a frame and keep its previous pixels (see the render scheduler below).
 
 Each `DicomCanvas` also creates one `RenderScheduler` (`./viewports/renderScheduler.ts`), provided to its Canvas subtree via context, that gates which viewports actually redraw while one of them is being dragged or wheel-scrubbed — full rate for the one under interaction, throttled for the rest unless shared state moved. This is what keeps interaction cheap without hardware acceleration; see [Performance notes](#performance-notes) for the consumer-facing summary and the dev docs for the full mechanism.
 
@@ -114,21 +116,22 @@ This store is **independent** from `3d-canvas`'s `Canvas3D`/`Toolbar3D` versions
 
 ## `DicomViewer` props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `id` | `string` | **required** | Unique identifier. Used as the key in `useDicomViewerStore` and `dicom-viewer`'s `useFiberStore`. Two viewers on the same page must have different ids. |
-| `data` | `string \| string[]` | **required** | URL(s) to load. Single string for NIfTI/NRRD; array of strings for multi-file DICOM series. |
-| `assetLabel` | `string` | `'image'` | Noun used in the built-in loading overlay's copy, e.g. `Loading scan… 42%`. Purely cosmetic. |
-| `mode` | `'quad_view' \| 'single_view'` | `'quad_view'` | Initial view layout. |
-| `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | `'3d'` | Active viewport in `single_view`. In `quad_view` this determines which pane is highlighted. |
-| `threshold3D` | `number` | `0` | Initial intensity threshold for 3D transparency. Fragments with raw intensity below this value are discarded. `0` = no transparency. Correctly offset for volumes with a negative minimum intensity (e.g. CT in Hounsfield units). |
-| `onLoaded` | `() => void` | — | Called once the volume has been loaded and the stack is ready. |
-| `interactions` | `ViewportInteractions` | — | Bundles all six per-viewport mouse interactions (`onClick`, `onCtrlClick`, `onShiftClick`, `onDoubleClick`, `onRightClick`, `onHover`) into one object. See [`ViewportInteractions` type](#viewportinteractions-type). |
-| `animationSkipRate` | `number` | `1` | Render every Nth frame. Use values > 1 to reduce GPU load for complex scenes. |
-| `onRender` | `(viewports: ViewportHandle[]) => void` | — | Called once all four viewports have initialised. Receives an array of `{ id, scene, camera }` handles, indexed by the exported `VP_ID_MAP` (`{ '3d': 0, axial: 1, sagittal: 2, coronal: 3 }`) — e.g. `viewports[VP_ID_MAP.axial]` for the axial pane. |
-| `onFps` | `(fps: number) => void` | — | Called approximately every 500 ms with the current frame rate. Resets to 0 after 600 ms of inactivity (demand rendering). |
-| `children` | `ReactNode` | — | **R3F scene content** — rendered inside the WebGL Canvas. Use for `<DicomLayer>`, `<DicomOverlay>`, or custom Three.js objects. |
-| `overlay` | `ReactNode` | — | **DOM content** — rendered outside the WebGL Canvas in the normal React tree. Use for toolbars, HUDs, legends. |
+| Prop                | Type                                                                | Default                | Description                                                                                                                                                                                                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | `string`                                                            | **required**           | Unique identifier. Used as the key in `useDicomViewerStore` and `dicom-viewer`'s `useFiberStore`. Two viewers on the same page must have different ids.                                                                                                                                                             |
+| `data`              | `string \| string[]`                                                | **required**           | URL(s) to load. Single string for NIfTI/NRRD; array of strings for multi-file DICOM series.                                                                                                                                                                                                                         |
+| `assetLabel`        | `string`                                                            | `'image'`              | Noun used in the built-in loading overlay's copy, e.g. `Loading scan… 42%`. Purely cosmetic.                                                                                                                                                                                                                        |
+| `mode`              | `ViewMode` (`'quad_view' \| 'single_view'` or a custom string)      | `'quad_view'`          | Initial view layout. See [`viewLayouts` / custom view modes](#viewlayouts--custom-view-modes).                                                                                                                                                                                                                      |
+| `viewLayouts`       | `ViewLayouts`                                                       | `DEFAULT_VIEW_LAYOUTS` | Adds or overrides named view modes. See [`viewLayouts` / custom view modes](#viewlayouts--custom-view-modes).                                                                                                                                                                                                       |
+| `orientation`       | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'`                        | `'3d'`                 | Active viewport in `single_view`. In `quad_view` this determines which pane is highlighted.                                                                                                                                                                                                                         |
+| `threshold3D`       | `number`                                                            | `0`                    | Initial intensity threshold for 3D transparency. Fragments with raw intensity below this value are discarded. `0` = no transparency. Correctly offset for volumes with a negative minimum intensity (e.g. CT in Hounsfield units).                                                                                  |
+| `onLoaded`          | `() => void`                                                        | —                      | Called once the volume has been loaded and the stack is ready.                                                                                                                                                                                                                                                      |
+| `interactions`      | `ViewportInteractions`                                              | —                      | Bundles all six per-viewport mouse interactions (`onClick`, `onCtrlClick`, `onShiftClick`, `onDoubleClick`, `onRightClick`, `onHover`) into one object. See [`ViewportInteractions` type](#viewportinteractions-type).                                                                                              |
+| `animationSkipRate` | `number`                                                            | `1`                    | Render every Nth frame. Use values > 1 to reduce GPU load for complex scenes.                                                                                                                                                                                                                                       |
+| `onRender`          | `(viewports: Record<string, ViewportHandle>, mode: string) => void` | —                      | Called once every pane of the active view has painted its first frame. Receives `{ id, scene, camera }` handles keyed by pane id (e.g. `viewports.axial`), plus the mode that just finished. Fires again on every later view activation that completes (e.g. switching to a mode whose panes haven't rendered yet). |
+| `onFps`             | `(fps: number) => void`                                             | —                      | Called approximately every 500 ms with the current frame rate. Resets to 0 after 600 ms of inactivity (demand rendering).                                                                                                                                                                                           |
+| `children`          | `ReactNode`                                                         | —                      | **R3F scene content** — rendered inside the WebGL Canvas. Use for `<DicomLayer>`, `<DicomOverlay>`, or custom Three.js objects.                                                                                                                                                                                     |
+| `overlay`           | `ReactNode`                                                         | —                      | **DOM content** — rendered outside the WebGL Canvas in the normal React tree. Use for toolbars, HUDs, legends.                                                                                                                                                                                                      |
 
 ### `ViewportInteractions` type
 
@@ -143,14 +146,74 @@ interface ViewportInteractions {
 }
 ```
 
-| Field | Fires on |
-|---|---|
-| `onClick` | A plain left-click in any viewport. |
-| `onCtrlClick` | Ctrl+click (or ⌘+click on macOS). |
-| `onShiftClick` | Shift+click. |
-| `onDoubleClick` | Double-click. |
-| `onRightClick` | Right-click (context menu suppressed). |
-| `onHover` | (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
+### `viewLayouts` / custom view modes
+
+`mode` isn't limited to `'quad_view'`/`'single_view'` — it's a lookup key into a `ViewLayouts` map (`Record<string, PaneDescriptor[]>`), and `viewLayouts` lets a consumer add or override entries in that map. Each entry is just an array of panes — `quad_view`/`single_view` are described the same way, so a custom mode is written identically to a built-in one, not bolted on separately.
+
+```ts
+interface PaneDescriptor {
+  id: string; // stable identity across mode switches — see "sticky mount" below
+  kind?: "3d" | "2d"; // only needed for a new (non-canonical) id — see below
+  planeOrientation?: PlaneOrientation; // only needed (with kind) for a new id, when it's a 2D pane
+  style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
+  layerIds?: string[]; // allowlist of registered layer ids this pane draws; omitted = all layers
+  sliceColor?: number; // crosshair tint; falls back to a per-orientation default when omitted
+  onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
+}
+type ViewLayouts = Record<string, PaneDescriptor[]>;
+```
+
+**`kind`/`planeOrientation` are derived automatically for the four canonical ids** (`'3d'`/`'axial'`/`'sagittal'`/`'coronal'`) — a pane using one of those ids doesn't need to (and can't usefully) restate what it shows, only where it sits. This is deliberate: a canonical pane's content isn't something a view gets to redefine, so there's nothing to keep in sync by hand and no way to set `id: 'coronal'` with a mismatched `planeOrientation` by mistake. `kind`/`planeOrientation` only need to be supplied when `id` introduces a genuinely new pane geppetto doesn't already know about.
+
+`DEFAULT_VIEW_LAYOUTS` (exported alongside the other named exports) supplies the built-in `quad_view`/`single_view` entries, each a 4-pane array using the ids `'3d'`/`'axial'`/`'sagittal'`/`'coronal'` — every entry is just `{ id, style }`. To add a custom mode, spread it and add your own array:
+
+```tsx
+import { DEFAULT_VIEW_LAYOUTS } from '@metacell/geppetto';
+import type { ViewLayouts } from '@metacell/geppetto';
+
+const MY_LAYOUTS: ViewLayouts = {
+  ...DEFAULT_VIEW_LAYOUTS,
+  row_view: [
+    // New pane ids ("row_view_..." rather than "axial" etc.) — geppetto has no canonical meaning
+    // for them, so kind/planeOrientation must be supplied explicitly.
+    {
+      id: 'row_view_3d',
+      kind: '3d',
+      style: () => ({ position: 'absolute', top: 0, left: '0%', width: '25%', height: '100%' }),
+    },
+    {
+      id: 'row_view_axial',
+      kind: '2d',
+      planeOrientation: 'axial',
+      style: () => ({ position: 'absolute', top: 0, left: '25%', width: '25%', height: '100%' }),
+    },
+    // ...sagittal, coronal similarly
+  ],
+};
+
+<DicomViewer mode="row_view" viewLayouts={MY_LAYOUTS} ... />
+```
+
+If `mode` doesn't match any key in `viewLayouts` (or the default map), the viewer falls back to `single_view`. There's no registry to register into — a custom mode is just a plain array passed as a prop, so it's as easy to compose, test, or override as any other value.
+
+**Sticky mount.** A pane id, once part of an active view, stays mounted (hidden via style when not part of the current one) rather than being torn down — recreating a viewport's camera/controls on every mode toggle is real cost. A mode can either reuse a canonical id (repositioning the same live `quad_view`/`single_view` pane instead of getting a fresh one) or introduce a genuinely new id (as `row_view` does above), which gets its own pane, mounted the first time that mode is activated and kept alive afterward.
+
+**Per-pane `onRender`.** Fires once, ever, for a given pane id — when that pane paints its first real frame. `siblings` is every pane of the _same view_ that has already fired by that point, keyed by id (inclusive of the pane itself), which is enough to implement "wire two panes together once both exist" without the framework doing that wiring itself: whichever pane happens to become ready last is the one whose callback sees the complete set. Because it's keyed to the pane's lifetime rather than to a specific view activation, a mode reusing a canonical id won't see that pane's `onRender` fire if it already fired earlier under `quad_view`/`single_view` — only a genuinely new id is guaranteed to fire under the mode that introduces it.
+
+**`layerIds` and per-pane layer filtering.** By default a pane draws every layer registered via `<DicomLayer>`. Passing `layerIds` restricts it to an allowlist — e.g. two panes at the same `planeOrientation` (different ids) can each show a different subset of registered layers. Pass a stable (module-level or memoized) array; a fresh array literal every render still works but re-runs the pane's overlay-refresh effect needlessly.
+
+A view can declare more than four panes — e.g. a second `'axial'`-oriented pane under a different id, filtered to a different `layerIds` allowlist. Each 2D pane gets its own slice navigation, resize handling, and layer filtering automatically; panes sharing a `planeOrientation` also share that orientation's slice index (scrubbing one scrubs both), which is the intended behavior for e.g. two co-registered modalities shown side by side.
+
+> **Not yet supported:** per-pane LUT override. A layer's LUT is a property of its shared `THREE.ShaderMaterial` (one material per layer, reused by every pane that draws it), so showing the same layer with two different LUTs in two panes would need per-pane material cloning — a real feature, just not built yet since nothing in this repo needs it. Also still hardcoded to the four canonical ids (`'3d'`/`'axial'`/`'sagittal'`/`'coronal'`) only: embedding the 2D scenes inside the 3D one, and localizer crosshair sync. A custom pane doesn't participate in either until that's generalized — see the dev docs.
+
+| Field           | Fires on                                                                                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `onClick`       | A plain left-click in any viewport.                                                                                                            |
+| `onCtrlClick`   | Ctrl+click (or ⌘+click on macOS).                                                                                                              |
+| `onShiftClick`  | Shift+click.                                                                                                                                   |
+| `onDoubleClick` | Double-click.                                                                                                                                  |
+| `onRightClick`  | Right-click (context menu suppressed).                                                                                                         |
+| `onHover`       | (rAF-throttled) pointer move over any viewport, and once more with a `null` point on mouse leave. See [`HoverAction` type](#hoveraction-type). |
 
 A stable empty object, `NO_INTERACTIONS`, is exported for cases that need to pass "no interactions" explicitly without allocating a fresh `{}` — mainly relevant to code that itself forwards an `interactions` prop through several layers.
 
@@ -158,13 +221,13 @@ A stable empty object, `NO_INTERACTIONS`, is exported for cases that need to pas
 
 ```ts
 type ClickAction =
-  | 'goToPoint'     // navigate all slice planes to the clicked world position
-  | 'expandView'    // expand the clicked viewport to single_view (or collapse back)
+  | "goToPoint" // navigate all slice planes to the clicked world position
+  | "expandView" // expand the clicked viewport to single_view (or collapse back)
   | ((
       ctx: DicomViewerContext,
       point: THREE.Vector3,
       event: MouseEvent,
-      planeOrientation: PlaneOrientation | '3d', // which viewport the click happened in
+      planeOrientation: PlaneOrientation | "3d", // which viewport the click happened in
     ) => void);
 ```
 
@@ -178,7 +241,7 @@ Drag is detected with a 4-pixel threshold — dragging suppresses the click even
 type HoverAction = (
   ctx: DicomViewerContext,
   point: THREE.Vector3 | null,
-  planeOrientation: PlaneOrientation | '3d',
+  planeOrientation: PlaneOrientation | "3d",
 ) => void;
 ```
 
@@ -188,11 +251,11 @@ Passed as `interactions.onHover`. Raycasting is throttled to at most one pick pe
 
 `preconf/DicomViewer` accepts all base props plus:
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `showToolbar` | `boolean` | `true` | Render the built-in toolbar. Set to `false` to suppress it entirely. |
-| `toolbarExtra` | `ReactNode` | — | Additional buttons appended after the last separator in the built-in toolbar. Use `<DicomViewerButton>` / `<Toolbar3DSeparator>` for consistent styling. |
-| `extraOverlay` | `ReactNode` | — | Additional DOM elements added to the overlay alongside the built-in toolbar. Use for custom HUD elements, not for R3F scene content. |
+| Prop           | Type        | Default | Description                                                                                                                                              |
+| -------------- | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `showToolbar`  | `boolean`   | `true`  | Render the built-in toolbar. Set to `false` to suppress it entirely.                                                                                     |
+| `toolbarExtra` | `ReactNode` | —       | Additional buttons appended after the last separator in the built-in toolbar. Use `<DicomViewerButton>` / `<Toolbar3DSeparator>` for consistent styling. |
+| `extraOverlay` | `ReactNode` | —       | Additional DOM elements added to the overlay alongside the built-in toolbar. Use for custom HUD elements, not for R3F scene content.                     |
 
 Default click behaviour in the preconf viewer: plain click = `'goToPoint'`, Ctrl+click = `'expandView'`.
 
@@ -201,9 +264,9 @@ Default click behaviour in the preconf viewer: plain click = `'goToPoint'`, Ctrl
 `<DicomViewer>` shows a built-in overlay (dark scrim, label, progress bar) automatically — no wiring required — and distinguishes two phases that a plain `isLoading` boolean would conflate:
 
 1. **Downloading** — the volume is still being fetched. Label reads `Loading {assetLabel}… N%` when the server reports a `Content-Length` (via ami.js's `fetch-progress` event), or `Loading {assetLabel}…` with an indeterminate animated bar when it doesn't.
-2. **Decoding** — the download finished and the stack exists, but nothing has painted yet: `StackHelper`/`DataTexture` construction and the first WebGL frame are still pending. Label reads `Decoding {assetLabel}…`. This phase exists because a `stack` being non-null does *not* mean anything is visible yet — GPU resource construction and the first `gl.render()` call still have to happen.
+2. **Decoding** — the download finished and the stack exists, but nothing has painted yet: `StackHelper`/`DataTexture` construction and the first WebGL frame are still pending. Label reads `Decoding {assetLabel}…`. This phase exists because a `stack` being non-null does _not_ mean anything is visible yet — GPU resource construction and the first `gl.render()` call still have to happen.
 
-The overlay clears only once a real frame has actually been drawn for every viewport relevant to the current `mode`/`orientation` (all four in `quad_view`; just the active one in `single_view`) — tracked via each viewport's own render pass, not merely via the presence of `stack`. Switching to `single_view` and back does *not* re-trigger the overlay; only loading a new `data` value does.
+The overlay clears only once a real frame has actually been drawn for every viewport relevant to the current `mode`/`orientation` (all four in `quad_view`; just the active one in `single_view`) — tracked via each viewport's own render pass, not merely via the presence of `stack`. Switching to `single_view` and back does _not_ re-trigger the overlay; only loading a new `data` value does.
 
 Use `assetLabel` to customize the noun in the copy (`assetLabel="scan"` → `Loading scan… 42%`). If you need the raw numbers for a custom loading UI instead of the built-in overlay, call `useVolumeLoader`/`useLayerStack` yourself — see [Advanced: custom volume loading](#advanced-custom-volume-loading).
 
@@ -214,7 +277,7 @@ Use `assetLabel` to customize the noun in the copy (`assetLabel="scan"` → `Loa
 The primary hook for components inside a `<DicomViewer>`. Returns the full `DicomViewerContext`:
 
 ```ts
-import { useDicomViewerContext } from '@metacell/geppetto/dicom-viewer';
+import { useDicomViewerContext } from "@metacell/geppetto/dicom-viewer";
 
 function MyButton() {
   const ctx = useDicomViewerContext();
@@ -226,41 +289,41 @@ Throws if called outside a `<DicomViewer>`.
 
 ### State fields
 
-| Field | Type | Description |
-|---|---|---|
-| `stack` | `StackModel \| null` | The loaded AMI.js base stack. `null` while loading. |
-| `viewMode` | `'quad_view' \| 'single_view'` | Current layout. |
-| `orientation` | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'` | Active viewport in single view. |
-| `sliceMaxIndices` | `Record<PlaneOrientation, number>` | Maximum slice index for each plane (set once the stack helper is ready). |
-| `planeStackOrientations` | `Record<PlaneOrientation, number>` | Each plane's real ami.js `camera.stackOrientation` (0/1/2) — which IJK axis that plane's slices step along. Set internally by `Viewport2DContent` once its camera is ready; used by `centerOnPoint` so click-to-center works for any acquisition orientation, not just axial. Not normally read directly. |
-| `isLoading` | `boolean` | Volume is currently being fetched/parsed. |
-| `layers` | `LayerState[]` | Registered overlay layers (from `<DicomLayer>`). |
-| `threshold3D` | `number` | Current 3D transparency threshold value. |
-| `threshold3DEnabled` | `boolean` | Whether 3D threshold is applied this frame. Decoupled from the value so toggling does not reset a slider position. |
-| `rawData` | `string \| string[] \| null` | The original `data` prop. |
-| `viewportScenes` | `Partial<Record<OrientationMode, THREE.Scene>>` | Per-viewport Three.js scenes, populated once each viewport initialises. Read by `<DicomOverlay>` to portal content. |
+| Field                    | Type                                            | Description                                                                                                                                                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stack`                  | `StackModel \| null`                            | The loaded AMI.js base stack. `null` while loading.                                                                                                                                                                                                                                                       |
+| `viewMode`               | `'quad_view' \| 'single_view'`                  | Current layout.                                                                                                                                                                                                                                                                                           |
+| `orientation`            | `'3d' \| 'axial' \| 'sagittal' \| 'coronal'`    | Active viewport in single view.                                                                                                                                                                                                                                                                           |
+| `sliceMaxIndices`        | `Record<PlaneOrientation, number>`              | Maximum slice index for each plane (set once the stack helper is ready).                                                                                                                                                                                                                                  |
+| `planeStackOrientations` | `Record<PlaneOrientation, number>`              | Each plane's real ami.js `camera.stackOrientation` (0/1/2) — which IJK axis that plane's slices step along. Set internally by `Viewport2DContent` once its camera is ready; used by `centerOnPoint` so click-to-center works for any acquisition orientation, not just axial. Not normally read directly. |
+| `isLoading`              | `boolean`                                       | Volume is currently being fetched/parsed.                                                                                                                                                                                                                                                                 |
+| `layers`                 | `LayerState[]`                                  | Registered overlay layers (from `<DicomLayer>`).                                                                                                                                                                                                                                                          |
+| `threshold3D`            | `number`                                        | Current 3D transparency threshold value.                                                                                                                                                                                                                                                                  |
+| `threshold3DEnabled`     | `boolean`                                       | Whether 3D threshold is applied this frame. Decoupled from the value so toggling does not reset a slider position.                                                                                                                                                                                        |
+| `rawData`                | `string \| string[] \| null`                    | The original `data` prop.                                                                                                                                                                                                                                                                                 |
+| `viewportScenes`         | `Partial<Record<OrientationMode, THREE.Scene>>` | Per-viewport Three.js scenes, populated once each viewport initialises. Read by `<DicomOverlay>` to portal content.                                                                                                                                                                                       |
 
 **`sliceIndices` is not on the context.** It's the highest-frequency write in the viewer — every wheel tick during a scrub — and including it here meant every tick rebuilt the context value and re-rendered every consumer (every viewport, every overlay). Read it with `useSliceIndices(useDicomCanvasId())` instead (see [Advanced: reading viewer state outside the component tree](#advanced-reading-viewer-state-outside-the-component-tree)); only components that call it re-render when it changes.
 
 ### Action methods
 
-| Method | Signature | Description |
-|---|---|---|
-| `setViewMode` | `(mode: ViewMode) => void` | Switch between `'quad_view'` and `'single_view'`. |
-| `setOrientation` | `(o: OrientationMode) => void` | Set active viewport (matters in `single_view`). |
-| `setSliceIndex` | `(plane: PlaneOrientation, idx: number) => void` | Navigate to a specific slice. Uses a functional Zustand update to avoid races when multiple viewports write concurrently. |
-| `setSliceMaxIndex` | `(plane: PlaneOrientation, maxIdx: number) => void` | Update the max-index for one plane (set internally by `Viewport2DContent`). |
-| `setPlaneStackOrientation` | `(plane: PlaneOrientation, stackOrientation: number) => void` | Records a plane's real ami.js `camera.stackOrientation`. Set internally by `Viewport2DContent`; not normally called directly. |
-| `centerOnPoint` | `(point: THREE.Vector3) => void` | Converts a world (LPS) point to IJK and sets all three plane slice indices to center on it, using each plane's real `planeStackOrientations` mapping. Single source of truth for "center on this point" — used by `'goToPoint'` and safe to call directly for a custom "jump to coordinate" action. |
-| `setThreshold3D` | `(value: number) => void` | Update threshold value without toggling it on/off. |
-| `setThreshold3DEnabled` | `(enabled: boolean) => void` | Toggle threshold on/off without changing the stored value. |
-| `registerLayer` | `(layer: LayerState) => void` | Register a new overlay layer (called by `<DicomLayer>`). |
-| `unregisterLayer` | `(id: string) => void` | Remove a layer and free its GPU resources. |
-| `setLayerOpacity` | `(id, opacity) => void` | Delegates to the layer's own `setOpacity` closure (which handles background-removal LUT curves if needed). |
-| `setLayerTransform` | `(id, transform: LayerTransform) => void` | Apply a rigid translate/rotate/scale to an overlay layer. |
-| `setLayerWindowLevel` | `(id, center, width) => void` | Update window/level for a continuous overlay layer. |
-| `setLayerLut` | `(id, name: string) => void` | Switch a continuous overlay layer's colour LUT preset at runtime. No-op for segmentation layers (they don't expose `setLut`). |
-| `syncLocalizers` | `() => void` | Manually re-synchronise the localizer line equations after a slice change. Called automatically by slice navigation. |
+| Method                     | Signature                                                     | Description                                                                                                                                                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setViewMode`              | `(mode: ViewMode) => void`                                    | Switch view mode — `'quad_view'`/`'single_view'`, or any custom key added via `viewLayouts`.                                                                                                                                                                                                        |
+| `setOrientation`           | `(o: OrientationMode) => void`                                | Set active viewport (matters in `single_view`).                                                                                                                                                                                                                                                     |
+| `setSliceIndex`            | `(plane: PlaneOrientation, idx: number) => void`              | Navigate to a specific slice. Uses a functional Zustand update to avoid races when multiple viewports write concurrently.                                                                                                                                                                           |
+| `setSliceMaxIndex`         | `(plane: PlaneOrientation, maxIdx: number) => void`           | Update the max-index for one plane (set internally by `Viewport2DContent`).                                                                                                                                                                                                                         |
+| `setPlaneStackOrientation` | `(plane: PlaneOrientation, stackOrientation: number) => void` | Records a plane's real ami.js `camera.stackOrientation`. Set internally by `Viewport2DContent`; not normally called directly.                                                                                                                                                                       |
+| `centerOnPoint`            | `(point: THREE.Vector3) => void`                              | Converts a world (LPS) point to IJK and sets all three plane slice indices to center on it, using each plane's real `planeStackOrientations` mapping. Single source of truth for "center on this point" — used by `'goToPoint'` and safe to call directly for a custom "jump to coordinate" action. |
+| `setThreshold3D`           | `(value: number) => void`                                     | Update threshold value without toggling it on/off.                                                                                                                                                                                                                                                  |
+| `setThreshold3DEnabled`    | `(enabled: boolean) => void`                                  | Toggle threshold on/off without changing the stored value.                                                                                                                                                                                                                                          |
+| `registerLayer`            | `(layer: LayerState) => void`                                 | Register a new overlay layer (called by `<DicomLayer>`).                                                                                                                                                                                                                                            |
+| `unregisterLayer`          | `(id: string) => void`                                        | Remove a layer and free its GPU resources.                                                                                                                                                                                                                                                          |
+| `setLayerOpacity`          | `(id, opacity) => void`                                       | Delegates to the layer's own `setOpacity` closure (which handles background-removal LUT curves if needed).                                                                                                                                                                                          |
+| `setLayerTransform`        | `(id, transform: LayerTransform) => void`                     | Apply a rigid translate/rotate/scale to an overlay layer.                                                                                                                                                                                                                                           |
+| `setLayerWindowLevel`      | `(id, center, width) => void`                                 | Update window/level for a continuous overlay layer.                                                                                                                                                                                                                                                 |
+| `setLayerLut`              | `(id, name: string) => void`                                  | Switch a continuous overlay layer's colour LUT preset at runtime. No-op for segmentation layers (they don't expose `setLut`).                                                                                                                                                                       |
+| `syncLocalizers`           | `() => void`                                                  | Manually re-synchronise the localizer line equations after a slice change. Called automatically by slice navigation.                                                                                                                                                                                |
 
 ### Coordinate helpers
 
@@ -294,11 +357,11 @@ Only the viewport matching `orientation` is visible; the others are hidden (zero
 
 When `quad_view` is active, each 2D viewport renders crosshair lines showing where the other two planes intersect the current slice. The lines update automatically on scroll.
 
-| Plane | Line colour |
-|---|---|
-| Axial | Red `#ff1744` |
+| Plane    | Line colour      |
+| -------- | ---------------- |
+| Axial    | Red `#ff1744`    |
 | Sagittal | Yellow `#ffea00` |
-| Coronal | Green `#76ff03` |
+| Coronal  | Green `#76ff03`  |
 
 ## Slice navigation
 
@@ -310,7 +373,7 @@ Scroll on any 2D viewport to advance or retreat one slice. The scroll handler is
 
 ```ts
 const sliceIndices = useSliceIndices(useDicomCanvasId());
-ctx.setSliceIndex('axial', (sliceIndices?.axial ?? 0) + 10);
+ctx.setSliceIndex("axial", (sliceIndices?.axial ?? 0) + 10);
 ```
 
 Slice indices are clamped to `[0, sliceMaxIndices[plane]]` by the viewport logic.
@@ -320,7 +383,7 @@ Slice indices are clamped to `[0, sliceMaxIndices[plane]]` by the viewport logic
 `DicomLayer` is a declarative component that loads a second volume and blends it over the base stack using AMI.js shader uniforms. Place it in the `children` prop of `<DicomViewer>` (inside the R3F Canvas tree).
 
 ```tsx
-import { DicomLayer } from '@metacell/geppetto/dicom-viewer';
+import { DicomLayer } from "@metacell/geppetto/dicom-viewer";
 
 <DicomViewer id="brain" data="/base.nii.gz">
   {/* Continuous activation map with a hot-and-cold LUT */}
@@ -331,25 +394,25 @@ import { DicomLayer } from '@metacell/geppetto/dicom-viewer';
     opacity={0.7}
     backgroundRemoval
   />
-</DicomViewer>
+</DicomViewer>;
 ```
 
 ### `DicomLayer` props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `id` | `string` | **required** | Unique identifier used to find this layer in `ctx.layers`. |
-| `data` | `string \| string[]` | **required** | URL(s) of the overlay volume. Accepts the same formats as the base `data` prop. |
-| `renderOrder` | `number` | `1` | Draw order relative to other layers. Lower = drawn first. |
-| `opacity` | `number` | `1` | Layer opacity (0–1). **Reactive** — changing it after mount calls `ctx.setLayerOpacity` automatically, no need to call the action yourself. |
-| `lut` | `string` | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset — see the exported `LUT_PRESETS` list). Ignored in segmentation mode. **Reactive** — changing it after mount calls `ctx.setLayerLut` automatically. |
-| `windowCenter` | `number` | stack default | Window centre for contrast. **Reactive** together with `windowWidth` — changing either after mount calls `ctx.setLayerWindowLevel` automatically (both must be defined). |
-| `windowWidth` | `number` | stack default | Window width for contrast. See `windowCenter`. |
-| `interpolation` | `0 \| 1` | `1` | `0` = nearest-neighbour (for label maps), `1` = trilinear (default). |
-| `segmentation` | `object` | — | Switch to label-map mode. See below. |
-| `backgroundRemoval` | `boolean \| { threshold?: number }` | — | Enable air transparency for CT overlays. Voxels below the threshold (default: `0.2` of normalised intensity) are kept transparent using an opacity LUT curve. Setting `opacity` via `setLayerOpacity` rebuilds the curve automatically. |
-| `onProgress` | `(progress: DownloadProgress \| null) => void` | — | Reports this layer's own fetch progress — same shape/semantics as `useVolumeLoader`'s `downloadProgress` (see [Loading state](#loading-state)). Fires `null` on mount, and again once loading finishes or errors — so it can't alone distinguish "not started" from "finished"; use `onLoadingChange` for that. |
-| `onLoadingChange` | `(loading: boolean) => void` | — | Reports the fetch+decode span as a plain boolean. Prefer this over `onProgress` for a "something is happening" indicator: byte progress may never fire at all when the volume is served from cache and the real cost is CPU-side gzip/parse work, not network transfer. |
+| Prop                | Type                                           | Default          | Description                                                                                                                                                                                                                                                                                                     |
+| ------------------- | ---------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                | `string`                                       | **required**     | Unique identifier used to find this layer in `ctx.layers`.                                                                                                                                                                                                                                                      |
+| `data`              | `string \| string[]`                           | **required**     | URL(s) of the overlay volume. Accepts the same formats as the base `data` prop.                                                                                                                                                                                                                                 |
+| `renderOrder`       | `number`                                       | `1`              | Draw order relative to other layers. Lower = drawn first.                                                                                                                                                                                                                                                       |
+| `opacity`           | `number`                                       | `1`              | Layer opacity (0–1). **Reactive** — changing it after mount calls `ctx.setLayerOpacity` automatically, no need to call the action yourself.                                                                                                                                                                     |
+| `lut`               | `string`                                       | `'hot_and_cold'` | LUT name for continuous overlays (any AMI.js `LutHelper` preset — see the exported `LUT_PRESETS` list). Ignored in segmentation mode. **Reactive** — changing it after mount calls `ctx.setLayerLut` automatically.                                                                                             |
+| `windowCenter`      | `number`                                       | stack default    | Window centre for contrast. **Reactive** together with `windowWidth` — changing either after mount calls `ctx.setLayerWindowLevel` automatically (both must be defined).                                                                                                                                        |
+| `windowWidth`       | `number`                                       | stack default    | Window width for contrast. See `windowCenter`.                                                                                                                                                                                                                                                                  |
+| `interpolation`     | `0 \| 1`                                       | `1`              | `0` = nearest-neighbour (for label maps), `1` = trilinear (default).                                                                                                                                                                                                                                            |
+| `segmentation`      | `object`                                       | —                | Switch to label-map mode. See below.                                                                                                                                                                                                                                                                            |
+| `backgroundRemoval` | `boolean \| { threshold?: number }`            | —                | Enable air transparency for CT overlays. Voxels below the threshold (default: `0.2` of normalised intensity) are kept transparent using an opacity LUT curve. Setting `opacity` via `setLayerOpacity` rebuilds the curve automatically.                                                                         |
+| `onProgress`        | `(progress: DownloadProgress \| null) => void` | —                | Reports this layer's own fetch progress — same shape/semantics as `useVolumeLoader`'s `downloadProgress` (see [Loading state](#loading-state)). Fires `null` on mount, and again once loading finishes or errors — so it can't alone distinguish "not started" from "finished"; use `onLoadingChange` for that. |
+| `onLoadingChange`   | `(loading: boolean) => void`                   | —                | Reports the fetch+decode span as a plain boolean. Prefer this over `onProgress` for a "something is happening" indicator: byte progress may never fire at all when the volume is served from cache and the real cost is CPU-side gzip/parse work, not network transfer.                                         |
 
 #### Label-map mode (`segmentation`)
 
@@ -369,6 +432,7 @@ const segPreset = {
 ```
 
 Two things follow from using `segmentation`:
+
 - **`interpolation` should be `0`** (nearest-neighbour). Trilinear interpolation blends adjacent label integers and produces nonsensical in-between colours at region boundaries.
 - **`setWindowLevel` and `setLut` are unavailable** on the layer at runtime — window/level and colour LUT only apply to continuous overlays.
 
@@ -390,16 +454,16 @@ const [opacity, setOpacity] = useState(0.7);
 
 ```ts
 // Adjust opacity
-ctx.setLayerOpacity('activation', 0.5);
+ctx.setLayerOpacity("activation", 0.5);
 
 // Switch the colour LUT preset
-ctx.setLayerLut('activation', 'spectrum');
+ctx.setLayerLut("activation", "spectrum");
 
 // Adjust contrast
-ctx.setLayerWindowLevel('activation', 400, 800);
+ctx.setLayerWindowLevel("activation", 400, 800);
 
 // Apply a rigid co-registration nudge (translate in mm, rotate in degrees, scale)
-ctx.setLayerTransform('activation', {
+ctx.setLayerTransform("activation", {
   translate: [2, -1, 0],
   rotate: [0, 0, 1.5],
   scale: [1, 1, 1],
@@ -415,31 +479,31 @@ GPU resources (ShaderMaterial, DataTextures) are created when both the base stac
 `DicomOverlay` portals R3F JSX children into one or more viewport scenes using R3F's `createPortal`. This is the correct way to inject custom Three.js objects that should appear in the rendered viewports.
 
 ```tsx
-import { DicomOverlay } from '@metacell/geppetto/dicom-viewer';
+import { DicomOverlay } from "@metacell/geppetto/dicom-viewer";
 
 <DicomViewer id="brain" data="/brain.nii.gz">
-  <DicomOverlay viewports={['3d', 'axial']}>
+  <DicomOverlay viewports={["3d", "axial"]}>
     {/* A sphere at LPS world coordinates */}
     <mesh position={[10, -5, 20]}>
       <sphereGeometry args={[2]} />
       <meshStandardMaterial color="red" />
     </mesh>
   </DicomOverlay>
-</DicomViewer>
+</DicomViewer>;
 ```
 
 ### `DicomOverlay` props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `coordinateSystem` | `'world' \| 'voxel'` | `'world'` | Coordinate space for child positions. `'world'` = LPS millimetres. `'voxel'` = IJK voxel indices — the `ijk2LPS` matrix is applied automatically as a group transform. |
-| `viewports` | `OrientationMode[]` | all four | Restrict the overlay to specific viewports, e.g. `['axial', '3d']`. Exclusion is exact — an overlay restricted to 2D planes (e.g. `['axial']`) will not also appear in the 3D view, even though the 2D scenes are nested inside the 3D scene for slice-plane rendering. |
-| `children` | `ReactNode` | **required** | Any R3F-compatible JSX (meshes, lights, helpers, etc.). |
+| Prop               | Type                 | Default      | Description                                                                                                                                                                                                                                                             |
+| ------------------ | -------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `coordinateSystem` | `'world' \| 'voxel'` | `'world'`    | Coordinate space for child positions. `'world'` = LPS millimetres. `'voxel'` = IJK voxel indices — the `ijk2LPS` matrix is applied automatically as a group transform.                                                                                                  |
+| `viewports`        | `OrientationMode[]`  | all four     | Restrict the overlay to specific viewports, e.g. `['axial', '3d']`. Exclusion is exact — an overlay restricted to 2D planes (e.g. `['axial']`) will not also appear in the 3D view, even though the 2D scenes are nested inside the 3D scene for slice-plane rendering. |
+| `children`         | `ReactNode`          | **required** | Any R3F-compatible JSX (meshes, lights, helpers, etc.).                                                                                                                                                                                                                 |
 
 ### Voxel-space positioning example
 
 ```tsx
-<DicomOverlay coordinateSystem="voxel" viewports={['axial']}>
+<DicomOverlay coordinateSystem="voxel" viewports={["axial"]}>
   {/* Placed at IJK voxel (128, 128, 50) — automatically converted to world space */}
   <mesh position={[128, 128, 50]}>
     <sphereGeometry args={[3]} />
@@ -450,14 +514,14 @@ import { DicomOverlay } from '@metacell/geppetto/dicom-viewer';
 
 ### Clipping an overlay to the current slice
 
-`viewports` restricts which *panes* an overlay renders into, but a marker list (electrode
-contacts, coregistration control points, seed points, …) often also needs to be filtered *within*
+`viewports` restricts which _panes_ an overlay renders into, but a marker list (electrode
+contacts, coregistration control points, seed points, …) often also needs to be filtered _within_
 a 2D pane so only markers lying on the currently-displayed slice show up. `usePlaneFilters` builds
 that filter for you:
 
 ```tsx
-import * as THREE from 'three';
-import { usePlaneFilters, useDicomViewerContext } from '@metacell/geppetto/dicom-viewer';
+import * as THREE from "three";
+import { usePlaneFilters, useDicomViewerContext } from "@metacell/geppetto/dicom-viewer";
 
 function SliceClippedMarkers({ points, radius }: { points: THREE.Vector3[]; radius: number }) {
   const ctx = useDicomViewerContext();
@@ -465,10 +529,14 @@ function SliceClippedMarkers({ points, radius }: { points: THREE.Vector3[]; radi
 
   return (
     <>
-      <DicomOverlay viewports={['axial']}>
+      <DicomOverlay viewports={["axial"]}>
         {points
           .filter(p => filters.axial?.(p.x, p.y, p.z))
-          .map((p, i) => <mesh key={i} position={p}><sphereGeometry args={[radius]} /></mesh>)}
+          .map((p, i) => (
+            <mesh key={i} position={p}>
+              <sphereGeometry args={[radius]} />
+            </mesh>
+          ))}
       </DicomOverlay>
       {/* ...repeat for sagittal / coronal with filters.sagittal / filters.coronal */}
     </>
@@ -493,16 +561,16 @@ lines up with the spatial filter. It's built from two lower-level exports if you
 Container for toolbar buttons. Renders a vertical MUI `Box` and provides `DicomViewerIdContext` so child buttons can resolve the viewer.
 
 ```tsx
-<DicomViewerToolbar viewerId="brain" sx={{ position: 'absolute', top: 8, right: 8 }}>
+<DicomViewerToolbar viewerId="brain" sx={{ position: "absolute", top: 8, right: 8 }}>
   {/* buttons */}
 </DicomViewerToolbar>
 ```
 
-| Prop | Type | Description |
-|---|---|---|
-| `viewerId` | `string` | The `id` of the `<DicomViewer>` this toolbar controls. |
-| `sx` | `SxProps<Theme>` | MUI layout overrides. |
-| `children` | `ReactNode` | Buttons and separators. |
+| Prop       | Type             | Description                                            |
+| ---------- | ---------------- | ------------------------------------------------------ |
+| `viewerId` | `string`         | The `id` of the `<DicomViewer>` this toolbar controls. |
+| `sx`       | `SxProps<Theme>` | MUI layout overrides.                                  |
+| `children` | `ReactNode`      | Buttons and separators.                                |
 
 ### `DicomViewerButton`
 
@@ -523,25 +591,25 @@ A toolbar button with access to both the DICOM domain context and the underlying
 />
 ```
 
-| Prop | Type | Description |
-|---|---|---|
-| `icon` | `ReactNode` | Icon element. |
-| `tooltip` | `string` | Native `title` attribute. |
-| `onClick` | `(ctx: DicomViewerContext, fiber: CanvasRootState \| null) => void` | Called with both the DICOM context and the R3F root state. `fiber` is `null` only before the canvas mounts. |
-| `active` | `boolean` | Highlighted (blue) background when `true`. |
-| `disabled` | `boolean` | Dims the button and suppresses click. |
-| `style` | `CSSProperties` | Inline style overrides. |
+| Prop       | Type                                                                | Description                                                                                                 |
+| ---------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `icon`     | `ReactNode`                                                         | Icon element.                                                                                               |
+| `tooltip`  | `string`                                                            | Native `title` attribute.                                                                                   |
+| `onClick`  | `(ctx: DicomViewerContext, fiber: CanvasRootState \| null) => void` | Called with both the DICOM context and the R3F root state. `fiber` is `null` only before the canvas mounts. |
+| `active`   | `boolean`                                                           | Highlighted (blue) background when `true`.                                                                  |
+| `disabled` | `boolean`                                                           | Dims the button and suppresses click.                                                                       |
+| `style`    | `CSSProperties`                                                     | Inline style overrides.                                                                                     |
 
-`fiber` is a plain R3F `RootState` (type `CanvasRootState`, importable from `@metacell/geppetto/dicom-viewer`) — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. It is *not* the same store as Canvas3D's `Canvas3DRootState`: dicom-viewer keeps its own independent registry (see [Fiber store integration](#fiber-store-integration)) since its `controls` are ami.js's `TrackballControl`/`TrackballOrthoControl`, not the `CameraControls` that Canvas3D's toolbar groups expect. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
+`fiber` is a plain R3F `RootState` (type `CanvasRootState`, importable from `@metacell/geppetto/dicom-viewer`) — it contains `camera`, `scene`, `gl`, `controls`, and `invalidate`. It is _not_ the same store as Canvas3D's `Canvas3DRootState`: dicom-viewer keeps its own independent registry (see [Fiber store integration](#fiber-store-integration)) since its `controls` are ami.js's `TrackballControl`/`TrackballOrthoControl`, not the `CameraControls` that Canvas3D's toolbar groups expect. DICOM buttons receive it in addition to `ctx` so they can directly interact with the render engine when needed.
 
 To build a toolbar button from scratch instead of using `<DicomViewerButton>`, use `useDicomCanvasId`/`useDicomFiber`/`DicomCanvasIdContext` — dicom-viewer's own exports of this pattern, aliased on export to avoid a name collision with `3d-canvas`'s identically-shaped `useCanvasId`/`useFiber`/`CanvasIdContext` in `@metacell/geppetto`'s flattened root barrel:
 
 ```tsx
-import { useDicomCanvasId, useDicomFiber } from '@metacell/geppetto/dicom-viewer';
+import { useDicomCanvasId, useDicomFiber } from "@metacell/geppetto/dicom-viewer";
 
 function MyCustomButton() {
   const canvasId = useDicomCanvasId();
-  const fiber = useDicomFiber(canvasId ?? '');
+  const fiber = useDicomFiber(canvasId ?? "");
   // ...
 }
 ```
@@ -567,9 +635,9 @@ If you only need DICOM domain state (the common case), the `fiber` argument can 
   tooltip="Go to centre"
   onClick={ctx => {
     const mid = ctx.sliceMaxIndices;
-    ctx.setSliceIndex('axial',    Math.floor(mid.axial    / 2));
-    ctx.setSliceIndex('sagittal', Math.floor(mid.sagittal / 2));
-    ctx.setSliceIndex('coronal',  Math.floor(mid.coronal  / 2));
+    ctx.setSliceIndex("axial", Math.floor(mid.axial / 2));
+    ctx.setSliceIndex("sagittal", Math.floor(mid.sagittal / 2));
+    ctx.setSliceIndex("coronal", Math.floor(mid.coronal / 2));
   }}
 />
 ```
@@ -590,14 +658,14 @@ function SliceCounter({ viewerId }: { viewerId: string }) {
 }
 ```
 
-Returns `null` when the viewer is not yet registered (before the `<DicomViewer>` mounts). Subscribes to the *whole* record, so it re-renders on every patch — including slice scrubbing, the highest-frequency write in the viewer. Prefer `useDicomViewerStable` or `useSliceIndices` below unless you genuinely need everything.
+Returns `null` when the viewer is not yet registered (before the `<DicomViewer>` mounts). Subscribes to the _whole_ record, so it re-renders on every patch — including slice scrubbing, the highest-frequency write in the viewer. Prefer `useDicomViewerStable` or `useSliceIndices` below unless you genuinely need everything.
 
 ### `useDicomViewerStable(id)`
 
 Like `useDicomViewer`, but shallow-compared and without `sliceIndices`. A slice patch produces a new record object, but every other field is unchanged, so the shallow comparison holds and this hook does not re-render for it:
 
 ```ts
-import { useDicomViewerStable } from '@metacell/geppetto/dicom-viewer';
+import { useDicomViewerStable } from "@metacell/geppetto/dicom-viewer";
 
 const viewer = useDicomViewerStable(viewerId); // Omit<ViewerRecord, 'sliceIndices'> | null
 ```
@@ -625,15 +693,15 @@ Returns the store's own object reference (never a freshly-constructed one), so i
 Raw Zustand store for imperative use outside React:
 
 ```ts
-import { useDicomViewerStore } from '@metacell/geppetto/dicom-viewer';
+import { useDicomViewerStore } from "@metacell/geppetto/dicom-viewer";
 
 // Snapshot read
-const state = useDicomViewerStore.getState().viewers['brain'];
+const state = useDicomViewerStore.getState().viewers["brain"];
 
 // Imperative subscribe
 const unsub = useDicomViewerStore.subscribe((state, prev) => {
-  if (state.viewers['brain'] !== prev.viewers['brain']) {
-    console.log('brain viewer changed');
+  if (state.viewers["brain"] !== prev.viewers["brain"]) {
+    console.log("brain viewer changed");
   }
 });
 ```
@@ -645,9 +713,9 @@ const unsub = useDicomViewerStore.subscribe((state, prev) => {
 Used internally by `<DicomViewer>` to load the base stack. Exported for cases where you need to load a volume outside the component before passing it:
 
 ```ts
-import { useVolumeLoader } from '@metacell/geppetto/dicom-viewer';
+import { useVolumeLoader } from "@metacell/geppetto/dicom-viewer";
 
-const { stack, loading, error, downloadProgress } = useVolumeLoader('/brain.nii.gz');
+const { stack, loading, error, downloadProgress } = useVolumeLoader("/brain.nii.gz");
 ```
 
 - Calls `stack.prepare()` and `loader.free()` after loading to release raw frame buffers.
@@ -657,7 +725,7 @@ const { stack, loading, error, downloadProgress } = useVolumeLoader('/brain.nii.
 - `downloadProgress` is a live `DownloadProgress | null` (`{ loaded: number; total: number }`, `total: 0` means the server didn't report a `Content-Length`), updated from ami.js's `VolumeLoader`'s `fetch-progress` event during the fetch and cleared once loading finishes or errors. Use the exported `pctOf(downloadProgress)` helper to turn it into a `0–100` percentage, or `null` while size is unknown:
 
   ```ts
-  import { pctOf } from '@metacell/geppetto/dicom-viewer';
+  import { pctOf } from "@metacell/geppetto/dicom-viewer";
 
   const pct = pctOf(downloadProgress); // number | null
   ```
@@ -671,11 +739,11 @@ Like `useVolumeLoader` but keeps `_rawData` intact (no `loader.free()`) because 
 Low-level factory that takes a loaded AMI.js `StackModel` and a set of options and returns the GPU `ShaderMaterial`, `uniforms`, LUT helpers, and action closures that make up a `LayerState`. Only needed if you are building a fully custom layer system:
 
 ```ts
-import { createLayerMaterial } from '@metacell/geppetto/dicom-viewer';
+import { createLayerMaterial } from "@metacell/geppetto/dicom-viewer";
 
 const layerState = createLayerMaterial(stack, {
   opacity: 0.8,
-  lut: 'rainbow',
+  lut: "rainbow",
   backgroundRemoval: true,
 });
 // layerState: { material, uniforms, lut, baseLps2IJK, setOpacity, setWindowLevel, setLut, setTransform }
@@ -698,14 +766,14 @@ const layerState = createLayerMaterial(stack, {
 ## Types reference
 
 ```ts
-type ViewMode = 'single_view' | 'quad_view';
-type OrientationMode = '3d' | 'axial' | 'sagittal' | 'coronal';
-type PlaneOrientation = 'axial' | 'sagittal' | 'coronal'; // 2D planes only
+type ViewMode = "single_view" | "quad_view" | (string & {}); // any key present in viewLayouts
+type OrientationMode = "3d" | "axial" | "sagittal" | "coronal";
+type PlaneOrientation = "axial" | "sagittal" | "coronal"; // 2D planes only
 
 interface LayerTransform {
   translate?: [number, number, number]; // mm
-  rotate?:    [number, number, number]; // degrees (x, y, z Euler)
-  scale?:     [number, number, number];
+  rotate?: [number, number, number]; // degrees (x, y, z Euler)
+  scale?: [number, number, number];
 }
 
 interface LayerState {
@@ -717,31 +785,31 @@ interface LayerState {
   setWindowLevel?: (center: number, width: number) => void;
   setLut?: (name: string) => void;
   setTransform: (t: LayerTransform) => void;
-  lut?: any;    // LutHelper (continuous overlays)
+  lut?: any; // LutHelper (continuous overlays)
   segLut?: any; // SegmentationLutHelper (label maps)
   baseLps2IJK: THREE.Matrix4;
 }
 
 interface ViewportHandle {
-  id: number;
+  id: string; // pane id
   scene: THREE.Scene;
   camera: THREE.Camera;
 }
 
 type ClickAction =
-  | 'goToPoint'
-  | 'expandView'
+  | "goToPoint"
+  | "expandView"
   | ((
       ctx: DicomViewerContext,
       point: THREE.Vector3,
       event: MouseEvent,
-      planeOrientation: PlaneOrientation | '3d',
+      planeOrientation: PlaneOrientation | "3d",
     ) => void);
 
 type HoverAction = (
   ctx: DicomViewerContext,
   point: THREE.Vector3 | null,
-  planeOrientation: PlaneOrientation | '3d',
+  planeOrientation: PlaneOrientation | "3d",
 ) => void;
 
 interface ViewportInteractions {
@@ -752,6 +820,17 @@ interface ViewportInteractions {
   onRightClick?: ClickAction;
   onHover?: HoverAction;
 }
+
+interface PaneDescriptor {
+  id: string;
+  kind?: "3d" | "2d"; // derived from id for the four canonical ids; required otherwise
+  planeOrientation?: PlaneOrientation;
+  style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
+  layerIds?: string[];
+  sliceColor?: number;
+  onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
+}
+type ViewLayouts = Record<string, PaneDescriptor[]>;
 
 interface DownloadProgress {
   loaded: number;
@@ -766,7 +845,7 @@ interface UseVolumeLoaderOptions {
 type PlaneFilter = ((lpsX: number, lpsY: number, lpsZ: number) => boolean) | null;
 
 // A plain R3F RootState — dicom-viewer's own type, independent from Canvas3D's Canvas3DRootState
-type CanvasRootState = import('@react-three/fiber').RootState;
+type CanvasRootState = import("@react-three/fiber").RootState;
 ```
 
 All types are re-exported from the package index and can be imported as:
@@ -781,11 +860,13 @@ import type {
   ClickAction,
   HoverAction,
   ViewportInteractions,
+  PaneDescriptor,
+  ViewLayouts,
   DownloadProgress,
   UseVolumeLoaderOptions,
   PlaneFilter,
   CanvasRootState,
   DicomViewerContextType, // DicomViewerContext re-exported under this name to avoid collision with the React context object
   ViewportHandle,
-} from '@metacell/geppetto/dicom-viewer';
+} from "@metacell/geppetto/dicom-viewer";
 ```

@@ -11,12 +11,14 @@ import {
   usePlaneFilters,
   LUT_PRESETS,
   pctOf,
+  DEFAULT_VIEW_LAYOUTS,
 } from "@metacell/geppetto";
 import type {
   HoverAction,
   DicomViewerContextType,
   PlaneOrientation,
   DownloadProgress,
+  ViewLayouts,
 } from "@metacell/geppetto";
 
 /*
@@ -210,6 +212,162 @@ const LayerIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>◱
 const PinIcon = () => (
   <span style={{ fontSize: "0.9em", fontWeight: 700, color: "magenta" }}>◎</span>
 );
+const RowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▤</span>;
+const DualRowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▦</span>;
+
+// Stable references (not fresh array literals per render) — see the layerIds note in the docs.
+const DUAL_ROW_LAYER_IDS = ["dual-row-layer"];
+const NO_LAYER_IDS: string[] = [];
+
+/*
+ * Custom view mode demo #1 — 3D on top (full width), the three 2D planes in a row underneath.
+ * Spreads DEFAULT_VIEW_LAYOUTS (so "single_view"/"quad_view" still work) and adds "row_view" as a
+ * plain array of PaneDescriptors — the same shape the built-in modes use, proving a consumer can
+ * add named layouts without geppetto knowing about them ahead of time.
+ *
+ * Written out pane-by-pane (not derived from a loop) so each one is easy to read, copy, and tweak
+ * independently — that's the point of an example.
+ *
+ * Reuses the canonical ids ("3d"/"axial"/"sagittal"/"coronal") rather than inventing new ones:
+ * kind/planeOrientation are derived from those ids automatically, so this just repositions the
+ * same four live panes quad_view/single_view already use — no new panes, no camera/controls
+ * recreated. That also means onRender below won't log here: it fires once, ever, per pane id, and
+ * quad_view (the default initial mode) already fired it for these same four ids before row_view is
+ * ever selected. It's left in to show the shape — it would fire for a mode that introduces a
+ * genuinely new pane id instead.
+ */
+const CUSTOM_VIEW_LAYOUTS: ViewLayouts = {
+  ...DEFAULT_VIEW_LAYOUTS,
+  row_view: [
+    {
+      id: "3d",
+      style: () => ({ position: "absolute", top: 0, left: 0, width: "100%", height: "50%" }),
+      onRender: (_handle, siblings) => {
+        console.log('[row_view] pane "3d" rendered; ready so far:', Object.keys(siblings));
+      },
+    },
+    {
+      id: "axial",
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "0%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+      onRender: (_handle, siblings) => {
+        console.log('[row_view] pane "axial" rendered; ready so far:', Object.keys(siblings));
+      },
+    },
+    {
+      id: "sagittal",
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "33.3333%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+      onRender: (_handle, siblings) => {
+        console.log('[row_view] pane "sagittal" rendered; ready so far:', Object.keys(siblings));
+      },
+    },
+    {
+      id: "coronal",
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "66.6667%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+      onRender: (_handle, siblings) => {
+        console.log('[row_view] pane "coronal" rendered; ready so far:', Object.keys(siblings));
+      },
+    },
+  ],
+  /*
+   * Custom view mode demo #2 — a 2x3 grid modelled on HFO's dual_row_view: a "solo" row on top
+   * showing a second load of the same volume as a <DicomLayer> (a different LUT, "hot_and_cold",
+   * so it's visually distinct), and the plain canonical row underneath. HFO's real dual_row_view
+   * puts a genuinely different modality (CT) in the top row; there's only one dataset shipped with
+   * this example, so the same file stands in for it here — the point is the *mechanism*
+   * (layerIds routing a specific overlay layer to a specific pane), not the clinical content.
+   *
+   * Top row panes are new ids (there's no canonical "solo" pane), so kind/planeOrientation must be
+   * given explicitly and layerIds restricts each to only the "dual-row-layer" overlay. Bottom row
+   * reuses the canonical ids and sets layerIds to an empty array so it stays a plain, unfiltered
+   * view regardless of whether the unrelated "overlay-self" layer (toggled separately) is on.
+   */
+  dual_row_view: [
+    {
+      id: "dual_row_axial",
+      kind: "2d",
+      planeOrientation: "axial",
+      layerIds: DUAL_ROW_LAYER_IDS,
+      style: () => ({ position: "absolute", top: 0, left: "0%", width: "33.3333%", height: "50%" }),
+    },
+    {
+      id: "dual_row_sagittal",
+      kind: "2d",
+      planeOrientation: "sagittal",
+      layerIds: DUAL_ROW_LAYER_IDS,
+      style: () => ({
+        position: "absolute",
+        top: 0,
+        left: "33.3333%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+    },
+    {
+      id: "dual_row_coronal",
+      kind: "2d",
+      planeOrientation: "coronal",
+      layerIds: DUAL_ROW_LAYER_IDS,
+      style: () => ({
+        position: "absolute",
+        top: 0,
+        left: "66.6667%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+    },
+    {
+      id: "axial",
+      layerIds: NO_LAYER_IDS,
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "0%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+    },
+    {
+      id: "sagittal",
+      layerIds: NO_LAYER_IDS,
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "33.3333%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+    },
+    {
+      id: "coronal",
+      layerIds: NO_LAYER_IDS,
+      style: () => ({
+        position: "absolute",
+        top: "50%",
+        left: "66.6667%",
+        width: "33.3333%",
+        height: "50%",
+      }),
+    },
+  ],
+};
 
 interface HoverInfo {
   plane: string;
@@ -222,6 +380,9 @@ const DicomViewerExample: React.FC = () => {
   const [fps, setFps] = useState(0);
   const [showAll, setShowAll] = useState(false);
   const [showSelected, setShowSelected] = useState(false);
+  const [viewMode, setViewMode] = useState<"quad_view" | "row_view" | "dual_row_view">(
+    "quad_view",
+  );
   const [hover, setHover] = useState<HoverInfo | null>(null);
 
   /*
@@ -274,6 +435,14 @@ const DicomViewerExample: React.FC = () => {
   const fpsColor = fps >= 50 ? "#4caf50" : fps >= 25 ? "#ff9800" : "#f44336";
   const handleFps = useCallback((v: number) => setFps(v), []);
 
+  // Top-level onRender — fires once per view activation, once every pane of that view has
+  // painted. Generalizes the old fixed-4-viewport callback to whichever mode is active.
+  const [lastRenderedMode, setLastRenderedMode] = useState<string | null>(null);
+  const handleRender = useCallback((viewports: Record<string, unknown>, mode: string) => {
+    setLastRenderedMode(mode);
+    console.log(`[onRender] "${mode}" fully rendered:`, Object.keys(viewports));
+  }, []);
+
   const handleHover = useCallback<HoverAction>((ctx, point, planeOrientation) => {
     if (!point) {
       setHover(null);
@@ -321,6 +490,18 @@ const DicomViewerExample: React.FC = () => {
         onClick={() => setPinMode(v => !v)}
         active={pinMode}
       />
+      <DicomViewerButton
+        icon={<RowIcon />}
+        tooltip="Toggle a custom 'row_view' layout (3D on top, the 3 planes in a row below) — demonstrates viewLayouts"
+        onClick={() => setViewMode(v => (v === "row_view" ? "quad_view" : "row_view"))}
+        active={viewMode === "row_view"}
+      />
+      <DicomViewerButton
+        icon={<DualRowIcon />}
+        tooltip="Toggle a custom 'dual_row_view' layout (2×3 grid): top row is the same volume loaded again as a <DicomLayer> with a different LUT, bottom row is the plain view"
+        onClick={() => setViewMode(v => (v === "dual_row_view" ? "quad_view" : "dual_row_view"))}
+        active={viewMode === "dual_row_view"}
+      />
     </>
   );
 
@@ -329,7 +510,8 @@ const DicomViewerExample: React.FC = () => {
       <DicomViewerPreconf
         id="dicom-viewer"
         data={DATA}
-        mode="quad_view"
+        mode={viewMode}
+        viewLayouts={CUSTOM_VIEW_LAYOUTS}
         orientation="3d"
         interactions={{
           onClick: pinMode ? handlePinClick : "goToPoint",
@@ -338,6 +520,7 @@ const DicomViewerExample: React.FC = () => {
         }}
         threshold3D={threshold3D}
         onFps={handleFps}
+        onRender={handleRender}
         toolbarExtra={toolbarExtra}
       >
         {/* R3F scene children: DicomOverlay / DicomLayer */}
@@ -370,6 +553,16 @@ const DicomViewerExample: React.FC = () => {
             <LayerNudgeController layerId="overlay-self" translateX={layerNudge} />
           </>
         )}
+        {/* dual_row_view's top row routes to this layer via layerIds — see CUSTOM_VIEW_LAYOUTS */}
+        {viewMode === "dual_row_view" && (
+          <DicomLayer
+            id="dual-row-layer"
+            data={DATA}
+            lut="hot_and_cold"
+            opacity={0.85}
+            backgroundRemoval
+          />
+        )}
       </DicomViewerPreconf>
 
       {/* Hover readout HUD — plane + LPS (world mm) + IJK (voxel) coordinates */}
@@ -388,6 +581,9 @@ const DicomViewerExample: React.FC = () => {
       {/* FPS counter HUD */}
       <div style={{ ...hudBase, top: 12, left: 12 }}>
         <span style={{ color: fpsColor, fontWeight: 700, minWidth: 38 }}>{fps} fps</span>
+        {lastRenderedMode && (
+          <span style={{ opacity: 0.7 }}>· rendered: {lastRenderedMode}</span>
+        )}
       </div>
 
       {/* 3D threshold slider HUD */}

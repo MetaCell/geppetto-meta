@@ -9,6 +9,7 @@ import { useFirstFrameFlag } from "./useFirstFrameFlag";
 import { useRenderScheduler } from "./renderScheduler";
 
 interface Viewport3DContentProps {
+  id: string;
   stack: any | null;
   domRef: React.RefObject<HTMLElement>;
   animationSkipRate: number;
@@ -19,6 +20,7 @@ interface Viewport3DContentProps {
 }
 
 export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
+  id,
   stack,
   domRef,
   animationSkipRate,
@@ -48,7 +50,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
   // Register the 3D scene in context and fire onReady once the handle is live.
   useEffect(() => {
     if (!handle) return;
-    ctx.registerViewportScene("3d", handle.scene);
+    ctx.registerViewportScene(id, handle.scene);
     if (!readyFired.current) {
       onReady?.(handle.scene, handle.camera);
       readyFired.current = true;
@@ -113,6 +115,13 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
 
   useFrame(() => {
     if (!handle || !domRef.current) return;
+
+    /*
+     * Fires as soon as this pane's render loop is alive — even while hidden/zero-size (a
+     * sticky-mounted pane that isn't part of the active view). A hidden pane has nothing to paint,
+     * so "ready" can't wait on real pixels the way a visible pane's readiness does below.
+     */
+    markFirstFrame();
 
     frameCount.current = (frameCount.current + 1) % animationSkipRate;
     if (frameCount.current !== 0) return;
@@ -196,8 +205,6 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
 
     gl.setScissorTest(false);
     gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
-
-    markFirstFrame();
   }, 1);
 
   return null;

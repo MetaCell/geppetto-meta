@@ -2,7 +2,7 @@
 
 Deeper rationale, invariants, and verified-against-source facts that used to live as block
 comments throughout `src/dicom-viewer/`. Quick one-line markers stayed in the code; anything
-longer that explains *why* (not just *what*) was moved here so the source stays readable while
+longer that explains _why_ (not just _what_) was moved here so the source stays readable while
 this knowledge stays discoverable. Organized by file, in source-tree order.
 
 ## `canvas-context.ts`
@@ -28,12 +28,67 @@ duplicate export and fail to build.
 - **`ViewportInteractions`**: the six per-viewport mouse callbacks (`onClick`, `onCtrlClick`,
   `onShiftClick`, `onDoubleClick`, `onRightClick`, `onHover`) bundled into one object instead of six
   separate props, threaded through `DicomViewer -> DicomCanvas -> Viewport2D/3DContent ->
-  useViewportEvents` as a single `interactions` prop. Six independent optional props meant six names
+useViewportEvents` as a single `interactions` prop. Six independent optional props meant six names
   to repeat (and keep in sync) at every layer of that chain; bundling them means adding a seventh
   interaction later only touches `ViewportInteractions` and the one component that acts on it, not
   every intermediate layer's prop list. `NO_INTERACTIONS` (`{}`) is a stable default so a consumer
   that never passes `interactions` doesn't get a fresh `{}` — and therefore a spurious effect
   re-run — every render.
+- **`ViewMode` / `PaneDescriptor` / `ViewLayouts`**: `ViewMode` was a closed
+  `'single_view' | 'quad_view'` union; it's now `'single_view' | 'quad_view' | (string & {})` — a
+  lookup key into a `ViewLayouts` map (`Record<string, PaneDescriptor[]>`) rather than a name
+  geppetto has to know ahead of time. `DEFAULT_VIEW_LAYOUTS` (in `viewports/DicomCanvas.tsx`)
+  supplies `quad_view`/`single_view` as plain 4-element `PaneDescriptor[]` arrays using the ids
+  `'3d'`/`'axial'`/`'sagittal'`/`'coronal'` — the built-ins are written the same way a custom mode
+  would be, not special-cased. A consumer adds a mode by spreading that map and adding its own
+  array, passed as `viewLayouts` with the new key as `mode`.
+
+  This went through three shapes before landing here, each rejected for a concrete reason:
+  1. A registry/plugin API (register/unregister calls, imperative state) — rejected in favor of a
+     plain object passed as a prop, exactly as easy to compose/override/test as any other prop.
+  2. A `ViewLayoutFn = (pane, activeOrientation) => CSSProperties` map — positioning-only, covered
+     custom layouts for the four standard panes but couldn't mount additional panes or filter which
+     layers a pane draws, both of which HFO's `dual_row_view`/`three_d_row_view` genuinely need
+     (CT-only solo panes). This is the shape still described in old design notes; superseded.
+  3. A `ViewDescriptor = { panes, onRender }` wrapper (one `onRender` per named view, for the whole
+     view) — rejected once the aggregation it existed for turned out not to need a framework-level
+     mechanism at all: a consumer who wrote the pane list already knows how many panes it has, so
+     they can count their own per-pane callbacks instead of the framework doing it for them. Once
+     `onRender` moved to `PaneDescriptor` (per pane), the wrapper had nothing left to hold, so
+     `ViewLayouts` collapsed to a bare `PaneDescriptor[]` per key.
+
+  `PaneDescriptor.id` is the pane's stable identity — see `viewports/DicomCanvas.tsx`'s sticky-mount
+  entry. Two panes may share a `planeOrientation` (an MRI-axial pane and a CT-only-axial pane side
+  by side) as long as their ids differ; they'll also share that orientation's slice index, which is
+  the desired behavior for co-registered modalities, not a limitation. `PaneDescriptor.onRender`
+  fires once, ever, per pane id, with `(handle, siblings)` — `siblings` is every pane of the same
+  view that's already fired, keyed by id inclusive of the pane itself, letting the _last_ pane to
+  become ready detect the complete set and perform cross-pane wiring without the framework doing
+  it. `DicomViewerProps.onRender` is the generalization of the old fixed-4-viewport callback: it
+  now fires per view _activation_ (keyed by `mode`), with a `Record<string, ViewportHandle>` scoped
+  to that view's own pane ids, instead of assuming exactly 4 viewports indexed 0-3 (`VP_ID_MAP` is
+  gone; `ViewportHandle.id` is now the pane's string id).
+
+  Deliberately still narrow: no per-pane LUT override (a layer's LUT lives on its shared
+  `THREE.ShaderMaterial`, reused by every pane that draws it — a real per-pane override needs
+  per-pane material cloning, not built), and scene-nesting / localizer cross-ref wiring
+  (`registerViewportScene`'s 3D-adopts-2D behavior, `initLocalizerCrossRefs`) are unchanged,
+  hardcoded to the four canonical ids only — see their own entries below for what that means for a
+  custom pane. Both deferred until a real second consumer needs them, per the same reasoning as
+  before: HFO's migration is separately blocked on a React 18→19 upgrade, so nothing exercises this
+  today.
+
+  `kind`/`planeOrientation` started out required on every `PaneDescriptor`, which meant
+  `DEFAULT_VIEW_LAYOUTS` had to restate them for every canonical pane in _both_ `quad_view` and
+  `single_view` (8 repetitions of the same 4 facts), and a consumer repositioning a canonical pane
+  in a custom mode had to restate them too — with nothing stopping `{ id: 'coronal', planeOrientation:
+'sagittal' }` from compiling and silently misbehaving. Fixed by making both optional and deriving
+  them from `id` for the four canonical ids (`resolvePaneKind` in `viewports/DicomCanvas.tsx`) —
+  any `kind`/`planeOrientation` a descriptor sets for one of those ids is simply never read. A
+  descriptor introducing a new id still has to supply `kind` itself (and `planeOrientation` if it's
+  a 2D pane); `resolvePaneKind` throws a descriptive error if it's missing, since there's nothing to
+  infer it from and failing loudly beats a silent crash three layers down in `Viewport2DContent`.
+
 - **`LayerState`**: represents a loaded overlay volume's GPU resources + controls. `setOpacity`
   encapsulates the background-removal logic so callers don't need to know whether the layer uses
   a plain uniform or an air-alpha LUT curve.
@@ -69,10 +124,11 @@ duplicate export and fail to build.
 
 ## `utils.ts`
 
-- **`VP_ID_MAP`**: canonical viewport ID ↔ orientation mapping, matching `DicomCanvas`'s
-  `onViewportReady` call order (0=3d, 1=axial, 2=sagittal, 3=coronal). Shared by `DicomViewer`'s
-  mode-driven "expected viewports" bookkeeping and any consumer resolving a `ViewportHandle` by
-  plane.
+- **`VP_ID_MAP` (removed)**: used to map orientation → numeric viewport index (0=3d, 1=axial,
+  2=sagittal, 3=coronal) back when `ViewportHandle.id` was a number. Once panes became an
+  arbitrary, consumer-describable list (`PaneDescriptor[]`), a numeric 0-3 index no longer means
+  anything — `ViewportHandle.id` is now the pane's own string id, and `onRender` hands back a
+  `Record<string, ViewportHandle>` instead of a fixed-length array.
 - **`ijkComponentForStackOrientation`**: extracts the IJK component that corresponds to a given
   ami.js `camera.stackOrientation`. Per ami.js conventions:
   - `stackOrientation 0` → `directions[2]` (zCosine, K axis → `ijk.z`)
@@ -315,6 +371,58 @@ overlay stack (for texture data) to be ready before creating the layer.
   lets `<Canvas>` mounting be delayed until the container div actually exists in the DOM.
   `pointer-events: none` on the canvas so tracking divs receive mouse/wheel events; R3F listens via
   `eventSource={containerEl}` so raycasting still works.
+- **Pane rendering — `mountedIds` / `domRefsRef` / `descriptorByIdRef`**: panes are no longer four
+  fixed JSX blocks with fixed refs (`r0Ref`..`r3Ref`); they're derived from `activePanes`
+  (`viewLayouts[viewMode]`, falling back to `single_view`) and rendered by mapping over
+  `mountedIds`. `domRefsRef` is a `Map<id, RefObject>`, created lazily per id via `getDomRef` and
+  never removed, so a pane's tracking div and its `Viewport2/3DContent` instance always share the
+  same ref across renders. `descriptorByIdRef` remembers each pane's last-seen descriptor (updated
+  from `activePanes` every render) so a sticky-mounted-but-currently-inactive pane still knows its
+  own `kind`/`planeOrientation`/etc. even once it's dropped out of `activePanes`.
+- **Sticky mount (`mountedIds` state)**: once a pane id has appeared in `activePanes`, it's added to
+  `mountedIds` and never removed — an effect on `[activePanes]` appends any new ids each time the
+  active view changes. A pane not in the current `activePanes` renders with `HIDDEN_STYLE` instead
+  of being unmounted. This exists because recreating a 2D pane's `TrackballOrthoControl`/camera (or
+  a 3D pane's orbit controls) on every mode toggle is real, felt cost — confirmed by HFO's own
+  `dualRowEverActive` flag doing the same thing for exactly this reason before this mechanism
+  existed generically here.
+- **Render-readiness tracking (`checkReady`)**: `sceneByIdRef` captures each pane's scene/camera as
+  soon as they exist (the pane's `onReady`); `handlesByIdRef` only gets an entry once that pane has
+  actually painted its first frame (`onFirstFrame`). `checkReady` runs after every pane's first
+  frame and also once on every `[viewMode, activePanes]` change (a sticky-mounted pane from an
+  earlier activation may already be ready, so switching back to a familiar mode can complete
+  instantly). It does two things: fires each pane's own `PaneDescriptor.onRender` exactly once
+  (guarded by `paneFiredRef`, a `Set<string>` that only grows), and — once every id in `activePanes`
+  has a handle — fires the top-level `onRender` prop with a `Record<string, ViewportHandle>` scoped
+  to that view, guarded by `aggregateRef` (reset whenever `viewMode` changes, so each view
+  activation gets its own one-time firing).
+- **`markFirstFrame()` moved earlier in `Viewport2/3DContent`'s `useFrame`**: it used to fire only
+  after a non-zero-size scissored render, at the very end of the frame callback. A hidden pane
+  (`HIDDEN_STYLE` → zero size) never reaches that point, so under the old placement a
+  sticky-mounted-but-inactive pane would never be considered "ready" — deadlocking `checkReady`'s
+  aggregate check for any view whose declared pane set includes ids that are hidden for the current
+  orientation (e.g. `single_view`, whose 3 inactive canonical panes are zero-size by design). Moving
+  the call to right after the `if (!handle || !domRef.current) return;` guard — before the
+  skip-rate/scheduler-throttle/zero-size checks — means "ready" now means "this pane's render loop
+  has run at least once," which for a hidden pane is already the final state (nothing more will
+  ever happen while it stays hidden). For a visible pane this can very occasionally fire one frame
+  before the actual first GL paint (if `animationSkipRate > 1` or a scheduler throttle skips the
+  very first tick); accepted as a minor, effectively unobservable trade-off in the common case
+  (`animationSkipRate` defaults to 1, and nothing throttles a freshly-mounted pane before any
+  interaction has begun).
+- **`onViewport2DReady` / registerViewportScene keyed by pane `id`, not orientation**: both
+  `Viewport2DContent` and `Viewport3DContent` now take an `id` prop (the pane's own id) and use it,
+  not `planeOrientation`, when calling `ctx.registerViewportScene`. This matters as soon as two
+  panes can share a `planeOrientation` (an MRI-axial pane and a CT-only-axial pane, say) — keying
+  by orientation would let the second one silently overwrite the first's `viewportScenes` entry.
+  Keying by id instead means each pane's scene registers under its own key; the canonical panes'
+  ids equal their orientation, so `DicomOverlay`'s default targeting and the 3D-scene-nesting logic
+  in `DicomViewer.tsx` (both still hardcoded to `'3d'`/`'axial'`/`'sagittal'`/`'coronal'`) keep
+  working unchanged — a custom pane just adds a non-colliding extra entry they don't look at yet.
+  `onHandleReady` (localizer cross-ref registration) is additionally guarded to only fire when
+  `id === planeOrientation`, i.e. only for a pane that IS the canonical one for its orientation —
+  otherwise a same-orientation custom pane would overwrite the canonical pane's slot in
+  `vpLocalizersRef` and corrupt the axial/sagittal/coronal cross-ref triangle.
 
 ## `viewports/renderScheduler.ts`
 
@@ -329,7 +437,7 @@ them was under the pointer.
 
 **What it does.** One rule replaces "redraw everything on every invalidate": while a viewport is
 under an active pointer interaction, render only that viewport at full rate; the other three
-throttle to ~8fps (`SIBLING_REDRAW_INTERVAL_MS`), and even then only on a frame where *shared*
+throttle to ~8fps (`SIBLING_REDRAW_INTERVAL_MS`), and even then only on a frame where _shared_
 viewer state actually changed. That exception is what keeps the localizer crosshairs correct:
 scrubbing slices in one 2D viewport writes into `useDicomViewerStore`, which — via
 `StoreInvalidator`'s `bumpSharedRevision()` — tells every sibling "something you display changed, you
@@ -339,6 +447,7 @@ is completely unchanged — every viewport renders on every `invalidate()`, exac
 existed.
 
 **How it integrates.**
+
 - `DicomCanvas` creates exactly one `RenderScheduler` per canvas (`createRenderScheduler()`, held in
   a `useRef` so it survives re-renders) and provides it via `RenderSchedulerContext`, INSIDE the
   `<Canvas>` — R3F runs Canvas children through a separate reconciler, so a provider outside it would
@@ -377,6 +486,7 @@ existed.
   variables, not `useState`.
 
 **What ties into it elsewhere:**
+
 - `Viewport2DContent`'s wheel handler batches ticks into one `requestAnimationFrame` flush instead
   of one `setSliceIndex` per wheel event, and treats the scrub as a scheduler interaction that ends
   `SCRUB_IDLE_MS` (150ms) after the wheel goes quiet — see `viewports/Viewport2DContent.tsx` below.
@@ -426,6 +536,17 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
 
 ## `viewports/Viewport2DContent.tsx`
 
+- **`id` prop**: the pane's own id (from `PaneDescriptor.id`), distinct from `planeOrientation` —
+  used (not `planeOrientation`) when calling `ctx.registerViewportScene`, so two panes sharing an
+  orientation don't collide. See `DicomCanvas.tsx`'s "keyed by pane id" entry for the full picture.
+- **`layerIds` / `visibleLayers`**: an allowlist filter applied to `ctx.layers` before it's handed
+  to `handle.refreshOverlayMeshes`. Omitted `layerIds` means every registered layer, matching the
+  original (unfilterable) behavior. There's no per-pane LUT override — a layer's LUT lives on its
+  shared material, reused by every pane drawing it — so two panes with different `layerIds` show
+  different subsets of layers, not the same layer with different LUTs.
+- **`sliceColor` now optional**: defaults to `DEFAULT_SLICE_COLORS[planeOrientation]` (the same
+  three colors previously hardcoded in `DicomCanvas.tsx`'s `SLICE_COLORS`) so a `PaneDescriptor`
+  can omit it entirely for the common case and only set it to get a non-default crosshair tint.
 - **ResizeObserver fix**: camera frustum is recalculated whenever the pane's own on-screen size
   changes. A `ResizeObserver` on the tracking div (rather than reacting to R3F's canvas-level
   `size`) is required because a pane can start out hidden (0×0 — e.g. `single_view`'s inactive
@@ -491,20 +612,27 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
 - **Localizer sync**: an immediate `syncAll()` is forced right after cross-ref init so the
   localizer uniforms reflect the current slice positions — without this the lines wouldn't appear
   until the next user-driven slice navigation event.
-- **`onRender` one-shot guard**: `onRenderFiredRef` makes `onRender` fire exactly once per volume
-  load. `vpHandlesRef.current` is also reset to `[]` on the same `[data]`-triggered effect: without
-  it, a volume reload leaves stale (already-disposed) handles from the previous mount sitting in
-  the array, and the very first fresh viewport to report in on the new mount would see the "all 4
-  ready" check pass immediately — 1 fresh handle + 3 stale/disposed ones — firing `onRender` once
-  with corrupted data before the guard blocks any further (correct) calls.
+- **`handleRenderComplete` replaces the old `handleViewportReady`/`handleViewportFirstFrame` pair**:
+  `DicomCanvas` now does all the per-pane readiness bookkeeping itself (see its `checkReady` entry
+  above) and calls a single `onRender(viewports, mode)` once per view activation.
+  `DicomViewer.tsx` no longer needs its own `vpHandlesRef`/`onRenderFiredRef`/`renderedViewportsRef`/
+  `expectedViewportIdsRef` — `handleRenderComplete` just sets `hasRenderedOnce` and forwards the
+  call to the consumer's own `onRender` prop, if any.
 - **`hasRenderedOnce` tracking**: a stack existing only means the data decoded —
   `StackHelper`/`DataTexture` construction still has to run and a WebGL frame still has to be
-  drawn before the user sees anything. `Viewport*Content`'s `useFrame` calls `markFirstFrame()`
-  (via `useFirstFrameFlag`) once their render pass actually completes; this tracks that across
-  however many viewports are relevant for the current `viewMode`/`orientation`.
-- **`hasRenderedOnce` reset on mode switch**: `single_view` only ever renders the active pane, so
-  that's all that's waited on. The check is unconditional (not just "set to true"): switching
-  `viewMode`/`orientation` can newly expect a pane that hasn't painted yet (e.g.
-  `single_view` → `quad_view` exposes three panes that were never rendered while hidden), and
-  `hasRenderedOnce` must go back to `false` in that case — not just forward to `true` — or the
-  loading overlay stays incorrectly hidden.
+  drawn before the user sees anything. Reset to `false` on `[data]` (a new volume starts a new
+  "first paint" cycle) and set back to `true` by `handleRenderComplete`.
+- **Known trade-off — `hasRenderedOnce` is not reset on mode switch**: the old implementation
+  explicitly recomputed "expected panes" on every `viewMode`/`orientation` change and could flip
+  `hasRenderedOnce` back to `false` if the newly active set included a pane that hadn't painted yet
+  (e.g. `single_view` → `quad_view` exposing three previously-hidden panes). The new design doesn't
+  reproduce this: `hasRenderedOnce` only ever goes `false → true`, never back down, so switching to
+  a brand-new custom view mode whose panes are still initializing won't re-show the loading
+  overlay. In practice this rarely matters for `single_view`/`quad_view` themselves — both declare
+  the same four canonical pane ids, and the `markFirstFrame()` timing fix (see `DicomCanvas.tsx`
+  above) means all four now become "ready" together shortly after first mount regardless of which
+  of the two modes is active first, so there's no meaningful window where switching between them
+  needs the overlay back. It does mean a genuinely new custom view (new pane ids, first activation)
+  won't get a loading spinner while its panes spin up. Accepted for this first pass rather than
+  adding cross-effect ordering to chase exact parity with the old behavior; revisit if a concrete
+  case shows the spinner is needed there.

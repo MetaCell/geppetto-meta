@@ -36,12 +36,14 @@ export { useLayerStack } from "./hooks/useLayerStack";
 export { createLayerMaterial, LUT_PRESETS } from "./layers/createLayerMaterial";
 
 // Geometry helpers (for building custom slice-aware overlays)
-export { soToCol, makePlaneFilter, VP_ID_MAP } from "./utils";
+export { soToCol, makePlaneFilter } from "./utils";
 export type { PlaneFilter } from "./utils";
 export { usePlaneFilters } from "./hooks/usePlaneFilters";
 
 // Stable empty default for the `interactions` prop — see ViewportInteractions.
 export { NO_INTERACTIONS } from "./types";
+// The built-in "single_view"/"quad_view" layouts — spread this to add a custom view mode.
+export { DEFAULT_VIEW_LAYOUTS } from "./viewports/DicomCanvas";
 
 // Types
 export type {
@@ -61,6 +63,8 @@ export type {
   ClickAction,
   HoverAction,
   ViewportInteractions,
+  PaneDescriptor,
+  ViewLayouts,
 } from "./types";
 export type { CanvasRootState } from "./canvas-context";
 export type { DownloadProgress, UseVolumeLoaderOptions } from "./hooks/useVolumeLoader";
