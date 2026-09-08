@@ -403,6 +403,15 @@ const DicomViewerExample: React.FC = () => {
   const layerPct = pctOf(layerProgress);
 
   /*
+   * dual_row_view's layer loads a second full copy of the same volume over the network — same
+   * onProgress/onLoadingChange mechanism as the overlay-self layer above, just its own state since
+   * it's a separate <DicomLayer> instance with its own independent load.
+   */
+  const [dualRowLayerProgress, setDualRowLayerProgress] = useState<DownloadProgress | null>(null);
+  const [dualRowLayerLoading, setDualRowLayerLoading] = useState(false);
+  const dualRowLayerPct = pctOf(dualRowLayerProgress);
+
+  /*
    * Window/level (contrast) sliders for the overlay layer — the last of
    * DicomLayer's reactive props (opacity/lut/transform are already covered)
    * left undemonstrated. Bounds are seeded from the base stack's own default
@@ -499,7 +508,16 @@ const DicomViewerExample: React.FC = () => {
       <DicomViewerButton
         icon={<DualRowIcon />}
         tooltip="Toggle a custom 'dual_row_view' layout (2×3 grid): top row is the same volume loaded again as a <DicomLayer> with a different LUT, bottom row is the plain view"
-        onClick={() => setViewMode(v => (v === "dual_row_view" ? "quad_view" : "dual_row_view"))}
+        onClick={() =>
+          setViewMode(v => {
+            if (v === "dual_row_view") {
+              // Leaving unmounts the layer — reset so a later re-entry doesn't briefly show stale state
+              setDualRowLayerLoading(false);
+              setDualRowLayerProgress(null);
+            }
+            return v === "dual_row_view" ? "quad_view" : "dual_row_view";
+          })
+        }
         active={viewMode === "dual_row_view"}
       />
     </>
@@ -561,6 +579,8 @@ const DicomViewerExample: React.FC = () => {
             lut="hot_and_cold"
             opacity={0.85}
             backgroundRemoval
+            onLoadingChange={setDualRowLayerLoading}
+            onProgress={setDualRowLayerProgress}
           />
         )}
       </DicomViewerPreconf>
@@ -585,6 +605,41 @@ const DicomViewerExample: React.FC = () => {
           <span style={{ opacity: 0.7 }}>· rendered: {lastRenderedMode}</span>
         )}
       </div>
+
+      {/* dual_row_view's layer loading HUD — same onLoadingChange/onProgress pattern as overlay-self */}
+      {viewMode === "dual_row_view" && dualRowLayerLoading && (
+        <div style={{ ...hudBase, top: 52, left: 12 }}>
+          <style>{`@keyframes dual-row-layer-indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}`}</style>
+          <span>
+            {dualRowLayerPct !== null
+              ? `Loading top-row layer… ${dualRowLayerPct}%`
+              : "Loading top-row layer…"}
+          </span>
+          <div
+            style={{
+              width: 80,
+              height: 4,
+              borderRadius: 2,
+              backgroundColor: "rgba(255,255,255,0.25)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                borderRadius: 2,
+                backgroundColor: "#fff",
+                width: dualRowLayerPct !== null ? `${dualRowLayerPct}%` : "35%",
+                transition: dualRowLayerPct !== null ? "width 0.2s ease" : "none",
+                animation:
+                  dualRowLayerPct === null
+                    ? "dual-row-layer-indeterminate 1.2s linear infinite"
+                    : "none",
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* 3D threshold slider HUD */}
       <div style={{ ...hudBase, bottom: 12, left: 12 }}>
