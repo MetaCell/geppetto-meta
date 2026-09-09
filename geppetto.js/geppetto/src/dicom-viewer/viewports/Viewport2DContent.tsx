@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { useViewport2D } from "./useViewport2D";
 import { useCanvasId } from "../canvas-context";
@@ -77,6 +77,45 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   const lastDrawnRevision = useRef(-1);
   const readyFired = useRef(false);
   const prevSliceIndex = useRef<number>(-1);
+  /*
+   * Wheel-scrub batching state, shared between the wheel listener and the sliceIndex round-trip
+   * effect below.
+   *
+   * A single requestAnimationFrame guard only prevents a second flush within the SAME frame — it
+   * says nothing about how long the dispatched change takes to actually land. Under software
+   * rendering, the round trip (store write -> React commit -> the sliceIndex effect updating
+   * handle.stackHelper.index) can span several frames. If a new flush were allowed to run before
+   * that lands, it would compute `next` from a stale sh.index and could regress the slice position
+   * (lose net scroll distance) rather than just be slow. updateInFlightRef closes that: a new flush
+   * is only allowed once the round trip has actually updated stackHelper.index, at which point any
+   * deltas that piled up while it was in flight are picked up in one shot.
+   *
+   * FLUSH_STALE_MS is a safety valve, same idea as renderScheduler's INTERACTION_STALE_MS: if the
+   * round trip is somehow never observed (e.g. the dispatched value coincides with what the effect
+   * already saw), scrubbing must resume on its own rather than stay stuck.
+   */
+  const FLUSH_STALE_MS = 500;
+  const pendingDeltaRef = useRef(0);
+  const flushHandleRef = useRef<number | undefined>(undefined);
+  const updateInFlightRef = useRef(false);
+  const flightStartedAtRef = useRef(0);
+
+  const isFlushBusy = () =>
+    updateInFlightRef.current && Date.now() - flightStartedAtRef.current < FLUSH_STALE_MS;
+
+  const tryFlush = useCallback(() => {
+    flushHandleRef.current = undefined;
+    const sh = handle?.stackHelper;
+    const delta = pendingDeltaRef.current;
+    pendingDeltaRef.current = 0;
+    if (!sh || delta === 0) return;
+    const next = Math.min(Math.max(sh.index + delta, 0), sh.orientationMaxIndex);
+    if (next === sh.index) return;
+    updateInFlightRef.current = true;
+    flightStartedAtRef.current = Date.now();
+    ctx.setSliceIndex(sliceKey, next);
+    invalidate();
+  }, [handle, ctx, sliceKey, invalidate]);
 
   // Register the AMI scene in the DicomViewer context and fire callbacks once.
   useEffect(() => {
@@ -170,7 +209,15 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     ctx.syncLocalizers();
     handle.refreshOverlayMeshes(visibleLayers, stack);
     invalidate();
-  }, [sliceIndex, handle, ctx.layers, layerIds, stack]);
+    /*
+     * The wheel-scrub round trip (if any) has landed — release the flush gate and pick up
+     * anything that piled up in pendingDeltaRef while it was in flight, see tryFlush's dev doc note.
+     */
+    updateInFlightRef.current = false;
+    if (pendingDeltaRef.current !== 0 && flushHandleRef.current === undefined) {
+      flushHandleRef.current = requestAnimationFrame(tryFlush);
+    }
+  }, [sliceIndex, handle, ctx.layers, layerIds, stack, tryFlush]);
 
   // Also refresh overlay meshes when the layers list (or this pane's layerIds filter) changes
   useEffect(() => {
@@ -186,26 +233,11 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
     // A wheel scrub has no pointerdown/up to bracket it — ends once the wheel goes quiet, see dev doc.
     let scrubEnd: ReturnType<typeof setTimeout> | undefined;
-    // Ticks batched into one rAF flush instead of one store write per event — see dev doc.
-    let pendingDelta = 0;
-    let flushHandle: number | undefined;
-
-    const flush = () => {
-      flushHandle = undefined;
-      const sh = handle.stackHelper;
-      const delta = pendingDelta;
-      pendingDelta = 0;
-      if (!sh || delta === 0) return;
-      const next = Math.min(Math.max(sh.index + delta, 0), sh.orientationMaxIndex);
-      if (next === sh.index) return;
-      ctx.setSliceIndex(sliceKey, next);
-      invalidate();
-    };
 
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       if (!handle.stackHelper) return;
-      pendingDelta += e.deltaY > 0 ? 1 : -1;
+      pendingDeltaRef.current += e.deltaY > 0 ? 1 : -1;
 
       scheduler.beginInteraction(paneId);
       if (scrubEnd) clearTimeout(scrubEnd);
@@ -214,16 +246,22 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
         invalidate();
       }, SCRUB_IDLE_MS);
 
-      if (flushHandle === undefined) flushHandle = requestAnimationFrame(flush);
+      /*
+       * While a previous dispatch is still in flight, don't schedule another — the round-trip
+       * effect above re-triggers tryFlush once it lands, picking up whatever piled up meanwhile.
+       */
+      if (flushHandleRef.current === undefined && !isFlushBusy()) {
+        flushHandleRef.current = requestAnimationFrame(tryFlush);
+      }
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       if (scrubEnd) clearTimeout(scrubEnd);
-      if (flushHandle !== undefined) cancelAnimationFrame(flushHandle);
+      if (flushHandleRef.current !== undefined) cancelAnimationFrame(flushHandleRef.current);
       el.removeEventListener("wheel", onWheel);
     };
-  }, [handle, domRef.current, sliceKey, ctx.setSliceIndex, scheduler, paneId]);
+  }, [handle, domRef.current, tryFlush, scheduler, paneId]);
 
   // Publish max slice indices to context once stack helper is ready.
   useEffect(() => {
