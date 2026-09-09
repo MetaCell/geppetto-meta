@@ -338,6 +338,14 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
         <Canvas
           style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
           frameloop="demand"
+          /*
+           * Render at CSS resolution, not the device pixel ratio. r3f defaults to
+           * window.devicePixelRatio, so a HiDPI screen (every Mac, and any Windows display at 200%
+           * scaling) shades 4x the pixels for the same layout, and each fragment here costs many
+           * texture fetches across the base volume and any overlay layer. Slices are already
+           * interpolated from voxel data, so the sharpness lost is close to invisible; the cost is not.
+           */
+          dpr={1}
           // antialias:false + preserveDrawingBuffer:true — see doc/dev/dicom-viewer.md's DicomCanvas.tsx entry.
           gl={{
             antialias: false,

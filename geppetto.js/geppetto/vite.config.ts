@@ -54,7 +54,7 @@ function copyStaticCss(srcGlob: string, destDir: string): Plugin {
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    dts({ include: ["src"], entryRoot: "src" }),
+    dts({ include: ["src"], exclude: ["**/__tests__/**"], entryRoot: "src" }),
     copyStaticCss("src/layout/styles", "layout/styles"),
     yalcPushPlugin(),
   ],
@@ -74,5 +74,8 @@ export default defineConfig(({ mode }) => ({
     },
     sourcemap: mode === "development",
     minify: false,
+  },
+  test: {
+    environment: "jsdom",
   },
 }));

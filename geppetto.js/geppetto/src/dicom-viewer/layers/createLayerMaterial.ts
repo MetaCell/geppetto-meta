@@ -114,6 +114,13 @@ export function createLayerMaterial(
   const uniforms = DataUniformShader.uniforms();
   uniforms.uTextureSize.value = stack.textureSize;
   uniforms.uTextureContainer.value = textures;
+  /*
+   * Must match the bound count: it sizes the GLSL sampler array AND the number of terms ami's
+   * texture3d helper generates, and every declared slot is sampled on every read. Left at ami's
+   * default of 7, a single-texture volume paid 7 texture2D calls per sample instead of 1 — x8 for
+   * trilinear, x2 again for a blended base+overlay pane.
+   */
+  uniforms.uTextureContainer.length = textures.length;
   uniforms.uWorldToData.value = stack.lps2IJK;
   uniforms.uNumberOfChannels.value = stack.numberOfChannels;
   uniforms.uPixelType.value = stack.pixelType;

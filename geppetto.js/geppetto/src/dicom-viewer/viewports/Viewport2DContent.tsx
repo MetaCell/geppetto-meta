@@ -138,7 +138,19 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     const applyFit = () => {
       const rect = el.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
-        handle.fitCamera({ width: rect.width, height: rect.height });
+        /*
+         * In drawing-buffer pixels, not CSS pixels. AMI sizes the orthographic frustum from
+         * camera.canvas, and the frustum has to span the same pixels gl.setViewport covers — which
+         * is rect * (canvas.width / canvas.clientWidth). Passing CSS pixels made the frustum half
+         * the viewport at devicePixelRatio 2: panes were positioned correctly (the scissor rects
+         * were right) but showed a magnified crop, which reads as a broken layout. Equal at dpr 1,
+         * which is why it stayed hidden until tested on a HiDPI screen.
+         */
+        const canvas = gl.domElement;
+        const canvasRect = canvas.getBoundingClientRect();
+        const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
+        const sy = canvasRect.height > 0 ? canvas.height / canvasRect.height : 1;
+        handle.fitCamera({ width: rect.width * sx, height: rect.height * sy });
         invalidate();
       }
     };
@@ -146,7 +158,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     const observer = new ResizeObserver(applyFit);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [handle, domRef.current]);
+  }, [handle, domRef.current, gl]);
 
   // Subscribed directly, not off the context — see dev doc's "sliceIndices omitted" note.
   const sliceIndices = useSliceIndices(useCanvasId());
@@ -264,12 +276,18 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
     const canvas = gl.domElement;
     const canvasRect = canvas.getBoundingClientRect();
-    const dpr = gl.getPixelRatio();
+    /*
+     * Scale from CSS pixels to drawing-buffer pixels, measured from the canvas itself rather than
+     * taken from gl.getPixelRatio(). The two disagree whenever the renderer's pixel ratio isn't
+     * what actually sized the buffer — canvas.width/clientWidth is ground truth and cannot drift.
+     */
+    const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
+    const sy = canvasRect.height > 0 ? canvas.height / canvasRect.height : 1;
 
-    const x = Math.round((rect.left - canvasRect.left) * dpr);
-    const y = Math.round((canvasRect.bottom - rect.bottom) * dpr);
-    const w = Math.round(rect.width * dpr);
-    const h = Math.round(rect.height * dpr);
+    const x = Math.round((rect.left - canvasRect.left) * sx);
+    const y = Math.round((canvasRect.bottom - rect.bottom) * sy);
+    const w = Math.round(rect.width * sx);
+    const h = Math.round(rect.height * sy);
 
     gl.setScissor(x, y, w, h);
     gl.setScissorTest(true);
@@ -296,7 +314,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     gl.render(handle.localizerScene, handle.camera);
 
     gl.setScissorTest(false);
-    gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
+    gl.setViewport(0, 0, canvas.width, canvas.height);
   }, 1);
 
   return null;

@@ -143,12 +143,18 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
 
     const canvas = gl.domElement;
     const canvasRect = canvas.getBoundingClientRect();
-    const dpr = gl.getPixelRatio();
+    /*
+     * Scale from CSS pixels to drawing-buffer pixels, measured from the canvas itself rather than
+     * taken from gl.getPixelRatio(). The two disagree whenever the renderer's pixel ratio isn't
+     * what actually sized the buffer — canvas.width/clientWidth is ground truth and cannot drift.
+     */
+    const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
+    const sy = canvasRect.height > 0 ? canvas.height / canvasRect.height : 1;
 
-    const x = Math.round((rect.left - canvasRect.left) * dpr);
-    const y = Math.round((canvasRect.bottom - rect.bottom) * dpr);
-    const w = Math.round(rect.width * dpr);
-    const h = Math.round(rect.height * dpr);
+    const x = Math.round((rect.left - canvasRect.left) * sx);
+    const y = Math.round((canvasRect.bottom - rect.bottom) * sy);
+    const w = Math.round(rect.width * sx);
+    const h = Math.round(rect.height * sy);
 
     gl.setScissor(x, y, w, h);
     gl.setScissorTest(true);
@@ -204,7 +210,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     });
 
     gl.setScissorTest(false);
-    gl.setViewport(0, 0, Math.round(canvasRect.width * dpr), Math.round(canvasRect.height * dpr));
+    gl.setViewport(0, 0, canvas.width, canvas.height);
   }, 1);
 
   return null;

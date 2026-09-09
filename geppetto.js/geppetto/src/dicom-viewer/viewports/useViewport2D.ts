@@ -1,6 +1,11 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import * as THREE from "three";
-import { StackHelper, LocalizerHelper, OrthographicCamera, TrackballOrthoControl } from "@metacell/ami";
+import {
+  StackHelper,
+  LocalizerHelper,
+  OrthographicCamera,
+  TrackballOrthoControl,
+} from "@metacell/ami";
 import { LayerState, PlaneOrientation } from "../types";
 
 interface Viewport2DHandle {
@@ -63,7 +68,11 @@ export function useViewport2D(
     controls.noRotate = true;
     camera.controls = controls;
 
-    // Now safe to set canvas (triggers _updateCanvas internally).
+    /*
+     * Now safe to set canvas (triggers _updateCanvas internally). CSS pixels here is a bootstrap
+     * value only: Viewport2DContent's ResizeObserver calls fitCamera with drawing-buffer pixels on
+     * mount and on every resize, which is what the frustum must actually match — see that comment.
+     */
     camera.canvas = { width: domEl.clientWidth, height: domEl.clientHeight };
     camera.update();
     if (domEl.clientWidth > 0 && domEl.clientHeight > 0) {
