@@ -10,6 +10,8 @@ export interface RenderScheduler {
   requestFullClear(): void;
   consumeFullClear(): boolean;
   shouldRenderPane(pane: object, lastDrawnRevision: number): boolean;
+  // Toggles the sibling-throttle behaviour live — see DicomViewer's throttleSiblingRenders prop.
+  setThrottleEnabled(enabled: boolean): void;
 }
 
 // How often sibling panes may redraw during an interaction — see dev doc for the tradeoff.
@@ -34,6 +36,8 @@ export function createRenderScheduler(): RenderScheduler {
   let lastSiblingFrameAt = 0;
   // Refreshed on every touch so a live drag never goes stale while an abandoned one does.
   let interactionTouchedAt = 0;
+  // See setThrottleEnabled — false makes shouldRenderPane behave as if idle, always.
+  let throttleEnabled = true;
 
   return {
     beginInteraction(pane) {
@@ -77,8 +81,8 @@ export function createRenderScheduler(): RenderScheduler {
       return pending;
     },
     shouldRenderPane(pane, lastDrawnRevision) {
-      // Idle: behave exactly as before the gating existed.
-      if (activePane === null) return true;
+      // Idle, or the throttle turned off: behave exactly as before the gating existed.
+      if (activePane === null || !throttleEnabled) return true;
       // The pane being interacted with must always be at full rate - it is the one being watched.
       if (activePane === pane) {
         interactionTouchedAt = timestamp();
@@ -86,6 +90,9 @@ export function createRenderScheduler(): RenderScheduler {
       }
       // A sibling redraws only when shared state moved AND its throttle window has elapsed.
       return siblingsAllowedThisFrame && lastDrawnRevision !== sharedRevision;
+    },
+    setThrottleEnabled(enabled) {
+      throttleEnabled = enabled;
     },
   };
 }

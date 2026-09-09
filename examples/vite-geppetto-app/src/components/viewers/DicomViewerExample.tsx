@@ -216,6 +216,7 @@ const PinIcon = () => (
 const RowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▤</span>;
 const DualRowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▦</span>;
 const SyncIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>⇌</span>;
+const ThrottleIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>⏱</span>;
 
 // Stable references (not fresh array literals per render) — see the layerIds note in the docs.
 const DUAL_ROW_LAYER_IDS = ["dual-row-layer"];
@@ -429,6 +430,9 @@ const DicomViewerExample: React.FC = () => {
 
   // dual_row_view's top/bottom row sync — see buildDualRowViewPanes / DualRowSyncController above.
   const [dualRowSynced, setDualRowSynced] = useState(false);
+  // Sibling-pane render throttling — see renderScheduler.ts's dev doc. On by default; exposed here
+  // so it can be compared live against the un-throttled 6-pane dual_row_view.
+  const [throttleEnabled, setThrottleEnabled] = useState(true);
   const viewLayouts = useMemo(
     () => ({ ...STATIC_VIEW_LAYOUTS, dual_row_view: buildDualRowViewPanes(dualRowSynced) }),
     [dualRowSynced],
@@ -590,6 +594,12 @@ const DicomViewerExample: React.FC = () => {
         onClick={() => setDualRowSynced(v => !v)}
         active={dualRowSynced}
       />
+      <DicomViewerButton
+        icon={<ThrottleIcon />}
+        tooltip="Throttle sibling panes' redraws while one pane is being interacted with. On by default — turn off to compare against all 6 panes redrawing every frame."
+        onClick={() => setThrottleEnabled(v => !v)}
+        active={throttleEnabled}
+      />
     </DicomViewerToolbar>
   );
 
@@ -607,6 +617,7 @@ const DicomViewerExample: React.FC = () => {
           onHover: handleHover,
         }}
         threshold3D={threshold3D}
+        throttleSiblingRenders={throttleEnabled}
         onFps={handleFps}
         onRender={handleRender}
         toolbarExtra={toolbarExtra}

@@ -48,6 +48,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
   onLoaded,
   interactions,
   animationSkipRate = 1,
+  throttleSiblingRenders = true,
   onRender,
   onFps,
   children,
@@ -233,6 +234,7 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
               orientation={viewer.orientation}
               stack={stack}
               animationSkipRate={animationSkipRate}
+              throttleSiblingRenders={throttleSiblingRenders}
               onViewport2DReady={handleViewport2DReady}
               onRender={handleRenderComplete}
               onFps={onFps}

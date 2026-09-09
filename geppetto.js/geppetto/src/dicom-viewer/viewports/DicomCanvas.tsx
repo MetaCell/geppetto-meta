@@ -31,6 +31,12 @@ interface DicomCanvasProps {
   interactions?: ViewportInteractions;
   viewLayouts?: ViewLayouts;
   onFps?: (fps: number) => void;
+  /*
+   * Throttles sibling panes' redraws while another pane is being interacted with — see
+   * renderScheduler.ts / dev doc. Defaults to on; a consumer with fast/GPU-accelerated hardware
+   * may not need it and can turn it off.
+   */
+  throttleSiblingRenders?: boolean;
   children?: React.ReactNode;
 }
 
@@ -210,6 +216,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   interactions,
   viewLayouts,
   onFps,
+  throttleSiblingRenders = true,
   children,
 }) => {
   const activePanes: PaneDescriptor[] =
@@ -221,6 +228,13 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   // One scheduler per canvas, never module-level — see doc/dev/dicom-viewer.md's renderScheduler.ts entry.
   const schedulerRef = useRef<ReturnType<typeof createRenderScheduler> | undefined>(undefined);
   if (!schedulerRef.current) schedulerRef.current = createRenderScheduler();
+  /*
+   * The scheduler instance is stable for the canvas's lifetime, so toggling the prop needs an
+   * explicit push rather than a fresh createRenderScheduler() call.
+   */
+  useEffect(() => {
+    schedulerRef.current?.setThrottleEnabled(throttleSiblingRenders);
+  }, [throttleSiblingRenders]);
 
   /*
    * Sticky mount: once a pane id has been part of an active view, it stays mounted (hidden via

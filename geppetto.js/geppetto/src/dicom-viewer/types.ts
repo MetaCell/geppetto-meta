@@ -215,6 +215,11 @@ export interface DicomViewerProps {
   showDownloadButton?: boolean;
   applySegmentationLUT?: boolean;
   animationSkipRate?: number;
+  /*
+   * Throttles sibling panes' redraws while another pane is being interacted with (default: on) —
+   * see viewports/renderScheduler.ts. Turn off on hardware fast enough not to need it.
+   */
+  throttleSiblingRenders?: boolean;
   toolbarOptions?: ToolbarOptions;
   loaderOptions?: LoaderOptions;
   toolbarButtons?: ToolbarButtons;
