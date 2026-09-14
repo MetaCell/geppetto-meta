@@ -25,17 +25,19 @@ interface DicomCanvasProps {
   orientation: OrientationMode;
   stack: any | null;
   animationSkipRate: number;
-  onViewport2DReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
+  onViewport2DReady?: (
+    id: string,
+    plane: PlaneOrientation,
+    stackHelper: any,
+    localizerHelper: any,
+    syncSliceWith?: string,
+  ) => void;
   // Fires once every pane of the active view has painted its first frame.
   onRender?: (viewports: Readonly<Record<string, ViewportHandle>>, mode: string) => void;
   interactions?: ViewportInteractions;
   viewLayouts?: ViewLayouts;
   onFps?: (fps: number) => void;
-  /*
-   * Throttles sibling panes' redraws while another pane is being interacted with — see
-   * renderScheduler.ts / dev doc. Defaults to on; a consumer with fast/GPU-accelerated hardware
-   * may not need it and can turn it off.
-   */
+  // Throttles sibling panes' redraws during interaction (default: on) — see the dev docs.
   throttleSiblingRenders?: boolean;
   children?: React.ReactNode;
 }
@@ -47,7 +49,7 @@ function StoreInvalidator({ viewerId }: { viewerId: string }) {
   useEffect(() => {
     return useDicomViewerStore.subscribe((state, prev: any) => {
       if (state.viewers[viewerId] !== prev?.viewers[viewerId]) {
-        // Marks the frame as "shared state moved" — see renderScheduler.ts / dev doc.
+        // Marks the frame as "shared state moved" — see the render scheduler in the dev docs.
         scheduler.bumpSharedRevision();
         invalidate();
       }
@@ -102,11 +104,8 @@ const HIDDEN_STYLE: React.CSSProperties = {
 const CANONICAL_PLANE_ORIENTATIONS = new Set(["axial", "sagittal", "coronal"]);
 
 /*
- * Resolves a pane's actual kind/planeOrientation. For the four canonical ids, these are derived
- * from `id` and any value the descriptor set is ignored — a canonical pane's content isn't
- * something a view gets to redefine, only reposition (see PaneDescriptor's doc comment in
- * types.ts). For any other id, the descriptor must supply `kind` (and `planeOrientation` for a 2D
- * pane) itself, since there's nothing to derive it from.
+ * Resolves a pane's actual kind/planeOrientation: derived from `id` for the four canonical ids
+ * (any descriptor value is ignored), otherwise taken from the descriptor itself.
  */
 function resolvePaneKind(desc: PaneDescriptor): {
   kind: "3d" | "2d";
@@ -125,11 +124,7 @@ function resolvePaneKind(desc: PaneDescriptor): {
   return { kind: desc.kind, planeOrientation: desc.planeOrientation };
 }
 
-/*
- * The two built-in view modes, described as plain pane arrays — the same shape a custom view uses.
- * A consumer adding a custom mode spreads this map and adds its own array under a new key; see
- * doc/dev/dicom-viewer.md's "PaneDescriptor / ViewLayouts" entry.
- */
+// The two built-in view modes, described as plain pane arrays — the same shape a custom view uses.
 export const DEFAULT_VIEW_LAYOUTS: ViewLayouts = {
   quad_view: [
     { id: "3d", style: () => QUAD_STYLES["3d"] },
@@ -172,7 +167,7 @@ function FiberRegister({ viewerId }: { viewerId: string }) {
   return null;
 }
 
-// Wipes the whole canvas only when the layout changed — see doc/dev/dicom-viewer.md's FrameClearer entry.
+// Wipes the whole canvas only when the layout changed — see the dev docs.
 function FrameClearer({
   viewMode,
   orientation,
@@ -225,12 +220,12 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
   const containerRef = useCallback((el: HTMLDivElement | null) => setContainerEl(el), []);
 
-  // One scheduler per canvas, never module-level — see doc/dev/dicom-viewer.md's renderScheduler.ts entry.
+  // One scheduler per canvas, never module-level — see the dev docs.
   const schedulerRef = useRef<ReturnType<typeof createRenderScheduler> | undefined>(undefined);
   if (!schedulerRef.current) schedulerRef.current = createRenderScheduler();
   /*
-   * The scheduler instance is stable for the canvas's lifetime, so toggling the prop needs an
-   * explicit push rather than a fresh createRenderScheduler() call.
+   * The scheduler instance is stable for the canvas's lifetime — toggling the prop needs an
+   * explicit push, not a fresh createRenderScheduler() call.
    */
   useEffect(() => {
     schedulerRef.current?.setThrottleEnabled(throttleSiblingRenders);
@@ -238,8 +233,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
 
   /*
    * Sticky mount: once a pane id has been part of an active view, it stays mounted (hidden via
-   * style when not part of the current one) instead of being torn down. Recreating a pane's
-   * camera/controls on every mode toggle is real cost — see doc/dev/dicom-viewer.md.
+   * style, not torn down) — recreating a pane's camera/controls on every mode toggle is real cost.
    */
   const [mountedIds, setMountedIds] = useState<string[]>(() => activePanes.map(p => p.id));
   useEffect(() => {
@@ -270,9 +264,9 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
   /*
    * Render-readiness tracking. `sceneByIdRef` captures each pane's scene/camera as soon as they
    * exist (onReady); `handlesByIdRef` only gets an entry once that pane has actually painted its
-   * first frame (onFirstFrame) — a hidden/zero-size pane still fires this (see Viewport2/3DContent's
-   * markFirstFrame placement) since there's nothing further to wait for. This one mechanism drives
-   * both PaneDescriptor.onRender (per pane) and the top-level onRender prop (per view activation).
+   * first frame (onFirstFrame) — a hidden/zero-size pane still fires this since there's nothing
+   * further to wait for. This one mechanism drives both PaneDescriptor.onRender (per pane) and the
+   * top-level onRender prop (per view activation).
    */
   const sceneByIdRef = useRef<Map<string, { scene: any; camera: any }>>(new Map());
   const handlesByIdRef = useRef<Map<string, ViewportHandle>>(new Map());
@@ -352,15 +346,9 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
         <Canvas
           style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
           frameloop="demand"
-          /*
-           * Render at CSS resolution, not the device pixel ratio. r3f defaults to
-           * window.devicePixelRatio, so a HiDPI screen (every Mac, and any Windows display at 200%
-           * scaling) shades 4x the pixels for the same layout, and each fragment here costs many
-           * texture fetches across the base volume and any overlay layer. Slices are already
-           * interpolated from voxel data, so the sharpness lost is close to invisible; the cost is not.
-           */
+          // Render at CSS resolution, not the device pixel ratio — see the dev docs.
           dpr={1}
-          // antialias:false + preserveDrawingBuffer:true — see doc/dev/dicom-viewer.md's DicomCanvas.tsx entry.
+          // antialias:false + preserveDrawingBuffer:true — see the dev docs.
           gl={{
             antialias: false,
             preserveDrawingBuffer: true,
@@ -407,6 +395,8 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
                   sliceColor={desc.sliceColor}
                   layerIds={desc.layerIds}
                   syncSliceWith={desc.syncSliceWith}
+                  soloMode={desc.soloMode}
+                  soloLutName={desc.soloLutName}
                   domRef={domRef}
                   animationSkipRate={animationSkipRate}
                   onReady={handlePaneReady(id)}

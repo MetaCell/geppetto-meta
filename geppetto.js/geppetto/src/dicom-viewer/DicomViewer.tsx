@@ -115,20 +115,42 @@ export const DicomViewer: React.FC<DicomViewerProps> = ({
     coronal: { stackHelper: null, localizerHelper: null },
   });
   const localizerInitRef = useRef(false);
-  const { syncAll } = useLocalizerSync(vpLocalizersRef);
+  /*
+   * A non-canonical pane's handles + which canonical plane it mirrors — keyed by pane id, since
+   * more than one such pane can share an orientation.
+   */
+  const vpMirrorTargetsRef = useRef<
+    Record<string, { stackHelper: any; localizerHelper: any; mirrorFrom?: string }>
+  >({});
+  const { syncAll } = useLocalizerSync(vpLocalizersRef, vpMirrorTargetsRef);
 
   const handleViewport2DReady = useCallback(
-    (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => {
-      vpLocalizersRef.current[plane] = { stackHelper, localizerHelper };
-      const { axial, sagittal, coronal } = vpLocalizersRef.current;
-      if (
-        !localizerInitRef.current &&
-        axial.stackHelper &&
-        sagittal.stackHelper &&
-        coronal.stackHelper
-      ) {
-        initLocalizerCrossRefs(axial, sagittal, coronal);
-        localizerInitRef.current = true;
+    (
+      paneId: string,
+      plane: PlaneOrientation,
+      stackHelper: any,
+      localizerHelper: any,
+      syncSliceWith?: string,
+    ) => {
+      if (paneId === plane) {
+        vpLocalizersRef.current[plane] = { stackHelper, localizerHelper };
+        const { axial, sagittal, coronal } = vpLocalizersRef.current;
+        if (
+          !localizerInitRef.current &&
+          axial.stackHelper &&
+          sagittal.stackHelper &&
+          coronal.stackHelper
+        ) {
+          initLocalizerCrossRefs(axial, sagittal, coronal);
+          localizerInitRef.current = true;
+          syncAll();
+        }
+      } else {
+        vpMirrorTargetsRef.current[paneId] = {
+          stackHelper,
+          localizerHelper,
+          mirrorFrom: syncSliceWith,
+        };
         syncAll();
       }
     },

@@ -41,7 +41,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     interactions,
   });
   const frameCount = useRef(0);
-  // Per-instance identity for the render scheduler — see renderScheduler.ts / dev doc.
+  // Per-instance identity for the render scheduler.
   const scheduler = useRenderScheduler();
   const paneId = useRef({}).current;
   const lastDrawnRevision = useRef(-1);
@@ -129,7 +129,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
     // Kept outside the render-skip below so an inertial camera keeps settling on skipped frames too.
     handle.controls.update();
 
-    // Skips this frame's GL work when it isn't this pane's turn — see renderScheduler.ts / dev doc.
+    // Skips this frame's GL work when it isn't this pane's turn.
     if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
     lastDrawnRevision.current = scheduler.getSharedRevision();
 
@@ -143,11 +143,7 @@ export const Viewport3DContent: React.FC<Viewport3DContentProps> = ({
 
     const canvas = gl.domElement;
     const canvasRect = canvas.getBoundingClientRect();
-    /*
-     * Scale from CSS pixels to drawing-buffer pixels, measured from the canvas itself rather than
-     * taken from gl.getPixelRatio(). The two disagree whenever the renderer's pixel ratio isn't
-     * what actually sized the buffer — canvas.width/clientWidth is ground truth and cannot drift.
-     */
+    // Scale from CSS to drawing-buffer pixels, measured from the canvas itself — see the dev docs.
     const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
     const sy = canvasRect.height > 0 ? canvas.height / canvasRect.height : 1;
 

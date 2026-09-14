@@ -155,48 +155,32 @@ export interface ViewportInteractions {
 export const NO_INTERACTIONS: ViewportInteractions = {};
 
 /*
- * One viewport pane: what it shows (kind/planeOrientation), where it sits (style), and which
- * layers/LUT/crosshair color it uses. `id` is the pane's stable identity across mode switches —
- * it drives sticky mounting (see viewports/DicomCanvas.tsx) and is the key used everywhere a pane
- * needs to be addressed (onRender, registerViewportScene, ...). Two panes may share a
- * planeOrientation (e.g. an MRI axial pane and a CT-only axial pane side by side) as long as
- * their ids differ.
- *
- * `kind`/`planeOrientation` are only needed when `id` introduces a genuinely new pane. For the
- * four canonical ids ("3d"/"axial"/"sagittal"/"coronal") they're derived from `id` automatically
- * (see viewports/DicomCanvas.tsx's resolvePaneKind) and any value passed here is ignored — a
- * canonical pane's kind/orientation isn't something a view can override, only reposition, so
- * there's nothing to keep in sync by hand and no way to accidentally mismatch them.
+ * One viewport pane: what it shows, where it sits, and which layers/LUT/crosshair color it uses.
+ * `id` is its stable identity across mode switches. See the dev docs for the full model.
  */
 export interface PaneDescriptor {
   id: string;
   kind?: "3d" | "2d";
-  planeOrientation?: PlaneOrientation; // required (with kind) when id isn't a canonical pane id
+  // Derived automatically for the four canonical ids; required (with planeOrientation) otherwise.
+  planeOrientation?: PlaneOrientation;
   style: React.CSSProperties | ((activeOrientation: OrientationMode) => React.CSSProperties);
   // Allowlist of registered layer ids this pane draws; omitted = every registered layer.
   layerIds?: string[];
-  /*
-   * A 2D pane's own current slice defaults to its own id's slot — independent from any other
-   * pane, even one sharing its planeOrientation. Set this to another pane's id to instead read and
-   * write that pane's slot, keeping the two in lockstep (scrubbing either one moves both).
-   */
+  // Sync this pane's slice to another pane's id instead of its own — see the dev docs.
   syncSliceWith?: string;
   sliceColor?: number; // crosshair tint; falls back to a per-orientation default when omitted
+  // Forces this pane's overlay(s) fully opaque with an independent LUT, hides the base slice.
+  soloMode?: boolean;
+  // Colormap name for the solo overlay's dedicated LUT; only meaningful when soloMode is true.
+  soloLutName?: string;
   /*
-   * Fires once, when this pane paints its first real frame. `siblings` is every other pane of the
-   * same view that has already fired, keyed by id (inclusive of this pane) — enough to implement
-   * "wire A and B together once both exist" without the framework doing that wiring itself.
+   * Fires once, on this pane's first real frame. `siblings` is every already-fired pane of the
+   * same view, keyed by id (inclusive) — enough to wire two panes together once both exist.
    */
   onRender?: (handle: ViewportHandle, siblings: Readonly<Record<string, ViewportHandle>>) => void;
 }
 
-/*
- * Named view modes, keyed by the string passed as DicomViewer's `mode` prop. Each entry is just an
- * array of panes — DEFAULT_VIEW_LAYOUTS (exported from viewports/DicomCanvas) supplies
- * "single_view" and "quad_view" this way too, so a custom mode is described identically to a
- * built-in one. A consumer adds a mode by spreading that default map and adding its own entry —
- * no registry, no subclassing.
- */
+// Named view modes, keyed by DicomViewer's `mode` prop — a custom mode is just another entry.
 export type ViewLayouts = Record<string, PaneDescriptor[]>;
 
 export interface DicomViewerProps {
@@ -205,7 +189,7 @@ export interface DicomViewerProps {
   // Noun used in the loading overlay's copy, e.g. "Loading scan… 42%" (default: "image")
   assetLabel?: string;
   mode?: ViewMode;
-  // Custom/extra view modes, merged over DEFAULT_VIEW_LAYOUTS (see viewports/DicomCanvas.tsx)
+  // Custom/extra view modes, merged over the built-in defaults.
   viewLayouts?: ViewLayouts;
   orientation?: OrientationMode;
   threshold3D?: number; // initial intensity threshold for 3D transparency (0 = off)
@@ -215,10 +199,7 @@ export interface DicomViewerProps {
   showDownloadButton?: boolean;
   applySegmentationLUT?: boolean;
   animationSkipRate?: number;
-  /*
-   * Throttles sibling panes' redraws while another pane is being interacted with (default: on) —
-   * see viewports/renderScheduler.ts. Turn off on hardware fast enough not to need it.
-   */
+  // Throttles sibling panes' redraws during interaction (default: on) — see the dev docs.
   throttleSiblingRenders?: boolean;
   toolbarOptions?: ToolbarOptions;
   loaderOptions?: LoaderOptions;

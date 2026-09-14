@@ -90,8 +90,12 @@ export function DicomLayer({
         // Swallow — component may unmount after the WebGL context is lost
       }
     };
+    /*
+     * interpolation is in the deps: ami bakes it into the compiled shader, so it needs a rebuild
+     * (unlike opacity/LUT/window-level, which are live uniforms).
+     */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layerStack, ctx.stack, id, renderOrder]);
+  }, [layerStack, ctx.stack, id, renderOrder, restMaterialOpts.interpolation]);
 
   return null;
 }

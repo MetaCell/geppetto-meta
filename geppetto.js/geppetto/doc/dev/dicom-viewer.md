@@ -94,6 +94,20 @@ useViewportEvents` as a single `interactions` prop. Six independent optional pro
 - **`LayerState`**: represents a loaded overlay volume's GPU resources + controls. `setOpacity`
   encapsulates the background-removal logic so callers don't need to know whether the layer uses
   a plain uniform or an air-alpha LUT curve.
+- **`PaneDescriptor.soloMode`/`soloLutName`**: forces this pane's overlay layer(s) fully opaque
+  with their own independent LUT, ignoring the live layer's own opacity/background-removal curve —
+  for a secondary pane that shows only an overlay (e.g. the same volume loaded again as a distinct
+  "row"), never blended with the base. Also hides the base volume's own slice, since only the
+  overlay matters here. Pairs naturally with `syncSliceWith`: a solo pane synced to a canonical
+  sibling also mirrors that sibling's crosshair (it never computes its own — see
+  `hooks/useLocalizerSync.ts`'s mirror-target entry above) since an unsynced solo pane gets no
+  crosshair, matching a plain non-canonical pane's existing behavior. Deliberately doesn't
+  replicate a parallel scene registry the way some consumers' own solo-pane code might — this
+  package's `viewportScenes` is already keyed by pane id, not orientation, so that concern doesn't
+  apply here.
+- **`DicomViewerProps.throttleSiblingRenders`**: lets a consumer turn off the sibling-throttle
+  behavior entirely (default: on) — see `viewports/renderScheduler.ts`'s entry below. Useful on
+  hardware fast enough that the throttling buys nothing but adds a perceptible input lag.
 - **`planeStackOrientations`**: each 2D viewport's actual ami.js `camera.stackOrientation`
   (0/1/2), i.e. which IJK axis that plane's slices step along. This depends on the volume's
   acquisition orientation, not a fixed axial/sagittal/coronal → z/x/y mapping — `centerOnPoint`
@@ -214,6 +228,14 @@ maxIdx/2)` once per pane mount. With a shared/synced slot, that would reset an a
   `LocalizerHelper` with the other two planes' equations and border colours.
 - **`useLocalizerSync`**: returns `syncAll()` which re-synchronises all three localizers after any
   slice navigation. Called by `ctx.syncLocalizers()` from `Viewport2DContent`.
+- **`MirrorTarget` / mirror targets**: a non-canonical pane (typically a `soloMode` pane) that
+  shows the same crosshairs as another pane instead of computing its own equations. Keyed by pane
+  id rather than orientation, since more than one such pane can share an orientation. `mirrorFrom`
+  names the canonical plane it mirrors; `syncAll`'s third step copies that source's fully-computed
+  state (reference plane + both cross-plane equations + border colors) onto every registered
+  target via `mirrorLocalizer`. A pane not synced to anything (no `mirrorFrom`) is simply never
+  touched by this step and shows no crosshair, matching a plain non-canonical pane's prior
+  behavior. `DicomViewer.tsx` is what registers a pane here — see its own entry below.
 
 ## `hooks/useViewportEvents.ts`
 
@@ -262,6 +284,11 @@ volume loaded via `useVolumeLoader` itself, which frees its loader as soon as it
   centre-anchored rotation should pre-translate before calling.
 - **`createLayerMaterial`**: pure factory that creates a GPU material + uniforms for one overlay
   volume. Returns a `LayerState` without an id or renderOrder — the caller assigns those.
+- **`uTextureContainer.length`** (perf fix): set explicitly to the actual bound texture count. It
+  sizes both the GLSL sampler array and the number of terms ami's texture3d helper generates, and
+  every declared slot is sampled on every read — left at ami's default of 7, a single-texture
+  volume paid 7 `texture2D` calls per sample instead of 1 (×8 for trilinear, ×2 again for a
+  blended base+overlay pane).
 - **`amiOffset`**: ami.js's data shader expects non-negative intensities and shifts volumes with a
   negative minimum (e.g. CT in Hounsfield units, which go below 0) up by this offset when packing
   textures. Window/level and threshold uniforms are compared against those shifted values, so they
@@ -287,6 +314,11 @@ invalidates) per user action.
 
 The mount/register effect waits for both the base stack (for geometry/orientation) and the
 overlay stack (for texture data) to be ready before creating the layer.
+
+**`interpolation` in the rebuild effect's deps** (bug fix): ami bakes `interpolation` into the
+compiled shader at material-creation time rather than exposing it as a live uniform, so changing
+it has to rebuild the material — unlike opacity/LUT/window-level, which stay live uniforms and
+don't need one.
 
 ## `layers/DicomOverlay.tsx`
 
@@ -379,7 +411,14 @@ overlay stack (for texture data) to be ready before creating the layer.
 - **`RenderSchedulerContext.Provider`**: one `RenderScheduler` instance is created per `DicomCanvas`
   (via `useRef`, lazily) and provided here, inside the `<Canvas>`. Every viewport, `StoreInvalidator`
   and `FrameClearer` read it via `useRenderScheduler()`. See `viewports/renderScheduler.ts` for what
-  it does and why.
+  it does and why. The instance itself is stable for the canvas's lifetime — toggling
+  `throttleSiblingRenders` pushes the new value into it via `setThrottleEnabled` rather than
+  creating a fresh scheduler.
+- **`dpr={1}`**: renders at CSS resolution rather than the device pixel ratio. r3f defaults to
+  `window.devicePixelRatio`, so a HiDPI screen (every Mac, and any Windows display at 200% scaling)
+  shades 4x the pixels for the same layout, and each fragment here costs many texture fetches
+  across the base volume and any overlay layer. Slices are already interpolated from voxel data, so
+  the lost sharpness is close to invisible; the cost is not.
 - **`gl={{ antialias: false, preserveDrawingBuffer: true, ... }}`**: both changed from the earlier
   `{ antialias: true }` with no `preserveDrawingBuffer`. `antialias: false` — MSAA costs little on a
   GPU but is expensive under software rendering (SwiftShader/llvmpipe, what a machine without
@@ -470,6 +509,7 @@ existed.
 
 **How it integrates.**
 
+- **`setThrottleEnabled`**: lets a consumer turn the whole mechanism off (`DicomViewerProps.throttleSiblingRenders`, default on) — when disabled, `shouldRenderPane` behaves as if idle, always, i.e. exactly like before this scheduler existed. Meant for hardware fast enough that the throttling only adds a perceptible lag with no measurable benefit.
 - `DicomCanvas` creates exactly one `RenderScheduler` per canvas (`createRenderScheduler()`, held in
   a `useRef` so it survives re-renders) and provides it via `RenderSchedulerContext`, INSIDE the
   `<Canvas>` — R3F runs Canvas children through a separate reconciler, so a provider outside it would
@@ -542,6 +582,38 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
   down and recreating the mesh in that case. Without this, every store-level layer edit (dragging
   a slider fires one update per pointer-move) rebuilt the mesh purely to pick up a value that was
   already live via the shared material/uniforms reference.
+- **`camera.canvas` bootstrap value**: set once from CSS pixels right after construction, purely so
+  `_updateCanvas` has something to work with immediately — `Viewport2DContent`'s resize observer
+  refits with real drawing-buffer pixels right after, which is what the frustum actually has to
+  match (see its own entry below).
+- **soloMode**: hides the base stack's own slice (`stackHelper.slice.visible = false`) — a solo
+  pane shows only its overlay layer(s).
+- **Solo material construction** (`refreshOverlayMeshes`'s `forceOpaque` branch): builds a second,
+  independent `THREE.ShaderMaterial` per overlay layer for a solo pane, cached per layer id
+  (`soloMaterialsRef`) alongside the live material it was built from and the `LutHelper` that backs
+  its LUT texture:
+  - Every uniform except `uOpacity` (forced to `1`) and `uTextureLUT` (an independent, dedicated
+    LUT texture — never the live layer's own colormap or background-removal curve) aliases the
+    live layer's own uniform object, so any future in-place mutation (opacity slider, window/level)
+    is picked up next render with no rebuild.
+  - The LUT itself always uses an "opaque" alpha curve (`OPAQUE_LUTS_O`, merged with
+    `LutHelper.presetLutsO()` — replacing wholesale instead of merging drops other internal LUT
+    state) regardless of what the live layer's own LUT/background-removal is configured to do, so
+    a solo pane never shows a transparent background.
+  - The cache is invalidated by identity: if the live layer's `material` reference changes (e.g. a
+    reload), the cached solo material is disposed and rebuilt from scratch; if only the requested
+    `soloLutName` changes, the existing material's LUT texture is swapped in place instead (cheap —
+    a small 256x1 texture).
+  - When spreading a uniform's wrapper object to override its `value` (for `uOpacity`/
+    `uTextureLUT`), the ENTIRE wrapper must be spread, not just `{ value }` — it also carries
+    `typeGLSL`, which the fragment shader's own declaration generator reads to emit each `uniform
+    <typeGLSL> <name>;` line. A bare `{ value }` compiles to `uniform undefined <name>;` and fails.
+  - `depthWrite: true` (unlike the live material's `false`): the solo material is effectively
+    always fully opaque, and writing depth here gives whatever draws on this plane afterward the
+    same near-plane clipping the (hidden) base slice would otherwise provide.
+  - `disposeSoloMaterial` disposes both the cached material and its independent LUT texture — this
+    is real GPU memory a solo pane would otherwise leak on every cache rebuild, layer eviction, or
+    pane unmount, since nothing else references that texture.
 
 ## `viewports/useViewport3D.ts`
 
@@ -594,15 +666,41 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
 - **Wheel-scrub batching**: wheel events fire far faster than frames (a trackpad emits well over
   60/s), and each `setSliceIndex` call used to write the store directly from the handler — one store
   write, and therefore one full re-render cascade through every context consumer, per event. Ticks
-  are now accumulated into `pendingDelta` and applied once per `requestAnimationFrame` instead, so a
-  fast scroll burst costs one cascade rather than one per tick; the same number of slices is still
-  traversed, just coalesced. The scrub is also reported to the render scheduler as an interaction
-  (`beginInteraction`) that ends `SCRUB_IDLE_MS` (150ms) after the wheel goes quiet
+  are now accumulated into `pendingDeltaRef` and applied once per `requestAnimationFrame` (`tryFlush`)
+  instead, so a fast scroll burst costs one cascade rather than one per tick; the same number of
+  slices is still traversed, just coalesced. The scrub is also reported to the render scheduler as
+  an interaction (`beginInteraction`) that ends `SCRUB_IDLE_MS` (150ms) after the wheel goes quiet
   (`scheduler.endInteraction()` on a debounced timeout) — a wheel gesture has no natural down/up pair,
   so this timeout is what stands in for one.
+- **Wheel-scrub fail-open (`updateInFlightRef` / `FLUSH_STALE_MS`)**: a single `requestAnimationFrame`
+  guard only prevents a second flush within the SAME frame — it says nothing about how long the
+  dispatched change takes to actually land. Under software rendering, the round trip (store write →
+  React commit → the sliceIndex effect updating `stackHelper.index`) can span several frames; a new
+  flush allowed to run before that lands would compute `next` from a stale index and could regress
+  the slice position rather than just be slow. `updateInFlightRef` closes that: a new flush is only
+  allowed once the round trip has actually landed, at which point any deltas that piled up while it
+  was in flight are picked up in one shot. `FLUSH_STALE_MS` (500ms) is a safety valve, same idea as
+  the render scheduler's `INTERACTION_STALE_MS`: an active timer, armed on every dispatch,
+  unconditionally releases the gate and retries — not just a lazily-checked staleness read — so
+  scrubbing resumes on its own even if the round trip is never observed and the user has already
+  stopped scrolling by the time it would have landed (a purely read-time check would leave whatever
+  was still pending stuck forever in that case).
 - **Own-scissor-rect clear**: clears just this viewport's scissor rect (`gl.clear()` honours the
   active scissor box) immediately before `gl.render()`, rather than relying on a canvas-wide clear —
   see `DicomCanvas.tsx`'s `FrameClearer` entry for why the canvas is no longer wiped every frame.
+- **HiDPI scissor/frustum fix**: both the scissor rect (in `useFrame`) and `fitCamera`'s input size
+  (in the resize effect) are now computed in drawing-buffer pixels — `canvas.width / canvas.clientWidth`,
+  measured from the canvas itself — rather than CSS pixels scaled by `gl.getPixelRatio()`. The two
+  disagree whenever the renderer's pixel ratio isn't what actually sized the buffer (e.g. after
+  `DicomCanvas`'s `dpr={1}`), and ami sizes its orthographic frustum from `camera.canvas`, which has
+  to span the same pixels `gl.setViewport` covers. Passing CSS pixels made the frustum half the
+  viewport at devicePixelRatio 2: panes were positioned correctly (scissor rects were right) but
+  showed a magnified crop — a bug that stayed hidden until tested on an actual HiDPI screen, since
+  CSS and drawing-buffer pixels are equal at dpr 1.
+- **soloMode skips**: a solo pane never calls `ctx.syncLocalizers()` (it mirrors a synced sibling's
+  crosshair instead — see `hooks/useLocalizerSync.ts`'s mirror-target entry) and never publishes max
+  slice indices (a sibling pane for the same plane, built from the same base stack, already owns
+  that bookkeeping) — both are guarded by the `soloMode` flag on their respective effects.
 
 ## `viewports/Viewport3DContent.tsx`
 
@@ -625,6 +723,8 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
   window-bound `pointerup`/`pointercancel`/`blur` listeners and own-scissor-rect clear before
   `gl.render()`. Orbiting this viewport touches no shared viewer state, so — unlike a slice scrub —
   it never triggers a sibling redraw; the 2D viewports correctly stay frozen while the 3D view moves.
+- **HiDPI scissor fix**: same fix as `Viewport2DContent.tsx`'s entry above — scissor rect scale
+  factors are computed from `canvas.width / canvas.clientWidth` rather than `gl.getPixelRatio()`.
 
 ## `DicomViewer.tsx`
 
@@ -641,6 +741,13 @@ slice + localizer passes vs. 3D's light-follow/threshold/overlay-hiding logic).
 - **Localizer sync**: an immediate `syncAll()` is forced right after cross-ref init so the
   localizer uniforms reflect the current slice positions — without this the lines wouldn't appear
   until the next user-driven slice navigation event.
+- **`handleViewport2DReady` — canonical vs. mirror registration**: every 2D pane calls this, not
+  just the three canonical ones. `id === plane` picks out a canonical pane (`id` equal to its own
+  orientation) and feeds it into the axial/sagittal/coronal cross-ref triangle exactly as before;
+  any other pane instead registers itself into `vpMirrorTargetsRef`, keyed by its own id, recording
+  its `syncSliceWith` as `mirrorFrom` — this is the registry `useLocalizerSync`'s mirror-target step
+  reads from (see that hook's entry above). Both branches call `syncAll()` so a newly-ready pane's
+  crosshair (or lack of one, if unsynced) reflects the current state immediately.
 - **`handleRenderComplete` replaces the old `handleViewportReady`/`handleViewportFirstFrame` pair**:
   `DicomCanvas` now does all the per-pane readiness bookkeeping itself (see its `checkReady` entry
   above) and calls a single `onRender(viewports, mode)` once per view activation.

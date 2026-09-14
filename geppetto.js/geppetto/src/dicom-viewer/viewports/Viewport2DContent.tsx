@@ -27,15 +27,23 @@ interface Viewport2DContentProps {
   layerIds?: string[];
   // Own slice slot defaults to `id`; set to another pane's id to read/write that pane's slot instead.
   syncSliceWith?: string;
+  // Forces this pane's overlay layer(s) fully opaque with an independent LUT, hides the base slice.
+  soloMode?: boolean;
+  soloLutName?: string;
   domRef: React.RefObject<HTMLElement>;
   animationSkipRate: number;
   onReady?: (scene: any, camera: any) => void;
   /*
-   * Exposes stackHelper + localizerHelper for localizer cross-ref initialisation. Only meaningful
-   * (and only invoked) for a pane whose id equals its own orientation — see dev doc's
-   * "localizer cross-refs stay canonical-only" note.
+   * Exposes id/syncSliceWith/stackHelper/localizerHelper for localizer cross-ref bookkeeping —
+   * fires for every pane. See the dev docs for how DicomViewer routes this.
    */
-  onHandleReady?: (plane: PlaneOrientation, stackHelper: any, localizerHelper: any) => void;
+  onHandleReady?: (
+    id: string,
+    plane: PlaneOrientation,
+    stackHelper: any,
+    localizerHelper: any,
+    syncSliceWith?: string,
+  ) => void;
   // Fires once the first real WebGL frame for this viewport has been painted
   onFirstFrame?: () => void;
   interactions?: ViewportInteractions;
@@ -48,6 +56,8 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   sliceColor = DEFAULT_SLICE_COLORS[planeOrientation],
   layerIds,
   syncSliceWith,
+  soloMode = false,
+  soloLutName,
   domRef,
   animationSkipRate,
   onReady,
@@ -56,7 +66,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   interactions,
 }) => {
   const { gl, invalidate } = useThree();
-  const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef);
+  const handle = useViewport2D(stack, planeOrientation, sliceColor, domRef, soloMode);
   const ctx = useDicomViewerContext();
   const markFirstFrame = useFirstFrameFlag(handle, onFirstFrame);
   const visibleLayers = layerIds ? ctx.layers.filter(l => layerIds.includes(l.id)) : ctx.layers;
@@ -71,7 +81,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     interactions,
   });
   const frameCount = useRef(0);
-  // Per-instance identity for the render scheduler — see renderScheduler.ts / dev doc.
+  // Per-instance identity for the render scheduler.
   const scheduler = useRenderScheduler();
   const paneId = useRef({}).current;
   const lastDrawnRevision = useRef(-1);
@@ -79,26 +89,19 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
   const prevSliceIndex = useRef<number>(-1);
   /*
    * Wheel-scrub batching state, shared between the wheel listener and the sliceIndex round-trip
-   * effect below.
-   *
-   * A single requestAnimationFrame guard only prevents a second flush within the SAME frame — it
-   * says nothing about how long the dispatched change takes to actually land. Under software
-   * rendering, the round trip (store write -> React commit -> the sliceIndex effect updating
-   * handle.stackHelper.index) can span several frames. If a new flush were allowed to run before
-   * that lands, it would compute `next` from a stale sh.index and could regress the slice position
-   * (lose net scroll distance) rather than just be slow. updateInFlightRef closes that: a new flush
-   * is only allowed once the round trip has actually updated stackHelper.index, at which point any
-   * deltas that piled up while it was in flight are picked up in one shot.
-   *
-   * FLUSH_STALE_MS is a safety valve, same idea as renderScheduler's INTERACTION_STALE_MS: if the
-   * round trip is somehow never observed (e.g. the dispatched value coincides with what the effect
-   * already saw), scrubbing must resume on its own rather than stay stuck.
+   * effect below — see the dev docs for the fail-open mechanism this implements.
    */
   const FLUSH_STALE_MS = 500;
   const pendingDeltaRef = useRef(0);
   const flushHandleRef = useRef<number | undefined>(undefined);
   const updateInFlightRef = useRef(false);
   const flightStartedAtRef = useRef(0);
+  const flushTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  /*
+   * Assigned below — lets the wheel listener and the sliceIndex effect call the current
+   * scheduleFlush without needing it in their own dependency arrays.
+   */
+  const scheduleFlushRef = useRef<(() => void) | undefined>(undefined);
 
   const isFlushBusy = () =>
     updateInFlightRef.current && Date.now() - flightStartedAtRef.current < FLUSH_STALE_MS;
@@ -113,9 +116,28 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     if (next === sh.index) return;
     updateInFlightRef.current = true;
     flightStartedAtRef.current = Date.now();
+    clearTimeout(flushTimeoutRef.current);
+    flushTimeoutRef.current = setTimeout(() => {
+      updateInFlightRef.current = false;
+      if (pendingDeltaRef.current !== 0) scheduleFlushRef.current?.();
+    }, FLUSH_STALE_MS);
     ctx.setSliceIndex(sliceKey, next);
     invalidate();
   }, [handle, ctx, sliceKey, invalidate]);
+
+  const scheduleFlush = useCallback(() => {
+    if (isFlushBusy() || flushHandleRef.current !== undefined) return;
+    flushHandleRef.current = requestAnimationFrame(tryFlush);
+  }, [tryFlush]);
+  scheduleFlushRef.current = scheduleFlush;
+
+  useEffect(
+    () => () => {
+      if (flushHandleRef.current !== undefined) cancelAnimationFrame(flushHandleRef.current);
+      clearTimeout(flushTimeoutRef.current);
+    },
+    [],
+  );
 
   // Register the AMI scene in the DicomViewer context and fire callbacks once.
   useEffect(() => {
@@ -123,13 +145,13 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     ctx.registerViewportScene(id, handle.scene);
     if (!readyFired.current) {
       onReady?.(handle.scene, handle.camera);
-      /*
-       * Localizer cross-refs are a fixed axial/sagittal/coronal triangle (see useLocalizerSync.ts) —
-       * only the canonical pane for each orientation (id === its own orientation) participates.
-       */
-      if (id === planeOrientation) {
-        onHandleReady?.(planeOrientation, handle.stackHelper, handle.localizerHelper);
-      }
+      onHandleReady?.(
+        id,
+        planeOrientation,
+        handle.stackHelper,
+        handle.localizerHelper,
+        syncSliceWith,
+      );
       readyFired.current = true;
     }
     invalidate();
@@ -177,14 +199,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     const applyFit = () => {
       const rect = el.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
-        /*
-         * In drawing-buffer pixels, not CSS pixels. AMI sizes the orthographic frustum from
-         * camera.canvas, and the frustum has to span the same pixels gl.setViewport covers — which
-         * is rect * (canvas.width / canvas.clientWidth). Passing CSS pixels made the frustum half
-         * the viewport at devicePixelRatio 2: panes were positioned correctly (the scissor rects
-         * were right) but showed a magnified crop, which reads as a broken layout. Equal at dpr 1,
-         * which is why it stayed hidden until tested on a HiDPI screen.
-         */
+        // fitCamera needs drawing-buffer pixels, not CSS pixels — see the dev docs (HiDPI fix).
         const canvas = gl.domElement;
         const canvasRect = canvas.getBoundingClientRect();
         const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
@@ -206,25 +221,25 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     if (!handle?.stackHelper || sliceIndex === prevSliceIndex.current) return;
     prevSliceIndex.current = sliceIndex;
     handle.stackHelper.index = sliceIndex;
-    ctx.syncLocalizers();
-    handle.refreshOverlayMeshes(visibleLayers, stack);
+    // A soloMode pane never computes its own cross-ref equations — it mirrors a synced sibling's.
+    if (!soloMode) ctx.syncLocalizers();
+    handle.refreshOverlayMeshes(visibleLayers, stack, soloMode, soloLutName);
     invalidate();
     /*
      * The wheel-scrub round trip (if any) has landed — release the flush gate and pick up
-     * anything that piled up in pendingDeltaRef while it was in flight, see tryFlush's dev doc note.
+     * anything that piled up while it was in flight.
      */
     updateInFlightRef.current = false;
-    if (pendingDeltaRef.current !== 0 && flushHandleRef.current === undefined) {
-      flushHandleRef.current = requestAnimationFrame(tryFlush);
-    }
-  }, [sliceIndex, handle, ctx.layers, layerIds, stack, tryFlush]);
+    clearTimeout(flushTimeoutRef.current);
+    if (pendingDeltaRef.current !== 0) scheduleFlushRef.current?.();
+  }, [sliceIndex, handle, ctx.layers, layerIds, stack, soloMode, soloLutName]);
 
   // Also refresh overlay meshes when the layers list (or this pane's layerIds filter) changes
   useEffect(() => {
     if (!handle?.stackHelper || !stack) return;
-    handle.refreshOverlayMeshes(visibleLayers, stack);
+    handle.refreshOverlayMeshes(visibleLayers, stack, soloMode, soloLutName);
     invalidate();
-  }, [ctx.layers, layerIds, handle, stack]);
+  }, [ctx.layers, layerIds, handle, stack, soloMode, soloLutName]);
 
   // Slice navigation via scroll on the tracking div
   useEffect(() => {
@@ -246,26 +261,23 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
         invalidate();
       }, SCRUB_IDLE_MS);
 
-      /*
-       * While a previous dispatch is still in flight, don't schedule another — the round-trip
-       * effect above re-triggers tryFlush once it lands, picking up whatever piled up meanwhile.
-       */
-      if (flushHandleRef.current === undefined && !isFlushBusy()) {
-        flushHandleRef.current = requestAnimationFrame(tryFlush);
-      }
+      // A dispatch already in flight re-triggers this itself once it clears — see scheduleFlush.
+      scheduleFlushRef.current?.();
     };
 
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => {
       if (scrubEnd) clearTimeout(scrubEnd);
-      if (flushHandleRef.current !== undefined) cancelAnimationFrame(flushHandleRef.current);
       el.removeEventListener("wheel", onWheel);
     };
-  }, [handle, domRef.current, tryFlush, scheduler, paneId]);
+  }, [handle, domRef.current, scheduler, paneId]);
 
-  // Publish max slice indices to context once stack helper is ready.
+  /*
+   * Publish max slice indices to context once stack helper is ready. Skipped in soloMode: a
+   * sibling pane for the same plane already owns this bookkeeping.
+   */
   useEffect(() => {
-    if (!handle?.stackHelper) return;
+    if (!handle?.stackHelper || soloMode) return;
     const maxIdx = handle.stackHelper.orientationMaxIndex;
     if (ctx.setSliceMaxIndex) {
       ctx.setSliceMaxIndex(planeOrientation, maxIdx);
@@ -276,25 +288,22 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
       });
     }
     /*
-     * Only the slot's own owner seeds it — a synced pane relies on whichever pane it's synced to
-     * (already mounted, in practice always a canonical pane) to have already done this or to do it
-     * itself; seeding here too would reset a shared slot back to the middle on every pane sharing
-     * it that mounts later, undoing wherever the user had already navigated to.
+     * Only the slot's own owner seeds it — a synced pane relies on the pane it's synced to for
+     * this, or seeding here too would reset an already-navigated shared slot back to the middle.
      */
     if (!syncSliceWith) {
       ctx.setSliceIndex(sliceKey, Math.floor(maxIdx / 2));
     }
     ctx.setPlaneStackOrientation(planeOrientation, handle.camera.stackOrientation);
     invalidate();
-  }, [handle?.stackHelper]);
+  }, [handle?.stackHelper, soloMode]);
 
   useFrame(() => {
     if (!handle || !domRef.current) return;
 
     /*
-     * Fires as soon as this pane's render loop is alive — even while hidden/zero-size (a
-     * sticky-mounted pane that isn't part of the active view). A hidden pane has nothing to paint,
-     * so "ready" can't wait on real pixels the way a visible pane's readiness does below.
+     * Fires as soon as this pane's render loop is alive, even hidden/zero-size — a hidden pane
+     * has nothing to paint, so "ready" can't wait on real pixels the way a visible pane's does.
      */
     markFirstFrame();
 
@@ -304,7 +313,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
     // Kept outside the render-skip below so an inertial camera keeps settling on skipped frames too.
     handle.controls.update();
 
-    // Skips this frame's GL work when it isn't this pane's turn — see renderScheduler.ts / dev doc.
+    // Skips this frame's GL work when it isn't this pane's turn.
     if (!scheduler.shouldRenderPane(paneId, lastDrawnRevision.current)) return;
     lastDrawnRevision.current = scheduler.getSharedRevision();
 
@@ -314,11 +323,7 @@ export const Viewport2DContent: React.FC<Viewport2DContentProps> = ({
 
     const canvas = gl.domElement;
     const canvasRect = canvas.getBoundingClientRect();
-    /*
-     * Scale from CSS pixels to drawing-buffer pixels, measured from the canvas itself rather than
-     * taken from gl.getPixelRatio(). The two disagree whenever the renderer's pixel ratio isn't
-     * what actually sized the buffer — canvas.width/clientWidth is ground truth and cannot drift.
-     */
+    // Scale from CSS to drawing-buffer pixels, measured from the canvas itself — see the dev docs.
     const sx = canvasRect.width > 0 ? canvas.width / canvasRect.width : 1;
     const sy = canvasRect.height > 0 ? canvas.height / canvasRect.height : 1;
 

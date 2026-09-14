@@ -293,21 +293,26 @@ const STATIC_VIEW_LAYOUTS: ViewLayouts = {
 
 /*
  * Custom view mode demo #2 — a 2x3 grid modelled on HFO's dual_row_view: a "solo" row on top
- * showing a second load of the same volume as a <DicomLayer> (a different LUT, "hot_and_cold", so
- * it's visually distinct), and the plain canonical row underneath. HFO's real dual_row_view puts a
- * genuinely different modality (CT) in the top row; there's only one dataset shipped with this
- * example, so the same file stands in for it here — the point is the *mechanism* (layerIds routing
- * a specific overlay layer to a specific pane), not the clinical content.
+ * showing a second load of the same volume as a <DicomLayer>, forced fully opaque with its own LUT
+ * ("hot_and_cold") via soloMode, and the plain canonical row underneath. HFO's real dual_row_view
+ * puts a genuinely different modality (CT) in the top row; there's only one dataset shipped with
+ * this example, so the same file stands in for it here — the point is the *mechanism* (soloMode +
+ * layerIds routing a specific overlay layer to a specific pane, rendered solo), not the clinical
+ * content.
  *
  * Top row panes are new ids (there's no canonical "solo" pane), so kind/planeOrientation must be
- * given explicitly and layerIds restricts each to only the "dual-row-layer" overlay. Bottom row
- * reuses the canonical ids and sets layerIds to an empty array so it stays a plain, unfiltered
- * view regardless of whether the unrelated "overlay-self" layer (toggled separately) is on.
+ * given explicitly, layerIds restricts each to only the "dual-row-layer" overlay, and soloMode
+ * forces that overlay fully opaque (ignoring its own opacity/backgroundRemoval) and hides the base
+ * volume slice underneath it — see PaneDescriptor's doc comment. Bottom row reuses the canonical
+ * ids and sets layerIds to an empty array so it stays a plain, unfiltered view regardless of
+ * whether the unrelated "overlay-self" layer (toggled separately) is on.
  *
  * A function (not a static array) because whether the top row tracks the bottom row is now
  * user-toggleable — see the "sync panes" HUD below. `synced` sets each top-row pane's
- * syncSliceWith to its bottom-row counterpart's id; omitted (independent), a new pane id gets its
- * own slice slot by default, so the two rows scrub separately.
+ * syncSliceWith to its bottom-row counterpart's id, which (via soloMode) also mirrors that
+ * counterpart's crosshair onto the top-row pane's own localizer — see useLocalizerSync's
+ * mirror-target note. Omitted (independent), a new pane id gets its own slice slot and no
+ * crosshair, so the two rows scrub separately.
  */
 function buildDualRowViewPanes(synced: boolean): ViewLayouts["dual_row_view"] {
   return [
@@ -316,6 +321,8 @@ function buildDualRowViewPanes(synced: boolean): ViewLayouts["dual_row_view"] {
       kind: "2d",
       planeOrientation: "axial",
       layerIds: DUAL_ROW_LAYER_IDS,
+      soloMode: true,
+      soloLutName: "hot_and_cold",
       syncSliceWith: synced ? "axial" : undefined,
       style: () => ({ position: "absolute", top: 0, left: "0%", width: "33.3333%", height: "50%" }),
     },
@@ -324,6 +331,8 @@ function buildDualRowViewPanes(synced: boolean): ViewLayouts["dual_row_view"] {
       kind: "2d",
       planeOrientation: "sagittal",
       layerIds: DUAL_ROW_LAYER_IDS,
+      soloMode: true,
+      soloLutName: "hot_and_cold",
       syncSliceWith: synced ? "sagittal" : undefined,
       style: () => ({
         position: "absolute",
@@ -338,6 +347,8 @@ function buildDualRowViewPanes(synced: boolean): ViewLayouts["dual_row_view"] {
       kind: "2d",
       planeOrientation: "coronal",
       layerIds: DUAL_ROW_LAYER_IDS,
+      soloMode: true,
+      soloLutName: "hot_and_cold",
       syncSliceWith: synced ? "coronal" : undefined,
       style: () => ({
         position: "absolute",
@@ -560,7 +571,7 @@ const DicomViewerExample: React.FC = () => {
       />
       <DicomViewerButton
         icon={<DualRowIcon />}
-        tooltip="Toggle a custom 'dual_row_view' layout (2×3 grid): top row is the same volume loaded again as a <DicomLayer> with a different LUT, bottom row is the plain view"
+        tooltip="Toggle a custom 'dual_row_view' layout (2×3 grid): top row is the same volume loaded again as a <DicomLayer>, rendered solo (soloMode: forced opaque, own LUT, base slice hidden), bottom row is the plain view"
         onClick={() =>
           setViewMode(v => {
             if (v === "dual_row_view") {
@@ -590,7 +601,7 @@ const DicomViewerExample: React.FC = () => {
     >
       <DicomViewerButton
         icon={<SyncIcon />}
-        tooltip="Sync each top-row (layer) pane's slice with its bottom-row counterpart. Bidirectional — since both then read/write the same underlying slot, scrubbing either one moves both."
+        tooltip="Sync each top-row (solo) pane's slice with its bottom-row counterpart. Bidirectional — since both then read/write the same underlying slot, scrubbing either one moves both — and mirrors the bottom row's crosshair onto the top row, since a solo pane never computes its own."
         onClick={() => setDualRowSynced(v => !v)}
         active={dualRowSynced}
       />
@@ -653,15 +664,16 @@ const DicomViewerExample: React.FC = () => {
             <LayerNudgeController layerId="overlay-self" translateX={layerNudge} />
           </>
         )}
-        {/* dual_row_view's top row routes to this layer via layerIds — see buildDualRowViewPanes */}
+        {/*
+          dual_row_view's top row routes to this layer via layerIds and renders it in soloMode — see
+          buildDualRowViewPanes. opacity/lut/backgroundRemoval are omitted: a solo pane forces its own
+          independent LUT (soloLutName) and full opacity regardless of what's set here.
+        */}
         {viewMode === "dual_row_view" && (
           <>
             <DicomLayer
               id="dual-row-layer"
               data={DATA}
-              lut="hot_and_cold"
-              opacity={0.85}
-              backgroundRemoval
               onLoadingChange={setDualRowLayerLoading}
               onProgress={setDualRowLayerProgress}
             />
