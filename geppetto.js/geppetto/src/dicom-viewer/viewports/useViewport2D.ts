@@ -9,7 +9,7 @@ import {
   DataVertexShader,
   DataFragmentShader,
 } from "@metacell/ami";
-import { LayerState, PlaneOrientation } from "../types";
+import { LayerState, PlaneOrientation, ShaderUniform } from "../types";
 
 interface Viewport2DHandle {
   scene: THREE.Scene;
@@ -95,7 +95,11 @@ export function useViewport2D(
     };
     camera.orientation = planeOrientation;
 
-    const controls = new TrackballOrthoControl(camera, domEl);
+    /*
+     * ami's factory-built camera loses the `isOrthographicCamera: true` literal through
+     * declaration bundling; the instance genuinely extends THREE.OrthographicCamera.
+     */
+    const controls = new TrackballOrthoControl(camera as THREE.OrthographicCamera, domEl);
     controls.staticMoving = true;
     controls.noRotate = true;
     camera.controls = controls;
@@ -190,7 +194,7 @@ export function useViewport2D(
              * Alias every other uniform to the live layer's own (so future mutation is picked up
              * with no rebuild) except uOpacity, forced to 1 independently.
              */
-            const soloUniforms: Record<string, { value: any }> = {};
+            const soloUniforms: Record<string, ShaderUniform> = {};
             Object.keys(layer.uniforms).forEach(key => {
               /*
                * Spread the original wrapper, not just {value} — it also carries typeGLSL, which

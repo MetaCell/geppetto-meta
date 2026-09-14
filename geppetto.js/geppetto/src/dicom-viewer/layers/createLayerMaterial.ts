@@ -8,13 +8,26 @@ import {
 } from "@metacell/ami";
 import { LayerState, LayerTransform } from "../types";
 
+/*
+ * Matches ami's SegmentationLutHelper constructor param (its own SegmentationPreset/SegmentationLabel
+ * types aren't part of ami's public export surface — the barrel actually shadows the name
+ * "SegmentationPreset" with the unrelated PresetsSegmentation class, so this is declared locally
+ * and relies on structural typing rather than importing it).
+ */
+export type SegmentationPreset = Record<string | number, SegmentationLabel>;
+export interface SegmentationLabel {
+  color: number[];
+  opacity: number;
+  label: string;
+}
+
 export interface LayerMaterialOpts {
   opacity?: number;
   lut?: string; // LUT name for continuous overlays, e.g. 'hot_and_cold'
   windowCenter?: number;
   windowWidth?: number;
   interpolation?: 0 | 1; // 0=nearest (labels), 1=trilinear (default)
-  segmentation?: object; // preset data from SegmentationPreset — signals label map mode
+  segmentation?: SegmentationPreset; // label map mode — a label integer -> {color,opacity,label} map
   backgroundRemoval?: boolean | { threshold?: number };
 }
 

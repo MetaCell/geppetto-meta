@@ -12,10 +12,22 @@ export interface LayerTransform {
   scale?: [number, number, number];
 }
 
+/*
+ * Matches ami's own ShaderUniform shape (its constructor for DataFragmentShader/DataVertexShader
+ * requires type/typeGLSL on every entry to emit GLSL uniform declarations) — not part of ami's
+ * public export surface, so declared locally and relied on structurally.
+ */
+export interface ShaderUniform {
+  value: any;
+  type: string;
+  typeGLSL: string;
+  length?: number;
+}
+
 export interface LayerState {
   id: string;
   material: THREE.ShaderMaterial;
-  uniforms: Record<string, { value: any }>;
+  uniforms: Record<string, ShaderUniform>;
   renderOrder: number;
   setOpacity: (v: number) => void;
   setWindowLevel?: (center: number, width: number) => void;
