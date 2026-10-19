@@ -34,6 +34,38 @@ import type {
  */
 const DATA = "/assets/EX_SITU_2009_UCSD_T1_WEIGHTED.nii.gz";
 
+/*
+ * Segmentation/label-map mode demo — exercises SegmentationLutHelper and the shader's label-map
+ * branch, which nothing else in this example touches. No segmented atlas volume ships with this
+ * example, and ami's own bundled Freesurfer preset turned out invisible against this T1 data (its
+ * label ids are real anatomical region codes that don't overlap this volume's raw intensities, so
+ * nothing painted — indistinguishable from a broken pipeline just by looking). Instead this bins
+ * the volume's own intensity range into a handful of coloured bands: every integer intensity in
+ * [min, max] gets a label, so the overlay is guaranteed to paint visibly for whatever data is
+ * loaded — a real exercise of the segmentation code path, just not a real atlas.
+ */
+const SEGMENTATION_BAND_COLORS: [number, number, number][] = [
+  [244, 67, 54], // red
+  [255, 152, 0], // orange
+  [255, 235, 59], // yellow
+  [76, 175, 80], // green
+  [33, 150, 243], // blue
+  [156, 39, 176], // purple
+];
+function buildSyntheticLabelMap(
+  minMax: [number, number],
+): Record<number, { color: number[]; opacity: number; label: string }> {
+  const [min, max] = minMax;
+  const bandCount = SEGMENTATION_BAND_COLORS.length;
+  const bandSize = Math.max(1, (max - min) / bandCount);
+  const labels: Record<number, { color: number[]; opacity: number; label: string }> = {};
+  for (let v = Math.floor(min); v <= Math.ceil(max); v++) {
+    const band = Math.min(bandCount - 1, Math.floor((v - min) / bandSize));
+    labels[v] = { color: SEGMENTATION_BAND_COLORS[band], opacity: 1, label: `band ${band}` };
+  }
+  return labels;
+}
+
 // useSliceIndices() reads undefined before the viewer registers; fall back to origin.
 const DEFAULT_SLICE_INDICES: Record<PlaneOrientation, number> = { axial: 0, sagittal: 0, coronal: 0 };
 
@@ -130,21 +162,26 @@ function LayerNudgeController({ layerId, translateX }: { layerId: string; transl
 
 /*
  * StackWindowDefaultsReporter — reads the base stack's own default window
- * center/width once (via ctx.stack, only available inside the Canvas tree)
- * and reports it up so the parent can seed the overlay layer's window/level
- * sliders with sensible bounds instead of guessing fixed numbers.
+ * center/width (to seed the overlay layer's window/level sliders) and its
+ * actual intensity range (to build the synthetic segmentation demo's label
+ * map — see buildSyntheticLabelMap) once ctx.stack is ready, only available
+ * inside the Canvas tree.
  */
 function StackWindowDefaultsReporter({
   onReady,
 }: {
-  onReady: (defaults: { center: number; width: number }) => void;
+  onReady: (defaults: { center: number; width: number; minMax: [number, number] }) => void;
 }) {
   const ctx = useDicomViewerContext();
   const reportedRef = useRef(false);
   useEffect(() => {
     if (reportedRef.current || !ctx.stack) return;
     reportedRef.current = true;
-    onReady({ center: ctx.stack.windowCenter, width: ctx.stack.windowWidth });
+    onReady({
+      center: ctx.stack.windowCenter,
+      width: ctx.stack.windowWidth,
+      minMax: ctx.stack.minMax,
+    });
   }, [ctx.stack, onReady]);
   return null;
 }
@@ -217,6 +254,9 @@ const RowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▤</
 const DualRowIcon = () => <span style={{ fontSize: "0.7em", fontWeight: 700 }}>▦</span>;
 const SyncIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>⇌</span>;
 const ThrottleIcon = () => <span style={{ fontSize: "0.9em", fontWeight: 700 }}>⏱</span>;
+const SegmentationIcon = () => (
+  <span style={{ fontSize: "0.9em", fontWeight: 700, color: "#7cb342" }}>◧</span>
+);
 
 // Stable references (not fresh array literals per render) — see the layerIds note in the docs.
 const DUAL_ROW_LAYER_IDS = ["dual-row-layer"];
@@ -466,6 +506,15 @@ const DicomViewerExample: React.FC = () => {
   const layerLut = LUT_PRESETS[layerLutIndex];
   const layerPct = pctOf(layerProgress);
 
+  // Segmentation/label-map demo — see buildSyntheticLabelMap above. minMax is seeded by
+  // StackWindowDefaultsReporter once the base stack is ready, same as wlRange below.
+  const [showSegmentation, setShowSegmentation] = useState(false);
+  const [stackMinMax, setStackMinMax] = useState<[number, number] | null>(null);
+  const segmentationLabels = useMemo(
+    () => (stackMinMax ? buildSyntheticLabelMap(stackMinMax) : null),
+    [stackMinMax],
+  );
+
   /*
    * dual_row_view's layer loads a second full copy of the same volume over the network — same
    * onProgress/onLoadingChange mechanism as the overlay-self layer above, just its own state since
@@ -487,11 +536,15 @@ const DicomViewerExample: React.FC = () => {
   );
   const [layerWindowCenter, setLayerWindowCenter] = useState<number | null>(null);
   const [layerWindowWidth, setLayerWindowWidth] = useState<number | null>(null);
-  const handleStackWindowDefaults = useCallback(({ center, width }: { center: number; width: number }) => {
-    setWlRange({ centerMin: center - width, centerMax: center + width, widthMax: width * 2 });
-    setLayerWindowCenter(center);
-    setLayerWindowWidth(width);
-  }, []);
+  const handleStackWindowDefaults = useCallback(
+    ({ center, width, minMax }: { center: number; width: number; minMax: [number, number] }) => {
+      setWlRange({ centerMin: center - width, centerMax: center + width, widthMax: width * 2 });
+      setLayerWindowCenter(center);
+      setLayerWindowWidth(width);
+      setStackMinMax(minMax);
+    },
+    [],
+  );
 
   /*
    * Pin-drop mode — a custom onClick function (as opposed to the built-in
@@ -556,6 +609,12 @@ const DicomViewerExample: React.FC = () => {
           })
         }
         active={showLayer}
+      />
+      <DicomViewerButton
+        icon={<SegmentationIcon />}
+        tooltip="Toggle a label-map <DicomLayer> (synthetic intensity-banded labels over this T1 volume — colours are not clinically meaningful, this exercises SegmentationLutHelper)"
+        onClick={() => setShowSegmentation(v => !v)}
+        active={showSegmentation}
       />
       <DicomViewerButton
         icon={<PinIcon />}
@@ -663,6 +722,17 @@ const DicomViewerExample: React.FC = () => {
             />
             <LayerNudgeController layerId="overlay-self" translateX={layerNudge} />
           </>
+        )}
+        {showSegmentation && segmentationLabels && (
+          // interpolation={0}: label ids must never blend with a neighbour's (trilinear, the
+          // default, would average adjacent label integers into meaningless values).
+          <DicomLayer
+            id="segmentation-demo"
+            data={DATA}
+            segmentation={segmentationLabels}
+            interpolation={0}
+            opacity={0.6}
+          />
         )}
         {/*
           dual_row_view's top row routes to this layer via layerIds and renders it in soloMode — see
