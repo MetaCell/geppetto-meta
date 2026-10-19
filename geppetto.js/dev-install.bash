@@ -4,13 +4,7 @@
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "${PARENT_PATH}"
 
-# Install and init the projects first in reverse order (the most dependent first)
-# each "init" script is linking the projects using yalc
-echo "[*] Install geppetto-core"
-(cd geppetto-core && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
-
-echo "[*] Install geppetto-ui"
-(cd geppetto-ui && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
-
-echo "[*] Install geppetto-client"
-(cd geppetto-client && yarn install && yarn link:yalc && yarn build:clean && yarn build:dev && yarn publish:yalc)
+# Build @metacell/geppetto and register it globally via yarn link so that
+# consumer apps can pick it up with `yarn link @metacell/geppetto`.
+echo "[*] Install geppetto"
+(cd geppetto && yarn install && yarn build:clean && yarn build && yarn publish:yalc)
