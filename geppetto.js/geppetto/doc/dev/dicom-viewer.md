@@ -297,6 +297,20 @@ volume loaded via `useVolumeLoader` itself, which frees its loader as soon as it
   `backgroundRemoval` and default `setWindowLevel` closures so the offset can't drift out of sync.
 - **Segmentation branch**: label map — LUT is keyed by integer label. Background label 0 has
   alpha 0 in standard presets — always transparent.
+- **`uTextureLUT` must hold a real texture even in segmentation mode** (bug fix): segmentation
+  mode never reads `uTextureLUT` (`uLut` stays 0), so it was left at its uninitialized
+  `{type: 't', value: []}` default — a plain empty array, not a `THREE.Texture`. This compiled and
+  ran without any error or warning, but rendered the segmentation layer fully transparent: three.js
+  assigns GPU texture units to sampler2D uniforms in shader-declaration order, and an invalid
+  (non-Texture) value on one sampler corrupts the unit assigned to whichever sampler is declared
+  right after it in the generated GLSL — here, `uTextureLUTSegmentation`. The segmentation texture
+  itself was built and painted correctly (verified independently: reading its canvas pixels back
+  with `getImageData` showed the right color at the right coordinate) and its own uniform compiled
+  and bound without error — the corruption is silent, one sampler away from the one that's actually
+  wrong, which is what made this hard to find. Fixed by assigning `uTextureLUT.value` a real texture
+  too — any valid one works, since the shader never reads it; reusing `helperSegLut.texture` costs
+  no extra GPU allocation. This was a pre-existing bug, not a casualty of any recent change: nothing
+  in this codebase exercised segmentation mode until a throwaway example demo surfaced it.
 
 ## `layers/DicomLayer.tsx`
 

@@ -174,6 +174,11 @@ export function createLayerMaterial(
     helperSegLut = new SegmentationLutHelper(document.createElement("div"), segmentation);
     uniforms.uLutSegmentation.value = 1;
     uniforms.uTextureLUTSegmentation.value = helperSegLut.texture;
+    /*
+     * uTextureLUT must hold a real texture even though segmentation mode never reads it (bug fix
+     * — see the dev docs): its default {value:[]} corrupts the next sampler's GPU texture unit.
+     */
+    uniforms.uTextureLUT.value = helperSegLut.texture;
   } else {
     // Continuous overlay: 1-D color + opacity LUT keyed by normalized intensity.
     helperLut = new LutHelper(document.createElement("div"));
