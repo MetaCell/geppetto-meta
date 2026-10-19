@@ -59,6 +59,39 @@ function StoreInvalidator({ viewerId }: { viewerId: string }) {
   return null;
 }
 
+/*
+ * Requests a frame once a lost WebGL context comes back — otherwise a pane can stay stuck
+ * unpainted under frameloop="demand" until something unrelated happens to invalidate. See the dev docs.
+ */
+function ContextLossRecovery() {
+  const { gl, invalidate } = useThree();
+
+  useEffect(() => {
+    const canvas = gl?.domElement;
+    if (!canvas) return undefined;
+
+    const onLost = (e: Event) => {
+      console.warn(
+        "[DicomCanvas] WebGL context lost:",
+        (e as { statusMessage?: string }).statusMessage || "(no reason given)",
+      );
+    };
+    // Two frames: the first re-uploads textures/programs three.js dropped, the second draws with them.
+    const onRestored = () => {
+      invalidate();
+      requestAnimationFrame(() => invalidate());
+    };
+    canvas.addEventListener("webglcontextlost", onLost);
+    canvas.addEventListener("webglcontextrestored", onRestored);
+    return () => {
+      canvas.removeEventListener("webglcontextlost", onLost);
+      canvas.removeEventListener("webglcontextrestored", onRestored);
+    };
+  }, [gl, invalidate]);
+
+  return null;
+}
+
 function FpsTracker({ onFps }: { onFps: (fps: number) => void }) {
   const frameCount = useRef(0);
   const lastTime = useRef(performance.now());
@@ -365,6 +398,7 @@ const DicomCanvasImpl: React.FC<DicomCanvasProps> = ({
             <FiberRegister viewerId={viewerId} />
             {/* Invalidate on any store/context change so frameloop="demand" stays correct */}
             <StoreInvalidator viewerId={viewerId} />
+            <ContextLossRecovery />
             {onFps && <FpsTracker onFps={onFps} />}
 
             {mountedIds.map(id => {

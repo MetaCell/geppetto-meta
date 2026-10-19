@@ -389,6 +389,21 @@ don't need one.
   this is the ONLY place shared-state changes are reported to the render scheduler, and it's what
   lets sibling viewports redraw their localizer crosshairs even while another viewport is being
   dragged (see `viewports/renderScheduler.ts`).
+- **`ContextLossRecovery`**: listens for `webglcontextlost`/`webglcontextrestored` on the canvas
+  and calls `invalidate()` (twice — once to re-upload textures/programs three.js dropped, once more
+  to actually draw with them) once the context comes back. three.js's `WebGLRenderer` already
+  `preventDefault()`s the loss event and re-initialises its own GL state on restore, so the context
+  recovers on its own either way — the gap this closes is specifically `frameloop="demand"`: nothing
+  else is guaranteed to ask for the frame that would repaint afterward. In practice r3f's root store
+  has a blanket `rootStore.subscribe((state) => invalidate(state))` baked into the library, and
+  anything that happens to touch that store around the restore moment (camera/size/viewport/`gl`)
+  triggers a repaint anyway — confirmed empirically (simulated loss via `WEBGL_lose_context`,
+  library-version-current) to already recover without this component. This listener turns that
+  into a guarantee instead of an incidental side effect of unrelated internals, which is the
+  difference between "happens to work today" and "can't regress silently if r3f's internals ever
+  change". `onLost` only logs (the driver's own `statusMessage` — "GPU reset", "out of memory",
+  etc. — is the one fact that tells a report apart from an ordinary watchdog reset); it never fires
+  outside an actual failure, so it adds no noise to a normal session.
 - **`FpsTracker`**: counts `useFrame` calls (= actual WebGL frames rendered) and reports via
   callback. Must live inside the Canvas so it has access to the R3F render loop. With
   `frameloop="demand"`, `useFrame` stops firing when idle, so it schedules a 600 ms decay timeout
